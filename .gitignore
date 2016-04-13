@@ -1,3 +1,10 @@
 *~
 .directory
 
+# java build dirs
+lib
+target
+
+# IntelliJ files
+.idea
+*.iml
