@@ -20,7 +20,6 @@ public class HttpsUserContextFactory implements ContextFactory {
         String subject = certChain[0].getSubjectDN().getName();
 
         return parseSubjectName(subject);
-
     }
 
     protected UserContext parseSubjectName(String subject){
@@ -51,4 +50,5 @@ public class HttpsUserContextFactory implements ContextFactory {
         return new UserContext(username, userId, deviceName, deviceId);
 
     }
+
 }

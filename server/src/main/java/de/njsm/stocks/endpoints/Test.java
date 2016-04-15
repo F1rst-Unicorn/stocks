@@ -15,10 +15,6 @@ public class Test {
 
     protected Config c = new Config();
 
-    public Test() {
-
-    }
-
     @GET
     @Produces("text/plain")
     public String getMessage(@Context HttpServletRequest request) {

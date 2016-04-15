@@ -2,7 +2,7 @@
 
 ## Configuration
 Currently the server has a class Config which serves as factory for all modules that can be
-exchanged. 
+exchanged.
 
 ## Authentication mechanism
 To authenticate users we use X509 client certificates in HTTPS. The certificates are issued by
