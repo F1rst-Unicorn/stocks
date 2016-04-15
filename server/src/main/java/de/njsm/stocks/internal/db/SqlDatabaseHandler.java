@@ -4,20 +4,11 @@ import de.njsm.stocks.data.*;
 import de.njsm.stocks.internal.auth.UserContext;
 
 import java.sql.SQLException;
-import java.util.Date;
 
-public class SimpleDatabaseHandler implements DatabaseHandler {
-
-    public void removeFood(UserContext c, int id) throws SQLException {
-
-    }
-
-    public void addFood(UserContext c, Food food) throws SQLException {
-
-    }
+public class SqlDatabaseHandler implements DatabaseHandler {
 
     public void addLocation(Location location) throws SQLException {
-
+        
     }
 
     public void removeLocation(int id) throws SQLException {
@@ -52,15 +43,23 @@ public class SimpleDatabaseHandler implements DatabaseHandler {
 
     }
 
+    public void addFood(UserContext c, Food food) throws SQLException {
+
+    }
+
+    public void removeFood(UserContext c, int id) throws SQLException {
+
+    }
+
+    public void renameFood(UserContext c, int id, String new_name) throws SQLException {
+
+    }
+
     public void addFoodItem(UserContext c, FoodItem item) throws SQLException {
 
     }
 
     public void removeFoodItem(UserContext c, int id) throws SQLException {
-
-    }
-
-    public void renameFood(UserContext c, int id, String new_name) throws SQLException {
 
     }
 

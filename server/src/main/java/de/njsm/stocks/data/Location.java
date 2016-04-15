@@ -7,6 +7,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
 public class Location {
-    public int Id;
+    public int id;
     public String name;
 }
