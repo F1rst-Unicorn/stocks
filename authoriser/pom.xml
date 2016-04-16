@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.njsm.stocks</groupId>
-    <artifactId>server</artifactId>
+    <artifactId>authoriser</artifactId>
     <version>0.1-beta</version>
     <packaging>war</packaging>
 
-    <name>Stocks management server</name>
+    <name>Stocks management server certifier</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

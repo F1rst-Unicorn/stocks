@@ -4,6 +4,7 @@ import de.njsm.stocks.internal.auth.ContextFactory;
 import de.njsm.stocks.internal.auth.SimpleUserContextFactory;
 import de.njsm.stocks.internal.db.DatabaseHandler;
 import de.njsm.stocks.internal.db.SimpleDatabaseHandler;
+import de.njsm.stocks.internal.db.SqlDatabaseHandler;
 
 public class Config {
 
@@ -12,6 +13,6 @@ public class Config {
     }
 
     public DatabaseHandler getDbHandler() {
-        return new SimpleDatabaseHandler();
+        return new SqlDatabaseHandler();
     }
 }
