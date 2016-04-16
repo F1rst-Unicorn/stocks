@@ -8,6 +8,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
 public class User {
-    int Id;
-    String name;
+    public int id;
+    public String name;
 }

@@ -12,13 +12,9 @@ public interface DatabaseHandler {
     void removeLocation(int id)  throws SQLException;
     void renameLocation(int id, String new_name)  throws SQLException;
 
-    void addUser(User user)  throws SQLException;
     void removeUser(int id)  throws SQLException;
-    void renameUser(int id, String new_name)  throws SQLException;
 
-    void addDevice(UserDevice device)  throws SQLException;
     void removeDevice(int id)  throws SQLException;
-    void renameDevice(int id, String new_name)  throws SQLException;
 
     void addFood(UserContext c, Food food) throws SQLException;
     void removeFood(UserContext c, int id) throws SQLException;
@@ -27,7 +23,7 @@ public interface DatabaseHandler {
     void addFoodItem(UserContext c, FoodItem item)  throws SQLException;
     void removeFoodItem(UserContext c, int id)  throws SQLException;
 
-
+    String getNewTicket() throws SQLException;
 
     Location[] getLocations()  throws SQLException;
     Food[] getFood()  throws SQLException;

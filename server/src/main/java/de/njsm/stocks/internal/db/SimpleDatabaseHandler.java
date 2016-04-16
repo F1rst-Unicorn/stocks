@@ -8,6 +8,11 @@ import java.util.Date;
 
 public class SimpleDatabaseHandler implements DatabaseHandler {
 
+    @Override
+    public String getNewTicket() throws SQLException {
+        return null;
+    }
+
     public void removeFood(UserContext c, int id) throws SQLException {
 
     }
@@ -28,27 +33,11 @@ public class SimpleDatabaseHandler implements DatabaseHandler {
 
     }
 
-    public void addUser(User user) throws SQLException {
-
-    }
-
     public void removeUser(int id) throws SQLException {
 
     }
 
-    public void renameUser(int id, String new_name) throws SQLException {
-
-    }
-
-    public void addDevice(UserDevice device) throws SQLException {
-
-    }
-
     public void removeDevice(int id) throws SQLException {
-
-    }
-
-    public void renameDevice(int id, String new_name) throws SQLException {
 
     }
 

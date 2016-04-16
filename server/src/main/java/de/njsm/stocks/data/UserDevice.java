@@ -9,7 +9,7 @@ import java.util.Date;
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
 public class UserDevice {
-    public int Id;
+    public int id;
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss zzz")
     public Date lastUpdate;
     public String name;
