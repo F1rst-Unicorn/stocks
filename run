@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd jetty-base
+java -jar ~/Software/jetty/start.jar cert.xml server.xml authoriser.xml
+cd ..

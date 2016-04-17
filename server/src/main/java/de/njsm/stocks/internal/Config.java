@@ -8,6 +8,8 @@ import de.njsm.stocks.internal.db.DatabaseHandler;
 import de.njsm.stocks.internal.db.SimpleDatabaseHandler;
 import de.njsm.stocks.internal.db.SqlDatabaseHandler;
 
+import java.util.Properties;
+
 public class Config {
 
     public ContextFactory getContextFactory() {

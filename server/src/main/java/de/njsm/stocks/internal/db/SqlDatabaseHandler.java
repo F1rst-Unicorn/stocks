@@ -5,17 +5,47 @@ import de.njsm.stocks.internal.Config;
 import de.njsm.stocks.internal.auth.CertificateAdmin;
 import de.njsm.stocks.internal.auth.UserContext;
 
+import javax.ws.rs.Produces;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class SqlDatabaseHandler implements DatabaseHandler {
 
+    protected String url;
+
+    public SqlDatabaseHandler() {
+        try {
+
+            Properties p = new Properties();
+            p.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
+
+            String address = getProperty("de.njsm.stocks.internal.db.databaseAddress", p);
+            String port = getProperty("de.njsm.stocks.internal.db.databasePort", p);
+            String name = getProperty("de.njsm.stocks.internal.db.databaseName", p);
+            String user = getProperty("de.njsm.stocks.internal.db.databaseUsername", p);
+            String password = getProperty("de.njsm.stocks.internal.db.databasePassword", p);
+
+            url = String.format("jdbc:mariadb://%s:%s/%s?user=%s&password=%s",
+                    address,
+                    port,
+                    name,
+                    user,
+                    password);
+
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
     private Connection getConnection() {
         try {
-            return DriverManager.getConnection(
-                    "jdbc:mariadb://localhost:3306/stocks_dev?user=server&password=linux"
-            );
+            return DriverManager.getConnection(url);
+
         } catch (SQLException e){
             throw new RuntimeException(e);
         }
@@ -287,6 +317,15 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             }
 
             return result.toArray(new FoodItem[result.size()]);
+        }
+    }
+
+    private String getProperty(String key, Properties p) throws IOException {
+        String systemProp = System.getProperty(key);
+        if (systemProp == null){
+            return p.getProperty(key);
+        } else {
+            return systemProp;
         }
     }
 }

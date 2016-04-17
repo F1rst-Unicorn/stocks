@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cd server
+mvn compile package
+cd ..
+cp server/target/server-0.1-beta.war jetty-base/wars/server.war
+
+cd authoriser
+mvn compile package
+cd ..
+cp authoriser/target/authoriser-0.1-beta.war jetty-base/wars/authoriser.war
