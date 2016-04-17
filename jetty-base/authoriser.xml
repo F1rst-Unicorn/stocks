@@ -19,7 +19,7 @@
           </Array>
         </Arg>
         <Set name="host"><Property name="jetty.http.host" deprecated="jetty.host" /></Set>
-        <Set name="port"><Property name="jetty.http.port" deprecated="jetty.port" default="8081" /></Set>
+        <Set name="port"><Property name="jetty.http.port" deprecated="jetty.port" default="10912" /></Set>
         <Set name="idleTimeout"><Property name="jetty.http.idleTimeout" deprecated="http.timeout" default="30000"/></Set>
         <Set name="soLingerTime"><Property name="jetty.http.soLingerTime" deprecated="http.soLingerTime" default="-1"/></Set>
         <Set name="acceptorPriorityDelta"><Property name="jetty.http.acceptorPriorityDelta" deprecated="http.acceptorPriorityDelta" default="0"/></Set>

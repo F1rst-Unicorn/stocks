@@ -1,5 +1,19 @@
 # Server documentation
 
+## Installation
+
+First set up a MariaDB database. Import the schema at database/schema.sql
+Also set the database URL and user credentials in TODO. 
+
+Then set up the CA. 
+
+Finally boot the server for the first time. 
+It generates a ticket with content
+'0000000000000000000000000000000000000000000000000000000000000000' (this is 64
+times the '0' character). You can use it to generate the first user. 
+
+Have fun. 
+
 ## Configuration
 Currently the server has a class Config which serves as factory for all modules that can be
 exchanged.
