@@ -1,6 +1,8 @@
 package de.njsm.stocks.internal;
 
+import de.njsm.stocks.internal.auth.CertificateAdmin;
 import de.njsm.stocks.internal.auth.ContextFactory;
+import de.njsm.stocks.internal.auth.SimpleCertificateAdmin;
 import de.njsm.stocks.internal.auth.SimpleUserContextFactory;
 import de.njsm.stocks.internal.db.DatabaseHandler;
 import de.njsm.stocks.internal.db.SimpleDatabaseHandler;
@@ -14,5 +16,9 @@ public class Config {
 
     public DatabaseHandler getDbHandler() {
         return new SqlDatabaseHandler();
+    }
+
+    public CertificateAdmin getCertAdmin() {
+        return new SimpleCertificateAdmin();
     }
 }

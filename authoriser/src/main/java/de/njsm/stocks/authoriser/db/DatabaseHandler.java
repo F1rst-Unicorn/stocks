@@ -19,15 +19,19 @@ public class DatabaseHandler {
      * @param ticket The ticket to check
      * @return true iff the ticket is valid
      */
-    public boolean authoriseTicket(String ticket) throws SQLException {
+    public boolean authoriseTicket(String[] ticket) throws SQLException {
         String query = "SELECT * FROM Ticket WHERE ticket=?";
         String command = "DELETE FROM Ticket WHERE ID=?";
+
+        if (! validUsername(ticket)){
+            return false;
+        }
 
         try (Connection con = getConnection();
              PreparedStatement sqlQuery = con.prepareStatement(query);
              PreparedStatement sqlCommand = con.prepareStatement(command)){
 
-            sqlQuery.setString(1, ticket);
+            sqlQuery.setString(1, ticket[0]);
             ResultSet rs = sqlQuery.executeQuery();
 
             int id = 0;
@@ -48,5 +52,31 @@ public class DatabaseHandler {
             }
         }
         return false;
+    }
+
+    public boolean validUsername(String[] ticket) throws SQLException {
+        String userQuery = "SELECT * FROM User WHERE name=?";
+        String deviceQuery = "SELECT * FROM User_device WHERE name=?";
+
+        boolean userPresent = false;
+        boolean devicePresent = false;
+
+        try (Connection con = getConnection();
+             PreparedStatement sqlUserQuery = con.prepareStatement(userQuery);
+             PreparedStatement sqlDeviceQuery = con.prepareStatement(deviceQuery)){
+
+            sqlUserQuery.setString(1, ticket[1]);
+            ResultSet res = sqlUserQuery.executeQuery();
+            while (res.next()){
+                userPresent = true;
+            }
+            sqlDeviceQuery.setString(1, ticket[2]);
+            res = sqlDeviceQuery.executeQuery();
+            while (res.next()){
+                devicePresent = true;
+            }
+
+            return !userPresent && ! devicePresent;
+        }
     }
 }

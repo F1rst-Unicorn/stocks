@@ -1,6 +1,8 @@
 package de.njsm.stocks.internal.db;
 
 import de.njsm.stocks.data.*;
+import de.njsm.stocks.internal.Config;
+import de.njsm.stocks.internal.auth.CertificateAdmin;
 import de.njsm.stocks.internal.auth.UserContext;
 
 import java.security.SecureRandom;
@@ -55,11 +57,20 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
     public void removeUser(int id) throws SQLException {
 
-        // TODO revoke all user certificates
-
         String command="DELETE FROM User WHERE ID=?";
+        String getDevicesQuery = "SELECT * FROM User_device WHERE belongs_to=?";
+        CertificateAdmin ca = new Config().getCertAdmin();
+
         try (Connection con = getConnection();
+             PreparedStatement sqlQuery = con.prepareStatement(getDevicesQuery);
              PreparedStatement sqlStmt=con.prepareStatement(command)) {
+
+            // revoke all devices
+            sqlQuery.setInt(1, id);
+            ResultSet res = sqlQuery.executeQuery();
+            while (res.next()){
+                ca.revokeCertificate(res.getInt("ID"));
+            }
 
             sqlStmt.setInt(1, id);
             sqlStmt.execute();
@@ -68,7 +79,8 @@ public class SqlDatabaseHandler implements DatabaseHandler {
     }
 
     public void removeDevice(int id) throws SQLException {
-        // TODO revoke device certificate
+        CertificateAdmin ca = new Config().getCertAdmin();
+        ca.revokeCertificate(id);
 
         String command="DELETE FROM User_device WHERE ID=?";
         try (Connection con = getConnection();

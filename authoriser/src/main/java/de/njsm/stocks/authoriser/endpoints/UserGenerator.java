@@ -14,10 +14,18 @@ public class UserGenerator {
 
     DatabaseHandler handler = new DatabaseHandler();
 
+    /**
+     * Get a new user certificate
+     * @param ticket An array holding the three strings.
+     *               ticket[0] should be the ticket
+     *               ticket[1] should be the desired user name
+     *               ticket[2] should be the desired device name
+     * @return A response containing the new user certificate
+     */
     @POST
     @Consumes("application/json")
     @Produces("application/octet-stream")
-    public Response getNewUser(String ticket){
+    public Response getNewUser(String[] ticket){
 
         try {
             boolean valid = handler.authoriseTicket(ticket);
@@ -25,16 +33,20 @@ public class UserGenerator {
                 return Response.status(HttpServletResponse.SC_FORBIDDEN).build();
             }
 
-            // TODO generate certificate
-
-            File file = new File("");
+            String certPath = generateCertificate(ticket);
+            File file = new File(certPath);
             return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-                    .header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath() + "\"" ) //optional
+                    .header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath() + "\"" )
                     .build();
 
         } catch (SQLException e){
             return Response.status(HttpServletResponse.SC_FORBIDDEN).build();
         }
+    }
+
+    public String generateCertificate(String[] ticket){
+        // TODO implement
+        return "";
     }
 
 }
