@@ -54,6 +54,10 @@ public class DatabaseHandler {
         return false;
     }
 
+    public void addUser(String[] ticket){
+        // TODO create new user and device in the database
+    }
+
     public boolean validUsername(String[] ticket) throws SQLException {
         String userQuery = "SELECT * FROM User WHERE name=?";
         String deviceQuery = "SELECT * FROM User_device WHERE name=?";
