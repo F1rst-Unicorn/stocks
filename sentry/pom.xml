@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.njsm.stocks</groupId>
-    <artifactId>authoriser</artifactId>
+    <artifactId>sentry</artifactId>
     <version>0.1-beta</version>
     <packaging>war</packaging>
 
-    <name>Stocks management server certifier</name>
+    <name>Stocks management server certificate sentry</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

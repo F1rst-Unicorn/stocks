@@ -5,7 +5,7 @@ mvn compile package
 cd ..
 cp server/target/server-0.1-beta.war jetty-base/wars/server.war
 
-cd authoriser
+cd sentry
 mvn compile package
 cd ..
-cp authoriser/target/authoriser-0.1-beta.war jetty-base/wars/authoriser.war
+cp sentry/target/sentry-0.1-beta.war jetty-base/wars/sentry.war

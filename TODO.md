@@ -1,17 +1,18 @@
 # Things to implement
 
-* Image support for Food
-* Implement TLS
-* Implement Certificate management
-* Build install script
-* Link the server components into a Maven module
-* Document the server
+* Build a clean CA
+* Tweak TLS
+* Setup OCSP server
+* Add OCSP Support
 * Implement logging
+* Implement Certificate management
+* Reevaluate database triggers
+* Think about SQL transactions
+* Build install script
+* Document the server
 
 * Implement desktop client
 * Implement Android app
+* Image support for Food
 * Implement Windows phone app
 * Implement iOS app
-
-## Jetty configuration
-* Configure TLS

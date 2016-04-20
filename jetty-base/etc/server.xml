@@ -10,25 +10,35 @@
                 <Arg name="acceptors" type="int"><Property name="jetty.http.acceptors" default="-1"/></Arg>
                 <Arg name="selectors" type="int"><Property name="jetty.http.selectors" default="-1"/></Arg>
                 <Arg name="factories">
-                    <Array type="org.eclipse.jetty.server.ConnectionFactory">
-                        <Item>
-                            <New class="org.eclipse.jetty.server.HttpConnectionFactory">
-                                <Arg name="config"><Ref refid="httpConfig" /></Arg>
-                                <Arg name="compliance">
-                                    <Call class="org.eclipse.jetty.http.HttpCompliance" name="valueOf">
-                                        <Arg>
-                                            <Property name="jetty.http.compliance" default="RFC7230"/>
-                                        </Arg>
-                                    </Call>
-                                </Arg>
-                            </New>
-                        </Item>
+                    <Array type="org.eclipse.jetty.server.ConnectionFactory">       
                     </Array>
                 </Arg>
 
                 <Set name="host"><Property name="jetty.http.host"/></Set>
                 <Set name="port"><Property name="jetty.http.port" default="10912" /></Set>
                 <Set name="idleTimeout"><Property name="jetty.http.idleTimeout" default="5000"/></Set>
+                
+                <Call name="addIfAbsentConnectionFactory">
+                    <Arg>
+                        <New class="org.eclipse.jetty.server.SslConnectionFactory">
+                            <Arg name="next">http/1.1</Arg>
+                            <Arg name="sslContextFactory"><Ref refid="serverSslFactory"/></Arg>
+                        </New>
+                    </Arg>
+                </Call>
+                
+                <Call name="addConnectionFactory">
+                    <Arg>
+                        <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                            <Arg name="config"><Ref refid="sslHttpConfig" /></Arg>
+                            <Arg name="compliance">
+                                <Call class="org.eclipse.jetty.http.HttpCompliance" name="valueOf">
+                                    <Arg><Property name="jetty.http.compliance" default="RFC7230"/></Arg>
+                                </Call>
+                            </Arg>
+                        </New>
+                    </Arg>
+                </Call>
             </New>
         </Arg>
     </Call>
