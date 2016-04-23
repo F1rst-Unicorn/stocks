@@ -8,18 +8,16 @@ public class HttpsUserContextFactory implements ContextFactory {
 
     public UserContext getUserContext(HttpServletRequest request) {
 
-        Object rawCertChain = request.getAttribute("javax.servlet.request.X509Certificate");
-        X509Certificate[] certChain;
+        Object rawClientName = request.getAttribute("X-SSL-Client-S-DN");
+        String clientName;
 
-        if (rawCertChain instanceof X509Certificate[]) {
-            certChain = (X509Certificate[]) rawCertChain;
+        if (rawClientName instanceof String) {
+            clientName = (String) rawClientName;
         } else {
             throw new SecurityException("request was not sent over HTTPS!");
         }
 
-        String subject = certChain[0].getSubjectDN().getName();
-
-        return parseSubjectName(subject);
+        return parseSubjectName(clientName);
     }
 
     protected UserContext parseSubjectName(String subject){

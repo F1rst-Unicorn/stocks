@@ -4,14 +4,11 @@ import java.sql.*;
 
 public class DatabaseHandler {
 
-    private Connection getConnection() {
-        try {
+    private Connection getConnection() throws SQLException {
             return DriverManager.getConnection(
                     "jdbc:mariadb://localhost:3306/stocks_dev?user=server&password=linux"
             );
-        } catch (SQLException e){
-            throw new RuntimeException(e);
-        }
+
     }
 
     /**

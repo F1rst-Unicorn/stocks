@@ -13,12 +13,17 @@ import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
 
 public class SqlDatabaseHandler implements DatabaseHandler {
 
     protected String url;
+    protected Config c;
 
     public SqlDatabaseHandler() {
+
+        c = new Config();
+
         try {
 
             Properties p = new Properties();
@@ -38,17 +43,12 @@ public class SqlDatabaseHandler implements DatabaseHandler {
                     password);
 
         } catch (IOException e){
-            throw new RuntimeException(e);
+            c.getLog().log(Level.SEVERE, "SqlDatabaseHandler: Failed to load database" + e.getMessage());
         }
     }
 
-    private Connection getConnection() {
-        try {
+    private Connection getConnection() throws SQLException {
             return DriverManager.getConnection(url);
-
-        } catch (SQLException e){
-            throw new RuntimeException(e);
-        }
     }
 
     public void addLocation(Location location) throws SQLException {

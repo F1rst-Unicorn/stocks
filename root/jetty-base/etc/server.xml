@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
 
-<Configure id="certServer" class="org.eclipse.jetty.server.Server">
- 
+<Configure id="mainServer" class="org.eclipse.jetty.server.Server">
+    
     <Call name="addConnector">
         <Arg>
             <New class="org.eclipse.jetty.server.ServerConnector">
-                <Arg name="server"><Ref refid="certServer" /></Arg>
+                <Arg name="server"><Ref refid="mainServer" /></Arg>
                 <Arg name="acceptors" type="int"><Property name="jetty.http.acceptors" default="-1"/></Arg>
                 <Arg name="selectors" type="int"><Property name="jetty.http.selectors" default="-1"/></Arg>
                 <Arg name="factories">
@@ -24,24 +24,20 @@
                     </Array>
                 </Arg>
 
-                <Set name="host"><Property name="jetty.http.host"/></Set>
-                <Set name="port"><Property name="jetty.http.port" default="10910" /></Set>
+                <Set name="host">localhost</Set>
+                <Set name="port"><Property name="jetty.http.port" default="10917" /></Set>
                 <Set name="idleTimeout"><Property name="jetty.http.idleTimeout" default="5000"/></Set>
             </New>
         </Arg>
     </Call>
     
-    <New id="certHandler" class="org.eclipse.jetty.server.handler.ContextHandler">
-        <Set name="contextPath">/ca</Set>
-        <Set name="handler">
-            <New class="org.eclipse.jetty.server.handler.ResourceHandler">
-                <Set name="resourceBase">resources/ca.crt</Set>
-                <Set name="directoriesListed">false</Set>
-            </New>
-        </Set>
+    <New id="webapp" class="org.eclipse.jetty.webapp.WebAppContext">
+        <Set name="contextPath">/</Set>
+        <Set name="war"><Property name="jetty.base" default="." />/wars/server.war</Set>
     </New>
-
-    <Set name="handler"><Ref refid="certHandler"/></Set>
-  
+    
+    <Set name="handler">
+        <Ref refid="webapp"/>
+    </Set>
+    
 </Configure> 
- 

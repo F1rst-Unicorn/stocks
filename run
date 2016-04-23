@@ -1,5 +1,5 @@
 #!/bin/sh
 
-cd jetty-base
+cd root/jetty-base
 java -jar ~/Software/jetty/start.jar
-cd ..
+cd ../..

@@ -1,14 +1,12 @@
 package de.njsm.stocks.internal;
 
-import de.njsm.stocks.internal.auth.CertificateAdmin;
-import de.njsm.stocks.internal.auth.ContextFactory;
-import de.njsm.stocks.internal.auth.SimpleCertificateAdmin;
-import de.njsm.stocks.internal.auth.SimpleUserContextFactory;
+import de.njsm.stocks.internal.auth.*;
 import de.njsm.stocks.internal.db.DatabaseHandler;
 import de.njsm.stocks.internal.db.SimpleDatabaseHandler;
 import de.njsm.stocks.internal.db.SqlDatabaseHandler;
 
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class Config {
 
@@ -21,6 +19,10 @@ public class Config {
     }
 
     public CertificateAdmin getCertAdmin() {
-        return new SimpleCertificateAdmin();
+        return new X509CertificateAdmin();
+    }
+
+    public Logger getLog() {
+        return Logger.getLogger("stocks");
     }
 }
