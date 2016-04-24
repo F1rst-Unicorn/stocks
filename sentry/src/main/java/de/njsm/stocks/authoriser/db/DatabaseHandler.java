@@ -12,23 +12,20 @@ public class DatabaseHandler {
     }
 
     /**
-     * Look up the given ticket in the database. Deletes the ticket if it exists
-     * @param ticket The ticket to check
+     * Determine whether the ticket has been created
+     * by an existing user
+     *
+     * @param ticket The ticket to check for
      * @return true iff the ticket is valid
+     * @throws SQLException
      */
-    public boolean authoriseTicket(String[] ticket) throws SQLException {
+    public boolean isTicketValid(String ticket) throws SQLException {
         String query = "SELECT * FROM Ticket WHERE ticket=?";
-        String command = "DELETE FROM Ticket WHERE ID=?";
-
-        if (! validUsername(ticket)){
-            return false;
-        }
 
         try (Connection con = getConnection();
-             PreparedStatement sqlQuery = con.prepareStatement(query);
-             PreparedStatement sqlCommand = con.prepareStatement(command)){
+             PreparedStatement sqlQuery = con.prepareStatement(query)){
 
-            sqlQuery.setString(1, ticket[0]);
+            sqlQuery.setString(1, ticket);
             ResultSet rs = sqlQuery.executeQuery();
 
             int id = 0;
@@ -37,47 +34,128 @@ public class DatabaseHandler {
             java.util.Date valid_till_date = new Date((new java.util.Date()).getTime() + 10 * 60000);
 
             while (rs.next()){
-                id = rs.getInt("ID");
                 date = rs.getTimestamp("created_on");
                 result = true;
             }
-            if (result && date.before(valid_till_date)){
-                sqlCommand.setInt(1, id);
-                sqlCommand.execute();
-            } else {
-                return false;
-            }
+            return result && date.before(valid_till_date);
+
         }
-        return false;
     }
 
-    public void addUser(String[] ticket){
-        // TODO create new user and device in the database
+    /**
+     * Get the ID of the ticket
+     * @return The ID of the ticket
+     * @throws SQLException
+     */
+    public int getCounter(String ticket) throws SQLException {
+        String query = "SELECT `ID` " +
+                "FROM  Ticket " +
+                "WHERE ticket=?;";
+
+        try (Connection con = getConnection();
+             PreparedStatement sqlQuery = con.prepareStatement(query)){
+
+            sqlQuery.setString(1, ticket);
+            ResultSet rs = sqlQuery.executeQuery();
+
+            while (rs.next()){
+                return rs.getInt("ID");
+            }
+            return -1;
+        }
     }
 
-    public boolean validUsername(String[] ticket) throws SQLException {
+    /**
+     * Adds the new device to the database. If the user already exists,
+     * the device is linked to him, otherwise a new user is added, too.
+     * @param credentials
+     * @throws SQLException
+     */
+    public void addUser(String[] credentials) throws SQLException {
         String userQuery = "SELECT * FROM User WHERE name=?";
-        String deviceQuery = "SELECT * FROM User_device WHERE name=?";
-
-        boolean userPresent = false;
-        boolean devicePresent = false;
+        String userCommand = "INSERT INTO User (name) VALUES (?)";
+        String deviceCommand = "INSERT INTO User_device (name, belongs_to)" +
+                " VALUES (?, ?)";
 
         try (Connection con = getConnection();
              PreparedStatement sqlUserQuery = con.prepareStatement(userQuery);
-             PreparedStatement sqlDeviceQuery = con.prepareStatement(deviceQuery)){
+             PreparedStatement sqlUserCommand = con.prepareStatement(userCommand);
+             PreparedStatement sqlDeviceCommand = con.prepareCall(deviceCommand)) {
 
-            sqlUserQuery.setString(1, ticket[1]);
+            boolean userPresent = false;
+            int userId = -1;
+            sqlUserQuery.setString(1, credentials[0]);
             ResultSet res = sqlUserQuery.executeQuery();
-            while (res.next()){
+            while (res.next()) {
                 userPresent = true;
-            }
-            sqlDeviceQuery.setString(1, ticket[2]);
-            res = sqlDeviceQuery.executeQuery();
-            while (res.next()){
-                devicePresent = true;
+                userId = res.getInt("ID");
             }
 
-            return !userPresent && ! devicePresent;
+            if (! userPresent) {
+                sqlUserCommand.setString(1, credentials[0]);
+                sqlUserCommand.execute();
+                res = sqlUserQuery.executeQuery();
+                while (res.next()) {
+                    userId = res.getInt("ID");
+                }
+            }
+
+            sqlDeviceCommand.setString(1, credentials[2]);
+            sqlDeviceCommand.setInt(2, userId);
+            sqlDeviceCommand.execute();
+
+        }
+    }
+
+    /**
+     * Checks whether the Ids presented in the CSR match
+     * the auto increment values in the database
+     *
+     * @param credentials the array of credentials learned from the CSR
+     * @return true if the credentials are valid
+     * @throws SQLException
+     */
+    public boolean isNameValid(String[] credentials) throws SQLException {
+
+        String userIdQuery = "SELECT `AUTO_INCREMENT` " +
+                "FROM  INFORMATION_SCHEMA.TABLES " +
+                "WHERE TABLE_SCHEMA = 'stocks_dev' " +
+                "AND   TABLE_NAME   = 'User';";
+
+        String deviceIdQuery = "SELECT `AUTO_INCREMENT` " +
+                "FROM  INFORMATION_SCHEMA.TABLES " +
+                "WHERE TABLE_SCHEMA = 'stocks_dev' " +
+                "AND   TABLE_NAME   = 'User_device';";
+
+        boolean userIdValid = false;
+        boolean deviceIdValid = false;
+
+        try (Connection con = getConnection();
+             PreparedStatement sqlUserIdQuery = con.prepareStatement(userIdQuery);
+             PreparedStatement sqlDeviceIdQuery = con.prepareStatement(deviceIdQuery)){
+
+            ResultSet res = sqlUserIdQuery.executeQuery();
+            while (res.next()){
+                userIdValid = res.getInt("AUTO_INCREMENT") == Integer.parseInt(credentials[1]);
+            }
+
+            res = sqlDeviceIdQuery.executeQuery();
+            while (res.next()){
+                deviceIdValid = res.getInt("AUTO_INCREMENT") == Integer.parseInt(credentials[3]);;
+            }
+
+            return userIdValid && deviceIdValid;
+        }
+    }
+
+    public void removeTicket(int id) throws SQLException {
+        String command = "DELETE FROM Ticket WHERE ID=?";
+
+        try (Connection con = getConnection();
+             PreparedStatement sqlCommand = con.prepareStatement(command)){
+
+            sqlCommand.setInt(1, id);
+            sqlCommand.execute();
         }
     }
 }

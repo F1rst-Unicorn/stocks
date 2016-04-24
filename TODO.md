@@ -1,6 +1,5 @@
 # Things to implement
 
-* Implement Certificate management
 * Think about SQL transactions
 * Build install script
 * Document the server

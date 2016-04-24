@@ -24,7 +24,7 @@ public class LocationEndpoint extends Endpoint {
         return null;
     }
 
-    @POST
+    @PUT
     @Consumes("application/json")
     public void addLocation(Location loc){
         c.getLog().log(Level.INFO, "LocationEndpoint: Add location " + loc.name);
@@ -48,6 +48,7 @@ public class LocationEndpoint extends Endpoint {
     }
 
     @PUT
+    @Path("/remove")
     @Consumes("application/json")
     public void removeLocation(Location loc){
         c.getLog().log(Level.INFO, "LocationEndpoint: Remove location " + loc.name);

@@ -63,7 +63,8 @@ public class FoodEndpoint extends Endpoint {
         }
     }
 
-    @POST
+    @PUT
+    @Path("/remove")
     @Consumes("application/json")
     public void removeFood(@Context HttpServletRequest request,
                            Food food) {
@@ -111,8 +112,8 @@ public class FoodEndpoint extends Endpoint {
         }
     }
 
-    @POST
-    @Path("/fooditem")
+    @PUT
+    @Path("/fooditem/remove")
     @Consumes("application/json")
     public void removeFoodItem(@Context HttpServletRequest request,
                                FoodItem item){

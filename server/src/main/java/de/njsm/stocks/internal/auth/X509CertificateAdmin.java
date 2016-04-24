@@ -12,6 +12,7 @@ public class X509CertificateAdmin implements CertificateAdmin {
 
         String command = String.format("openssl ca " +
                 "-config ../CA/intermediate/openssl.cnf " +
+                "-batch " +
                 "-revoke ../CA/intermediate/certs/user_%d.cert.pem",
                 id);
         try {
