@@ -1,7 +1,6 @@
 package de.njsm.stocks.authoriser.endpoints;
 
 import de.njsm.stocks.authoriser.db.DatabaseHandler;
-import org.apache.commons.io.IOExceptionWithCause;
 import org.apache.commons.io.IOUtils;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +25,7 @@ public class UserGenerator {
      * Get a new user certificate
      * @return A response containing the new user certificate
      */
-    @GET
+    @POST
     @Path("/{ticket}")
     @Consumes("application/octet-stream")
     @Produces("application/octet-stream")
@@ -109,7 +108,7 @@ public class UserGenerator {
             String buffer = match.group(0);
             return parseSubjectName(buffer.substring(3, buffer.length()));
         } else {
-            throw new IOException("Subject name invalid invalid");
+            throw new IOException("Subject name invalid");
         }
     }
 

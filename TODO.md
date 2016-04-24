@@ -1,8 +1,8 @@
 # Things to implement
 
-* Think about SQL transactions
 * Build install script
 * Document the server
+* Add move food
 
 * Implement desktop client
 * Implement Android app

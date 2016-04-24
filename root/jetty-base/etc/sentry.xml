@@ -25,7 +25,7 @@
                 </Arg>
 
                 <Set name="host">localhost</Set>
-                <Set name="port"><Property name="jetty.http.port" default="10916" /></Set>
+                <Set name="port"><Property name="de.njsm.stocks.sentry.port"/></Set>
                 <Set name="idleTimeout"><Property name="jetty.http.idleTimeout" default="5000"/></Set>
             </New>
         </Arg>

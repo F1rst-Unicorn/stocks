@@ -24,27 +24,19 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
         c = new Config();
 
-        try {
+        String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
+        String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
+        String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
+        String user = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
+        String password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
 
-            Properties p = new Properties();
-            p.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
+        url = String.format("jdbc:mariadb://%s:%s/%s?user=%s&password=%s",
+                address,
+                port,
+                name,
+                user,
+                password);
 
-            String address = getProperty("de.njsm.stocks.internal.db.databaseAddress", p);
-            String port = getProperty("de.njsm.stocks.internal.db.databasePort", p);
-            String name = getProperty("de.njsm.stocks.internal.db.databaseName", p);
-            String user = getProperty("de.njsm.stocks.internal.db.databaseUsername", p);
-            String password = getProperty("de.njsm.stocks.internal.db.databasePassword", p);
-
-            url = String.format("jdbc:mariadb://%s:%s/%s?user=%s&password=%s",
-                    address,
-                    port,
-                    name,
-                    user,
-                    password);
-
-        } catch (IOException e){
-            c.getLog().log(Level.SEVERE, "SqlDatabaseHandler: Failed to load database" + e.getMessage());
-        }
     }
 
     private Connection getConnection() throws SQLException {
@@ -95,6 +87,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
              PreparedStatement sqlQuery = con.prepareStatement(getDevicesQuery);
              PreparedStatement sqlStmt=con.prepareStatement(command)) {
 
+            con.setAutoCommit(false);
             // revoke all devices
             sqlQuery.setInt(1, id);
             ResultSet res = sqlQuery.executeQuery();
@@ -104,6 +97,8 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
             sqlStmt.setInt(1, id);
             sqlStmt.execute();
+
+            con.commit();
         }
 
     }
@@ -184,21 +179,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
     public String getNewTicket() throws SQLException {
 
-        // Ticket generation
-        int ticket_length = 64;         // this conforms to database ticket size
-        SecureRandom rng = new SecureRandom();
-        byte[] content = new byte[ticket_length];
-
-        for (int i = 0; i < ticket_length; i++){
-            byte b;
-            do {
-                b = (byte) rng.nextInt();
-            } while (!Character.isLetterOrDigit(b));
-            content[i] = b;
-        }
-        String ticket = new String(content);
-
-        // insert into database
+        String ticket = generateTicket();
         String command = "INSERT INTO Ticket (ticket, created_on) VALUES (?, ?)";
 
         try (Connection con = getConnection();
@@ -206,7 +187,8 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
             java.util.Date now = new java.util.Date();
             sqlStmt.setString(1, ticket);
-            sqlStmt.setDate(2, new Date(now.getTime()));
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(now.getTime());
+            sqlStmt.setTimestamp(2, timestamp);
             sqlStmt.execute();
         }
 
@@ -320,12 +302,18 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    private String getProperty(String key, Properties p) throws IOException {
-        String systemProp = System.getProperty(key);
-        if (systemProp == null){
-            return p.getProperty(key);
-        } else {
-            return systemProp;
+    protected String generateTicket() {
+        int ticket_length = 64;         // this conforms to database ticket size
+        SecureRandom rng = new SecureRandom();
+        byte[] content = new byte[ticket_length];
+
+        for (int i = 0; i < ticket_length; i++){
+            byte b;
+            do {
+                b = (byte) rng.nextInt();
+            } while (!Character.isLetterOrDigit(b));
+            content[i] = b;
         }
+        return new String(content);
     }
 }

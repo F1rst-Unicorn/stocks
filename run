@@ -1,5 +1,5 @@
 #!/bin/sh
 
 cd root/jetty-base
-java -jar ~/Software/jetty/start.jar
+java -jar $(cat ../stocks.properties) ~/Software/jetty/start.jar
 cd ../..

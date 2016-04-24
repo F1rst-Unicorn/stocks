@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class Config {
 
     public ContextFactory getContextFactory() {
-        return new SimpleUserContextFactory();
+        return new HttpsUserContextFactory();
     }
 
     public DatabaseHandler getDbHandler() {

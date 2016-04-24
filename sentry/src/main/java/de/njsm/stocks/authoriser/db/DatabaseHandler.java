@@ -4,11 +4,27 @@ import java.sql.*;
 
 public class DatabaseHandler {
 
-    private Connection getConnection() throws SQLException {
-            return DriverManager.getConnection(
-                    "jdbc:mariadb://localhost:3306/stocks_dev?user=server&password=linux"
-            );
+    protected String url;
 
+    public DatabaseHandler() {
+
+        String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
+        String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
+        String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
+        String user = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
+        String password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
+
+        url = String.format("jdbc:mariadb://%s:%s/%s?user=%s&password=%s",
+                address,
+                port,
+                name,
+                user,
+                password);
+
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url);
     }
 
     /**
@@ -21,6 +37,8 @@ public class DatabaseHandler {
      */
     public boolean isTicketValid(String ticket) throws SQLException {
         String query = "SELECT * FROM Ticket WHERE ticket=?";
+        int minutesValid = Integer.parseInt(
+                System.getProperty("de.njsm.stocks.internal.ticketValidityTimeInMinutes"));
 
         try (Connection con = getConnection();
              PreparedStatement sqlQuery = con.prepareStatement(query)){
@@ -28,16 +46,16 @@ public class DatabaseHandler {
             sqlQuery.setString(1, ticket);
             ResultSet rs = sqlQuery.executeQuery();
 
-            int id = 0;
             boolean result = false;
             java.util.Date date = null;
-            java.util.Date valid_till_date = new Date((new java.util.Date()).getTime() + 10 * 60000);
 
             while (rs.next()){
                 date = rs.getTimestamp("created_on");
                 result = true;
             }
-            return result && date.before(valid_till_date);
+            java.util.Date valid_till_date = new Date(date.getTime() + minutesValid * 60000);
+
+            return result && (new java.util.Date()).before(valid_till_date);
 
         }
     }
