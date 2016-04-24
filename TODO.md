@@ -1,7 +1,5 @@
 # Things to implement
 
-* Build install script
-* Document the server
 * Add move food
 
 * Implement desktop client

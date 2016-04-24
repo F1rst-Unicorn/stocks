@@ -14,13 +14,14 @@ the server. Import the schema in database/schema.sql into the database.
 ## CA
 
 Stocks drives its own CA. Set it up in root/CA/ using the already existing 
-config files. Note that the CA is only needed to certify the intermediate CA
-which is used for daily business. Copy the CA's certificate into root/nginx/ca.
+config files. Adjust the paths inside!. Note that the CA is only needed to 
+certify the intermediate CA which is used for daily business. Copy the CA's 
+certificate into root/nginx/ca.
 
 ## OCSP server
 
 Stocks needs an OCSP server. Use openssl to set it up and make it listen on 
-port $ocspPort. Define that port in root/CA/intermediate/openssl.cnf, too 
+port $ocspPort (default 10920). Define that port in root/CA/intermediate/openssl.cnf, too 
 (in the OCSP section). Also set the port in root/nginx/stocks/nginx.conf. 
 
 ## Jetty
