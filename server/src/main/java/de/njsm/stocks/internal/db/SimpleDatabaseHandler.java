@@ -37,6 +37,11 @@ public class SimpleDatabaseHandler implements DatabaseHandler {
 
     }
 
+    @Override
+    public Update[] getUpdates() throws SQLException {
+        return new Update[0];
+    }
+
     public void removeDevice(int id) throws SQLException {
 
     }

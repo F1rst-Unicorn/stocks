@@ -31,4 +31,6 @@ public interface DatabaseHandler {
     UserDevice[] getDevices() throws SQLException;
     FoodItem[] getFoodItems() throws SQLException;
 
+    Update[] getUpdates() throws SQLException;
+
 }

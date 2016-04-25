@@ -315,6 +315,24 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
+    @Override
+    public Update[] getUpdates() throws SQLException {
+        String query = "SELECT * FROM Updates";
+
+        try (Connection con = getConnection();
+             PreparedStatement sqlQuery = con.prepareStatement(query)){
+            ResultSet res = sqlQuery.executeQuery();
+            ArrayList<Update> result = new ArrayList<>();
+            while (res.next()) {
+                Update u = new Update();
+                u.table = res.getString("table_name");
+                u.lastUpdate = res.getDate("last_update");
+            }
+
+            return result.toArray(new Update[result.size()]);
+        }
+    }
+
     protected String generateTicket() {
         int ticket_length = 64;         // this conforms to database ticket size
         SecureRandom rng = new SecureRandom();
@@ -329,4 +347,5 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
         return new String(content);
     }
+
 }
