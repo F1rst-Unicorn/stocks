@@ -19,7 +19,7 @@ public class LocationEndpoint extends Endpoint {
         try {
             return handler.getLocations();
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to get locations: " + e.getSQLState());
+            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to get locations: " + e.getMessage());
         }
         return null;
     }
@@ -31,7 +31,7 @@ public class LocationEndpoint extends Endpoint {
         try {
             handler.addLocation(loc);
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to add location: " + e.getSQLState());
+            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to add location: " + e.getMessage());
         }
     }
 
@@ -43,7 +43,7 @@ public class LocationEndpoint extends Endpoint {
         try {
             handler.renameLocation(loc.id, newName);
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to rename location: " + e.getSQLState());
+            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to rename location: " + e.getMessage());
         }
     }
 
@@ -55,7 +55,7 @@ public class LocationEndpoint extends Endpoint {
         try {
             handler.removeLocation(loc.id);
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to remove location: " + e.getSQLState());
+            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to remove location: " + e.getMessage());
         }
     }
 }

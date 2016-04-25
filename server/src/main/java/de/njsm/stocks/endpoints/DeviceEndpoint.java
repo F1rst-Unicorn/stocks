@@ -18,7 +18,7 @@ public class DeviceEndpoint extends Endpoint {
         try {
             return handler.getDevices();
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "DeviceEndpoint: Failed to get devices: " + e.getSQLState());
+            c.getLog().log(Level.SEVERE, "DeviceEndpoint: Failed to get devices: " + e.getMessage());
         }
         return null;
     }
@@ -30,7 +30,7 @@ public class DeviceEndpoint extends Endpoint {
         try {
             handler.removeDevice(d.id);
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "DeviceEndpoint: Failed to remove device" + e.getSQLState());
+            c.getLog().log(Level.SEVERE, "DeviceEndpoint: Failed to remove device" + e.getMessage());
         }
     }
 

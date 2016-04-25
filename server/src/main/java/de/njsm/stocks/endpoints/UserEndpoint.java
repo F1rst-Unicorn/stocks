@@ -18,7 +18,7 @@ public class UserEndpoint extends Endpoint {
         try {
             return handler.getNewTicket();
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to add ticket: " + e.getSQLState());
+            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to add ticket: " + e.getMessage());
         }
 
         return "";
@@ -31,7 +31,7 @@ public class UserEndpoint extends Endpoint {
         try {
             return handler.getUsers();
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to get users: " + e.getSQLState());
+            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to get users: " + e.getMessage());
         }
         return null;
     }
@@ -43,7 +43,7 @@ public class UserEndpoint extends Endpoint {
         try {
             handler.removeUser(u.id);
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to delete user: " + e.getSQLState());
+            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to delete user: " + e.getMessage());
         }
     }
 

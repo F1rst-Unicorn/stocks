@@ -1,9 +1,12 @@
 # Things to implement
 
-* Add move food
+
 
 * Implement desktop client
-* Implement Android app
+
 * Image support for Food
+* Add move food
+
+* Implement Android app
 * Implement Windows phone app
 * Implement iOS app

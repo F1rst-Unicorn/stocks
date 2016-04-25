@@ -89,16 +89,18 @@ public class DatabaseHandler {
      * @param credentials
      * @throws SQLException
      */
-    public void addUser(String[] credentials) throws SQLException {
+    public void addUser(String[] credentials, int certId) throws SQLException {
         String userQuery = "SELECT * FROM User WHERE name=?";
         String userCommand = "INSERT INTO User (name) VALUES (?)";
-        String deviceCommand = "INSERT INTO User_device (name, belongs_to)" +
-                " VALUES (?, ?)";
+        String deviceCommand = "INSERT INTO User_device (name, belongs_to, certificate_no)" +
+                " VALUES (?, ?, ?)";
 
         try (Connection con = getConnection();
              PreparedStatement sqlUserQuery = con.prepareStatement(userQuery);
              PreparedStatement sqlUserCommand = con.prepareStatement(userCommand);
              PreparedStatement sqlDeviceCommand = con.prepareCall(deviceCommand)) {
+
+            con.setAutoCommit(false);
 
             boolean userPresent = false;
             int userId = -1;
@@ -120,8 +122,10 @@ public class DatabaseHandler {
 
             sqlDeviceCommand.setString(1, credentials[2]);
             sqlDeviceCommand.setInt(2, userId);
+            sqlDeviceCommand.setInt(3, certId);
             sqlDeviceCommand.execute();
 
+            con.commit();
         }
     }
 

@@ -92,7 +92,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             sqlQuery.setInt(1, id);
             ResultSet res = sqlQuery.executeQuery();
             while (res.next()){
-                ca.revokeCertificate(res.getInt("ID"));
+                ca.revokeCertificate(res.getInt("certificate_no"));
             }
 
             sqlStmt.setInt(1, id);
@@ -104,15 +104,28 @@ public class SqlDatabaseHandler implements DatabaseHandler {
     }
 
     public void removeDevice(int id) throws SQLException {
-        CertificateAdmin ca = new Config().getCertAdmin();
-        ca.revokeCertificate(id);
 
+
+        String query = "SELECT certificate_no FROM User_device WHERE ID=?";
         String command="DELETE FROM User_device WHERE ID=?";
         try (Connection con = getConnection();
+             PreparedStatement sqlQuery = con.prepareStatement(query);
              PreparedStatement sqlStmt=con.prepareStatement(command)) {
+
+            con.setAutoCommit(false);
+            CertificateAdmin ca = new Config().getCertAdmin();
+
+            sqlQuery.setInt(1, id);
+            ResultSet res = sqlQuery.executeQuery();
+
+            while (res.next()) {
+                ca.revokeCertificate(res.getInt("certificate_no"));
+            }
 
             sqlStmt.setInt(1, id);
             sqlStmt.execute();
+
+            con.commit();
         }
     }
 

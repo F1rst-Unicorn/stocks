@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS `Food`;
 CREATE TABLE `Food` (
   `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
   `name` varchar(200) NOT NULL,
+  `image_path` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -36,6 +37,7 @@ CREATE TABLE User_device (
     `name` varchar(200) NOT NULL,
     `last_poll` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
     belongs_to int UNSIGNED NOT NULL,
+    `certificate_no` int UNSIGNED NOT NULL, 
     CONSTRAINT `device_points_to_user` FOREIGN KEY (`belongs_to`) REFERENCES `User`(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -72,5 +74,23 @@ CREATE TABLE Ticket (
 INSERT INTO Ticket (ticket)
 VALUES 
     ('0000000000000000000000000000000000000000000000000000000000000000');
+    
+
+    
+DROP TABLE IF EXISTS Updates;
+
+CREATE TABLE Updates (
+    `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
+    `table_name` varchar(200) NOT NULL,
+    `last_update` DATETIME NOT NULL    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO Updates (`table_name`, `last_update`)
+VALUES 
+    ('Location', NOW()),
+    ('User', NOW()),
+    ('User_device', NOW()),
+    ('Food', NOW()),
+    ('Food_item', NOW());
 
 SET foreign_key_checks = 1;

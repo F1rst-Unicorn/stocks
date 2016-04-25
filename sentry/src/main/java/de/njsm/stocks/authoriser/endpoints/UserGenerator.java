@@ -41,8 +41,8 @@ public class UserGenerator {
                 }
 
                 // save signing request
-                int id = handler.getCounter(ticket);
-                String userFileName = String.format("user_%d", id);
+                int certId = handler.getCounter(ticket);
+                String userFileName = String.format("user_%d", certId);
                 String csrFileName = "../CA/intermediate/csr/" + userFileName + ".csr.pem";
                 FileOutputStream output = new FileOutputStream(csrFileName);
                 FileInputStream input = new FileInputStream(csrFile);
@@ -58,8 +58,8 @@ public class UserGenerator {
                     return Response.status(HttpServletResponse.SC_FORBIDDEN).build();
                 }
 
-                handler.removeTicket(id);
-                handler.addUser(credentials);
+                handler.removeTicket(certId);
+                handler.addUser(credentials, certId);
 
                 // sign request
                 log.log(Level.INFO, "sentry: Signing request for " + credentials[0] + credentials[2]);
