@@ -1,0 +1,44 @@
+# Maintainer: aliena <dairyman@njsm.de>
+pkgname=stocks-server
+pkgver=0.1
+pkgrel=1
+pkgdesc="Stocks server framework"
+arch=('i686' 'x86_64')
+url="https://github.com/F1rst-Unicorn/stocks"
+license=('proprietary')
+depends=('jre8-openjdk'
+         'nginx'
+         'openssl'
+         'mariadb')
+source=("git://www.github.com/F1rst-Unicorn/stocks")
+#install=stocks-server.install
+sha512sums=('SKIP')
+
+build() {
+  cd "$srcdir/stocks"
+  
+  cd server
+  mvn compile package
+  cd ..
+  cp server/target/server-$pkgver.war root/jetty-base/wars/server.war
+  
+  
+  cd sentry
+  mvn compile package
+  cd ..
+  cp sentry/target/sentry-$pkgver.war root/jetty-base/wars/sentry.war
+  
+  wget -O jetty.tar.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.8.v20160314.tar.gz"
+  
+}
+
+package() {
+    cd "$srcdir/stocks"
+    
+    mkdir -p /srv/stocks
+    cp -r root /srv/stocks
+    
+    tar xf jetty.tar.gz
+    mv jetty /opt/
+    
+}
