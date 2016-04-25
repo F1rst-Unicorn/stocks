@@ -11,7 +11,7 @@ depends=('jre8-openjdk'
          'openssl'
          'mariadb')
 source=("git://www.github.com/F1rst-Unicorn/stocks")
-#install=stocks-server.install
+install=stocks-server.install
 sha512sums=('SKIP')
 
 build() {
@@ -20,6 +20,7 @@ build() {
   cd server
   mvn compile package
   cd ..
+  mkdir -p root/jetty-base/wars
   cp server/target/server-$pkgver.war root/jetty-base/wars/server.war
   
   
@@ -27,18 +28,23 @@ build() {
   mvn compile package
   cd ..
   cp sentry/target/sentry-$pkgver.war root/jetty-base/wars/sentry.war
-  
-  wget -O jetty.tar.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.8.v20160314.tar.gz"
+                        
+  wget -O jetty.tar.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.8.v20160314.tar.gz&r=1"
   
 }
 
 package() {
     cd "$srcdir/stocks"
     
-    mkdir -p /srv/stocks
-    cp -r root /srv/stocks
+    mkdir -p $pkgdir/srv/stocks
+    cp -r root $pkgdir/srv/stocks
+    rm $pkgdir/srv/stocks/root/nginx/ca
+    rm $pkgdir/srv/stocks/root/nginx.conf.d/ssl/*
     
-    tar xf jetty.tar.gz
-    mv jetty /opt/
+    cp database/schema.sql $pkgdir/srv/stocks/schema.sql
+    
+    tar xzf jetty.tar.gz
+    mkdir -p $pkgdir/opt/jetty
+    mv jetty-distribution-9.3.8.v20160314/* $pkgdir/opt/jetty
     
 }

@@ -1,0 +1,52 @@
+## arg 1:  the new package version
+#pre_install() {
+	# do something here
+#}
+
+## arg 1:  the new package version
+post_install() {
+    
+    ## Set up the database
+    sqlpassword='fdsaieosa32fd$2&3)'
+    mkdir -p /srv/stocks/mysql
+	mysql_install_db --user=mysql --basedir=/usr --datadir=/srv/stocks/mysql
+	echo "SET PASSWORD = PASSWORD('fdsaieosa32fd$2&3)');" | mysql -u root -p --password=''
+	echo "CREATE USER 'server'@'localhost' IDENTIFIED BY 'linux';" | mysql -u root -p --password='$sqlpassword'
+	echo "CREATE DATABASE stocks;" | mysql -u root -p --password='$sqlpassword'
+	echo "GRANT ALL PRIVILEGES ON stocks.* TO 'server'@'localhost';" | mysql -u root -p --password='$sqlpassword'
+	echo "FLUSH PRIVILEGES;" | mysql -u root -p --password='$sqlpassword'
+	echo "source /srv/stocks/schema.sql;" | mysql -u root -p --password='$sqlpassword'
+	
+	## Set up the CA
+	mkdir -p /srv/stocks/root/CA
+	cd /srv/stocks/root/CA
+	mkdir certs csr private newcerts
+	chmod 700 private
+	touch index.txt
+	echo 1000 > serial
+	
+	## Set up the OCSP server
+	
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+#pre_upgrade() {
+	# do something here
+#}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+#post_upgrade() {
+	# do something here
+#}
+
+## arg 1:  the old package version
+#pre_remove() {
+	# do something here
+#}
+
+## arg 1:  the old package version
+#post_remove() {
+	# do something here
+#}
