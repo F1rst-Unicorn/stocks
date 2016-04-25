@@ -10,6 +10,9 @@ depends=('jre8-openjdk'
          'nginx'
          'openssl'
          'mariadb')
+makedepends=('git'
+			 'wget'
+			 'maven')
 source=("git://www.github.com/F1rst-Unicorn/stocks")
 install=stocks-server.install
 sha512sums=('SKIP')

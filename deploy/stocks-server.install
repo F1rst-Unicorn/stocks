@@ -1,17 +1,21 @@
 ## arg 1:  the new package version
-#pre_install() {
-	# do something here
-#}
+pre_install() {
+    echo -n ""
+}
 
 ## arg 1:  the new package version
 post_install() {
     
     useradd -g users stocks
+    systemctl daemon-reload
     
     ## Set up the database
     sqlpassword='fdsaieosa32fd$2&3)'
     mkdir -p /srv/stocks/mysql
 	mysql_install_db --user=mysql --basedir=/usr --datadir=/srv/stocks/mysql
+	
+	systemctl start stocks-mariadb.service
+	
 	echo "SET PASSWORD = PASSWORD('$sqlpassword');" | mysql -u root -p --password=''
 	echo "CREATE USER 'server'@'localhost' IDENTIFIED BY 'linux';" | mysql -u root -p --password='$sqlpassword'
 	echo "CREATE DATABASE stocks;" | mysql -u root -p --password='$sqlpassword'
@@ -71,26 +75,25 @@ post_install() {
     chmod 444 certs/ocsp.cert.pem
 	
 	chown -R stocks:users /srv/stocks/root
-	systemctl daemon-reload
 	echo "Start the stocks services to run the system"
 }
 
 ## arg 1:  the new package version
 ## arg 2:  the old package version
-#pre_upgrade() {
-	# do something here
-#}
+pre_upgrade() {
+    echo -n ""
+}
 
 ## arg 1:  the new package version
 ## arg 2:  the old package version
-#post_upgrade() {
-	# do something here
-#}
+post_upgrade() {
+    echo -n ""
+}
 
 ## arg 1:  the old package version
-#pre_remove() {
-	# do something here
-#}
+pre_remove() {
+    echo -n ""
+}
 
 ## arg 1:  the old package version
 post_remove() {
