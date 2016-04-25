@@ -1,0 +1,17 @@
+[Unit]
+Description=stocks nginx
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/run/nginx.pid
+PrivateDevices=yes
+SyslogLevel=err
+
+ExecStart=/usr/bin/nginx -p /srv/stocks/root/nginx.conf.d -c /srv/stocks/root/nginx.conf.d/nginx.conf -g 'pid /run/nginx.pid; error_log stderr;'
+ExecReload=/usr/bin/kill -HUP $MAINPID
+KillSignal=SIGQUIT
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target

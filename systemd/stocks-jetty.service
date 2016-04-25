@@ -1,0 +1,18 @@
+[Unit]
+Description=stocks jetty 
+After=network.target
+
+[Service]
+Type=forking
+PrivateDevices=yes
+SyslogLevel=err
+User=stocks
+Group=users
+
+WorkingDirectory=/srv/stocks/root/jetty-base
+ExecStart=java -jar $(cat stocks.properties) /opt/jetty/start.jar
+KillSignal=SIGQUIT
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target

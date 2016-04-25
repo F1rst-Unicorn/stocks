@@ -47,4 +47,7 @@ package() {
     mkdir -p $pkgdir/opt/jetty
     mv jetty-distribution-9.3.8.v20160314/* $pkgdir/opt/jetty
     
+    mkdir -p $pkgdir/etc/systemd/system
+    cp systemd/* $pkgdir/etc/systemd/system/
+    
 }
