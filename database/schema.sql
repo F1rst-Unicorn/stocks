@@ -82,7 +82,8 @@ DROP TABLE IF EXISTS Updates;
 CREATE TABLE Updates (
     `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
     `table_name` varchar(200) NOT NULL,
-    `last_update` DATETIME NOT NULL    
+    `last_update` DATETIME NOT NULL,
+    PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO Updates (`table_name`, `last_update`)
@@ -93,104 +94,110 @@ VALUES
     ('Food', NOW()),
     ('Food_item', NOW());
     
-    
-CREATE TRIGGER Location_insert
-AFTER INSERT ON Location FOR EACH ROW
+
+delimiter |    
+
+CREATE TRIGGER Location_insert AFTER INSERT ON `Location` FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='Location';
-END
+    UPDATE Updates 
+    SET last_update=NOW() 
+    WHERE `table_name`='Location';
+END;
 
 CREATE TRIGGER Location_update
 AFTER UPDATE ON Location FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='Location';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Location';
+END;
 
 CREATE TRIGGER Location_delete
 AFTER DELETE ON Location FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='Location';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Location';
+END;
 
 
 
 CREATE TRIGGER Food_insert
 AFTER INSERT ON Food FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='Food';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food';
+END;
 
 CREATE TRIGGER Food_update
 AFTER UPDATE ON Food FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='Food';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food';
+END;
 
 CREATE TRIGGER Food_delete
 AFTER DELETE ON Food FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='Food';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food';
+END;
 
 
 
 CREATE TRIGGER User_insert
 AFTER INSERT ON `User` FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='User';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User';
+END;
 
 CREATE TRIGGER User_update
 AFTER UPDATE ON `User` FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='User';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User';
+END;
 
 CREATE TRIGGER User_delete
 AFTER DELETE ON `User` FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='User';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User';
+END;
 
 
 
 CREATE TRIGGER User_device_insert
 AFTER INSERT ON User_device FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='User_device';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User_device';
+END;
 
 CREATE TRIGGER User_device_update
 AFTER UPDATE ON User_device FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='User_device';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User_device';
+END;
 
 CREATE TRIGGER User_device_delete
 AFTER DELETE ON User_device FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='User_device';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User_device';
+END;
 
 
 
 CREATE TRIGGER Food_item_insert
 AFTER INSERT ON Food_item FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='Food_item';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food_item';
+END;
 
 CREATE TRIGGER Food_item_update
 AFTER UPDATE ON Food_item FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='Food_item';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food_item';
+END;
 
 CREATE TRIGGER Food_item_delete
 AFTER DELETE ON Food_item FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE name='Food_item';
-END
+    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food_item';
+END;
 
+|
+
+delimiter ;
 
 SET foreign_key_checks = 1;
