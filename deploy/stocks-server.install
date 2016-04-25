@@ -71,7 +71,8 @@ post_install() {
     chmod 444 certs/ocsp.cert.pem
 	
 	chown -R stocks:users /srv/stocks/root
-	
+	systemctl daemon-reload
+	echo "Start the stocks services to run the system"
 }
 
 ## arg 1:  the new package version

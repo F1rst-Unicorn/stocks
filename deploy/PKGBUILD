@@ -15,22 +15,20 @@ install=stocks-server.install
 sha512sums=('SKIP')
 
 build() {
-  cd "$srcdir/stocks"
-  
-  cd server
-  mvn compile package
-  cd ..
-  mkdir -p root/jetty-base/wars
-  cp server/target/server-$pkgver.war root/jetty-base/wars/server.war
-  
-  
-  cd sentry
-  mvn compile package
-  cd ..
-  cp sentry/target/sentry-$pkgver.war root/jetty-base/wars/sentry.war
+    cd "$srcdir/stocks"
+
+    cd server
+    mvn compile package
+    cd ..
+    mkdir -p root/jetty-base/wars
+    cp server/target/server-$pkgver.war root/jetty-base/wars/server.war
+
+    cd sentry
+    mvn compile package
+    cd ..
+    cp sentry/target/sentry-$pkgver.war root/jetty-base/wars/sentry.war
                         
-  wget -O jetty.tar.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.8.v20160314.tar.gz&r=1"
-  
+    wget -O jetty.tar.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.8.v20160314.tar.gz&r=1"
 }
 
 package() {
@@ -49,5 +47,4 @@ package() {
     
     mkdir -p $pkgdir/etc/systemd/system
     cp systemd/* $pkgdir/etc/systemd/system/
-    
 }
