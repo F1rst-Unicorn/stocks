@@ -9,6 +9,7 @@ post_install() {
     useradd -g users stocks
     
     mkdir /etc/nginx/ssl
+    mkdir /usr/share/stocks/root/jetty-base/resources
     
     chown -R stocks:users /etc/nginx/ssl
     chown -R stocks:users /usr/share/stocks/root

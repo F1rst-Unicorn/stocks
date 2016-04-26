@@ -3,14 +3,14 @@ Description=stocks jetty
 After=network.target
 
 [Service]
-Type=forking
+Type=simple
 PrivateDevices=yes
 SyslogLevel=err
 User=stocks
 Group=users
 
 WorkingDirectory=/usr/share/stocks/root/jetty-base
-ExecStart=java -jar $(cat stocks.properties) /opt/jetty/start.jar
+ExecStart=/usr/bin/java -jar $(cat ../stocks.properties) /opt/jetty/start.jar
 KillSignal=SIGQUIT
 KillMode=mixed
 

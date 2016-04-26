@@ -11,7 +11,7 @@ User=stocks
 Group=users
 
 WorkingDirectory=/usr/share/stocks/root/CA/intermediate
-ExecStart=openssl ocsp -port 127.0.0.1:10920 -text -sha256 -index index.txt -CA certs/ca-chain.cert.pem \
+ExecStart=/usr/bin/openssl ocsp -port 127.0.0.1:10920 -text -sha256 -index index.txt -CA certs/ca-chain.cert.pem \
       -rkey private/ocsp.key.pem -rsigner certs/ocsp.cert.pem 
 KillSignal=SIGINT
 
