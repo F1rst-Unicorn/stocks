@@ -3,7 +3,7 @@ Description=stocks OCSP
 After=network.target
 
 [Service]
-Type=forking
+Type=simple
 PrivateDevices=yes
 SyslogLevel=err
 
