@@ -30,7 +30,7 @@ NGINX_PATH=/etc/nginx
     chmod 444 intermediate/certs/intermediate.cert.pem
     cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
     chmod 444 intermediate/certs/ca-chain.cert.pem
-    cp certs/ca.cert.pem ../nginx/ca
+    cp certs/ca.cert.pem /usr/share/stocks/root/nginx/ca
     
     ## Server certificate
     cd intermediate
@@ -52,7 +52,7 @@ NGINX_PATH=/etc/nginx
     chmod 444 certs/ocsp.cert.pem
     
     ## Copy files to nginx
-    cp certs/ca.cert.pem $NGINX_PATH/ssl/ca.cert.pem
-    cp intermediate/certs/ca-chain.cert.pem $NGINX_PATH/ssl/ca-chain.cert.pem
+    cp ../certs/ca.cert.pem $NGINX_PATH/ssl/ca.cert.pem
+    cp certs/ca-chain.cert.pem $NGINX_PATH/ssl/ca-chain.cert.pem
     cp certs/server.cert.pem  $NGINX_PATH/ssl/nginx-server.cert.pem
     cp private/server.key.pem $NGINX_PATH/ssl/nginx-server.key.pem
