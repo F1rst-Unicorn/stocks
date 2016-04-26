@@ -1,0 +1,59 @@
+#!/usr/bin/sh
+
+NGINX_PATH=/etc/nginx
+
+## Set up the CA
+	cd /usr/share/stocks/root/CA
+	mkdir certs csr private newcerts
+	chmod 700 private
+	touch index.txt
+	echo 1000 > serial
+	openssl genrsa -out private/ca.key.pem 4096
+	chmod 400 private/ca.key.pem
+	openssl req -config openssl.cnf -key private/ca.key.pem -new -x509 -days 365000 -sha256 -extensions v3_ca -out certs/ca.cert.pem \
+        -subj "/C=CH/ST=Zurich/L=Zurich/O=stocks/CN=stocks CA" -batch
+    chmod 444 certs/ca.cert.pem
+    
+    ## Set up intermediate CA
+    cd intermediate
+    mkdir certs csr private newcerts
+    chmod 700 private
+    touch index.txt
+    echo 1000 > serial
+    openssl genrsa -out private/intermediate.key.pem 4096
+    chmod 400 private/intermediate.key.pem
+    openssl req -config openssl.cnf -new -sha256 -key private/intermediate.key.pem -out csr/intermediate.csr.pem \
+        -subj "/C=CH/ST=Zurich/L=Zurich/O=stocks/CN=stocks intermediate CA" -batch
+    cd ..
+    openssl ca -config openssl.cnf -extensions v3_intermediate_ca -days 365000 -notext -md sha256 \
+        -in intermediate/csr/intermediate.csr.pem -out intermediate/certs/intermediate.cert.pem -batch
+    chmod 444 intermediate/certs/intermediate.cert.pem
+    cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
+    chmod 444 intermediate/certs/ca-chain.cert.pem
+    cp certs/ca.cert.pem ../nginx/ca
+    
+    ## Server certificate
+    cd intermediate
+    openssl genrsa -out private/server.key.pem 4096
+    chmod 400 private/server.key.pem
+    openssl req -config openssl.cnf -new -sha256 -key private/server.key.pem -out csr/server.csr.pem \
+        -subj "/C=CH/ST=Zurich/L=Zurich/O=stocks/CN=stocks server" -batch
+    openssl ca -config openssl.cnf -extensions server_cert -days 365000 -notext -md sha256 \
+        -in csr/server.csr.pem -out certs/server.cert.pem -batch
+    chmod 444 certs/server.cert.pem
+        
+    ## OCSP certificate
+    openssl genrsa -out private/ocsp.key.pem 4096
+    chmod 400 private/ocsp.key.pem
+    openssl req -config openssl.cnf -new -sha256 -key private/ocsp.key.pem -out csr/ocsp.csr.pem \
+        -subj "/C=CH/ST=Zurich/L=Zurich/O=stocks/CN=stocks OCSP" -batch
+    openssl ca -config openssl.cnf -extensions server_cert -days 365000 -notext -md sha256 \
+        -in csr/ocsp.csr.pem -out certs/ocsp.cert.pem -batch
+    chmod 444 certs/ocsp.cert.pem
+    
+    ## Copy files to nginx
+    sudo cp certs/ca.cert.pem $NGINX_PATH/ssl/ca.cert.pem
+    sudo cp intermediate/certs/ca-chain.cert.pem $NGINX_PATH/ssl/ca-chain.cert.pem
+    sudo cp certs/server.cert.pem  $NGINX_PATH/ssl/nginx-server.cert.pem
+    sudo cp private/server.key.pem $NGINX_PATH/ssl/nginx-server.key.pem
+    chown -R stocks:users $NGINX_PATH/ssl

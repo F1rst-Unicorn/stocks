@@ -9,7 +9,7 @@ SyslogLevel=err
 User=stocks
 Group=users
 
-WorkingDirectory=/srv/stocks/root/jetty-base
+WorkingDirectory=/usr/share/stocks/root/jetty-base
 ExecStart=java -jar $(cat stocks.properties) /opt/jetty/start.jar
 KillSignal=SIGQUIT
 KillMode=mixed
