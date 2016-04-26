@@ -52,8 +52,7 @@ NGINX_PATH=/etc/nginx
     chmod 444 certs/ocsp.cert.pem
     
     ## Copy files to nginx
-    sudo cp certs/ca.cert.pem $NGINX_PATH/ssl/ca.cert.pem
-    sudo cp intermediate/certs/ca-chain.cert.pem $NGINX_PATH/ssl/ca-chain.cert.pem
-    sudo cp certs/server.cert.pem  $NGINX_PATH/ssl/nginx-server.cert.pem
-    sudo cp private/server.key.pem $NGINX_PATH/ssl/nginx-server.key.pem
-    chown -R stocks:users $NGINX_PATH/ssl
+    cp certs/ca.cert.pem $NGINX_PATH/ssl/ca.cert.pem
+    cp intermediate/certs/ca-chain.cert.pem $NGINX_PATH/ssl/ca-chain.cert.pem
+    cp certs/server.cert.pem  $NGINX_PATH/ssl/nginx-server.cert.pem
+    cp private/server.key.pem $NGINX_PATH/ssl/nginx-server.key.pem

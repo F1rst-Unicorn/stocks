@@ -44,6 +44,10 @@ package() {
     cp deploy/setup-ca $pkgdir/usr/lib/stocks/
     
     cp database/schema.sql $pkgdir/usr/share/stocks/schema.sql
+    cp deploy/nginx.conf $pkgdir/usr/share/stocks/nginx.conf
+    
+    mkdir -p $pkgdir/usr/share/doc/stocks/
+    cp README.md $pkgdir/usr/share/doc/stocks/
     
     tar xzf jetty.tar.gz
     mkdir -p $pkgdir/opt/jetty

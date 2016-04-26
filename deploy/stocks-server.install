@@ -8,6 +8,12 @@ post_install() {
     
     useradd -g users stocks
     
+    mkdir /etc/nginx/ssl
+    
+    chown -R stocks:users /etc/nginx/ssl
+    chown -R stocks:users /usr/share/stocks/root
+    chmod +x /usr/lib/stocks/setup-ca
+    
     echo "See /usr/share/doc/stocks/README for installation overview"
 }
 
@@ -32,4 +38,5 @@ pre_remove() {
 post_remove() {
 	userdel stocks
 	rm -rf /usr/share/stocks
+	rm -rf /etc/nginx/ssl
 }
