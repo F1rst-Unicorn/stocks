@@ -42,6 +42,7 @@ package() {
     
     mkdir -p $pkgdir/usr/lib/stocks/
     cp deploy/setup-ca $pkgdir/usr/lib/stocks/
+    cp deploy/server $pkgdir/usr/lib/stocks
     
     cp database/schema.sql $pkgdir/usr/share/stocks/schema.sql
     cp deploy/nginx.conf $pkgdir/usr/share/stocks/nginx.conf

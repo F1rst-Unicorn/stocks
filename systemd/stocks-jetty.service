@@ -10,7 +10,7 @@ User=stocks
 Group=users
 
 WorkingDirectory=/usr/share/stocks/root/jetty-base
-ExecStart=/usr/bin/java -jar $(cat ../stocks.properties) /opt/jetty/start.jar
+ExecStart=/usr/lib/stocks/server
 KillSignal=SIGQUIT
 KillMode=mixed
 
