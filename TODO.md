@@ -1,7 +1,6 @@
 # Things to implement
 
-
-
+* Transaction checking
 * Implement desktop client
 
 * Image support for Food

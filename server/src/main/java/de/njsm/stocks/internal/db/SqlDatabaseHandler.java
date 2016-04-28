@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -81,24 +82,41 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
         String command="DELETE FROM User WHERE ID=?";
         String getDevicesQuery = "SELECT * FROM User_device WHERE belongs_to=?";
+        String deleteDevicesCommand = "DELETE FROM User_device WHERE belongs_to=?";
         CertificateAdmin ca = new Config().getCertAdmin();
+        List<Integer> certificateList = new ArrayList<>();
+        Connection con = null;
 
-        try (Connection con = getConnection();
-             PreparedStatement sqlQuery = con.prepareStatement(getDevicesQuery);
-             PreparedStatement sqlStmt=con.prepareStatement(command)) {
+        try {
+
+            con = getConnection();
+            PreparedStatement sqlQuery = con.prepareStatement(getDevicesQuery);
+            PreparedStatement sqlStmt=con.prepareStatement(command);
+            PreparedStatement sqlDeleteDevices = con.prepareStatement(deleteDevicesCommand);
 
             con.setAutoCommit(false);
             // revoke all devices
             sqlQuery.setInt(1, id);
             ResultSet res = sqlQuery.executeQuery();
             while (res.next()){
-                ca.revokeCertificate(res.getInt("certificate_no"));
+                certificateList.add(res.getInt("certificate_no"));
             }
 
+            sqlDeleteDevices.setInt(1, id);
+            sqlDeleteDevices.execute();
             sqlStmt.setInt(1, id);
             sqlStmt.execute();
 
             con.commit();
+
+            for (Integer i : certificateList){
+                ca.revokeCertificate(i);
+            }
+        } catch (SQLException e){
+            c.getLog().log(Level.SEVERE, "Error deleting devices: " + e.getMessage());
+            if (con != null) {
+                con.rollback();
+            }
         }
 
     }
@@ -108,24 +126,35 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
         String query = "SELECT certificate_no FROM User_device WHERE ID=?";
         String command="DELETE FROM User_device WHERE ID=?";
-        try (Connection con = getConnection();
-             PreparedStatement sqlQuery = con.prepareStatement(query);
-             PreparedStatement sqlStmt=con.prepareStatement(command)) {
+        Connection con = null;
+        int certId = -1;
+
+        try {
+
+            con = getConnection();
+            PreparedStatement sqlQuery = con.prepareStatement(query);
+            PreparedStatement sqlStmt=con.prepareStatement(command);
 
             con.setAutoCommit(false);
-            CertificateAdmin ca = new Config().getCertAdmin();
-
+            // revoke all devices
             sqlQuery.setInt(1, id);
             ResultSet res = sqlQuery.executeQuery();
-
-            while (res.next()) {
-                ca.revokeCertificate(res.getInt("certificate_no"));
+            while (res.next()){
+                certId = res.getInt("certificate_no");
             }
 
             sqlStmt.setInt(1, id);
             sqlStmt.execute();
 
             con.commit();
+
+            c.getCertAdmin().revokeCertificate(certId);
+
+        } catch (SQLException e){
+            c.getLog().log(Level.SEVERE, "Error deleting devices: " + e.getMessage());
+            if (con != null) {
+                con.rollback();
+            }
         }
     }
 
