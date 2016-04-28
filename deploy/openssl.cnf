@@ -109,7 +109,6 @@ subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid,issuer:always
 keyUsage = critical, digitalSignature, keyEncipherment
 extendedKeyUsage = serverAuth
-crlDistributionPoints = URI:http://localhost/home/jan/Programme/Java/stocks/CA/intermediate/crl/intermediate.crl.pem
 
 [ crl_ext ]
 # Extension for CRLs (`man x509v3_config`).

@@ -44,19 +44,19 @@ package() {
     
     mkdir -p $pkgdir/usr/share/stocks/root/CA/intermediate
     cp deploy/openssl.cnf $pkgdir/usr/share/stocks/root/CA/
-    cp deploy/openssl_intermediate.cnf $pkgdir/usr/share/stocks/root/CA/intermediate/
+    cp deploy/openssl_intermediate.cnf $pkgdir/usr/share/stocks/root/CA/intermediate/openssl.cnf
     
     mkdir -p $pkgdir/usr/lib/stocks/
     cp deploy/setup-ca $pkgdir/usr/lib/stocks/
     cp deploy/server $pkgdir/usr/lib/stocks
-    chmod -R 744 $pkgdir/usr/lib/stocks/
+    chmod -R 755 $pkgdir/usr/lib/stocks/
     
     mkdir -p $pkgdir/etc/stocks/
     cp deploy/stocks.properties $pkgdir/etc/stocks
     
     mkdir -p $pkgdir/usr/share/doc/stocks/
     cp README.md $pkgdir/usr/share/doc/stocks/
-    chmod -R 444 $pkgdir/usr/share/doc/
+    chmod -R 755 $pkgdir/usr/share/doc/stocks/
     
     tar xzf jetty.tar.gz
     mkdir -p $pkgdir/opt/stocks-jetty
