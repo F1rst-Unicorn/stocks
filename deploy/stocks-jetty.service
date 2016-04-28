@@ -11,8 +11,7 @@ Group=users
 WorkingDirectory=/usr/share/stocks/root/jetty-base
 ExecStart=/usr/lib/stocks/server
 
-KillSignal=SIGINT
-KillMode=mixed
+KillSignal=SIGTERM
 
 [Install]
 WantedBy=multi-user.target
