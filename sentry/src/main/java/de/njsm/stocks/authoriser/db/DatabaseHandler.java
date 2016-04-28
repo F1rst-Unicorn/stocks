@@ -139,14 +139,15 @@ public class DatabaseHandler {
      */
     public boolean isNameValid(String[] credentials) throws SQLException {
 
+        String dbName = System.getProperty("de.njsm.stocks.internal.db.databaseName");
         String userIdQuery = "SELECT `AUTO_INCREMENT` " +
                 "FROM  INFORMATION_SCHEMA.TABLES " +
-                "WHERE TABLE_SCHEMA = 'stocks_dev' " +
+                "WHERE TABLE_SCHEMA = ? " +
                 "AND   TABLE_NAME   = 'User';";
 
         String deviceIdQuery = "SELECT `AUTO_INCREMENT` " +
                 "FROM  INFORMATION_SCHEMA.TABLES " +
-                "WHERE TABLE_SCHEMA = 'stocks_dev' " +
+                "WHERE TABLE_SCHEMA = ? " +
                 "AND   TABLE_NAME   = 'User_device';";
 
         boolean userIdValid = false;
@@ -156,11 +157,13 @@ public class DatabaseHandler {
              PreparedStatement sqlUserIdQuery = con.prepareStatement(userIdQuery);
              PreparedStatement sqlDeviceIdQuery = con.prepareStatement(deviceIdQuery)){
 
+            sqlUserIdQuery.setString(1, dbName);
             ResultSet res = sqlUserIdQuery.executeQuery();
             while (res.next()){
                 userIdValid = res.getInt("AUTO_INCREMENT") == Integer.parseInt(credentials[1]);
             }
 
+            sqlDeviceIdQuery.setString(1, dbName);
             res = sqlDeviceIdQuery.executeQuery();
             while (res.next()){
                 deviceIdValid = res.getInt("AUTO_INCREMENT") == Integer.parseInt(credentials[3]);;

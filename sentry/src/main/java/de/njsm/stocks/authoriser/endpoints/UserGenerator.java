@@ -69,10 +69,7 @@ public class UserGenerator {
                         .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
                         .build();
 
-            } catch (SQLException e) {
-                log.log(Level.SEVERE, "sentry: Failed to handle request: " + e.getSQLState());
-                return Response.status(HttpServletResponse.SC_FORBIDDEN).build();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.log(Level.SEVERE, "sentry: Failed to handle request: " + e.getMessage());
                 return Response.status(HttpServletResponse.SC_FORBIDDEN).build();
             }
