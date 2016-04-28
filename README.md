@@ -20,7 +20,13 @@ CA and all needed keys in /usr/share/stocks/root/CA.
 ## nginx
 
 Set up nginx as reverse proxy with the corresponding SSL configs. 
-For an example config have a look at /usr/share/stocks/nginx.conf
+For an example config have a look at /usr/share/stocks/nginx.conf.
+Give nginx access to the certificates generated above. Particularly
+
+* server.key.pem
+* server.cert.pem
+* ca-chain.cert.pem
+* ca.cert.pem
 
 ## OCSP server
 
