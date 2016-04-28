@@ -63,5 +63,6 @@ package() {
     mv jetty-distribution-9.3.8.v20160314/* $pkgdir/opt/stocks-jetty
     
     mkdir -p $pkgdir/usr/lib/systemd/system/
-    cp systemd/* $pkgdir/usr/lib/systemd/system/
+    cp deploy/stocks-jetty.service $pkgdir/usr/lib/systemd/system/
+    cp deploy/stocks-ocsp.service $pkgdir/usr/lib/systemd/system/
 }
