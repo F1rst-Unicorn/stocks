@@ -11,7 +11,7 @@ Group=users
 
 WorkingDirectory=/usr/share/stocks/root/jetty-base
 ExecStart=/usr/lib/stocks/server
-KillSignal=SIGQUIT
+KillSignal=SIGINT
 KillMode=mixed
 
 [Install]
