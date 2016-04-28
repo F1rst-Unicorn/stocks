@@ -1,5 +1,4 @@
 # OpenSSL intermediate CA configuration file.
-# Copy to `/root/ca/intermediate/openssl.cnf`.
 
 [ ca ]
 # `man ca`

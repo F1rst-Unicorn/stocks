@@ -1,3 +1,3 @@
 #!/usr/bin/bash
 
-java -jar $(cat ../stocks.properties) /opt/jetty/start.jar > /usr/share/stocks/root/stocks.log 2> /usr/share/stocks/root/stocks.log
+java -jar $(cat /etc/stocks/stocks.properties) /opt/stocks-jetty/start.jar > /usr/share/stocks/root/stocks.log 2> /usr/share/stocks/root/stocks.log

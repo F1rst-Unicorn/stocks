@@ -8,23 +8,27 @@ food stocks, periodic tasks and tasks in daily life.
 ## Database
 
 Stocks needs a MariaDB database. Set it up and make it reachable over localhost. 
-Then set the credentials in root/stocks.properties to make it accessible to
-the server. Import the schema in database/schema.sql into the database. 
+Then set the credentials in /etc/stocks/stocks.properties to make it accessible to
+the server. Import the schema in /usr/share/stocks/schema.sql into the database. 
 
 ## CA
 
-Stocks drives its own CA. Set it up in root/CA/ using the already existing 
-config files. Adjust the paths inside!. Note that the CA is only needed to 
-certify the intermediate CA which is used for daily business. Copy the CA's 
-certificate into root/nginx/ca.
+Run the script in /usr/lib/stocks/setup-ca as user stocks to generate a CA and all needed keys in
+/usr/share/stocks/root/CA. 
+
+## nginx
+
+Set up nginx as reverse proxy with the corresponding SSL configs. For an example config
+have a look at /usr/share/stocks/nginx.conf
 
 ## OCSP server
 
-Stocks needs an OCSP server. Use openssl to set it up and make it listen on 
-port $ocspPort (default 10920). Define that port in root/CA/intermediate/openssl.cnf, too 
-(in the OCSP section). Also set the port in root/nginx/stocks/nginx.conf. 
+Stocks needs an OCSP server. If you adhere to the default config in the CA section, 
+you can simply run the stocks-ocsp service. 
 
-## Jetty
+## Start up the components
 
-Get a recent version of Jetty 9. Optionally adjust the ports in 
-root/stocks.properties and update it in /root/nginx/stocks/nginx.conf. 
+* Start mysql
+* Start OCSP
+* Start nginx
+* Start jetty

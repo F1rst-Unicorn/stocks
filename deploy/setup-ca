@@ -1,9 +1,9 @@
 #!/usr/bin/sh
 
-NGINX_PATH=/etc/nginx
+CA_ROOT=/usr/share/stocks/root/CA
 
 ## Set up the CA
-	cd /usr/share/stocks/root/CA
+	cd $CA_ROOT
 	mkdir certs csr private newcerts
 	chmod 700 private
 	touch index.txt
@@ -51,8 +51,3 @@ NGINX_PATH=/etc/nginx
         -in csr/ocsp.csr.pem -out certs/ocsp.cert.pem -batch
     chmod 444 certs/ocsp.cert.pem
     
-    ## Copy files to nginx
-    cp ../certs/ca.cert.pem $NGINX_PATH/ssl/ca.cert.pem
-    cp certs/ca-chain.cert.pem $NGINX_PATH/ssl/ca-chain.cert.pem
-    cp certs/server.cert.pem  $NGINX_PATH/ssl/nginx-server.cert.pem
-    cp private/server.key.pem $NGINX_PATH/ssl/nginx-server.key.pem
