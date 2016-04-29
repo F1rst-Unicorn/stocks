@@ -39,3 +39,15 @@ the CA section, you can simply run the stocks-ocsp service.
 * Start OCSP
 * Start nginx
 * Start jetty
+
+## Adding the first user
+
+Due to the protocol to add new users, adding the first one has to be done
+manually. Log into the database and add a user, user device and ticket. E.g. 
+
+INSERT INTO User (name) VALUES (desired_name);
+INSERT INTO User_device (name, belongs_to) VALUES (desired_name, LAST_INSERT_ID());
+INSERT INTO Ticket (ticket, belongs_device) VALUES (some_string, LAST_INSERT_ID());
+
+Then you can read out the needed values from the database and talk to the 
+sentry (see spec/new-user-creation-protocol.md). 

@@ -69,8 +69,8 @@ CREATE TABLE Ticket (
     `ticket` varchar(64) NOT NULL,
     `belongs_device` int UNSIGNED NOT NULL,
     `created_on` DATETIME NOT NULL DEFAULT '2100-01-01 00:00:00',
-    PRIMARY KEY (`ID`)
-    FOREIGN KEY (belongs_device) REFERENCES User_device(`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (`ID`),
+    FOREIGN KEY (belongs_device) REFERENCES User_device(`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
 
     
