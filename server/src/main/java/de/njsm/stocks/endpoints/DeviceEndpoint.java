@@ -3,6 +3,7 @@ package de.njsm.stocks.endpoints;
 import de.njsm.stocks.data.UserDevice;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,10 +11,22 @@ import java.util.logging.Logger;
 @Path("/device")
 public class DeviceEndpoint extends Endpoint {
 
+    @PUT
+    @Consumes("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String addDevice(UserDevice d) {
+        c.getLog().log(Level.INFO, "DeviceEndpoint: Add device " + d.name);
+        try {
+            return handler.addDevice(d);
+        } catch (SQLException e) {
+            c.getLog().log(Level.SEVERE, "DeviceEndpoint: Failed to add devices " + e.getMessage());
+            return "";
+        }
+    }
+
     @GET
     @Produces("application/json")
     public UserDevice[] getDevices(){
-
         c.getLog().log(Level.INFO, "DeviceEndpoint: Get devices");
         try {
             return handler.getDevices();
@@ -24,6 +37,7 @@ public class DeviceEndpoint extends Endpoint {
     }
 
     @PUT
+    @Path("/remove")
     @Consumes("application/json")
     public void removeDevice(UserDevice d){
         c.getLog().log(Level.INFO, "DeviceEndpoint: Removing device " + d);

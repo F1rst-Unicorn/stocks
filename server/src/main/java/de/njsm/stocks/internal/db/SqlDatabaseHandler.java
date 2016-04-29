@@ -78,6 +78,18 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
+    @Override
+    public void addUser(User u) throws SQLException {
+        String command = "INSERT INTO User (name) VALUES (?)";
+
+        try (Connection con = getConnection();
+             PreparedStatement sqlStmt = con.prepareStatement(command)) {
+
+            sqlStmt.setString(1, u.name);
+            sqlStmt.execute();
+        }
+    }
+
     public void removeUser(int id) throws SQLException {
 
         String command="DELETE FROM User WHERE ID=?";
@@ -119,6 +131,38 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             }
         }
 
+    }
+
+    @Override
+    public String addDevice(UserDevice d) throws SQLException {
+
+        String addDevice = "INSERT INTO User_device (name, belongs_to) VALUES (?,?)";
+        String addTicket = "INSERT INTO Ticket (ticket, belongs_device) VALUES (?,LAST_INSERT_ID())";
+        String ticket = generateTicket();
+        Connection con = null;
+
+        try {
+
+            con = getConnection();
+            PreparedStatement sqlAddDevice = con.prepareStatement(addDevice);
+            PreparedStatement sqlAddTicket = con.prepareStatement(addTicket);
+
+            con.setAutoCommit(false);
+            sqlAddDevice.setString(1, d.name);
+            sqlAddDevice.setInt(2, d.userId);
+            sqlAddDevice.execute();
+
+            sqlAddTicket.setString(1, ticket);
+            sqlAddDevice.execute();
+            con.commit();
+
+        } catch (SQLException e) {
+            c.getLog().log(Level.SEVERE, "Error adding device: " + e.getMessage());
+            if (con != null) {
+                con.rollback();
+            }
+        }
+        return ticket;
     }
 
     public void removeDevice(int id) throws SQLException {

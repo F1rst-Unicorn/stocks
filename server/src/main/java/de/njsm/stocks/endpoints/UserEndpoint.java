@@ -9,19 +9,15 @@ import java.util.logging.Level;
 @Path("/user")
 public class UserEndpoint extends Endpoint {
 
-    @GET
-    @Path("/newuser")
-    @Produces("application/json")
-    public String getTicket() {
-
-        c.getLog().log(Level.INFO, "UserEndpoint: Added new ticket");
+    @PUT
+    @Consumes("application/json")
+    public void addUser(User u) {
+        c.getLog().log(Level.INFO, "UserEndpoint: Add user " + u.name);
         try {
-            return handler.getNewTicket();
+            handler.addUser(u);
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to add ticket: " + e.getMessage());
+            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to add user: " + e.getMessage());
         }
-
-        return "";
     }
 
     @GET
@@ -37,6 +33,7 @@ public class UserEndpoint extends Endpoint {
     }
 
     @PUT
+    @Path("/remove")
     @Consumes("application/json")
     public void deleteUser(User u) {
         c.getLog().log(Level.INFO, "UserEndpoint: Delete user " + u.name);
