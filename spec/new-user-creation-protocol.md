@@ -47,8 +47,9 @@ He also generates a CSR for the certificate.
 The new device will send the following to the sentry: (ticket, CSR). The sentry
 will now check for validity as follows:
 
-* Check if the ticket is in the database. 
+* Check if the ticket is in the database
 * Check if the CSR subject name matches the ticket's associated device
+* Check if the ticket is in the valid time interval
 
 If one of the checks fails, the sentry will reject the request. If everything
 succeeds the sentry will sign the CSR and return the certificate to the new 

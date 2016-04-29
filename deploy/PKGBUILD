@@ -16,6 +16,10 @@ makedepends=('git'
 source=("git://www.github.com/F1rst-Unicorn/stocks")
 install=stocks-server.install
 sha512sums=('SKIP')
+backup=('etc/stocks/stocks.properties'
+		'usr/lib/systemd/system/stocks-ocsp.service'
+		'usr/lib/stocks/server'
+		'usr/lib/stocks/setup-ca')
 
 build() {
     cd "$srcdir/stocks"
