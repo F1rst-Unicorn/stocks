@@ -1,0 +1,139 @@
+package de.njsm.stocks.sentry.db;
+
+import de.njsm.stocks.sentry.auth.CertificateManager;
+
+import java.io.File;
+import java.sql.*;
+
+public class DatabaseHandler {
+
+    protected String url;
+
+    public DatabaseHandler() {
+
+        String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
+        String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
+        String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
+        String user = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
+        String password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
+
+        url = String.format("jdbc:mariadb://%s:%s/%s?user=%s&password=%s",
+                address,
+                port,
+                name,
+                user,
+                password);
+
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url);
+    }
+
+    /**
+     * Determine whether the ticket has been created
+     * by an existing user
+     *
+     * @param ticket The ticket to check for
+     * @return true iff the ticket is valid
+     * @throws SQLException
+     */
+    public boolean isTicketValid(String ticket, int deviceId) throws SQLException {
+        String query = "SELECT * FROM Ticket WHERE ticket=?";
+        int minutesValid = Integer.parseInt(
+                System.getProperty("de.njsm.stocks.internal.ticketValidityTimeInMinutes"));
+
+        try (Connection con = getConnection();
+             PreparedStatement sqlQuery = con.prepareStatement(query)){
+
+            sqlQuery.setString(1, ticket);
+            ResultSet rs = sqlQuery.executeQuery();
+
+            boolean result = false;
+            java.util.Date date = null;
+            int storedId = -1;
+
+            while (rs.next()){
+                date = rs.getTimestamp("created_on");
+                storedId = rs.getInt("belongs_device");
+                result = true;
+            }
+            java.util.Date valid_till_date = new Date(date.getTime() + minutesValid * 60000);
+
+            return result &&
+                    (new java.util.Date()).before(valid_till_date) &&
+                    storedId == deviceId;
+
+        }
+    }
+
+    public void handleTicket (String ticket, int deviceId) {
+
+        Connection con = null;
+        CertificateManager cm = new CertificateManager();
+        String userFile = String.format("user_%d", deviceId);
+        String csrFilePath = String.format("../CA/intermediate/csr/%s.csr.pem", userFile);
+        String certFilePath = String.format("../CA/intermediate/cert/%s.cert.pem", userFile);
+
+        try {
+
+            con = getConnection();
+            con.setAutoCommit(false);
+
+            // get ticket associated data
+            boolean hasTicket = false;
+            String dbUsername = null, dbDevicename = null;
+            int dbUid = -1, dbDid = -1;
+            String getTicketQuery = "SELECT d.`ID` as did, d.name as dname, u.`ID` as uid, u.name as uname" +
+                    "FROM Ticket t, User u, User_device d " +
+                    "WHERE ticket=? AND t.belongs_device=d.`ID` AND d.belongs_to=u.`ID`";
+            PreparedStatement sqlQuery = con.prepareStatement(getTicketQuery);
+            ResultSet rs = sqlQuery.executeQuery();
+            while (rs.next()){
+                dbUsername = rs.getString("uname");
+                dbUid = rs.getInt("uid");
+                dbDevicename = rs.getString("dname");
+                dbDid = rs.getInt("did");
+                hasTicket = true;
+            }
+
+            // get csr associated data
+            String[] principals = cm.getPrincipals(csrFilePath);
+            int csrUid = Integer.parseInt(principals[1]);
+            int csrDid = Integer.parseInt(principals[3]);
+
+            // check for equality, if not, exception
+            if (! hasTicket ||
+                csrUid != dbUid ||
+                csrDid != dbDid ||
+                ! principals[0].equals(dbUsername) ||
+                ! principals[2].equals(dbDevicename)) {
+                throw new Exception("CSR Subject name differs from database!");
+            }
+
+            // issue certificate
+            cm.generateCertificate(userFile);
+
+            // remove ticket
+            String removeTicketCommand = "DELETE FROM Ticket WHERE ID=?";
+            PreparedStatement sqlRemoveTicketCommand = con.prepareStatement(removeTicketCommand);
+            sqlRemoveTicketCommand.setInt(1, deviceId);
+            sqlRemoveTicketCommand.execute();
+
+            con.commit();
+        } catch (Exception e) {
+            try {
+                if (con != null) {
+                    con.rollback();
+                }
+                (new File(csrFilePath)).delete();
+                (new File(certFilePath)).delete();
+                throw new RuntimeException("sentry: failed to handle ticket: " + e.getMessage());
+            } catch (SQLException sql){
+                throw new RuntimeException("sentry: failed to rollback! " + sql.getMessage());
+            }
+        }
+
+    }
+
+}

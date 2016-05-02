@@ -38,12 +38,12 @@ The new user device will now contact the CA distribution point and download the
 CA certificate. It will be compared to the fpr passed form the host. If the two
 don't match the protocol fails now. 
 
-### Certificate generation
+### Client key generation
 The new device will create a new certificate and key. The Subject name of the 
 certificate must have the form "<username>$<user id>$<device name>$<device id>".
 He also generates a CSR for the certificate. 
 
-### Certificate verification
+### Certificate issuing
 The new device will send the following to the sentry: (ticket, CSR). The sentry
 will now check for validity as follows:
 

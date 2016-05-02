@@ -37,7 +37,6 @@ CREATE TABLE User_device (
     `name` varchar(200) NOT NULL,
     `last_poll` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
     belongs_to int UNSIGNED NOT NULL,
-    `certificate_no` int UNSIGNED NOT NULL, 
     CONSTRAINT `device_points_to_user` FOREIGN KEY (`belongs_to`) REFERENCES `User`(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

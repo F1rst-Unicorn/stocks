@@ -8,11 +8,5 @@ public interface ConfigGenerator {
     String getServerName();
     int[] getPorts();
 
-    String getTicket();
-    String getCaFingerprint();
-    String getUsername();
-    String getDevicename();
-    int[] getUserIds();
-
     void shutDown();
 }
