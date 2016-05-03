@@ -9,6 +9,8 @@ import java.io.File;
 public class CertificateManager {
 
     public static final String keystorePath = System.getProperty("user.home") + "/.stocks/keystore";
+    public static final String keystorePassword = System.getProperty("de.njsm.stocks.client.cert.password",
+            "thisisapassword");
 
     protected Configuration c;
 

@@ -3,10 +3,12 @@ package de.njsm.stocks.linux.client;
 import de.njsm.stocks.linux.client.frontend.CertificateGenerator;
 import de.njsm.stocks.linux.client.frontend.ConfigGenerator;
 import de.njsm.stocks.linux.client.network.TicketHandler;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -57,16 +59,13 @@ public class InitManager {
         TicketHandler handler = new TicketHandler(c);
 
         try {
-            KeyStore keystore = generateKey(source.getUsername(),
+            /*generateKey(source.getUsername(),
                     source.getDevicename(),
                     source.getUserIds());
-
+*/
             handler.verifyServerCa(source.getCaFingerprint());
             handler.handleTicket(source.getTicket());
 
-            FileOutputStream outStream = new FileOutputStream(CertificateManager.keystorePath);
-            keystore.store(outStream, "".toCharArray());
-            outStream.close();
         } catch (Exception e) {
             c.getLog().log(Level.SEVERE, "InitManager: Failed to setup keystore: " + e.getMessage());
             File keystore = new File(CertificateManager.keystorePath);
@@ -75,23 +74,48 @@ public class InitManager {
         }
     }
 
-    protected KeyStore generateKey(String username, String devicename, int[] ids) throws Exception {
-
-        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        char[] password = "password".toCharArray();
-        keystore.load(null, password);
-
-        Enumeration<String> list = keystore.aliases();
-        while (list.hasMoreElements()){
-            keystore.deleteEntry(list.nextElement());
-        }
+    protected void generateKey(String username, String devicename, int[] ids) throws Exception {
 
         // generate key
-
+        String cn = String.format("%s$%d$%s$%d", username, ids[0], devicename, ids[1]);
+        String keyGenCommand = String.format("keytool -genkeypair " +
+                "-dname CN=%s,OU=%s,O=%s " +
+                "-alias %s " +
+                "-keyalg RSA " +
+                "-keysize 4096 " +
+                "-keypass %s " +
+                "-keystore %s " +
+                "-storepass %s ",
+                cn,
+                "User",
+                "stocks",
+                "client",
+                CertificateManager.keystorePassword,
+                CertificateManager.keystorePath,
+                CertificateManager.keystorePassword);
+        Process p = Runtime.getRuntime().exec(keyGenCommand);
+        InputStream resultStream = p.getInputStream();
+        InputStream errorStream = p.getErrorStream();
+        IOUtils.copy(resultStream, System.out);
+        IOUtils.copy(errorStream, System.out);
 
         // generate CSR
+        String getCsrCommand = String.format("keytool -certreq " +
+                "-alias client " +
+                "-file %s/client.csr.pem " +
+                "-keypass %s " +
+                "-keystore %s " +
+                "-storepass %s ",
+                Configuration.stocksHome,
+                CertificateManager.keystorePassword,
+                CertificateManager.keystorePath,
+                CertificateManager.keystorePassword);
+        p = Runtime.getRuntime().exec(getCsrCommand);
+        resultStream = p.getInputStream();
+        errorStream = p.getErrorStream();
+        IOUtils.copy(resultStream, System.out);
+        IOUtils.copy(errorStream, System.out);
 
 
-        return keystore;
     }
 }

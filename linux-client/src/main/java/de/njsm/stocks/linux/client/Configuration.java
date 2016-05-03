@@ -13,7 +13,8 @@ public class Configuration {
     public static final String caPortConfig = "de.njsm.stocks.client.caPort";
     public static final String ticketPortConfig = "de.njsm.stocks.client.ticketPort";
     public static final String serverPortConfig = "de.njsm.stocks.client.serverPort";
-    public static final String configPath = System.getProperty("user.home") + "/.stocks/config";
+    public static final String stocksHome = System.getProperty("user.home") + "/.stocks";
+    public static final String configPath = stocksHome + "/config";
 
     protected String serverName;
     protected int caPort;

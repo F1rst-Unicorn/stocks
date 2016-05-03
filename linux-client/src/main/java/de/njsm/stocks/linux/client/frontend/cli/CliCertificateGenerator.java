@@ -24,6 +24,11 @@ public class CliCertificateGenerator implements CertificateGenerator {
     public String getUsername() {
         System.out.print("Please enter your name: ");
         String name = readLine();
+
+        while (name.indexOf(',') != -1) {
+            System.out.print("Comma is not allowed, try again: ");
+            name = readLine();
+        }
         return name;
     }
 
@@ -31,6 +36,11 @@ public class CliCertificateGenerator implements CertificateGenerator {
     public String getDevicename() {
         System.out.print("Please enter your device's name: ");
         String name = readLine();
+
+        while (name.indexOf(',') != -1) {
+            System.out.print("Comma is not allowed, try again: ");
+            name = readLine();
+        }
         return name;
     }
 
