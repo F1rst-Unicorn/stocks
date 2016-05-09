@@ -6,15 +6,8 @@ import de.njsm.stocks.linux.client.network.TicketHandler;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.util.Enumeration;
 import java.util.logging.Level;
 
 public class InitManager {
@@ -59,12 +52,15 @@ public class InitManager {
         TicketHandler handler = new TicketHandler(c);
 
         try {
-            generateKey(source.getUsername(),
-                    source.getDevicename(),
-                    source.getUserIds());
+            //String username = source.getUsername();
+            //String deviceName = source.getDevicename();
+            //int[] ids = source.getUserIds();
 
-            handler.verifyServerCa(source.getCaFingerprint());
-            handler.handleTicket(source.getTicket());
+            generateKey("Jan", "Laptop", new int[]{1,1});
+
+            handler.verifyServerCa("E7:A4:A1:1F:15:ED:24:EF:3A:86:9F:FF:AE:C8:97:9E:51:27:B1:C6:71:97:1C:DE:7F:19:84:B6:43:80:71:9C");
+            //source.getCaFingerprint());
+            handler.handleTicket("0000", 1);
 
         } catch (Exception e) {
             c.getLog().log(Level.SEVERE, "InitManager: Failed to setup keystore: " + e.getMessage());

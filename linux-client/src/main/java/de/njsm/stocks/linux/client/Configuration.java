@@ -4,8 +4,10 @@ import de.njsm.stocks.linux.client.frontend.UIFactory;
 
 import java.io.*;
 import java.util.Properties;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Configuration {
 
@@ -24,7 +26,13 @@ public class Configuration {
     protected final Logger log;
 
     public Configuration () {
+
         log = Logger.getLogger("stocks-client");
+        log.setLevel(Level.ALL);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(new SimpleFormatter());
+        handler.setLevel(Level.ALL);
+        log.addHandler(handler);
     }
 
     public boolean hasConfig() {
