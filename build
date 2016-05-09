@@ -3,12 +3,12 @@
 cd server
 mvn compile package
 cd ..
-cp server/target/server-0.1-beta.war root/jetty-base/wars/server.war
+cp server/target/server-0.1.war root-dev/jetty-base/wars/server.war
 
 cd sentry
 mvn compile package
 cd ..
-cp sentry/target/sentry-0.1-beta.war root/jetty-base/wars/sentry.war
+cp sentry/target/sentry-0.1.war root-dev/jetty-base/wars/sentry.war
 
 cd linux-client
 mvn compile package

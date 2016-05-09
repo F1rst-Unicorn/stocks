@@ -1,5 +1,6 @@
 package de.njsm.stocks.sentry.endpoints;
 
+import de.njsm.stocks.sentry.data.Ticket;
 import de.njsm.stocks.sentry.db.DatabaseHandler;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -24,30 +25,27 @@ public class UserGenerator {
      * @return A response containing the new user certificate
      */
     @POST
-    @Path("/{ticket}/{id}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces("application/octet-stream")
-    public Response getNewCertificate(@PathParam("ticket") String ticket,
-                                      @PathParam("id") int deviceId,
-                                      @FormDataParam("file") InputStream fileInputStream,
-                                      @FormDataParam("file") FormDataContentDisposition fileMetaData){
+    @Path("/newuser")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response getNewCertificate(Ticket ticket){
 
         try {
 
             // check ticket validity
-            if (! handler.isTicketValid(ticket, deviceId)) {
+            if (! handler.isTicketValid(ticket.ticket, ticket.deviceId)) {
                 throw new Exception("sentry: ticket is not valid");
             }
 
             // save signing request
-            String userFileName = String.format("user_%d", deviceId);
+            String userFileName = String.format("user_%d", ticket.deviceId);
             String csrFileName = "../CA/intermediate/csr/" + userFileName + ".csr.pem";
             FileOutputStream output = new FileOutputStream(csrFileName);
-            IOUtils.copy(fileInputStream, output);
+            IOUtils.write(ticket.pemFile.getBytes(), output);
             output.close();
 
             // hand ticket and deviceId to database handler
-            handler.handleTicket(ticket, deviceId);
+            handler.handleTicket(ticket.ticket, ticket.deviceId);
 
             // Send answer to client
             File file = new File(String.format("../CA/intermediate/cert/" + userFileName + ".cert.pem"));
