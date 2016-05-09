@@ -50,9 +50,13 @@ public class SentryManager {
         // execute call
         Call<Ticket> callback = backend.requestCertificate(request);
         retrofit.Response<Ticket> response = callback.execute();
+
         if (response.isSuccess()) {
             Ticket responseTicket = response.body();
             // store result
+            if (responseTicket.pemFile == null) {
+                throw new SecurityException("Server rejected ticket!");
+            }
             FileOutputStream output = new FileOutputStream(Configuration.stocksHome + "/client.cert.pem");
             IOUtils.write(responseTicket.pemFile.getBytes(), output);
             output.close();

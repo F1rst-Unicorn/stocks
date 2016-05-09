@@ -132,9 +132,9 @@ public class DatabaseHandler {
                 }
                 (new File(csrFilePath)).delete();
                 (new File(certFilePath)).delete();
-                throw new RuntimeException("sentry: failed to handle ticket: " + e.getMessage());
+                throw new RuntimeException("Aborting transaction: " + e.getMessage());
             } catch (SQLException sql){
-                throw new RuntimeException("sentry: failed to rollback! " + sql.getMessage());
+                throw new RuntimeException("Aborting transaction, failed to rollback! " + sql.getMessage());
             }
         }
 

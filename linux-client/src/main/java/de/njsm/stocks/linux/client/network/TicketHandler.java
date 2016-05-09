@@ -54,7 +54,9 @@ public class TicketHandler {
 
             String fprFromCa = getFprFromFile();
             if (! fprFromCa.equals(fingerprint)){
-                throw new SecurityException("fingerprints do not match!");
+                throw new SecurityException(String.format("fingerprints do not match!\nLocal: %s\nOther: %s",
+                        fingerprint,
+                        fprFromCa));
             }
 
             importCertificate("ca");
@@ -101,10 +103,7 @@ public class TicketHandler {
                 CertificateManager.keystorePassword,
                 CertificateManager.keystorePath,
                 CertificateManager.keystorePassword);
-        Process p = Runtime.getRuntime().exec(command);
-        System.out.println(file + ":\n");
-        IOUtils.copy(p.getInputStream(), System.out);
-        IOUtils.copy(p.getErrorStream(), System.out);
+        Runtime.getRuntime().exec(command);
     }
 
 }

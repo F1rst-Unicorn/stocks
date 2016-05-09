@@ -52,15 +52,14 @@ public class InitManager {
         TicketHandler handler = new TicketHandler(c);
 
         try {
-            //String username = source.getUsername();
-            //String deviceName = source.getDevicename();
-            //int[] ids = source.getUserIds();
+            String username = source.getUsername();
+            String deviceName = source.getDevicename();
+            int[] ids = source.getUserIds();
 
-            generateKey("Jan", "Laptop", new int[]{1,1});
+            generateKey(username, deviceName, ids);
 
-            handler.verifyServerCa("E7:A4:A1:1F:15:ED:24:EF:3A:86:9F:FF:AE:C8:97:9E:51:27:B1:C6:71:97:1C:DE:7F:19:84:B6:43:80:71:9C");
-            //source.getCaFingerprint());
-            handler.handleTicket("0000", 1);
+            handler.verifyServerCa(source.getCaFingerprint());
+            handler.handleTicket(source.getTicket(), ids[1]);
 
         } catch (Exception e) {
             c.getLog().log(Level.SEVERE, "InitManager: Failed to setup keystore: " + e.getMessage());

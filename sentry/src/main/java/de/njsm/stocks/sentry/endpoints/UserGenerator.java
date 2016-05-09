@@ -35,7 +35,7 @@ public class UserGenerator {
 
             // check ticket validity
             if (! handler.isTicketValid(ticket.ticket, ticket.deviceId)) {
-                throw new Exception("sentry: ticket is not valid");
+                throw new Exception("ticket is not valid");
             }
 
             // save signing request
@@ -55,7 +55,6 @@ public class UserGenerator {
 
         } catch (Exception e) {
             log.log(Level.SEVERE, "sentry: Failed to handle request: " + e.getMessage());
-            e.printStackTrace();
             ticket.pemFile = null;
             return ticket;
         }

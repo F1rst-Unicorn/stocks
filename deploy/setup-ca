@@ -32,6 +32,7 @@ CA_ROOT=/usr/share/stocks/root/CA
     chmod 444 intermediate/certs/ca-chain.cert.pem
     mkdir -p /usr/share/stocks/root/nginx
     cp certs/ca.cert.pem /usr/share/stocks/root/nginx/ca
+    cp intermediate/certs/intermediate.cert.pem /usr/share/stocks/root/nginx/chain
     
     ## Server certificate
     cd intermediate
