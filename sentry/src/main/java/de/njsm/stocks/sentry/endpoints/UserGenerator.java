@@ -11,6 +11,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
+import java.nio.channels.FileLockInterruptionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +29,7 @@ public class UserGenerator {
     @Path("/newuser")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response getNewCertificate(Ticket ticket){
+    public Ticket getNewCertificate(Ticket ticket){
 
         try {
 
@@ -49,13 +50,13 @@ public class UserGenerator {
 
             // Send answer to client
             File file = new File(String.format("../CA/intermediate/cert/" + userFileName + ".cert.pem"));
-            return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-                    .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-                    .build();
+            ticket.pemFile = IOUtils.toString(new FileInputStream(file));
+            return ticket;
 
         } catch (Exception e) {
             log.log(Level.SEVERE, "sentry: Failed to handle request: " + e.getMessage());
-            return Response.status(HttpServletResponse.SC_FORBIDDEN).build();
+            ticket.pemFile = null;
+            return ticket;
         }
     }
 
