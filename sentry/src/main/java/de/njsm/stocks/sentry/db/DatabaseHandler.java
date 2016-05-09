@@ -58,11 +58,15 @@ public class DatabaseHandler {
                 storedId = rs.getInt("belongs_device");
                 result = true;
             }
-            java.util.Date valid_till_date = new Date(date.getTime() + minutesValid * 60000);
 
-            return result &&
-                    (new java.util.Date()).before(valid_till_date) &&
-                    storedId == deviceId;
+            if (result) {
+                java.util.Date valid_till_date = new Date(date.getTime() + minutesValid * 60000);
+
+                return (new java.util.Date()).before(valid_till_date) &&
+                        storedId == deviceId;
+            } else {
+                return false;
+            }
 
         }
     }
