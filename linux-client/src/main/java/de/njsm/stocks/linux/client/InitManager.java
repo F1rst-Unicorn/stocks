@@ -59,10 +59,10 @@ public class InitManager {
         TicketHandler handler = new TicketHandler(c);
 
         try {
-            /*generateKey(source.getUsername(),
+            generateKey(source.getUsername(),
                     source.getDevicename(),
                     source.getUserIds());
-*/
+
             handler.verifyServerCa(source.getCaFingerprint());
             handler.handleTicket(source.getTicket());
 

@@ -2,6 +2,8 @@ package de.njsm.stocks.sentry.endpoints;
 
 import de.njsm.stocks.sentry.db.DatabaseHandler;
 import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -10,8 +12,6 @@ import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Path("/uac")
 public class UserGenerator {
@@ -25,11 +25,12 @@ public class UserGenerator {
      */
     @POST
     @Path("/{ticket}/{id}")
-    @Consumes("application/octet-stream")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/octet-stream")
     public Response getNewCertificate(@PathParam("ticket") String ticket,
                                       @PathParam("id") int deviceId,
-                                      File csrFile){
+                                      @FormDataParam("file") InputStream fileInputStream,
+                                      @FormDataParam("file") FormDataContentDisposition fileMetaData){
 
         try {
 
@@ -42,9 +43,7 @@ public class UserGenerator {
             String userFileName = String.format("user_%d", deviceId);
             String csrFileName = "../CA/intermediate/csr/" + userFileName + ".csr.pem";
             FileOutputStream output = new FileOutputStream(csrFileName);
-            FileInputStream input = new FileInputStream(csrFile);
-            IOUtils.copy(input, output);
-            input.close();
+            IOUtils.copy(fileInputStream, output);
             output.close();
 
             // hand ticket and deviceId to database handler

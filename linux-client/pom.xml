@@ -4,7 +4,7 @@
 
     <groupId>de.njsm.stocks</groupId>
     <artifactId>linux-client</artifactId>
-    <version>0.1-beta</version>
+    <version>0.1</version>
     <packaging>jar</packaging>
 
     <name>Stocks management Linux client</name>
