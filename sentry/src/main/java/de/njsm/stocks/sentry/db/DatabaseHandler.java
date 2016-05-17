@@ -92,6 +92,7 @@ public class DatabaseHandler {
                     "FROM Ticket t, User u, User_device d " +
                     "WHERE ticket=? AND t.belongs_device=d.`ID` AND d.belongs_to=u.`ID`";
             PreparedStatement sqlQuery = con.prepareStatement(getTicketQuery);
+            sqlQuery.setString(1, ticket);
             ResultSet rs = sqlQuery.executeQuery();
             while (rs.next()){
                 dbUsername = rs.getString("uname");
