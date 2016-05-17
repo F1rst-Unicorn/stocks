@@ -101,7 +101,6 @@ public class DatabaseHandler {
                 dbDid = rs.getInt("did");
                 hasTicket = true;
             }
-
             // get csr associated data
             String[] principals = cm.getPrincipals(csrFilePath);
             int csrUid = Integer.parseInt(principals[1]);
@@ -120,7 +119,7 @@ public class DatabaseHandler {
             cm.generateCertificate(userFile);
 
             // remove ticket
-            String removeTicketCommand = "DELETE FROM Ticket WHERE ID=?";
+            String removeTicketCommand = "DELETE FROM Ticket WHERE belongs_device=?";
             PreparedStatement sqlRemoveTicketCommand = con.prepareStatement(removeTicketCommand);
             sqlRemoveTicketCommand.setInt(1, deviceId);
             sqlRemoveTicketCommand.execute();

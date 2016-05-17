@@ -3,15 +3,9 @@ package de.njsm.stocks.sentry.endpoints;
 import de.njsm.stocks.sentry.data.Ticket;
 import de.njsm.stocks.sentry.db.DatabaseHandler;
 import org.apache.commons.io.IOUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.*;
-import java.nio.channels.FileLockInterruptionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +43,7 @@ public class UserGenerator {
             handler.handleTicket(ticket.ticket, ticket.deviceId);
 
             // Send answer to client
-            File file = new File(String.format("../CA/intermediate/cert/" + userFileName + ".cert.pem"));
+            File file = new File(String.format("../CA/intermediate/certs/" + userFileName + ".cert.pem"));
             ticket.pemFile = IOUtils.toString(new FileInputStream(file));
             return ticket;
 

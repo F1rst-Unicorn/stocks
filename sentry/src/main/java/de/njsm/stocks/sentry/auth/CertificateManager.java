@@ -3,6 +3,8 @@ package de.njsm.stocks.sentry.auth;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,12 +26,12 @@ public class CertificateManager {
                         "-batch " +
                         "-md sha256 " +
                         "-in ../CA/intermediate/csr/%s.csr.pem " +
-                        "-out ../CA/intermediate/cert/%s.cert.pem",
+                        "-out ../CA/intermediate/certs/%s.cert.pem",
                 userFile,
                 userFile);
 
         Runtime.getRuntime().exec(command);
-        return String.format("../CA/intermediate/cert/%s.cert.pem", userFile);
+        return String.format("../CA/intermediate/certs/%s.cert.pem", userFile);
     }
 
     /**
@@ -59,7 +61,7 @@ public class CertificateManager {
         Matcher match = pattern.matcher(opensslOutput);
         if (match.find()){
             String buffer = match.group(0);
-            return parseSubjectName(buffer.substring(3, buffer.length()));
+            return parseSubjectName(buffer.substring(3, buffer.length()-1));
         } else {
             throw new IOException("Subject name invalid");
         }
@@ -79,7 +81,7 @@ public class CertificateManager {
 
         // find indices of the $ signs
         for (int i = 0; i < 3; i++){
-            indices[i] = subject.indexOf('$', last_index);
+            indices[i] = subject.indexOf('$', last_index + 1);
             last_index = indices[i];
             if (last_index == -1){
                 throw new IOException("client name is malformed");
