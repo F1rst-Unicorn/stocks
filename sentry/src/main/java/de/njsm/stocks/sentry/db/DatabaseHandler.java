@@ -88,7 +88,7 @@ public class DatabaseHandler {
             boolean hasTicket = false;
             String dbUsername = null, dbDevicename = null;
             int dbUid = -1, dbDid = -1;
-            String getTicketQuery = "SELECT d.`ID` as did, d.name as dname, u.`ID` as uid, u.name as uname" +
+            String getTicketQuery = "SELECT d.`ID` as did, d.name as dname, u.`ID` as uid, u.name as uname " +
                     "FROM Ticket t, User u, User_device d " +
                     "WHERE ticket=? AND t.belongs_device=d.`ID` AND d.belongs_to=u.`ID`";
             PreparedStatement sqlQuery = con.prepareStatement(getTicketQuery);
