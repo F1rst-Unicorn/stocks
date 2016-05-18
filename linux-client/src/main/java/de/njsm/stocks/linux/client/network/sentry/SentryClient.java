@@ -1,4 +1,4 @@
-package de.njsm.stocks.linux.client.network;
+package de.njsm.stocks.linux.client.network.sentry;
 
 
 import de.njsm.stocks.linux.client.data.Ticket;

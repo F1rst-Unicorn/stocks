@@ -1,5 +1,6 @@
 package de.njsm.stocks.linux.client.frontend.cli;
 
+import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.frontend.CertificateGenerator;
 import de.njsm.stocks.linux.client.frontend.MainHandler;
 import de.njsm.stocks.linux.client.frontend.UIFactory;
@@ -18,7 +19,7 @@ public class CliFactory extends UIFactory {
     }
 
     @Override
-    public MainHandler getMainHandler() {
-        return new CliMainHandler();
+    public MainHandler getMainHandler(Configuration c) {
+        return new CliMainHandler(c);
     }
 }

@@ -1,4 +1,4 @@
-package de.njsm.stocks.linux.client.network;
+package de.njsm.stocks.linux.client.network.sentry;
 
 import com.squareup.okhttp.*;
 import de.njsm.stocks.linux.client.CertificateManager;

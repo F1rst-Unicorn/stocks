@@ -18,6 +18,6 @@ public class Main {
         c.loadConfig(f);
         certManager.loadCertificates(f);
 
-        f.getMainHandler().run();
+        f.getMainHandler(c).run();
     }
 }

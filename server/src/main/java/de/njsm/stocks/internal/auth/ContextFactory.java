@@ -4,5 +4,5 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface ContextFactory {
 
-    Principals getUserContext(HttpServletRequest request);
+    Principals getPrincipals(HttpServletRequest request);
 }

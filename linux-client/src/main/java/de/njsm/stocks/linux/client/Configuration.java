@@ -1,6 +1,7 @@
 package de.njsm.stocks.linux.client;
 
 import de.njsm.stocks.linux.client.frontend.UIFactory;
+import de.njsm.stocks.linux.client.network.server.ServerManager;
 
 import java.io.*;
 import java.util.Properties;
@@ -24,6 +25,7 @@ public class Configuration {
     protected int serverPort;
 
     protected final Logger log;
+    protected ServerManager sm;
 
     public Configuration () {
 
@@ -81,6 +83,17 @@ public class Configuration {
         } catch (IOException e){
             getLog().log(Level.SEVERE, "Configuration: Failed to store config: " + e.getMessage());
         }
+    }
+
+    public ServerManager getServerManager() {
+        if (!hasConfig()){
+            throw new RuntimeException("Not initialised!");
+        }
+
+        if (sm == null) {
+            sm = new ServerManager(this);
+        }
+        return sm;
     }
 
     public void setServerName(String serverName) {

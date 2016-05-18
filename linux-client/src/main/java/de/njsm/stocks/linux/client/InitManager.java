@@ -2,7 +2,7 @@ package de.njsm.stocks.linux.client;
 
 import de.njsm.stocks.linux.client.frontend.CertificateGenerator;
 import de.njsm.stocks.linux.client.frontend.ConfigGenerator;
-import de.njsm.stocks.linux.client.network.TicketHandler;
+import de.njsm.stocks.linux.client.network.sentry.TicketHandler;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;

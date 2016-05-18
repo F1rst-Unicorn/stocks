@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class SimpleUserContextFactory implements ContextFactory {
 
-    public Principals getUserContext(HttpServletRequest request) {
+    public Principals getPrincipals(HttpServletRequest request) {
         return new Principals("test_user", 0, "test_device", 0);
     }
 

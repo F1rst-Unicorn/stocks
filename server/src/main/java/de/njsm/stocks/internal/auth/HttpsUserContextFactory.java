@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HttpsUserContextFactory implements ContextFactory {
 
 
-    public Principals getUserContext(HttpServletRequest request) {
+    public Principals getPrincipals(HttpServletRequest request) {
 
         Object rawClientName = request.getAttribute("X-SSL-Client-S-DN");
         String clientName;
