@@ -33,7 +33,12 @@ public class CertificateManager {
                 userFile,
                 userFile);
 
-        Runtime.getRuntime().exec(command);
+        Process p = Runtime.getRuntime().exec(command);
+        try {
+            p.waitFor();
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -47,7 +52,7 @@ public class CertificateManager {
         PEMParser parser = new PEMParser(new FileReader(csrFile));
         Object csrRaw = parser.readObject();
         if (csrRaw instanceof PKCS10CertificationRequest) {
-            PKCS10CertificationRequest csr = (PKCS10CertificationRequest) parser.readObject();
+            PKCS10CertificationRequest csr = (PKCS10CertificationRequest) csrRaw;
             return parseSubjectName(csr.getSubject().toString());
         } else {
             throw new SecurityException("failed to cast CSR");
@@ -67,9 +72,19 @@ public class CertificateManager {
         List<Integer> indexList = new LinkedList<>();
         int[] indices;
         int last_index = 0;
+        int begin = 0;
         int i = 0;
 
+        // find last '=' sign
+        while (last_index != -1) {
+            last_index = subject.indexOf('=', last_index + 1);
+            if (last_index != -1) {
+                begin = last_index;
+            }
+        }
+
         // find indices of the $ signs
+        last_index = begin;
         while (last_index != -1){
             int newIndex = subject.indexOf('$', last_index + 1);
             if (newIndex != -1) {
@@ -89,7 +104,7 @@ public class CertificateManager {
         }
 
         String[] rawInput = new String[4];
-        rawInput[0] = subject.substring(0, indices[0]);
+        rawInput[0] = subject.substring(begin+1, indices[0]);
         rawInput[1] = subject.substring(indices[0] + 1, indices[1]);
         rawInput[2] = subject.substring(indices[1] + 1, indices[2]);
         rawInput[3] = subject.substring(indices[2] + 1, subject.length());

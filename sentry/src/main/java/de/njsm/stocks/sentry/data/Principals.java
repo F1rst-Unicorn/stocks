@@ -50,4 +50,9 @@ public class Principals {
     public int getDid() {
         return did;
     }
+
+    @Override
+    public String toString() {
+        return username + "$" + uid + "$" + deviceName + "$" + did;
+    }
 }

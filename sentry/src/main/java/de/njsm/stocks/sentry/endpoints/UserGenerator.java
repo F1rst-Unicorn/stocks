@@ -46,6 +46,7 @@ public class UserGenerator {
             // Send answer to client
             File file = new File(String.format(CertificateManager.certFormatString, userFileName));
             ticket.pemFile = IOUtils.toString(new FileInputStream(file));
+            log.log(Level.INFO, "sentry: Authorised new device with ID " + ticket.deviceId);
             return ticket;
 
         } catch (Exception e) {

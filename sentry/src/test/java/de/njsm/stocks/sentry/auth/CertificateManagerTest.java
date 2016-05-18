@@ -3,6 +3,8 @@ package de.njsm.stocks.sentry.auth;
 import de.njsm.stocks.sentry.data.Principals;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.junit.Assert.assertEquals;
 
 public class CertificateManagerTest {
@@ -20,7 +22,7 @@ public class CertificateManagerTest {
                 String.valueOf(uid),
                 "my_device_name",
                 String.valueOf(did)};
-        String input = new String();
+        String input = "CN=";
         for (int i = 0; i < testInput.length-1; i++){
             input = input.concat(testInput[i] + "$");
         }
@@ -41,7 +43,7 @@ public class CertificateManagerTest {
 
         String[] testInput = new String[] {"my_user$name", "3",
                 "my_device_name", "6"};
-        String input = new String();
+        String input = "CN=";
         for (int i = 0; i < testInput.length-1; i++){
             input = input.concat(testInput[i] + "$");
         }
@@ -54,7 +56,20 @@ public class CertificateManagerTest {
     public void testTooFewDollars() {
         CertificateManager uut = new CertificateManager();
 
-        Principals p = uut.parseSubjectName("username$devicename$4");
+        Principals p = uut.parseSubjectName("CN=username$devicename$4");
+    }
+
+    @Test
+    public void testParseCsr() {
+        CertificateManager uut = new CertificateManager();
+
+        try {
+            Principals p = uut.getPrincipals("/usr/share/stocks/root/CA/intermediate/csr/user_1.csr.pem");
+            p.getDeviceName();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

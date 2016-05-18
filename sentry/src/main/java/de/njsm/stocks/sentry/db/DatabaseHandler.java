@@ -111,7 +111,8 @@ public class DatabaseHandler {
                 p.getDid() != dbDid ||
                 ! p.getUsername().equals(dbUsername) ||
                 ! p.getDeviceName().equals(dbDevicename)) {
-                throw new Exception("CSR Subject name differs from database!");
+                throw new Exception("CSR Subject name differs from database! " + p.toString() + " " +
+                        dbUsername + "$" + dbUid + "$" + dbDevicename + "$" + dbDid);
             }
 
             // issue certificate
