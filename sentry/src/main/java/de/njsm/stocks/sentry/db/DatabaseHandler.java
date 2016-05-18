@@ -1,6 +1,7 @@
 package de.njsm.stocks.sentry.db;
 
 import de.njsm.stocks.sentry.auth.CertificateManager;
+import de.njsm.stocks.sentry.data.Principals;
 
 import java.io.File;
 import java.sql.*;
@@ -102,16 +103,14 @@ public class DatabaseHandler {
                 hasTicket = true;
             }
             // get csr associated data
-            String[] principals = cm.getPrincipals(csrFilePath);
-            int csrUid = Integer.parseInt(principals[1]);
-            int csrDid = Integer.parseInt(principals[3]);
+            Principals p = cm.getPrincipals(csrFilePath);
 
             // check for equality, if not, exception
             if (! hasTicket ||
-                csrUid != dbUid ||
-                csrDid != dbDid ||
-                ! principals[0].equals(dbUsername) ||
-                ! principals[2].equals(dbDevicename)) {
+                p.getUid() != dbUid ||
+                p.getDid() != dbDid ||
+                ! p.getUsername().equals(dbUsername) ||
+                ! p.getDeviceName().equals(dbDevicename)) {
                 throw new Exception("CSR Subject name differs from database!");
             }
 

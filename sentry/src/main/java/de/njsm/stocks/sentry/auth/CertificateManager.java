@@ -1,8 +1,11 @@
 package de.njsm.stocks.sentry.auth;
 
+import de.njsm.stocks.sentry.data.Principals;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -38,14 +41,10 @@ public class CertificateManager {
      * Read the CSR and extract the parts of the Subject name
      *
      * @param csrFile the relative filepath of the CSR to read
-     * @return The array of names:
-     *          [0]: User name
-     *          [1]: User Id
-     *          [2]: Device name
-     *          [3]: Device Id
+     * @return The parsed principals
      * @throws IOException
      */
-    public String[] getPrincipals(String csrFile) throws IOException {
+    public Principals getPrincipals(String csrFile) throws IOException {
         String command = String.format("openssl req " +
                         "-noout " +
                         "-text " +
@@ -72,28 +71,41 @@ public class CertificateManager {
      * are divided by the $ signs
      *
      * @param subject A subject name
-     * @return An array of the divided parts
+     * @return The parsed principals
      * @throws IOException If the subject name has an invalid format
      */
-    protected String[] parseSubjectName(String subject) throws IOException{
-        int[] indices = new int[3];
+    protected Principals parseSubjectName(String subject) throws SecurityException{
+        List<Integer> indexList = new LinkedList<>();
+        int[] indices;
         int last_index = 0;
+        int i = 0;
 
         // find indices of the $ signs
-        for (int i = 0; i < 3; i++){
-            indices[i] = subject.indexOf('$', last_index + 1);
-            last_index = indices[i];
-            if (last_index == -1){
-                throw new IOException("client name is malformed");
+        while (last_index != -1){
+            int newIndex = subject.indexOf('$', last_index + 1);
+            if (newIndex != -1) {
+                indexList.add(newIndex);
             }
+            last_index = newIndex;
         }
 
-        String username = subject.substring(0, indices[0]);
-        String userId = subject.substring(indices[0] + 1, indices[1]);
-        String deviceName = subject.substring(indices[1] + 1, indices[2]);
-        String deviceId = subject.substring(indices[2] + 1, subject.length());
+        if (indexList.size() != 3){
+            throw new SecurityException("client name contains " + indexList.size() + " $ signs");
+        }
 
-        return new String[] {username, userId, deviceName, deviceId};
+        indices = new int[indexList.size()];
+        for (Integer index : indexList) {
+            indices[i] = index;
+            i++;
+        }
+
+        String[] rawInput = new String[4];
+        rawInput[0] = subject.substring(0, indices[0]);
+        rawInput[1] = subject.substring(indices[0] + 1, indices[1]);
+        rawInput[2] = subject.substring(indices[1] + 1, indices[2]);
+        rawInput[3] = subject.substring(indices[2] + 1, subject.length());
+
+        return new Principals(rawInput);
 
     }
 }
