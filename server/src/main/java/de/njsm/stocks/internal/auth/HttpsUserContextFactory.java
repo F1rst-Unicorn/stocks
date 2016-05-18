@@ -1,12 +1,11 @@
 package de.njsm.stocks.internal.auth;
 
-import javax.security.cert.X509Certificate;
 import javax.servlet.http.HttpServletRequest;
 
 public class HttpsUserContextFactory implements ContextFactory {
 
 
-    public UserContext getUserContext(HttpServletRequest request) {
+    public Principals getUserContext(HttpServletRequest request) {
 
         Object rawClientName = request.getAttribute("X-SSL-Client-S-DN");
         String clientName;
@@ -20,7 +19,7 @@ public class HttpsUserContextFactory implements ContextFactory {
         return parseSubjectName(clientName);
     }
 
-    protected UserContext parseSubjectName(String subject){
+    protected Principals parseSubjectName(String subject){
         int[] indices = new int[3];
         int last_index = 0;
 
@@ -33,19 +32,10 @@ public class HttpsUserContextFactory implements ContextFactory {
             }
         }
 
-        String username = subject.substring(0, indices[0]);
-        String deviceName = subject.substring(indices[1] + 1, indices[2]);
-        int userId;
-        int deviceId;
-
-        try {
-            userId = Integer.parseInt(subject.substring(indices[0] + 1, indices[1]));
-            deviceId = Integer.parseInt(subject.substring(indices[2] + 1, subject.length()));
-        } catch (NumberFormatException e){
-            throw new SecurityException("client ID is malformed");
-        }
-
-        return new UserContext(username, userId, deviceName, deviceId);
+        return new Principals(subject.substring(0, indices[0]),
+                subject.substring(indices[1] + 1, indices[2]),
+                subject.substring(indices[0] + 1, indices[1]),
+                subject.substring(indices[2] + 1, subject.length()));
 
     }
 

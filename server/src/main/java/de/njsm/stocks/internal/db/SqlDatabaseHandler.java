@@ -3,17 +3,12 @@ package de.njsm.stocks.internal.db;
 import de.njsm.stocks.data.*;
 import de.njsm.stocks.internal.Config;
 import de.njsm.stocks.internal.auth.CertificateAdmin;
-import de.njsm.stocks.internal.auth.UserContext;
+import de.njsm.stocks.internal.auth.Principals;
 
-import javax.ws.rs.Produces;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
 public class SqlDatabaseHandler implements DatabaseHandler {
@@ -202,7 +197,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public void addFood(UserContext c, Food food) throws SQLException {
+    public void addFood(Principals c, Food food) throws SQLException {
         String command="INSERT INTO Food (name) VALUES (?)";
 
         try (Connection con = getConnection();
@@ -213,7 +208,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public void removeFood(UserContext c, int id) throws SQLException {
+    public void removeFood(Principals c, int id) throws SQLException {
         String command="DELETE FROM Food WHERE ID=?";
 
         try (Connection con = getConnection();
@@ -224,7 +219,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public void renameFood(UserContext c, int id, String new_name) throws SQLException {
+    public void renameFood(Principals c, int id, String new_name) throws SQLException {
         String command="UPDATE Food SET name=? WHERE ID=?";
 
         try (Connection con = getConnection();
@@ -236,7 +231,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public void addFoodItem(UserContext c, FoodItem item) throws SQLException {
+    public void addFoodItem(Principals c, FoodItem item) throws SQLException {
         String command="INSERT INTO Food_item (eat_by, of_type, stored_in, registers, buys) " +
                 "VALUES (?,?,?,?,?)";
 
@@ -252,7 +247,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public void removeFoodItem(UserContext c, int id) throws SQLException {
+    public void removeFoodItem(Principals c, int id) throws SQLException {
         String command="DELETE FROM Food_item WHERE ID=?";
 
         try (Connection con = getConnection();

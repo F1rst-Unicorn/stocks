@@ -1,10 +1,9 @@
 package de.njsm.stocks.internal.db;
 
 import de.njsm.stocks.data.*;
-import de.njsm.stocks.internal.auth.UserContext;
+import de.njsm.stocks.internal.auth.Principals;
 
 import java.sql.SQLException;
-import java.util.Date;
 
 public class SimpleDatabaseHandler implements DatabaseHandler {
 
@@ -44,27 +43,27 @@ public class SimpleDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public void addFood(UserContext c, Food food) throws SQLException {
+    public void addFood(Principals c, Food food) throws SQLException {
 
     }
 
     @Override
-    public void removeFood(UserContext c, int id) throws SQLException {
+    public void removeFood(Principals c, int id) throws SQLException {
 
     }
 
     @Override
-    public void renameFood(UserContext c, int id, String new_name) throws SQLException {
+    public void renameFood(Principals c, int id, String new_name) throws SQLException {
 
     }
 
     @Override
-    public void addFoodItem(UserContext c, FoodItem item) throws SQLException {
+    public void addFoodItem(Principals c, FoodItem item) throws SQLException {
 
     }
 
     @Override
-    public void removeFoodItem(UserContext c, int id) throws SQLException {
+    public void removeFoodItem(Principals c, int id) throws SQLException {
 
     }
 

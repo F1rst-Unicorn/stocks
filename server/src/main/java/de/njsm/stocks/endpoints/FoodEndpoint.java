@@ -2,8 +2,7 @@ package de.njsm.stocks.endpoints;
 
 import de.njsm.stocks.data.Food;
 import de.njsm.stocks.data.FoodItem;
-import de.njsm.stocks.internal.auth.UserContext;
-import de.njsm.stocks.internal.db.DatabaseHandler;
+import de.njsm.stocks.internal.auth.Principals;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -34,7 +33,7 @@ public class FoodEndpoint extends Endpoint {
         c.getLog().log(Level.INFO, "FoodEndpoint: Adding food " + food.name);
 
         try {
-            UserContext uc = c.getContextFactory().getUserContext(request);
+            Principals uc = c.getContextFactory().getUserContext(request);
             handler.addFood(uc, food);
         } catch (SQLException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to add food: " + e.getMessage());
@@ -54,7 +53,7 @@ public class FoodEndpoint extends Endpoint {
         c.getLog().log(Level.INFO, "FoodEndpoint: Renaming food " + food.name + " -> " + newName);
 
         try {
-            UserContext uc = c.getContextFactory().getUserContext(request);
+            Principals uc = c.getContextFactory().getUserContext(request);
             handler.renameFood(uc, food.id, newName);
         } catch (SQLException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to rename food: " + e.getMessage());
@@ -72,7 +71,7 @@ public class FoodEndpoint extends Endpoint {
         c.getLog().log(Level.INFO, "FoodEndpoint: Removing food " + food.name);
 
         try {
-            UserContext uc = c.getContextFactory().getUserContext(request);
+            Principals uc = c.getContextFactory().getUserContext(request);
             handler.removeFood(uc, food.id);
         } catch (SQLException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to remove food: " + e.getMessage());
@@ -103,7 +102,7 @@ public class FoodEndpoint extends Endpoint {
         c.getLog().log(Level.INFO, "FoodEndpoint: Add food item");
 
         try {
-            UserContext uc = c.getContextFactory().getUserContext(request);
+            Principals uc = c.getContextFactory().getUserContext(request);
             handler.addFoodItem(uc, item);
         } catch (SQLException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to add food item: " + e.getMessage());
@@ -121,7 +120,7 @@ public class FoodEndpoint extends Endpoint {
         c.getLog().log(Level.INFO, "FoodEndpoint: Remove food item");
 
         try {
-            UserContext uc = c.getContextFactory().getUserContext(request);
+            Principals uc = c.getContextFactory().getUserContext(request);
             handler.removeFoodItem(uc, item.id);
         } catch (SQLException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to remove food item: " + e.getMessage());
