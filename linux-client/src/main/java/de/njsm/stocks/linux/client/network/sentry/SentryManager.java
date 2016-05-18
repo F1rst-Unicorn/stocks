@@ -1,19 +1,14 @@
 package de.njsm.stocks.linux.client.network.sentry;
 
-import com.squareup.okhttp.*;
-import de.njsm.stocks.linux.client.CertificateManager;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Ticket;
 import org.apache.commons.io.IOUtils;
 import retrofit.*;
 import retrofit.Call;
 
-import javax.net.ssl.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.security.KeyStore;
-import java.security.SecureRandom;
 import java.util.logging.Level;
 
 public class SentryManager {
@@ -28,7 +23,7 @@ public class SentryManager {
 
             backend = new Retrofit.Builder()
                     .baseUrl(url)
-                    .client(getClient())
+                    .client(c.getClient())
                     .addConverterFactory(JacksonConverterFactory.create())
                     .build()
                     .create(SentryClient.class);
@@ -59,39 +54,14 @@ public class SentryManager {
             }
             FileOutputStream output = new FileOutputStream(Configuration.stocksHome + "/client.cert.pem");
             IOUtils.write(responseTicket.pemFile.getBytes(), output);
+            FileOutputStream concatStream = new FileOutputStream(Configuration.stocksHome + "/client.chain.cert.pem");
+            IOUtils.copy(new FileInputStream(Configuration.stocksHome + "/client.cert.pem"), concatStream);
+            IOUtils.copy(new FileInputStream(Configuration.stocksHome + "/intermediate.cert.pem"), concatStream);
+            concatStream.close();
             output.close();
         } else {
             throw new Exception("Retrofit call failed: " + response.raw().toString());
         }
-
-
-    }
-
-    protected OkHttpClient getClient() throws Exception {
-
-        TrustManagerFactory tmf = TrustManagerFactory
-                .getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(new FileInputStream(CertificateManager.keystorePath),
-                CertificateManager.keystorePassword.toCharArray());
-        tmf.init(ks);
-
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        kmf.init(ks, CertificateManager.keystorePassword.toCharArray());
-
-        SSLContext context = SSLContext.getInstance("TLSv1.2");
-        context.init(kmf.getKeyManagers(),
-                tmf.getTrustManagers(),
-                new SecureRandom());
-
-        return new OkHttpClient()
-                .setSslSocketFactory(context.getSocketFactory())
-                .setHostnameVerifier(new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String s, SSLSession sslSession) {
-                        return true;
-                    }
-                });
 
 
     }

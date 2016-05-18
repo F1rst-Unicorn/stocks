@@ -1,9 +1,13 @@
 package de.njsm.stocks.linux.client;
 
+import com.squareup.okhttp.OkHttpClient;
 import de.njsm.stocks.linux.client.frontend.UIFactory;
 import de.njsm.stocks.linux.client.network.server.ServerManager;
 
+import javax.net.ssl.*;
 import java.io.*;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
@@ -130,5 +134,34 @@ public class Configuration {
 
     public Logger getLog() {
         return log;
+    }
+
+    public OkHttpClient getClient() throws Exception {
+
+        TrustManagerFactory tmf = TrustManagerFactory
+                .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+        ks.load(new FileInputStream(CertificateManager.keystorePath),
+                CertificateManager.keystorePassword.toCharArray());
+        tmf.init(ks);
+
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        kmf.init(ks, CertificateManager.keystorePassword.toCharArray());
+
+        SSLContext context = SSLContext.getInstance("TLSv1.2");
+        context.init(kmf.getKeyManagers(),
+                tmf.getTrustManagers(),
+                new SecureRandom());
+
+        return new OkHttpClient()
+                .setSslSocketFactory(context.getSocketFactory())
+                .setHostnameVerifier(new HostnameVerifier() {
+                    @Override
+                    public boolean verify(String s, SSLSession sslSession) {
+                        return true;
+                    }
+                });
+
+
     }
 }

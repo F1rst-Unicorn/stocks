@@ -84,7 +84,7 @@ public class InitManager {
                 cn,
                 "User",
                 "stocks",
-                "client_key",
+                "client",
                 CertificateManager.keystorePassword,
                 CertificateManager.keystorePath,
                 CertificateManager.keystorePassword);
@@ -97,7 +97,7 @@ public class InitManager {
 
         // generate CSR
         String getCsrCommand = String.format("keytool -certreq " +
-                "-alias client_key " +
+                "-alias client " +
                 "-file %s/client.csr.pem " +
                 "-keypass %s " +
                 "-keystore %s " +

@@ -1,17 +1,15 @@
 package de.njsm.stocks.linux.client.network.server;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.OkHttpClient;
 import de.njsm.stocks.linux.client.CertificateManager;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Update;
-import de.njsm.stocks.linux.client.network.sentry.SentryClient;
-import retrofit.JacksonConverterFactory;
-import retrofit.Retrofit;
+import retrofit.*;
 
-import javax.net.ssl.*;
-import java.io.FileInputStream;
-import java.security.KeyStore;
-import java.security.SecureRandom;
+import java.io.IOException;
 import java.util.logging.Level;
 
 public class ServerManager {
@@ -24,44 +22,36 @@ public class ServerManager {
                     c.getServerName(),
                     c.getServerPort());
 
-            backend = new Retrofit.Builder()
+            Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(url)
-                    .client(getClient())
+                    .client(c.getClient())
                     .addConverterFactory(JacksonConverterFactory.create())
-                    .build()
-                    .create(ServerClient.class);
+                    .build();
+
+            backend = retrofit.create(ServerClient.class);
         } catch (Exception e) {
             c.getLog().log(Level.SEVERE, "Failed to set up ServerManager: " + e.getMessage());
         }
     }
 
     public Update[] getUpdates() {
-        return backend.getUpdates();
+        Call<Update[]> u = backend.getUpdates();
+
+        try {
+            Response<Update[]> r = u.execute();
+
+            if (r.isSuccess()) {
+                return r.body();
+            } else {
+                throw new RuntimeException("failed to retrieve updates");
+            }
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    protected OkHttpClient getClient() throws Exception {
-        TrustManagerFactory tmf = TrustManagerFactory
-                .getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(new FileInputStream(CertificateManager.keystorePath),
-                CertificateManager.keystorePassword.toCharArray());
-        tmf.init(ks);
-
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        kmf.init(ks, CertificateManager.keystorePassword.toCharArray());
-
-        SSLContext context = SSLContext.getInstance("TLSv1.2");
-        context.init(kmf.getKeyManagers(),
-                tmf.getTrustManagers(),
-                new SecureRandom());
-
-        return new OkHttpClient()
-                .setSslSocketFactory(context.getSocketFactory())
-                .setHostnameVerifier(new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String s, SSLSession sslSession) {
-                        return true;
-                    }
-                });
-    }
 }

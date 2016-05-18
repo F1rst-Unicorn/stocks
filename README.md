@@ -37,8 +37,8 @@ the CA section, you can simply run the stocks-ocsp service.
 
 * Start mysql
 * Start OCSP
-* Start nginx
 * Start jetty
+* Start nginx
 
 ## Adding the first user
 

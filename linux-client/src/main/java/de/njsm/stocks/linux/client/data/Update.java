@@ -10,8 +10,8 @@ import java.util.Date;
 @XmlRootElement
 public class Update {
 
-        public String table;
-        @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss")
-        public Date lastUpdate;
+    public String table;
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss")
+    public Date lastUpdate;
 
 }

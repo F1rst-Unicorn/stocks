@@ -1,6 +1,7 @@
 package de.njsm.stocks.linux.client.network.server;
 
 import de.njsm.stocks.linux.client.data.*;
+import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.PUT;
@@ -13,7 +14,7 @@ public interface ServerClient {
     void addUser(@Body User u);
 
     @GET("/user")
-    User[] getUsers();
+    Call<User[]> getUsers();
 
     @PUT("/user/remove")
     void removeUser(@Body User u);
@@ -22,16 +23,16 @@ public interface ServerClient {
     void addDevice(@Body UserDevice u);
 
     @GET("/device")
-    UserDevice[] getDevices();
+    Call<UserDevice[]> getDevices();
 
     @PUT("/device/remove")
     void removeDevice(@Body UserDevice u);
 
     @GET("/update")
-    Update[] getUpdates();
+    Call<Update[]> getUpdates();
 
     @GET("/location")
-    Location[] getLocations();
+    Call<Location[]> getLocations();
 
     @PUT("/location")
     void addLocation(@Body Location l);
@@ -43,7 +44,7 @@ public interface ServerClient {
     void removeLocation(@Body Location l);
 
     @GET("/food")
-    Food[] getFood();
+    Call<Food[]> getFood();
 
     @PUT("/food")
     void addFood(@Body Food f);
@@ -55,7 +56,7 @@ public interface ServerClient {
     void removeFood(@Body Food f);
 
     @GET("/food/fooditem")
-    FoodItem[] getFoodItems();
+    Call<FoodItem[]> getFoodItems();
 
     @PUT("/food/fooditem")
     void addFoodItem(@Body FoodItem f);
