@@ -16,11 +16,14 @@ public class X509CertificateAdmin implements CertificateAdmin {
                 "-revoke ../CA/intermediate/certs/user_%d.cert.pem",
                 id);
         try {
-            Runtime.getRuntime().exec(command);
+            Process p = Runtime.getRuntime().exec(command);
+            p.waitFor();
         } catch (IOException e){
             (new Config()).getLog().log(Level.SEVERE,
                     "X509CertificateAdmin: Failed to revoke certificate: " +
                             e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }

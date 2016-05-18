@@ -175,7 +175,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             PreparedStatement sqlStmt=con.prepareStatement(command);
 
             con.setAutoCommit(false);
-            // revoke all devices
+            // revoke device
             sqlQuery.setInt(1, id);
             ResultSet res = sqlQuery.executeQuery();
             while (res.next()){
@@ -241,8 +241,8 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             sqlStmt.setDate(1, new java.sql.Date(item.eatByDate.getTime()));
             sqlStmt.setInt(2, item.ofType);
             sqlStmt.setInt(3, item.storedIn);
-            sqlStmt.setInt(4, c.getDeviceId());
-            sqlStmt.setInt(5, c.getId());
+            sqlStmt.setInt(4, c.getDid());
+            sqlStmt.setInt(5, c.getUid());
             sqlStmt.execute();
         }
     }
