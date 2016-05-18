@@ -12,11 +12,9 @@ public class Main {
     public static void main (String[] args) {
 
         Configuration c = new Configuration();
-        CertificateManager certManager = new CertificateManager(c);
         UIFactory f = new CliFactory();
 
         c.loadConfig(f);
-        certManager.loadCertificates(f);
 
         f.getMainHandler(c).run();
     }

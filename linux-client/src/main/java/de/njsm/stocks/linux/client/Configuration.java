@@ -22,6 +22,9 @@ public class Configuration {
     public static final String serverPortConfig = "de.njsm.stocks.client.serverPort";
     public static final String stocksHome = System.getProperty("user.home") + "/.stocks";
     public static final String configPath = stocksHome + "/config";
+    public static final String keystorePath = System.getProperty("user.home") + "/.stocks/keystore";
+    public static final String keystorePassword = System.getProperty("de.njsm.stocks.client.cert.password",
+            "thisisapassword");
 
     protected String serverName;
     protected int caPort;
@@ -45,33 +48,46 @@ public class Configuration {
         return (new File(configPath).exists());
     }
 
+    public boolean hasCerts() {
+        return new File(Configuration.keystorePath).exists();
+    }
+
     public void loadConfig(UIFactory f) {
+        InitManager im = null;
+        boolean initialised = false;
 
         if (! hasConfig()) {
-            (new InitManager(this)).initConfig(f.getInteractor());
-            return;
+            im = new InitManager(this);
+            im.initConfig(f.getInteractor());
+            initialised = true;
         }
 
-        try {
-            BufferedReader source = new BufferedReader(new FileReader(configPath));
-            Properties p = new Properties();
-            p.load(source);
-
-            serverName = p.getProperty(serverNameConfig);
-            caPort = Integer.parseInt(p.getProperty(caPortConfig));
-            ticketPort = Integer.parseInt(p.getProperty(ticketPortConfig));
-            serverPort = Integer.parseInt(p.getProperty(serverPortConfig));
-
-        } catch (FileNotFoundException e){
-            getLog().log(Level.SEVERE, "Configuration: Bug in hasConfig(): " + e.getMessage());
-        } catch (IOException e) {
-            getLog().log(Level.SEVERE,
-                    "Configuration: Failed to load config: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            getLog().log(Level.SEVERE,
-                    "Configuration: Malformed configuration file: " + e.getMessage());
+        if (! hasCerts()) {
+            im = (im == null ? new InitManager(this) : im);
+            im.initCertificates(f.getCertGenerator());
         }
 
+        if (! initialised) {
+            try {
+                BufferedReader source = new BufferedReader(new FileReader(configPath));
+                Properties p = new Properties();
+                p.load(source);
+
+                serverName = p.getProperty(serverNameConfig);
+                caPort = Integer.parseInt(p.getProperty(caPortConfig));
+                ticketPort = Integer.parseInt(p.getProperty(ticketPortConfig));
+                serverPort = Integer.parseInt(p.getProperty(serverPortConfig));
+
+            } catch (FileNotFoundException e) {
+                getLog().log(Level.SEVERE, "Configuration: Bug in hasConfig(): " + e.getMessage());
+            } catch (IOException e) {
+                getLog().log(Level.SEVERE,
+                        "Configuration: Failed to load config: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                getLog().log(Level.SEVERE,
+                        "Configuration: Malformed configuration file: " + e.getMessage());
+            }
+        }
     }
 
     public void saveConfig() {
@@ -141,12 +157,12 @@ public class Configuration {
         TrustManagerFactory tmf = TrustManagerFactory
                 .getInstance(TrustManagerFactory.getDefaultAlgorithm());
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(new FileInputStream(CertificateManager.keystorePath),
-                CertificateManager.keystorePassword.toCharArray());
+        ks.load(new FileInputStream(keystorePath),
+                keystorePassword.toCharArray());
         tmf.init(ks);
 
         KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        kmf.init(ks, CertificateManager.keystorePassword.toCharArray());
+        kmf.init(ks, keystorePassword.toCharArray());
 
         SSLContext context = SSLContext.getInstance("TLSv1.2");
         context.init(kmf.getKeyManagers(),

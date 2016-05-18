@@ -1,10 +1,5 @@
 package de.njsm.stocks.linux.client.network.server;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.OkHttpClient;
-import de.njsm.stocks.linux.client.CertificateManager;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Update;
 import retrofit.*;

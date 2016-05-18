@@ -56,63 +56,24 @@ public class InitManager {
             String deviceName = source.getDevicename();
             int[] ids = source.getUserIds();
 
-            generateKey(username, deviceName, ids);
-
+            handler.generateKey(username, deviceName, ids);
+            handler.generateCsr();
             handler.verifyServerCa(source.getCaFingerprint());
             handler.handleTicket(source.getTicket(), ids[1]);
 
         } catch (Exception e) {
             c.getLog().log(Level.SEVERE, "InitManager: Failed to setup keystore: " + e.getMessage());
-            File keystore = new File(CertificateManager.keystorePath);
+            File keystore = new File(Configuration.keystorePath);
             keystore.delete();
             System.exit(1);
+        } finally {
+            (new File(TicketHandler.caFilePath)).delete();
+            (new File(TicketHandler.csrFilePath)).delete();
+            (new File(TicketHandler.certFilePath)).delete();
+            (new File(TicketHandler.intermediateFilePath)).delete();
+            (new File(Configuration.stocksHome + "/client.chain.cert.pem")).delete();
         }
     }
 
-    protected void generateKey(String username, String devicename, int[] ids) throws Exception {
 
-        // generate key
-        String cn = String.format("%s$%d$%s$%d", username, ids[0], devicename, ids[1]);
-        String keyGenCommand = String.format("keytool -genkeypair " +
-                "-dname CN=%s,OU=%s,O=%s " +
-                "-alias %s " +
-                "-keyalg RSA " +
-                "-keysize 4096 " +
-                "-keypass %s " +
-                "-keystore %s " +
-                "-storepass %s ",
-                cn,
-                "User",
-                "stocks",
-                "client",
-                CertificateManager.keystorePassword,
-                CertificateManager.keystorePath,
-                CertificateManager.keystorePassword);
-        Process p = Runtime.getRuntime().exec(keyGenCommand);
-        InputStream resultStream = p.getInputStream();
-        InputStream errorStream = p.getErrorStream();
-        IOUtils.copy(resultStream, System.out);
-        IOUtils.copy(errorStream, System.out);
-        p.waitFor();
-
-        // generate CSR
-        String getCsrCommand = String.format("keytool -certreq " +
-                "-alias client " +
-                "-file %s/client.csr.pem " +
-                "-keypass %s " +
-                "-keystore %s " +
-                "-storepass %s ",
-                Configuration.stocksHome,
-                CertificateManager.keystorePassword,
-                CertificateManager.keystorePath,
-                CertificateManager.keystorePassword);
-        p = Runtime.getRuntime().exec(getCsrCommand);
-        resultStream = p.getInputStream();
-        errorStream = p.getErrorStream();
-        IOUtils.copy(resultStream, System.out);
-        IOUtils.copy(errorStream, System.out);
-        p.waitFor();
-
-
-    }
 }

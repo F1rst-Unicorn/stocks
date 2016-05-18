@@ -395,6 +395,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
                 Update u = new Update();
                 u.table = res.getString("table_name");
                 u.lastUpdate = res.getDate("last_update");
+                result.add(u);
             }
 
             return result.toArray(new Update[result.size()]);

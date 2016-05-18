@@ -1,12 +1,12 @@
 package de.njsm.stocks.linux.client.network.sentry;
 
-import de.njsm.stocks.linux.client.CertificateManager;
 import de.njsm.stocks.linux.client.Configuration;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -17,6 +17,11 @@ import java.util.regex.Pattern;
 public class TicketHandler {
 
     protected Configuration c;
+
+    public static final String caFilePath           = Configuration.stocksHome + "/ca.cert.pem";
+    public static final String intermediateFilePath = Configuration.stocksHome + "/intermediate.cert.pem";
+    public static final String csrFilePath          = Configuration.stocksHome + "/client.csr.pem";
+    public static final String certFilePath         = Configuration.stocksHome + "/client.cert.pem";
 
     public TicketHandler (Configuration c) {
         this.c = c;
@@ -30,26 +35,24 @@ public class TicketHandler {
 
         } catch (Exception e){
             c.getLog().log(Level.SEVERE, "TicketHandler: Certificate retrival failed: " + e.getMessage());
-            new File(CertificateManager.keystorePath).delete();
+            new File(Configuration.keystorePath).delete();
         }
     }
 
     public void verifyServerCa(String fingerprint) {
-        String caFile = Configuration.stocksHome + "/ca.cert.pem";
-        String chainFile = Configuration.stocksHome + "/intermediate.cert.pem";
         try {
             URL website = new URL(String.format("http://%s:%d/ca",
                     c.getServerName(),
                     c.getCaPort()));
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(caFile);
+            FileOutputStream fos = new FileOutputStream(caFilePath);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
             website = new URL(String.format("http://%s:%d/chain",
                     c.getServerName(),
                     c.getCaPort()));
             rbc = Channels.newChannel(website.openStream());
-            fos = new FileOutputStream(chainFile);
+            fos = new FileOutputStream(intermediateFilePath);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
             String fprFromCa = getFprFromFile();
@@ -67,13 +70,58 @@ public class TicketHandler {
         }
     }
 
+    public void generateKey(String username, String devicename, int[] ids) throws Exception {
+
+        String cn = String.format("%s$%d$%s$%d", username, ids[0], devicename, ids[1]);
+        String keyGenCommand = String.format("keytool -genkeypair " +
+                        "-dname CN=%s,OU=%s,O=%s " +
+                        "-alias %s " +
+                        "-keyalg RSA " +
+                        "-keysize 4096 " +
+                        "-keypass %s " +
+                        "-keystore %s " +
+                        "-storepass %s ",
+                cn,
+                "User",
+                "stocks",
+                "client",
+                Configuration.keystorePassword,
+                Configuration.keystorePath,
+                Configuration.keystorePassword);
+        Process p = Runtime.getRuntime().exec(keyGenCommand);
+        InputStream resultStream = p.getInputStream();
+        InputStream errorStream = p.getErrorStream();
+        IOUtils.copy(resultStream, System.out);
+        IOUtils.copy(errorStream, System.out);
+        p.waitFor();
+    }
+
+    public void generateCsr() throws Exception {
+        String getCsrCommand = String.format("keytool -certreq " +
+                        "-alias client " +
+                        "-file %s " +
+                        "-keypass %s " +
+                        "-keystore %s " +
+                        "-storepass %s ",
+                csrFilePath,
+                Configuration.keystorePassword,
+                Configuration.keystorePath,
+                Configuration.keystorePassword);
+        Process p = Runtime.getRuntime().exec(getCsrCommand);
+        InputStream resultStream = p.getInputStream();
+        InputStream errorStream = p.getErrorStream();
+        IOUtils.copy(resultStream, System.out);
+        IOUtils.copy(errorStream, System.out);
+        p.waitFor();
+    }
+
     protected String getFprFromFile() throws Exception {
         String command = "openssl x509 " +
                 "-noout " +
                 "-text " +
                 "-fingerprint " +
                 "-sha256 " +
-                "-in " + Configuration.stocksHome + "/ca.cert.pem";
+                "-in " + caFilePath;
         Process p = Runtime.getRuntime().exec(command);
         String output = IOUtils.toString(p.getInputStream());
 
@@ -100,9 +148,9 @@ public class TicketHandler {
                         "-storepass %s ",
                 file,
                 Configuration.stocksHome + "/" + file + ".cert.pem",
-                CertificateManager.keystorePassword,
-                CertificateManager.keystorePath,
-                CertificateManager.keystorePassword);
+                Configuration.keystorePassword,
+                Configuration.keystorePath,
+                Configuration.keystorePassword);
         Process p = Runtime.getRuntime().exec(command);
         IOUtils.copy(p.getInputStream(), System.out);
         IOUtils.copy(p.getErrorStream(), System.out);

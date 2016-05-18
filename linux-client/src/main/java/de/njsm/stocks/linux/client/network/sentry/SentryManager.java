@@ -36,7 +36,7 @@ public class SentryManager {
     public void requestCertificate(String ticket, int id) throws Exception {
 
         // set up file
-        File csr = new File(Configuration.stocksHome + "/client.csr.pem");
+        File csr = new File(TicketHandler.csrFilePath);
         Ticket request = new Ticket();
         request.deviceId = id;
         request.ticket = ticket;
@@ -52,11 +52,11 @@ public class SentryManager {
             if (responseTicket.pemFile == null) {
                 throw new SecurityException("Server rejected ticket!");
             }
-            FileOutputStream output = new FileOutputStream(Configuration.stocksHome + "/client.cert.pem");
+            FileOutputStream output = new FileOutputStream(TicketHandler.certFilePath);
             IOUtils.write(responseTicket.pemFile.getBytes(), output);
             FileOutputStream concatStream = new FileOutputStream(Configuration.stocksHome + "/client.chain.cert.pem");
-            IOUtils.copy(new FileInputStream(Configuration.stocksHome + "/client.cert.pem"), concatStream);
-            IOUtils.copy(new FileInputStream(Configuration.stocksHome + "/intermediate.cert.pem"), concatStream);
+            IOUtils.copy(new FileInputStream(TicketHandler.certFilePath), concatStream);
+            IOUtils.copy(new FileInputStream(TicketHandler.intermediateFilePath), concatStream);
             concatStream.close();
             output.close();
         } else {
