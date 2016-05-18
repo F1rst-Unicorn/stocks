@@ -1,26 +1,26 @@
 package de.njsm.stocks.sentry.auth;
 
 import de.njsm.stocks.sentry.data.Principals;
-import org.apache.commons.io.IOUtils;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CertificateManager {
+
+    public static final String csrFormatString = "../CA/intermediate/csr/%s.csr.pem";
+    public static final String certFormatString = "../CA/intermediate/certs/%s.cert.pem";
 
     /**
      * Execute openssl command to generate new certificate
      *
      * @param userFile The userFile string, i.e. the file name without extension
-     * @return The relative path of the certificate
      * @throws IOException
      */
-    public String generateCertificate(String userFile) throws IOException {
+    public void generateCertificate(String userFile) throws IOException {
 
         String command = String.format("openssl ca " +
                         "-config ../CA/intermediate/openssl.cnf " +
@@ -28,13 +28,12 @@ public class CertificateManager {
                         "-notext " +
                         "-batch " +
                         "-md sha256 " +
-                        "-in ../CA/intermediate/csr/%s.csr.pem " +
-                        "-out ../CA/intermediate/certs/%s.cert.pem",
+                        "-in " + csrFormatString + " " +
+                        "-out " + certFormatString + " ",
                 userFile,
                 userFile);
 
         Runtime.getRuntime().exec(command);
-        return String.format("../CA/intermediate/certs/%s.cert.pem", userFile);
     }
 
     /**
@@ -42,28 +41,18 @@ public class CertificateManager {
      *
      * @param csrFile the relative filepath of the CSR to read
      * @return The parsed principals
-     * @throws IOException
+     * @throws IOException if IO goes wrong
      */
     public Principals getPrincipals(String csrFile) throws IOException {
-        String command = String.format("openssl req " +
-                        "-noout " +
-                        "-text " +
-                        "-in %s",
-                csrFile);
-
-        Process p = Runtime.getRuntime().exec(command);
-
-        String opensslOutput = IOUtils.toString(p.getInputStream());
-        p.getInputStream().close();
-
-        Pattern pattern = Pattern.compile("CN=.*\n");
-        Matcher match = pattern.matcher(opensslOutput);
-        if (match.find()){
-            String buffer = match.group(0);
-            return parseSubjectName(buffer.substring(3, buffer.length()-1));
+        PEMParser parser = new PEMParser(new FileReader(csrFile));
+        Object csrRaw = parser.readObject();
+        if (csrRaw instanceof PKCS10CertificationRequest) {
+            PKCS10CertificationRequest csr = (PKCS10CertificationRequest) parser.readObject();
+            return parseSubjectName(csr.getSubject().toString());
         } else {
-            throw new IOException("Subject name invalid");
+            throw new SecurityException("failed to cast CSR");
         }
+
     }
 
     /**

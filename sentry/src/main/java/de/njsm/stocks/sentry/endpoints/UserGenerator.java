@@ -1,5 +1,6 @@
 package de.njsm.stocks.sentry.endpoints;
 
+import de.njsm.stocks.sentry.auth.CertificateManager;
 import de.njsm.stocks.sentry.data.Ticket;
 import de.njsm.stocks.sentry.db.DatabaseHandler;
 import org.apache.commons.io.IOUtils;
@@ -34,7 +35,7 @@ public class UserGenerator {
 
             // save signing request
             String userFileName = String.format("user_%d", ticket.deviceId);
-            String csrFileName = "../CA/intermediate/csr/" + userFileName + ".csr.pem";
+            String csrFileName = String.format(CertificateManager.csrFormatString, userFileName);
             FileOutputStream output = new FileOutputStream(csrFileName);
             IOUtils.write(ticket.pemFile.getBytes(), output);
             output.close();
@@ -43,7 +44,7 @@ public class UserGenerator {
             handler.handleTicket(ticket.ticket, ticket.deviceId);
 
             // Send answer to client
-            File file = new File(String.format("../CA/intermediate/certs/" + userFileName + ".cert.pem"));
+            File file = new File(String.format(CertificateManager.certFormatString, userFileName));
             ticket.pemFile = IOUtils.toString(new FileInputStream(file));
             return ticket;
 

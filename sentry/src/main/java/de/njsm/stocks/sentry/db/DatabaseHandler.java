@@ -77,8 +77,8 @@ public class DatabaseHandler {
         Connection con = null;
         CertificateManager cm = new CertificateManager();
         String userFile = String.format("user_%d", deviceId);
-        String csrFilePath = String.format("../CA/intermediate/csr/%s.csr.pem", userFile);
-        String certFilePath = String.format("../CA/intermediate/cert/%s.cert.pem", userFile);
+        String csrFilePath = String.format(CertificateManager.csrFormatString, userFile);
+        String certFilePath = String.format(CertificateManager.certFormatString, userFile);
 
         try {
 
