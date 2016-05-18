@@ -4,6 +4,7 @@ import de.njsm.stocks.linux.client.CertificateManager;
 import de.njsm.stocks.linux.client.Configuration;
 import org.apache.commons.io.IOUtils;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +32,7 @@ public class TicketHandler {
 
         } catch (Exception e){
             c.getLog().log(Level.SEVERE, "TicketHandler: Certificate retrival failed: " + e.getMessage());
+            new File(CertificateManager.keystorePath).delete();
         }
     }
 
@@ -103,7 +105,10 @@ public class TicketHandler {
                 CertificateManager.keystorePassword,
                 CertificateManager.keystorePath,
                 CertificateManager.keystorePassword);
-        Runtime.getRuntime().exec(command);
+        Process p = Runtime.getRuntime().exec(command);
+        IOUtils.copy(p.getInputStream(), System.out);
+        IOUtils.copy(p.getErrorStream(), System.out);
+        p.waitFor();
     }
 
 }

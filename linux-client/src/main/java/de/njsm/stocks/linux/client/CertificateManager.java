@@ -1,7 +1,5 @@
 package de.njsm.stocks.linux.client;
 
-import de.njsm.stocks.linux.client.Configuration;
-import de.njsm.stocks.linux.client.InitManager;
 import de.njsm.stocks.linux.client.frontend.UIFactory;
 
 import java.io.File;

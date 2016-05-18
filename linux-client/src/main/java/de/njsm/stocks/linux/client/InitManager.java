@@ -84,7 +84,7 @@ public class InitManager {
                 cn,
                 "User",
                 "stocks",
-                "client",
+                "client_key",
                 CertificateManager.keystorePassword,
                 CertificateManager.keystorePath,
                 CertificateManager.keystorePassword);
@@ -93,10 +93,11 @@ public class InitManager {
         InputStream errorStream = p.getErrorStream();
         IOUtils.copy(resultStream, System.out);
         IOUtils.copy(errorStream, System.out);
+        p.waitFor();
 
         // generate CSR
         String getCsrCommand = String.format("keytool -certreq " +
-                "-alias client " +
+                "-alias client_key " +
                 "-file %s/client.csr.pem " +
                 "-keypass %s " +
                 "-keystore %s " +
@@ -110,6 +111,7 @@ public class InitManager {
         errorStream = p.getErrorStream();
         IOUtils.copy(resultStream, System.out);
         IOUtils.copy(errorStream, System.out);
+        p.waitFor();
 
 
     }
