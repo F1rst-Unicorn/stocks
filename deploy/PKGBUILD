@@ -1,7 +1,7 @@
 # Maintainer: aliena <dairyman@njsm.de>
 pkgname=stocks-server
 pkgver=0.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Stocks server framework"
 arch=('i686' 'x86_64')
 url="https://github.com/F1rst-Unicorn/stocks"
@@ -67,6 +67,7 @@ package() {
     mkdir -p $pkgdir/opt/stocks-jetty
     mv jetty-distribution-9.3.8.v20160314/* $pkgdir/opt/stocks-jetty
     chown -R root:root $pkgdir/opt/stocks-jetty
+    rm -rf $pkgdir/opt/stocks-jetty/demo-base
     
     mkdir -p $pkgdir/usr/lib/systemd/system/
     cp deploy/stocks-jetty.service $pkgdir/usr/lib/systemd/system/
