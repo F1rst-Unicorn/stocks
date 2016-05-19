@@ -5,8 +5,9 @@ pkgrel=1
 pkgdesc="Stocks server framework"
 arch=('i686' 'x86_64')
 url="https://github.com/F1rst-Unicorn/stocks"
-license=('proprietary')
+license=('MIT')
 depends=('jre8-openjdk'
+         'java-environment'
          'nginx'
          'openssl'
          'mariadb')
@@ -65,8 +66,12 @@ package() {
     tar xzf jetty.tar.gz
     mkdir -p $pkgdir/opt/stocks-jetty
     mv jetty-distribution-9.3.8.v20160314/* $pkgdir/opt/stocks-jetty
+    chown -R root:root $pkgdir/opt/stocks-jetty
     
     mkdir -p $pkgdir/usr/lib/systemd/system/
     cp deploy/stocks-jetty.service $pkgdir/usr/lib/systemd/system/
     cp deploy/stocks-ocsp.service $pkgdir/usr/lib/systemd/system/
+
+    mkdir -p $pkgdir/usr/share/licenses/$pkgname/
+    cp LICENSE.md $pkgdir/usr/share/licenses/$pkgname/
 }

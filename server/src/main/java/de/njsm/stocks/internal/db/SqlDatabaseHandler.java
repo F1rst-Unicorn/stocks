@@ -394,7 +394,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             while (res.next()) {
                 Update u = new Update();
                 u.table = res.getString("table_name");
-                u.lastUpdate = res.getDate("last_update");
+                u.lastUpdate = res.getTimestamp("last_update");
                 result.add(u);
             }
 
