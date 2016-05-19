@@ -1,9 +1,7 @@
 package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
-import de.njsm.stocks.linux.client.data.Update;
-import de.njsm.stocks.linux.client.data.User;
-import de.njsm.stocks.linux.client.data.UserDevice;
+import de.njsm.stocks.linux.client.data.*;
 import de.njsm.stocks.linux.client.network.server.ServerManager;
 import de.njsm.stocks.linux.client.storage.DatabaseManager;
 
@@ -40,11 +38,11 @@ public class RefreshCommand extends Command {
         } else if (tableName.equals("User_device")) {
             refreshDevices();
         } else if (tableName.equals("Food")) {
-
+            refreshFood();
         } else if (tableName.equals("Food_item")) {
-
+            refreshFoodItems();
         } else if (tableName.equals("Location")) {
-
+            refreshLocations();
         } else {
             c.getLog().log(Level.WARNING, "Trying to refresh invalid tablename: " + tableName);
         }
@@ -52,11 +50,26 @@ public class RefreshCommand extends Command {
 
     public void refreshUsers() {
         User[] serverUsers = c.getServerManager().getUsers();
-        c.getDatabaseManager().writeDevices(serverUsers);
+        c.getDatabaseManager().writeUsers(serverUsers);
     }
 
     public void refreshDevices() {
         UserDevice[] serverDevices = c.getServerManager().getDevices();
         c.getDatabaseManager().writeDevices(serverDevices);
+    }
+
+    public void refreshLocations() {
+        Location[] serverLocations = c.getServerManager().getLocations();
+        c.getDatabaseManager().writeLocations(serverLocations);
+    }
+
+    public void refreshFood() {
+        Food[] serverFood = c.getServerManager().getFood();
+        c.getDatabaseManager().writeFood(serverFood);
+    }
+
+    public void refreshFoodItems() {
+        FoodItem[] serverItems = c.getServerManager().getFoodItems();
+        c.getDatabaseManager().writeFoodItems(serverItems);
     }
 }

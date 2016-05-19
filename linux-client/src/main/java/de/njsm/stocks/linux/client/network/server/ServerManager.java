@@ -1,9 +1,7 @@
 package de.njsm.stocks.linux.client.network.server;
 
 import de.njsm.stocks.linux.client.Configuration;
-import de.njsm.stocks.linux.client.data.Update;
-import de.njsm.stocks.linux.client.data.User;
-import de.njsm.stocks.linux.client.data.UserDevice;
+import de.njsm.stocks.linux.client.data.*;
 import retrofit.*;
 
 import java.io.IOException;
@@ -57,7 +55,7 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                throw new RuntimeException("failed to retrieve updates: " + r.message());
+                throw new RuntimeException("failed to retrieve users: " + r.message());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,7 +72,58 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                throw new RuntimeException("failed to retrieve updates: " + r.message());
+                throw new RuntimeException("failed to retrieve devices: " + r.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Location[] getLocations() {
+        Call<Location[]> u = backend.getLocations();
+
+        try {
+            Response<Location[]> r = u.execute();
+
+            if (r.isSuccess()) {
+                return r.body();
+            } else {
+                throw new RuntimeException("failed to retrieve locations: " + r.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Food[] getFood() {
+        Call<Food[]> u = backend.getFood();
+
+        try {
+            Response<Food[]> r = u.execute();
+
+            if (r.isSuccess()) {
+                return r.body();
+            } else {
+                throw new RuntimeException("failed to retrieve food: " + r.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public FoodItem[] getFoodItems() {
+        Call<FoodItem[]> u = backend.getFoodItems();
+
+        try {
+            Response<FoodItem[]> r = u.execute();
+
+            if (r.isSuccess()) {
+                return r.body();
+            } else {
+                throw new RuntimeException("failed to retrieve food items: " + r.message());
             }
         } catch (IOException e) {
             e.printStackTrace();
