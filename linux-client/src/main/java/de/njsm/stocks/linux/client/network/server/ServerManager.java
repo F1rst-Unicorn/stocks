@@ -2,6 +2,8 @@ package de.njsm.stocks.linux.client.network.server;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Update;
+import de.njsm.stocks.linux.client.data.User;
+import de.njsm.stocks.linux.client.data.UserDevice;
 import retrofit.*;
 
 import java.io.IOException;
@@ -38,11 +40,42 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                throw new RuntimeException("failed to retrieve updates");
+                throw new RuntimeException("failed to retrieve updates: " + r.message());
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
+    public User[] getUsers() {
+        Call<User[]> u = backend.getUsers();
 
+        try {
+            Response<User[]> r = u.execute();
 
+            if (r.isSuccess()) {
+                return r.body();
+            } else {
+                throw new RuntimeException("failed to retrieve updates: " + r.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public UserDevice[] getDevices() {
+        Call<UserDevice[]> u = backend.getDevices();
+
+        try {
+            Response<UserDevice[]> r = u.execute();
+
+            if (r.isSuccess()) {
+                return r.body();
+            } else {
+                throw new RuntimeException("failed to retrieve updates: " + r.message());
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return null;

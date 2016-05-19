@@ -3,6 +3,7 @@ package de.njsm.stocks.linux.client;
 import com.squareup.okhttp.OkHttpClient;
 import de.njsm.stocks.linux.client.frontend.UIFactory;
 import de.njsm.stocks.linux.client.network.server.ServerManager;
+import de.njsm.stocks.linux.client.storage.DatabaseManager;
 
 import javax.net.ssl.*;
 import java.io.*;
@@ -22,7 +23,8 @@ public class Configuration {
     public static final String serverPortConfig = "de.njsm.stocks.client.serverPort";
     public static final String stocksHome = System.getProperty("user.home") + "/.stocks";
     public static final String configPath = stocksHome + "/config";
-    public static final String keystorePath = System.getProperty("user.home") + "/.stocks/keystore";
+    public static final String keystorePath = stocksHome + "/keystore";
+    public static final String dbPath = stocksHome + "/stocks.db";
     public static final String keystorePassword = System.getProperty("de.njsm.stocks.client.cert.password",
             "thisisapassword");
 
@@ -33,6 +35,7 @@ public class Configuration {
 
     protected final Logger log;
     protected ServerManager sm;
+    protected DatabaseManager dm;
 
     public Configuration () {
 
@@ -114,6 +117,17 @@ public class Configuration {
             sm = new ServerManager(this);
         }
         return sm;
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        if (!hasConfig()){
+            throw new RuntimeException("Not initialised!");
+        }
+
+        if (dm == null) {
+            dm = new DatabaseManager();
+        }
+        return dm;
     }
 
     public void setServerName(String serverName) {
