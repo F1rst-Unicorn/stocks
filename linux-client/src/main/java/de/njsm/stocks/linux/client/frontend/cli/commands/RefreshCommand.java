@@ -23,13 +23,22 @@ public class RefreshCommand extends Command {
         Update[] serverUpdates = sm.getUpdates();
         Update[] localUpdates = dm.getUpdates();
 
+        boolean upToDate = true;
+
         for (int i = 0; i < serverUpdates.length; i++){
             if (serverUpdates[i].lastUpdate.after(localUpdates[i].lastUpdate)) {
                 refreshTable(serverUpdates[i].table);
+                upToDate = false;
             }
         }
 
-        dm.writeUpdates(serverUpdates);
+        if (upToDate) {
+            System.out.println("Already up to date");
+        } else {
+            dm.writeUpdates(serverUpdates);
+        }
+
+
     }
 
     public void refreshTable(String tableName) {
@@ -49,26 +58,31 @@ public class RefreshCommand extends Command {
     }
 
     public void refreshUsers() {
+        System.out.println("Refreshing users");
         User[] serverUsers = c.getServerManager().getUsers();
         c.getDatabaseManager().writeUsers(serverUsers);
     }
 
     public void refreshDevices() {
+        System.out.println("Refreshing devices");
         UserDevice[] serverDevices = c.getServerManager().getDevices();
         c.getDatabaseManager().writeDevices(serverDevices);
     }
 
     public void refreshLocations() {
+        System.out.println("Refreshing locations");
         Location[] serverLocations = c.getServerManager().getLocations();
         c.getDatabaseManager().writeLocations(serverLocations);
     }
 
     public void refreshFood() {
+        System.out.println("Refreshing food");
         Food[] serverFood = c.getServerManager().getFood();
         c.getDatabaseManager().writeFood(serverFood);
     }
 
     public void refreshFoodItems() {
+        System.out.println("Refreshing food items");
         FoodItem[] serverItems = c.getServerManager().getFoodItems();
         c.getDatabaseManager().writeFoodItems(serverItems);
     }

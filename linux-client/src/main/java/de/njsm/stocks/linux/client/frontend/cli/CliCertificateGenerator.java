@@ -2,8 +2,6 @@ package de.njsm.stocks.linux.client.frontend.cli;
 
 import de.njsm.stocks.linux.client.frontend.CertificateGenerator;
 
-import java.util.Scanner;
-
 public class CliCertificateGenerator implements CertificateGenerator {
 
     @Override

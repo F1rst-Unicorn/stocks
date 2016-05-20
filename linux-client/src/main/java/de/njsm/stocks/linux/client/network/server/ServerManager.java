@@ -63,6 +63,20 @@ public class ServerManager {
         }
     }
 
+    public void addUser(User u) {
+        Call<Void> call = backend.addUser(u);
+
+        try {
+            Response<Void> r = call.execute();
+
+            if (!r.isSuccess()) {
+                throw new RuntimeException("failed to create user: " + r.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public UserDevice[] getDevices() {
         Call<UserDevice[]> u = backend.getDevices();
 

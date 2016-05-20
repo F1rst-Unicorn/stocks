@@ -156,6 +156,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             if (con != null) {
                 con.rollback();
             }
+            return null;
         }
         return ticket;
     }
@@ -351,7 +352,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
                 d.id = rs.getInt("ID");
                 d.name = rs.getString("name");
                 d.userId = rs.getInt("belongs_to");
-                d.lastUpdate = rs.getDate("last_poll");
+                d.lastUpdate = rs.getTimestamp("last_poll");
                 result.add(d);
             }
 

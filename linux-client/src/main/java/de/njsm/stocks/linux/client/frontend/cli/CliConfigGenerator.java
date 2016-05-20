@@ -2,8 +2,6 @@ package de.njsm.stocks.linux.client.frontend.cli;
 
 import de.njsm.stocks.linux.client.frontend.ConfigGenerator;
 
-import java.util.Scanner;
-
 public class CliConfigGenerator implements ConfigGenerator {
 
     @Override

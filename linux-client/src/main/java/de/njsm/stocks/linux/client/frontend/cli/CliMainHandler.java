@@ -5,8 +5,12 @@ import de.njsm.stocks.linux.client.frontend.MainHandler;
 import de.njsm.stocks.linux.client.frontend.cli.commands.Command;
 import de.njsm.stocks.linux.client.frontend.cli.commands.HelpCommand;
 import de.njsm.stocks.linux.client.frontend.cli.commands.RefreshCommand;
+import de.njsm.stocks.linux.client.frontend.cli.commands.UserCommand;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 
 public class CliMainHandler implements MainHandler {
 
@@ -19,6 +23,7 @@ public class CliMainHandler implements MainHandler {
         clients = new LinkedList<>();
         clients.add(new HelpCommand());
         clients.add(new RefreshCommand(c));
+        clients.add(new UserCommand(c));
     }
 
     @Override
@@ -32,6 +37,8 @@ public class CliMainHandler implements MainHandler {
 
             if (command.equals("quit")) {
                 endRequested = true;
+            } else if (command.equals("")) {
+
             } else {
                 forwardCommand(command);
             }

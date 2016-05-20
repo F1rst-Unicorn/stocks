@@ -11,22 +11,22 @@ import retrofit.http.Path;
 public interface ServerClient {
 
     @PUT("/user")
-    void addUser(@Body User u);
+    Call<Void> addUser(@Body User u);
 
     @GET("/user")
     Call<User[]> getUsers();
 
     @PUT("/user/remove")
-    void removeUser(@Body User u);
+    Call<Void> removeUser(@Body User u);
 
     @PUT("/device")
-    void addDevice(@Body UserDevice u);
+    Call<Void> addDevice(@Body UserDevice u);
 
     @GET("/device")
     Call<UserDevice[]> getDevices();
 
     @PUT("/device/remove")
-    void removeDevice(@Body UserDevice u);
+    Call<Void> removeDevice(@Body UserDevice u);
 
     @GET("/update")
     Call<Update[]> getUpdates();
@@ -35,33 +35,33 @@ public interface ServerClient {
     Call<Location[]> getLocations();
 
     @PUT("/location")
-    void addLocation(@Body Location l);
+    Call<Void> addLocation(@Body Location l);
 
     @PUT("/location/{newname}")
-    void renameLocation(@Body Location l, @Path("newname") String newName);
+    Call<Void> renameLocation(@Body Location l, @Path("newname") String newName);
 
     @PUT("/location/remove")
-    void removeLocation(@Body Location l);
+    Call<Void> removeLocation(@Body Location l);
 
     @GET("/food")
     Call<Food[]> getFood();
 
     @PUT("/food")
-    void addFood(@Body Food f);
+    Call<Void> addFood(@Body Food f);
 
     @PUT("/food/{newname}")
-    void renameFood(@Body Food f, @Path("newname") String newName);
+    Call<Void> renameFood(@Body Food f, @Path("newname") String newName);
 
     @PUT("/food/remove")
-    void removeFood(@Body Food f);
+    Call<Void> removeFood(@Body Food f);
 
     @GET("/food/fooditem")
     Call<FoodItem[]> getFoodItems();
 
     @PUT("/food/fooditem")
-    void addFoodItem(@Body FoodItem f);
+    Call<Void> addFoodItem(@Body FoodItem f);
 
     @PUT("/food/fooditem/remove")
-    void removeFoodItem(@Body FoodItem f);
+    Call<Void> removeFoodItem(@Body FoodItem f);
 
 }

@@ -61,6 +61,29 @@ public class DatabaseManager {
         }
     }
 
+    public User[] getUsers() {
+        try {
+            Connection c = getConnection();
+            String queryUsers = "SELECT * FROM User";
+
+            PreparedStatement p = c.prepareStatement(queryUsers);
+
+            ArrayList<User> result = new ArrayList<>();
+            ResultSet rs = p.executeQuery();
+            while (rs.next()) {
+                User u = new User();
+                u.name = rs.getString("name");
+                u.id = rs.getInt("ID");
+                result.add(u);
+            }
+
+            return result.toArray(new User[result.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void writeUsers(User[] u) {
         try {
             Connection c = getConnection();
