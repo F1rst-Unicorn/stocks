@@ -9,12 +9,20 @@ import java.util.logging.Level;
 @Path("/user")
 public class UserEndpoint extends Endpoint {
 
+    public static boolean isNameValid(String name) {
+        int noDollar = name.indexOf('$');
+        int noEqual  = name.indexOf('=');
+        return noDollar == -1 && noEqual == -1;
+    }
+
     @PUT
     @Consumes("application/json")
     public void addUser(User u) {
         c.getLog().log(Level.INFO, "UserEndpoint: Add user " + u.name);
         try {
-            handler.addUser(u);
+            if (isNameValid(u.name)) {
+                handler.addUser(u);
+            }
         } catch (SQLException e) {
             c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to add user: " + e.getMessage());
         }

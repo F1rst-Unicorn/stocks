@@ -5,8 +5,6 @@ import de.njsm.stocks.linux.client.data.*;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 public class DatabaseManager {
 
@@ -69,7 +67,7 @@ public class DatabaseManager {
             PreparedStatement p = c.prepareStatement(queryUsers);
 
             ResultSet rs = p.executeQuery();
-            ArrayList<User> result = getResults(rs);
+            ArrayList<User> result = getUserResult(rs);
             return result.toArray(new User[result.size()]);
 
         } catch (SQLException e) {
@@ -88,24 +86,13 @@ public class DatabaseManager {
 
 
             ResultSet rs = p.executeQuery();
-            ArrayList<User> result = getResults(rs);
+            ArrayList<User> result = getUserResult(rs);
             return result.toArray(new User[result.size()]);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public ArrayList<User> getResults(ResultSet rs) throws SQLException {
-        ArrayList<User> result = new ArrayList<>();
-        while (rs.next()) {
-            User u = new User();
-            u.name = rs.getString("name");
-            u.id = rs.getInt("ID");
-            result.add(u);
-        }
-        return result;
     }
 
     public void writeUsers(User[] u) {
@@ -157,6 +144,35 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Location[] getLocations() {
+        try {
+            Connection c = getConnection();
+            String getLocations = "SELECT * FROM Location";
+            PreparedStatement selectStmt = c.prepareStatement(getLocations);
+            ResultSet rs = selectStmt.executeQuery();
+            ArrayList<Location> result = getLocationResults(rs);
+            return result.toArray(new Location[result.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Location[] getLocations(String name) {
+        try {
+            Connection c = getConnection();
+            String getLocations = "SELECT * FROM Location WHERE name=?";
+            PreparedStatement selectStmt = c.prepareStatement(getLocations);
+            selectStmt.setString(1, name);
+            ResultSet rs = selectStmt.executeQuery();
+            ArrayList<Location> result = getLocationResults(rs);
+            return result.toArray(new Location[result.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void writeLocations(Location[] l) {
@@ -238,5 +254,27 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    protected ArrayList<User> getUserResult(ResultSet rs) throws SQLException {
+        ArrayList<User> result = new ArrayList<>();
+        while (rs.next()) {
+            User u = new User();
+            u.name = rs.getString("name");
+            u.id = rs.getInt("ID");
+            result.add(u);
+        }
+        return result;
+    }
+
+    protected ArrayList<Location> getLocationResults(ResultSet rs) throws SQLException {
+        ArrayList<Location> result = new ArrayList<>();
+        while (rs.next()) {
+            Location l = new Location();
+            l.name = rs.getString("name");
+            l.id = rs.getInt("ID");
+            result.add(l);
+        }
+        return result;
     }
 }

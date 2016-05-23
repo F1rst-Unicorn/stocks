@@ -2,10 +2,7 @@ package de.njsm.stocks.linux.client.frontend.cli;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.frontend.MainHandler;
-import de.njsm.stocks.linux.client.frontend.cli.commands.Command;
-import de.njsm.stocks.linux.client.frontend.cli.commands.HelpCommand;
-import de.njsm.stocks.linux.client.frontend.cli.commands.RefreshCommand;
-import de.njsm.stocks.linux.client.frontend.cli.commands.UserCommand;
+import de.njsm.stocks.linux.client.frontend.cli.commands.*;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -24,6 +21,7 @@ public class CliMainHandler implements MainHandler {
         clients.add(new HelpCommand());
         clients.add(new RefreshCommand(c));
         clients.add(new UserCommand(c));
+        clients.add(new LocationCommand(c));
     }
 
     @Override
@@ -58,7 +56,7 @@ public class CliMainHandler implements MainHandler {
         }
 
         if (! commandFound){
-            System.out.println("Unknown command: ");
+            System.out.println("Unknown command: " + commandList.get(0));
         }
     }
 

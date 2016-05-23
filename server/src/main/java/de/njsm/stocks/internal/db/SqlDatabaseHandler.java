@@ -40,7 +40,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
     }
 
     public void addLocation(Location location) throws SQLException {
-        String command="INSERT INTO Location (ID, name) VALUES (?, ?)";
+        String command="INSERT INTO Location (name) VALUES (?)";
 
         try (Connection con = getConnection();
              PreparedStatement sqlStmt = con.prepareStatement(command)) {

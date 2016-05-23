@@ -125,6 +125,34 @@ public class ServerManager {
         }
     }
 
+    public void addLocation(Location l) {
+        Call<Void> c = backend.addLocation(l);
+
+        try {
+            Response<Void> r = c.execute();
+
+            if (! r.isSuccess()) {
+                throw new RuntimeException("failed to add location: " + r.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeLocation(Location l) {
+        Call<Void> c = backend.removeLocation(l);
+
+        try {
+            Response<Void> r = c.execute();
+
+            if (! r.isSuccess()) {
+                throw new RuntimeException("failed to remove location: " + r.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Food[] getFood() {
         Call<Food[]> u = backend.getFood();
 
