@@ -11,6 +11,7 @@ public class LocationCommand extends Command {
 
     public LocationCommand(Configuration c) {
         command = "loc";
+        description = "Manage the locations to store food";
         this.c = c;
     }
 
@@ -20,6 +21,8 @@ public class LocationCommand extends Command {
             listLocations();
         } else if (commands.get(1).equals("list")) {
             listLocations();
+        } else if (commands.get(1).equals("help")) {
+            printHelp();
         } else if (commands.get(1).equals("add")) {
             if (commands.size() == 3){
                 addLocation(commands.get(2));
@@ -46,7 +49,13 @@ public class LocationCommand extends Command {
 
     @Override
     public void printHelp() {
-
+        String help = "location command\n" +
+                "\n" +
+                "\thelp\t\t\tThis help screen\n" +
+                "\tlist\t\t\tList the locations of the system\n" +
+                "\tadd [name]\t\tAdd a location to the system\n" +
+                "\tremove [name]\t\tRemove a location from the system\n";
+        System.out.println(help);
     }
 
     public void listLocations() {

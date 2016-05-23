@@ -11,17 +11,12 @@ import java.util.List;
 
 public class CliMainHandler implements MainHandler {
 
-    protected List<Command> clients;
+    protected CommandManager m;
     protected Configuration c;
 
     public CliMainHandler(Configuration c) {
         this.c = c;
-
-        clients = new LinkedList<>();
-        clients.add(new HelpCommand());
-        clients.add(new RefreshCommand(c));
-        clients.add(new UserCommand(c));
-        clients.add(new LocationCommand(c));
+        m = new CommandManager(c);
     }
 
     @Override
@@ -36,7 +31,7 @@ public class CliMainHandler implements MainHandler {
             if (command.equals("quit")) {
                 endRequested = true;
             } else if (command.equals("")) {
-
+                // usefully do nothing
             } else {
                 forwardCommand(command);
             }
@@ -45,17 +40,7 @@ public class CliMainHandler implements MainHandler {
 
     public void forwardCommand(String command) {
         List<String> commandList = parseCommand(command);
-        boolean commandFound = false;
-
-        for (Command c : clients) {
-            if (c.canHandle(commandList.get(0))){
-                c.handle(commandList);
-                commandFound = true;
-                break;
-            }
-        }
-
-        if (! commandFound){
+        if (! m.handleCommand(commandList)){
             System.out.println("Unknown command: " + commandList.get(0));
         }
     }

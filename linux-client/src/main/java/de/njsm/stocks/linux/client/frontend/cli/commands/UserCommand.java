@@ -10,6 +10,7 @@ public class UserCommand extends Command {
 
     public UserCommand(Configuration c) {
         command = "user";
+        description = "Manage the users of the stocks system";
         this.c = c;
     }
 
@@ -19,6 +20,8 @@ public class UserCommand extends Command {
             listUsers();
         } else if (commands.get(1).equals("list")) {
             listUsers();
+        } else if (commands.get(1).equals("help")) {
+            printHelp();
         } else if (commands.get(1).equals("add")) {
             if (commands.size() == 3){
                 addUser(commands.get(2));
@@ -38,7 +41,13 @@ public class UserCommand extends Command {
 
     @Override
     public void printHelp() {
-
+        String help = "user command\n" +
+                "\n" +
+                "\thelp\t\t\tThis help screen\n" +
+                "\tlist\t\t\tList the users of the system\n" +
+                "\tadd [name]\t\tAdd a user to the system\n" +
+                "\tremove [name]\t\tRemove a user from the system\n";
+        System.out.println(help);
     }
 
     public void listUsers() {

@@ -13,10 +13,17 @@ public class RefreshCommand extends Command {
     public RefreshCommand(Configuration c) {
         this.c = c;
         command = "refresh";
+        description = "Refresh the stocks system from the server";
     }
 
     @Override
     public void handle(List<String> commands) {
+
+        if (commands.size() == 2) {
+            printHelp();
+            return;
+        }
+
         ServerManager sm = c.getServerManager();
         DatabaseManager dm = c.getDatabaseManager();
 
@@ -41,7 +48,10 @@ public class RefreshCommand extends Command {
 
     @Override
     public void printHelp() {
-
+        String help = "refresh command\n" +
+                "\n" +
+                "\tGet the latest updates from the server";
+        System.out.println(help);
     }
 
     public void refreshTable(String tableName) {
