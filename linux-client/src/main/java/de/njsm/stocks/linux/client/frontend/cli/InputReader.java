@@ -1,16 +1,13 @@
 package de.njsm.stocks.linux.client.frontend.cli;
 
-import javassist.bytecode.ByteArray;
-import org.apache.commons.io.IOUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Scanner {
+public class InputReader {
 
     protected InputStream in;
 
-    public Scanner(InputStream input) {
+    public InputReader(InputStream input) {
         in = input;
     }
 
@@ -50,5 +47,41 @@ public class Scanner {
         return result.toString();
     }
 
+    public String nextName() {
+        String result;
+
+        result = next();
+
+        while (! isNameValid(result)) {
+            System.out.print("Name may not contain '$' or '='. Try again: ");
+            result = next();
+        }
+        return result;
+    }
+
+    public int nextInt(int defaultResult) {
+        String input;
+        int result;
+        do {
+            input = next();
+            if (input.equals("")){
+                result = defaultResult;
+            } else {
+                try {
+                    result = Integer.parseInt(input);
+                } catch (NumberFormatException e) {
+                    result = -1;
+                    System.out.print("That's not a number. Try again: ");
+                }
+            }
+        } while (result == -1);
+        return result;
+    }
+
+    public static boolean isNameValid(String name) {
+        int noDollar = name.indexOf('$');
+        int noEqual  = name.indexOf('=');
+        return noDollar == -1 && noEqual == -1;
+    }
 
 }

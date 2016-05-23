@@ -70,7 +70,7 @@ public class CliCertificateGenerator implements CertificateGenerator {
     }
 
     public String readLine() {
-        Scanner scanner = new Scanner(System.in);
+        InputReader scanner = new InputReader(System.in);
         return scanner.next();
     }
 }

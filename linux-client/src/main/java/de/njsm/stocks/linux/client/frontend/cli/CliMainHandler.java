@@ -29,7 +29,7 @@ public class CliMainHandler implements MainHandler {
     @Override
     public void run() {
         boolean endRequested = false;
-        Scanner source = new Scanner(System.in);
+        InputReader source = new InputReader(System.in);
 
         while (! endRequested) {
             System.out.print("stocks $ ");

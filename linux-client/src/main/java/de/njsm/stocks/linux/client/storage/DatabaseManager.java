@@ -68,20 +68,44 @@ public class DatabaseManager {
 
             PreparedStatement p = c.prepareStatement(queryUsers);
 
-            ArrayList<User> result = new ArrayList<>();
             ResultSet rs = p.executeQuery();
-            while (rs.next()) {
-                User u = new User();
-                u.name = rs.getString("name");
-                u.id = rs.getInt("ID");
-                result.add(u);
-            }
-
+            ArrayList<User> result = getResults(rs);
             return result.toArray(new User[result.size()]);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public User[] getUsers(String name) {
+        try {
+            Connection c = getConnection();
+            String queryUsers = "SELECT * FROM User WHERE name=?";
+
+            PreparedStatement p = c.prepareStatement(queryUsers);
+            p.setString(1, name);
+
+
+            ResultSet rs = p.executeQuery();
+            ArrayList<User> result = getResults(rs);
+            return result.toArray(new User[result.size()]);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ArrayList<User> getResults(ResultSet rs) throws SQLException {
+        ArrayList<User> result = new ArrayList<>();
+        while (rs.next()) {
+            User u = new User();
+            u.name = rs.getString("name");
+            u.id = rs.getInt("ID");
+            result.add(u);
+        }
+        return result;
     }
 
     public void writeUsers(User[] u) {
