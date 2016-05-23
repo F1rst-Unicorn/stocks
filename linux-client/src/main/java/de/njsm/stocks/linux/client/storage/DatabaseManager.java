@@ -99,13 +99,11 @@ public class DatabaseManager {
         try {
             Connection c = getConnection();
             c.setAutoCommit(false);
-            String deleteUsers = "DELETE FROM User";
-            String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
 
-            PreparedStatement deleteStmt = c.prepareStatement(deleteUsers);
+            (new DatabaseOperator(c)).clearTable("User");
+            String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
             PreparedStatement insertStmt = c.prepareStatement(insertUser);
 
-            deleteStmt.execute();
 
             for (User user : u) {
                 insertStmt.setInt(1, user.id);
@@ -114,7 +112,6 @@ public class DatabaseManager {
             }
 
             c.commit();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -124,13 +121,11 @@ public class DatabaseManager {
         try {
             Connection c = getConnection();
             c.setAutoCommit(false);
-            String deleteDevices = "DELETE FROM User_device";
+
+            (new DatabaseOperator(c)).clearTable("User_device");
             String insertDevices = "INSERT INTO User_device (`ID`, name, belongs_to) VALUES (?,?,?)";
 
-            PreparedStatement deleteStmt = c.prepareStatement(deleteDevices);
             PreparedStatement insertStmt = c.prepareStatement(insertDevices);
-
-            deleteStmt.execute();
 
             for (UserDevice dev : u) {
                 insertStmt.setInt(1, dev.id);
@@ -140,7 +135,6 @@ public class DatabaseManager {
             }
 
             c.commit();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -179,13 +173,10 @@ public class DatabaseManager {
         try {
             Connection c = getConnection();
             c.setAutoCommit(false);
-            String deleteLocations = "DELETE FROM Location";
+            (new DatabaseOperator(c)).clearTable("Location");
             String insertLocations = "INSERT INTO Location (`ID`, name) VALUES (?,?)";
 
-            PreparedStatement deleteStmt = c.prepareStatement(deleteLocations);
             PreparedStatement insertStmt = c.prepareStatement(insertLocations);
-
-            deleteStmt.execute();
 
             for (Location loc : l) {
                 insertStmt.setInt(1, loc.id);
@@ -194,7 +185,6 @@ public class DatabaseManager {
             }
 
             c.commit();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -204,13 +194,10 @@ public class DatabaseManager {
         try {
             Connection c = getConnection();
             c.setAutoCommit(false);
-            String deleteFood = "DELETE FROM Food";
+            (new DatabaseOperator(c)).clearTable("Food");
             String insertFood = "INSERT INTO Food (`ID`, name) VALUES (?,?)";
 
-            PreparedStatement deleteStmt = c.prepareStatement(deleteFood);
             PreparedStatement insertStmt = c.prepareStatement(insertFood);
-
-            deleteStmt.execute();
 
             for (Food food : f) {
                 insertStmt.setInt(1, food.id);
@@ -219,7 +206,6 @@ public class DatabaseManager {
             }
 
             c.commit();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -229,14 +215,11 @@ public class DatabaseManager {
         try {
             Connection c = getConnection();
             c.setAutoCommit(false);
-            String deleteFood = "DELETE FROM Food_item";
+            (new DatabaseOperator(c)).clearTable("Food_item");
             String insertFood = "INSERT INTO Food_item " +
                     "(`ID`, of_type, stored_in, registers, buys, eat_by) VALUES (?,?,?,?,?,?)";
 
-            PreparedStatement deleteStmt = c.prepareStatement(deleteFood);
             PreparedStatement insertStmt = c.prepareStatement(insertFood);
-
-            deleteStmt.execute();
 
             for (FoodItem food : f) {
                 java.sql.Timestamp sqlDate = new java.sql.Timestamp(food.eatByDate.getTime());
@@ -276,5 +259,76 @@ public class DatabaseManager {
             result.add(l);
         }
         return result;
+    }
+
+    public void writeAll(User[] users,
+                         UserDevice[] devices,
+                         Location[] locations,
+                         Food[] foods,
+                         FoodItem[] items) {
+        try {
+            Connection c = getConnection();
+            c.setAutoCommit(false);
+            DatabaseOperator op = new DatabaseOperator(c);
+
+            String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
+            String insertDevice = "INSERT INTO User_device (`ID`, name, belongs_to) VALUES (?,?,?)";
+            String insertLocation = "INSERT INTO Location (`ID`, name) VALUES (?,?)";
+            String insertFood = "INSERT INTO User (`ID`, name) VALUES (?,?)";
+            String insertItem = "INSERT INTO Food_item " +
+                    "(`ID`, of_type, stored_in, registers, buys, eat_by) VALUES (?,?,?,?,?,?)";
+
+            PreparedStatement insertStmt = c.prepareStatement(insertUser);
+
+            op.clearTable("User");
+            op.clearTable("User_device");
+            op.clearTable("Location");
+            op.clearTable("Food");
+            op.clearTable("FoodItem");
+
+            for (User user : users) {
+                insertStmt.setInt(1, user.id);
+                insertStmt.setString(2, user.name);
+                insertStmt.execute();
+            }
+
+            insertStmt = c.prepareStatement(insertDevice);
+            for (UserDevice dev : devices) {
+                insertStmt.setInt(1, dev.id);
+                insertStmt.setString(2, dev.name);
+                insertStmt.setInt(3, dev.userId);
+                insertStmt.execute();
+            }
+
+            insertStmt = c.prepareStatement(insertLocation);
+            for (Location loc : locations) {
+                insertStmt.setInt(1, loc.id);
+                insertStmt.setString(2, loc.name);
+                insertStmt.execute();
+            }
+
+            insertStmt = c.prepareStatement(insertFood);
+            for (Food food : foods) {
+                insertStmt.setInt(1, food.id);
+                insertStmt.setString(2, food.name);
+                insertStmt.execute();
+            }
+
+            insertStmt = c.prepareStatement(insertItem);
+            for (FoodItem food : items) {
+                java.sql.Timestamp sqlDate = new java.sql.Timestamp(food.eatByDate.getTime());
+                insertStmt.setInt(1, food.id);
+                insertStmt.setInt(2, food.ofType);
+                insertStmt.setInt(3, food.storedIn);
+                insertStmt.setInt(4, food.registers);
+                insertStmt.setInt(5, food.buys);
+                insertStmt.setTimestamp(6, sqlDate);
+                insertStmt.execute();
+            }
+
+            c.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

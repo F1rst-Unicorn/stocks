@@ -37,7 +37,10 @@ public class RefreshCommand extends Command {
         } else {
             dm.writeUpdates(serverUpdates);
         }
+    }
 
+    @Override
+    public void printHelp() {
 
     }
 
@@ -86,4 +89,18 @@ public class RefreshCommand extends Command {
         FoodItem[] serverItems = c.getServerManager().getFoodItems();
         c.getDatabaseManager().writeFoodItems(serverItems);
     }
+
+    public void refreshAll() {
+        User[] serverUsers = c.getServerManager().getUsers();
+        UserDevice[] serverDevices = c.getServerManager().getDevices();
+        Location[] serverLocations = c.getServerManager().getLocations();
+        Food[] serverFood = c.getServerManager().getFood();
+        FoodItem[] serverItems = c.getServerManager().getFoodItems();
+        c.getDatabaseManager().writeAll(serverUsers,
+                serverDevices,
+                serverLocations,
+                serverFood,
+                serverItems);
+    }
+
 }

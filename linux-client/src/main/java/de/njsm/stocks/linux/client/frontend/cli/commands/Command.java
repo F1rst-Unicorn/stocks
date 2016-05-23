@@ -11,6 +11,8 @@ public abstract class Command {
 
     public abstract void handle(List<String> commands);
 
+    public abstract void printHelp();
+
     public boolean canHandle(String command) {
         return this.command.equals(command);
     }

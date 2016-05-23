@@ -12,7 +12,16 @@ public class HelpCommand extends Command {
     public void handle(List<String> commands) {
         if (commands.size() == 1){
             printGeneralHelp();
+        } else if (commands.size() == 2) {
+            printCommandHelp(commands.get(1));
+        } else {
+            System.out.println("Too many arguments!");
         }
+    }
+
+    @Override
+    public void printHelp() {
+        printGeneralHelp();
     }
 
     public void printGeneralHelp() {
@@ -24,5 +33,9 @@ public class HelpCommand extends Command {
                 "\tloc\t\t\t\tCommands regarding locations\n";
 
         System.out.println(help);
+    }
+
+    public void printCommandHelp(String command) {
+
     }
 }

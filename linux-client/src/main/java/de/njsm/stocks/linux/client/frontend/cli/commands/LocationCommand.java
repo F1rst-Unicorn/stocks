@@ -34,10 +34,19 @@ public class LocationCommand extends Command {
             }
 
         } else if (commands.get(1).equals("rename")) {
-
+            if (commands.size() == 4) {
+                renameLocation(commands.get(2), commands.get(3));
+            } else {
+                renameLocation();
+            }
         } else {
             System.out.println("Unknown command: " + commands.get(1));
         }
+    }
+
+    @Override
+    public void printHelp() {
+
     }
 
     public void listLocations() {
@@ -77,30 +86,56 @@ public class LocationCommand extends Command {
     }
 
     public void removeLocation(String name) {
-        InputReader scanner = new InputReader(System.in);
         Location[] l = c.getDatabaseManager().getLocations(name);
-        int id;
+        int id = resolveLoc(l, name);
+
+        for (Location loc : l) {
+            if (loc.id == id){
+                c.getServerManager().removeLocation(loc);
+                (new RefreshCommand(c)).refreshLocations();
+            }
+        }
+    }
+
+    public void renameLocation() {
+        InputReader scanner = new InputReader(System.in);
+        System.out.print("Rename a location\nName: ");
+        String name = scanner.next();
+        System.out.print("New name: ");
+        String newName = scanner.next();
+        renameLocation(name, newName);
+    }
+
+    public void renameLocation(String name, String newName) {
+        Location[] l = c.getDatabaseManager().getLocations(name);
+        int id = resolveLoc(l, name);
+
+        for (Location loc : l) {
+            if (loc.id == id){
+                c.getServerManager().renameLocation(loc, newName);
+                (new RefreshCommand(c)).refreshLocations();
+            }
+        }
+
+    }
+
+    protected int resolveLoc(Location[] l, String name) {
+        InputReader scanner = new InputReader(System.in);
+        int result;
 
         if (l.length == 1) {
-            id = l[0].id;
+            result = l[0].id;
         } else if (l.length == 0) {
             System.out.println("No such location found: " + name);
-            return;
+            return -1;
         } else {
             System.out.println("Several locations found");
             for (Location loc : l) {
                 System.out.println("\t" + loc.id + ": " + loc.name);
             }
             System.out.print("Choose one (default " + l[0].id + "): ");
-            id = scanner.nextInt(l[0].id);
+            result = scanner.nextInt(l[0].id);
         }
-
-        for (Location loc : l) {
-            if (loc.id == id){
-                c.getServerManager().removeLocation(loc);
-            }
-        }
-
-        (new RefreshCommand(c)).refreshLocations();
+        return result;
     }
 }

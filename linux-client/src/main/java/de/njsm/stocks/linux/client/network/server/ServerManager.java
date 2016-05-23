@@ -153,6 +153,20 @@ public class ServerManager {
         }
     }
 
+    public void renameLocation(Location l, String newName) {
+        Call<Void> c = backend.renameLocation(l, newName);
+
+        try {
+            Response<Void> r = c.execute();
+
+            if (!r.isSuccess()) {
+                throw new RuntimeException("failed to rename location: " + r.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Food[] getFood() {
         Call<Food[]> u = backend.getFood();
 

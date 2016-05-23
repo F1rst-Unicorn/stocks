@@ -36,6 +36,11 @@ public class UserCommand extends Command {
         }
     }
 
+    @Override
+    public void printHelp() {
+
+    }
+
     public void listUsers() {
         User[] u = c.getDatabaseManager().getUsers();
         System.out.println("Current users: ");
