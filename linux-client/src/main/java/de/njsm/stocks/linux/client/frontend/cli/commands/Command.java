@@ -12,7 +12,9 @@ public abstract class Command {
 
     public abstract void handle(List<String> commands);
 
-    public abstract void printHelp();
+    public void printHelp() {
+        System.out.println("No help page found...");
+    }
 
     public boolean canHandle(String command) {
         return this.command.equals(command);

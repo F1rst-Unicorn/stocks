@@ -7,41 +7,49 @@ import java.util.List;
 
 public class CommandManager {
 
-    ArrayList<Command> commandHandler;
+    protected List<Command> commandHandler;
+    protected String prefix;
 
-    public CommandManager(Configuration c) {
-        commandHandler = new ArrayList<>();
-        commandHandler.add(new RefreshCommand(c));
-        commandHandler.add(new UserCommand(c));
-        commandHandler.add(new LocationCommand(c));
-        commandHandler.add(new DeviceCommand(c));
+    public CommandManager(List<Command> commands) {
+        this(commands, "");
     }
 
-    public boolean handleCommand(List<String> commandList){
+    public CommandManager(List<Command> commands, String prefix) {
+        commandHandler = commands;
+        this.prefix = prefix;
+    }
+
+    public void handleCommand(List<String> commandList){
         boolean commandFound = false;
 
-        if (commandList.get(0).equals("help")){
+        if (commandList.isEmpty() || commandList.get(0).equals("help")){
             printHelp();
-            return true;
         }
 
         for (Command c : commandHandler) {
             if (c.canHandle(commandList.get(0))){
-                c.handle(commandList);
+                commandList.remove(0);
+                if (commandList.get(0).equals("help")) {
+                    c.printHelp();
+                } else {
+                    c.handle(commandList);
+                }
                 commandFound = true;
                 break;
             }
         }
-        return commandFound;
+
+        if (! commandFound){
+            System.out.println("Unknown command: " + commandList.get(0));
+        }
     }
 
     public void printHelp() {
-        System.out.println("Stocks linux CLI client");
         System.out.println("Possible commands:");
 
         for (Command c : commandHandler){
-            System.out.println("\t" + c.toString());
+            System.out.println("\t" + prefix + " " + c.toString());
         }
-        System.out.println("\n\tType '<command> help' for specific help to that command");
+        System.out.println("Type '<command> help' for specific help to that command");
     }
 }

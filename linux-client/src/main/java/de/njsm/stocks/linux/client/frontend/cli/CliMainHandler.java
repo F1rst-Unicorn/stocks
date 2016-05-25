@@ -4,6 +4,7 @@ import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.frontend.MainHandler;
 import de.njsm.stocks.linux.client.frontend.cli.commands.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +17,14 @@ public class CliMainHandler implements MainHandler {
 
     public CliMainHandler(Configuration c) {
         this.c = c;
-        m = new CommandManager(c);
+
+        ArrayList<Command> commandHandler = new ArrayList<>();
+        commandHandler.add(new RefreshCommand(c));
+        commandHandler.add(new UserCommand(c));
+        commandHandler.add(new LocationCommand(c));
+        commandHandler.add(new DeviceCommand(c));
+
+        m = new CommandManager(commandHandler);
     }
 
     @Override
@@ -40,13 +48,15 @@ public class CliMainHandler implements MainHandler {
 
     public void forwardCommand(String command) {
         List<String> commandList = parseCommand(command);
-        if (! m.handleCommand(commandList)){
-            System.out.println("Unknown command: " + commandList.get(0));
-        }
+        m.handleCommand(commandList);
     }
 
     public List<String> parseCommand(String command) {
         String[] commands = command.split(" ");
-        return Arrays.asList(commands);
+        LinkedList<String> result = new LinkedList<>();
+        for (String s : commands) {
+            result.add(s);
+        }
+        return result;
     }
 }
