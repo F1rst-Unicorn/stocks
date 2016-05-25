@@ -14,6 +14,7 @@ public class CommandManager {
         commandHandler.add(new RefreshCommand(c));
         commandHandler.add(new UserCommand(c));
         commandHandler.add(new LocationCommand(c));
+        commandHandler.add(new DeviceCommand(c));
     }
 
     public boolean handleCommand(List<String> commandList){

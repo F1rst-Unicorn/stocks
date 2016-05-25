@@ -14,7 +14,7 @@ public interface DatabaseHandler {
     void addUser(User u) throws SQLException;
     void removeUser(int id)  throws SQLException;
 
-    String addDevice(UserDevice d) throws SQLException;
+    Ticket addDevice(UserDevice d) throws SQLException;
     void removeDevice(int id)  throws SQLException;
 
     void addFood(Principals c, Food food) throws SQLException;

@@ -36,14 +36,11 @@ public class InputReader {
                     result.append(new String(buffer));
                 }
 
-
             } while (bytesRead != -1);
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return "";
         }
-
-
         return result.toString();
     }
 
@@ -76,6 +73,27 @@ public class InputReader {
             }
         } while (result == -1);
         return result;
+    }
+
+    public int nextInt() {
+        String input;
+        int result;
+        do {
+            input = next();
+            try {
+                result = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                result = -1;
+                System.out.print("That's not a number. Try again: ");
+            }
+
+        } while (result == -1);
+        return result;
+    }
+
+    public boolean getYesNo() {
+        String input = next();
+        return input.equals("y");
     }
 
     public static boolean isNameValid(String name) {

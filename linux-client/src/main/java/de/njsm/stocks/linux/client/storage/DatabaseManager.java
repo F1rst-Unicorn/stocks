@@ -2,6 +2,7 @@ package de.njsm.stocks.linux.client.storage;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.*;
+import de.njsm.stocks.linux.client.data.view.UserDeviceView;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -84,7 +85,6 @@ public class DatabaseManager {
             PreparedStatement p = c.prepareStatement(queryUsers);
             p.setString(1, name);
 
-
             ResultSet rs = p.executeQuery();
             ArrayList<User> result = getUserResult(rs);
             return result.toArray(new User[result.size()]);
@@ -103,7 +103,6 @@ public class DatabaseManager {
             (new DatabaseOperator(c)).clearTable("User");
             String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
             PreparedStatement insertStmt = c.prepareStatement(insertUser);
-
 
             for (User user : u) {
                 insertStmt.setInt(1, user.id);
@@ -138,6 +137,43 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public UserDeviceView[] getDevices() {
+        try {
+            Connection c = getConnection();
+            String queryDevices = "SELECT d.id, d.name, u.name as belongs_to " +
+                    "FROM User_device d, User u " +
+                    "WHERE d.belongs_to=u.ID";
+
+            PreparedStatement p = c.prepareStatement(queryDevices);
+
+            ResultSet rs = p.executeQuery();
+            ArrayList<UserDeviceView> result = getDeviceResults(rs);
+            return result.toArray(new UserDeviceView[result.size()]);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public UserDeviceView[] getDevices(String name) {
+        try {
+            Connection c = getConnection();
+            String queryDevices = "SELECT * FROM User_device WHERE name=?";
+
+            PreparedStatement p = c.prepareStatement(queryDevices);
+            p.setString(1, name);
+
+            ResultSet rs = p.executeQuery();
+            ArrayList<UserDeviceView> result = getDeviceResults(rs);
+            return result.toArray(new UserDeviceView[result.size()]);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Location[] getLocations() {
@@ -239,28 +275,6 @@ public class DatabaseManager {
         }
     }
 
-    protected ArrayList<User> getUserResult(ResultSet rs) throws SQLException {
-        ArrayList<User> result = new ArrayList<>();
-        while (rs.next()) {
-            User u = new User();
-            u.name = rs.getString("name");
-            u.id = rs.getInt("ID");
-            result.add(u);
-        }
-        return result;
-    }
-
-    protected ArrayList<Location> getLocationResults(ResultSet rs) throws SQLException {
-        ArrayList<Location> result = new ArrayList<>();
-        while (rs.next()) {
-            Location l = new Location();
-            l.name = rs.getString("name");
-            l.id = rs.getInt("ID");
-            result.add(l);
-        }
-        return result;
-    }
-
     public void writeAll(User[] users,
                          UserDevice[] devices,
                          Location[] locations,
@@ -330,5 +344,39 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    protected ArrayList<User> getUserResult(ResultSet rs) throws SQLException {
+        ArrayList<User> result = new ArrayList<>();
+        while (rs.next()) {
+            User u = new User();
+            u.name = rs.getString("name");
+            u.id = rs.getInt("ID");
+            result.add(u);
+        }
+        return result;
+    }
+
+    protected ArrayList<Location> getLocationResults(ResultSet rs) throws SQLException {
+        ArrayList<Location> result = new ArrayList<>();
+        while (rs.next()) {
+            Location l = new Location();
+            l.name = rs.getString("name");
+            l.id = rs.getInt("ID");
+            result.add(l);
+        }
+        return result;
+    }
+
+    protected ArrayList<UserDeviceView> getDeviceResults(ResultSet rs) throws SQLException {
+        ArrayList<UserDeviceView> result = new ArrayList<>();
+        while (rs.next()) {
+            UserDeviceView d = new UserDeviceView();
+            d.name = rs.getString("name");
+            d.id = rs.getInt("ID");
+            d.user = rs.getString("belongs_to");
+            result.add(d);
+        }
+        return result;
     }
 }

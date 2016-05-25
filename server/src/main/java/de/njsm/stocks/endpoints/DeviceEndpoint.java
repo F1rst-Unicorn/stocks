@@ -1,5 +1,6 @@
 package de.njsm.stocks.endpoints;
 
+import de.njsm.stocks.data.Ticket;
 import de.njsm.stocks.data.UserDevice;
 
 import javax.ws.rs.*;
@@ -14,13 +15,13 @@ public class DeviceEndpoint extends Endpoint {
     @PUT
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public String addDevice(UserDevice d) {
+    public Ticket addDevice(UserDevice d) {
         c.getLog().log(Level.INFO, "DeviceEndpoint: Add device " + d.name);
         try {
             return handler.addDevice(d);
         } catch (SQLException e) {
             c.getLog().log(Level.SEVERE, "DeviceEndpoint: Failed to add devices " + e.getMessage());
-            return "";
+            return new Ticket();
         }
     }
 

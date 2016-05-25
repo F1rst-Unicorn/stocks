@@ -36,7 +36,7 @@ build() {
     cd ..
     cp sentry/target/sentry-$pkgver.war root/jetty-base/wars/sentry.war
                         
-    wget -4 -O jetty.tar.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.8.v20160314.tar.gz&r=1"
+    wget -4 -O jetty.tar.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.9.v20160517.tar.gz&r=1"
 }
 
 package() {
@@ -65,7 +65,7 @@ package() {
     
     tar xzf jetty.tar.gz
     mkdir -p $pkgdir/opt/stocks-jetty
-    mv jetty-distribution-9.3.8.v20160314/* $pkgdir/opt/stocks-jetty
+    mv jetty-distribution-*/* $pkgdir/opt/stocks-jetty
     chown -R root:root $pkgdir/opt/stocks-jetty
     rm -rf $pkgdir/opt/stocks-jetty/demo-base
     

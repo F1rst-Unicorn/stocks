@@ -38,7 +38,6 @@ public class InitManager {
             c.setCaPort(ports[0]);
             c.setTicketPort(ports[1]);
             c.setServerPort(ports[2]);
-            c.saveConfig();
 
         } catch (IOException e) {
             c.getLog().log(Level.SEVERE, "InitManager: Failed to write config: " + e.getMessage());
@@ -58,8 +57,16 @@ public class InitManager {
 
             handler.generateKey(username, deviceName, ids);
             handler.generateCsr();
-            handler.verifyServerCa(source.getCaFingerprint());
+            String fingerprint = source.getCaFingerprint();
+            handler.verifyServerCa(fingerprint);
             handler.handleTicket(source.getTicket(), ids[1]);
+
+            c.setUsername(username);
+            c.setDeviceName(deviceName);
+            c.setUserId(ids[0]);
+            c.setDeviceId(ids[1]);
+            c.setFingerprint(fingerprint);
+            c.saveConfig();
 
         } catch (Exception e) {
             c.getLog().log(Level.SEVERE, "InitManager: Failed to setup keystore: " + e.getMessage());

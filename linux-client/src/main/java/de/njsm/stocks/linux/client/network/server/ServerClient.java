@@ -20,7 +20,7 @@ public interface ServerClient {
     Call<Void> removeUser(@Body User u);
 
     @PUT("/device")
-    Call<Void> addDevice(@Body UserDevice u);
+    Call<Ticket> addDevice(@Body UserDevice u);
 
     @GET("/device")
     Call<UserDevice[]> getDevices();

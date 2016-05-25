@@ -21,6 +21,12 @@ public class Configuration {
     public static final String caPortConfig = "de.njsm.stocks.client.caPort";
     public static final String ticketPortConfig = "de.njsm.stocks.client.ticketPort";
     public static final String serverPortConfig = "de.njsm.stocks.client.serverPort";
+    public static final String userNameConfig = "de.njsm.stocks.client.username";
+    public static final String deviceNameConfig = "de.njsm.stocks.client.devicename";
+    public static final String userIdConfig = "de.njsm.stocks.client.userId";
+    public static final String deviceIdConfig = "de.njsm.stocks.client.deviceId";
+    public static final String fingerprintConfig = "de.njsm.stocks.client.fingerprint";
+
     public static final String stocksHome = System.getProperty("user.home") + "/.stocks";
     public static final String configPath = stocksHome + "/config";
     public static final String keystorePath = stocksHome + "/keystore";
@@ -32,6 +38,12 @@ public class Configuration {
     protected int caPort;
     protected int ticketPort;
     protected int serverPort;
+
+    protected String username;
+    protected String deviceName;
+    protected int userId;
+    protected int deviceId;
+    protected String fingerprint;
 
     protected final Logger log;
     protected ServerManager sm;
@@ -81,6 +93,12 @@ public class Configuration {
                 ticketPort = Integer.parseInt(p.getProperty(ticketPortConfig));
                 serverPort = Integer.parseInt(p.getProperty(serverPortConfig));
 
+                username = p.getProperty(userNameConfig);
+                userId = Integer.parseInt(p.getProperty(userIdConfig));
+                deviceName = p.getProperty(deviceNameConfig);
+                deviceId = Integer.parseInt(p.getProperty(deviceIdConfig));
+                fingerprint = p.getProperty(fingerprintConfig);
+
             } catch (FileNotFoundException e) {
                 getLog().log(Level.SEVERE, "Configuration: Bug in hasConfig(): " + e.getMessage());
             } catch (IOException e) {
@@ -97,10 +115,15 @@ public class Configuration {
         try {
             Properties p = new Properties();
             BufferedWriter config = new BufferedWriter(new FileWriter(configPath));
-            p.setProperty(Configuration.serverNameConfig, serverName);
-            p.setProperty(Configuration.caPortConfig, String.valueOf(caPort));
-            p.setProperty(Configuration.ticketPortConfig, String.valueOf(ticketPort));
-            p.setProperty(Configuration.serverPortConfig, String.valueOf(serverPort));
+            p.setProperty(serverNameConfig, serverName);
+            p.setProperty(caPortConfig, String.valueOf(caPort));
+            p.setProperty(ticketPortConfig, String.valueOf(ticketPort));
+            p.setProperty(serverPortConfig, String.valueOf(serverPort));
+            p.setProperty(userNameConfig, username);
+            p.setProperty(deviceNameConfig, deviceName);
+            p.setProperty(userIdConfig, String.valueOf(userId));
+            p.setProperty(deviceIdConfig, String.valueOf(deviceId));
+            p.setProperty(fingerprintConfig, fingerprint);
             p.store(config, "");
             config.close();
         } catch (IOException e){
@@ -146,6 +169,26 @@ public class Configuration {
         this.serverPort = serverPort;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public void setDeviceId(int deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public void setFingerprint(String fingerprint) {
+        this.fingerprint = fingerprint;
+    }
+
     public String getServerName() {
         return serverName;
     }
@@ -160,6 +203,26 @@ public class Configuration {
 
     public int getServerPort() {
         return serverPort;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getDeviceId() {
+        return deviceId;
+    }
+
+    public String getFingerprint() {
+        return fingerprint;
     }
 
     public Logger getLog() {
@@ -191,7 +254,6 @@ public class Configuration {
                         return true;
                     }
                 });
-
 
     }
 }

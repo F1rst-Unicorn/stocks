@@ -13,9 +13,8 @@ public class DatabaseOperator {
     }
 
     public void clearTable(String name) throws SQLException {
-        String sqlString = "DELETE FROM ?";
+        String sqlString = "DELETE FROM " + name;
         PreparedStatement s = c.prepareStatement(sqlString);
-        s.setString(1, name);
         s.execute();
     }
 }

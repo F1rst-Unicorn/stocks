@@ -129,11 +129,13 @@ public class SqlDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public String addDevice(UserDevice d) throws SQLException {
+    public Ticket addDevice(UserDevice d) throws SQLException {
 
         String addDevice = "INSERT INTO User_device (name, belongs_to) VALUES (?,?)";
-        String addTicket = "INSERT INTO Ticket (ticket, belongs_device) VALUES (?,LAST_INSERT_ID())";
-        String ticket = generateTicket();
+        String addTicket = "INSERT INTO Ticket (ticket, belongs_device, created_on) VALUES (?,LAST_INSERT_ID(), NOW())";
+        Ticket result = new Ticket();
+        result.ticket = generateTicket();
+        result.deviceId = d.id;
         Connection con = null;
 
         try {
@@ -147,8 +149,8 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             sqlAddDevice.setInt(2, d.userId);
             sqlAddDevice.execute();
 
-            sqlAddTicket.setString(1, ticket);
-            sqlAddDevice.execute();
+            sqlAddTicket.setString(1, result.ticket);
+            sqlAddTicket.execute();
             con.commit();
 
         } catch (SQLException e) {
@@ -158,7 +160,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             }
             return null;
         }
-        return ticket;
+        return result;
     }
 
     public void removeDevice(int id) throws SQLException {

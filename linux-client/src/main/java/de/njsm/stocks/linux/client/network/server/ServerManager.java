@@ -42,7 +42,7 @@ public class ServerManager {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return new Update[0];
         }
     }
 
@@ -105,6 +105,37 @@ public class ServerManager {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public Ticket addDevice(UserDevice d) {
+        Call<Ticket> call = backend.addDevice(d);
+
+        try {
+            Response<Ticket> r = call.execute();
+
+            if (!r.isSuccess()) {
+                throw new RuntimeException("failed to create device: " + r.message());
+            } else {
+                return r.body();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new Ticket();
+    }
+
+    public void removeDevice(UserDevice d) {
+        Call<Void> call = backend.removeDevice(d);
+
+        try {
+            Response<Void> r = call.execute();
+
+            if (!r.isSuccess()) {
+                throw new RuntimeException("failed to remove device: " + r.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

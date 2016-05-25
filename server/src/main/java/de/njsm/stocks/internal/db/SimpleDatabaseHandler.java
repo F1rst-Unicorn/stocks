@@ -33,7 +33,7 @@ public class SimpleDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public String addDevice(UserDevice d) throws SQLException {
+    public Ticket addDevice(UserDevice d) throws SQLException {
         return null;
     }
 

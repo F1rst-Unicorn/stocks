@@ -44,25 +44,14 @@ public class CliCertificateGenerator implements CertificateGenerator {
 
     @Override
     public int[] getUserIds() {
+        InputReader scanner = new InputReader(System.in);
         String format = "Please give the Id for the %s: ";
         String[] args = {"user", "user's device"};
         int[] result = new int[2];
-        int id = -1;
-        boolean success;
 
         for (int i = 0; i < result.length; i++) {
             System.out.print(String.format(format, args[i]));
-            success = false;
-            while (!success) {
-                try {
-                    String value = readLine();
-                    id = Integer.parseInt(value);
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid number: " + e.getMessage());
-                    continue;
-                }
-                success = true;
-            }
+            int id = scanner.nextInt();
             result[i] = id;
         }
 
