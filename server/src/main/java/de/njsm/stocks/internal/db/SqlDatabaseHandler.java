@@ -165,32 +165,21 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
     public void removeDevice(int id) throws SQLException {
 
-
-        String query = "SELECT certificate_no FROM User_device WHERE ID=?";
         String command="DELETE FROM User_device WHERE ID=?";
         Connection con = null;
-        int certId = -1;
 
         try {
 
             con = getConnection();
-            PreparedStatement sqlQuery = con.prepareStatement(query);
             PreparedStatement sqlStmt=con.prepareStatement(command);
-
             con.setAutoCommit(false);
-            // revoke device
-            sqlQuery.setInt(1, id);
-            ResultSet res = sqlQuery.executeQuery();
-            while (res.next()){
-                certId = res.getInt("certificate_no");
-            }
 
             sqlStmt.setInt(1, id);
             sqlStmt.execute();
 
             con.commit();
 
-            c.getCertAdmin().revokeCertificate(certId);
+            c.getCertAdmin().revokeCertificate(id);
 
         } catch (SQLException e){
             c.getLog().log(Level.SEVERE, "Error deleting devices: " + e.getMessage());

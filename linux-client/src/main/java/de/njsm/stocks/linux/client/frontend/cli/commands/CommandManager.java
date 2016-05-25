@@ -29,7 +29,7 @@ public class CommandManager {
         for (Command c : commandHandler) {
             if (c.canHandle(commandList.get(0))){
                 commandList.remove(0);
-                if (commandList.get(0).equals("help")) {
+                if (!commandList.isEmpty() && commandList.get(0).equals("help")) {
                     c.printHelp();
                 } else {
                     c.handle(commandList);
@@ -45,7 +45,11 @@ public class CommandManager {
     }
 
     public void printHelp() {
-        System.out.println("Possible commands:");
+        if (prefix.equals("")){
+            System.out.println("Possible commands for :");
+        } else {
+            System.out.println("Possible commands for " + prefix + ":");
+        }
 
         for (Command c : commandHandler){
             System.out.println("\t" + prefix + " " + c.toString());
