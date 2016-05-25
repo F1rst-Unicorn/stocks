@@ -41,7 +41,7 @@ public class ServerManager {
                 throw new RuntimeException("failed to retrieve updates: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            error(e);
             return new Update[0];
         }
     }
@@ -58,8 +58,8 @@ public class ServerManager {
                 throw new RuntimeException("failed to retrieve users: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            error(e);
+            return new User[0];
         }
     }
 
@@ -73,7 +73,7 @@ public class ServerManager {
                 throw new RuntimeException("failed to create user: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            error(e);
         }
     }
 
@@ -87,7 +87,7 @@ public class ServerManager {
                 throw new RuntimeException("failed to remove user: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            error(e);
         }
     }
 
@@ -103,8 +103,8 @@ public class ServerManager {
                 throw new RuntimeException("failed to retrieve devices: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            error(e);
+            return new UserDevice[0];
         }
     }
 
@@ -120,7 +120,7 @@ public class ServerManager {
                 return r.body();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            error(e);
         }
         return new Ticket();
     }
@@ -135,7 +135,7 @@ public class ServerManager {
                 throw new RuntimeException("failed to remove device: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            error(e);
         }
     }
 
@@ -151,8 +151,8 @@ public class ServerManager {
                 throw new RuntimeException("failed to retrieve locations: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            error(e);
+            return new Location[0];
         }
     }
 
@@ -166,7 +166,7 @@ public class ServerManager {
                 throw new RuntimeException("failed to add location: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            error(e);
         }
     }
 
@@ -180,7 +180,7 @@ public class ServerManager {
                 throw new RuntimeException("failed to remove location: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            error(e);
         }
     }
 
@@ -194,7 +194,7 @@ public class ServerManager {
                 throw new RuntimeException("failed to rename location: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            error(e);
         }
     }
 
@@ -210,8 +210,8 @@ public class ServerManager {
                 throw new RuntimeException("failed to retrieve food: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            error(e);
+            return new Food[0];
         }
     }
 
@@ -227,9 +227,13 @@ public class ServerManager {
                 throw new RuntimeException("failed to retrieve food items: " + r.message());
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            error(e);
+            return new FoodItem[0];
         }
+    }
+
+    protected void error(IOException e) {
+        System.out.println("No connection to server: " + e.getMessage());
     }
 
 }
