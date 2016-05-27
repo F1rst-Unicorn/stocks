@@ -55,4 +55,18 @@ public class Principals {
     public String toString() {
         return username + "$" + uid + "$" + deviceName + "$" + did;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (! (obj instanceof Principals)) {
+            return false;
+        } else {
+            Principals other = (Principals) obj;
+
+            return uid == other.uid &&
+                    did == other.did &&
+                    username.equals(other.username) &&
+                    deviceName.equals(other.deviceName);
+        }
+    }
 }

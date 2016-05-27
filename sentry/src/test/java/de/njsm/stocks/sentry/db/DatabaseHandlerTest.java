@@ -1,7 +1,5 @@
 package de.njsm.stocks.sentry.db;
 
-import org.junit.Test;
-
 public class DatabaseHandlerTest {
 
 

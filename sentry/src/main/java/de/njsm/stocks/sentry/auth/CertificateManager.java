@@ -66,22 +66,13 @@ public class CertificateManager {
      *
      * @param subject A subject name
      * @return The parsed principals
-     * @throws IOException If the subject name has an invalid format
      */
-    protected Principals parseSubjectName(String subject) throws SecurityException{
+    protected Principals parseSubjectName(String subject) throws SecurityException {
         List<Integer> indexList = new LinkedList<>();
         int[] indices;
-        int last_index = 0;
-        int begin = 0;
+        int last_index;
+        int begin = subject.lastIndexOf('=');
         int i = 0;
-
-        // find last '=' sign
-        while (last_index != -1) {
-            last_index = subject.indexOf('=', last_index + 1);
-            if (last_index != -1) {
-                begin = last_index;
-            }
-        }
 
         // find indices of the $ signs
         last_index = begin;

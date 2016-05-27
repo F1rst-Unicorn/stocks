@@ -9,8 +9,18 @@ import java.sql.*;
 public class DatabaseHandler {
 
     protected String url;
+    protected int validityTime;
 
     public DatabaseHandler() {
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("mysql driver not found");
+        }
+
+        validityTime = Integer.parseInt(
+                System.getProperty("de.njsm.stocks.internal.ticketValidityTimeInMinutes", "10"));
 
         String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
         String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
@@ -41,8 +51,6 @@ public class DatabaseHandler {
      */
     public boolean isTicketValid(String ticket, int deviceId) throws SQLException {
         String query = "SELECT * FROM Ticket WHERE ticket=?";
-        int minutesValid = Integer.parseInt(
-                System.getProperty("de.njsm.stocks.internal.ticketValidityTimeInMinutes"));
 
         try (Connection con = getConnection();
              PreparedStatement sqlQuery = con.prepareStatement(query)){
@@ -61,9 +69,10 @@ public class DatabaseHandler {
             }
 
             if (result) {
-                java.util.Date valid_till_date = new Date(date.getTime() + minutesValid * 60000);
+                java.util.Date valid_till_date = new Date(date.getTime() + validityTime * 60000);
+                java.util.Date now = new java.util.Date();
 
-                return (new java.util.Date()).before(valid_till_date) &&
+                return now.before(valid_till_date) &&
                         storedId == deviceId;
             } else {
                 return false;
@@ -103,19 +112,15 @@ public class DatabaseHandler {
                 hasTicket = true;
             }
             // get csr associated data
-            Principals p = cm.getPrincipals(csrFilePath);
+            Principals csrPrincipals = cm.getPrincipals(csrFilePath);
+            Principals dbPrincipals = new Principals(dbUsername, dbDevicename, dbUid, dbDid);
 
             // check for equality, if not, exception
-            if (! hasTicket ||
-                p.getUid() != dbUid ||
-                p.getDid() != dbDid ||
-                ! p.getUsername().equals(dbUsername) ||
-                ! p.getDeviceName().equals(dbDevicename)) {
-                throw new Exception("CSR Subject name differs from database! " + p.toString() + " " +
-                        dbUsername + "$" + dbUid + "$" + dbDevicename + "$" + dbDid);
+            if (! (hasTicket && csrPrincipals.equals(dbPrincipals))) {
+                throw new Exception("CSR Subject name differs from database! " + dbPrincipals.toString() + " " +
+                        csrPrincipals.toString());
             }
 
-            // issue certificate
             cm.generateCertificate(userFile);
 
             // remove ticket
