@@ -33,6 +33,11 @@ Give nginx access to the certificates generated above. Particularly
 Stocks needs an OCSP server. If you adhere to the default config in 
 the CA section, you can simply run the stocks-ocsp service. 
 
+## Jetty server
+
+To adapt the stocks server to your system, adjust the needed values in 
+/etc/stocks/stocks.properties. 
+
 ## Start up the components
 
 * Start mysql
