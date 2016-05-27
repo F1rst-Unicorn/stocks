@@ -24,6 +24,7 @@ public class CommandManager {
 
         if (commandList.isEmpty() || commandList.get(0).equals("help")){
             printHelp();
+            commandFound = true;
         }
 
         for (Command c : commandHandler) {
@@ -46,7 +47,7 @@ public class CommandManager {
 
     public void printHelp() {
         if (prefix.equals("")){
-            System.out.println("Possible commands for :");
+            System.out.println("Possible commands:");
         } else {
             System.out.println("Possible commands for " + prefix + ":");
         }

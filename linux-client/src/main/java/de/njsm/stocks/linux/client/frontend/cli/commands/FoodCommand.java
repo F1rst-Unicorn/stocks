@@ -1,33 +1,33 @@
 package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
+import de.njsm.stocks.linux.client.data.Food;
 import de.njsm.stocks.linux.client.data.Location;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationCommand extends Command {
+public class FoodCommand extends Command {
 
     protected CommandManager m;
 
-    public LocationCommand(Configuration c) {
-        command = "loc";
-        description = "Manage the locations to store food";
+    public FoodCommand(Configuration c) {
+        command = "food";
+        description = "Manage the food types";
         this.c = c;
 
         List<Command> commands = new ArrayList<>();
-        commands.add(new LocationAddCommand(c));
-        commands.add(new LocationListCommand(c));
-        commands.add(new LocationRenameCommand(c));
-        commands.add(new LocationRemoveCommand(c));
+        commands.add(new FoodAddCommand(c));
+        commands.add(new FoodListCommand(c));
+        commands.add(new FoodRenameCommand(c));
         m = new CommandManager(commands, command);
     }
 
     @Override
     public void handle(List<String> commands) {
         if (commands.isEmpty()) {
-            new LocationListCommand(c).listLocations();
+            new FoodListCommand(c).listFood();
         } else {
             m.handleCommand(commands);
         }
@@ -38,23 +38,24 @@ public class LocationCommand extends Command {
         m.printHelp();
     }
 
-    public static int selectLocation(Location[] l, String name) {
+    public static int selectFood(Food[] f, String name) {
         InputReader scanner = new InputReader(System.in);
         int result;
 
-        if (l.length == 1) {
-            result = l[0].id;
-        } else if (l.length == 0) {
+        if (f.length == 1) {
+            result = f[0].id;
+        } else if (f.length == 0) {
             System.out.println("No such location found: " + name);
             return -1;
         } else {
-            System.out.println("Several locations found");
-            for (Location loc : l) {
-                System.out.println("\t" + loc.id + ": " + loc.name);
+            System.out.println("Several food types found");
+            for (Food food : f) {
+                System.out.println("\t" + food.id + ": " + food.name);
             }
-            System.out.print("Choose one (default " + l[0].id + "): ");
-            result = scanner.nextInt(l[0].id);
+            System.out.print("Choose one (default " + f[0].id + "): ");
+            result = scanner.nextInt(f[0].id);
         }
         return result;
     }
+
 }

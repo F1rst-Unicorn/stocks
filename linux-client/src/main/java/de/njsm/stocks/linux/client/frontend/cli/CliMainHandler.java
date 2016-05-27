@@ -19,9 +19,10 @@ public class CliMainHandler implements MainHandler {
         this.c = c;
 
         ArrayList<Command> commandHandler = new ArrayList<>();
+        commandHandler.add(new FoodCommand(c));
+        commandHandler.add(new LocationCommand(c));
         commandHandler.add(new RefreshCommand(c));
         commandHandler.add(new UserCommand(c));
-        commandHandler.add(new LocationCommand(c));
         commandHandler.add(new DeviceCommand(c));
 
         m = new CommandManager(commandHandler);

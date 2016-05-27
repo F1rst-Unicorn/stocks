@@ -3,6 +3,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Ticket;
 import de.njsm.stocks.linux.client.data.UserDevice;
+import de.njsm.stocks.linux.client.data.view.UserDeviceView;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
@@ -51,11 +52,13 @@ public class DeviceAddCommand extends Command {
                     ticket = c.getServerManager().addDevice(d);
                     (new RefreshCommand(c)).refreshDevices();
 
+                    UserDeviceView[] devs = c.getDatabaseManager().getDevices(d.name);
+
                     System.out.println("Creation successful. The new device needs these parameters:");
                     System.out.println("\tUser name: " + username);
                     System.out.println("\tDevice name: " + name);
                     System.out.println("\tUser ID: " + userId);
-                    System.out.println("\tDevice ID: ");
+                    System.out.println("\tDevice ID: " + devs[devs.length-1].id);
                     System.out.println("\tFingerprint: " + c.getFingerprint());
                     System.out.println("\tTicket: " + ticket.ticket);
                 } catch (RuntimeException e) {

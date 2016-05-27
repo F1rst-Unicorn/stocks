@@ -32,7 +32,7 @@ public class LocationRemoveCommand extends Command {
 
     public void removeLocation(String name) {
         Location[] l = c.getDatabaseManager().getLocations(name);
-        int id = LocationCommand.resolveLoc(l, name);
+        int id = LocationCommand.selectLocation(l, name);
 
         for (Location loc : l) {
             if (loc.id == id){

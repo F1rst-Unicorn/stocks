@@ -215,6 +215,48 @@ public class ServerManager {
         }
     }
 
+    public void addFood(Food f) {
+        Call<Void> c = backend.addFood(f);
+
+        try {
+            Response<Void> r = c.execute();
+
+            if (! r.isSuccess()) {
+                throw new RuntimeException("failed to add food: " + r.message());
+            }
+        } catch (IOException e) {
+            error(e);
+        }
+    }
+
+    public void removeFood(Food f) {
+        Call<Void> c = backend.removeFood(f);
+
+        try {
+            Response<Void> r = c.execute();
+
+            if (! r.isSuccess()) {
+                throw new RuntimeException("failed to remove food: " + r.message());
+            }
+        } catch (IOException e) {
+            error(e);
+        }
+    }
+
+    public void renameFood(Food f, String newName) {
+        Call<Void> c = backend.renameFood(f, newName);
+
+        try {
+            Response<Void> r = c.execute();
+
+            if (!r.isSuccess()) {
+                throw new RuntimeException("failed to rename food: " + r.message());
+            }
+        } catch (IOException e) {
+            error(e);
+        }
+    }
+
     public FoodItem[] getFoodItems() {
         Call<FoodItem[]> u = backend.getFoodItems();
 

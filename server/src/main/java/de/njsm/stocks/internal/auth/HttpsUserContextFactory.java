@@ -1,31 +1,26 @@
 package de.njsm.stocks.internal.auth;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HttpsUserContextFactory implements ContextFactory {
 
 
     public Principals getPrincipals(HttpServletRequest request) {
 
-        Object rawClientName = request.getAttribute("X-SSL-Client-S-DN");
-        String clientName;
-
-        if (rawClientName instanceof String) {
-            clientName = (String) rawClientName;
-        } else {
-            throw new SecurityException("request was not sent over HTTPS!");
-        }
-
+        String clientName = request.getHeader("X-SSL-Client-S-DN");
         return parseSubjectName(clientName);
     }
 
-    protected Principals parseSubjectName(String subject){
+    public Principals parseSubjectName(String subject){
         int[] indices = new int[3];
-        int last_index = 0;
+        int last_index = subject.lastIndexOf("=");
 
         // find indices of the $ signs
         for (int i = 0; i < 3; i++){
-            indices[i] = subject.indexOf('$', last_index);
+            indices[i] = subject.indexOf('$', last_index+1);
             last_index = indices[i];
             if (last_index == -1){
                 throw new SecurityException("client name is malformed");
