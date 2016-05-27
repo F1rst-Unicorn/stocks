@@ -4,16 +4,13 @@ import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.frontend.MainHandler;
 import de.njsm.stocks.linux.client.frontend.cli.commands.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 public class CliMainHandler implements MainHandler {
 
-    protected CommandManager m;
-    protected Configuration c;
+    protected final CommandManager m;
+    protected final Configuration c;
 
     public CliMainHandler(Configuration c) {
         this.c = c;
@@ -37,12 +34,14 @@ public class CliMainHandler implements MainHandler {
             System.out.print("stocks $ ");
             String command = source.next();
 
-            if (command.equals("quit")) {
-                endRequested = true;
-            } else if (command.equals("")) {
-                // usefully do nothing
-            } else {
-                forwardCommand(command);
+            switch (command) {
+                case "quit":
+                    endRequested = true;
+                    break;
+                case "":
+                    break;
+                default:
+                    forwardCommand(command);
             }
         }
     }
@@ -55,9 +54,7 @@ public class CliMainHandler implements MainHandler {
     public List<String> parseCommand(String command) {
         String[] commands = command.split(" ");
         LinkedList<String> result = new LinkedList<>();
-        for (String s : commands) {
-            result.add(s);
-        }
+        Collections.addAll(result, commands);
         return result;
     }
 }

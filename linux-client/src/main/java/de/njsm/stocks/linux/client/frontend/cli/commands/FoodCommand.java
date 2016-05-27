@@ -2,7 +2,6 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Food;
-import de.njsm.stocks.linux.client.data.Location;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.List;
 
 public class FoodCommand extends Command {
 
-    protected CommandManager m;
+    protected final CommandManager m;
 
     public FoodCommand(Configuration c) {
         command = "food";
@@ -21,6 +20,7 @@ public class FoodCommand extends Command {
         commands.add(new FoodAddCommand(c));
         commands.add(new FoodListCommand(c));
         commands.add(new FoodRenameCommand(c));
+        commands.add(new FoodRemoveCommand(c));
         m = new CommandManager(commands, command);
     }
 
@@ -45,7 +45,7 @@ public class FoodCommand extends Command {
         if (f.length == 1) {
             result = f[0].id;
         } else if (f.length == 0) {
-            System.out.println("No such location found: " + name);
+            System.out.println("No such food found: " + name);
             return -1;
         } else {
             System.out.println("Several food types found");

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DatabaseOperator {
 
-    protected Connection c;
+    protected final Connection c;
 
     public DatabaseOperator(Connection c) {
         this.c = c;

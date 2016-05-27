@@ -1,14 +1,11 @@
 package de.njsm.stocks.linux.client.frontend.cli.commands;
 
-import de.njsm.stocks.linux.client.Configuration;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class CommandManager {
 
-    protected List<Command> commandHandler;
-    protected String prefix;
+    protected final List<Command> commandHandler;
+    protected final String prefix;
 
     public CommandManager(List<Command> commands) {
         this(commands, "");

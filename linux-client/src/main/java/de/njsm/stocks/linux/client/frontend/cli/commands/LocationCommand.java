@@ -9,7 +9,7 @@ import java.util.List;
 
 public class LocationCommand extends Command {
 
-    protected CommandManager m;
+    protected final CommandManager m;
 
     public LocationCommand(Configuration c) {
         command = "loc";

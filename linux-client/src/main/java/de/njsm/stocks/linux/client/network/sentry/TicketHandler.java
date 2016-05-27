@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class TicketHandler {
 
-    protected Configuration c;
+    protected final Configuration c;
 
     public static final String caFilePath           = Configuration.stocksHome + "/ca.cert.pem";
     public static final String intermediateFilePath = Configuration.stocksHome + "/intermediate.cert.pem";
@@ -34,7 +34,7 @@ public class TicketHandler {
             importCertificate("client");
 
         } catch (Exception e){
-            c.getLog().log(Level.SEVERE, "TicketHandler: Certificate retrival failed: " + e.getMessage());
+            c.getLog().log(Level.SEVERE, "TicketHandler: Certificate receiving failed: " + e.getMessage());
             new File(Configuration.keystorePath).delete();
         }
     }
@@ -70,9 +70,9 @@ public class TicketHandler {
         }
     }
 
-    public void generateKey(String username, String devicename, int[] ids) throws Exception {
+    public void generateKey(String username, String deviceName, int[] ids) throws Exception {
 
-        String cn = String.format("%s$%d$%s$%d", username, ids[0], devicename, ids[1]);
+        String cn = String.format("%s$%d$%s$%d", username, ids[0], deviceName, ids[1]);
         String keyGenCommand = String.format("keytool -genkeypair " +
                         "-dname CN=%s,OU=%s,O=%s " +
                         "-alias %s " +

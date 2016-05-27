@@ -1,7 +1,6 @@
 package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
-import de.njsm.stocks.linux.client.data.User;
 import de.njsm.stocks.linux.client.data.UserDevice;
 import de.njsm.stocks.linux.client.data.view.UserDeviceView;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;

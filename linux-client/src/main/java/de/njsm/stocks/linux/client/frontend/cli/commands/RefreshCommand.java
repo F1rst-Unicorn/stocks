@@ -55,18 +55,25 @@ public class RefreshCommand extends Command {
     }
 
     public void refreshTable(String tableName) {
-        if (tableName.equals("User")) {
-            refreshUsers();
-        } else if (tableName.equals("User_device")) {
-            refreshDevices();
-        } else if (tableName.equals("Food")) {
-            refreshFood();
-        } else if (tableName.equals("Food_item")) {
-            refreshFoodItems();
-        } else if (tableName.equals("Location")) {
-            refreshLocations();
-        } else {
-            c.getLog().log(Level.WARNING, "Trying to refresh invalid tablename: " + tableName);
+        switch (tableName) {
+            case "User":
+                refreshUsers();
+                break;
+            case "User_device":
+                refreshDevices();
+                break;
+            case "Food":
+                refreshFood();
+                break;
+            case "Food_item":
+                refreshFoodItems();
+                break;
+            case "Location":
+                refreshLocations();
+                break;
+            default:
+                c.getLog().log(Level.WARNING, "Trying to refresh invalid table: " + tableName);
+                break;
         }
     }
 

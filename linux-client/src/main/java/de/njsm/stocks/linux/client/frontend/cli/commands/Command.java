@@ -24,7 +24,7 @@ public abstract class Command {
     public String toString() {
         int colWidth = 15;
         int count = colWidth - command.length();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(command);
 
         for (int i = 0; i < count; i++){

@@ -4,8 +4,6 @@ package de.njsm.stocks.linux.client;
 import de.njsm.stocks.linux.client.frontend.cli.CliFactory;
 import de.njsm.stocks.linux.client.frontend.UIFactory;
 
-import java.util.Scanner;
-
 public class Main {
 
 

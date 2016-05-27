@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DeviceCommand extends Command {
 
-    protected CommandManager m;
+    protected final CommandManager m;
 
     public DeviceCommand(Configuration c) {
         this.c = c;

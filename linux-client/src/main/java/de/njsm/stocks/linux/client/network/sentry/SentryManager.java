@@ -4,7 +4,6 @@ import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Ticket;
 import org.apache.commons.io.IOUtils;
 import retrofit.*;
-import retrofit.Call;
 
 import java.io.File;
 import java.io.FileInputStream;

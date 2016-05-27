@@ -7,15 +7,13 @@ public class CliCertificateGenerator implements CertificateGenerator {
     @Override
     public String getTicket() {
         System.out.print("Please give the ticket you got from your friend: ");
-        String ticket = readLine();
-        return ticket;
+        return readLine();
     }
 
     @Override
     public String getCaFingerprint() {
         System.out.print("Please give the fingerprint you got from your friend: ");
-        String fingerprint = readLine();
-        return fingerprint;
+        return readLine();
     }
 
     @Override
@@ -31,7 +29,7 @@ public class CliCertificateGenerator implements CertificateGenerator {
     }
 
     @Override
-    public String getDevicename() {
+    public String getDeviceName() {
         System.out.print("Please enter your device's name: ");
         String name = readLine();
 

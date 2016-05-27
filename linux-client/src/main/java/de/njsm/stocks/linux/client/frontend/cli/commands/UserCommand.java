@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UserCommand extends Command {
 
-    protected CommandManager m;
+    protected final CommandManager m;
 
     public UserCommand(Configuration c) {
         command = "user";

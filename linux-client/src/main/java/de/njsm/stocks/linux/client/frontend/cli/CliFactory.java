@@ -9,7 +9,7 @@ import de.njsm.stocks.linux.client.frontend.ConfigGenerator;
 public class CliFactory extends UIFactory {
 
     @Override
-    public ConfigGenerator getInteractor() {
+    public ConfigGenerator getConfigActor() {
         return new CliConfigGenerator();
     }
 

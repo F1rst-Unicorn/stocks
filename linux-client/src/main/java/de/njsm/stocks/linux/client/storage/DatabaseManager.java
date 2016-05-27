@@ -15,8 +15,7 @@ public class DatabaseManager {
     }
 
     protected Connection getConnection() throws SQLException {
-        Connection c = DriverManager.getConnection("jdbc:sqlite:" + Configuration.dbPath);
-        return c;
+        return DriverManager.getConnection("jdbc:sqlite:" + Configuration.dbPath);
     }
 
     public Update[] getUpdates() {

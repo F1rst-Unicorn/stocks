@@ -3,16 +3,14 @@ package de.njsm.stocks.linux.client;
 import de.njsm.stocks.linux.client.frontend.CertificateGenerator;
 import de.njsm.stocks.linux.client.frontend.ConfigGenerator;
 import de.njsm.stocks.linux.client.network.sentry.TicketHandler;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.logging.Level;
 
 public class InitManager {
 
-    Configuration c;
+    final Configuration c;
 
     public InitManager (Configuration c) {
         this.c = c;
@@ -52,7 +50,7 @@ public class InitManager {
 
         try {
             String username = source.getUsername();
-            String deviceName = source.getDevicename();
+            String deviceName = source.getDeviceName();
             int[] ids = source.getUserIds();
 
             handler.generateKey(username, deviceName, ids);

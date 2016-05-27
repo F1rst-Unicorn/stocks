@@ -22,7 +22,7 @@ public class Configuration {
     public static final String ticketPortConfig = "de.njsm.stocks.client.ticketPort";
     public static final String serverPortConfig = "de.njsm.stocks.client.serverPort";
     public static final String userNameConfig = "de.njsm.stocks.client.username";
-    public static final String deviceNameConfig = "de.njsm.stocks.client.devicename";
+    public static final String deviceNameConfig = "de.njsm.stocks.client.deviceName";
     public static final String userIdConfig = "de.njsm.stocks.client.userId";
     public static final String deviceIdConfig = "de.njsm.stocks.client.deviceId";
     public static final String fingerprintConfig = "de.njsm.stocks.client.fingerprint";
@@ -73,7 +73,7 @@ public class Configuration {
 
         if (! hasConfig()) {
             im = new InitManager(this);
-            im.initConfig(f.getInteractor());
+            im.initConfig(f.getConfigActor());
             initialised = true;
         }
 
@@ -248,12 +248,7 @@ public class Configuration {
 
         return new OkHttpClient()
                 .setSslSocketFactory(context.getSocketFactory())
-                .setHostnameVerifier(new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String s, SSLSession sslSession) {
-                        return true;
-                    }
-                });
+                .setHostnameVerifier((s, sslSession) -> true);
 
     }
 }

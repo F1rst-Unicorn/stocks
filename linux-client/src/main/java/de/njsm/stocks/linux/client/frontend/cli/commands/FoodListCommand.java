@@ -3,9 +3,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.FoodItem;
 import de.njsm.stocks.linux.client.data.view.FoodView;
-import de.njsm.stocks.linux.client.data.view.UserDeviceView;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class FoodListCommand extends Command {

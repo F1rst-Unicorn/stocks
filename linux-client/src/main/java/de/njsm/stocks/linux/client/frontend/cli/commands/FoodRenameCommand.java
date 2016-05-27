@@ -2,7 +2,6 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Food;
-import de.njsm.stocks.linux.client.data.Location;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;

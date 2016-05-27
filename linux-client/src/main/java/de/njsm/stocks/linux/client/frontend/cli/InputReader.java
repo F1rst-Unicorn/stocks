@@ -5,14 +5,14 @@ import java.io.InputStream;
 
 public class InputReader {
 
-    protected InputStream in;
+    protected final InputStream in;
 
     public InputReader(InputStream input) {
         in = input;
     }
 
     public String next() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         byte[] buffer = new byte[32];
         int bytesRead;
 

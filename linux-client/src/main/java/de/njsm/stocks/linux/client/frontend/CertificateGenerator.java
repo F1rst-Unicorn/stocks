@@ -6,6 +6,6 @@ public interface CertificateGenerator {
     String getTicket();
     String getCaFingerprint();
     String getUsername();
-    String getDevicename();
+    String getDeviceName();
     int[] getUserIds();
 }

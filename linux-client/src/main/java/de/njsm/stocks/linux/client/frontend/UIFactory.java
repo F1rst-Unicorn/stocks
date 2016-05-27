@@ -4,7 +4,7 @@ import de.njsm.stocks.linux.client.Configuration;
 
 public abstract class UIFactory {
 
-    public abstract ConfigGenerator getInteractor();
+    public abstract ConfigGenerator getConfigActor();
 
     public abstract CertificateGenerator getCertGenerator();
 
