@@ -2,10 +2,8 @@ package de.njsm.stocks.internal;
 
 import de.njsm.stocks.internal.auth.*;
 import de.njsm.stocks.internal.db.DatabaseHandler;
-import de.njsm.stocks.internal.db.SimpleDatabaseHandler;
 import de.njsm.stocks.internal.db.SqlDatabaseHandler;
 
-import java.util.Properties;
 import java.util.logging.Logger;
 
 public class Config {

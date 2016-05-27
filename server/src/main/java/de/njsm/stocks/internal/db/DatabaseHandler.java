@@ -17,12 +17,12 @@ public interface DatabaseHandler {
     Ticket addDevice(UserDevice d) throws SQLException;
     void removeDevice(int id)  throws SQLException;
 
-    void addFood(Principals c, Food food) throws SQLException;
-    void removeFood(Principals c, int id) throws SQLException;
-    void renameFood(Principals c, int id, String new_name)  throws SQLException;
+    void addFood(Food food) throws SQLException;
+    void removeFood(int id) throws SQLException;
+    void renameFood(int id, String new_name)  throws SQLException;
 
     void addFoodItem(Principals c, FoodItem item)  throws SQLException;
-    void removeFoodItem(Principals c, int id)  throws SQLException;
+    void removeFoodItem(int id)  throws SQLException;
 
     Location[] getLocations()  throws SQLException;
     Food[] getFood()  throws SQLException;

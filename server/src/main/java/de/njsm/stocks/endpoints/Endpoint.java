@@ -5,8 +5,8 @@ import de.njsm.stocks.internal.db.DatabaseHandler;
 
 public class Endpoint {
 
-    protected Config c;
-    protected DatabaseHandler handler;
+    protected final Config c;
+    protected final DatabaseHandler handler;
 
 
     public Endpoint() {

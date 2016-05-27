@@ -43,17 +43,17 @@ public class SimpleDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public void addFood(Principals c, Food food) throws SQLException {
+    public void addFood(Food food) throws SQLException {
 
     }
 
     @Override
-    public void removeFood(Principals c, int id) throws SQLException {
+    public void removeFood(int id) throws SQLException {
 
     }
 
     @Override
-    public void renameFood(Principals c, int id, String new_name) throws SQLException {
+    public void renameFood(int id, String new_name) throws SQLException {
 
     }
 
@@ -63,7 +63,7 @@ public class SimpleDatabaseHandler implements DatabaseHandler {
     }
 
     @Override
-    public void removeFoodItem(Principals c, int id) throws SQLException {
+    public void removeFoodItem(int id) throws SQLException {
 
     }
 

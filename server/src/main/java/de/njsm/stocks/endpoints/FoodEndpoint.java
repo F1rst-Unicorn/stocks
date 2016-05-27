@@ -34,10 +34,8 @@ public class FoodEndpoint extends Endpoint {
 
         try {
             Principals uc = c.getContextFactory().getPrincipals (request);
-            handler.addFood(uc, food);
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to add food: " + e.getMessage());
-        } catch (SecurityException e){
+            handler.addFood(food);
+        } catch (SQLException | SecurityException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to add food: " + e.getMessage());
         }
     }
@@ -54,10 +52,8 @@ public class FoodEndpoint extends Endpoint {
 
         try {
             Principals uc = c.getContextFactory().getPrincipals(request);
-            handler.renameFood(uc, food.id, newName);
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to rename food: " + e.getMessage());
-        } catch (SecurityException e){
+            handler.renameFood(food.id, newName);
+        } catch (SQLException | SecurityException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to rename food: " + e.getMessage());
         }
     }
@@ -72,10 +68,8 @@ public class FoodEndpoint extends Endpoint {
 
         try {
             Principals uc = c.getContextFactory().getPrincipals(request);
-            handler.removeFood(uc, food.id);
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to remove food: " + e.getMessage());
-        } catch (SecurityException e){
+            handler.removeFood(food.id);
+        } catch (SQLException | SecurityException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to remove food: " + e.getMessage());
         }
     }
@@ -104,9 +98,7 @@ public class FoodEndpoint extends Endpoint {
         try {
             Principals uc = c.getContextFactory().getPrincipals(request);
             handler.addFoodItem(uc, item);
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to add food item: " + e.getMessage());
-        } catch (SecurityException e){
+        } catch (SQLException | SecurityException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to add food item: " + e.getMessage());
         }
     }
@@ -121,10 +113,8 @@ public class FoodEndpoint extends Endpoint {
 
         try {
             Principals uc = c.getContextFactory().getPrincipals(request);
-            handler.removeFoodItem(uc, item.id);
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to remove food item: " + e.getMessage());
-        } catch (SecurityException e){
+            handler.removeFoodItem(item.id);
+        } catch (SQLException | SecurityException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to remove food item: " + e.getMessage());
         }
     }

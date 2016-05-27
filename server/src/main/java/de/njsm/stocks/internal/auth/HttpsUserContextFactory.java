@@ -1,9 +1,6 @@
 package de.njsm.stocks.internal.auth;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class HttpsUserContextFactory implements ContextFactory {
 

@@ -13,8 +13,8 @@ import java.util.logging.Level;
 
 public class SqlDatabaseHandler implements DatabaseHandler {
 
-    protected String url;
-    protected Config c;
+    protected final String url;
+    protected final Config c;
 
     public SqlDatabaseHandler() {
 
@@ -116,9 +116,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
             con.commit();
 
-            for (Integer i : certificateList){
-                ca.revokeCertificate(i);
-            }
+            certificateList.forEach(ca::revokeCertificate);
         } catch (SQLException e){
             c.getLog().log(Level.SEVERE, "Error deleting devices: " + e.getMessage());
             if (con != null) {
@@ -189,7 +187,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public void addFood(Principals c, Food food) throws SQLException {
+    public void addFood(Food food) throws SQLException {
         String command="INSERT INTO Food (name) VALUES (?)";
 
         try (Connection con = getConnection();
@@ -200,7 +198,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public void removeFood(Principals c, int id) throws SQLException {
+    public void removeFood(int id) throws SQLException {
         String command="DELETE FROM Food WHERE ID=?";
 
         try (Connection con = getConnection();
@@ -211,7 +209,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public void renameFood(Principals c, int id, String new_name) throws SQLException {
+    public void renameFood(int id, String new_name) throws SQLException {
         String command="UPDATE Food SET name=? WHERE ID=?";
 
         try (Connection con = getConnection();
@@ -239,7 +237,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public void removeFoodItem(Principals c, int id) throws SQLException {
+    public void removeFoodItem(int id) throws SQLException {
         String command="DELETE FROM Food_item WHERE ID=?";
 
         try (Connection con = getConnection();

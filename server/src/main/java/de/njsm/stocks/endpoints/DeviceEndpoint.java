@@ -7,7 +7,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Path("/device")
 public class DeviceEndpoint extends Endpoint {

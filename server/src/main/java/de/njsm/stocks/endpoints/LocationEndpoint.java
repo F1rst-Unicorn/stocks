@@ -1,7 +1,6 @@
 package de.njsm.stocks.endpoints;
 
 import de.njsm.stocks.data.Location;
-import de.njsm.stocks.internal.Config;
 
 import javax.ws.rs.*;
 import java.sql.SQLException;
