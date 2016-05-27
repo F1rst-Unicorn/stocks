@@ -49,7 +49,7 @@ CA_ROOT=/usr/share/stocks/root/CA
     chmod 400 private/ocsp.key.pem
     openssl req -config openssl.cnf -new -sha256 -key private/ocsp.key.pem -out csr/ocsp.csr.pem \
         -subj "/C=CH/ST=Zurich/L=Zurich/O=stocks/CN=stocks OCSP" -batch
-    openssl ca -config openssl.cnf -extensions server_cert -days 365000 -notext -md sha256 \
+    openssl ca -config openssl.cnf -extensions ocsp -days 365000 -notext -md sha256 \
         -in csr/ocsp.csr.pem -out certs/ocsp.cert.pem -batch
     chmod 444 certs/ocsp.cert.pem
     
