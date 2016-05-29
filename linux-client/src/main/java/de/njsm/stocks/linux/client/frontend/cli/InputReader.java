@@ -70,11 +70,11 @@ public class InputReader {
                 try {
                     result = Integer.parseInt(input);
                 } catch (NumberFormatException e) {
-                    result = -1;
+                    result = Integer.MIN_VALUE;
                     System.out.print("That's not a number. Try again: ");
                 }
             }
-        } while (result == -1);
+        } while (result == Integer.MIN_VALUE);
         return result;
     }
 
@@ -95,7 +95,7 @@ public class InputReader {
     }
 
     public Date nextDate() {
-        SimpleDateFormat parser = new SimpleDateFormat("dd-MM-yy");
+        SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yy");
         String input = next();
         Date result = null;
 

@@ -4,6 +4,7 @@ import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.FoodItem;
 import de.njsm.stocks.linux.client.data.view.FoodView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class FoodListCommand extends Command {
@@ -21,6 +22,7 @@ public class FoodListCommand extends Command {
 
     public void listFood() {
 
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         FoodView[] food = c.getDatabaseManager().getItems();
 
         if (food.length == 0) {
@@ -32,7 +34,7 @@ public class FoodListCommand extends Command {
         for (FoodView f : food) {
             System.out.println("\t" + f.getItems().size() + "x " + f.getFood().name);
             for (FoodItem i : f.getItems()) {
-                System.out.println("\t\t" + i.eatByDate);
+                System.out.println("\t\t" + format.format(i.eatByDate));
             }
         }
 

@@ -1,7 +1,6 @@
 # Things to implement
 
 * Add history for shell commands
-* Make location typing less redundant
 * Add food listing without dates
 * Add query for food to eat
 * Add food listing of present items

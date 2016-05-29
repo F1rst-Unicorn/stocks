@@ -6,6 +6,7 @@ import de.njsm.stocks.linux.client.data.view.FoodView;
 import de.njsm.stocks.linux.client.data.view.UserDeviceView;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
 
+import java.security.spec.PSSParameterSpec;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -199,6 +200,22 @@ public class DatabaseManager {
             selectStmt.setString(1, name);
             ResultSet rs = selectStmt.executeQuery();
             ArrayList<Location> result = getLocationResults(rs);
+            return result.toArray(new Location[result.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Location[] getLocationsForFoodType(int foodId) {
+        try {
+            Connection c = getConnection();
+            String getLocations = "SELECT DISTINCT l.ID, l.name " +
+                    "FROM Location l, Food_item i " +
+                    "WHERE i.of_type=? AND i.stored_in=l.ID";
+            PreparedStatement stmt = c.prepareStatement(getLocations);
+            stmt.setInt(1, foodId);
+            ArrayList<Location> result = getLocationResults(stmt.executeQuery());
             return result.toArray(new Location[result.size()]);
         } catch (SQLException e) {
             e.printStackTrace();
