@@ -2,6 +2,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Food;
+import de.njsm.stocks.linux.client.exceptions.SelectException;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
@@ -33,14 +34,18 @@ public class FoodRenameCommand extends Command {
     }
 
     public void renameFood(String name, String newName) {
-        Food[] l = c.getDatabaseManager().getFood(name);
-        int id = FoodCommand.selectFood(l, name);
+        try {
+            Food[] l = c.getDatabaseManager().getFood(name);
+            int id = FoodCommand.selectFood(l, name);
 
-        for (Food food : l) {
-            if (food.id == id){
-                c.getServerManager().renameFood(food, newName);
-                (new RefreshCommand(c)).refreshFood();
+            for (Food food : l) {
+                if (food.id == id) {
+                    c.getServerManager().renameFood(food, newName);
+                    (new RefreshCommand(c)).refreshFood();
+                }
             }
+        } catch (SelectException e) {
+            System.out.println(e.getMessage());
         }
 
     }

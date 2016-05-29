@@ -2,6 +2,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.view.UserDeviceView;
+import de.njsm.stocks.linux.client.exceptions.SelectException;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.LinkedList;
@@ -37,15 +38,14 @@ public class DeviceCommand extends Command {
         m.printHelp();
     }
 
-    public static int selectDevice(UserDeviceView[] d, String name) {
+    public static int selectDevice(UserDeviceView[] d, String name) throws SelectException {
         InputReader scanner = new InputReader(System.in);
         int result;
 
         if (d.length == 1) {
             result = d[0].id;
         } else if (d.length == 0) {
-            System.out.println("No such device found: " + name);
-            return -1;
+            throw new SelectException("No such device found: " + name);
         } else {
             System.out.println("Several devices found");
             for (UserDeviceView dev : d) {

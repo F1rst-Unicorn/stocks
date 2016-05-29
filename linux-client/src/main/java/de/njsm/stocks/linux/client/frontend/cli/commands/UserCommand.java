@@ -2,6 +2,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.User;
+import de.njsm.stocks.linux.client.exceptions.SelectException;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.LinkedList;
@@ -37,14 +38,13 @@ public class UserCommand extends Command {
         m.printHelp();
     }
 
-    public static int selectUser(User[] users, String name) {
+    public static int selectUser(User[] users, String name) throws SelectException {
         InputReader scanner = new InputReader(System.in);
         int result;
         if (users.length == 1) {
             result = users[0].id;
         } else if (users.length == 0) {
-            System.out.println("No such user found: " + name);
-            result = -1;
+            throw new SelectException("No such user found: " + name);
         } else {
             System.out.println("Several users found");
             for (User u : users) {

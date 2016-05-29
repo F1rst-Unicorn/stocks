@@ -4,6 +4,7 @@ import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.*;
 import de.njsm.stocks.linux.client.data.view.FoodView;
 import de.njsm.stocks.linux.client.data.view.UserDeviceView;
+import de.njsm.stocks.linux.client.exceptions.SelectException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -334,9 +335,7 @@ public class DatabaseManager {
         }
     }
 
-    public int getNextItem(int foodId) {
-
-
+    public int getNextItem(int foodId) throws SelectException {
         try {
             Connection c = getConnection();
 
@@ -356,7 +355,7 @@ public class DatabaseManager {
                 return result;
             } else {
                 rs.close();
-                return -1;
+                throw new SelectException("You don't have any...");
             }
 
         } catch (SQLException e) {

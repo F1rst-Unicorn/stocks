@@ -4,6 +4,7 @@ import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Ticket;
 import de.njsm.stocks.linux.client.data.UserDevice;
 import de.njsm.stocks.linux.client.data.view.UserDeviceView;
+import de.njsm.stocks.linux.client.exceptions.SelectException;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
@@ -35,13 +36,14 @@ public class DeviceAddCommand extends Command {
     }
 
     public void addDevice(String name, String username) {
-        InputReader scanner = new InputReader(System.in);
-        int userId = UserCommand.selectUser(
-                c.getDatabaseManager().getUsers(username),
-                username);
-        Ticket ticket;
+        try {
+            InputReader scanner = new InputReader(System.in);
+            int userId = UserCommand.selectUser(
+                    c.getDatabaseManager().getUsers(username),
+                    username);
+            Ticket ticket;
 
-        if (userId != -1) {
+
             System.out.print("Create new device '" + name + "' for user '" +
                     username + "'? [y/N]  ");
             if (scanner.getYesNo()) {
@@ -67,6 +69,8 @@ public class DeviceAddCommand extends Command {
             } else {
                 System.out.println("Aborted.");
             }
+        } catch (SelectException e) {
+            System.out.println(e.getMessage());
         }
 
 

@@ -2,6 +2,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Food;
+import de.njsm.stocks.linux.client.exceptions.SelectException;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
@@ -31,14 +32,18 @@ public class FoodRemoveCommand extends Command {
     }
 
     public void removeFood(String name) {
-        Food[] f = c.getDatabaseManager().getFood(name);
-        int id = FoodCommand.selectFood(f, name);
+        try {
+            Food[] f = c.getDatabaseManager().getFood(name);
+            int id = FoodCommand.selectFood(f, name);
 
-        for (Food food : f) {
-            if (food.id == id){
-                c.getServerManager().removeFood(food);
-                (new RefreshCommand(c)).refreshFood();
+            for (Food food : f) {
+                if (food.id == id) {
+                    c.getServerManager().removeFood(food);
+                    (new RefreshCommand(c)).refreshFood();
+                }
             }
+        } catch (SelectException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

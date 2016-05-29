@@ -2,6 +2,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Location;
+import de.njsm.stocks.linux.client.exceptions.SelectException;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.ArrayList;
@@ -38,15 +39,14 @@ public class LocationCommand extends Command {
         m.printHelp();
     }
 
-    public static int selectLocation(Location[] l, String name) {
+    public static int selectLocation(Location[] l, String name) throws SelectException {
         InputReader scanner = new InputReader(System.in);
         int result;
 
         if (l.length == 1) {
             result = l[0].id;
         } else if (l.length == 0) {
-            System.out.println("No such location found: " + name);
-            return -1;
+            throw new SelectException("No such location found: " + name);
         } else {
             System.out.println("Several locations found");
             for (Location loc : l) {

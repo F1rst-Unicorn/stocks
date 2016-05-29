@@ -3,6 +3,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.UserDevice;
 import de.njsm.stocks.linux.client.data.view.UserDeviceView;
+import de.njsm.stocks.linux.client.exceptions.SelectException;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
@@ -32,17 +33,21 @@ public class DeviceRemoveCommand extends Command {
     }
 
     public void removeDevice(String name) {
-        UserDeviceView[] devices = c.getDatabaseManager().getDevices(name);
-        int id = DeviceCommand.selectDevice(devices, name);
+        try {
+            UserDeviceView[] devices = c.getDatabaseManager().getDevices(name);
+            int id = DeviceCommand.selectDevice(devices, name);
 
-        for (UserDeviceView d : devices) {
-            if (d.id == id){
-                UserDevice rawDevice = new UserDevice();
-                rawDevice.id = d.id;
-                rawDevice.name = d.name;
-                c.getServerManager().removeDevice(rawDevice);
-                (new RefreshCommand(c)).refreshDevices();
+            for (UserDeviceView d : devices) {
+                if (d.id == id) {
+                    UserDevice rawDevice = new UserDevice();
+                    rawDevice.id = d.id;
+                    rawDevice.name = d.name;
+                    c.getServerManager().removeDevice(rawDevice);
+                    (new RefreshCommand(c)).refreshDevices();
+                }
             }
+        } catch (SelectException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

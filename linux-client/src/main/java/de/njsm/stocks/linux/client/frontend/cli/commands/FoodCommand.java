@@ -2,6 +2,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Food;
+import de.njsm.stocks.linux.client.exceptions.SelectException;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.ArrayList;
@@ -38,15 +39,14 @@ public class FoodCommand extends Command {
         m.printHelp();
     }
 
-    public static int selectFood(Food[] f, String name) {
+    public static int selectFood(Food[] f, String name) throws SelectException {
         InputReader scanner = new InputReader(System.in);
         int result;
 
         if (f.length == 1) {
             result = f[0].id;
         } else if (f.length == 0) {
-            System.out.println("No such food found: " + name);
-            return -1;
+            throw new SelectException("No such food found: " + name);
         } else {
             System.out.println("Several food types found");
             for (Food food : f) {
