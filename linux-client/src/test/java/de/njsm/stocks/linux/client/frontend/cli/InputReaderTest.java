@@ -9,7 +9,7 @@ public class InputReaderTest {
 
     @Test
     public void testDateParsing() {
-        String validDate = "31-12-2017\n";
+        String validDate = "31.12.2017\n";
         InputReader uut = new InputReader(IOUtils.toInputStream(validDate));
 
         Date date = uut.nextDate();
