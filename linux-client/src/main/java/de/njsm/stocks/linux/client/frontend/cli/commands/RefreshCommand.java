@@ -57,18 +57,23 @@ public class RefreshCommand extends Command {
     public void refreshTable(String tableName) {
         switch (tableName) {
             case "User":
+                System.out.println("Refreshing users");
                 refreshUsers();
                 break;
             case "User_device":
+                System.out.println("Refreshing devices");
                 refreshDevices();
                 break;
             case "Food":
+                System.out.println("Refreshing food");
                 refreshFood();
                 break;
             case "Food_item":
+                System.out.println("Refreshing food items");
                 refreshFoodItems();
                 break;
             case "Location":
+                System.out.println("Refreshing locations");
                 refreshLocations();
                 break;
             default:
@@ -78,31 +83,26 @@ public class RefreshCommand extends Command {
     }
 
     public void refreshUsers() {
-        System.out.println("Refreshing users");
         User[] serverUsers = c.getServerManager().getUsers();
         c.getDatabaseManager().writeUsers(serverUsers);
     }
 
     public void refreshDevices() {
-        System.out.println("Refreshing devices");
         UserDevice[] serverDevices = c.getServerManager().getDevices();
         c.getDatabaseManager().writeDevices(serverDevices);
     }
 
     public void refreshLocations() {
-        System.out.println("Refreshing locations");
         Location[] serverLocations = c.getServerManager().getLocations();
         c.getDatabaseManager().writeLocations(serverLocations);
     }
 
     public void refreshFood() {
-        System.out.println("Refreshing food");
         Food[] serverFood = c.getServerManager().getFood();
         c.getDatabaseManager().writeFood(serverFood);
     }
 
     public void refreshFoodItems() {
-        System.out.println("Refreshing food items");
         FoodItem[] serverItems = c.getServerManager().getFoodItems();
         c.getDatabaseManager().writeFoodItems(serverItems);
     }

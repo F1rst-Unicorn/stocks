@@ -267,7 +267,7 @@ public class DatabaseManager {
             Connection c = getConnection();
 
             String queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                    "FROM Food f LEFT OUTER JOIN Food_item i " +
+                    "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
                     "ORDER BY f.ID ASC, i.eat_by ASC";
 
             PreparedStatement sqlQuery = c.prepareStatement(queryString);
@@ -296,7 +296,9 @@ public class DatabaseManager {
                 }
                 lastId = id;
             }
-            result.add(f);
+            if (f != null) {
+                result.add(f);
+            }
             return result.toArray(new FoodView[result.size()]);
         } catch (SQLException e) {
             e.printStackTrace();

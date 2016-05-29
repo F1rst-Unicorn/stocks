@@ -29,26 +29,27 @@ public class AddCommand extends Command {
         }
     }
 
+
     public void addFood() {
         InputReader scanner = new InputReader(System.in);
         System.out.print("What to add?  ");
         String type = scanner.next();
-        System.out.print("Where is it stored?  ");
-        String location = scanner.next();
-        System.out.print("Eat before:  ");
-        Date date = scanner.nextDate();
-        addFood(type, location, date);
-    }
-
-    public void addFood(String type, String location, Date date) {
         Food[] foods = c.getDatabaseManager().getFood(type);
         int foodId = FoodCommand.selectFood(foods, type);
-        Location[] locs = c.getDatabaseManager().getLocations(location);
-        int locId = LocationCommand.selectLocation(locs, location);
-
-        if (foodId == -1 || locId == -1) {
+        if (foodId == -1) {
             return;
         }
+
+        System.out.print("Where is it stored?  ");
+        String location = scanner.next();
+        Location[] locs = c.getDatabaseManager().getLocations(location);
+        int locId = LocationCommand.selectLocation(locs, location);
+        if (locId == -1) {
+            return;
+        }
+
+        System.out.print("Eat before:  ");
+        Date date = scanner.nextDate();
 
         FoodItem item = new FoodItem();
         item.ofType = foodId;

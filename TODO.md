@@ -1,10 +1,13 @@
 # Things to implement
 
-* Implement desktop client
-
+* Add history for shell commands
+* Make location typing less redundant
+* Early correcting of wrong entries
+* Add food listing without dates
+* Add query for food to eat
+* Add food listing of present items
 * Add methods to get and clear pending tickets
 * Image support for Food
-* Add move food
 
 * Implement Android app
 * Implement Windows phone app
