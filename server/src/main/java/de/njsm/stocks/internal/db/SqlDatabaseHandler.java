@@ -20,6 +20,12 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
         c = new Config();
 
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("mysql driver not found");
+        }
+
         String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
         String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
         String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
@@ -106,7 +112,7 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             sqlQuery.setInt(1, id);
             ResultSet res = sqlQuery.executeQuery();
             while (res.next()){
-                certificateList.add(res.getInt("certificate_no"));
+                certificateList.add(res.getInt("ID"));
             }
 
             sqlDeleteDevices.setInt(1, id);
