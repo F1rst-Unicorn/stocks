@@ -10,4 +10,4 @@ target
 *.iml
 
 *.war
-root-dev
+*.pkg.tar.xz

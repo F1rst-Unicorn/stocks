@@ -2,7 +2,7 @@
 pkgname=stocks-server
 pkgver=0.1
 pkgrel=3
-pkgdesc="Stocks server framework"
+pkgdesc="Manages a household's stocks"
 arch=('i686' 'x86_64')
 url="https://github.com/F1rst-Unicorn/stocks"
 license=('MIT')
@@ -24,17 +24,18 @@ backup=('etc/stocks/stocks.properties'
 
 build() {
     cd "$srcdir/stocks"
+    
+    mkdir -p deploy-server/root/jetty-base/wars
 
     cd server
-    mvn compile package
+    mvn -Dmaven.test.skip=true package
     cd ..
-    mkdir -p root/jetty-base/wars
-    cp server/target/server-$pkgver.war root/jetty-base/wars/server.war
+    cp server/target/server-$pkgver.war deploy-server/root/jetty-base/wars/server.war
 
     cd sentry
-    mvn compile package
+    mvn -Dmaven.test.skip=true package
     cd ..
-    cp sentry/target/sentry-$pkgver.war root/jetty-base/wars/sentry.war
+    cp sentry/target/sentry-$pkgver.war deploy-server/root/jetty-base/wars/sentry.war
                         
     wget -4 -O jetty.tar.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.9.v20160517.tar.gz&r=1"
 }
@@ -43,21 +44,21 @@ package() {
     cd "$srcdir/stocks"
     
     mkdir -p $pkgdir/usr/share/stocks
-    cp -r root $pkgdir/usr/share/stocks
-    cp database/schema.sql $pkgdir/usr/share/stocks/schema.sql
-    cp deploy/nginx.conf $pkgdir/usr/share/stocks/nginx.example.conf
+    cp -r deploy-server/root $pkgdir/usr/share/stocks
+    cp deploy-server/schema.sql $pkgdir/usr/share/stocks/schema.sql
+    cp deploy-server/nginx.conf $pkgdir/usr/share/stocks/nginx.example.conf
     
     mkdir -p $pkgdir/usr/share/stocks/root/CA/intermediate
-    cp deploy/openssl.cnf $pkgdir/usr/share/stocks/root/CA/
-    cp deploy/openssl_intermediate.cnf $pkgdir/usr/share/stocks/root/CA/intermediate/openssl.cnf
+    cp deploy-server/openssl.cnf $pkgdir/usr/share/stocks/root/CA/
+    cp deploy-server/openssl_intermediate.cnf $pkgdir/usr/share/stocks/root/CA/intermediate/openssl.cnf
     
     mkdir -p $pkgdir/usr/lib/stocks/
-    cp deploy/setup-ca $pkgdir/usr/lib/stocks/
-    cp deploy/server $pkgdir/usr/lib/stocks
+    cp deploy-server/setup-ca $pkgdir/usr/lib/stocks/
+    cp deploy-server/server $pkgdir/usr/lib/stocks
     chmod -R 755 $pkgdir/usr/lib/stocks/
     
     mkdir -p $pkgdir/etc/stocks/
-    cp deploy/stocks.properties $pkgdir/etc/stocks
+    cp deploy-server/stocks.properties $pkgdir/etc/stocks
     
     mkdir -p $pkgdir/usr/share/doc/stocks/
     cp README.md $pkgdir/usr/share/doc/stocks/
@@ -70,9 +71,12 @@ package() {
     rm -rf $pkgdir/opt/stocks-jetty/demo-base
     
     mkdir -p $pkgdir/usr/lib/systemd/system/
-    cp deploy/stocks-jetty.service $pkgdir/usr/lib/systemd/system/
-    cp deploy/stocks-ocsp.service $pkgdir/usr/lib/systemd/system/
+    cp deploy-server/stocks-jetty.service $pkgdir/usr/lib/systemd/system/
+    cp deploy-server/stocks-ocsp.service $pkgdir/usr/lib/systemd/system/
 
     mkdir -p $pkgdir/usr/share/licenses/$pkgname/
     cp LICENSE.md $pkgdir/usr/share/licenses/$pkgname/
+    
+    mkdir -p $pkgdir/var/log/stocks/
+    touch $pkgdir/var/log/stocks/stocks.log
 }

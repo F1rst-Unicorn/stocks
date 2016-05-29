@@ -1,0 +1,3 @@
+#!/usr/bin/bash
+
+java -jar $(cat /etc/stocks/stocks.properties) /opt/stocks-jetty/start.jar > /var/log/stocks/stocks.log 2> /var/log/stocks/stocks.log
