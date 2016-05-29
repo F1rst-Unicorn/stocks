@@ -248,24 +248,6 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public String getNewTicket() throws SQLException {
-
-        String ticket = generateTicket();
-        String command = "INSERT INTO Ticket (ticket, created_on) VALUES (?, ?)";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlStmt = con.prepareStatement(command)) {
-
-            java.util.Date now = new java.util.Date();
-            sqlStmt.setString(1, ticket);
-            java.sql.Timestamp timestamp = new java.sql.Timestamp(now.getTime());
-            sqlStmt.setTimestamp(2, timestamp);
-            sqlStmt.execute();
-        }
-
-        return ticket;
-    }
-
     public Location[] getLocations() throws SQLException {
 
         String query = "SELECT * " +

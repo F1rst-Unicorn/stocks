@@ -294,6 +294,7 @@ public class DatabaseManager {
                 if (i.eatByDate != null) {
                     f.add(i);
                 }
+                lastId = id;
             }
             result.add(f);
             return result.toArray(new FoodView[result.size()]);
@@ -329,6 +330,37 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getNextItem(int foodId) {
+
+
+        try {
+            Connection c = getConnection();
+
+            String query = "SELECT * " +
+                    "FROM Food_item " +
+                    "WHERE of_type=? " +
+                    "ORDER BY eat_by ASC " +
+                    "LIMIT 1";
+
+            PreparedStatement stmt = c.prepareStatement(query);
+            stmt.setInt(1, foodId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int result = rs.getInt("ID");
+                rs.close();
+                return result;
+            } else {
+                rs.close();
+                return -1;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public void writeAll(User[] users,
@@ -446,4 +478,6 @@ public class DatabaseManager {
         }
         return result;
     }
+
+
 }

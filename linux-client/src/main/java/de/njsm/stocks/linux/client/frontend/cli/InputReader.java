@@ -2,6 +2,9 @@ package de.njsm.stocks.linux.client.frontend.cli;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class InputReader {
 
@@ -91,6 +94,28 @@ public class InputReader {
         return result;
     }
 
+    public Date nextDate() {
+        SimpleDateFormat parser = new SimpleDateFormat("dd-MM-yy");
+        String input = next();
+        Date result = null;
+
+        while (result == null) {
+            try {
+                if (input.length() > 0 && input.charAt(0) == '+') {
+                    result = parseRelative(input);
+                } else {
+                    result = parser.parse(input);
+                }
+
+            } catch (ParseException e) {
+                System.out.print("Invalid date. Try again: ");
+                input = next();
+                result = null;
+            }
+        }
+        return result;
+    }
+
     public boolean getYesNo() {
         String input = next();
         return input.equals("y");
@@ -101,5 +126,29 @@ public class InputReader {
         int noEqual  = name.indexOf('=');
         return noDollar == -1 && noEqual == -1;
     }
+
+    protected Date parseRelative(String input) throws ParseException {
+        char unit = input.charAt(input.length()-1);
+        int amount;
+        try {
+            amount = Integer.parseInt(input.substring(1, input.length() - 1));
+        } catch (NumberFormatException e) {
+            throw new ParseException(input, 1);
+        }
+
+        Date result;
+        switch (unit) {
+            case 'd':
+                result = new Date(new Date().getTime() + amount * 1000L * 60L * 60L * 24L);
+                break;
+            case 'm':
+                result = new Date(new Date().getTime() + amount * 1000L * 60L * 60L * 24L * 30L);
+                break;
+            default:
+                throw new ParseException(input, input.length()-1);
+        }
+        return result;
+    }
+
 
 }

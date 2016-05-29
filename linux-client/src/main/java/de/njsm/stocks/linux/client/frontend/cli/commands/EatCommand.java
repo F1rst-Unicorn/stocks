@@ -6,15 +6,14 @@ import de.njsm.stocks.linux.client.data.FoodItem;
 import de.njsm.stocks.linux.client.data.Location;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class AddCommand extends Command {
+public class EatCommand extends Command {
 
-    public AddCommand(Configuration c) {
-        command = "add";
-        description = "Add a food item";
+    public EatCommand(Configuration c) {
+        command = "eat";
+        description = "Eat a food item";
         this.c = c;
 
     }
@@ -25,39 +24,37 @@ public class AddCommand extends Command {
             commands.get(0).equals("help")) {
             printHelp();
         } else {
-            addFood();
+            eatFood();
         }
     }
 
-    public void addFood() {
+    public void eatFood() {
         InputReader scanner = new InputReader(System.in);
-        System.out.print("What to add?  ");
+        System.out.print("What to eat?  ");
         String type = scanner.next();
-        System.out.print("Where is it stored?  ");
-        String location = scanner.next();
-        System.out.print("Eat before:  ");
-        Date date = scanner.nextDate();
-        addFood(type, location, date);
+        eatFood(type);
     }
 
-    public void addFood(String type, String location, Date date) {
+    public void eatFood(String type) {
         Food[] foods = c.getDatabaseManager().getFood(type);
         int foodId = FoodCommand.selectFood(foods, type);
-        Location[] locs = c.getDatabaseManager().getLocations(location);
-        int locId = LocationCommand.selectLocation(locs, location);
+        int itemId = c.getDatabaseManager().getNextItem(foodId);
 
-        if (foodId == -1 || locId == -1) {
+        if (foodId == -1) {
+            return;
+        }
+        if (itemId == -1) {
+            System.out.println("You don't have any " + type + "...");
             return;
         }
 
         FoodItem item = new FoodItem();
+        item.id = itemId;
         item.ofType = foodId;
-        item.storedIn = locId;
         item.buys = c.getUserId();
         item.registers = c.getDeviceId();
-        item.eatByDate = date;
 
-        c.getServerManager().addItem(item);
+        c.getServerManager().removeItem(item);
         (new RefreshCommand(c)).refreshFoodItems();
     }
 

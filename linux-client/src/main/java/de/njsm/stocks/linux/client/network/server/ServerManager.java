@@ -274,6 +274,34 @@ public class ServerManager {
         }
     }
 
+    public void addItem(FoodItem f) {
+        Call<Void> c = backend.addFoodItem(f);
+
+        try {
+            Response<Void> r = c.execute();
+
+            if (! r.isSuccess()) {
+                throw new RuntimeException("failed to add food item: " + r.message());
+            }
+        } catch (IOException e) {
+            error(e);
+        }
+    }
+
+    public void removeItem(FoodItem f) {
+        Call<Void> call = backend.removeFoodItem(f);
+
+        try {
+            Response<Void> r = call.execute();
+
+            if (!r.isSuccess()) {
+                throw new RuntimeException("failed to remove item: " + r.message());
+            }
+        } catch (IOException e) {
+            error(e);
+        }
+    }
+
     protected void error(IOException e) {
         System.out.println("No connection to server: " + e.getMessage());
     }
