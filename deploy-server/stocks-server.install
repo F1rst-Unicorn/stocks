@@ -11,6 +11,7 @@ post_install() {
     mkdir -p /usr/share/stocks/root/jetty-base/resources
     
     chown -R stocks:users /usr/share/stocks/root
+    chown -R stocks:users /var/log/stocks
     
     echo "See /usr/share/doc/stocks/README for configuration overview"
 }
