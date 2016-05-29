@@ -33,7 +33,6 @@ public class FoodEndpoint extends Endpoint {
         c.getLog().log(Level.INFO, "FoodEndpoint: Adding food " + food.name);
 
         try {
-            Principals uc = c.getContextFactory().getPrincipals (request);
             handler.addFood(food);
         } catch (SQLException | SecurityException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to add food: " + e.getMessage());
@@ -51,7 +50,6 @@ public class FoodEndpoint extends Endpoint {
         c.getLog().log(Level.INFO, "FoodEndpoint: Renaming food " + food.name + " -> " + newName);
 
         try {
-            Principals uc = c.getContextFactory().getPrincipals(request);
             handler.renameFood(food.id, newName);
         } catch (SQLException | SecurityException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to rename food: " + e.getMessage());
@@ -67,7 +65,6 @@ public class FoodEndpoint extends Endpoint {
         c.getLog().log(Level.INFO, "FoodEndpoint: Removing food " + food.name);
 
         try {
-            Principals uc = c.getContextFactory().getPrincipals(request);
             handler.removeFood(food.id);
         } catch (SQLException | SecurityException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to remove food: " + e.getMessage());
@@ -112,7 +109,6 @@ public class FoodEndpoint extends Endpoint {
         c.getLog().log(Level.INFO, "FoodEndpoint: Remove food item");
 
         try {
-            Principals uc = c.getContextFactory().getPrincipals(request);
             handler.removeFoodItem(item.id);
         } catch (SQLException | SecurityException e){
             c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to remove food item: " + e.getMessage());
