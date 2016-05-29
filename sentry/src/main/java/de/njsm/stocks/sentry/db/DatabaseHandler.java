@@ -16,7 +16,6 @@ public class DatabaseHandler {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("mysql driver not found");
         }
 
         validityTime = Integer.parseInt(
