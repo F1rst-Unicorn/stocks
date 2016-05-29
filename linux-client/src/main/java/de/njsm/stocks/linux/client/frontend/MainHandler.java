@@ -2,5 +2,5 @@ package de.njsm.stocks.linux.client.frontend;
 
 public interface MainHandler {
 
-    void run();
+    void run(String[] args);
 }

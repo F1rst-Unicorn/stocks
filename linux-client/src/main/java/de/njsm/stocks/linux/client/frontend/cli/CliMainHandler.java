@@ -28,22 +28,26 @@ public class CliMainHandler implements MainHandler {
     }
 
     @Override
-    public void run() {
+    public void run(String[] args) {
         boolean endRequested = false;
         InputReader source = new InputReader(System.in);
 
-        while (! endRequested) {
-            System.out.print("stocks $ ");
-            String command = source.next();
+        if (args.length > 0) {
+            m.handleCommand(parseCommand(args));
+        } else {
+            while (!endRequested) {
+                System.out.print("stocks $ ");
+                String command = source.next();
 
-            switch (command) {
-                case "quit":
-                    endRequested = true;
-                    break;
-                case "":
-                    break;
-                default:
-                    forwardCommand(command);
+                switch (command) {
+                    case "quit":
+                        endRequested = true;
+                        break;
+                    case "":
+                        break;
+                    default:
+                        forwardCommand(command);
+                }
             }
         }
     }
@@ -57,6 +61,12 @@ public class CliMainHandler implements MainHandler {
         String[] commands = command.split(" ");
         LinkedList<String> result = new LinkedList<>();
         Collections.addAll(result, commands);
+        return result;
+    }
+
+    public List<String> parseCommand(String[] commandArray) {
+        LinkedList<String> result = new LinkedList<>();
+        Collections.addAll(result, commandArray);
         return result;
     }
 }

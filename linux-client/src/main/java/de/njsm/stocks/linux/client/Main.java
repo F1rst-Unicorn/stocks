@@ -14,6 +14,6 @@ public class Main {
 
         c.loadConfig(f);
 
-        f.getMainHandler(c).run();
+        f.getMainHandler(c).run(args);
     }
 }
