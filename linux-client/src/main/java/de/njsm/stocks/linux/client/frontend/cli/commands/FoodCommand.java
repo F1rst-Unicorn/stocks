@@ -28,7 +28,7 @@ public class FoodCommand extends Command {
     @Override
     public void handle(List<String> commands) {
         if (commands.isEmpty()) {
-            new FoodListCommand(c).listFood();
+            new FoodListCommand(c).handle(commands);
         } else {
             m.handleCommand(commands);
         }

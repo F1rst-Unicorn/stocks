@@ -25,17 +25,24 @@ public class AddCommand extends Command {
         if (! commands.isEmpty() &&
             commands.get(0).equals("help")) {
             printHelp();
+        } else if (commands.size() == 1) {
+            addFood(commands.get(0));
         } else {
             addFood();
         }
     }
 
-
     public void addFood() {
+        InputReader scanner = new InputReader(System.in);
+        System.out.print("What to add?  ");
+        String type = scanner.next();
+        addFood(type);
+    }
+
+
+    public void addFood(String type) {
         try {
             InputReader scanner = new InputReader(System.in);
-            System.out.print("What to add?  ");
-            String type = scanner.next();
             Food[] foods = c.getDatabaseManager().getFood(type);
             int foodId = FoodCommand.selectFood(foods, type);
             int locId = selectLocation(foodId);
