@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-CA_ROOT=/usr/share/stocks/root/CA
+CA_ROOT=/usr/share/stocks-server/root/CA
 
 ## Set up the CA
 	cd $CA_ROOT
@@ -30,9 +30,9 @@ CA_ROOT=/usr/share/stocks/root/CA
     chmod 444 intermediate/certs/intermediate.cert.pem
     cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
     chmod 444 intermediate/certs/ca-chain.cert.pem
-    mkdir -p /usr/share/stocks/root/nginx
-    cp certs/ca.cert.pem /usr/share/stocks/root/nginx/ca
-    cp intermediate/certs/intermediate.cert.pem /usr/share/stocks/root/nginx/chain
+    mkdir -p /usr/share/stocks-server/root/nginx
+    cp certs/ca.cert.pem /usr/share/stocks-server/root/nginx/ca
+    cp intermediate/certs/intermediate.cert.pem /usr/share/stocks-server/root/nginx/chain
     
     ## Server certificate
     cd intermediate
