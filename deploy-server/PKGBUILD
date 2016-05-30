@@ -43,26 +43,26 @@ build() {
 package() {
     cd "$srcdir/stocks"
     
-    mkdir -p $pkgdir/usr/share/stocks
-    cp -r deploy-server/root $pkgdir/usr/share/stocks
-    cp deploy-server/schema.sql $pkgdir/usr/share/stocks/schema.sql
-    cp deploy-server/nginx.conf $pkgdir/usr/share/stocks/nginx.example.conf
+    mkdir -p $pkgdir/usr/share/$pkgname
+    cp -r deploy-server/root $pkgdir/usr/share/$pkgname
+    cp deploy-server/schema.sql $pkgdir/usr/share/$pkgname/schema.sql
+    cp deploy-server/nginx.conf $pkgdir/usr/share/$pkgname/nginx.example.conf
     
-    mkdir -p $pkgdir/usr/share/stocks/root/CA/intermediate
-    cp deploy-server/openssl.cnf $pkgdir/usr/share/stocks/root/CA/
-    cp deploy-server/openssl_intermediate.cnf $pkgdir/usr/share/stocks/root/CA/intermediate/openssl.cnf
+    mkdir -p $pkgdir/usr/share/$pkgname/root/CA/intermediate
+    cp deploy-server/openssl.cnf $pkgdir/usr/share/$pkgname/root/CA/
+    cp deploy-server/openssl_intermediate.cnf $pkgdir/usr/share/$pkgname/root/CA/intermediate/openssl.cnf
     
-    mkdir -p $pkgdir/usr/lib/stocks/
-    cp deploy-server/setup-ca $pkgdir/usr/lib/stocks/
-    cp deploy-server/server $pkgdir/usr/lib/stocks
-    chmod -R 755 $pkgdir/usr/lib/stocks/
+    mkdir -p $pkgdir/usr/lib/$pkgname/
+    cp deploy-server/setup-ca $pkgdir/usr/lib/$pkgname/
+    cp deploy-server/server $pkgdir/usr/lib/$pkgname/
+    chmod -R 755 $pkgdir/usr/lib/$pkgname
     
-    mkdir -p $pkgdir/etc/stocks/
-    cp deploy-server/stocks.properties $pkgdir/etc/stocks
+    mkdir -p $pkgdir/etc/$pkgname/
+    cp deploy-server/stocks.properties $pkgdir/etc/$pkgname
     
-    mkdir -p $pkgdir/usr/share/doc/stocks/
-    cp README.md $pkgdir/usr/share/doc/stocks/
-    chmod -R 755 $pkgdir/usr/share/doc/stocks/
+    mkdir -p $pkgdir/usr/share/doc/$pkgname
+    cp README.md $pkgdir/usr/share/doc/$pkgname
+    chmod -R 755 $pkgdir/usr/share/doc/$pkgname
     
     tar xzf jetty.tar.gz
     mkdir -p $pkgdir/opt/stocks-jetty
@@ -77,6 +77,6 @@ package() {
     mkdir -p $pkgdir/usr/share/licenses/$pkgname/
     cp LICENSE.md $pkgdir/usr/share/licenses/$pkgname/
     
-    mkdir -p $pkgdir/var/log/stocks/
-    touch $pkgdir/var/log/stocks/stocks.log
+    mkdir -p $pkgdir/var/log/$pkgname
+    touch $pkgdir/var/log/$pkgname/stocks.log
 }
