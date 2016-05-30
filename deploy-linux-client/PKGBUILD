@@ -29,7 +29,7 @@ package() {
     
     mkdir -p $pkgdir/usr/lib/stocks/
     cp linux-client/target/linux-client-${pkgver}-jar-with-dependencies.jar $pkgdir/usr/lib/stocks/client.jar
-    chmod -R 755 $pkgdir/usr/lib/stocks/
+    chmod -R 555 $pkgdir/usr/lib/stocks/
 
     mkdir -p $pkgdir/usr/bin/
     cp deploy-linux-client/client.sh $pkgdir/usr/bin/stocks

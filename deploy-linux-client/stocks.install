@@ -9,9 +9,8 @@ pre_install() {
 
 ## arg 1:  the new package version
 post_install() {
-
     echo ".read /usr/share/stocks/client/schema.sql" | sqlite3 /usr/share/stocks/client/proto.db
-    echo "Copy the file /usr/share/stocks/client/proto.db to HOME/.stocks/stocks.db before starting"
+    echo "Copy the file /usr/share/stocks/client/proto.db to your HOME/.stocks/stocks.db before starting"
 }
 
 ## arg 1:  the new package version
