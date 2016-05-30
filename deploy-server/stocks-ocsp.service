@@ -8,9 +8,9 @@ Type=simple
 User=stocks
 Group=users
 
-WorkingDirectory=/usr/share/stocks/root/CA/intermediate
+WorkingDirectory=/usr/share/stocks-server/root/CA/intermediate
 ExecStart=/usr/bin/openssl ocsp -port 127.0.0.1:10920 -text -sha256 -index index.txt -CA certs/ca-chain.cert.pem \
-      -rkey private/ocsp.key.pem -rsigner certs/ocsp.cert.pem > /var/log/stocks/stocks-ocsp.log 2> /var/log/stocks/stocks-ocsp.log
+      -rkey private/ocsp.key.pem -rsigner certs/ocsp.cert.pem > /var/log/stocks-server/stocks-ocsp.log 2> /var/log/stocks-server/stocks-ocsp.log
 
 KillSignal=SIGINT
 
