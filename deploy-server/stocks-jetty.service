@@ -8,8 +8,8 @@ Type=simple
 User=stocks
 Group=users
 
-WorkingDirectory=/usr/share/stocks/root/jetty-base
-ExecStart=/usr/lib/stocks/server
+WorkingDirectory=/usr/share/stocks-server/root/jetty-base
+ExecStart=/usr/lib/stocks-server/server
 
 KillSignal=SIGTERM
 
