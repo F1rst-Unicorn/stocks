@@ -1,0 +1,37 @@
+# This is a default template for a post-install scriptlet.
+# Uncomment only required functions and remove any functions
+# you don't need (and this header).
+
+## arg 1:  the new package version
+#pre_install() {
+	# do something here
+#}
+
+## arg 1:  the new package version
+post_install() {
+
+    echo ".read /usr/share/stocks/client/schema.sql" | sqlite3 /usr/share/stocks/client/proto.db
+    echo "Copy the file /usr/share/stocks/client/proto.db to HOME/.stocks/stocks.db before starting"
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+#pre_upgrade() {
+	# do something here
+#}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+#post_upgrade() {
+	# do something here
+#}
+
+## arg 1:  the old package version
+#pre_remove() {
+	# do something here
+#}
+
+## arg 1:  the old package version
+#post_remove() {
+	rm -rf /usr/share/stocks/client
+#}
