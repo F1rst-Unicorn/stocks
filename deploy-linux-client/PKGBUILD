@@ -37,7 +37,7 @@ package() {
     
     mkdir -p $pkgdir/usr/share/stocks/client
     cp deploy-linux-client/schema.sql $pkgdir/usr/share/stocks/client/
-    chmod 444 $pkgdir/usr/share/stocks/schema.sql
+    chmod 444 $pkgdir/usr/share/stocks/client/schema.sql
 
     mkdir -p $pkgdir/usr/share/licenses/$pkgname/
     cp LICENSE.md $pkgdir/usr/share/licenses/$pkgname/
