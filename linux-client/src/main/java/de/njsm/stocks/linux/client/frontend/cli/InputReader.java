@@ -1,7 +1,11 @@
 package de.njsm.stocks.linux.client.frontend.cli;
 
+import jline.console.ConsoleReader;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,6 +13,8 @@ import java.util.Date;
 public class InputReader {
 
     protected final InputStream in;
+
+
 
     public InputReader(InputStream input) {
         in = input;
@@ -148,6 +154,10 @@ public class InputReader {
                 throw new ParseException(input, input.length()-1);
         }
         return result;
+    }
+
+    public void shutdown() {
+
     }
 
 

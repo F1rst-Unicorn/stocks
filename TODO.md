@@ -1,6 +1,5 @@
 # Things to implement
 
-* Add history for shell commands
 * Add food listing without dates
 * Add query for food to eat
 * Add food listing of present items

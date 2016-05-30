@@ -30,13 +30,13 @@ public class CliMainHandler implements MainHandler {
     @Override
     public void run(String[] args) {
         boolean endRequested = false;
-        InputReader source = new InputReader(System.in);
+        InputReader source = new EnhancedInputReader(System.in);
 
         if (args.length > 0) {
             m.handleCommand(parseCommand(args));
         } else {
             while (!endRequested) {
-                System.out.print("stocks $ ");
+                //System.out.print("stocks $ ");
                 String command = source.next();
 
                 switch (command) {
@@ -50,6 +50,7 @@ public class CliMainHandler implements MainHandler {
                 }
             }
         }
+        source.shutdown();
     }
 
     public void forwardCommand(String command) {
