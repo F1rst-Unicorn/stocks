@@ -1,0 +1,41 @@
+# Maintainer: aliena <dairyman@njsm.de>
+pkgname=stocks
+pkgver=0.1
+pkgrel=1
+pkgdesc="Manages a household's stocks client"
+arch=('i686' 'x86_64')
+url="https://github.com/F1rst-Unicorn/stocks"
+license=('MIT')
+depends=('jre8-openjdk'
+         'java-environment'
+         'sqlite'
+         )
+makedepends=('git'
+			 'maven')
+source=("git://www.github.com/F1rst-Unicorn/stocks")
+sha512sums=('SKIP')
+install=stocks.install
+
+build() {
+    cd "$srcdir/stocks"
+
+    cd linux-client
+    mvn -Dmaven.test.skip=true package
+    cd ..
+}
+
+package() {
+    cd "$srcdir/stocks"
+    
+    mkdir -p $pkgdir/usr/lib/stocks/
+    cp linux-client/target/linux-client-${pkgver}-jar-with-dependencies.jar $pkgdir/usr/lib/stocks/client.jar
+    chmod -R 755 $pkgdir/usr/lib/stocks/
+
+    mkdir -p $pkgdir/usr/bin/
+    cp deploy-linux-client/client.sh $pkgdir/usr/bin/stocks
+    chmod 555 $pkgdir/usr/bin/stocks
+    
+    mkdir -p $pkgdir/usr/share/licenses/$pkgname/
+    cp LICENSE.md $pkgdir/usr/share/licenses/$pkgname/
+    
+}
