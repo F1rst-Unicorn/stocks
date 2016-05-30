@@ -11,3 +11,4 @@ target
 
 *.war
 *.pkg.tar.xz
+deploy*/stocks/
