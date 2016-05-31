@@ -27,17 +27,15 @@ public class DeviceAddCommand extends Command {
     }
 
     public void addDevice() {
-        InputReader scanner = new InputReader(System.in);
         System.out.print("Creating a new device\nName: ");
-        String name = scanner.nextName();
+        String name = c.getReader().nextName();
         System.out.print("Who is the owner?  ");
-        String user = scanner.next();
+        String user = c.getReader().next();
         addDevice(name, user);
     }
 
     public void addDevice(String name, String username) {
         try {
-            InputReader scanner = new InputReader(System.in);
             int userId = UserCommand.selectUser(
                     c.getDatabaseManager().getUsers(username),
                     username);
@@ -46,7 +44,7 @@ public class DeviceAddCommand extends Command {
 
             System.out.print("Create new device '" + name + "' for user '" +
                     username + "'? [y/N]  ");
-            if (scanner.getYesNo()) {
+            if (c.getReader().getYesNo()) {
                 UserDevice d = new UserDevice();
                 d.name = name;
                 d.userId = userId;

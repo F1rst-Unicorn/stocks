@@ -25,11 +25,10 @@ public class FoodRenameCommand extends Command {
     }
 
     public void renameFood() {
-        InputReader scanner = new InputReader(System.in);
         System.out.print("Rename a food type\nName: ");
-        String name = scanner.next();
+        String name = c.getReader().next();
         System.out.print("New name: ");
-        String newName = scanner.next();
+        String newName = c.getReader().next();
         renameFood(name, newName);
     }
 

@@ -24,9 +24,8 @@ public class LocationAddCommand extends Command {
     }
 
     public void addLocation() {
-        InputReader scanner = new InputReader(System.in);
         System.out.print("Creating a new location\nName: ");
-        String name = scanner.nextName();
+        String name = c.getReader().nextName();
         addLocation(name);
     }
 

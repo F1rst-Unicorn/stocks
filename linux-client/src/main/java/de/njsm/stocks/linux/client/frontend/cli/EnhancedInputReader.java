@@ -17,7 +17,6 @@ public class EnhancedInputReader extends InputReader {
         super(input);
         try {
             reader = new ConsoleReader();
-            reader.setPrompt("stocks $ ");
 
             History file = new FileHistory(new File(Configuration.stocksHome + "/history"));
             reader.setHistory(file);

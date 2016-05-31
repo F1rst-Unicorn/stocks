@@ -26,7 +26,7 @@ public class FoodListCommand extends Command {
         FoodView[] food = c.getDatabaseManager().getItems();
 
         if (food.length == 0) {
-            System.out.println("No food here...");
+            System.out.println("\tNo food here...");
             return;
         }
 

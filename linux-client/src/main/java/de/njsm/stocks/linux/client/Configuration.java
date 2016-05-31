@@ -2,6 +2,8 @@ package de.njsm.stocks.linux.client;
 
 import com.squareup.okhttp.OkHttpClient;
 import de.njsm.stocks.linux.client.frontend.UIFactory;
+import de.njsm.stocks.linux.client.frontend.cli.EnhancedInputReader;
+import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 import de.njsm.stocks.linux.client.network.server.ServerManager;
 import de.njsm.stocks.linux.client.storage.DatabaseManager;
 
@@ -48,6 +50,7 @@ public class Configuration {
     protected final Logger log;
     protected ServerManager sm;
     protected DatabaseManager dm;
+    protected final InputReader r;
 
     public Configuration () {
 
@@ -57,6 +60,8 @@ public class Configuration {
         handler.setFormatter(new SimpleFormatter());
         handler.setLevel(Level.ALL);
         log.addHandler(handler);
+
+        r = new EnhancedInputReader(System.in);
     }
 
     public boolean hasConfig() {
@@ -151,6 +156,10 @@ public class Configuration {
             dm = new DatabaseManager();
         }
         return dm;
+    }
+
+    public InputReader getReader() {
+        return r;
     }
 
     public void setServerName(String serverName) {

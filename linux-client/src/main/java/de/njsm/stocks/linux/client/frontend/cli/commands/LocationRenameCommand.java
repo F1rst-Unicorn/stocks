@@ -25,11 +25,10 @@ public class LocationRenameCommand extends Command {
     }
 
     public void renameLocation() {
-        InputReader scanner = new InputReader(System.in);
         System.out.print("Rename a location\nName: ");
-        String name = scanner.next();
+        String name = c.getReader().next();
         System.out.print("New name: ");
-        String newName = scanner.next();
+        String newName = c.getReader().next();
         renameLocation(name, newName);
     }
 

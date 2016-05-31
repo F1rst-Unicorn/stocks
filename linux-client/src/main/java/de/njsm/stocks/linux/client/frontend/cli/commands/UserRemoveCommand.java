@@ -25,9 +25,8 @@ public class UserRemoveCommand extends Command {
     }
 
     public void removeUser() {
-        InputReader scanner = new InputReader(System.in);
         System.out.print("Remove a user\nName: ");
-        String name = scanner.next();
+        String name = c.getReader().next();
         removeUser(name);
     }
 

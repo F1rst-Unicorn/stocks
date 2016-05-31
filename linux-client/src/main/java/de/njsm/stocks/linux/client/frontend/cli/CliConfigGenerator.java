@@ -4,6 +4,12 @@ import de.njsm.stocks.linux.client.frontend.ConfigGenerator;
 
 public class CliConfigGenerator implements ConfigGenerator {
 
+    protected InputReader reader;
+
+    public CliConfigGenerator() {
+        reader = new EnhancedInputReader(System.in);
+    }
+
     @Override
     public void startUp() {
         System.out.println("Welcome to stocks.\nThis is the first time you use the app, please follow\n" +
@@ -13,7 +19,7 @@ public class CliConfigGenerator implements ConfigGenerator {
     @Override
     public String getServerName() {
         System.out.print("Please give the URL of the server (localhost): ");
-        String serverName = readLine();
+        String serverName = reader.next();
         return serverName.equals("") ? "localhost" : serverName;
     }
 
@@ -31,7 +37,7 @@ public class CliConfigGenerator implements ConfigGenerator {
             success = false;
             while (!success) {
                 try {
-                    String value = readLine();
+                    String value = reader.next();
                     port = value.equals("") ? defaults[i] : Integer.parseInt(value);
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid number, expecting only digits, range 1-65535");
@@ -51,8 +57,4 @@ public class CliConfigGenerator implements ConfigGenerator {
         System.out.println("Configuration successful");
     }
 
-    public String readLine() {
-        InputReader scanner = new InputReader(System.in);
-        return scanner.next();
-    }
 }

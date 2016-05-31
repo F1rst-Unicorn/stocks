@@ -33,22 +33,20 @@ public class AddCommand extends Command {
     }
 
     public void addFood() {
-        InputReader scanner = new InputReader(System.in);
         System.out.print("What to add?  ");
-        String type = scanner.next();
+        String type = c.getReader().next();
         addFood(type);
     }
 
 
     public void addFood(String type) {
         try {
-            InputReader scanner = new InputReader(System.in);
             Food[] foods = c.getDatabaseManager().getFood(type);
             int foodId = FoodCommand.selectFood(foods, type);
             int locId = selectLocation(foodId);
 
             System.out.print("Eat before:  ");
-            Date date = scanner.nextDate();
+            Date date = c.getReader().nextDate();
 
             FoodItem item = new FoodItem();
             item.ofType = foodId;
@@ -65,7 +63,6 @@ public class AddCommand extends Command {
     }
 
     protected int selectLocation(int foodId) throws SelectException {
-        InputReader scanner = new InputReader(System.in);
         Location[] l = c.getDatabaseManager().getLocationsForFoodType(foodId);
 
         if (l.length == 0) {
@@ -77,7 +74,7 @@ public class AddCommand extends Command {
                 System.out.println("\t" + loc.id + ": " + loc.name);
             }
             System.out.print("Choose one or type -1 for new location (default " + l[0].id + "): ");
-            result = scanner.nextInt(l[0].id);
+            result = c.getReader().nextInt(l[0].id);
 
             if (result == -1) {
                 return selectLocation();
@@ -88,9 +85,8 @@ public class AddCommand extends Command {
     }
 
     protected int selectLocation() throws SelectException {
-        InputReader scanner = new InputReader(System.in);
         System.out.print("Where is it stored?  ");
-        String location = scanner.next();
+        String location = c.getReader().next();
         Location[] locs = c.getDatabaseManager().getLocations(location);
         return LocationCommand.selectLocation(locs, location);
     }
