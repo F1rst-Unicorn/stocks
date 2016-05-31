@@ -15,5 +15,4 @@
 # Open issues
 * setup-ca script emits "unable to write random state"
 * First server access to database crashes due to driver not found
-* Client crashes if server crashes
 * nginx ignores OCSP field

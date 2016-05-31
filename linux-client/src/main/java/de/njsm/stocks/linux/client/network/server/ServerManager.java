@@ -10,6 +10,7 @@ import java.util.logging.Level;
 public class ServerManager {
 
     protected ServerClient backend;
+    protected Configuration c;
 
     public ServerManager(Configuration c) {
         try {
@@ -24,43 +25,44 @@ public class ServerManager {
                     .build();
 
             backend = retrofit.create(ServerClient.class);
+            this.c = c;
         } catch (Exception e) {
             c.getLog().log(Level.SEVERE, "Failed to set up ServerManager: " + e.getMessage());
         }
     }
 
     public Update[] getUpdates() {
-        Call<Update[]> u = backend.getUpdates();
+        Call<Update[]> call = backend.getUpdates();
 
         try {
-            Response<Update[]> r = u.execute();
+            Response<Update[]> r = call.execute();
 
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                throw new RuntimeException("failed to retrieve updates: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to retrieve updates: " + r.message());
             }
         } catch (IOException e) {
             error(e);
-            return new Update[0];
         }
+        return new Update[0];
     }
 
     public User[] getUsers() {
-        Call<User[]> u = backend.getUsers();
+        Call<User[]> call = backend.getUsers();
 
         try {
-            Response<User[]> r = u.execute();
+            Response<User[]> r = call.execute();
 
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                throw new RuntimeException("failed to retrieve users: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to retrieve users: " + r.message());
             }
         } catch (IOException e) {
             error(e);
-            return new User[0];
         }
+        return new User[0];
     }
 
     public void addUser(User u) {
@@ -70,7 +72,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                throw new RuntimeException("failed to create user: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to create user: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -84,7 +86,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                throw new RuntimeException("failed to remove user: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to remove user: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -100,12 +102,12 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                throw new RuntimeException("failed to retrieve devices: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to retrieve devices: " + r.message());
             }
         } catch (IOException e) {
             error(e);
-            return new UserDevice[0];
         }
+        return new UserDevice[0];
     }
 
     public Ticket addDevice(UserDevice d) {
@@ -115,7 +117,7 @@ public class ServerManager {
             Response<Ticket> r = call.execute();
 
             if (!r.isSuccess()) {
-                throw new RuntimeException("failed to create device: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to create device: " + r.message());
             } else {
                 return r.body();
             }
@@ -132,7 +134,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                throw new RuntimeException("failed to remove device: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to remove device: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -148,22 +150,22 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                throw new RuntimeException("failed to retrieve locations: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to retrieve locations: " + r.message());
             }
         } catch (IOException e) {
             error(e);
-            return new Location[0];
         }
+        return new Location[0];
     }
 
     public void addLocation(Location l) {
-        Call<Void> c = backend.addLocation(l);
+        Call<Void> call = backend.addLocation(l);
 
         try {
-            Response<Void> r = c.execute();
+            Response<Void> r = call.execute();
 
             if (! r.isSuccess()) {
-                throw new RuntimeException("failed to add location: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to add location: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -171,13 +173,13 @@ public class ServerManager {
     }
 
     public void removeLocation(Location l) {
-        Call<Void> c = backend.removeLocation(l);
+        Call<Void> call = backend.removeLocation(l);
 
         try {
-            Response<Void> r = c.execute();
+            Response<Void> r = call.execute();
 
             if (! r.isSuccess()) {
-                throw new RuntimeException("failed to remove location: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to remove location: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -185,13 +187,13 @@ public class ServerManager {
     }
 
     public void renameLocation(Location l, String newName) {
-        Call<Void> c = backend.renameLocation(l, newName);
+        Call<Void> call = backend.renameLocation(l, newName);
 
         try {
-            Response<Void> r = c.execute();
+            Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                throw new RuntimeException("failed to rename location: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to rename location: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -207,22 +209,22 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                throw new RuntimeException("failed to retrieve food: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to retrieve food: " + r.message());
             }
         } catch (IOException e) {
             error(e);
-            return new Food[0];
         }
+        return new Food[0];
     }
 
     public void addFood(Food f) {
-        Call<Void> c = backend.addFood(f);
+        Call<Void> call = backend.addFood(f);
 
         try {
-            Response<Void> r = c.execute();
+            Response<Void> r = call.execute();
 
             if (! r.isSuccess()) {
-                throw new RuntimeException("failed to add food: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to add food: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -230,13 +232,13 @@ public class ServerManager {
     }
 
     public void removeFood(Food f) {
-        Call<Void> c = backend.removeFood(f);
+        Call<Void> call = backend.removeFood(f);
 
         try {
-            Response<Void> r = c.execute();
+            Response<Void> r = call.execute();
 
             if (! r.isSuccess()) {
-                throw new RuntimeException("failed to remove food: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to remove food: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -244,13 +246,13 @@ public class ServerManager {
     }
 
     public void renameFood(Food f, String newName) {
-        Call<Void> c = backend.renameFood(f, newName);
+        Call<Void> call = backend.renameFood(f, newName);
 
         try {
-            Response<Void> r = c.execute();
+            Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                throw new RuntimeException("failed to rename food: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to rename food: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -266,22 +268,22 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                throw new RuntimeException("failed to retrieve food items: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to retrieve food items: " + r.message());
             }
         } catch (IOException e) {
             error(e);
-            return new FoodItem[0];
         }
+        return new FoodItem[0];
     }
 
     public void addItem(FoodItem f) {
-        Call<Void> c = backend.addFoodItem(f);
+        Call<Void> call = backend.addFoodItem(f);
 
         try {
-            Response<Void> r = c.execute();
+            Response<Void> r = call.execute();
 
             if (! r.isSuccess()) {
-                throw new RuntimeException("failed to add food item: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to add food item: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -295,7 +297,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                throw new RuntimeException("failed to remove item: " + r.message());
+                c.getLog().log(Level.SEVERE, "failed to remove item: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -303,7 +305,7 @@ public class ServerManager {
     }
 
     protected void error(IOException e) {
-        System.out.println("No connection to server: " + e.getMessage());
+        c.getLog().log(Level.SEVERE, "No connection to server: " + e.getMessage());
     }
 
 }
