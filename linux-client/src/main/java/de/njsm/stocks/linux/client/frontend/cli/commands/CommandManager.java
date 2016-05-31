@@ -4,14 +4,14 @@ import java.util.List;
 
 public class CommandManager {
 
-    protected final List<Command> commandHandler;
+    protected final List<CommandHandler> commandHandler;
     protected final String prefix;
 
-    public CommandManager(List<Command> commands) {
+    public CommandManager(List<CommandHandler> commands) {
         this(commands, "");
     }
 
-    public CommandManager(List<Command> commands, String prefix) {
+    public CommandManager(List<CommandHandler> commands, String prefix) {
         commandHandler = commands;
         this.prefix = prefix;
     }
@@ -24,7 +24,7 @@ public class CommandManager {
             commandFound = true;
         }
 
-        for (Command c : commandHandler) {
+        for (CommandHandler c : commandHandler) {
             if (c.canHandle(commandList.get(0))){
                 commandList.remove(0);
                 if (!commandList.isEmpty() && commandList.get(0).equals("help")) {
@@ -49,7 +49,7 @@ public class CommandManager {
             System.out.println("Possible commands for " + prefix + ":");
         }
 
-        for (Command c : commandHandler){
+        for (CommandHandler c : commandHandler){
             System.out.println("\t" + prefix + " " + c.toString());
         }
         System.out.println("Type '<command> help' for specific help to that command");

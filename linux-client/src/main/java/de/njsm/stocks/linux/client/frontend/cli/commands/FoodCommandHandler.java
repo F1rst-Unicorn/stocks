@@ -8,27 +8,27 @@ import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoodCommand extends Command {
+public class FoodCommandHandler extends CommandHandler {
 
     protected final CommandManager m;
 
-    public FoodCommand(Configuration c) {
+    public FoodCommandHandler(Configuration c) {
         command = "food";
         description = "Manage the food types";
         this.c = c;
 
-        List<Command> commands = new ArrayList<>();
-        commands.add(new FoodAddCommand(c));
-        commands.add(new FoodListCommand(c));
-        commands.add(new FoodRenameCommand(c));
-        commands.add(new FoodRemoveCommand(c));
+        List<CommandHandler> commands = new ArrayList<>();
+        commands.add(new FoodAddCommandHandler(c));
+        commands.add(new FoodListCommandHandler(c));
+        commands.add(new FoodRenameCommandHandler(c));
+        commands.add(new FoodRemoveCommandHandler(c));
         m = new CommandManager(commands, command);
     }
 
     @Override
     public void handle(List<String> commands) {
         if (commands.isEmpty()) {
-            new FoodListCommand(c).handle(commands);
+            new FoodListCommandHandler(c).handle(commands);
         } else {
             m.handleCommand(commands);
         }

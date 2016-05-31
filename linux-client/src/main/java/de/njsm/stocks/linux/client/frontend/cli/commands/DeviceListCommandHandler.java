@@ -5,9 +5,9 @@ import de.njsm.stocks.linux.client.data.view.UserDeviceView;
 
 import java.util.List;
 
-public class DeviceListCommand extends Command {
+public class DeviceListCommandHandler extends CommandHandler {
 
-    public DeviceListCommand(Configuration c) {
+    public DeviceListCommandHandler(Configuration c) {
         this.c = c;
         this.command = "list";
         this.description = "List all the devices";

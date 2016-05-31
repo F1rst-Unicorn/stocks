@@ -15,14 +15,14 @@ public class CliMainHandler implements MainHandler {
     public CliMainHandler(Configuration c) {
         this.c = c;
 
-        ArrayList<Command> commandHandler = new ArrayList<>();
-        commandHandler.add(new AddCommand(c));
-        commandHandler.add(new EatCommand(c));
-        commandHandler.add(new FoodCommand(c));
-        commandHandler.add(new LocationCommand(c));
-        commandHandler.add(new RefreshCommand(c));
-        commandHandler.add(new UserCommand(c));
-        commandHandler.add(new DeviceCommand(c));
+        ArrayList<CommandHandler> commandHandler = new ArrayList<>();
+        commandHandler.add(new AddCommandHandlerHandler(c));
+        commandHandler.add(new EatCommandHandler(c));
+        commandHandler.add(new FoodCommandHandler(c));
+        commandHandler.add(new LocationCommandHandler(c));
+        commandHandler.add(new RefreshCommandHandler(c));
+        commandHandler.add(new UserCommandHandler(c));
+        commandHandler.add(new DeviceCommandHandler(c));
 
         m = new CommandManager(commandHandler);
     }

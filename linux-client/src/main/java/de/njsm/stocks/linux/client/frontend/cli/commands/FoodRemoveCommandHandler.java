@@ -3,13 +3,12 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Food;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
-import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
 
-public class FoodRemoveCommand extends Command {
+public class FoodRemoveCommandHandler extends CommandHandler {
 
-    public FoodRemoveCommand(Configuration c) {
+    public FoodRemoveCommandHandler(Configuration c) {
         this.c = c;
         this.command = "remove";
         this.description = "Remove food from the system";
@@ -32,12 +31,12 @@ public class FoodRemoveCommand extends Command {
     public void removeFood(String name) {
         try {
             Food[] f = c.getDatabaseManager().getFood(name);
-            int id = FoodCommand.selectFood(f, name);
+            int id = FoodCommandHandler.selectFood(f, name);
 
             for (Food food : f) {
                 if (food.id == id) {
                     c.getServerManager().removeFood(food);
-                    (new RefreshCommand(c)).refreshFood();
+                    (new RefreshCommandHandler(c)).refreshFood();
                 }
             }
         } catch (SelectException e) {

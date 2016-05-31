@@ -5,13 +5,12 @@ import de.njsm.stocks.linux.client.data.Ticket;
 import de.njsm.stocks.linux.client.data.UserDevice;
 import de.njsm.stocks.linux.client.data.view.UserDeviceView;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
-import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
 
-public class DeviceAddCommand extends Command {
+public class DeviceAddCommandHandler extends CommandHandler {
 
-    public DeviceAddCommand(Configuration c) {
+    public DeviceAddCommandHandler(Configuration c) {
         this.c = c;
         this.command = "add";
         this.description = "Add a device";
@@ -34,7 +33,7 @@ public class DeviceAddCommand extends Command {
 
     public void addDevice(String name, String username) {
         try {
-            int userId = UserCommand.selectUser(
+            int userId = UserCommandHandler.selectUser(
                     c.getDatabaseManager().getUsers(username),
                     username);
             Ticket ticket;
@@ -48,7 +47,7 @@ public class DeviceAddCommand extends Command {
                 d.userId = userId;
                 try {
                     ticket = c.getServerManager().addDevice(d);
-                    (new RefreshCommand(c)).refreshDevices();
+                    (new RefreshCommandHandler(c)).refreshDevices();
 
                     UserDeviceView[] devices = c.getDatabaseManager().getDevices(d.name);
 

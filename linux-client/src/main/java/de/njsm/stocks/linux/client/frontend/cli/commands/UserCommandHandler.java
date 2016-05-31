@@ -8,26 +8,26 @@ import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UserCommand extends Command {
+public class UserCommandHandler extends CommandHandler {
 
     protected final CommandManager m;
 
-    public UserCommand(Configuration c) {
+    public UserCommandHandler(Configuration c) {
         command = "user";
         description = "Manage the users of the stocks system";
         this.c = c;
 
-        List<Command> commandList = new LinkedList<>();
-        commandList.add(new UserAddCommand(c));
-        commandList.add(new UserListCommand(c));
-        commandList.add(new UserRemoveCommand(c));
+        List<CommandHandler> commandList = new LinkedList<>();
+        commandList.add(new UserAddCommandHandler(c));
+        commandList.add(new UserListCommandHandler(c));
+        commandList.add(new UserRemoveCommandHandler(c));
         m = new CommandManager(commandList, "user");
     }
 
     @Override
     public void handle(List<String> commands) {
         if (commands.isEmpty()) {
-            new UserListCommand(c).listUsers();
+            new UserListCommandHandler(c).listUsers();
         } else {
             m.handleCommand(commands);
         }

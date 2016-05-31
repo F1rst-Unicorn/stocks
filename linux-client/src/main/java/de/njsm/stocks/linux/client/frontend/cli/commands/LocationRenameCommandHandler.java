@@ -3,13 +3,12 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Location;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
-import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
 
-public class LocationRenameCommand extends Command {
+public class LocationRenameCommandHandler extends CommandHandler {
 
-    public LocationRenameCommand (Configuration c) {
+    public LocationRenameCommandHandler(Configuration c) {
         this.c = c;
         this.command = "rename";
         this.description = "Rename a location";
@@ -33,12 +32,12 @@ public class LocationRenameCommand extends Command {
     public void renameLocation(String name, String newName) {
         try {
             Location[] l = c.getDatabaseManager().getLocations(name);
-            int id = LocationCommand.selectLocation(l, name);
+            int id = LocationCommandHandler.selectLocation(l, name);
 
             for (Location loc : l) {
                 if (loc.id == id){
                     c.getServerManager().renameLocation(loc, newName);
-                    (new RefreshCommand(c)).refreshLocations();
+                    (new RefreshCommandHandler(c)).refreshLocations();
                 }
             }
 

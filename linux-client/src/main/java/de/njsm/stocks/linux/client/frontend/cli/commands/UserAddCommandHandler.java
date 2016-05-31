@@ -6,9 +6,9 @@ import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
 
-public class UserAddCommand extends Command {
+public class UserAddCommandHandler extends CommandHandler {
 
-    public UserAddCommand(Configuration c) {
+    public UserAddCommandHandler(Configuration c) {
         this.c = c;
         this.command = "add";
         this.description = "Add a new user";
@@ -39,6 +39,6 @@ public class UserAddCommand extends Command {
 
         c.getServerManager().addUser(u);
 
-        (new RefreshCommand(c)).refreshUsers();
+        (new RefreshCommandHandler(c)).refreshUsers();
     }
 }

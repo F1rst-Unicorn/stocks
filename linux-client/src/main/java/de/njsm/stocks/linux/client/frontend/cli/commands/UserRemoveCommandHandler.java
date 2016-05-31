@@ -3,13 +3,12 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.User;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
-import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
 
-public class UserRemoveCommand extends Command {
+public class UserRemoveCommandHandler extends CommandHandler {
 
-    public UserRemoveCommand(Configuration c) {
+    public UserRemoveCommandHandler(Configuration c) {
         this.c = c;
         this.command = "remove";
         this.description = "Remove a user";
@@ -32,12 +31,12 @@ public class UserRemoveCommand extends Command {
     public void removeUser(String name) {
         try {
             User[] users = c.getDatabaseManager().getUsers(name);
-            int id = UserCommand.selectUser(users, name);
+            int id = UserCommandHandler.selectUser(users, name);
 
             for (User u : users) {
                 if (u.id == id) {
                     c.getServerManager().removeUser(u);
-                    (new RefreshCommand(c)).refreshUsers();
+                    (new RefreshCommandHandler(c)).refreshUsers();
                 }
             }
         } catch (SelectException e) {

@@ -5,9 +5,9 @@ import de.njsm.stocks.linux.client.data.Location;
 
 import java.util.List;
 
-public class LocationListCommand extends Command {
+public class LocationListCommandHandler extends CommandHandler {
 
-    public LocationListCommand(Configuration c) {
+    public LocationListCommandHandler(Configuration c) {
         this.c = c;
         this.command = "list";
         this.description = "List the available food locations";

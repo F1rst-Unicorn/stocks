@@ -4,7 +4,7 @@ import de.njsm.stocks.linux.client.Configuration;
 
 import java.util.List;
 
-public abstract class Command {
+public abstract class CommandHandler {
 
     protected String command;
     protected String description;

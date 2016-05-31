@@ -4,13 +4,12 @@ import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.UserDevice;
 import de.njsm.stocks.linux.client.data.view.UserDeviceView;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
-import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
 
-public class DeviceRemoveCommand extends Command {
+public class DeviceRemoveCommandHandler extends CommandHandler {
 
-    public DeviceRemoveCommand(Configuration c) {
+    public DeviceRemoveCommandHandler(Configuration c) {
         this.c = c;
         this.command = "remove";
         this.description = "Remove a device";
@@ -33,7 +32,7 @@ public class DeviceRemoveCommand extends Command {
     public void removeDevice(String name) {
         try {
             UserDeviceView[] devices = c.getDatabaseManager().getDevices(name);
-            int id = DeviceCommand.selectDevice(devices, name);
+            int id = DeviceCommandHandler.selectDevice(devices, name);
 
             for (UserDeviceView d : devices) {
                 if (d.id == id) {
@@ -41,7 +40,7 @@ public class DeviceRemoveCommand extends Command {
                     rawDevice.id = d.id;
                     rawDevice.name = d.name;
                     c.getServerManager().removeDevice(rawDevice);
-                    (new RefreshCommand(c)).refreshDevices();
+                    (new RefreshCommandHandler(c)).refreshDevices();
                 }
             }
         } catch (SelectException e) {

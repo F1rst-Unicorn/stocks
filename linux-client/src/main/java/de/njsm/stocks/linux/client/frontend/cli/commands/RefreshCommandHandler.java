@@ -8,9 +8,9 @@ import de.njsm.stocks.linux.client.storage.DatabaseManager;
 import java.util.List;
 import java.util.logging.Level;
 
-public class RefreshCommand extends Command {
+public class RefreshCommandHandler extends CommandHandler {
 
-    public RefreshCommand(Configuration c) {
+    public RefreshCommandHandler(Configuration c) {
         this.c = c;
         command = "refresh";
         description = "Refresh the stocks system from the server";

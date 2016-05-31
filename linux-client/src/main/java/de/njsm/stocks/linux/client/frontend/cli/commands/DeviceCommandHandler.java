@@ -8,26 +8,26 @@ import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DeviceCommand extends Command {
+public class DeviceCommandHandler extends CommandHandler {
 
     protected final CommandManager m;
 
-    public DeviceCommand(Configuration c) {
+    public DeviceCommandHandler(Configuration c) {
         this.c = c;
         this.command = "dev";
         this.description = "Manage the devices accessing the stocks system";
 
-        List<Command> commandList = new LinkedList<>();
-        commandList.add(new DeviceAddCommand(c));
-        commandList.add(new DeviceListCommand(c));
-        commandList.add(new DeviceRemoveCommand(c));
+        List<CommandHandler> commandList = new LinkedList<>();
+        commandList.add(new DeviceAddCommandHandler(c));
+        commandList.add(new DeviceListCommandHandler(c));
+        commandList.add(new DeviceRemoveCommandHandler(c));
         this.m = new CommandManager(commandList, command);
     }
 
     @Override
     public void handle(List<String> commands) {
         if (commands.isEmpty()) {
-            new DeviceListCommand(c).listDevices();
+            new DeviceListCommandHandler(c).listDevices();
         } else {
             m.handleCommand(commands);
         }

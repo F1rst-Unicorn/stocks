@@ -5,9 +5,9 @@ import de.njsm.stocks.linux.client.data.User;
 
 import java.util.List;
 
-public class UserListCommand extends Command {
+public class UserListCommandHandler extends CommandHandler {
 
-    public UserListCommand(Configuration c) {
+    public UserListCommandHandler(Configuration c) {
         this.c = c;
         this.command = "list";
         this.description = "List the users";

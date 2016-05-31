@@ -3,16 +3,13 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Food;
 import de.njsm.stocks.linux.client.data.FoodItem;
-import de.njsm.stocks.linux.client.data.Location;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
-import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
-import java.util.Date;
 import java.util.List;
 
-public class EatCommand extends Command {
+public class EatCommandHandler extends CommandHandler {
 
-    public EatCommand(Configuration c) {
+    public EatCommandHandler(Configuration c) {
         command = "eat";
         description = "Eat a food item";
         this.c = c;
@@ -39,7 +36,7 @@ public class EatCommand extends Command {
     public void eatFood(String type) {
         try {
             Food[] foods = c.getDatabaseManager().getFood(type);
-            int foodId = FoodCommand.selectFood(foods, type);
+            int foodId = FoodCommandHandler.selectFood(foods, type);
             int itemId = c.getDatabaseManager().getNextItem(foodId);
 
             FoodItem item = new FoodItem();
@@ -49,7 +46,7 @@ public class EatCommand extends Command {
             item.registers = c.getDeviceId();
 
             c.getServerManager().removeItem(item);
-            (new RefreshCommand(c)).refreshFoodItems();
+            (new RefreshCommandHandler(c)).refreshFoodItems();
         } catch (SelectException e) {
             System.out.println(e.getMessage());
         }

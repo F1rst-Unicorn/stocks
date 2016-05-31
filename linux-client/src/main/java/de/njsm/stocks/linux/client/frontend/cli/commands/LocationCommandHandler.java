@@ -8,27 +8,27 @@ import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationCommand extends Command {
+public class LocationCommandHandler extends CommandHandler {
 
     protected final CommandManager m;
 
-    public LocationCommand(Configuration c) {
+    public LocationCommandHandler(Configuration c) {
         command = "loc";
         description = "Manage the locations to store food";
         this.c = c;
 
-        List<Command> commands = new ArrayList<>();
-        commands.add(new LocationAddCommand(c));
-        commands.add(new LocationListCommand(c));
-        commands.add(new LocationRenameCommand(c));
-        commands.add(new LocationRemoveCommand(c));
+        List<CommandHandler> commands = new ArrayList<>();
+        commands.add(new LocationAddCommandHandler(c));
+        commands.add(new LocationListCommandHandler(c));
+        commands.add(new LocationRenameCommandHandler(c));
+        commands.add(new LocationRemoveCommandHandler(c));
         m = new CommandManager(commands, command);
     }
 
     @Override
     public void handle(List<String> commands) {
         if (commands.isEmpty()) {
-            new LocationListCommand(c).listLocations();
+            new LocationListCommandHandler(c).listLocations();
         } else {
             m.handleCommand(commands);
         }

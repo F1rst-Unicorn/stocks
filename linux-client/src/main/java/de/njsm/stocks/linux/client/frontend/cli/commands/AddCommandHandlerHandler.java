@@ -5,15 +5,13 @@ import de.njsm.stocks.linux.client.data.Food;
 import de.njsm.stocks.linux.client.data.FoodItem;
 import de.njsm.stocks.linux.client.data.Location;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
-import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class AddCommand extends Command {
+public class AddCommandHandlerHandler extends CommandHandler {
 
-    public AddCommand(Configuration c) {
+    public AddCommandHandlerHandler(Configuration c) {
         command = "add";
         description = "Add a food item";
         this.c = c;
@@ -41,7 +39,7 @@ public class AddCommand extends Command {
     public void addFood(String type) {
         try {
             Food[] foods = c.getDatabaseManager().getFood(type);
-            int foodId = FoodCommand.selectFood(foods, type);
+            int foodId = FoodCommandHandler.selectFood(foods, type);
             int locId = selectLocation(foodId);
 
             Date date = c.getReader().nextDate("Eat before:  ");
@@ -54,7 +52,7 @@ public class AddCommand extends Command {
             item.eatByDate = date;
 
             c.getServerManager().addItem(item);
-            (new RefreshCommand(c)).refreshFoodItems();
+            (new RefreshCommandHandler(c)).refreshFoodItems();
         } catch (SelectException e) {
             System.out.println(e.getMessage());
         }
@@ -84,7 +82,7 @@ public class AddCommand extends Command {
     protected int selectLocation() throws SelectException {
         String location = c.getReader().next("Where is it stored?  ");
         Location[] locs = c.getDatabaseManager().getLocations(location);
-        return LocationCommand.selectLocation(locs, location);
+        return LocationCommandHandler.selectLocation(locs, location);
     }
 
 }

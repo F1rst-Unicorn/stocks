@@ -7,9 +7,9 @@ import de.njsm.stocks.linux.client.data.view.FoodView;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class FoodListCommand extends Command {
+public class FoodListCommandHandler extends CommandHandler {
 
-    public FoodListCommand(Configuration c) {
+    public FoodListCommandHandler(Configuration c) {
         this.c = c;
         this.command = "list";
         this.description = "List food in stock";

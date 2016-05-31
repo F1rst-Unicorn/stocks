@@ -2,13 +2,12 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Location;
-import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.List;
 
-public class LocationAddCommand extends Command {
+public class LocationAddCommandHandler extends CommandHandler {
 
-    public LocationAddCommand(Configuration c) {
+    public LocationAddCommandHandler(Configuration c) {
         this.c = c;
         this.command = "add";
         this.description = "Add a new food location to the system";
@@ -34,6 +33,6 @@ public class LocationAddCommand extends Command {
 
         c.getServerManager().addLocation(l);
 
-        (new RefreshCommand(c)).refreshLocations();
+        (new RefreshCommandHandler(c)).refreshLocations();
     }
 }
