@@ -35,8 +35,7 @@ public class CliMainHandler implements MainHandler {
             m.handleCommand(parseCommand(args));
         } else {
             while (!endRequested) {
-                System.out.print("stocks $ ");
-                String command = c.getReader().next();
+                String command = c.getReader().next("stocks $ ");
 
                 switch (command) {
                     case "quit":

@@ -25,10 +25,8 @@ public class LocationRenameCommand extends Command {
     }
 
     public void renameLocation() {
-        System.out.print("Rename a location\nName: ");
-        String name = c.getReader().next();
-        System.out.print("New name: ");
-        String newName = c.getReader().next();
+        String name = c.getReader().next("Rename a location\nName: ");
+        String newName = c.getReader().next("New name: ");
         renameLocation(name, newName);
     }
 

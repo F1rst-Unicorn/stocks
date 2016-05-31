@@ -25,8 +25,7 @@ public class UserRemoveCommand extends Command {
     }
 
     public void removeUser() {
-        System.out.print("Remove a user\nName: ");
-        String name = c.getReader().next();
+        String name = c.getReader().next("Remove a user\nName: ");
         removeUser(name);
     }
 

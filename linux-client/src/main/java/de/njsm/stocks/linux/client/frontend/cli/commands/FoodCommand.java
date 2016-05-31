@@ -52,8 +52,7 @@ public class FoodCommand extends Command {
             for (Food food : f) {
                 System.out.println("\t" + food.id + ": " + food.name);
             }
-            System.out.print("Choose one (default " + f[0].id + "): ");
-            result = scanner.nextInt(f[0].id);
+            result = scanner.nextInt("Choose one ", f[0].id);
         }
         return result;
     }

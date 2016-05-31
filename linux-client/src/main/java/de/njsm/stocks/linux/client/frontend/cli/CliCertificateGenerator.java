@@ -12,36 +12,30 @@ public class CliCertificateGenerator implements CertificateGenerator {
 
     @Override
     public String getTicket() {
-        System.out.print("Please give the ticket you got from your friend: ");
-        return reader.next();
+        return reader.next("Please give the ticket you got from your friend: ");
     }
 
     @Override
     public String getCaFingerprint() {
-        System.out.print("Please give the fingerprint you got from your friend: ");
-        return reader.next();
+        return reader.next("Please give the fingerprint you got from your friend: ");
     }
 
     @Override
     public String getUsername() {
-        System.out.print("Please enter your name: ");
-        String name = reader.next();
+        String name = reader.next("Please enter your name: ");
 
-        while (name.indexOf(',') != -1) {
-            System.out.print("Comma is not allowed, try again: ");
-            name = reader.next();
+        while (!InputReader.isNameValid(name)) {
+            name = reader.next("Invalid name, try again: ");
         }
         return name;
     }
 
     @Override
     public String getDeviceName() {
-        System.out.print("Please enter your device's name: ");
-        String name = reader.next();
+        String name = reader.next("Please enter your device's name: ");
 
-        while (name.indexOf(',') != -1) {
-            System.out.print("Comma is not allowed, try again: ");
-            name = reader.next();
+        while (!InputReader.isNameValid(name)) {
+            name = reader.next("Invalid name, try again: ");
         }
         return name;
     }
@@ -53,9 +47,7 @@ public class CliCertificateGenerator implements CertificateGenerator {
         int[] result = new int[2];
 
         for (int i = 0; i < result.length; i++) {
-            System.out.print(String.format(format, args[i]));
-            int id = reader.nextInt();
-            result[i] = id;
+            result[i] = reader.nextInt(String.format(format, args[i]));
         }
 
         return result;

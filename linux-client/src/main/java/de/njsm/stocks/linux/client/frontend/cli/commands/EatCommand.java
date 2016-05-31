@@ -32,8 +32,7 @@ public class EatCommand extends Command {
     }
 
     public void eatFood() {
-        System.out.print("What to eat?  ");
-        String type = c.getReader().next();
+        String type = c.getReader().next("What to eat?  ");
         eatFood(type);
     }
 

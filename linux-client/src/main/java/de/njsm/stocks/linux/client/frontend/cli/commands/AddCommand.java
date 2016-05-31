@@ -33,8 +33,7 @@ public class AddCommand extends Command {
     }
 
     public void addFood() {
-        System.out.print("What to add?  ");
-        String type = c.getReader().next();
+        String type = c.getReader().next("What to add?  ");
         addFood(type);
     }
 
@@ -45,8 +44,7 @@ public class AddCommand extends Command {
             int foodId = FoodCommand.selectFood(foods, type);
             int locId = selectLocation(foodId);
 
-            System.out.print("Eat before:  ");
-            Date date = c.getReader().nextDate();
+            Date date = c.getReader().nextDate("Eat before:  ");
 
             FoodItem item = new FoodItem();
             item.ofType = foodId;
@@ -73,8 +71,7 @@ public class AddCommand extends Command {
             for (Location loc : l) {
                 System.out.println("\t" + loc.id + ": " + loc.name);
             }
-            System.out.print("Choose one or type -1 for new location (default " + l[0].id + "): ");
-            result = c.getReader().nextInt(l[0].id);
+            result = c.getReader().nextInt("Choose one or type -1 for new location", l[0].id);
 
             if (result == -1) {
                 return selectLocation();
@@ -85,8 +82,7 @@ public class AddCommand extends Command {
     }
 
     protected int selectLocation() throws SelectException {
-        System.out.print("Where is it stored?  ");
-        String location = c.getReader().next();
+        String location = c.getReader().next("Where is it stored?  ");
         Location[] locs = c.getDatabaseManager().getLocations(location);
         return LocationCommand.selectLocation(locs, location);
     }

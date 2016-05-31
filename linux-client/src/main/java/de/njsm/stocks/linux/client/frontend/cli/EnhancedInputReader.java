@@ -28,7 +28,8 @@ public class EnhancedInputReader extends InputReader {
 
 
     @Override
-    public String next() {
+    public String next(String prompt) {
+        reader.setPrompt(prompt);
         try {
             return reader.readLine();
         } catch (IOException e) {

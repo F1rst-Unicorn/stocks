@@ -25,8 +25,7 @@ public class LocationRemoveCommand extends Command {
     }
 
     public void removeLocation() {
-        System.out.print("Remove a location\nName: ");
-        String name = c.getReader().next();
+        String name = c.getReader().next("Remove a location\nName: ");
         removeLocation(name);
     }
 

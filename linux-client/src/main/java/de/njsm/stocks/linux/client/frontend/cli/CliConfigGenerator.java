@@ -18,37 +18,20 @@ public class CliConfigGenerator implements ConfigGenerator {
 
     @Override
     public String getServerName() {
-        System.out.print("Please give the URL of the server (localhost): ");
-        String serverName = reader.next();
+        String serverName = reader.next("Please give the URL of the server (localhost): ");
         return serverName.equals("") ? "localhost" : serverName;
     }
 
     @Override
     public int[] getPorts() {
-        String format = "Please give the %s port of the server (%d): ";
+        String format = "Please give the %s port of the server";
         String[] ports = {"CA", "ticket server", "main server"};
         int[] defaults = {10910, 10911, 10912};
         int[] result = new int[3];
-        int port = -1;
-        boolean success;
 
         for (int i = 0; i < result.length; i++) {
-            System.out.print(String.format(format, ports[i], defaults[i]));
-            success = false;
-            while (!success) {
-                try {
-                    String value = reader.next();
-                    port = value.equals("") ? defaults[i] : Integer.parseInt(value);
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid number, expecting only digits, range 1-65535");
-                    continue;
-                }
-                success = true;
-            }
-            result[i] = port;
+            result[i] = reader.nextInt(String.format(format, ports[i]), defaults[i]);
         }
-
-
         return result;
     }
 

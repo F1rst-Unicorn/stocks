@@ -26,8 +26,7 @@ public class DeviceRemoveCommand extends Command {
     }
 
     public void removeDevice() {
-        System.out.print("Remove a device\nName: ");
-        String name = c.getReader().next();
+        String name = c.getReader().next("Remove a device\nName: ");
         removeDevice(name);
     }
 

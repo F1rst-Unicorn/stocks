@@ -50,8 +50,7 @@ public class UserCommand extends Command {
             for (User u : users) {
                 System.out.println("\t" + u.id + ": " + u.name);
             }
-            System.out.print("Choose one (default " + users[0].id + "): ");
-            result = scanner.nextInt(users[0].id);
+            result = scanner.nextInt("Choose one ", users[0].id);
         }
         return result;
     }

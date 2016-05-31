@@ -24,8 +24,7 @@ public class UserAddCommand extends Command {
     }
 
     public void addUser() {
-        System.out.print("Creating a new user\nName: ");
-        String name = c.getReader().nextName();
+        String name = c.getReader().nextName("Creating a new user\nName: ");
         addUser(name);
     }
 

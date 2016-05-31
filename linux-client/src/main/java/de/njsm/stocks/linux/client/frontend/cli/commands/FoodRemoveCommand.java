@@ -25,8 +25,7 @@ public class FoodRemoveCommand extends Command {
     }
 
     public void removeFood() {
-        System.out.print("Remove food\nName: ");
-        String name = c.getReader().next();
+        String name = c.getReader().next("Remove food\nName: ");
         removeFood(name);
     }
 

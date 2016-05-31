@@ -24,8 +24,7 @@ public class FoodAddCommand extends Command {
     }
 
     public void addFood() {
-        System.out.print("Creating a new food type\nName: ");
-        String name = c.getReader().nextName();
+        String name = c.getReader().nextName("Creating a new food type\nName: ");
         addFood(name);
     }
 

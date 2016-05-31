@@ -20,11 +20,12 @@ public class InputReader {
         in = input;
     }
 
-    public String next() {
+    public String next(String prompt) {
         StringBuilder result = new StringBuilder();
         byte[] buffer = new byte[32];
         int bytesRead;
 
+        System.out.print(prompt);
         try {
             do {
                 bytesRead = in.read(buffer);
@@ -53,23 +54,23 @@ public class InputReader {
         return result.toString();
     }
 
-    public String nextName() {
+    public String nextName(String prompt) {
         String result;
 
-        result = next();
+        result = next(prompt);
 
         while (! isNameValid(result)) {
-            System.out.print("Name may not contain '$' or '='. Try again: ");
-            result = next();
+            result = next("Name may not contain '$' or '='. Try again: ");
         }
         return result;
     }
 
-    public int nextInt(int defaultResult) {
+    public int nextInt(String prompt, int defaultResult) {
         String input;
         int result;
+        System.out.print(prompt + " (" + defaultResult + "): ");
         do {
-            input = next();
+            input = next("");
             if (input.equals("")){
                 result = defaultResult;
             } else {
@@ -84,11 +85,11 @@ public class InputReader {
         return result;
     }
 
-    public int nextInt() {
+    public int nextInt(String prompt) {
         String input;
         int result;
         do {
-            input = next();
+            input = next(prompt);
             try {
                 result = Integer.parseInt(input);
             } catch (NumberFormatException e) {
@@ -100,9 +101,9 @@ public class InputReader {
         return result;
     }
 
-    public Date nextDate() {
+    public Date nextDate(String prompt) {
         SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yy");
-        String input = next();
+        String input = next(prompt);
         Date result = null;
 
         while (result == null) {
@@ -114,8 +115,7 @@ public class InputReader {
                 }
 
             } catch (ParseException e) {
-                System.out.print("Invalid date. Try again: ");
-                input = next();
+                input = next("Invalid date. Try again: ");
                 result = null;
             }
         }
@@ -123,7 +123,7 @@ public class InputReader {
     }
 
     public boolean getYesNo() {
-        String input = next();
+        String input = next(" (y/N): ");
         return input.equals("y");
     }
 

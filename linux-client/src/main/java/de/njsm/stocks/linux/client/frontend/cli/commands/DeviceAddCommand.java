@@ -27,10 +27,8 @@ public class DeviceAddCommand extends Command {
     }
 
     public void addDevice() {
-        System.out.print("Creating a new device\nName: ");
-        String name = c.getReader().nextName();
-        System.out.print("Who is the owner?  ");
-        String user = c.getReader().next();
+        String name = c.getReader().nextName("Creating a new device\nName: ");
+        String user = c.getReader().next("Who is the owner?  ");
         addDevice(name, user);
     }
 

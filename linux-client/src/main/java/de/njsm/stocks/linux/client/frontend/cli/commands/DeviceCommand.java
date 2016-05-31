@@ -51,8 +51,7 @@ public class DeviceCommand extends Command {
             for (UserDeviceView dev : d) {
                 System.out.println("\t" + dev.id + ": " + dev.user + "'s " + dev.name);
             }
-            System.out.print("Choose one (default " + d[0].id + "): ");
-            result = scanner.nextInt(d[0].id);
+            result = scanner.nextInt("Choose one ", d[0].id);
         }
         return result;
     }

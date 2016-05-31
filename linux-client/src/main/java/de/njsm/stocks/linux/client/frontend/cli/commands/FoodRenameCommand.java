@@ -25,10 +25,8 @@ public class FoodRenameCommand extends Command {
     }
 
     public void renameFood() {
-        System.out.print("Rename a food type\nName: ");
-        String name = c.getReader().next();
-        System.out.print("New name: ");
-        String newName = c.getReader().next();
+        String name = c.getReader().next("Rename a food type\nName: ");
+        String newName = c.getReader().next("New name: ");
         renameFood(name, newName);
     }
 

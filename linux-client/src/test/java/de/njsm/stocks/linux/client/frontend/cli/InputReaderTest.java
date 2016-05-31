@@ -12,7 +12,7 @@ public class InputReaderTest {
         String validDate = "31.12.2017\n";
         InputReader uut = new InputReader(IOUtils.toInputStream(validDate));
 
-        Date date = uut.nextDate();
+        Date date = uut.nextDate("");
         date.toString();
 
     }

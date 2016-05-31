@@ -52,8 +52,7 @@ public class LocationCommand extends Command {
             for (Location loc : l) {
                 System.out.println("\t" + loc.id + ": " + loc.name);
             }
-            System.out.print("Choose one (default " + l[0].id + "): ");
-            result = scanner.nextInt(l[0].id);
+            result = scanner.nextInt("Choose one ", l[0].id);
         }
         return result;
     }
