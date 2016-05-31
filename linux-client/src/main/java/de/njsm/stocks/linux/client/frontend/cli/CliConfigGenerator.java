@@ -4,7 +4,7 @@ import de.njsm.stocks.linux.client.frontend.ConfigGenerator;
 
 public class CliConfigGenerator implements ConfigGenerator {
 
-    protected InputReader reader;
+    protected final InputReader reader;
 
     public CliConfigGenerator() {
         reader = new EnhancedInputReader(System.in);

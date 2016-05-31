@@ -4,7 +4,7 @@ import de.njsm.stocks.linux.client.frontend.CertificateGenerator;
 
 public class CliCertificateGenerator implements CertificateGenerator {
 
-    protected InputReader reader;
+    protected final InputReader reader;
 
     public CliCertificateGenerator() {
         reader = new EnhancedInputReader(System.in);

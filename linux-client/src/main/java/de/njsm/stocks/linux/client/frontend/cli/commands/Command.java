@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 public class Command {
 
-    protected Map<Character, String> arguments;
-    protected List<String> command;
+    protected final Map<Character, String> arguments;
+    protected final List<String> command;
     protected Iterator<String> commandIt;
 
     public static Command createCommand(String input) throws ParseException {
@@ -25,6 +25,10 @@ public class Command {
         List<String> words = result.parseCommand(input);
         result.fillCommand(words);
         return result;
+    }
+
+    public boolean hasNext() {
+        return commandIt.hasNext();
     }
 
     public String next() {
@@ -50,8 +54,7 @@ public class Command {
     public int getParamInt(char c) throws ParseException {
         String value = arguments.get(c);
         try {
-            int result = Integer.parseInt(value);
-            return result;
+            return Integer.parseInt(value);
         } catch (NumberFormatException e) {
             throw new ParseException("Parameter is not a number", 0);
         }
@@ -60,8 +63,7 @@ public class Command {
     public Date getParamDate(char c) throws ParseException {
         String value = arguments.get(c);
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        Date result = format.parse(value);
-        return result;
+        return format.parse(value);
     }
 
     public ValueRange getParamRange(char c) throws ParseException {
@@ -85,7 +87,7 @@ public class Command {
 
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (String c : command) {
             buf.append(c);
             buf.append(" ");
@@ -95,7 +97,8 @@ public class Command {
             buf.append("-");
             buf.append(e.getKey());
             if (!e.getValue().equals("")) {
-                buf.append("=" + e.getValue());
+                buf.append("=");
+                buf.append(e.getValue());
             }
             buf.append(" ");
         }
