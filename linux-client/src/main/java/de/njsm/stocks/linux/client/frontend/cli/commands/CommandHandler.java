@@ -12,6 +12,8 @@ public abstract class CommandHandler {
 
     public abstract void handle(List<String> commands);
 
+    public abstract void handle(Command command);
+
     public void printHelp() {
         System.out.println("No help page found...");
     }

@@ -19,6 +19,19 @@ public class AddCommandHandlerHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        String word = command.next();
+
+        if (word.equals("help")) {
+            printHelp();
+        } else if (command.hasNext()) {
+            addFood(command.next());
+        } else {
+            addFood();
+        }
+    }
+
+    @Override
     public void handle(List<String> commands) {
         if (! commands.isEmpty() &&
             commands.get(0).equals("help")) {

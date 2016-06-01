@@ -14,6 +14,11 @@ public class DeviceListCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        listDevices();
+    }
+
+    @Override
     public void handle(List<String> commands) {
         listDevices();
     }

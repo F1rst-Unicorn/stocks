@@ -14,6 +14,11 @@ public class LocationListCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        listLocations();
+    }
+
+    @Override
     public void handle(List<String> commands) {
         listLocations();
     }

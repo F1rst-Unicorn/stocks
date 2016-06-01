@@ -26,9 +26,18 @@ public class LocationCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        if (command.hasNext()) {
+            m.handleCommand(command);
+        } else {
+            new LocationListCommandHandler(c).handle(command);
+        }
+    }
+
+    @Override
     public void handle(List<String> commands) {
         if (commands.isEmpty()) {
-            new LocationListCommandHandler(c).listLocations();
+            new LocationListCommandHandler(c).handle(commands);
         } else {
             m.handleCommand(commands);
         }

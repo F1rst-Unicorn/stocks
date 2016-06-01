@@ -14,6 +14,15 @@ public class LocationAddCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        if (command.hasNext()) {
+            addLocation(command.next());
+        } else {
+            addLocation();
+        }
+    }
+
+    @Override
     public void handle(List<String> commands) {
         if (commands.size() == 1) {
             addLocation(commands.get(0));

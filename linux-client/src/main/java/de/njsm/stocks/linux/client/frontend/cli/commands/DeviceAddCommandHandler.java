@@ -17,6 +17,24 @@ public class DeviceAddCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        String devName;
+        String userName;
+
+        if (command.hasNext()) {
+            devName = command.next();
+            if (command.hasNext()) {
+                userName = command.next();
+                addDevice(devName, userName);
+            } else {
+                addDevice();
+            }
+        } else {
+            addDevice();
+        }
+    }
+
+    @Override
     public void handle(List<String> commands) {
         if (commands.size() == 4){
             addDevice(commands.get(2), commands.get(3));

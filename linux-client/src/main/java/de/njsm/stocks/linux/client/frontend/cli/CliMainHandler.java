@@ -4,7 +4,11 @@ import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.frontend.MainHandler;
 import de.njsm.stocks.linux.client.frontend.cli.commands.*;
 
-import java.util.*;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class CliMainHandler implements MainHandler {
@@ -30,21 +34,32 @@ public class CliMainHandler implements MainHandler {
     @Override
     public void run(String[] args) {
         boolean endRequested = false;
+        Command command;
 
         if (args.length > 0) {
-            m.handleCommand(parseCommand(args));
+            try {
+                command = Command.createCommand(args);
+                m.handleCommand(command);
+            } catch (ParseException e) {
+                c.getLog().severe("Invalid command: " + e.getMessage());
+            }
         } else {
             while (!endRequested) {
-                String command = c.getReader().next("stocks $ ");
+                String input = c.getReader().next("stocks $ ");
 
-                switch (command) {
+                switch (input) {
                     case "quit":
                         endRequested = true;
                         break;
                     case "":
                         break;
                     default:
-                        forwardCommand(command);
+                        try {
+                            command = Command.createCommand(input);
+                            m.handleCommand(command);
+                        } catch (ParseException e) {
+                            c.getLog().severe("Invalid Command: " + e.getMessage());
+                        }
                 }
             }
         }

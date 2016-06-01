@@ -16,6 +16,28 @@ public class CommandManager {
         this.prefix = prefix;
     }
 
+    public void handleCommand(Command command) {
+        String word = command.next();
+        boolean commandFound = false;
+
+        if (word.equals("") || word.equals("help")) {
+            printHelp();
+            commandFound = true;
+        }
+
+        for (CommandHandler c : commandHandler) {
+            if (c.canHandle(word)){
+                c.handle(command);
+                commandFound = true;
+                break;
+            }
+        }
+
+        if (! commandFound){
+            System.out.println("Unknown command: " + word);
+        }
+    }
+
     public void handleCommand(List<String> commandList){
         boolean commandFound = false;
 

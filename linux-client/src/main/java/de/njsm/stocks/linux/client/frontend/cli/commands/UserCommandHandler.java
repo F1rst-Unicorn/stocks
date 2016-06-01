@@ -25,6 +25,15 @@ public class UserCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        if (command.hasNext()) {
+            m.handleCommand(command);
+        } else {
+            new UserListCommandHandler(c).handle(command);
+        }
+    }
+
+    @Override
     public void handle(List<String> commands) {
         if (commands.isEmpty()) {
             new UserListCommandHandler(c).listUsers();

@@ -14,6 +14,11 @@ public class UserListCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        listUsers();
+    }
+
+    @Override
     public void handle(List<String> commands) {
         listUsers();
     }

@@ -17,6 +17,20 @@ public class EatCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        if (command.hasNext()) {
+            String word = command.next();
+            if (word.equals("help")) {
+                printHelp();
+            } else {
+                eatFood(word);
+            }
+        } else {
+            eatFood();
+        }
+    }
+
+    @Override
     public void handle(List<String> commands) {
         if (! commands.isEmpty() &&
             commands.get(0).equals("help")) {

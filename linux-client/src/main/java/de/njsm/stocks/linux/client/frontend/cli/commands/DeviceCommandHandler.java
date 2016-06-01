@@ -25,6 +25,15 @@ public class DeviceCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        if (command.hasNext()) {
+            m.handleCommand(command);
+        } else {
+            new DeviceListCommandHandler(c).handle(command);
+        }
+    }
+
+    @Override
     public void handle(List<String> commands) {
         if (commands.isEmpty()) {
             new DeviceListCommandHandler(c).listDevices();

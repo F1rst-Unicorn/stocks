@@ -15,6 +15,15 @@ public class UserRemoveCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        if (command.hasNext()) {
+            removeUser(command.next());
+        } else {
+            removeUser();
+        }
+    }
+
+    @Override
     public void handle(List<String> commands) {
         if (commands.size() == 1) {
             removeUser(commands.get(0));

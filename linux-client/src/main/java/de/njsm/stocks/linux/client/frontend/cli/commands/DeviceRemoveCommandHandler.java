@@ -16,6 +16,15 @@ public class DeviceRemoveCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        if (command.hasNext()) {
+            removeDevice(command.next());
+        } else {
+            removeDevice();
+        }
+    }
+
+    @Override
     public void handle(List<String> commands) {
         if (commands.size() == 1) {
             removeDevice(commands.get(0));

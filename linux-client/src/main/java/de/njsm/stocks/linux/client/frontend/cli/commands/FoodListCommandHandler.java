@@ -16,6 +16,11 @@ public class FoodListCommandHandler extends CommandHandler {
     }
 
     @Override
+    public void handle(Command command) {
+        listFood();
+    }
+
+    @Override
     public void handle(List<String> commands) {
         listFood();
     }
