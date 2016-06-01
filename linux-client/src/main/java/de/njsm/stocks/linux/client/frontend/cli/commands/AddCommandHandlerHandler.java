@@ -43,7 +43,8 @@ public class AddCommandHandlerHandler extends CommandHandler {
     @Override
     public void printHelp() {
         String text = "Add food item to the store\n" +
-                "\t--d date\t\t\tdate: Eat before this date\n\n";
+                "\t--d date  \t\t\tdate: Eat before this date\n" +
+                "\t--l string\t\t\tlocation: Where to put the food\n\n";
 
         System.out.print(text);
 

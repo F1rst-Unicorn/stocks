@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.time.temporal.ValueRange;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class FoodListCommandHandler extends CommandHandler {
 
@@ -20,6 +22,7 @@ public class FoodListCommandHandler extends CommandHandler {
     protected long daysLeft;
     protected ValueRange range;
     protected String user;
+    protected String regex;
 
     public FoodListCommandHandler(Configuration c) {
         this.c = c;
@@ -75,6 +78,17 @@ public class FoodListCommandHandler extends CommandHandler {
                 user = "";
             }
 
+            if (command.hasArg('r')) {
+                regex = command.getParam('r');
+                try {
+                    Pattern.compile(regex);
+                } catch (PatternSyntaxException e) {
+                    throw new ParseException("regex is not valid", 0);
+                }
+            } else {
+                regex = ".*";
+            }
+
             listFood();
         } catch (ParseException e) {
             c.getLog().severe(e.getMessage());
@@ -90,6 +104,7 @@ public class FoodListCommandHandler extends CommandHandler {
                 "\t--d number\t\tdays: Filter food with <number> days left\n" +
                 "\t--l string\t\tlocation: Filter by given location\n" +
                 "\t--n number\t\tnumber: List at most <number> dates\n" +
+                "\t--r regex \t\tregex: Filter food names by regex\n" +
                 "\t--u string\t\tuser: Filter by user who bought it\n\n";
 
                 System.out.print(text);
@@ -98,6 +113,7 @@ public class FoodListCommandHandler extends CommandHandler {
     public void listFood() {
 
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        Pattern p = Pattern.compile(regex);
         FoodView[] food = c.getDatabaseManager().getItems(user, location);
         Date listUntil = new Date(new Date().getTime() + daysLeft * 1000L * 60L * 60L * 24L);
         int printedItems;
@@ -109,7 +125,8 @@ public class FoodListCommandHandler extends CommandHandler {
             f.getItems().removeIf((item) -> item.eatByDate.after(listUntil));
 
             if ((!existing || (existing && !f.getItems().isEmpty())) &&
-                    range.isValidValue(f.getItems().size())) {
+                    range.isValidValue(f.getItems().size())          &&
+                    p.matcher(f.getFood().name).find()) {
 
                 System.out.println("\t" + f.getItems().size() + "x " + f.getFood().name);
                 if (!quiet) {
