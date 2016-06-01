@@ -38,6 +38,7 @@ public class CommandManager {
         }
     }
 
+    @Deprecated
     public void handleCommand(List<String> commandList){
         boolean commandFound = false;
 

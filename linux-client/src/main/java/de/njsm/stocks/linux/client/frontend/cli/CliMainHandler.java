@@ -66,21 +66,4 @@ public class CliMainHandler implements MainHandler {
         c.getReader().shutdown();
     }
 
-    public void forwardCommand(String command) {
-        List<String> commandList = parseCommand(command);
-        m.handleCommand(commandList);
-    }
-
-    public List<String> parseCommand(String command) {
-        String[] commands = command.split(" ");
-        LinkedList<String> result = new LinkedList<>();
-        Collections.addAll(result, commands);
-        return result;
-    }
-
-    public List<String> parseCommand(String[] commandArray) {
-        LinkedList<String> result = new LinkedList<>();
-        Collections.addAll(result, commandArray);
-        return result;
-    }
 }
