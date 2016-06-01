@@ -3,6 +3,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.User;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
+import de.njsm.stocks.linux.client.frontend.cli.EnhancedInputReader;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.LinkedList;
@@ -48,7 +49,7 @@ public class UserCommandHandler extends CommandHandler {
     }
 
     public static int selectUser(User[] users, String name) throws SelectException {
-        InputReader scanner = new InputReader(System.in);
+        InputReader scanner = new EnhancedInputReader(System.in);
         int result;
         if (users.length == 1) {
             result = users[0].id;

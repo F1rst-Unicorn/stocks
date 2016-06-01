@@ -68,9 +68,8 @@ public class InputReader {
     public int nextInt(String prompt, int defaultResult) {
         String input;
         int result;
-        System.out.print(prompt + " (" + defaultResult + "): ");
         do {
-            input = next("");
+            input = next(prompt + " (" + defaultResult + "): ");
             if (input.equals("")){
                 result = defaultResult;
             } else {

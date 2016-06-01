@@ -3,6 +3,7 @@ package de.njsm.stocks.linux.client.frontend.cli.commands;
 import de.njsm.stocks.linux.client.Configuration;
 import de.njsm.stocks.linux.client.data.Location;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
+import de.njsm.stocks.linux.client.frontend.cli.EnhancedInputReader;
 import de.njsm.stocks.linux.client.frontend.cli.InputReader;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class LocationCommandHandler extends CommandHandler {
     }
 
     public static int selectLocation(Location[] l, String name) throws SelectException {
-        InputReader scanner = new InputReader(System.in);
+        InputReader scanner = new EnhancedInputReader(System.in);
         int result;
 
         if (l.length == 1) {
