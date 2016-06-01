@@ -1,5 +1,7 @@
 package de.njsm.stocks.linux.client.frontend.cli.commands;
 
+import de.njsm.stocks.linux.client.frontend.cli.InputReader;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ValueRange;
@@ -62,8 +64,7 @@ public class Command {
 
     public Date getParamDate(char c) throws ParseException {
         String value = arguments.get(c);
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        return format.parse(value);
+        return InputReader.parseDate(value);
     }
 
     public ValueRange getParamRange(char c) throws ParseException {

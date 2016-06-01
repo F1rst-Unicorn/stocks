@@ -12,6 +12,8 @@ import java.util.List;
 
 public class AddCommandHandlerHandler extends CommandHandler {
 
+    protected String location;
+
     public AddCommandHandlerHandler(Configuration c) {
         command = "add";
         description = "Add a food item";
@@ -23,12 +25,18 @@ public class AddCommandHandlerHandler extends CommandHandler {
     public void handle(Command command) {
         String word = command.next();
 
+        if (command.hasArg('l')) {
+            location = command.getParam('l');
+        } else {
+            location = "";
+        }
+
         if (word.equals("help")) {
             printHelp();
-        } else if (command.hasNext()) {
-            addFood(command, command.next());
-        } else {
+        } else if (word.equals("")) {
             addFood(command);
+        } else {
+            addFood(command, word);
         }
     }
 
@@ -82,6 +90,10 @@ public class AddCommandHandlerHandler extends CommandHandler {
     }
 
     protected int selectLocation(int foodId) throws SelectException {
+        if (! location.equals("")) {
+            Location[] inputLoc = c.getDatabaseManager().getLocations(location);
+            return LocationCommandHandler.selectLocation(inputLoc, location);
+        }
         Location[] l = c.getDatabaseManager().getLocationsForFoodType(foodId);
 
         if (l.length == 0) {

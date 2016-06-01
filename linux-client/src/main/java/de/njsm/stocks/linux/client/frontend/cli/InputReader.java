@@ -101,18 +101,12 @@ public class InputReader {
     }
 
     public Date nextDate(String prompt) {
-        SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yy");
         String input = next(prompt);
         Date result = null;
 
         while (result == null) {
             try {
-                if (input.length() > 0 && input.charAt(0) == '+') {
-                    result = parseRelative(input);
-                } else {
-                    result = parser.parse(input);
-                }
-
+                result = parseDate(input);
             } catch (ParseException e) {
                 input = next("Invalid date. Try again: ");
                 result = null;
@@ -132,7 +126,18 @@ public class InputReader {
         return noDollar == -1 && noEqual == -1;
     }
 
-    protected Date parseRelative(String input) throws ParseException {
+    public static Date parseDate(String input) throws ParseException {
+        Date result;
+        SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yy");
+        if (input.length() > 0 && input.charAt(0) == '+') {
+            result = parseRelative(input);
+        } else {
+            result = parser.parse(input);
+        }
+        return result;
+    }
+
+    protected static Date parseRelative(String input) throws ParseException {
         char unit = input.charAt(input.length()-1);
         int amount;
         try {
