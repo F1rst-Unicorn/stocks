@@ -290,33 +290,29 @@ public class DatabaseManager {
 
             PreparedStatement sqlQuery = c.prepareStatement(queryString);
             ResultSet rs = sqlQuery.executeQuery();
-            ArrayList<FoodView> result = new ArrayList<>();
+            ArrayList<FoodView> result = getFoodView(rs);
 
-            int lastId = -1;
-            FoodView f = null;
-            while (rs.next()) {
-                int id = rs.getInt("id");
+            return result.toArray(new FoodView[result.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new FoodView[0];
+        }
+    }
 
-                if (id != lastId) {
-                    if (f != null) {
-                        result.add(f);
-                    }
-                    Food newFood = new Food();
-                    newFood.id = id;
-                    newFood.name = rs.getString("name");
-                    f = new FoodView(newFood);
-                }
-                FoodItem i = new FoodItem();
-                i.ofType = id;
-                i.eatByDate = rs.getDate("date");
-                if (i.eatByDate != null) {
-                    f.add(i);
-                }
-                lastId = id;
-            }
-            if (f != null) {
-                result.add(f);
-            }
+    public FoodView[] getItems(String location) {
+        try {
+            Connection c = getConnection();
+
+            String queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                    "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
+                    "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
+                    "ORDER BY f.ID ASC, i.eat_by ASC";
+
+            PreparedStatement sqlQuery = c.prepareStatement(queryString);
+            sqlQuery.setString(1, location);
+            ResultSet rs = sqlQuery.executeQuery();
+            ArrayList<FoodView> result = getFoodView(rs);
+
             return result.toArray(new FoodView[result.size()]);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -450,6 +446,36 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    protected ArrayList<FoodView> getFoodView(ResultSet rs) throws SQLException {
+        ArrayList<FoodView> result = new ArrayList<>();
+        int lastId = -1;
+        FoodView f = null;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+
+            if (id != lastId) {
+                if (f != null) {
+                    result.add(f);
+                }
+                Food newFood = new Food();
+                newFood.id = id;
+                newFood.name = rs.getString("name");
+                f = new FoodView(newFood);
+            }
+            FoodItem i = new FoodItem();
+            i.ofType = id;
+            i.eatByDate = rs.getDate("date");
+            if (i.eatByDate != null) {
+                f.add(i);
+            }
+            lastId = id;
+        }
+        if (f != null) {
+            result.add(f);
+        }
+        return result;
     }
 
     protected ArrayList<User> getUserResult(ResultSet rs) throws SQLException {

@@ -10,6 +10,7 @@ public abstract class CommandHandler {
     protected String description;
     protected Configuration c;
 
+    @Deprecated
     public abstract void handle(List<String> commands);
 
     public abstract void handle(Command command);

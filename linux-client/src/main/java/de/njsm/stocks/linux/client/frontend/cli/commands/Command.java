@@ -56,7 +56,7 @@ public class Command {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throw new ParseException("Parameter is not a number", 0);
+            throw new ParseException("Parameter for -" + c + " is not a number", 0);
         }
     }
 

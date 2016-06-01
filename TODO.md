@@ -1,9 +1,5 @@
 # Things to implement
 
-* Add arguments for commands
-* Add food listing without dates
-* Add query for food to eat
-* Add food listing of present items
 * Add methods to get and clear pending tickets
 * Image support for Food
 
