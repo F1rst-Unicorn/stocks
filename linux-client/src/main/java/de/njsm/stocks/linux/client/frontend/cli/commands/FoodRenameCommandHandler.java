@@ -29,15 +29,6 @@ public class FoodRenameCommandHandler extends CommandHandler {
         }
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        if (commands.size() == 2) {
-            renameFood(commands.get(0), commands.get(1));
-        } else {
-            renameFood();
-        }
-    }
-
     public void renameFood() {
         String name = c.getReader().next("Rename a food type\nName: ");
         String newName = c.getReader().next("New name: ");

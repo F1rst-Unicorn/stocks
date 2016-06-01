@@ -35,15 +35,6 @@ public class DeviceCommandHandler extends CommandHandler {
     }
 
     @Override
-    public void handle(List<String> commands) {
-        if (commands.isEmpty()) {
-            new DeviceListCommandHandler(c).listDevices();
-        } else {
-            m.handleCommand(commands);
-        }
-    }
-
-    @Override
     public void printHelp() {
         m.printHelp();
     }

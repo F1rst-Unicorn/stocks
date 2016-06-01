@@ -23,15 +23,6 @@ public class LocationRemoveCommandHandler extends CommandHandler {
         }
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        if (commands.size() == 1) {
-            removeLocation(commands.get(0));
-        } else {
-            removeLocation();
-        }
-    }
-
     public void removeLocation() {
         String name = c.getReader().next("Remove a location\nName: ");
         removeLocation(name);

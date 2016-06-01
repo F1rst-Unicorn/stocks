@@ -18,11 +18,6 @@ public class UserListCommandHandler extends CommandHandler {
         listUsers();
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        listUsers();
-    }
-
     public void listUsers() {
         User[] u = c.getDatabaseManager().getUsers();
         System.out.println("Current users: ");

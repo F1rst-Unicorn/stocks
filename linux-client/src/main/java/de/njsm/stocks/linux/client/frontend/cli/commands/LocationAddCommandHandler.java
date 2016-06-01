@@ -22,15 +22,6 @@ public class LocationAddCommandHandler extends CommandHandler {
         }
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        if (commands.size() == 1) {
-            addLocation(commands.get(0));
-        } else {
-            addLocation();
-        }
-    }
-
     public void addLocation() {
         String name = c.getReader().nextName("Creating a new location\nName: ");
         addLocation(name);

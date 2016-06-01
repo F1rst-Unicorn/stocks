@@ -7,6 +7,7 @@ import sun.security.krb5.internal.PAEncTSEnc;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.ValueRange;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,9 @@ public class FoodListCommandHandler extends CommandHandler {
     protected boolean existing;
     protected int limit;
     protected String location;
-    protected int daysLeft;
+    protected long daysLeft;
+    protected ValueRange range;
+    protected String user;
 
     public FoodListCommandHandler(Configuration c) {
         this.c = c;
@@ -60,6 +63,18 @@ public class FoodListCommandHandler extends CommandHandler {
                 daysLeft = 36500;   // 100 years :P
             }
 
+            if (command.hasArg('a')) {
+                range = command.getParamRange('a');
+            } else {
+                range = ValueRange.of(Long.MIN_VALUE, Long.MAX_VALUE);
+            }
+
+            if (command.hasArg('u')) {
+                user = command.getParam('u');
+            } else {
+                user = "";
+            }
+
             listFood();
         } catch (ParseException e) {
             c.getLog().severe(e.getMessage());
@@ -67,41 +82,34 @@ public class FoodListCommandHandler extends CommandHandler {
     }
 
     @Override
-    public void handle(List<String> commands) {
-        listFood();
-    }
-
-    @Override
     public void printHelp() {
         String text = "List food in the store\n" +
-                "\t-q\t\t\t\t\tquiet: Only list amounts, no dates\n" +
-                "\t-e\t\t\t\t\texisting: Only list food that is in store\n" +
-                "\t--n number\t\t\tnumber: List at most <number> dates\n" +
-                "\t--l string\t\t\tlocation: Filter by given location\n" +
-                "\t--d number\t\t\tdays: Only list food with <number> days left\n\n";
+                "\t-e\t\t\texisting: Filter by food that is in store\n" +
+                "\t-q\t\t\tquiet: Only list amounts, no dates\n" +
+                "\t--a range \t\tamount: Filter amounts within range\n" +
+                "\t--d number\t\tdays: Filter food with <number> days left\n" +
+                "\t--l string\t\tlocation: Filter by given location\n" +
+                "\t--n number\t\tnumber: List at most <number> dates\n" +
+                "\t--u string\t\tuser: Filter by user who bought it\n\n";
 
-        System.out.print(text);
+                System.out.print(text);
     }
 
     public void listFood() {
 
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        FoodView[] food = queryDatabase(location);
-        Date listUntil = new Date(new Date().getTime() + daysLeft * 1000 * 60 * 60 * 24);
+        FoodView[] food = c.getDatabaseManager().getItems(user, location);
+        Date listUntil = new Date(new Date().getTime() + daysLeft * 1000L * 60L * 60L * 24L);
         int printedItems;
-
-        if (food.length == 0) {
-            System.out.println("\tNo food here...");
-            return;
-        }
+        boolean foodPrinted = false;
 
         System.out.println("Current food: ");
         for (FoodView f : food) {
             printedItems = 0;
             f.getItems().removeIf((item) -> item.eatByDate.after(listUntil));
 
-            if (!existing ||
-                    (existing && !f.getItems().isEmpty())) {
+            if ((!existing || (existing && !f.getItems().isEmpty())) &&
+                    range.isValidValue(f.getItems().size())) {
 
                 System.out.println("\t" + f.getItems().size() + "x " + f.getFood().name);
                 if (!quiet) {
@@ -113,17 +121,14 @@ public class FoodListCommandHandler extends CommandHandler {
                         }
                     }
                 }
+                foodPrinted = true;
             }
         }
 
-    }
-
-    protected FoodView[] queryDatabase(String location) {
-        if (location.equals("")) {
-            return c.getDatabaseManager().getItems();
-        } else {
-            return c.getDatabaseManager().getItems(location);
+        if (!foodPrinted) {
+            System.out.println("No food to show...");
         }
+
     }
 
 }

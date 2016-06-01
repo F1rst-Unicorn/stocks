@@ -299,17 +299,47 @@ public class DatabaseManager {
         }
     }
 
-    public FoodView[] getItems(String location) {
+    public FoodView[] getItems(String user, String location) {
         try {
             Connection c = getConnection();
 
-            String queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                    "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                    "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
-                    "ORDER BY f.ID ASC, i.eat_by ASC";
+            String queryString;
+            PreparedStatement sqlQuery;
 
-            PreparedStatement sqlQuery = c.prepareStatement(queryString);
-            sqlQuery.setString(1, location);
+            if (user.equals("")) {
+                if (location.equals("")) {
+                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
+                            "ORDER BY f.ID ASC, i.eat_by ASC";
+                    sqlQuery = c.prepareStatement(queryString);
+                } else {
+                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
+                            "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
+                            "ORDER BY f.ID ASC, i.eat_by ASC";
+                    sqlQuery = c.prepareStatement(queryString);
+                    sqlQuery.setString(1, location);
+                }
+            } else {
+                if (location.equals("")) {
+                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
+                            "WHERE i.buys in (SELECT ID FROM User WHERE name=?) " +
+                            "ORDER BY f.ID ASC, i.eat_by ASC";
+                    sqlQuery = c.prepareStatement(queryString);
+                    sqlQuery.setString(1, user);
+                } else {
+                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
+                            "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
+                            "AND i.buys in (SELECT ID FROM User WHERE name=?) " +
+                            "ORDER BY f.ID ASC, i.eat_by ASC";
+                    sqlQuery = c.prepareStatement(queryString);
+                    sqlQuery.setString(1, location);
+                    sqlQuery.setString(2, user);
+                }
+            }
+
             ResultSet rs = sqlQuery.executeQuery();
             ArrayList<FoodView> result = getFoodView(rs);
 

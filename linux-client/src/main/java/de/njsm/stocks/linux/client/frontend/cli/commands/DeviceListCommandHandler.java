@@ -18,11 +18,6 @@ public class DeviceListCommandHandler extends CommandHandler {
         listDevices();
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        listDevices();
-    }
-
     public void listDevices() {
         UserDeviceView[] devices = c.getDatabaseManager().getDevices();
         System.out.println("Current devices: ");

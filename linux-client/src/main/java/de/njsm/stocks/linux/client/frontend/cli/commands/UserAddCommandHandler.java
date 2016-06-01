@@ -23,15 +23,6 @@ public class UserAddCommandHandler extends CommandHandler {
         }
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        if (commands.size() == 1) {
-            addUser(commands.get(0));
-        } else {
-            addUser();
-        }
-    }
-
     public void addUser() {
         String name = c.getReader().nextName("Creating a new user\nName: ");
         addUser(name);

@@ -24,15 +24,6 @@ public class DeviceRemoveCommandHandler extends CommandHandler {
         }
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        if (commands.size() == 1) {
-            removeDevice(commands.get(0));
-        } else {
-            removeDevice();
-        }
-    }
-
     public void removeDevice() {
         String name = c.getReader().next("Remove a device\nName: ");
         removeDevice(name);

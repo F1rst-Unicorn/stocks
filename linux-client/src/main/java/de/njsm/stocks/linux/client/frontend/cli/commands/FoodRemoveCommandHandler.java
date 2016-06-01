@@ -23,15 +23,6 @@ public class FoodRemoveCommandHandler extends CommandHandler {
         }
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        if (commands.size() == 1) {
-            removeFood(commands.get(0));
-        } else {
-            removeFood();
-        }
-    }
-
     public void removeFood() {
         String name = c.getReader().next("Remove food\nName: ");
         removeFood(name);

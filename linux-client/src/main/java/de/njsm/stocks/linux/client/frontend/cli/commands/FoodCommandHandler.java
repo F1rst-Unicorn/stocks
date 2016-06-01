@@ -36,15 +36,6 @@ public class FoodCommandHandler extends CommandHandler {
     }
 
     @Override
-    public void handle(List<String> commands) {
-        if (commands.isEmpty()) {
-            new FoodListCommandHandler(c).handle(commands);
-        } else {
-            m.handleCommand(commands);
-        }
-    }
-
-    @Override
     public void printHelp() {
         m.printHelp();
     }

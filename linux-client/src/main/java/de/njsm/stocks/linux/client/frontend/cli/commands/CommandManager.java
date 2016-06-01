@@ -38,33 +38,6 @@ public class CommandManager {
         }
     }
 
-    @Deprecated
-    public void handleCommand(List<String> commandList){
-        boolean commandFound = false;
-
-        if (commandList.isEmpty() || commandList.get(0).equals("help")){
-            printHelp();
-            commandFound = true;
-        }
-
-        for (CommandHandler c : commandHandler) {
-            if (c.canHandle(commandList.get(0))){
-                commandList.remove(0);
-                if (!commandList.isEmpty() && commandList.get(0).equals("help")) {
-                    c.printHelp();
-                } else {
-                    c.handle(commandList);
-                }
-                commandFound = true;
-                break;
-            }
-        }
-
-        if (! commandFound){
-            System.out.println("Unknown command: " + commandList.get(0));
-        }
-    }
-
     public void printHelp() {
         if (prefix.equals("")){
             System.out.println("Possible commands:");

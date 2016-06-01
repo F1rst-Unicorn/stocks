@@ -30,19 +30,7 @@ public class EatCommandHandler extends CommandHandler {
         }
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        if (! commands.isEmpty() &&
-            commands.get(0).equals("help")) {
-            printHelp();
-        } else if (commands.size() == 1) {
-            eatFood(commands.get(0));
-        } else {
-            eatFood();
-        }
-    }
-
-    public void eatFood() {
+   public void eatFood() {
         String type = c.getReader().next("What to eat?  ");
         eatFood(type);
     }

@@ -26,16 +26,6 @@ public class RefreshCommandHandler extends CommandHandler {
         }
     }
 
-    @Override
-    public void handle(List<String> commands) {
-
-        if (commands.size() == 2) {
-            printHelp();
-        } else {
-            refresh();
-        }
-    }
-
     public void refresh() {
         ServerManager sm = c.getServerManager();
         DatabaseManager dm = c.getDatabaseManager();

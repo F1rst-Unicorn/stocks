@@ -6,6 +6,7 @@ import de.njsm.stocks.linux.client.data.FoodItem;
 import de.njsm.stocks.linux.client.data.Location;
 import de.njsm.stocks.linux.client.exceptions.SelectException;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -25,37 +26,34 @@ public class AddCommandHandlerHandler extends CommandHandler {
         if (word.equals("help")) {
             printHelp();
         } else if (command.hasNext()) {
-            addFood(command.next());
+            addFood(command, command.next());
         } else {
-            addFood();
+            addFood(command);
         }
     }
 
     @Override
-    public void handle(List<String> commands) {
-        if (! commands.isEmpty() &&
-            commands.get(0).equals("help")) {
-            printHelp();
-        } else if (commands.size() == 1) {
-            addFood(commands.get(0));
-        } else {
-            addFood();
-        }
+    public void printHelp() {
+        String text = "Add food item to the store\n" +
+                "\t--d date\t\t\tdate: Eat before this date\n\n";
+
+        System.out.print(text);
+
     }
 
-    public void addFood() {
+    public void addFood(Command command) {
         String type = c.getReader().next("What to add?  ");
-        addFood(type);
+        addFood(command, type);
     }
 
 
-    public void addFood(String type) {
+    public void addFood(Command command, String type) {
         try {
             Food[] foods = c.getDatabaseManager().getFood(type);
             int foodId = FoodCommandHandler.selectFood(foods, type);
             int locId = selectLocation(foodId);
 
-            Date date = c.getReader().nextDate("Eat before:  ");
+            Date date = getDate(command);
 
             FoodItem item = new FoodItem();
             item.ofType = foodId;
@@ -68,6 +66,18 @@ public class AddCommandHandlerHandler extends CommandHandler {
             (new RefreshCommandHandler(c)).refreshFoodItems();
         } catch (SelectException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    protected Date getDate(Command c) {
+        try {
+            if (c.hasArg('d')) {
+                return c.getParamDate('d');
+            } else {
+                return this.c.getReader().nextDate("Eat before:  ");
+            }
+        } catch (ParseException e) {
+            return this.c.getReader().nextDate("Eat before:  ");
         }
     }
 

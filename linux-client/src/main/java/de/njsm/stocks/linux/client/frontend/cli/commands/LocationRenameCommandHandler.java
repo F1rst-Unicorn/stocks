@@ -28,15 +28,6 @@ public class LocationRenameCommandHandler extends CommandHandler {
         }
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        if (commands.size() == 2) {
-            renameLocation(commands.get(0), commands.get(1));
-        } else {
-            renameLocation();
-        }
-    }
-
     public void renameLocation() {
         String name = c.getReader().next("Rename a location\nName: ");
         String newName = c.getReader().next("New name: ");

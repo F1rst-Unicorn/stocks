@@ -18,11 +18,6 @@ public class LocationListCommandHandler extends CommandHandler {
         listLocations();
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        listLocations();
-    }
-
     public void listLocations() {
         Location[] l = c.getDatabaseManager().getLocations();
         if (l.length != 0) {

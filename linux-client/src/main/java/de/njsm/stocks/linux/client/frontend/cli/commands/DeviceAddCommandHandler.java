@@ -34,15 +34,6 @@ public class DeviceAddCommandHandler extends CommandHandler {
         }
     }
 
-    @Override
-    public void handle(List<String> commands) {
-        if (commands.size() == 4){
-            addDevice(commands.get(2), commands.get(3));
-        } else {
-            addDevice();
-        }
-    }
-
     public void addDevice() {
         String name = c.getReader().nextName("Creating a new device\nName: ");
         String user = c.getReader().next("Who is the owner?  ");
