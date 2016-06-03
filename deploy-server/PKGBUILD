@@ -18,7 +18,6 @@ source=("git://www.github.com/F1rst-Unicorn/stocks")
 install=stocks-server.install
 sha512sums=('SKIP')
 backup=("etc/$pkgname/stocks.properties"
-		"usr/lib/systemd/system/stocks-ocsp.service"
 		"usr/lib/$pkgname/server"
 		"usr/lib/$pkgname/setup-ca")
 
@@ -55,6 +54,7 @@ package() {
     mkdir -p $pkgdir/usr/lib/$pkgname/
     cp deploy-server/setup-ca $pkgdir/usr/lib/$pkgname/
     cp deploy-server/server $pkgdir/usr/lib/$pkgname/
+    cp deploy-server/nginx-reload $pkgdir/usr/lib/$pkgname/
     chmod -R 755 $pkgdir/usr/lib/$pkgname
     
     mkdir -p $pkgdir/etc/$pkgname/

@@ -23,11 +23,6 @@ Give nginx access to the certificates generated above. Particularly
 * ca-chain.cert.pem
 * ca.cert.pem
 
-## OCSP server
-
-Stocks needs an OCSP server. If you adhere to the default config in 
-the CA section, you can simply run the stocks-ocsp service. 
-
 ## Jetty server
 
 To adapt the stocks server to your system, adjust the needed values in 
@@ -36,7 +31,6 @@ To adapt the stocks server to your system, adjust the needed values in
 ## Start up the components
 
 * Start mysql
-* Start OCSP
 * Start jetty
 * Start nginx
 
