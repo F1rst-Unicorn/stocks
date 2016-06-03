@@ -33,6 +33,7 @@ RANDFILE=$CA_ROOT/.rnd
     cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
     chmod 444 intermediate/certs/ca-chain.cert.pem
     mkdir -p ../nginx
+    openssl ca -config intermediate/openssl.cnf -gencrl -out intermediate/crl/intermediate.crl.pem
     cp certs/ca.cert.pem ../nginx/ca
     cp intermediate/certs/intermediate.cert.pem ../nginx/chain
     
