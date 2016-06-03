@@ -18,6 +18,7 @@ public class X509CertificateAdmin implements CertificateAdmin {
         try {
             Process p = Runtime.getRuntime().exec(command);
             p.waitFor();
+            refreshCrl();
         } catch (IOException e){
             (new Config()).getLog().log(Level.SEVERE,
                     "X509CertificateAdmin: Failed to revoke certificate: " +
@@ -26,5 +27,21 @@ public class X509CertificateAdmin implements CertificateAdmin {
             e.printStackTrace();
         }
 
+    }
+
+    protected void refreshCrl() {
+        String crlCommand = "openssl ca " +
+                "-config ../CA/intermediate/openssl.cnf " +
+                "-gencrl " +
+                "-out ../CA/intermediate/crl/intermediate.crl.pem";
+        String nginxCommand = "/usr/lib/stocks-server/nginx-reload";
+
+        try {
+            Process p = Runtime.getRuntime().exec(crlCommand);
+            p.waitFor();
+            p = Runtime.getRuntime().exec(nginxCommand);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
