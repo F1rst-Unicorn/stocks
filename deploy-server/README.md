@@ -4,18 +4,18 @@
 
 Stocks needs a MariaDB database. Set it up and make it reachable over 
 localhost. Create a user for the server. Then set the credentials in 
-/etc/stocks/stocks.properties to make it accessible to the server. 
-Import the schema in /usr/share/stocks/schema.sql into the database. 
+/etc/stocks-server/stocks.properties to make it accessible to the server. 
+Import the schema in /usr/share/stocks-server/schema.sql into the database. 
 
 ## CA
 
-Run the script in /usr/lib/stocks/setup-ca as user stocks to generate a 
-CA and all needed keys in /usr/share/stocks/root/CA. 
+Run the script in /usr/lib/stocks-server/setup-ca as user stocks to generate a 
+CA and all needed keys in /usr/share/stocks-server/root/CA. 
 
 ## nginx
 
 Set up nginx as reverse proxy with the corresponding SSL configs. 
-For an example config have a look at /usr/share/stocks/nginx.conf.
+For an example config have a look at /usr/share/stocks-server/nginx.conf.
 Give nginx access to the certificates generated above. Particularly
 
 * server.key.pem
@@ -23,10 +23,17 @@ Give nginx access to the certificates generated above. Particularly
 * ca-chain.cert.pem
 * ca.cert.pem
 
+Furthermore the stocks server must be able to reload nginx to update the CRL
+nginx reads from. This means the user stocks must be allowed to execute 
+/usr/lib/stocks-server/nginx-reload as root via sudo. Add the following line
+to your /etc/sudoers file
+
+stocks ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload
+
 ## Jetty server
 
 To adapt the stocks server to your system, adjust the needed values in 
-/etc/stocks/stocks.properties. 
+/etc/stocks-server/stocks.properties. 
 
 ## Start up the components
 

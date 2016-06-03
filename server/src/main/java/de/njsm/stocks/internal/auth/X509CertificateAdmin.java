@@ -34,7 +34,7 @@ public class X509CertificateAdmin implements CertificateAdmin {
                 "-config ../CA/intermediate/openssl.cnf " +
                 "-gencrl " +
                 "-out ../CA/intermediate/crl/intermediate.crl.pem";
-        String nginxCommand = "/usr/lib/stocks-server/nginx-reload";
+        String nginxCommand = "sudo /usr/lib/stocks-server/nginx-reload";
 
         try {
             Process p = Runtime.getRuntime().exec(crlCommand);
