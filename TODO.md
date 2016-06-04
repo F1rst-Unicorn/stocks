@@ -1,8 +1,5 @@
 # Planned features
 
-## Server
-* Emit CRL in server to revoke devices
-
 ## Android
 * Implement Android app
 
