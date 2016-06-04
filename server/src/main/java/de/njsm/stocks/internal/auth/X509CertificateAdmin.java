@@ -38,16 +38,17 @@ public class X509CertificateAdmin implements CertificateAdmin {
                 "-config ../CA/intermediate/openssl.cnf " +
                 "-gencrl " +
                 "-out ../CA/intermediate/crl/intermediate.crl.pem";
+        String nginxCommand = "sudo /usr/lib/stocks-server/nginx-reload";
+        
         try {
+            Process p = Runtime.getRuntime().exec(crlCommand);
+            p.waitFor();
+
             FileOutputStream out = new FileOutputStream("../CA/intermediate/crl/whole.crl.pem");
             IOUtils.copy(new FileInputStream("../CA/crl/ca.crl.pem"), out);
             IOUtils.copy(new FileInputStream("../CA/intermediate/crl/intermediate.crl.pem"), out);
             out.close();
 
-            String nginxCommand = "sudo /usr/lib/stocks-server/nginx-reload";
-
-            Process p = Runtime.getRuntime().exec(crlCommand);
-            p.waitFor();
             p = Runtime.getRuntime().exec(nginxCommand);
             p.waitFor();
         } catch (IOException | InterruptedException e) {

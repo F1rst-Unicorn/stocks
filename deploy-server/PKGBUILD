@@ -1,7 +1,7 @@
 # Maintainer: aliena <dairyman@njsm.de>
 pkgname=stocks-server
 pkgver=0.2
-pkgrel=3
+pkgrel=4
 pkgdesc="Manages a household's stocks"
 arch=('i686' 'x86_64')
 url="https://github.com/F1rst-Unicorn/stocks"
@@ -72,7 +72,6 @@ package() {
     
     mkdir -p $pkgdir/usr/lib/systemd/system/
     cp deploy-server/stocks-jetty.service $pkgdir/usr/lib/systemd/system/
-    cp deploy-server/stocks-ocsp.service $pkgdir/usr/lib/systemd/system/
 
     mkdir -p $pkgdir/usr/share/licenses/$pkgname/
     cp LICENSE.md $pkgdir/usr/share/licenses/$pkgname/
