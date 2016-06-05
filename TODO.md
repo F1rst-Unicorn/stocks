@@ -1,5 +1,8 @@
 # Planned features
 
+## Linux
+* Add emitting QR codes 
+
 ## Android
 * Implement Android app
 
