@@ -56,6 +56,7 @@ public class Configuration {
             log.removeHandler(h);
         }
         log.setLevel(Level.ALL);
+        log.setUseParentHandlers(false);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(new SimpleFormatter());
         handler.setLevel(Level.ALL);
