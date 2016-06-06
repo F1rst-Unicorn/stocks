@@ -3,7 +3,7 @@
 ## SQLite database
 
 Create a skeleton database by either using the database from 
-/usr/share/stocks/client/proto.db or creating a new database and
+/usr/share/stocks/proto.db or creating a new database and
 importing schema.sql into it. Place the database in ~/.stocks/stocks.db. 
 
 ## First startup
