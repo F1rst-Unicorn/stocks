@@ -12,10 +12,7 @@ import java.io.*;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.Properties;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import java.util.logging.*;
 
 public class Configuration {
 
@@ -55,6 +52,9 @@ public class Configuration {
     public Configuration () {
 
         log = Logger.getLogger("stocks-client");
+        for (Handler h : log.getHandlers()) {
+            log.removeHandler(h);
+        }
         log.setLevel(Level.ALL);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(new SimpleFormatter());

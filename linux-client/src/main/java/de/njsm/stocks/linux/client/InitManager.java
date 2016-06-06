@@ -55,9 +55,13 @@ public class InitManager {
 
             handler.generateKey(username, deviceName, ids);
             handler.generateCsr();
+
             String fingerprint = source.getCaFingerprint();
+            String ticket = source.getTicket();
             handler.verifyServerCa(fingerprint);
-            handler.handleTicket(source.getTicket(), ids[1]);
+            handler.waitFor();
+
+            handler.handleTicket(ticket, ids[1]);
 
             c.setUsername(username);
             c.setDeviceName(deviceName);
@@ -69,6 +73,8 @@ public class InitManager {
         } catch (Exception e) {
             c.getLog().log(Level.SEVERE, "InitManager: Failed to setup keystore: " + e.getMessage());
             File keystore = new File(Configuration.keystorePath);
+            File config = new File(Configuration.configPath);
+            config.delete();
             keystore.delete();
             System.exit(1);
         } finally {

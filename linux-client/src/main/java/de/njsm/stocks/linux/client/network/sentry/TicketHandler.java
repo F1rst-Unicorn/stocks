@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 public class TicketHandler {
 
     protected final Configuration c;
+    protected final LinkedList<Process> waitList;
 
     public static final String caFilePath           = Configuration.stocksHome + "/ca.cert.pem";
     public static final String intermediateFilePath = Configuration.stocksHome + "/intermediate.cert.pem";
@@ -25,49 +27,40 @@ public class TicketHandler {
 
     public TicketHandler (Configuration c) {
         this.c = c;
+        waitList = new LinkedList<>();
     }
 
-    public void handleTicket(String ticket, int id) {
-        try {
-            SentryManager manager = new SentryManager(c);
-            manager.requestCertificate(ticket, id);
-            importCertificate("client");
-
-        } catch (Exception e){
-            c.getLog().log(Level.SEVERE, "TicketHandler: Certificate receiving failed: " + e.getMessage());
-            new File(Configuration.keystorePath).delete();
-        }
+    public void handleTicket(String ticket, int id) throws Exception {
+        SentryManager manager = new SentryManager(c);
+        manager.requestCertificate(ticket, id);
+        importCertificate("client");
     }
 
-    public void verifyServerCa(String fingerprint) {
-        try {
-            URL website = new URL(String.format("http://%s:%d/ca",
-                    c.getServerName(),
-                    c.getCaPort()));
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(caFilePath);
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+    public void verifyServerCa(String fingerprint) throws Exception {
+        URL website = new URL(String.format("http://%s:%d/ca",
+                c.getServerName(),
+                c.getCaPort()));
+        ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+        FileOutputStream fos = new FileOutputStream(caFilePath);
+        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
-            website = new URL(String.format("http://%s:%d/chain",
-                    c.getServerName(),
-                    c.getCaPort()));
-            rbc = Channels.newChannel(website.openStream());
-            fos = new FileOutputStream(intermediateFilePath);
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        website = new URL(String.format("http://%s:%d/chain",
+                c.getServerName(),
+                c.getCaPort()));
+        rbc = Channels.newChannel(website.openStream());
+        fos = new FileOutputStream(intermediateFilePath);
+        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
-            String fprFromCa = getFprFromFile();
-            if (! fprFromCa.equals(fingerprint)){
-                throw new SecurityException(String.format("fingerprints do not match!\nLocal: %s\nOther: %s",
-                        fingerprint,
-                        fprFromCa));
-            }
-
-            importCertificate("ca");
-            importCertificate("intermediate");
-
-        } catch (Exception e) {
-            c.getLog().log(Level.SEVERE, "TicketHandler: Unable to get CA certificate: " + e.getMessage());
+        String fprFromCa = getFprFromFile();
+        if (! fprFromCa.equals(fingerprint)){
+            throw new SecurityException(String.format("fingerprints do not match!\nLocal: %s\nOther: %s",
+                    fingerprint,
+                    fprFromCa));
         }
+
+        importCertificate("ca");
+        importCertificate("intermediate");
+
     }
 
     public void generateKey(String username, String deviceName, int[] ids) throws Exception {
@@ -93,7 +86,7 @@ public class TicketHandler {
         InputStream errorStream = p.getErrorStream();
         IOUtils.copy(resultStream, System.out);
         IOUtils.copy(errorStream, System.out);
-        p.waitFor();
+        waitList.add(p);
     }
 
     public void generateCsr() throws Exception {
@@ -113,6 +106,13 @@ public class TicketHandler {
         IOUtils.copy(resultStream, System.out);
         IOUtils.copy(errorStream, System.out);
         p.waitFor();
+    }
+
+    public void waitFor() throws InterruptedException {
+        for (Process p : waitList) {
+            p.waitFor();
+        }
+        waitList.clear();
     }
 
     protected String getFprFromFile() throws Exception {
