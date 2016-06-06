@@ -123,6 +123,7 @@ public class TicketHandler {
                 "-sha256 " +
                 "-in " + caFilePath;
         Process p = Runtime.getRuntime().exec(command);
+        p.waitFor();
         String output = IOUtils.toString(p.getInputStream());
 
         Pattern pattern = Pattern.compile("SHA256 Fingerprint=.*");
