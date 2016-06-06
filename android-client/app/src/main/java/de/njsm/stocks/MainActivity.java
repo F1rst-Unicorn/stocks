@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.app.Fragment;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +20,12 @@ import de.njsm.stocks.setup.SetupActivity;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    protected DrawerLayout drawer;
+    protected View content;
+
+    protected Fragment outlineFragment;
+    protected Fragment usersFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,14 +33,24 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
+        drawer.getChildAt(0).setSelected(true);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        content = findViewById(R.id.main_content);
+
+        usersFragment = new UserListFragment();
+        outlineFragment = new OutlineFragment();
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.main_content, outlineFragment)
+                .commit();
     }
 
     @Override
@@ -68,12 +85,21 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
+        Fragment f;
 
+        switch (item.getItemId()) {
+            case R.id.users:
+                f = new UserListFragment();
+                break;
+            default:
+                f = new OutlineFragment();
+        }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.main_content, f)
+                .commit();
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
