@@ -26,4 +26,9 @@ dependencies {
     compile 'com.android.support:support-v4:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'com.github.fcannizzaro:material-stepper:1.1.8'
+    compile group: 'com.google.zxing', name: 'zxingorg', version: '3.2.1'
+    compile group: 'commons-io', name: 'commons-io', version: '2.0.1'
+    compile group: 'org.bouncycastle', name: 'bcprov-jdk16', version: '1.45'
+
+
 }

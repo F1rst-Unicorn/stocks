@@ -8,7 +8,7 @@
     <EditText
         style="@style/StocksTheme.EditText"
         android:id="@+id/server_url"
-        android:hint="URL"
+        android:hint="Server host name"
         android:inputType="textUri"
         android:layout_alignParentTop="true"/>
 
@@ -17,8 +17,8 @@
         android:layout_height="wrap_content"
         android:text="Expert options"
         android:id="@+id/expert_switch"
-        android:layout_below="@+id/server_url"
-        android:layout_alignEnd="@+id/server_url"
+        android:layout_below="@id/server_url"
+        android:layout_alignEnd="@id/server_url"
         android:onClick="onExpertPush"/>
 
     <LinearLayout
@@ -34,27 +34,21 @@
             android:inputType="numberDecimal"
             android:hint="CA port (10910)"
             android:ems="10"
-            android:id="@+id/ca_port"
-            android:layout_below="@+id/expert_switch"
-            android:layout_alignStart="@+id/editText" />
+            android:id="@+id/ca_port" />
 
         <EditText
             style="@style/StocksTheme.EditText"
             android:inputType="numberDecimal"
             android:hint="Ticket port (10911)"
             android:ems="10"
-            android:id="@+id/sentry_port"
-            android:layout_below="@+id/ca_port"
-            android:layout_alignStart="@+id/ca_port" />
+            android:id="@+id/sentry_port" />
 
         <EditText
             style="@style/StocksTheme.EditText"
             android:inputType="numberDecimal"
             android:ems="10"
             android:hint="Server port (10912)"
-            android:id="@+id/server_port"
-            android:layout_below="@+id/sentry_port"
-            android:layout_alignStart="@+id/sentry_port" />
+            android:id="@+id/server_port" />
     </LinearLayout>
 
 </RelativeLayout>
