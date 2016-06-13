@@ -17,6 +17,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        warning 'InvalidPackage'
+    }
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
 }
 
 dependencies {
@@ -29,6 +36,12 @@ dependencies {
     compile group: 'com.google.zxing', name: 'zxingorg', version: '3.2.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.0.1'
     compile group: 'org.bouncycastle', name: 'bcprov-jdk16', version: '1.45'
+    compile group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.0.2'
+    compile group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.0.2'
+
+    compile 'com.android.support:multidex:1.0.1'
+
+
 
 
 }

@@ -1,7 +1,6 @@
 package de.njsm.stocks.setup;
 
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,18 +31,18 @@ public class PrincipalsFragment extends AbstractStep {
 
     @Override
     public void onPrevious() {
-        mStepper.getExtras().remove(Config.username);
+        mStepper.getExtras().remove(Config.usernameConfig);
     }
 
     @Override
     public void onStepVisible() {
         Bundle data = mStepper.getExtras();
-        ((EditText) getActivity().findViewById(R.id.user_name)).setText(data.getString(Config.username));
-        ((EditText) getActivity().findViewById(R.id.device_name)).setText(data.getString(Config.deviceName));
-        ((EditText) getActivity().findViewById(R.id.user_id)).setText(String.valueOf(data.getInt(Config.uid)));
-        ((EditText) getActivity().findViewById(R.id.device_id)).setText(String.valueOf(data.getInt(Config.did)));
-        ((EditText) getActivity().findViewById(R.id.fingerprint)).setText(data.getString(Config.fpr));
-        ((EditText) getActivity().findViewById(R.id.ticket)).setText(data.getString(Config.ticket));
+        ((EditText) getActivity().findViewById(R.id.user_name)).setText(data.getString(Config.usernameConfig));
+        ((EditText) getActivity().findViewById(R.id.device_name)).setText(data.getString(Config.deviceNameConfig));
+        ((EditText) getActivity().findViewById(R.id.user_id)).setText(String.valueOf(data.getInt(Config.uidConfig)));
+        ((EditText) getActivity().findViewById(R.id.device_id)).setText(String.valueOf(data.getInt(Config.didConfig)));
+        ((EditText) getActivity().findViewById(R.id.fingerprint)).setText(data.getString(Config.fprConfig));
+        ((EditText) getActivity().findViewById(R.id.ticket)).setText(data.getString(Config.ticketConfig));
 
     }
 }

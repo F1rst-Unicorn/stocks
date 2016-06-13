@@ -1,11 +1,7 @@
 package de.njsm.stocks.setup;
 
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,24 +32,24 @@ public class ServerFragment extends AbstractStep {
     @Override
     public void onStart() {
         super.onStart();
-        if (mStepper.getExtras().containsKey(Config.serverName)) {
+        if (mStepper.getExtras().containsKey(Config.serverNameConfig)) {
             ((EditText) getActivity().findViewById(R.id.server_url)).setText(
-                    mStepper.getExtras().getString(Config.serverName, "")
+                    mStepper.getExtras().getString(Config.serverNameConfig, "")
             );
         }
-        if (mStepper.getExtras().containsKey(Config.caPort)) {
+        if (mStepper.getExtras().containsKey(Config.caPortConfig)) {
             ((EditText) getActivity().findViewById(R.id.ca_port)).setText(
-                    String.valueOf(mStepper.getExtras().getInt(Config.caPort, 0))
+                    String.valueOf(mStepper.getExtras().getInt(Config.caPortConfig, 0))
             );
         }
-        if (mStepper.getExtras().containsKey(Config.sentryPort)) {
+        if (mStepper.getExtras().containsKey(Config.sentryPortConfig)) {
             ((EditText) getActivity().findViewById(R.id.sentry_port)).setText(
-                    String.valueOf(mStepper.getExtras().getInt(Config.sentryPort, 0))
+                    String.valueOf(mStepper.getExtras().getInt(Config.sentryPortConfig, 0))
             );
         }
-        if (mStepper.getExtras().containsKey(Config.serverPort)) {
+        if (mStepper.getExtras().containsKey(Config.serverPortConfig)) {
             ((EditText) getActivity().findViewById(R.id.server_port)).setText(
-                    String.valueOf(mStepper.getExtras().getInt(Config.serverPort, 0))
+                    String.valueOf(mStepper.getExtras().getInt(Config.serverPortConfig, 0))
             );
         }
     }
@@ -70,10 +66,10 @@ public class ServerFragment extends AbstractStep {
     @Override
     public void onNext() {
         Bundle data = mStepper.getExtras();
-        data.putString(Config.serverName, getServerName());
-        data.putInt(Config.caPort, getCaPort());
-        data.putInt(Config.sentryPort, getSentryPort());
-        data.putInt(Config.serverPort, getServerPort());
+        data.putString(Config.serverNameConfig, getServerName());
+        data.putInt(Config.caPortConfig, getCaPort());
+        data.putInt(Config.sentryPortConfig, getSentryPort());
+        data.putInt(Config.serverPortConfig, getServerPort());
     }
 
     @Override

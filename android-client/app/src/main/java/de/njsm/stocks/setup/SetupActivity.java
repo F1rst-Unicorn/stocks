@@ -3,7 +3,6 @@ package de.njsm.stocks.setup;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -32,35 +31,35 @@ public class SetupActivity extends DotStepper {
         principalsFragment = new PrincipalsFragment();
 
         SharedPreferences prefs = new Config(this).getPrefs();
-        if (prefs.contains(Config.serverName)) {
-            getExtras().putString(Config.serverName, prefs.getString(Config.serverName, ""));
+        if (prefs.contains(Config.serverNameConfig)) {
+            getExtras().putString(Config.serverNameConfig, prefs.getString(Config.serverNameConfig, ""));
         }
-        if (prefs.contains(Config.caPort)) {
-            getExtras().putInt(Config.caPort, prefs.getInt(Config.caPort, 0));
+        if (prefs.contains(Config.caPortConfig)) {
+            getExtras().putInt(Config.caPortConfig, prefs.getInt(Config.caPortConfig, 0));
         }
-        if (prefs.contains(Config.sentryPort)) {
-            getExtras().putInt(Config.sentryPort, prefs.getInt(Config.sentryPort, 0));
+        if (prefs.contains(Config.sentryPortConfig)) {
+            getExtras().putInt(Config.sentryPortConfig, prefs.getInt(Config.sentryPortConfig, 0));
         }
-        if (prefs.contains(Config.serverPort)) {
-            getExtras().putInt(Config.serverPort, prefs.getInt(Config.serverPort, 0));
+        if (prefs.contains(Config.serverPortConfig)) {
+            getExtras().putInt(Config.serverPortConfig, prefs.getInt(Config.serverPortConfig, 0));
         }
-        if (prefs.contains(Config.username)) {
-            getExtras().putString(Config.username, prefs.getString(Config.username, ""));
+        if (prefs.contains(Config.usernameConfig)) {
+            getExtras().putString(Config.usernameConfig, prefs.getString(Config.usernameConfig, ""));
         }
-        if (prefs.contains(Config.deviceName)) {
-            getExtras().putString(Config.deviceName, prefs.getString(Config.deviceName, ""));
+        if (prefs.contains(Config.deviceNameConfig)) {
+            getExtras().putString(Config.deviceNameConfig, prefs.getString(Config.deviceNameConfig, ""));
         }
-        if (prefs.contains(Config.uid)) {
-            getExtras().putInt(Config.uid, prefs.getInt(Config.uid, 0));
+        if (prefs.contains(Config.uidConfig)) {
+            getExtras().putInt(Config.uidConfig, prefs.getInt(Config.uidConfig, 0));
         }
-        if (prefs.contains(Config.did)) {
-            getExtras().putInt(Config.did, prefs.getInt(Config.did, 0));
+        if (prefs.contains(Config.didConfig)) {
+            getExtras().putInt(Config.didConfig, prefs.getInt(Config.didConfig, 0));
         }
-        if (prefs.contains(Config.fpr)) {
-            getExtras().putString(Config.fpr, prefs.getString(Config.fpr, ""));
+        if (prefs.contains(Config.fprConfig)) {
+            getExtras().putString(Config.fprConfig, prefs.getString(Config.fprConfig, ""));
         }
-        if (prefs.contains(Config.ticket)) {
-            getExtras().putString(Config.ticket, prefs.getString(Config.ticket, ""));
+        if (prefs.contains(Config.ticketConfig)) {
+            getExtras().putString(Config.ticketConfig, prefs.getString(Config.ticketConfig, ""));
         }
 
         addStep(serverFragment);
@@ -75,16 +74,16 @@ public class SetupActivity extends DotStepper {
 
         SharedPreferences prefs = new Config(this).getPrefs();
         prefs.edit()
-                .putString(Config.serverName, data.getString(Config.serverName))
-                .putInt(Config.caPort, data.getInt(Config.caPort))
-                .putInt(Config.sentryPort, data.getInt(Config.sentryPort))
-                .putInt(Config.serverPort, data.getInt(Config.serverPort))
-                .putString(Config.username, data.getString(Config.username))
-                .putString(Config.deviceName, data.getString(Config.deviceName))
-                .putInt(Config.uid, data.getInt(Config.uid))
-                .putInt(Config.did, data.getInt(Config.did))
-                .putString(Config.fpr, data.getString(Config.fpr))
-                .putString(Config.ticket, data.getString(Config.ticket))
+                .putString(Config.serverNameConfig, data.getString(Config.serverNameConfig))
+                .putInt(Config.caPortConfig, data.getInt(Config.caPortConfig))
+                .putInt(Config.sentryPortConfig, data.getInt(Config.sentryPortConfig))
+                .putInt(Config.serverPortConfig, data.getInt(Config.serverPortConfig))
+                .putString(Config.usernameConfig, data.getString(Config.usernameConfig))
+                .putString(Config.deviceNameConfig, data.getString(Config.deviceNameConfig))
+                .putInt(Config.uidConfig, data.getInt(Config.uidConfig))
+                .putInt(Config.didConfig, data.getInt(Config.didConfig))
+                .putString(Config.fprConfig, data.getString(Config.fprConfig))
+                .putString(Config.ticketConfig, data.getString(Config.ticketConfig))
                 .commit();
 
         Intent i = new Intent(this, MainActivity.class);

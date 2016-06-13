@@ -1,18 +1,10 @@
 package de.njsm.stocks.setup;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 
-import java.util.List;
-
 import de.njsm.stocks.Config;
-import de.njsm.stocks.R;
 import de.njsm.stocks.zxing.IntentIntegrator;
 import de.njsm.stocks.zxing.IntentResult;
 
@@ -34,7 +26,7 @@ public class QrFragment extends AbstractStep {
     @Override
     public void onStepVisible() {
         // start qr reader
-        if (mStepper.getExtras().containsKey(Config.username)) {
+        if (mStepper.getExtras().containsKey(Config.usernameConfig)) {
             ((SetupActivity) getActivity()).onNext();
         } else {
             IntentIntegrator integrator = new IntentIntegrator(getActivity());
@@ -48,12 +40,12 @@ public class QrFragment extends AbstractStep {
         Bundle data = mStepper.getExtras();
 
         if (arguments.length == 6) {
-            data.putString(Config.username, arguments[0]);
-            data.putString(Config.deviceName, arguments[1]);
-            data.putInt(Config.uid, Integer.parseInt(arguments[2]));
-            data.putInt(Config.did, Integer.parseInt(arguments[3]));
-            data.putString(Config.fpr, arguments[4]);
-            data.putString(Config.ticket, arguments[5]);
+            data.putString(Config.usernameConfig, arguments[0]);
+            data.putString(Config.deviceNameConfig, arguments[1]);
+            data.putInt(Config.uidConfig, Integer.parseInt(arguments[2]));
+            data.putInt(Config.didConfig, Integer.parseInt(arguments[3]));
+            data.putString(Config.fprConfig, arguments[4]);
+            data.putString(Config.ticketConfig, arguments[5]);
         }
 
     }

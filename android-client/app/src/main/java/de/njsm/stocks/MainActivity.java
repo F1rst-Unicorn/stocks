@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (getIntent().hasExtra("setup")) {
+            getIntent().getExtras().remove("setup");
             SetupTask s = new SetupTask(this);
             s.execute();
         }
