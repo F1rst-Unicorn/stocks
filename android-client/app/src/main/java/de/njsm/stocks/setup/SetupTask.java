@@ -63,7 +63,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
 
     @Override
     protected void onPreExecute() {
-        dialog.setTitle("Registering");
+        dialog.setTitle(c.getResources().getString(R.string.dialog_registering));
         dialog.setProgress(0);
         dialog.setMax(5);
         dialog.setCanceledOnTouchOutside(false);
@@ -79,21 +79,23 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         }
         Result result;
         try {
-            publishProgress("Get server certificate");
+            publishProgress(c.getResources().getString(R.string.dialog_get_cert));
             downloadCa();
 
-            publishProgress("Check server certificate");
+            publishProgress(c.getResources().getString(R.string.dialog_verify_cert));
             verifyCa();
 
-            publishProgress("Create key");
+            publishProgress(c.getResources().getString(R.string.dialog_create_key));
             generateKey();
 
-            publishProgress("Registering key");
+            publishProgress(c.getResources().getString(R.string.dialog_register_key));
             registerKey();
 
-            result = Result.SUCCESS;
+            result = Result.getSuccess(c);
         } catch (Exception e) {
-            result = new Result("Error", e.getMessage(), false);
+            result = new Result(c.getResources().getString(R.string.dialog_error),
+                    e.getMessage(),
+                    false);
         }
 
         return result;
@@ -130,7 +132,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         String expectedFpr = config.getFpr();
 
         if (! expectedFpr.equals(actualFpr)) {
-            throw new SecurityException("Wrong fingerprint");
+            throw new SecurityException(c.getResources().getString(R.string.dialog_wrong_fpr));
         }
     }
 
@@ -194,7 +196,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
             Ticket responseTicket = response.body();
             // store result
             if (responseTicket.pemFile == null) {
-                throw new SecurityException("Server rejected ticket!");
+                throw new SecurityException(c.getResources().getString(R.string.dialog_ticket_reject));
             }
             clientCert = responseTicket.pemFile;
             KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -207,7 +209,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
 
             keystore.setKeyEntry("client", clientKeys.getPrivate().getEncoded(), trustChain);
         } else {
-            throw new Exception("Invalid server answer: " + response.raw().toString());
+            throw new Exception(c.getResources().getString(R.string.dialog_invalid_answer) + response.raw().toString());
         }
 
     }
@@ -218,7 +220,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         if (rawCert instanceof Certificate) {
             return (Certificate) rawCert;
         } else {
-            throw new Exception("Certificate is unreadable");
+            throw new Exception(c.getResources().getString(R.string.dialog_cert_unreadable));
         }
     }
 
@@ -240,20 +242,23 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
 
         if (s.isSuccess()) {
             builder.setIcon(R.drawable.ic_check_black_24dp)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(c.getResources().getString(R.string.dialog_ok),
+                            new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                 }
             });
         } else {
-            builder.setPositiveButton("RETRY", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(c.getResources().getString(R.string.dialog_retry),
+                    new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent i = new Intent(c, SetupActivity.class);
                     c.startActivity(i);
                 }
-            }).setNegativeButton("ABORT", new DialogInterface.OnClickListener() {
+            }).setNegativeButton(c.getResources().getString(R.string.dialog_abort),
+                    new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();

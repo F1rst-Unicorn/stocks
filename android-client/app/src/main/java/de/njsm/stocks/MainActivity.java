@@ -12,9 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import de.njsm.stocks.setup.SetupActivity;
 import de.njsm.stocks.setup.SetupTask;
+import de.njsm.stocks.Config;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity
 
     protected Fragment outlineFragment;
     protected Fragment usersFragment;
+
+    protected Config config;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,23 +47,33 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         content = findViewById(R.id.main_content);
-
         usersFragment = new UserListFragment();
         outlineFragment = new OutlineFragment();
+        config = new Config(this);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_content, outlineFragment)
                 .commit();
 
-        if (! new Config(this).isConfigured()) {
+        if (! config.isConfigured()) {
             Intent i = new Intent(this, SetupActivity.class);
             startActivity(i);
+        } else {
+            TextView view = ((TextView) findViewById(R.id.drawer_user_name));
+            if (view != null) {
+                view.setText(config.getUsername());
+            }
+            view = (TextView) findViewById(R.id.drawer_server);
+            if (view != null) {
+                view.setText(config.getServerName());
+            }
         }
 
         if (getIntent().hasExtra("setup")) {
             getIntent().getExtras().remove("setup");
             SetupTask s = new SetupTask(this);
             s.execute();
+            config.refresh();
         }
 
     }
@@ -101,10 +115,10 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.users:
-                f = new UserListFragment();
+                f = usersFragment;
                 break;
             default:
-                f = new OutlineFragment();
+                f = outlineFragment;
         }
 
         getFragmentManager().beginTransaction()

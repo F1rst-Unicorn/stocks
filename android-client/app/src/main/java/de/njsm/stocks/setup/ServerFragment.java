@@ -57,7 +57,7 @@ public class ServerFragment extends AbstractStep {
     @Override
     public boolean nextIf() {
         if (getServerName().equals("")) {
-            errorText = "No server name set";
+            errorText = getResources().getString(R.string.error_no_server_name);
             return false;
         }
         return true;

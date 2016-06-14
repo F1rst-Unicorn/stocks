@@ -12,3 +12,4 @@ target
 *.war
 *.pkg.tar.xz
 deploy*/stocks/
+keystore

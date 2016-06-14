@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">Stocks</string>
+
+    <string name="navigation_drawer_open">Navigationsleiste öffnen</string>
+    <string name="navigation_drawer_close">Navigationsleiste schließen</string>
+
+    <!-- Main activity navigation drawer -->
+    <string name="action_outline">Übersicht</string>
+    <string name="action_users">Benutzer</string>
+    <string name="action_locations">Orte</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_help">Hilfe</string>
+    <string name="action_info">Über Stocks</string>
+
+    <string name="hint_servername">Server Hostname</string>
+    <string name="hint_expert">Expertenoptionen</string>
+    <string name="hint_caport">CA Port (10910)</string>
+    <string name="hint_ticket_port">Ticketport (10911)</string>
+    <string name="hint_server_port">Serverport (10912)</string>
+    <string name="hint_username">Benutzername</string>
+    <string name="hint_device_name">Gerätename</string>
+    <string name="hint_user_id">Benutzer ID</string>
+    <string name="hint_device_id">Geräte ID</string>
+    <string name="hint_fingerprint">Fingerprint</string>
+    <string name="hint_ticket">Ticket</string>
+
+    <string name="dialog_success">Erfolgreich</string>
+    <string name="dialog_finished">Registrierung abgeschlossen</string>
+    <string name="error_no_server_name">Kein Server gesetzt</string>
+    <string name="dialog_registering">Registriere</string>
+    <string name="dialog_get_cert">Hole Serverzertifikat</string>
+    <string name="dialog_verify_cert">Prüfe Serverzertifikat</string>
+    <string name="dialog_create_key">Erzeuge Schlüssel</string>
+    <string name="dialog_register_key">Registriere Schlüssel</string>
+    <string name="dialog_error">Fehler</string>
+    <string name="dialog_wrong_fpr">Falscher fingerprint</string>
+    <string name="dialog_ticket_reject">Server weist Ticket ab</string>
+    <string name="dialog_invalid_answer">Ungültige Antwort: </string>
+    <string name="dialog_cert_unreadable">Zertifikat ist unlesbar</string>
+    <string name="dialog_retry">WIEDERHOLEN</string>
+    <string name="dialog_abort">ABBRECHEN</string>
+    <string name="dialog_ok">OK</string>
+
+</resources>

@@ -47,17 +47,7 @@ public class Config {
     public Config(Context c) {
         this.c = c;
         prefs = c.getSharedPreferences(preferences, Context.MODE_PRIVATE);
-        serverName = prefs.getString(serverNameConfig, "");
-        caPort = prefs.getInt(caPortConfig, 10910);
-        sentryPort = prefs.getInt(sentryPortConfig, 10911);
-        serverPort = prefs.getInt(serverPortConfig, 10912);
-        username = prefs.getString(usernameConfig, "");
-        deviceName = prefs.getString(deviceNameConfig, "");
-        uid = prefs.getInt(uidConfig, 0);
-        did = prefs.getInt(didConfig, 0);
-        fpr = prefs.getString(fprConfig, "");
-        ticket = prefs.getString(ticketConfig, "");
-
+        refresh();
     }
 
     public OkHttpClient getClient() throws Exception {
@@ -91,6 +81,19 @@ public class Config {
 
     public boolean isConfigured() {
         return prefs.contains(serverNameConfig);
+    }
+
+    public void refresh() {
+        serverName = prefs.getString(serverNameConfig, "");
+        caPort = prefs.getInt(caPortConfig, 10910);
+        sentryPort = prefs.getInt(sentryPortConfig, 10911);
+        serverPort = prefs.getInt(serverPortConfig, 10912);
+        username = prefs.getString(usernameConfig, "");
+        deviceName = prefs.getString(deviceNameConfig, "");
+        uid = prefs.getInt(uidConfig, 0);
+        did = prefs.getInt(didConfig, 0);
+        fpr = prefs.getString(fprConfig, "");
+        ticket = prefs.getString(ticketConfig, "");
     }
 
     public SharedPreferences getPrefs() {

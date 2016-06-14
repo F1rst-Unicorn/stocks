@@ -6,15 +6,15 @@
         <item
             android:id="@+id/outline"
             android:icon="@drawable/ic_view_list_black_24dp"
-            android:title="Outline" />
+            android:title="@string/action_outline" />
         <item
             android:id="@+id/users"
             android:icon="@drawable/ic_people_black_24dp"
-            android:title="Users"/>
+            android:title="@string/action_users"/>
         <item
             android:id="@+id/locations"
             android:icon="@drawable/ic_account_balance_wallet_black_24dp"
-            android:title="Locations"/>
+            android:title="@string/action_locations"/>
 
     </group>
 
@@ -23,15 +23,15 @@
         <item
             android:id="@+id/settings"
             android:icon="@drawable/ic_settings_black_24dp"
-            android:title="Settings" />
+            android:title="@string/action_settings" />
         <item
             android:id="@+id/help"
             android:icon="@drawable/ic_help_black_24dp"
-            android:title="Help" />
+            android:title="@string/action_help" />
         <item
             android:id="@+id/about"
             android:icon="@drawable/ic_info_black_24dp"
-            android:title="Information" />
+            android:title="@string/action_info" />
 
     </group>
 
