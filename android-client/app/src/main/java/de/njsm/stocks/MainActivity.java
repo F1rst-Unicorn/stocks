@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import de.njsm.stocks.setup.SetupActivity;
 import de.njsm.stocks.setup.SetupTask;
-import de.njsm.stocks.Config;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -59,13 +58,17 @@ public class MainActivity extends AppCompatActivity
             Intent i = new Intent(this, SetupActivity.class);
             startActivity(i);
         } else {
-            TextView view = ((TextView) findViewById(R.id.drawer_user_name));
+            TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_name));
             if (view != null) {
                 view.setText(config.getUsername());
             }
-            view = (TextView) findViewById(R.id.drawer_server);
+            view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_server);
             if (view != null) {
                 view.setText(config.getServerName());
+            }
+            view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_dev);
+            if (view != null) {
+                view.setText(config.getDeviceName());
             }
         }
 

@@ -17,6 +17,7 @@ import org.bouncycastle.jce.provider.PEMUtil;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -78,24 +79,31 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
             android.os.Debug.waitForDebugger();
         }
         Result result;
-        try {
-            publishProgress(c.getResources().getString(R.string.dialog_get_cert));
-            downloadCa();
 
-            publishProgress(c.getResources().getString(R.string.dialog_verify_cert));
-            verifyCa();
-
-            publishProgress(c.getResources().getString(R.string.dialog_create_key));
-            generateKey();
-
-            publishProgress(c.getResources().getString(R.string.dialog_register_key));
-            registerKey();
-
+        File keystore = new File(c.getFilesDir().getAbsolutePath()+"/keystore");
+        if (keystore.exists()){
             result = Result.getSuccess(c);
-        } catch (Exception e) {
-            result = new Result(c.getResources().getString(R.string.dialog_error),
-                    e.getMessage(),
-                    false);
+
+        } else {
+            try {
+                publishProgress(c.getResources().getString(R.string.dialog_get_cert));
+                downloadCa();
+
+                publishProgress(c.getResources().getString(R.string.dialog_verify_cert));
+                verifyCa();
+
+                publishProgress(c.getResources().getString(R.string.dialog_create_key));
+                generateKey();
+
+                publishProgress(c.getResources().getString(R.string.dialog_register_key));
+                registerKey();
+
+                result = Result.getSuccess(c);
+            } catch (Exception e) {
+                result = new Result(c.getResources().getString(R.string.dialog_error),
+                        e.getMessage(),
+                        false);
+            }
         }
 
         return result;
