@@ -7,4 +7,8 @@ public class Update {
     public String table;
     public Date lastUpdate;
 
+    public Update(String table, Date lastUpdate) {
+        this.table = table;
+        this.lastUpdate = lastUpdate;
+    }
 }

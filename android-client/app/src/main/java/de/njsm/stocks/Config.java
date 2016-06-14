@@ -2,9 +2,11 @@ package de.njsm.stocks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.util.Enumeration;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
@@ -17,6 +19,7 @@ import okhttp3.OkHttpClient;
 public class Config {
 
     public static final String preferences = "stocks_prefs";
+    public static final String log = "de.njsm.stocks";
 
     public static final String serverNameConfig = "stocks.serverName";
     public static final String caPortConfig = "stocks.caPort";
@@ -57,9 +60,14 @@ public class Config {
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
         ks.load(c.openFileInput("keystore"),
                 getPassword().toCharArray());
+        Enumeration<String> d = ks.aliases();
+        while (d.hasMoreElements()){
+            String s = d.nextElement();
+            Log.e(Config.log, s);
+        }
         tmf.init(ks);
 
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance("X509");
         kmf.init(ks, getPassword().toCharArray());
 
         SSLContext context = SSLContext.getInstance("TLSv1.2");

@@ -31,6 +31,7 @@ import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.security.auth.x500.X500Principal;
@@ -46,6 +47,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
 
     protected Context c;
     protected Config config;
+    protected ArrayList<SetupFinishedListener> listeners;
 
     protected ProgressDialog dialog;
 
@@ -176,7 +178,10 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
 
         keystore.setCertificateEntry("ca", getCertificate(caCert));
         keystore.setCertificateEntry("intermediate", getCertificate(intermediateCert));
-        keystore.store(c.openFileOutput("keystore", Context.MODE_PRIVATE), config.getPassword().toCharArray());
+        FileOutputStream out = c.openFileOutput("keystore", Context.MODE_PRIVATE);
+        keystore.store(out, config.getPassword().toCharArray());
+        out.flush();
+        out.close();
     }
 
     private void registerKey() throws Exception {
@@ -215,7 +220,11 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
             trustChain[1] = getCertificate(intermediateCert);
             trustChain[2] = getCertificate(caCert);
 
-            keystore.setKeyEntry("client", clientKeys.getPrivate().getEncoded(), trustChain);
+            keystore.setKeyEntry("client", clientKeys.getPrivate(), config.getPassword().toCharArray(), trustChain);
+            FileOutputStream out = c.openFileOutput("keystore", Context.MODE_PRIVATE);
+            keystore.store(out, config.getPassword().toCharArray());
+            out.flush();
+            out.close();
         } else {
             throw new Exception(c.getResources().getString(R.string.dialog_invalid_answer) + response.raw().toString());
         }
@@ -239,9 +248,16 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         dialog.setProgress(dialog.getProgress()+1);
     }
 
+    public void addListener(SetupFinishedListener l) {
+        listeners.add(l);
+    }
+
     @Override
     protected void onPostExecute(Result s) {
         dialog.cancel();
+        for (SetupFinishedListener l : listeners){
+            l.finished();
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(c)
                 .setTitle(s.getTitle())

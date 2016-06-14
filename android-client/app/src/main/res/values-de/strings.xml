@@ -11,6 +11,9 @@
     <string name="action_settings">Einstellungen</string>
     <string name="action_help">Hilfe</string>
     <string name="action_info">Über Stocks</string>
+    <string name="action_refresh">Aktualisieren</string>
+    <string name="action_search">Suchen</string>
+    <string name="action_add">Hinzufügen</string>
 
     <string name="hint_servername">Server Hostname</string>
     <string name="hint_expert">Expertenoptionen</string>
