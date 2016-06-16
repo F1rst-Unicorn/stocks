@@ -25,7 +25,8 @@ pre_upgrade() {
 ## arg 1:  the new package version
 ## arg 2:  the old package version
 post_upgrade() {
-    echo -n ""
+    chown -R stocks:users /usr/share/stocks-server/root
+    chown -R stocks:users /var/log/stocks-server
 }
 
 ## arg 1:  the old package version
