@@ -24,7 +24,6 @@ import java.util.Locale;
 public class ServerManager {
 
     protected ServerClient backend;
-    protected Config c;
 
     public static ServerManager m;
 
@@ -51,7 +50,6 @@ public class ServerManager {
                     .build();
 
             backend = retrofit.create(ServerClient.class);
-            this.c = c;
         } catch (Exception e) {
             Log.e(Config.log, "Failed to set up ServerManager: " + e.getMessage());
         }

@@ -11,9 +11,7 @@
 * Add methods to get and clear pending tickets
 * Image support for Food
 * Remember maximum items per food to emit warnings based on thresholds
-
-## Server
-* Add log message for retrieving Updates table
+* Add food moving semantics
 
 # Open issues 
 
@@ -21,4 +19,7 @@
 * setup-ca script emits "unable to write random state"
 
 ## Server
+* First access to database crashes due to driver not found
+
+## Sentry
 * First access to database crashes due to driver not found

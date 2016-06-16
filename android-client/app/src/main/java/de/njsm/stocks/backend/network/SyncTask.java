@@ -1,28 +1,29 @@
 package de.njsm.stocks.backend.network;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.data.Food;
+import de.njsm.stocks.backend.data.FoodItem;
+import de.njsm.stocks.backend.data.Location;
 import de.njsm.stocks.backend.data.Update;
 import de.njsm.stocks.backend.data.User;
 import de.njsm.stocks.backend.data.UserDevice;
 import de.njsm.stocks.backend.db.DatabaseHandler;
 import de.njsm.stocks.backend.db.data.SqlDeviceTable;
-import de.njsm.stocks.backend.db.data.SqlUpdateTable;
+import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
+import de.njsm.stocks.backend.db.data.SqlFoodTable;
+import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
-    protected Context c;
-
-    public SyncTask(Context c) {
-        this.c = c;
-    }
 
     @Override
     protected Integer doInBackground(Void... params) {
+
         if (android.os.Debug.isDebuggerConnected()) {
             android.os.Debug.waitForDebugger();
         }
@@ -44,6 +45,7 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
         }
 
         DatabaseHandler.h.writeUpdates(serverUpdates);
+        Log.i(Config.log, "Sync successful");
         return 0;
     }
 
@@ -52,7 +54,28 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
             refreshUsers();
         } else if (table.equals(SqlDeviceTable.NAME)) {
             refreshDevices();
+        } else if (table.equals(SqlLocationTable.NAME)) {
+            refreshLocations();
+        } else if (table.equals(SqlFoodTable.NAME)) {
+            refreshFood();
+        } else if (table.equals(SqlFoodItemTable.NAME)) {
+            refreshItems();
         }
+    }
+
+    protected void refreshFood() {
+        Food[] f = ServerManager.m.getFood();
+        DatabaseHandler.h.writeFood(f);
+    }
+
+    protected void refreshItems() {
+        FoodItem[] f = ServerManager.m.getFoodItems();
+        DatabaseHandler.h.writeItems(f);
+    }
+
+    protected void refreshLocations() {
+        Location[] l = ServerManager.m.getLocations();
+        DatabaseHandler.h.writeLocations(l);
     }
 
     protected void refreshUsers() {

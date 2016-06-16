@@ -94,6 +94,14 @@ public class SetupActivity extends DotStepper {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        this.serverFragment = null;
+        this.qrFragment = null;
+        this.principalsFragment = null;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanResult != null) {
@@ -101,7 +109,6 @@ public class SetupActivity extends DotStepper {
             onNext();
 
         }
-        // else continue with any other code you need in the method
     }
 
     public void onExpertPush(View view) {

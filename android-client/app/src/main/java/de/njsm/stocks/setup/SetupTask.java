@@ -1,5 +1,6 @@
 package de.njsm.stocks.setup;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -62,7 +63,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         dialog = new ProgressDialog(c);
         this.c = c;
         config = new Config(c);
-        listeners = new ArrayList<>(3);
+        listeners = new ArrayList<>(1);
     }
 
     @Override
@@ -78,9 +79,6 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
     @Override
     protected Result doInBackground(Void... params) {
 
-        if (android.os.Debug.isDebuggerConnected()) {
-            android.os.Debug.waitForDebugger();
-        }
         Result result;
 
         File keystore = new File(c.getFilesDir().getAbsolutePath()+"/keystore");
@@ -279,6 +277,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
                     new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
                     Intent i = new Intent(c, SetupActivity.class);
                     c.startActivity(i);
                 }
@@ -287,6 +286,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    ((Activity) c).finish();
                 }
             }).setIcon(R.drawable.ic_error_black_24dp);
         }

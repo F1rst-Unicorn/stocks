@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.action_refresh:
-                SyncTask task = new SyncTask(this);
+                SyncTask task = new SyncTask();
                 task.execute();
                 break;
             default:
