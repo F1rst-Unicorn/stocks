@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java -jar /usr/lib/stocks/client.jar
+java -jar /usr/lib/stocks/client.jar $@
