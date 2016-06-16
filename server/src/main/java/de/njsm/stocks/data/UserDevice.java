@@ -10,7 +10,7 @@ import java.util.Date;
 @XmlRootElement
 public class UserDevice {
     public int id;
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss zzz")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss")
     public Date lastUpdate;
     public String name;
     public int userId;

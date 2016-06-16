@@ -14,6 +14,9 @@ public class UpdateEndpoint extends Endpoint {
     @GET
     @Produces("application/json")
     public Update[] getUpdates() {
+
+        c.getLog().log(Level.INFO, "UpdateEndpoint: get Updates");
+
         try {
             return handler.getUpdates();
         } catch (SQLException e){
