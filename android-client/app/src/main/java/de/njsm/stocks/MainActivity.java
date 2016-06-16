@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import de.njsm.stocks.backend.db.DatabaseHandler;
 import de.njsm.stocks.backend.network.ServerManager;
 import de.njsm.stocks.backend.network.SyncTask;
 import de.njsm.stocks.setup.SetupActivity;
@@ -153,5 +154,10 @@ public class MainActivity extends AppCompatActivity
     public void finished() {
         config.refresh();
         ServerManager.init(config);
+        DatabaseHandler.init(this);
+    }
+
+    public Config getConfig() {
+        return config;
     }
 }

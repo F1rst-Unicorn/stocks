@@ -7,11 +7,13 @@
 * Implement Android app
 
 ## General
+* Store EAN Food IDs in database
 * Add methods to get and clear pending tickets
 * Image support for Food
 * Remember maximum items per food to emit warnings based on thresholds
 
-
+## Server
+* Add log message for retrieving Updates table
 
 # Open issues 
 

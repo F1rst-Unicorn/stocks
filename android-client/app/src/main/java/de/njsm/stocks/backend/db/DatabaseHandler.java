@@ -12,19 +12,30 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import de.njsm.stocks.Config;
 import de.njsm.stocks.backend.data.Update;
 import de.njsm.stocks.backend.data.User;
+import de.njsm.stocks.backend.data.UserDevice;
+import de.njsm.stocks.backend.db.data.SqlDeviceTable;
 import de.njsm.stocks.backend.db.data.SqlUpdateTable;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 10;
     public static final String DATABASE_NAME = "stocks.db";
 
-    public DatabaseHandler(Context context) {
+    public static DatabaseHandler h;
+
+    public static void init(Context c) {
+        if (h == null) {
+            h = new DatabaseHandler(c);
+        }
+    }
+
+    private DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -34,6 +45,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             db.execSQL(SqlUserTable.CREATE);
             db.execSQL(SqlUpdateTable.CREATE);
             db.execSQL(SqlUpdateTable.INIT);
+            db.execSQL(SqlDeviceTable.CREATE);
         } catch (SQLException e) {
             Log.e(Config.log, "could not create table", e);
         }
@@ -45,6 +57,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         try {
             db.execSQL(SqlUserTable.DROP);
             db.execSQL(SqlUpdateTable.DROP);
+            db.execSQL(SqlDeviceTable.DROP);
         } catch (SQLException e) {
             Log.e(Config.log, "could not drop tables", e);
         }
@@ -54,23 +67,24 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     public Update[] getUpdates() {
         Cursor c = null;
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
 
         try {
             SQLiteDatabase db = getReadableDatabase();
             c = db.rawQuery(SqlUpdateTable.SELECT_ALL, null);
             ArrayList<Update> result = new ArrayList<>();
-
+            c.moveToFirst();
             while (!c.isAfterLast()) {
                 Date date = format.parse(c.getString(c.getColumnIndex(SqlUpdateTable.COL_DATE)));
                 Update u = new Update(c.getString(c.getColumnIndex(SqlUpdateTable.COL_NAME)),
                         date);
                 result.add(u);
+                c.moveToNext();
             }
             return result.toArray(new Update[result.size()]);
 
         } catch (SQLException e) {
-            Log.e(Config.log, "could not get users", e);
+            Log.e(Config.log, "could not get updates", e);
             return new Update[0];
         } catch (ParseException e) {
             Log.e(Config.log, "could not parse date", e);
@@ -84,7 +98,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     public void writeUpdates(Update[] updates) {
         SQLiteDatabase db = getWritableDatabase();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
 
         try {
             db.beginTransaction();
@@ -101,7 +115,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-            Log.e(Config.log, "could not get users", e);
+            Log.e(Config.log, "could not write updates", e);
         } finally {
             db.endTransaction();
         }
@@ -115,11 +129,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             c = db.rawQuery(SqlUserTable.SELECT_ALL, null);
             ArrayList<User> result = new ArrayList<>();
 
+            c.moveToFirst();
             while (!c.isAfterLast()) {
                 User u = new User(
                         c.getInt(c.getColumnIndex(SqlUserTable.COL_ID)),
                         c.getString(c.getColumnIndex(SqlUserTable.COL_NAME)));
                 result.add(u);
+                c.moveToNext();
             }
             return result.toArray(new User[result.size()]);
 
@@ -140,12 +156,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             SQLiteDatabase db = getReadableDatabase();
             c = db.rawQuery(SqlUserTable.SELECT_NAME, new String[] {name});
             ArrayList<User> result = new ArrayList<>();
-
+            c.moveToFirst();
             while (!c.isAfterLast()) {
                 User u = new User(
                         c.getInt(c.getColumnIndex(SqlUserTable.COL_ID)),
                         c.getString(c.getColumnIndex(SqlUserTable.COL_NAME)));
                 result.add(u);
+                c.moveToNext();
             }
             return result.toArray(new User[result.size()]);
 
@@ -175,7 +192,59 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-            Log.e(Config.log, "could not get users", e);
+            Log.e(Config.log, "could not write users", e);
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public UserDevice[] getDevices() {
+        Cursor c = null;
+
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            c = db.rawQuery(SqlDeviceTable.SELECT_ALL, null);
+            ArrayList<UserDevice> result = new ArrayList<>();
+
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                UserDevice u = new UserDevice(
+                        c.getInt(c.getColumnIndex(SqlDeviceTable.COL_ID)),
+                        c.getString(c.getColumnIndex(SqlDeviceTable.COL_NAME)),
+                        c.getInt(c.getColumnIndex(SqlDeviceTable.COL_USER)));
+                result.add(u);
+                c.moveToNext();
+            }
+            return result.toArray(new UserDevice[result.size()]);
+
+        } catch (SQLException e) {
+            Log.e(Config.log, "could not get devices", e);
+            return new UserDevice[0];
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
+    public void writeDevices(UserDevice[] devs) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+            db.execSQL(SqlDeviceTable.CLEAR);
+
+            for (UserDevice u : devs) {
+                ContentValues v = new ContentValues();
+                v.put(SqlDeviceTable.COL_ID, u.id);
+                v.put(SqlDeviceTable.COL_NAME, u.name);
+                v.put(SqlDeviceTable.COL_USER, u.userId);
+                db.insertOrThrow(SqlDeviceTable.NAME, null, v);
+            }
+
+            db.setTransactionSuccessful();
+        } catch (SQLException e) {
+            Log.e(Config.log, "could not write users", e);
         } finally {
             db.endTransaction();
         }

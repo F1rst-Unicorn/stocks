@@ -60,11 +60,6 @@ public class Config {
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
         ks.load(c.openFileInput("keystore"),
                 getPassword().toCharArray());
-        Enumeration<String> d = ks.aliases();
-        while (d.hasMoreElements()){
-            String s = d.nextElement();
-            Log.e(Config.log, s);
-        }
         tmf.init(ks);
 
         KeyManagerFactory kmf = KeyManagerFactory.getInstance("X509");

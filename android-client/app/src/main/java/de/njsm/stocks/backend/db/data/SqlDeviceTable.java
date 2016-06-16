@@ -1,39 +1,36 @@
 package de.njsm.stocks.backend.db.data;
 
-public class SqlUpdateTable {
+public class SqlDeviceTable {
 
     public static final String NAME;
 
     public static final String COL_ID;
     public static final String COL_NAME;
-    public static final String COL_DATE;
+    public static final String COL_USER;
 
     public static final String CREATE;
-    public static final String INIT;
     public static final String DROP;
     public static final String CLEAR;
     public static final String SELECT_ALL;
+    public static final String SELECT_USER;
 
     static {
-        NAME = "Updates";
+        NAME = "User_device";
         COL_ID = "ID";
         COL_NAME = "name";
-        COL_DATE = "last_update";
+        COL_USER = "belongs_to";
         CREATE = "CREATE TABLE " + NAME + " (\n" +
                 "    " + COL_ID + " int UNSIGNED NOT NULL UNIQUE,\n" +
                 "    " + COL_NAME + " varchar(200) NOT NULL,\n" +
-                "    " + COL_DATE + " varchar(19) NOT NULL DEFAULT '1000-01-01 00:00:00',\n" +
+                "    " + COL_USER + " int UNSIGNED NOT NULL,\n" +
                 "    PRIMARY KEY (" + COL_ID + ")\n" +
+                "    CONSTRAINT `device_points_to_user` FOREIGN KEY (" + COL_USER +
+                ") REFERENCES " + SqlUserTable.NAME + "(" + SqlUserTable.COL_ID +
+                ") ON DELETE RESTRICT ON UPDATE CASCADE\n" +
                 ")";
-        INIT = "INSERT INTO Updates (" + COL_ID + ", " + COL_NAME + ")\n" +
-                "VALUES\n" +
-                "(1, 'Location'),\n" +
-                "(2, 'User'),\n" +
-                "(3, 'User_device'),\n" +
-                "(4, 'Food'),\n" +
-                "(5, 'Food_item')";
         DROP = "DROP TABLE IF EXISTS " + NAME;
         CLEAR = "DELETE FROM " + NAME;
         SELECT_ALL = "SELECT * FROM " + NAME;
+        SELECT_USER = "SELECT * FROM " + NAME + " WHERE " + COL_USER + "=?";
     }
 }

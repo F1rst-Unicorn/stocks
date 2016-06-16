@@ -62,6 +62,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         dialog = new ProgressDialog(c);
         this.c = c;
         config = new Config(c);
+        listeners = new ArrayList<>(3);
     }
 
     @Override

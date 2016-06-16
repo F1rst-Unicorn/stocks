@@ -21,10 +21,10 @@ public class SqlUserTable {
                 "    " + COL_ID + " int UNSIGNED NOT NULL UNIQUE,\n" +
                 "    " + COL_NAME + " varchar(200) NOT NULL,\n" +
                 "    PRIMARY KEY (" + COL_ID + ")\n" +
-                ");";
-        DROP = "DROP TABLE IF EXISTS " + NAME + ";";
-        CLEAR = "DELETE FROM " + NAME + ";";
-        SELECT_ALL = "SELECT * FROM " + NAME + ";";
-        SELECT_NAME = "SELECT * FROM " + NAME + " WHERE " + COL_NAME + "=?;";
+                ")";
+        DROP = "DROP TABLE IF EXISTS " + NAME;
+        CLEAR = "DELETE FROM " + NAME;
+        SELECT_ALL = "SELECT * FROM " + NAME;
+        SELECT_NAME = "SELECT * FROM " + NAME + " WHERE " + COL_NAME + "=?";
     }
 }

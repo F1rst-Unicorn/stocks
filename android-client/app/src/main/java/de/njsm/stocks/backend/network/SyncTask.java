@@ -7,12 +7,15 @@ import android.util.Log;
 import de.njsm.stocks.Config;
 import de.njsm.stocks.backend.data.Update;
 import de.njsm.stocks.backend.data.User;
+import de.njsm.stocks.backend.data.UserDevice;
 import de.njsm.stocks.backend.db.DatabaseHandler;
+import de.njsm.stocks.backend.db.data.SqlDeviceTable;
+import de.njsm.stocks.backend.db.data.SqlUpdateTable;
+import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
     protected Context c;
-    protected DatabaseHandler db;
 
     public SyncTask(Context c) {
         this.c = c;
@@ -20,9 +23,12 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
     @Override
     protected Integer doInBackground(Void... params) {
-        db = new DatabaseHandler(c);
+        if (android.os.Debug.isDebuggerConnected()) {
+            android.os.Debug.waitForDebugger();
+        }
+
         Update[] serverUpdates = ServerManager.m.getUpdates();
-        Update[] localUpdates = db.getUpdates();
+        Update[] localUpdates = DatabaseHandler.h.getUpdates();
 
         if (serverUpdates.length == 0 ||
                 localUpdates.length == 0) {
@@ -37,19 +43,26 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
             }
         }
 
-        db.writeUpdates(serverUpdates);
+        DatabaseHandler.h.writeUpdates(serverUpdates);
         return 0;
     }
 
     protected void refresh(String table) {
-        if (table.equals("User")) {
+        if (table.equals(SqlUserTable.NAME)) {
             refreshUsers();
+        } else if (table.equals(SqlDeviceTable.NAME)) {
+            refreshDevices();
         }
     }
 
     protected void refreshUsers() {
         User[] u = ServerManager.m.getUsers();
-        db.writeUsers(u);
+        DatabaseHandler.h.writeUsers(u);
+    }
+
+    protected void refreshDevices() {
+        UserDevice[] d = ServerManager.m.getDevices();
+        DatabaseHandler.h.writeDevices(d);
     }
 }
 
