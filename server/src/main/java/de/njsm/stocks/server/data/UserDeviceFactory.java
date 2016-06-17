@@ -18,7 +18,6 @@ public class UserDeviceFactory extends DataFactory {
         d.id = rs.getInt("ID");
         d.name = rs.getString("name");
         d.userId = rs.getInt("belongs_to");
-        d.lastUpdate = rs.getTimestamp("last_poll");
         return d;
     }
 }
