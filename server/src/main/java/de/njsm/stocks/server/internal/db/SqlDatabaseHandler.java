@@ -120,7 +120,6 @@ public class SqlDatabaseHandler {
             sqlDeleteDevices.execute();
             u.fillRemoveStmt(sqlStmt);
             sqlStmt.execute();
-
             con.commit();
 
             certificateList.forEach(ca::revokeCertificate);
@@ -134,7 +133,6 @@ public class SqlDatabaseHandler {
                 }
             }
         }
-
     }
 
     public Ticket addDevice(UserDevice d) {
@@ -146,7 +144,6 @@ public class SqlDatabaseHandler {
         Connection con = null;
 
         try {
-
             con = getConnection();
             PreparedStatement sqlAddDevice = con.prepareStatement(d.getAddStmt());
             PreparedStatement sqlAddTicket = con.prepareStatement(addTicket);
@@ -199,129 +196,25 @@ public class SqlDatabaseHandler {
         }
     }
 
-    public Location[] getLocations() throws SQLException {
-
-        String query = "SELECT * " +
-                       "FROM Location";
-        try (
-                Connection con = getConnection();
-                PreparedStatement stmt = con.prepareStatement(query)
-        ) {
+    public Data[] get(DataFactory df) {
+        Connection con = null;
+        try {
+            con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(df.getQuery());
             ResultSet rs = stmt.executeQuery();
-            ArrayList<Location> result = new ArrayList<>();
-            while (rs.next()) {
-                Location l = new Location();
-                l.id = rs.getInt("ID");
-                l.name = rs.getString("name");
-                result.add(l);
+            List<Data> result = df.createDataList(rs);
+            return result.toArray(new Data[result.size()]);
+        } catch (SQLException e) {
+            c.getLog().log(Level.SEVERE, "Error getting data: " + e.getMessage());
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException e1) {
+                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                }
             }
-
-            return result.toArray(new Location[result.size()]);
         }
-    }
-
-    public Food[] getFood() throws SQLException {
-        String query = "SELECT * " +
-                       "FROM Food";
-        try (
-                Connection con = getConnection();
-                PreparedStatement stmt = con.prepareStatement(query)
-        ) {
-            ResultSet rs = stmt.executeQuery();
-            ArrayList<Food> result = new ArrayList<>();
-            while (rs.next()) {
-                Food f = new Food();
-                f.id = rs.getInt("ID");
-                f.name = rs.getString("name");
-                result.add(f);
-            }
-
-            return result.toArray(new Food[result.size()]);
-        }
-    }
-
-    public User[] getUsers() throws SQLException {
-        String query = "SELECT * " +
-                "FROM User";
-        try (
-                Connection con = getConnection();
-                PreparedStatement stmt = con.prepareStatement(query)
-        ) {
-            ResultSet rs = stmt.executeQuery();
-            ArrayList<User> result = new ArrayList<>();
-            while (rs.next()) {
-                User u = new User();
-                u.id = rs.getInt("ID");
-                u.name = rs.getString("name");
-                result.add(u);
-            }
-
-            return result.toArray(new User[result.size()]);
-        }
-    }
-
-    public UserDevice[] getDevices() throws SQLException {
-        String query = "SELECT * " +
-                "FROM User_device";
-        try (
-                Connection con = getConnection();
-                PreparedStatement stmt = con.prepareStatement(query)
-        ) {
-            ResultSet rs = stmt.executeQuery();
-            ArrayList<UserDevice> result = new ArrayList<>();
-            while (rs.next()) {
-                UserDevice d = new UserDevice();
-                d.id = rs.getInt("ID");
-                d.name = rs.getString("name");
-                d.userId = rs.getInt("belongs_to");
-                d.lastUpdate = rs.getTimestamp("last_poll");
-                result.add(d);
-            }
-
-            return result.toArray(new UserDevice[result.size()]);
-        }
-    }
-
-    public FoodItem[] getFoodItems() throws SQLException {
-        String query = "SELECT * " +
-                "FROM Food_item";
-        try (
-                Connection con = getConnection();
-                PreparedStatement stmt = con.prepareStatement(query)
-        ) {
-            ResultSet rs = stmt.executeQuery();
-            ArrayList<FoodItem> result = new ArrayList<>();
-            while (rs.next()) {
-                FoodItem i = new FoodItem();
-                i.id = rs.getInt("ID");
-                i.eatByDate = rs.getDate("eat_by");
-                i.ofType = rs.getInt("of_type");
-                i.storedIn = rs.getInt("stored_in");
-                i.registers = rs.getInt("registers");
-                i.buys = rs.getInt("buys");
-                result.add(i);
-            }
-
-            return result.toArray(new FoodItem[result.size()]);
-        }
-    }
-
-    public Update[] getUpdates() throws SQLException {
-        String query = "SELECT * FROM Updates";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlQuery = con.prepareStatement(query)){
-            ResultSet res = sqlQuery.executeQuery();
-            ArrayList<Update> result = new ArrayList<>();
-            while (res.next()) {
-                Update u = new Update();
-                u.table = res.getString("table_name");
-                u.lastUpdate = res.getTimestamp("last_update");
-                result.add(u);
-            }
-
-            return result.toArray(new Update[result.size()]);
-        }
+        return new Data[0];
     }
 
 }

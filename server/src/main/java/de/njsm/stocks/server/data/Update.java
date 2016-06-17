@@ -8,7 +8,7 @@ import java.util.Date;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class Update {
+public class Update extends Data {
 
         public String table;
         @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss")

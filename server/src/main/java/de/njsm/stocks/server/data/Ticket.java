@@ -7,7 +7,7 @@ import java.security.SecureRandom;
 
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class Ticket {
+public class Ticket extends Data {
     public int deviceId;
     public String ticket;
     public String pemFile;

@@ -1,6 +1,8 @@
 package de.njsm.stocks.server.endpoints;
 
+import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.Update;
+import de.njsm.stocks.server.data.UpdateFactory;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -13,16 +15,8 @@ public class UpdateEndpoint extends Endpoint {
 
     @GET
     @Produces("application/json")
-    public Update[] getUpdates() {
-
+    public Data[] getUpdates() {
         c.getLog().log(Level.INFO, "UpdateEndpoint: get Updates");
-
-        try {
-            return handler.getUpdates();
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "UpdateEndpoint: Failed to get updates: " + e.getMessage());
-        }
-
-        return null;
+        return handler.get(UpdateFactory.f);
     }
 }

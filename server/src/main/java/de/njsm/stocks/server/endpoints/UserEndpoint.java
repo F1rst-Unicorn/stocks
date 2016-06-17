@@ -1,6 +1,8 @@
 package de.njsm.stocks.server.endpoints;
 
+import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.User;
+import de.njsm.stocks.server.data.UserFactory;
 
 import javax.ws.rs.*;
 import java.sql.SQLException;
@@ -28,14 +30,9 @@ public class UserEndpoint extends Endpoint {
 
     @GET
     @Produces("application/json")
-    public User[] getUsers() {
+    public Data[] getUsers() {
         c.getLog().log(Level.INFO, "UserEndpoint: Get users");
-        try {
-            return handler.getUsers();
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to get users: " + e.getMessage());
-        }
-        return null;
+        return handler.get(UserFactory.f);
     }
 
     @PUT

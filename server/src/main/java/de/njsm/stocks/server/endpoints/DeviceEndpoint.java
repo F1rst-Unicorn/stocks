@@ -1,7 +1,9 @@
 package de.njsm.stocks.server.endpoints;
 
+import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.Ticket;
 import de.njsm.stocks.server.data.UserDevice;
+import de.njsm.stocks.server.data.UserDeviceFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,14 +23,9 @@ public class DeviceEndpoint extends Endpoint {
 
     @GET
     @Produces("application/json")
-    public UserDevice[] getDevices(){
+    public Data[] getDevices(){
         c.getLog().log(Level.INFO, "DeviceEndpoint: Get devices");
-        try {
-            return handler.getDevices();
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "DeviceEndpoint: Failed to get devices: " + e.getMessage());
-        }
-        return null;
+        return handler.get(UserDeviceFactory.f);
     }
 
     @PUT

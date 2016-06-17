@@ -10,7 +10,7 @@ import java.util.Date;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class UserDevice implements SqlAddable, SqlRemovable{
+public class UserDevice extends Data implements SqlAddable, SqlRemovable{
     public int id;
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss")
     public Date lastUpdate;

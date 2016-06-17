@@ -1,7 +1,6 @@
 package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.server.data.Food;
-import de.njsm.stocks.server.data.FoodItem;
+import de.njsm.stocks.server.data.*;
 import de.njsm.stocks.server.internal.auth.Principals;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,14 +14,9 @@ public class FoodEndpoint extends Endpoint {
 
     @GET
     @Produces("application/json")
-    public Food[] getFood() {
+    public Data[] getFood() {
         c.getLog().log(Level.INFO, "FoodEndpoint: Get food");
-        try {
-            return handler.getFood();
-        } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to get food: " + e.getMessage());
-        }
-        return null;
+        return handler.get(FoodFactory.f);
     }
 
     @PUT
@@ -56,15 +50,9 @@ public class FoodEndpoint extends Endpoint {
     @GET
     @Path("/fooditem")
     @Produces("application/json")
-    public FoodItem[] getFoodItems() {
-
+    public Data[] getFoodItems() {
         c.getLog().log(Level.INFO, "FoodEndpoint: Get food items");
-        try {
-            return handler.getFoodItems();
-        } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to get food items: " + e.getMessage());
-        }
-        return null;
+        return handler.get(FoodItemFactory.f);
     }
 
     @PUT

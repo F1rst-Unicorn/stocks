@@ -1,6 +1,8 @@
 package de.njsm.stocks.server.endpoints;
 
+import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.Location;
+import de.njsm.stocks.server.data.LocationFactory;
 
 import javax.ws.rs.*;
 import java.sql.SQLException;
@@ -12,15 +14,9 @@ public class LocationEndpoint extends Endpoint {
 
     @GET
     @Produces("application/json")
-    public Location[] getLocations() {
+    public Data[] getLocations() {
         c.getLog().log(Level.INFO, "LocationEndpoint: Get locations");
-
-        try {
-            return handler.getLocations();
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to get locations: " + e.getMessage());
-        }
-        return null;
+        return handler.get(LocationFactory.f);
     }
 
     @PUT

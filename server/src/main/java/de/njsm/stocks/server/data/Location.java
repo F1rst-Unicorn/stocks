@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class Location implements SqlAddable, SqlRenamable, SqlRemovable {
+public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemovable {
     public int id;
     public String name;
 
