@@ -98,7 +98,7 @@ public class SqlDatabaseHandler {
 
         String getDevicesQuery = "SELECT * FROM User_device WHERE belongs_to=?";
         String deleteDevicesCommand = "DELETE FROM User_device WHERE belongs_to=?";
-        X509CertificateAdmin ca = new Config().getCertAdmin();
+        X509CertificateAdmin ca = c.getCertAdmin();
         List<Integer> certificateList = new ArrayList<>();
         Connection con = null;
 
