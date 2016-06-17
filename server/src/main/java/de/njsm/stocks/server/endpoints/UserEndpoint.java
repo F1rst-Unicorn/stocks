@@ -43,11 +43,7 @@ public class UserEndpoint extends Endpoint {
     @Consumes("application/json")
     public void deleteUser(User u) {
         c.getLog().log(Level.INFO, "UserEndpoint: Delete user " + u.name);
-        try {
-            handler.removeUser(u.id);
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to delete user: " + e.getMessage());
-        }
+        handler.removeUser(u);
     }
 
 }

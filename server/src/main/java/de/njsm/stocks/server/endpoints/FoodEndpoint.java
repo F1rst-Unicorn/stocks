@@ -50,12 +50,7 @@ public class FoodEndpoint extends Endpoint {
                            Food food) {
 
         c.getLog().log(Level.INFO, "FoodEndpoint: Removing food " + food.name);
-
-        try {
-            handler.removeFood(food.id);
-        } catch (SQLException | SecurityException e){
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to remove food: " + e.getMessage());
-        }
+        handler.remove(food);
     }
 
     @GET
@@ -95,11 +90,6 @@ public class FoodEndpoint extends Endpoint {
                                FoodItem item){
 
         c.getLog().log(Level.INFO, "FoodEndpoint: Remove food item");
-
-        try {
-            handler.removeFoodItem(item.id);
-        } catch (SQLException | SecurityException e){
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to remove food item: " + e.getMessage());
-        }
+        handler.remove(item);
     }
 }

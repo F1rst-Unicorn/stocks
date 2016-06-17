@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class User implements SqlAddable{
+public class User implements SqlAddable, SqlRemovable {
     public int id;
     public String name;
 
@@ -21,6 +21,16 @@ public class User implements SqlAddable{
     @Override
     public String getAddStmt() {
         return "INSERT INTO User (name) VALUES (?)";
+    }
+
+    @Override
+    public void fillRemoveStmt(PreparedStatement stmt) throws SQLException {
+        stmt.setInt(1, id);
+    }
+
+    @Override
+    public String getRemoveStmt() {
+        return "DELETE FROM User WHERE ID=?";
     }
 
     @Override

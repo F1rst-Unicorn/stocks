@@ -36,11 +36,7 @@ public class DeviceEndpoint extends Endpoint {
     @Consumes("application/json")
     public void removeDevice(UserDevice d){
         c.getLog().log(Level.INFO, "DeviceEndpoint: Removing device " + d.name);
-        try {
-            handler.removeDevice(d.id);
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "DeviceEndpoint: Failed to remove device" + e.getMessage());
-        }
+        handler.removeDevice(d);
     }
 
 

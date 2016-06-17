@@ -10,7 +10,7 @@ import java.util.Date;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class UserDevice implements SqlAddable{
+public class UserDevice implements SqlAddable, SqlRemovable{
     public int id;
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss")
     public Date lastUpdate;
@@ -26,6 +26,16 @@ public class UserDevice implements SqlAddable{
     @Override
     public String getAddStmt() {
         return "INSERT INTO User_device (name, belongs_to) VALUES (?,?)";
+    }
+
+    @Override
+    public void fillRemoveStmt(PreparedStatement stmt) throws SQLException {
+        stmt.setInt(1, id);
+    }
+
+    @Override
+    public String getRemoveStmt() {
+        return "DELETE FROM User_device WHERE ID=?";
     }
 
     @Override

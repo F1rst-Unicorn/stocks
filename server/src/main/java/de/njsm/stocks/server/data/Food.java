@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class Food implements SqlAddable, SqlRenamable{
+public class Food implements SqlAddable, SqlRenamable, SqlRemovable {
     public int id;
     public String name;
 
@@ -31,6 +32,16 @@ public class Food implements SqlAddable, SqlRenamable{
     @Override
     public String getRenameStmt() {
         return "UPDATE Food SET name=? WHERE ID=?";
+    }
+
+    @Override
+    public void fillRemoveStmt(PreparedStatement stmt) throws SQLException {
+        stmt.setInt(1, id);
+    }
+
+    @Override
+    public String getRemoveStmt() {
+        return "DELETE FROM Food WHERE ID=?";
     }
 
     @Override

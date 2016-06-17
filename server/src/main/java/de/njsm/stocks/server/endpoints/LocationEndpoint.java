@@ -43,10 +43,6 @@ public class LocationEndpoint extends Endpoint {
     @Consumes("application/json")
     public void removeLocation(Location loc){
         c.getLog().log(Level.INFO, "LocationEndpoint: Remove location " + loc.name);
-        try {
-            handler.removeLocation(loc.id);
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to remove location: " + e.getMessage());
-        }
+        handler.remove(loc);
     }
 }

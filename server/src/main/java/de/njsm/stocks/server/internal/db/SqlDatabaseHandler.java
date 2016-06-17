@@ -39,17 +39,6 @@ public class SqlDatabaseHandler {
             return DriverManager.getConnection(url);
     }
 
-    public void removeLocation(int id) throws SQLException {
-        String command="DELETE FROM Location WHERE ID=?";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlStmt = con.prepareStatement(command)) {
-
-            sqlStmt.setInt(1, id);
-            sqlStmt.execute();
-        }
-    }
-
     public void add(SqlAddable d) {
         Connection con = null;
         try {
@@ -88,9 +77,27 @@ public class SqlDatabaseHandler {
         }
     }
 
-    public void removeUser(int id) throws SQLException {
+    public void remove(SqlRemovable d) {
+        Connection con = null;
+        try {
+            con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(d.getRemoveStmt());
+            d.fillRemoveStmt(stmt);
+            stmt.execute();
+        } catch (SQLException e) {
+            c.getLog().log(Level.SEVERE, "Database: Failed to remove " + d.toString() + ": " + e.getMessage());
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException e1) {
+                    c.getLog().log(Level.SEVERE, "Database: Failed to rollback: " + e1.getMessage());
+                }
+            }
+        }
+    }
 
-        String command="DELETE FROM User WHERE ID=?";
+    public void removeUser(User u){
+
         String getDevicesQuery = "SELECT * FROM User_device WHERE belongs_to=?";
         String deleteDevicesCommand = "DELETE FROM User_device WHERE belongs_to=?";
         CertificateAdmin ca = new Config().getCertAdmin();
@@ -98,23 +105,22 @@ public class SqlDatabaseHandler {
         Connection con = null;
 
         try {
-
             con = getConnection();
             PreparedStatement sqlQuery = con.prepareStatement(getDevicesQuery);
-            PreparedStatement sqlStmt=con.prepareStatement(command);
+            PreparedStatement sqlStmt=con.prepareStatement(u.getRemoveStmt());
             PreparedStatement sqlDeleteDevices = con.prepareStatement(deleteDevicesCommand);
 
             con.setAutoCommit(false);
             // revoke all devices
-            sqlQuery.setInt(1, id);
+            sqlQuery.setInt(1, u.id);
             ResultSet res = sqlQuery.executeQuery();
             while (res.next()){
                 certificateList.add(res.getInt("ID"));
             }
 
-            sqlDeleteDevices.setInt(1, id);
+            sqlDeleteDevices.setInt(1, u.id);
             sqlDeleteDevices.execute();
-            sqlStmt.setInt(1, id);
+            u.fillRemoveStmt(sqlStmt);
             sqlStmt.execute();
 
             con.commit();
@@ -123,7 +129,11 @@ public class SqlDatabaseHandler {
         } catch (SQLException e){
             c.getLog().log(Level.SEVERE, "Error deleting devices: " + e.getMessage());
             if (con != null) {
-                con.rollback();
+                try {
+                    con.rollback();
+                } catch (SQLException e1) {
+                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                }
             }
         }
 
@@ -165,51 +175,29 @@ public class SqlDatabaseHandler {
         return result;
     }
 
-    public void removeDevice(int id) throws SQLException {
+    public void removeDevice(UserDevice u){
 
-        String command="DELETE FROM User_device WHERE ID=?";
         Connection con = null;
 
         try {
-
             con = getConnection();
-            PreparedStatement sqlStmt=con.prepareStatement(command);
+            PreparedStatement sqlStmt=con.prepareStatement(u.getRemoveStmt());
             con.setAutoCommit(false);
-
-            sqlStmt.setInt(1, id);
+            u.fillAddStmt(sqlStmt);
             sqlStmt.execute();
-
             con.commit();
 
-            c.getCertAdmin().revokeCertificate(id);
+            c.getCertAdmin().revokeCertificate(u.id);
 
         } catch (SQLException e){
             c.getLog().log(Level.SEVERE, "Error deleting devices: " + e.getMessage());
             if (con != null) {
-                con.rollback();
+                try {
+                    con.rollback();
+                } catch (SQLException e1) {
+                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                }
             }
-        }
-    }
-
-    public void removeFood(int id) throws SQLException {
-        String command="DELETE FROM Food WHERE ID=?";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlStmt=con.prepareStatement(command)) {
-
-            sqlStmt.setInt(1, id);
-            sqlStmt.execute();
-        }
-    }
-
-    public void removeFoodItem(int id) throws SQLException {
-        String command="DELETE FROM Food_item WHERE ID=?";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlStmt=con.prepareStatement(command)) {
-
-            sqlStmt.setInt(1, id);
-            sqlStmt.execute();
         }
     }
 

@@ -9,7 +9,7 @@ import java.util.Date;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class FoodItem implements SqlAddable{
+public class FoodItem implements SqlAddable, SqlRemovable {
     public int id;
     public Date eatByDate;
     public int ofType;
@@ -30,6 +30,16 @@ public class FoodItem implements SqlAddable{
     public String getAddStmt() {
         return "INSERT INTO Food_item (eat_by, of_type, stored_in, registers, buys) " +
                 "VALUES (?,?,?,?,?)";
+    }
+
+    @Override
+    public void fillRemoveStmt(PreparedStatement stmt) throws SQLException {
+        stmt.setInt(1, id);
+    }
+
+    @Override
+    public String getRemoveStmt() {
+        return "DELETE FROM Food_item WHERE ID=?";
     }
 
     @Override
