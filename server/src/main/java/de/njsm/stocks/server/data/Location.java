@@ -1,4 +1,4 @@
-package de.njsm.stocks.data;
+package de.njsm.stocks.server.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 

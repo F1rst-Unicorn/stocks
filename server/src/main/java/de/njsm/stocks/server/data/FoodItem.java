@@ -1,12 +1,17 @@
-package de.njsm.stocks.data;
+package de.njsm.stocks.server.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class Food {
+public class FoodItem {
     public int id;
-    public String name;
+    public Date eatByDate;
+    public int ofType;
+    public int storedIn;
+    public int registers;
+    public int buys;
 }

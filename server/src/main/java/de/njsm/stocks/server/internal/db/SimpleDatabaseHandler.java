@@ -1,7 +1,7 @@
-package de.njsm.stocks.internal.db;
+package de.njsm.stocks.server.internal.db;
 
-import de.njsm.stocks.data.*;
-import de.njsm.stocks.internal.auth.Principals;
+import de.njsm.stocks.server.internal.auth.Principals;
+import de.njsm.stocks.server.data.*;
 
 import java.sql.SQLException;
 

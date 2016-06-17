@@ -1,8 +1,8 @@
-package de.njsm.stocks.endpoints;
+package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.data.Food;
-import de.njsm.stocks.data.FoodItem;
-import de.njsm.stocks.internal.auth.Principals;
+import de.njsm.stocks.server.data.Food;
+import de.njsm.stocks.server.data.FoodItem;
+import de.njsm.stocks.server.internal.auth.Principals;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;

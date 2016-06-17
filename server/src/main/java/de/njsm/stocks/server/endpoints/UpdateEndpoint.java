@@ -1,6 +1,6 @@
-package de.njsm.stocks.endpoints;
+package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.data.Update;
+import de.njsm.stocks.server.data.Update;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

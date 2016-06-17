@@ -14,7 +14,7 @@ depends=('jre8-openjdk'
 makedepends=('git'
 			 'wget'
 			 'maven')
-source=("git://www.github.com/F1rst-Unicorn/stocks")
+source=("git://www.github.com/F1rst-Unicorn/stocks#server")
 install=stocks-server.install
 sha512sums=('SKIP')
 backup=("etc/$pkgname/stocks.properties"

@@ -1,6 +1,6 @@
-package de.njsm.stocks.endpoints;
+package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.data.User;
+import de.njsm.stocks.server.data.User;
 
 import javax.ws.rs.*;
 import java.sql.SQLException;

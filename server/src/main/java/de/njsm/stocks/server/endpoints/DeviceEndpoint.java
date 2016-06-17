@@ -1,7 +1,7 @@
-package de.njsm.stocks.endpoints;
+package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.data.Ticket;
-import de.njsm.stocks.data.UserDevice;
+import de.njsm.stocks.server.data.Ticket;
+import de.njsm.stocks.server.data.UserDevice;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

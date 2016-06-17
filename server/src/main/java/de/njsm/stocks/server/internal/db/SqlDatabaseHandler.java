@@ -1,9 +1,9 @@
-package de.njsm.stocks.internal.db;
+package de.njsm.stocks.server.internal.db;
 
-import de.njsm.stocks.data.*;
-import de.njsm.stocks.internal.Config;
-import de.njsm.stocks.internal.auth.CertificateAdmin;
-import de.njsm.stocks.internal.auth.Principals;
+import de.njsm.stocks.server.data.*;
+import de.njsm.stocks.server.internal.Config;
+import de.njsm.stocks.server.internal.auth.CertificateAdmin;
+import de.njsm.stocks.server.internal.auth.Principals;
 
 import java.security.SecureRandom;
 import java.sql.*;

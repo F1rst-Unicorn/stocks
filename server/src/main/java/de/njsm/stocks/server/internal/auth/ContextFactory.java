@@ -1,4 +1,4 @@
-package de.njsm.stocks.internal.auth;
+package de.njsm.stocks.server.internal.auth;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -1,7 +1,7 @@
-package de.njsm.stocks.endpoints;
+package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.internal.Config;
-import de.njsm.stocks.internal.db.DatabaseHandler;
+import de.njsm.stocks.server.internal.Config;
+import de.njsm.stocks.server.internal.db.DatabaseHandler;
 
 public class Endpoint {
 

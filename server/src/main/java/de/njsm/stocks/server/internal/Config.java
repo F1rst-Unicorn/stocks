@@ -1,8 +1,11 @@
-package de.njsm.stocks.internal;
+package de.njsm.stocks.server.internal;
 
-import de.njsm.stocks.internal.auth.*;
-import de.njsm.stocks.internal.db.DatabaseHandler;
-import de.njsm.stocks.internal.db.SqlDatabaseHandler;
+import de.njsm.stocks.server.internal.auth.CertificateAdmin;
+import de.njsm.stocks.server.internal.auth.ContextFactory;
+import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
+import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
+import de.njsm.stocks.server.internal.db.DatabaseHandler;
+import de.njsm.stocks.server.internal.db.SqlDatabaseHandler;
 
 import java.util.logging.Logger;
 

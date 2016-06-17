@@ -1,8 +1,7 @@
-package de.njsm.stocks.internal.auth;
+package de.njsm.stocks.server.internal.auth;
 
-import de.njsm.stocks.internal.Config;
+import de.njsm.stocks.server.internal.Config;
 import org.apache.commons.io.IOUtils;
-import sun.nio.ch.IOUtil;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
