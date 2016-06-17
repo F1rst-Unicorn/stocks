@@ -4,7 +4,6 @@ import de.njsm.stocks.server.internal.auth.CertificateAdmin;
 import de.njsm.stocks.server.internal.auth.ContextFactory;
 import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
-import de.njsm.stocks.server.internal.db.DatabaseHandler;
 import de.njsm.stocks.server.internal.db.SqlDatabaseHandler;
 
 import java.util.logging.Logger;
@@ -15,7 +14,7 @@ public class Config {
         return new HttpsUserContextFactory();
     }
 
-    public DatabaseHandler getDbHandler() {
+    public SqlDatabaseHandler getDbHandler() {
         return new SqlDatabaseHandler();
     }
 

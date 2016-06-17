@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class SqlDatabaseHandler implements DatabaseHandler {
+public class SqlDatabaseHandler {
 
     protected final String url;
     protected final Config c;
@@ -39,17 +39,6 @@ public class SqlDatabaseHandler implements DatabaseHandler {
             return DriverManager.getConnection(url);
     }
 
-    public void addLocation(Location location) throws SQLException {
-        String command="INSERT INTO Location (name) VALUES (?)";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlStmt = con.prepareStatement(command)) {
-
-            sqlStmt.setString(1, location.name);
-            sqlStmt.execute();
-        }
-    }
-
     public void removeLocation(int id) throws SQLException {
         String command="DELETE FROM Location WHERE ID=?";
 
@@ -73,15 +62,22 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    @Override
-    public void addUser(User u) throws SQLException {
-        String command = "INSERT INTO User (name) VALUES (?)";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlStmt = con.prepareStatement(command)) {
-
-            sqlStmt.setString(1, u.name);
-            sqlStmt.execute();
+    public void add(Data d) {
+        Connection con = null;
+        try {
+            con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(d.getAddStmt());
+            d.fillAddStmt(stmt);
+            stmt.execute();
+        } catch (SQLException e) {
+            c.getLog().log(Level.SEVERE, "Database: Failed to add " + d.toString() + ": " + e.getMessage());
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException e1) {
+                    c.getLog().log(Level.SEVERE, "Database: Failed to rollback: " + e1.getMessage());
+                }
+            }
         }
     }
 
@@ -126,25 +122,22 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
     }
 
-    @Override
-    public Ticket addDevice(UserDevice d) throws SQLException {
+    public Ticket addDevice(UserDevice d) {
 
-        String addDevice = "INSERT INTO User_device (name, belongs_to) VALUES (?,?)";
         String addTicket = "INSERT INTO Ticket (ticket, belongs_device, created_on) VALUES (?,LAST_INSERT_ID(), NOW())";
         Ticket result = new Ticket();
-        result.ticket = generateTicket();
+        result.ticket = Ticket.generateTicket();
         result.deviceId = d.id;
         Connection con = null;
 
         try {
 
             con = getConnection();
-            PreparedStatement sqlAddDevice = con.prepareStatement(addDevice);
+            PreparedStatement sqlAddDevice = con.prepareStatement(d.getAddStmt());
             PreparedStatement sqlAddTicket = con.prepareStatement(addTicket);
 
             con.setAutoCommit(false);
-            sqlAddDevice.setString(1, d.name);
-            sqlAddDevice.setInt(2, d.userId);
+            d.fillAddStmt(sqlAddDevice);
             sqlAddDevice.execute();
 
             sqlAddTicket.setString(1, result.ticket);
@@ -154,9 +147,13 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         } catch (SQLException e) {
             c.getLog().log(Level.SEVERE, "Error adding device: " + e.getMessage());
             if (con != null) {
-                con.rollback();
+                try {
+                    con.rollback();
+                } catch (SQLException e1) {
+                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                }
             }
-            return null;
+            result.ticket = null;
         }
         return result;
     }
@@ -187,17 +184,6 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    public void addFood(Food food) throws SQLException {
-        String command="INSERT INTO Food (name) VALUES (?)";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlStmt=con.prepareStatement(command)) {
-
-            sqlStmt.setString(1, food.name);
-            sqlStmt.execute();
-        }
-    }
-
     public void removeFood(int id) throws SQLException {
         String command="DELETE FROM Food WHERE ID=?";
 
@@ -217,22 +203,6 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
             sqlStmt.setString(1, new_name);
             sqlStmt.setInt(2, id);
-            sqlStmt.execute();
-        }
-    }
-
-    public void addFoodItem(Principals c, FoodItem item) throws SQLException {
-        String command="INSERT INTO Food_item (eat_by, of_type, stored_in, registers, buys) " +
-                "VALUES (?,?,?,?,?)";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlStmt=con.prepareStatement(command)) {
-
-            sqlStmt.setDate(1, new java.sql.Date(item.eatByDate.getTime()));
-            sqlStmt.setInt(2, item.ofType);
-            sqlStmt.setInt(3, item.storedIn);
-            sqlStmt.setInt(4, c.getDid());
-            sqlStmt.setInt(5, c.getUid());
             sqlStmt.execute();
         }
     }
@@ -355,7 +325,6 @@ public class SqlDatabaseHandler implements DatabaseHandler {
         }
     }
 
-    @Override
     public Update[] getUpdates() throws SQLException {
         String query = "SELECT * FROM Updates";
 
@@ -372,21 +341,6 @@ public class SqlDatabaseHandler implements DatabaseHandler {
 
             return result.toArray(new Update[result.size()]);
         }
-    }
-
-    protected String generateTicket() {
-        int ticket_length = 64;         // this conforms to database ticket size
-        SecureRandom rng = new SecureRandom();
-        byte[] content = new byte[ticket_length];
-
-        for (int i = 0; i < ticket_length; i++){
-            byte b;
-            do {
-                b = (byte) rng.nextInt();
-            } while (!Character.isLetterOrDigit(b));
-            content[i] = b;
-        }
-        return new String(content);
     }
 
 }

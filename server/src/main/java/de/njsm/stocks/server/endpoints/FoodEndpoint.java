@@ -28,15 +28,8 @@ public class FoodEndpoint extends Endpoint {
     @PUT
     @Consumes("application/json")
     public void addFood(@Context HttpServletRequest request, Food food){
-
-
         c.getLog().log(Level.INFO, "FoodEndpoint: Adding food " + food.name);
-
-        try {
-            handler.addFood(food);
-        } catch (SQLException | SecurityException e){
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to add food: " + e.getMessage());
-        }
+        handler.add(food);
     }
 
     @PUT
@@ -90,13 +83,14 @@ public class FoodEndpoint extends Endpoint {
     @Consumes("application/json")
     public void addFoodItem(@Context HttpServletRequest request, FoodItem item){
 
-        c.getLog().log(Level.INFO, "FoodEndpoint: Add food item");
-
         try {
             Principals uc = c.getContextFactory().getPrincipals(request);
-            handler.addFoodItem(uc, item);
-        } catch (SQLException | SecurityException e){
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to add food item: " + e.getMessage());
+            c.getLog().log(Level.INFO, "FoodEndpoint: Add food item");
+            item.buys = uc.getUid();
+            item.registers = uc.getDid();
+            handler.add(item);
+        } catch (SecurityException e) {
+            c.getLog().log(Level.SEVERE, "FoodEndpoint: security violation: " + e.getMessage());
         }
     }
 

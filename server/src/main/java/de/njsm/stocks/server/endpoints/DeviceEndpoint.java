@@ -16,12 +16,7 @@ public class DeviceEndpoint extends Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Ticket addDevice(UserDevice d) {
         c.getLog().log(Level.INFO, "DeviceEndpoint: Add device " + d.name);
-        try {
-            return handler.addDevice(d);
-        } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "DeviceEndpoint: Failed to add devices " + e.getMessage());
-            return new Ticket();
-        }
+        return handler.addDevice(d);
     }
 
     @GET

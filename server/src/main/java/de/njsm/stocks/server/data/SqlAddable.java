@@ -1,7 +1,11 @@
 package de.njsm.stocks.server.data;
 
-/**
- * Created by jan on 17.06.16.
- */
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public interface SqlAddable {
+
+    void fillAddStmt(PreparedStatement stmt) throws SQLException;
+
+    String getAddStmt();
 }

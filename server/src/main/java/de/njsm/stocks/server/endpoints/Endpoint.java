@@ -1,12 +1,12 @@
 package de.njsm.stocks.server.endpoints;
 
 import de.njsm.stocks.server.internal.Config;
-import de.njsm.stocks.server.internal.db.DatabaseHandler;
+import de.njsm.stocks.server.internal.db.SqlDatabaseHandler;
 
 public class Endpoint {
 
     protected final Config c;
-    protected final DatabaseHandler handler;
+    protected final SqlDatabaseHandler handler;
 
 
     public Endpoint() {

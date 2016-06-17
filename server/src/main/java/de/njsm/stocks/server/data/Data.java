@@ -1,4 +1,5 @@
 package de.njsm.stocks.server.data;
 
-public class Data {
+public abstract class Data implements SqlAddable {
+
 }

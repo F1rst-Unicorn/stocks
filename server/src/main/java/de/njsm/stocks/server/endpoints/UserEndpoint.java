@@ -18,13 +18,11 @@ public class UserEndpoint extends Endpoint {
     @PUT
     @Consumes("application/json")
     public void addUser(User u) {
-        c.getLog().log(Level.INFO, "UserEndpoint: Add user " + u.name);
-        try {
-            if (isNameValid(u.name)) {
-                handler.addUser(u);
-            }
-        } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "UserEndpoint: Failed to add user: " + e.getMessage());
+        if (isNameValid(u.name)) {
+            handler.add(u);
+            c.getLog().log(Level.INFO, "UserEndpoint: Add user " + u.name);
+        } else {
+            c.getLog().log(Level.INFO, "UserEndpoint: Tried to add invalid user " + u.name);
         }
     }
 

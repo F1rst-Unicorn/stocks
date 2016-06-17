@@ -27,11 +27,7 @@ public class LocationEndpoint extends Endpoint {
     @Consumes("application/json")
     public void addLocation(Location loc){
         c.getLog().log(Level.INFO, "LocationEndpoint: Add location " + loc.name);
-        try {
-            handler.addLocation(loc);
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to add location: " + e.getMessage());
-        }
+        handler.add(loc);
     }
 
     @PUT
