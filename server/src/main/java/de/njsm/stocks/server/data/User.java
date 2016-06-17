@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class User extends Data {
+public class User implements SqlAddable{
     public int id;
     public String name;
 

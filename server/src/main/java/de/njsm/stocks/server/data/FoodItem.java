@@ -9,7 +9,7 @@ import java.util.Date;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class FoodItem extends Data {
+public class FoodItem implements SqlAddable{
     public int id;
     public Date eatByDate;
     public int ofType;

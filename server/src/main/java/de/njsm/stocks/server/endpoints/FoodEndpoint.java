@@ -39,14 +39,8 @@ public class FoodEndpoint extends Endpoint {
                            Food food,
                            @PathParam("newname") String newName){
 
-
         c.getLog().log(Level.INFO, "FoodEndpoint: Renaming food " + food.name + " -> " + newName);
-
-        try {
-            handler.renameFood(food.id, newName);
-        } catch (SQLException | SecurityException e){
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: Failed to rename food: " + e.getMessage());
-        }
+        handler.rename(food, newName);
     }
 
     @PUT

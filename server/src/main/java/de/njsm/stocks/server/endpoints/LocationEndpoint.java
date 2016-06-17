@@ -35,11 +35,7 @@ public class LocationEndpoint extends Endpoint {
     @Path("/{newname}")
     public void renameLocation(Location loc, @PathParam("newname") String newName){
         c.getLog().log(Level.INFO, "LocationEndpoint: Rename location " + loc.name + " -> " + newName);
-        try {
-            handler.renameLocation(loc.id, newName);
-        } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "LocationEndpoint: Failed to rename location: " + e.getMessage());
-        }
+        handler.rename(loc, newName);
     }
 
     @PUT

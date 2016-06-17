@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class Location extends Data {
+public class Location implements SqlAddable, SqlRenamable {
     public int id;
     public String name;
 
@@ -20,6 +20,17 @@ public class Location extends Data {
     @Override
     public String getAddStmt() {
         return "INSERT INTO Location (name) VALUES (?)";
+    }
+
+    @Override
+    public void fillRenameStmt(PreparedStatement stmt, String newName) throws SQLException {
+        stmt.setString(1, newName);
+        stmt.setInt(2, id);
+    }
+
+    @Override
+    public String getRenameStmt() {
+        return "UPDATE Location SET name=? WHERE ID=?";
     }
 
     @Override

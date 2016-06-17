@@ -50,19 +50,7 @@ public class SqlDatabaseHandler {
         }
     }
 
-    public void renameLocation(int id, String new_name) throws SQLException {
-        String command = "UPDATE Location SET name=? WHERE ID=?";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlStmt = con.prepareStatement(command)) {
-
-            sqlStmt.setString(1, new_name);
-            sqlStmt.setInt(2, id);
-            sqlStmt.execute();
-        }
-    }
-
-    public void add(Data d) {
+    public void add(SqlAddable d) {
         Connection con = null;
         try {
             con = getConnection();
@@ -71,6 +59,25 @@ public class SqlDatabaseHandler {
             stmt.execute();
         } catch (SQLException e) {
             c.getLog().log(Level.SEVERE, "Database: Failed to add " + d.toString() + ": " + e.getMessage());
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException e1) {
+                    c.getLog().log(Level.SEVERE, "Database: Failed to rollback: " + e1.getMessage());
+                }
+            }
+        }
+    }
+
+    public void rename(SqlRenamable d, String newName) {
+        Connection con = null;
+        try {
+            con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(d.getRenameStmt());
+            d.fillRenameStmt(stmt, newName);
+            stmt.execute();
+        } catch (SQLException e) {
+            c.getLog().log(Level.SEVERE, "Database: Failed to rename " + d.toString() + ": " + e.getMessage());
             if (con != null) {
                 try {
                     con.rollback();
@@ -191,18 +198,6 @@ public class SqlDatabaseHandler {
              PreparedStatement sqlStmt=con.prepareStatement(command)) {
 
             sqlStmt.setInt(1, id);
-            sqlStmt.execute();
-        }
-    }
-
-    public void renameFood(int id, String new_name) throws SQLException {
-        String command="UPDATE Food SET name=? WHERE ID=?";
-
-        try (Connection con = getConnection();
-             PreparedStatement sqlStmt=con.prepareStatement(command)) {
-
-            sqlStmt.setString(1, new_name);
-            sqlStmt.setInt(2, id);
             sqlStmt.execute();
         }
     }
