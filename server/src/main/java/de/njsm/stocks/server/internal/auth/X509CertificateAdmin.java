@@ -8,9 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class X509CertificateAdmin implements CertificateAdmin {
+public class X509CertificateAdmin {
 
-    @Override
     public void revokeCertificate(int id) {
 
         String command = String.format("openssl ca " +

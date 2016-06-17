@@ -2,10 +2,8 @@ package de.njsm.stocks.server.internal.db;
 
 import de.njsm.stocks.server.data.*;
 import de.njsm.stocks.server.internal.Config;
-import de.njsm.stocks.server.internal.auth.CertificateAdmin;
-import de.njsm.stocks.server.internal.auth.Principals;
+import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
 
-import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +98,7 @@ public class SqlDatabaseHandler {
 
         String getDevicesQuery = "SELECT * FROM User_device WHERE belongs_to=?";
         String deleteDevicesCommand = "DELETE FROM User_device WHERE belongs_to=?";
-        CertificateAdmin ca = new Config().getCertAdmin();
+        X509CertificateAdmin ca = new Config().getCertAdmin();
         List<Integer> certificateList = new ArrayList<>();
         Connection con = null;
 

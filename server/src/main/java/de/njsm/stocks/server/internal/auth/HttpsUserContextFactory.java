@@ -2,7 +2,7 @@ package de.njsm.stocks.server.internal.auth;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class HttpsUserContextFactory implements ContextFactory {
+public class HttpsUserContextFactory{
 
 
     public Principals getPrincipals(HttpServletRequest request) {
