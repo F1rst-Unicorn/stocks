@@ -2,6 +2,7 @@ package de.njsm.stocks.backend.network;
 
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 
 import de.njsm.stocks.Config;
@@ -20,6 +21,11 @@ import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
+    protected SwipeRefreshLayout swiper;
+
+    public SyncTask(SwipeRefreshLayout swiper) {
+        this.swiper = swiper;
+    }
 
     @Override
     protected Integer doInBackground(Void... params) {
@@ -86,6 +92,16 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
     protected void refreshDevices() {
         UserDevice[] d = ServerManager.m.getDevices();
         DatabaseHandler.h.writeDevices(d);
+    }
+
+    @Override
+    protected void onPreExecute() {
+        swiper.setRefreshing(true);
+    }
+
+    @Override
+    protected void onPostExecute(Integer integer) {
+        swiper.setRefreshing(false);
     }
 }
 

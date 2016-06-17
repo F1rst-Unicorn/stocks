@@ -11,11 +11,6 @@ import android.view.ViewGroup;
 public class OutlineFragment extends Fragment {
 
 
-    public OutlineFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

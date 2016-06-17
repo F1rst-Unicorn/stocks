@@ -2,11 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.njsm.stocks.OutlineFragment">
+    tools:context=".LocationListFragment">
 
-    <TextView
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Outline fragment" />
+        android:id="@+id/location_list"
+        android:layout_gravity="center" />
 
 </LinearLayout>

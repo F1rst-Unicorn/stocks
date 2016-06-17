@@ -3,9 +3,12 @@ package de.njsm.stocks;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,13 +25,17 @@ import de.njsm.stocks.setup.SetupFinishedListener;
 import de.njsm.stocks.setup.SetupTask;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SetupFinishedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+                   SetupFinishedListener,
+                   SwipeRefreshLayout.OnRefreshListener {
 
     protected DrawerLayout drawer;
     protected View content;
+    protected SwipeRefreshLayout swiper;
 
     protected Fragment outlineFragment;
     protected Fragment usersFragment;
+    protected Fragment locationsFragment;
 
     protected Config config;
 
@@ -49,8 +56,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        swiper = (SwipeRefreshLayout) findViewById(R.id.swipe_overlay);
+        swiper.setOnRefreshListener(this);
+
         content = findViewById(R.id.main_content);
         usersFragment = new UserListFragment();
+        locationsFragment = new LocationListFragment();
         outlineFragment = new OutlineFragment();
         config = new Config(this);
 
@@ -110,15 +121,6 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.action_refresh:
-                SyncTask task = new SyncTask();
-                task.execute();
-                break;
-            default:
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -128,13 +130,23 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         Fragment f;
+        FloatingActionButton fab;
 
         switch (item.getItemId()) {
             case R.id.users:
                 f = usersFragment;
+                fab = ((FloatingActionButton) findViewById(R.id.fab));
+                fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
+                break;
+            case R.id.locations:
+                f = locationsFragment;
+                fab = ((FloatingActionButton) findViewById(R.id.fab));
+                fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
                 break;
             default:
                 f = outlineFragment;
+                fab = ((FloatingActionButton) findViewById(R.id.fab));
+                fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_local_dining_white_24dp));
         }
 
         getFragmentManager().beginTransaction()
@@ -146,8 +158,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void testConnect(View view) {
-        Intent i = new Intent(this, SetupActivity.class);
-        startActivity(i);
+
     }
 
     @Override
@@ -160,4 +171,11 @@ public class MainActivity extends AppCompatActivity
     public Config getConfig() {
         return config;
     }
+
+    @Override
+    public void onRefresh() {
+        SyncTask task = new SyncTask(swiper);
+        task.execute();
+    }
+
 }
