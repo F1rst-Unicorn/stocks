@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 public class LocationFactory extends DataFactory {
 
-    public static LocationFactory f = new LocationFactory();
+    public static final LocationFactory f = new LocationFactory();
 
     @Override
     public String getQuery() {

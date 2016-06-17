@@ -11,8 +11,8 @@ import java.util.logging.Level;
 
 public class SqlDatabaseHandler {
 
-    protected final String url;
-    protected final Config c;
+    private final String url;
+    private final Config c;
 
     public SqlDatabaseHandler() {
 

@@ -5,7 +5,6 @@ import de.njsm.stocks.server.data.Location;
 import de.njsm.stocks.server.data.LocationFactory;
 
 import javax.ws.rs.*;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 

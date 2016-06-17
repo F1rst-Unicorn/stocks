@@ -8,14 +8,15 @@ import java.sql.*;
 
 public class DatabaseHandler {
 
-    protected String url;
-    protected int validityTime;
+    private final String url;
+    private final int validityTime;
 
     public DatabaseHandler() {
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
+            // Well, do you really want to use the database?
         }
 
         validityTime = Integer.parseInt(
@@ -131,11 +132,11 @@ public class DatabaseHandler {
             con.commit();
         } catch (Exception e) {
             try {
+                (new File(csrFilePath)).delete();
+                (new File(certFilePath)).delete();
                 if (con != null) {
                     con.rollback();
                 }
-                (new File(csrFilePath)).delete();
-                (new File(certFilePath)).delete();
                 throw new RuntimeException("Aborting transaction: " + e.getMessage());
             } catch (SQLException sql){
                 throw new RuntimeException("Aborting transaction, failed to rollback! " + sql.getMessage());

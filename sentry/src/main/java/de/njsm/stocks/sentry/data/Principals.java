@@ -7,10 +7,10 @@ package de.njsm.stocks.sentry.data;
  */
 public class Principals {
 
-    protected String username;
-    protected String deviceName;
-    protected int uid;
-    protected int did;
+    private String username;
+    private String deviceName;
+    private int uid;
+    private int did;
 
     public Principals(String[] rawInput) {
 

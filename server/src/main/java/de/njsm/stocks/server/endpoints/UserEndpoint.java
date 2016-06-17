@@ -5,13 +5,12 @@ import de.njsm.stocks.server.data.User;
 import de.njsm.stocks.server.data.UserFactory;
 
 import javax.ws.rs.*;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 @Path("/user")
 public class UserEndpoint extends Endpoint {
 
-    public static boolean isNameValid(String name) {
+    private static boolean isNameValid(String name) {
         int noDollar = name.indexOf('$');
         int noEqual  = name.indexOf('=');
         return noDollar == -1 && noEqual == -1;

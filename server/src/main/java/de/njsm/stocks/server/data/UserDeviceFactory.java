@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 public class UserDeviceFactory extends DataFactory {
 
-    public static UserDeviceFactory f = new UserDeviceFactory();
+    public static final UserDeviceFactory f = new UserDeviceFactory();
 
     @Override
     public String getQuery() {

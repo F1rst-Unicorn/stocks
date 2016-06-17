@@ -9,7 +9,7 @@ public abstract class DataFactory {
 
     public abstract String getQuery();
 
-    public abstract Data createData(ResultSet rs) throws SQLException;
+    protected abstract Data createData(ResultSet rs) throws SQLException;
 
     public List<Data> createDataList(ResultSet rs) throws SQLException {
         ArrayList<Data> result = new ArrayList<>();

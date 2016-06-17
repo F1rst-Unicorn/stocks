@@ -7,7 +7,6 @@ import de.njsm.stocks.server.data.UserDeviceFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 @Path("/device")

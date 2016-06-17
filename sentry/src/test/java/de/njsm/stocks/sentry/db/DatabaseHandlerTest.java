@@ -1,6 +1,6 @@
 package de.njsm.stocks.sentry.db;
 
-public class DatabaseHandlerTest {
+class DatabaseHandlerTest {
 
 
     public void testTicket() {

@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 public class UpdateFactory extends DataFactory {
 
-    public static UpdateFactory f = new UpdateFactory();
+    public static final UpdateFactory f = new UpdateFactory();
 
     @Override
     public String getQuery() {

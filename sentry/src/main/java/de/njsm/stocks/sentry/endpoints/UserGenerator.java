@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 @Path("/uac")
 public class UserGenerator {
 
-    protected final DatabaseHandler handler = new DatabaseHandler();
-    protected final Logger log = Logger.getLogger("stocks");
+    private final DatabaseHandler handler = new DatabaseHandler();
+    private final Logger log = Logger.getLogger("stocks");
 
     /**
      * Get a new user certificate
@@ -46,7 +46,9 @@ public class UserGenerator {
 
             // Send answer to client
             String certFileName = String.format(CertificateManager.certFormatString, userFileName);
-            ticket.pemFile = IOUtils.toString(new FileInputStream(certFileName));
+            FileInputStream input = new FileInputStream(certFileName);
+            ticket.pemFile = IOUtils.toString(input);
+            input.close();
             log.log(Level.INFO, "sentry: Authorised new device with ID " + ticket.deviceId);
             return ticket;
 

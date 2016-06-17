@@ -2,12 +2,10 @@ package de.njsm.stocks.server.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FoodItemFactory extends DataFactory {
 
-    public static FoodItemFactory f = new FoodItemFactory();
+    public static final FoodItemFactory f = new FoodItemFactory();
 
     @Override
     public String getQuery() {

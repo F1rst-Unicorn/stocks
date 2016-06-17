@@ -6,7 +6,6 @@ import de.njsm.stocks.server.internal.auth.Principals;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 @Path("/food")

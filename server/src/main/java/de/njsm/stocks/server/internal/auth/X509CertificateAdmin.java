@@ -31,7 +31,7 @@ public class X509CertificateAdmin {
 
     }
 
-    protected void refreshCrl() {
+    private void refreshCrl() {
         String crlCommand = "openssl ca " +
                 "-config ../CA/intermediate/openssl.cnf " +
                 "-gencrl " +

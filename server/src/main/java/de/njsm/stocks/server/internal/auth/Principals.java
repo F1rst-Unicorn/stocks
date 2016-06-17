@@ -7,12 +7,12 @@ package de.njsm.stocks.server.internal.auth;
  */
 public class Principals {
 
-    protected String username;
-    protected String deviceName;
-    protected int uid;
-    protected int did;
+    private String username;
+    private String deviceName;
+    private int uid;
+    private int did;
 
-    public Principals(String[] rawInput) {
+    private Principals(String[] rawInput) {
 
         if (rawInput.length != 4) {
             throw new SecurityException("client name malformed");
