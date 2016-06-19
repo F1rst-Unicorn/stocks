@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,6 +19,7 @@ public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemov
     }
 
     @Override
+    @JsonIgnore
     public String getAddStmt() {
         return "INSERT INTO Location (name) VALUES (?)";
     }
@@ -29,6 +31,7 @@ public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemov
     }
 
     @Override
+    @JsonIgnore
     public String getRenameStmt() {
         return "UPDATE Location SET name=? WHERE ID=?";
     }
@@ -39,6 +42,7 @@ public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemov
     }
 
     @Override
+    @JsonIgnore
     public String getRemoveStmt() {
         return "DELETE FROM Location WHERE ID=?";
     }

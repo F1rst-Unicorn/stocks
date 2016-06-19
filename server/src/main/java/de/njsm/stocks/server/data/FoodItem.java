@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,6 +28,7 @@ public class FoodItem extends Data implements SqlAddable, SqlRemovable {
     }
 
     @Override
+    @JsonIgnore
     public String getAddStmt() {
         return "INSERT INTO Food_item (eat_by, of_type, stored_in, registers, buys) " +
                 "VALUES (?,?,?,?,?)";
@@ -38,6 +40,7 @@ public class FoodItem extends Data implements SqlAddable, SqlRemovable {
     }
 
     @Override
+    @JsonIgnore
     public String getRemoveStmt() {
         return "DELETE FROM Food_item WHERE ID=?";
     }

@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -12,6 +13,7 @@ public class Ticket extends Data {
     public String ticket;
     public String pemFile;
 
+    @JsonIgnore
     public static String generateTicket() {
         int ticket_length = 64;         // this conforms to database ticket size
         SecureRandom rng = new SecureRandom();
