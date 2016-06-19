@@ -178,7 +178,7 @@ public class SqlDatabaseHandler {
             con = getConnection();
             PreparedStatement sqlStmt=con.prepareStatement(u.getRemoveStmt());
             con.setAutoCommit(false);
-            u.fillAddStmt(sqlStmt);
+            u.fillRemoveStmt(sqlStmt);
             sqlStmt.execute();
             con.commit();
 
