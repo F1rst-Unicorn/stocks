@@ -10,7 +10,8 @@
 * Add methods to get and clear pending tickets
 * Image support for Food
 * Remember maximum items per food to emit warnings based on thresholds
-
+* Add feature to move food between locations
+* Add EAN-13 numbers to food
 
 
 # Open issues 
