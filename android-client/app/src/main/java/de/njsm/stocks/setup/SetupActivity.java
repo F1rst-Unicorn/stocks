@@ -96,9 +96,6 @@ public class SetupActivity extends DotStepper {
     @Override
     protected void onStop() {
         super.onStop();
-        this.serverFragment = null;
-        this.qrFragment = null;
-        this.principalsFragment = null;
     }
 
     @Override
