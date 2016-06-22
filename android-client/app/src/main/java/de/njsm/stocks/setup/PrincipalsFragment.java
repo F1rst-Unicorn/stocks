@@ -2,6 +2,7 @@ package de.njsm.stocks.setup;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,13 +31,31 @@ public class PrincipalsFragment extends AbstractStep {
     }
 
     @Override
+    public void onNext() {
+        Bundle data = mStepper.getExtras();
+        data.putString(Config.usernameConfig, ((EditText) getActivity().findViewById(R.id.user_name)).getText().toString());
+        data.putString(Config.deviceNameConfig, ((EditText) getActivity().findViewById(R.id.device_name)).getText().toString());
+        data.putInt(Config.uidConfig, Integer.parseInt(((EditText) getActivity().findViewById(R.id.user_id)).getText().toString()));
+        data.putInt(Config.didConfig, Integer.parseInt(((EditText) getActivity().findViewById(R.id.device_id)).getText().toString()));
+        data.putString(Config.fprConfig, ((EditText) getActivity().findViewById(R.id.fingerprint)).getText().toString());
+        data.putString(Config.ticketConfig, ((EditText) getActivity().findViewById(R.id.ticket)).getText().toString());
+    }
+
+    @Override
     public void onPrevious() {
         mStepper.getExtras().remove(Config.usernameConfig);
     }
 
     @Override
     public void onStepVisible() {
-        Bundle data = mStepper.getExtras();
+        Bundle data = getActivity().getIntent().getExtras();
+        if (data == null) {
+            Log.i(Config.log, "Using stepper extras");
+            data = mStepper.getExtras();
+        }
+        if (data == null) {
+            return;
+        }
         ((EditText) getActivity().findViewById(R.id.user_name)).setText(data.getString(Config.usernameConfig));
         ((EditText) getActivity().findViewById(R.id.device_name)).setText(data.getString(Config.deviceNameConfig));
         ((EditText) getActivity().findViewById(R.id.user_id)).setText(String.valueOf(data.getInt(Config.uidConfig)));

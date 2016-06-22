@@ -4,6 +4,8 @@
     <string name="navigation_drawer_open">Navigationsleiste öffnen</string>
     <string name="navigation_drawer_close">Navigationsleiste schließen</string>
 
+    <string name="title_connection_setup">Verbindung einrichten</string>
+
     <!-- Main activity navigation drawer -->
     <string name="action_outline">Übersicht</string>
     <string name="action_users">Benutzer</string>
@@ -43,5 +45,6 @@
     <string name="dialog_retry">WIEDERHOLEN</string>
     <string name="dialog_abort">ABBRECHEN</string>
     <string name="dialog_ok">OK</string>
+    <string name="dialog_store_settings">Speichere Einstellungen</string>
 
 </resources>

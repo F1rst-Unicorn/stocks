@@ -6,7 +6,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.test.suitebuilder.annotation.Suppress;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,15 +18,11 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
-import org.bouncycastle.jce.provider.PEMUtil;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.security.KeyPair;
@@ -30,8 +30,6 @@ import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -46,8 +44,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SetupTask extends AsyncTask<Void, String, Result> {
 
-    protected Context c;
-    protected Config config;
+    protected Activity c;
+    protected Bundle extras;
     protected ArrayList<SetupFinishedListener> listeners;
 
     protected ProgressDialog dialog;
@@ -58,11 +56,11 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
     protected String caCert;
     protected String intermediateCert;
 
-    public SetupTask(Context c) {
+    public SetupTask(Activity c) {
         super();
         dialog = new ProgressDialog(c);
         this.c = c;
-        config = new Config(c);
+        extras = c.getIntent().getExtras();
         listeners = new ArrayList<>(1);
     }
 
@@ -85,26 +83,28 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         if (keystore.exists()){
             result = Result.getSuccess(c);
 
-        } else {
-            try {
-                publishProgress(c.getResources().getString(R.string.dialog_get_cert));
-                downloadCa();
+        } else try {
+            publishProgress(c.getResources().getString(R.string.dialog_get_cert));
+            downloadCa();
 
-                publishProgress(c.getResources().getString(R.string.dialog_verify_cert));
-                verifyCa();
+            publishProgress(c.getResources().getString(R.string.dialog_verify_cert));
+            verifyCa();
 
-                publishProgress(c.getResources().getString(R.string.dialog_create_key));
-                generateKey();
+            publishProgress(c.getResources().getString(R.string.dialog_create_key));
+            generateKey();
 
-                publishProgress(c.getResources().getString(R.string.dialog_register_key));
-                registerKey();
+            publishProgress(c.getResources().getString(R.string.dialog_register_key));
+            registerKey();
 
-                result = Result.getSuccess(c);
-            } catch (Exception e) {
-                result = new Result(c.getResources().getString(R.string.dialog_error),
-                        e.getMessage(),
-                        false);
-            }
+            publishProgress(c.getResources().getString(R.string.dialog_store_settings));
+            storeConfig();
+
+            result = Result.getSuccess(c);
+        } catch (Exception e) {
+            result = new Result(c.getResources().getString(R.string.dialog_error),
+                    e.getMessage(),
+                    false);
+            keystore.delete();
         }
 
         return result;
@@ -112,8 +112,8 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
 
     private void downloadCa() throws Exception {
         String baseUrl = String.format(Locale.US, "http://%s:%d/",
-                config.getServerName(),
-                config.getCaPort());
+                extras.getString(Config.serverNameConfig),
+                extras.getInt(Config.caPortConfig));
         URL website = new URL(baseUrl + "ca");
         caCert = IOUtils.toString(website.openStream());
 
@@ -138,7 +138,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         buf.delete(buf.length()-1, buf.length());
 
         String actualFpr = buf.toString();
-        String expectedFpr = config.getFpr();
+        String expectedFpr = extras.getString(Config.fprConfig);
 
         if (! expectedFpr.equals(actualFpr)) {
             throw new SecurityException(c.getResources().getString(R.string.dialog_wrong_fpr));
@@ -158,10 +158,10 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         clientKeys = gen.generateKeyPair();
 
         X500Principal principals = new X500Principal("CN=" +
-                config.getUsername() + "$" +
-                config.getUid() + "$" +
-                config.getDeviceName() + "$" +
-                config.getDid());
+                extras.getString(Config.usernameConfig) + "$" +
+                extras.getInt(Config.uidConfig) + "$" +
+                extras.getString(Config.deviceNameConfig) + "$" +
+                extras.getInt(Config.didConfig));
         PKCS10CertificationRequest request =
                 new PKCS10CertificationRequest(sigAlgName,
                         principals,
@@ -178,28 +178,28 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         keystore.setCertificateEntry("ca", getCertificate(caCert));
         keystore.setCertificateEntry("intermediate", getCertificate(intermediateCert));
         FileOutputStream out = c.openFileOutput("keystore", Context.MODE_PRIVATE);
-        keystore.store(out, config.getPassword().toCharArray());
+        keystore.store(out, Config.password.toCharArray());
         out.flush();
         out.close();
     }
 
     private void registerKey() throws Exception {
         String url = String.format(Locale.US, "https://%s:%d/",
-                config.getServerName(),
-                config.getSentryPort());
+                extras.getString(Config.serverNameConfig),
+                extras.getInt(Config.sentryPortConfig));
 
         Gson gson = new GsonBuilder().create();
 
         SentryClient backend = new Retrofit.Builder()
                 .baseUrl(url)
-                .client(config.getClient())
+                .client(Config.getClient(c))
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(SentryClient.class);
 
         Ticket request = new Ticket();
-        request.deviceId = config.getDid();
-        request.ticket = config.getTicket();
+        request.deviceId = extras.getInt(Config.didConfig);
+        request.ticket = extras.getString(Config.ticketConfig);
         request.pemFile = csr;
         Call<Ticket> callback = backend.requestCertificate(request);
         retrofit2.Response<Ticket> response = callback.execute();
@@ -212,22 +212,37 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
             }
             clientCert = responseTicket.pemFile;
             KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore.load(this.c.openFileInput("keystore"), config.getPassword().toCharArray());
+            keystore.load(this.c.openFileInput("keystore"), Config.password.toCharArray());
 
             Certificate[] trustChain = new Certificate[3];
             trustChain[0] = getCertificate(clientCert);
             trustChain[1] = getCertificate(intermediateCert);
             trustChain[2] = getCertificate(caCert);
 
-            keystore.setKeyEntry("client", clientKeys.getPrivate(), config.getPassword().toCharArray(), trustChain);
+            keystore.setKeyEntry("client", clientKeys.getPrivate(), Config.password.toCharArray(), trustChain);
             FileOutputStream out = c.openFileOutput("keystore", Context.MODE_PRIVATE);
-            keystore.store(out, config.getPassword().toCharArray());
+            keystore.store(out, Config.password.toCharArray());
             out.flush();
             out.close();
         } else {
             throw new Exception(c.getResources().getString(R.string.dialog_invalid_answer) + response.raw().toString());
         }
+    }
 
+    private void storeConfig() {
+        SharedPreferences prefs = c.getSharedPreferences(Config.preferences, Context.MODE_PRIVATE);
+        prefs.edit()
+                .putString(Config.serverNameConfig, extras.getString(Config.serverNameConfig))
+                .putInt(Config.caPortConfig, extras.getInt(Config.caPortConfig))
+                .putInt(Config.sentryPortConfig, extras.getInt(Config.sentryPortConfig))
+                .putInt(Config.serverPortConfig, extras.getInt(Config.serverPortConfig))
+                .putString(Config.usernameConfig, extras.getString(Config.usernameConfig))
+                .putString(Config.deviceNameConfig, extras.getString(Config.deviceNameConfig))
+                .putInt(Config.uidConfig, extras.getInt(Config.uidConfig))
+                .putInt(Config.didConfig, extras.getInt(Config.didConfig))
+                .putString(Config.fprConfig, extras.getString(Config.fprConfig))
+                .putString(Config.ticketConfig, extras.getString(Config.ticketConfig))
+                .commit();
     }
 
     private Certificate getCertificate(String pemString) throws Exception {
@@ -254,9 +269,6 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
     @Override
     protected void onPostExecute(Result s) {
         dialog.cancel();
-        for (SetupFinishedListener l : listeners){
-            l.finished();
-        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(c)
                 .setTitle(s.getTitle())
@@ -264,6 +276,9 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
                 .setCancelable(false);
 
         if (s.isSuccess()) {
+            for (SetupFinishedListener l : listeners){
+                l.finished();
+            }
             builder.setIcon(R.drawable.ic_check_black_24dp)
                     .setPositiveButton(c.getResources().getString(R.string.dialog_ok),
                             new DialogInterface.OnClickListener() {
@@ -279,6 +294,11 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     Intent i = new Intent(c, SetupActivity.class);
+                    i.putExtras(extras);
+                    Log.i(Config.log, "SetupTask refills: ");
+                    for (String key : i.getExtras().keySet()) {
+                        Log.i(Config.log, key + " --> " + i.getExtras().get(key));
+                    }
                     c.startActivity(i);
                 }
             }).setNegativeButton(c.getResources().getString(R.string.dialog_abort),
@@ -286,7 +306,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    ((Activity) c).finish();
+                    c.finish();
                 }
             }).setIcon(R.drawable.ic_error_black_24dp);
         }

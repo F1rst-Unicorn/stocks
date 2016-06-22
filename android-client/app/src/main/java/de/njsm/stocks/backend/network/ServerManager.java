@@ -1,5 +1,7 @@
 package de.njsm.stocks.backend.network;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -27,17 +29,18 @@ public class ServerManager {
 
     public static ServerManager m;
 
-    public static void init(Config c) {
+    public static void init(Context ctx) {
         if (m == null) {
-            m = new ServerManager(c);
+            m = new ServerManager(ctx);
         }
     }
 
-    public ServerManager(Config c) {
+    public ServerManager(Context ctx) {
         try {
+            SharedPreferences prefs = ctx.getSharedPreferences(Config.preferences, Context.MODE_PRIVATE);
             String url = String.format(Locale.US, "https://%s:%d/",
-                    c.getServerName(),
-                    c.getServerPort());
+                    prefs.getString(Config.serverNameConfig, ""),
+                    prefs.getInt(Config.serverPortConfig, 0));
 
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd hh:mm:ss")
@@ -45,7 +48,7 @@ public class ServerManager {
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(url)
-                    .client(c.getClient())
+                    .client(Config.getClient(ctx))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
 

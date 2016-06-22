@@ -32,24 +32,28 @@ public class ServerFragment extends AbstractStep {
     @Override
     public void onStart() {
         super.onStart();
-        if (mStepper.getExtras().containsKey(Config.serverNameConfig)) {
+        Bundle extras = getActivity().getIntent().getExtras();
+        if (extras == null) {
+            return;
+        }
+        if (extras.containsKey(Config.serverNameConfig)) {
             ((EditText) getActivity().findViewById(R.id.server_url)).setText(
-                    mStepper.getExtras().getString(Config.serverNameConfig, "")
+                    extras.getString(Config.serverNameConfig, "")
             );
         }
-        if (mStepper.getExtras().containsKey(Config.caPortConfig)) {
+        if (extras.containsKey(Config.caPortConfig)) {
             ((EditText) getActivity().findViewById(R.id.ca_port)).setText(
-                    String.valueOf(mStepper.getExtras().getInt(Config.caPortConfig, 0))
+                    String.valueOf(extras.getInt(Config.caPortConfig, 0))
             );
         }
-        if (mStepper.getExtras().containsKey(Config.sentryPortConfig)) {
+        if (extras.containsKey(Config.sentryPortConfig)) {
             ((EditText) getActivity().findViewById(R.id.sentry_port)).setText(
-                    String.valueOf(mStepper.getExtras().getInt(Config.sentryPortConfig, 0))
+                    String.valueOf(extras.getInt(Config.sentryPortConfig, 0))
             );
         }
-        if (mStepper.getExtras().containsKey(Config.serverPortConfig)) {
+        if (extras.containsKey(Config.serverPortConfig)) {
             ((EditText) getActivity().findViewById(R.id.server_port)).setText(
-                    String.valueOf(mStepper.getExtras().getInt(Config.serverPortConfig, 0))
+                    String.valueOf(extras.getInt(Config.serverPortConfig, 0))
             );
         }
     }

@@ -1,7 +1,9 @@
 package de.njsm.stocks;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -32,12 +34,13 @@ public class MainActivity extends AppCompatActivity
     protected DrawerLayout drawer;
     protected View content;
     protected SwipeRefreshLayout swiper;
+    protected NavigationView navigationView;
 
     protected Fragment outlineFragment;
     protected Fragment usersFragment;
     protected Fragment locationsFragment;
 
-    protected Config config;
+    protected SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,50 +56,49 @@ public class MainActivity extends AppCompatActivity
         drawer.getChildAt(0).setSelected(true);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
 
         swiper = (SwipeRefreshLayout) findViewById(R.id.swipe_overlay);
+        assert swiper != null;
         swiper.setOnRefreshListener(this);
 
         content = findViewById(R.id.main_content);
         usersFragment = new UserListFragment();
         locationsFragment = new LocationListFragment();
         outlineFragment = new OutlineFragment();
-        config = new Config(this);
+        prefs = getSharedPreferences(Config.preferences, Context.MODE_PRIVATE);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_content, outlineFragment)
                 .commit();
 
-        if (! config.isConfigured()) {
-            Intent i = new Intent(this, SetupActivity.class);
-            startActivity(i);
-        } else {
-            finished();
-            TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_name));
-            if (view != null) {
-                view.setText(config.getUsername());
-            }
-            view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_server);
-            if (view != null) {
-                view.setText(config.getServerName());
-            }
-            view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_dev);
-            if (view != null) {
-                view.setText(config.getDeviceName());
-            }
-        }
-
-        if (getIntent().hasExtra("setup")) {
-            getIntent().getExtras().remove("setup");
+        if (getIntent().hasExtra(SetupActivity.setupFinished)) {
+            getIntent().getExtras().remove(SetupActivity.setupFinished);
             SetupTask s = new SetupTask(this);
             s.addListener(this);
             s.execute();
+        } else if (! prefs.contains(Config.usernameConfig)) {
+            Intent i = new Intent(this, SetupActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        } else {
+            finished();
         }
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        prefs = null;
+    }
 
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        prefs = getSharedPreferences(Config.preferences, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -130,22 +132,20 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         Fragment f;
-        FloatingActionButton fab;
+        FloatingActionButton fab = ((FloatingActionButton) findViewById(R.id.fab));
+        assert fab != null;
 
         switch (item.getItemId()) {
             case R.id.users:
                 f = usersFragment;
-                fab = ((FloatingActionButton) findViewById(R.id.fab));
                 fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
                 break;
             case R.id.locations:
                 f = locationsFragment;
-                fab = ((FloatingActionButton) findViewById(R.id.fab));
                 fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
                 break;
             default:
                 f = outlineFragment;
-                fab = ((FloatingActionButton) findViewById(R.id.fab));
                 fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_local_dining_white_24dp));
         }
 
@@ -163,13 +163,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void finished() {
-        config.refresh();
-        ServerManager.init(config);
+        ServerManager.init(this);
         DatabaseHandler.init(this);
-    }
-
-    public Config getConfig() {
-        return config;
+        TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_name));
+        if (view != null) {
+            view.setText(prefs.getString(Config.usernameConfig, ""));
+        }
+        view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_server);
+        if (view != null) {
+            view.setText(prefs.getString(Config.serverNameConfig, ""));
+        }
+        view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_dev);
+        if (view != null) {
+            view.setText(prefs.getString(Config.deviceNameConfig, ""));
+        }
     }
 
     @Override

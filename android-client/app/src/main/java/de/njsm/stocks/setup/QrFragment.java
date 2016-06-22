@@ -26,7 +26,8 @@ public class QrFragment extends AbstractStep {
     @Override
     public void onStepVisible() {
         // start qr reader
-        if (mStepper.getExtras().containsKey(Config.usernameConfig)) {
+        Bundle extras = getActivity().getIntent().getExtras();
+        if (extras != null && extras.containsKey(Config.usernameConfig)) {
             ((SetupActivity) getActivity()).onNext();
         } else {
             IntentIntegrator integrator = new IntentIntegrator(getActivity());
@@ -36,18 +37,20 @@ public class QrFragment extends AbstractStep {
 
     public void getQrResult(IntentResult res) {
 
-        String[] arguments = res.getContents().split("\n");
-        Bundle data = mStepper.getExtras();
+        if (res.getContents() != null) {
 
-        if (arguments.length == 6) {
-            data.putString(Config.usernameConfig, arguments[0]);
-            data.putString(Config.deviceNameConfig, arguments[1]);
-            data.putInt(Config.uidConfig, Integer.parseInt(arguments[2]));
-            data.putInt(Config.didConfig, Integer.parseInt(arguments[3]));
-            data.putString(Config.fprConfig, arguments[4]);
-            data.putString(Config.ticketConfig, arguments[5]);
+            String[] arguments = res.getContents().split("\n");
+            Bundle data = mStepper.getExtras();
+
+            if (arguments.length == 6) {
+                data.putString(Config.usernameConfig, arguments[0]);
+                data.putString(Config.deviceNameConfig, arguments[1]);
+                data.putInt(Config.uidConfig, Integer.parseInt(arguments[2]));
+                data.putInt(Config.didConfig, Integer.parseInt(arguments[3]));
+                data.putString(Config.fprConfig, arguments[4]);
+                data.putString(Config.ticketConfig, arguments[5]);
+            }
         }
-
     }
 
 

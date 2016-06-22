@@ -4,6 +4,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="title_connection_setup">Connection Setup</string>
+
     <!-- Main activity navigation drawer -->
     <string name="action_outline">Outline</string>
     <string name="action_users">Users</string>
@@ -31,9 +33,9 @@
     <string name="dialog_finished">Registration finished</string>
     <string name="error_no_server_name">No server name set</string>
     <string name="dialog_registering">Registering</string>
-    <string name="dialog_get_cert">Get server certificate</string>
-    <string name="dialog_verify_cert">Check server certificate</string>
-    <string name="dialog_create_key">Create key</string>
+    <string name="dialog_get_cert">Getting server certificate</string>
+    <string name="dialog_verify_cert">Checking server certificate</string>
+    <string name="dialog_create_key">Creating key</string>
     <string name="dialog_register_key">Registering key</string>
     <string name="dialog_error">Error</string>
     <string name="dialog_wrong_fpr">Wrong fingerprint</string>
@@ -43,6 +45,7 @@
     <string name="dialog_retry">RETRY</string>
     <string name="dialog_abort">ABORT</string>
     <string name="dialog_ok">OK</string>
+    <string name="dialog_store_settings">Saving settings</string>
 
 
 </resources>
