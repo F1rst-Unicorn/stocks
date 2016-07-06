@@ -45,6 +45,8 @@
     <string name="dialog_retry">WIEDERHOLEN</string>
     <string name="dialog_abort">ABBRECHEN</string>
     <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">ABBRECHEN</string>
     <string name="dialog_store_settings">Speichere Einstellungen</string>
+    <string name="dialog_new_device">Neues Gerät erstellen</string>
 
 </resources>

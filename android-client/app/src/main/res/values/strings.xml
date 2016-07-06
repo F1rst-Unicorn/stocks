@@ -46,6 +46,8 @@
     <string name="dialog_abort">ABORT</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_store_settings">Saving settings</string>
+    <string name="dialog_cancel">CANCEL</string>
+    <string name="dialog_new_device">Create new device</string>
 
 
 </resources>

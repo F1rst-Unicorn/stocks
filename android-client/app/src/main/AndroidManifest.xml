@@ -20,7 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".setup.SetupActivity"></activity>
+        <activity android:name=".setup.SetupActivity" />
+        <activity
+            android:name=".UserActivity"
+            android:theme="@style/StocksTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

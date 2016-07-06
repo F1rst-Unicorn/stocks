@@ -239,6 +239,35 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
     }
 
+    public UserDevice[] getDevices(int userId) {
+        Cursor c = null;
+
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            c = db.rawQuery(SqlDeviceTable.SELECT_USER, new String[] {String.valueOf(userId)});
+            ArrayList<UserDevice> result = new ArrayList<>();
+
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                UserDevice u = new UserDevice(
+                        c.getInt(c.getColumnIndex(SqlDeviceTable.COL_ID)),
+                        c.getString(c.getColumnIndex(SqlDeviceTable.COL_NAME)),
+                        c.getInt(c.getColumnIndex(SqlDeviceTable.COL_USER)));
+                result.add(u);
+                c.moveToNext();
+            }
+            return result.toArray(new UserDevice[result.size()]);
+
+        } catch (SQLException e) {
+            Log.e(Config.log, "could not get devices", e);
+            return new UserDevice[0];
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
     public void writeDevices(UserDevice[] devs) {
         SQLiteDatabase db = getWritableDatabase();
 

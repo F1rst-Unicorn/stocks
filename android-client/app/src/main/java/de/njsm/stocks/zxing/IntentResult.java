@@ -53,7 +53,7 @@ public final class IntentResult {
     }
 
     /**
-     * @return name of format, like "QR_CODE", "UPC_A". See {@code BarcodeFormat} for more format names.
+     * @return userId of format, like "QR_CODE", "UPC_A". See {@code BarcodeFormat} for more format names.
      */
     public String getFormatName() {
         return formatName;
@@ -74,7 +74,7 @@ public final class IntentResult {
     }
 
     /**
-     * @return name of the error correction level used in the barcode, if applicable
+     * @return userId of the error correction level used in the barcode, if applicable
      */
     public String getErrorCorrectionLevel() {
         return errorCorrectionLevel;

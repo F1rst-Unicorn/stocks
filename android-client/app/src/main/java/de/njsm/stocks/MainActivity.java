@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity
     protected Fragment outlineFragment;
     protected Fragment usersFragment;
     protected Fragment locationsFragment;
+    protected Fragment currentFragment;
 
     protected SharedPreferences prefs;
 
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity
         usersFragment = new UserListFragment();
         locationsFragment = new LocationListFragment();
         outlineFragment = new OutlineFragment();
+        currentFragment = outlineFragment;
         prefs = getSharedPreferences(Config.preferences, Context.MODE_PRIVATE);
 
         getFragmentManager().beginTransaction()
@@ -96,18 +98,27 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        prefs = getSharedPreferences(Config.preferences, Context.MODE_PRIVATE);
+    protected void onStart() {
+        super.onStart();
+        prefs = prefs == null ? getSharedPreferences(Config.preferences, Context.MODE_PRIVATE) : prefs;
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (currentFragment != outlineFragment) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.main_content, outlineFragment)
+                        .commit();
+                currentFragment = outlineFragment;
+                navigationView.
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -152,13 +163,10 @@ public class MainActivity extends AppCompatActivity
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_content, f)
                 .commit();
+        currentFragment = f;
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void testConnect(View view) {
-
     }
 
     @Override

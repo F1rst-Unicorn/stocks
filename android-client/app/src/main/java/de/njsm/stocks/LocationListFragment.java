@@ -1,14 +1,13 @@
 package de.njsm.stocks;
 
 
-import android.app.Fragment;
+import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -16,8 +15,7 @@ import android.widget.ListView;
 import de.njsm.stocks.backend.data.Location;
 import de.njsm.stocks.backend.db.DatabaseHandler;
 
-public class LocationListFragment extends Fragment implements AdapterView.OnItemClickListener,
-        AbsListView.OnScrollListener {
+public class LocationListFragment extends ListFragment implements AbsListView.OnScrollListener {
 
     ListView list;
     Location[] locations;
@@ -26,11 +24,7 @@ public class LocationListFragment extends Fragment implements AdapterView.OnItem
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View result = inflater.inflate(R.layout.fragment_location_list, container, false);
-
-        list = (ListView) result.findViewById(R.id.location_list);
-        list.setOnItemClickListener(this);
-        list.setOnScrollListener(this);
+        View result = super.onCreateView(inflater, container, savedInstanceState);
 
         new Thread(new Runnable() {
             @Override
@@ -48,7 +42,7 @@ public class LocationListFragment extends Fragment implements AdapterView.OnItem
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        list.setAdapter(content);
+                        setListAdapter(content);
                     }
                 });
             }
@@ -58,11 +52,22 @@ public class LocationListFragment extends Fragment implements AdapterView.OnItem
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (view == list) {
+    public void onStart() {
+        super.onStart();
+        list = getListView();
+        list.setOnScrollListener(this);
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        list.setOnScrollListener(null);
+        list = null;
+    }
 
-        }
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+
     }
 
     @Override
