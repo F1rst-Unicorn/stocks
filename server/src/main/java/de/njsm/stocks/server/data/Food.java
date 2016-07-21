@@ -21,7 +21,7 @@ public class Food extends Data implements SqlAddable, SqlRenamable, SqlRemovable
     @Override
     @JsonIgnore
     public String getAddStmt() {
-        return "INSERT INTO User (name) VALUES (?)";
+        return "INSERT INTO Food (name) VALUES (?)";
     }
 
     @Override
