@@ -115,9 +115,8 @@ public class FoodListCommandHandler extends CommandHandler {
         FoodView[] food = c.getDatabaseManager().getItems(user, location);
         Date listUntil = new Date(new Date().getTime() + daysLeft * 1000L * 60L * 60L * 24L);
         int printedItems;
-        boolean foodPrinted = false;
+        StringBuffer outBuf = new StringBuffer();
 
-        System.out.println("Current food: ");
         for (FoodView f : food) {
             printedItems = 0;
             f.getItems().removeIf((item) -> item.eatByDate.after(listUntil));
@@ -126,21 +125,23 @@ public class FoodListCommandHandler extends CommandHandler {
                     range.isValidValue(f.getItems().size())          &&
                     p.matcher(f.getFood().name).find()) {
 
-                System.out.println("\t" + f.getItems().size() + "x " + f.getFood().name);
+                outBuf.append("\t" + f.getItems().size() + "x " + f.getFood().name + "\n");
                 if (!quiet) {
                     for (FoodItem i : f.getItems()) {
-                        System.out.println("\t\t" + format.format(i.eatByDate));
+                        outBuf.append("\t\t" + format.format(i.eatByDate) + "\n");
                         printedItems++;
                         if (printedItems >= limit) {
                             break;
                         }
                     }
                 }
-                foodPrinted = true;
             }
         }
 
-        if (!foodPrinted) {
+        if (outBuf.length() != 0) {
+            System.out.println("Current food: ");
+            System.out.print(outBuf.toString());
+        } else {
             System.out.println("No food to show...");
         }
 
