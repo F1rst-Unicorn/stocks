@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Navigationsleiste schließen</string>
 
     <string name="title_connection_setup">Verbindung einrichten</string>
+    <string name="title_settings">Einstellungen</string>
 
     <!-- Main activity navigation drawer -->
     <string name="action_outline">Übersicht</string>

@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="title_connection_setup">Connection Setup</string>
+    <string name="title_settings">Settings</string>
 
     <!-- Main activity navigation drawer -->
     <string name="action_outline">Outline</string>
@@ -48,6 +49,8 @@
     <string name="dialog_store_settings">Saving settings</string>
     <string name="dialog_cancel">CANCEL</string>
     <string name="dialog_new_device">Create new device</string>
+
+
 
 
 </resources>

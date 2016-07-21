@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.main_content, outlineFragment)
                         .commit();
                 currentFragment = outlineFragment;
-                navigationView.
             } else {
                 super.onBackPressed();
             }
@@ -155,6 +154,9 @@ public class MainActivity extends AppCompatActivity
                 f = locationsFragment;
                 fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
                 break;
+            case R.id.settings:
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
             default:
                 f = outlineFragment;
                 fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_local_dining_white_24dp));
