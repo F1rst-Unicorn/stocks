@@ -1,4 +1,4 @@
-import de.njsm.stocks.internal.auth.HttpsUserContextFactory;
+import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import org.junit.Test;
 
 public class HttpsUserContextFactoryTest {

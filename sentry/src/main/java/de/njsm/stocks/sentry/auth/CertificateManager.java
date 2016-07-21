@@ -67,7 +67,7 @@ public class CertificateManager {
      * @param subject A subject name
      * @return The parsed principals
      */
-    protected Principals parseSubjectName(String subject) throws SecurityException {
+    Principals parseSubjectName(String subject) throws SecurityException {
         List<Integer> indexList = new LinkedList<>();
         int[] indices;
         int last_index;

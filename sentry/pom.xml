@@ -4,7 +4,7 @@
 
     <groupId>de.njsm.stocks</groupId>
     <artifactId>sentry</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
     <packaging>war</packaging>
 
     <name>Stocks management server certificate sentry</name>
