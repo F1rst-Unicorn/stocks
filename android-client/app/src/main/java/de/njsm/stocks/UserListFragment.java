@@ -9,8 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import java.lang.reflect.Array;
 
 import de.njsm.stocks.adapters.IconStringAdapter;
 import de.njsm.stocks.backend.data.User;
@@ -42,15 +45,17 @@ public class UserListFragment extends ListFragment implements AbsListView.OnScro
                     imageIds[i] = R.drawable.ic_person_black_24dp;
                 }
 
-                final ListAdapter content = new IconStringAdapter(getActivity(),
+                final IconStringAdapter content = new IconStringAdapter(getActivity(),
                         R.layout.icon_list_item,
                         userNames,
                         imageIds);
+
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         setListAdapter(content);
+                        content.notifyDataSetChanged();
                     }
                 });
             }

@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity
                     .setView(textField)
                     .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            String name = textField.getText().toString();
+                            String name = textField.getText().toString().trim();
                             NewUserTask task = new NewUserTask(usersFragment);
                             task.execute(name);
                         }

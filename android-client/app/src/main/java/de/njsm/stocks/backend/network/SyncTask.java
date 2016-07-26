@@ -1,5 +1,6 @@
 package de.njsm.stocks.backend.network;
 
+import android.app.Fragment;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v4.widget.SwipeRefreshLayout;
