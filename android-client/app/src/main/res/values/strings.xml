@@ -49,6 +49,7 @@
     <string name="dialog_store_settings">Saving settings</string>
     <string name="dialog_cancel">CANCEL</string>
     <string name="dialog_new_device">Create new device</string>
+    <string name="dialog_new_user">Create new user</string>
 
 
 

@@ -25,7 +25,12 @@ public class UserListFragment extends ListFragment implements AbsListView.OnScro
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View result = super.onCreateView(inflater, container, savedInstanceState);
+        reload();
 
+        return result;
+    }
+
+    public void reload() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -50,8 +55,6 @@ public class UserListFragment extends ListFragment implements AbsListView.OnScro
                 });
             }
         }).start();
-
-        return result;
     }
 
     @Override

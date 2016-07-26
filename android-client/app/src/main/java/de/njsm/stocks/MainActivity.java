@@ -2,6 +2,7 @@ package de.njsm.stocks;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,14 +13,17 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import de.njsm.stocks.backend.db.DatabaseHandler;
+import de.njsm.stocks.backend.network.NewUserTask;
 import de.njsm.stocks.backend.network.ServerManager;
 import de.njsm.stocks.backend.network.SyncTask;
 import de.njsm.stocks.setup.SetupActivity;
@@ -195,4 +199,25 @@ public class MainActivity extends AppCompatActivity
         task.execute();
     }
 
+    public void addEntity(View view) {
+        if (currentFragment == usersFragment) {
+            final EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
+            textField.setHint(getResources().getString(R.string.hint_username));
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.dialog_new_user))
+                    .setView(textField)
+                    .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            String name = textField.getText().toString();
+                            NewUserTask task = new NewUserTask(usersFragment);
+                            task.execute(name);
+                        }
+                    })
+                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    })
+                    .show();
+        }
+    }
 }
