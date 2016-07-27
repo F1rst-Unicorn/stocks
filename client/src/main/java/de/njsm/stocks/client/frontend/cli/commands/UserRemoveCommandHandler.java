@@ -34,7 +34,7 @@ public class UserRemoveCommandHandler extends CommandHandler {
             for (User u : users) {
                 if (u.id == id) {
                     c.getServerManager().removeUser(u);
-                    (new RefreshCommandHandler(c)).refreshUsers();
+                    (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
         } catch (SelectException e) {

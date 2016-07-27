@@ -31,6 +31,6 @@ public class LocationAddCommandHandler extends CommandHandler {
 
         c.getServerManager().addLocation(l);
 
-        (new RefreshCommandHandler(c)).refreshLocations();
+        (new RefreshCommandHandler(c, false)).refresh();
     }
 }

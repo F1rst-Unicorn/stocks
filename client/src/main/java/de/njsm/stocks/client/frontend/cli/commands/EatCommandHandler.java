@@ -46,7 +46,7 @@ public class EatCommandHandler extends CommandHandler {
             item.registers = c.getDeviceId();
 
             c.getServerManager().removeItem(item);
-            (new RefreshCommandHandler(c)).refreshFoodItems();
+            (new RefreshCommandHandler(c, false)).refresh();
         } catch (SelectException e) {
             System.out.println(e.getMessage());
         }

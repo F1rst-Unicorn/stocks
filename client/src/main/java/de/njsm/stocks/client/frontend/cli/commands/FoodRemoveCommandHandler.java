@@ -34,7 +34,7 @@ public class FoodRemoveCommandHandler extends CommandHandler {
             for (Food food : f) {
                 if (food.id == id) {
                     c.getServerManager().removeFood(food);
-                    (new RefreshCommandHandler(c)).refreshFood();
+                    (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
         } catch (SelectException e) {

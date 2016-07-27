@@ -41,7 +41,7 @@ public class FoodRenameCommandHandler extends CommandHandler {
             for (Food food : l) {
                 if (food.id == id) {
                     c.getServerManager().renameFood(food, newName);
-                    (new RefreshCommandHandler(c)).refreshFood();
+                    (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
         } catch (SelectException e) {
