@@ -50,8 +50,7 @@
     <string name="dialog_cancel">CANCEL</string>
     <string name="dialog_new_device">Create new device</string>
     <string name="dialog_new_user">Create new user</string>
-
-
+    <string name="title_activity_location">LocationActivity</string>
 
 
 </resources>

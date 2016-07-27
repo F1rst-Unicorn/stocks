@@ -48,4 +48,8 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
+    <style name="StocksTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="StocksTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

@@ -2,6 +2,7 @@ package de.njsm.stocks;
 
 
 import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -67,7 +68,10 @@ public class LocationListFragment extends ListFragment implements AbsListView.On
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-
+        Intent i = new Intent(getActivity(), LocationActivity.class);
+        i.putExtra(LocationActivity.KEY_LOCATION_ID, locations[position].id);
+        i.putExtra(LocationActivity.KEY_LOCATION_NAME, locations[position].name);
+        startActivity(i);
     }
 
     @Override
