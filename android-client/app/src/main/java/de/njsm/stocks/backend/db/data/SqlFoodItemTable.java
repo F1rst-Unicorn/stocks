@@ -18,7 +18,7 @@ public class SqlFoodItemTable {
 
     static {
         NAME = "Food_item";
-        COL_ID = "ID";
+        COL_ID = "_id";
         COL_EAT_BY = "eat_by";
         COL_OF_TYPE = "of_type";
         COL_STORED_IN = "stored_in";

@@ -16,7 +16,7 @@ public class SqlUpdateTable {
 
     static {
         NAME = "Updates";
-        COL_ID = "ID";
+        COL_ID = "_id";
         COL_NAME = "name";
         COL_DATE = "last_update";
         CREATE = "CREATE TABLE " + NAME + " (\n" +

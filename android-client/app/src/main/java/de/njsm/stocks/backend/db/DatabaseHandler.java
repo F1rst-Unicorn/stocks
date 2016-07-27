@@ -30,7 +30,7 @@ import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
-    public static final int DATABASE_VERSION = 13;
+    public static final int DATABASE_VERSION = 14;
     public static final String DATABASE_NAME = "stocks.db";
 
     public static DatabaseHandler h;
@@ -41,7 +41,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
     }
 
-    private DatabaseHandler(Context context) {
+    public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -210,6 +210,25 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 v.put(SqlUserTable.COL_ID, u.id);
                 v.put(SqlUserTable.COL_NAME, u.name);
                 db.insertOrThrow(SqlUserTable.NAME, null, v);
+            }
+
+            db.setTransactionSuccessful();
+        } catch (SQLException e) {
+            Log.e(Config.log, "could not write users", e);
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void writeUsers(ContentValues[] users) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+            db.execSQL(SqlUserTable.CLEAR);
+
+            for (ContentValues u : users) {
+                db.insertOrThrow(SqlUserTable.NAME, null, u);
             }
 
             db.setTransactionSuccessful();

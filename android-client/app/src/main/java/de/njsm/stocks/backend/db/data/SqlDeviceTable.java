@@ -16,7 +16,7 @@ public class SqlDeviceTable {
 
     static {
         NAME = "User_device";
-        COL_ID = "ID";
+        COL_ID = "_id";
         COL_NAME = "name";
         COL_USER = "belongs_to";
         CREATE = "CREATE TABLE " + NAME + " (\n" +

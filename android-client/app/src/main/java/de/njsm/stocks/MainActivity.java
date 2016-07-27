@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import de.njsm.stocks.backend.db.DatabaseHandler;
+import de.njsm.stocks.backend.network.AsyncTaskCallback;
 import de.njsm.stocks.backend.network.NewUserTask;
 import de.njsm.stocks.backend.network.ServerManager;
 import de.njsm.stocks.backend.network.SyncTask;
@@ -33,7 +34,8 @@ import de.njsm.stocks.setup.SetupTask;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                    SetupFinishedListener,
-                   SwipeRefreshLayout.OnRefreshListener {
+                   SwipeRefreshLayout.OnRefreshListener,
+        AsyncTaskCallback {
 
     protected DrawerLayout drawer;
     protected View content;
@@ -105,6 +107,16 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         prefs = prefs == null ? getSharedPreferences(Config.preferences, Context.MODE_PRIVATE) : prefs;
+    }
+
+    @Override
+    public void onAsyncTaskStart() {
+        swiper.setRefreshing(true);
+    }
+
+    @Override
+    public void onAsyncTaskComplete() {
+        swiper.setRefreshing(false);
     }
 
     @Override
@@ -195,7 +207,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onRefresh() {
-        SyncTask task = new SyncTask(swiper);
+        SyncTask task = new SyncTask(this, this);
         task.execute();
     }
 
@@ -209,7 +221,7 @@ public class MainActivity extends AppCompatActivity
                     .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             String name = textField.getText().toString().trim();
-                            NewUserTask task = new NewUserTask(usersFragment);
+                            NewUserTask task = new NewUserTask(MainActivity.this);
                             task.execute(name);
                         }
                     })

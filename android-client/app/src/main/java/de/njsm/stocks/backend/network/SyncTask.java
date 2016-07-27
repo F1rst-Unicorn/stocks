@@ -1,8 +1,9 @@
 package de.njsm.stocks.backend.network;
 
-import android.app.Fragment;
+import android.content.ContentValues;
+import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 
@@ -14,6 +15,7 @@ import de.njsm.stocks.backend.data.Update;
 import de.njsm.stocks.backend.data.User;
 import de.njsm.stocks.backend.data.UserDevice;
 import de.njsm.stocks.backend.db.DatabaseHandler;
+import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlDeviceTable;
 import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
 import de.njsm.stocks.backend.db.data.SqlFoodTable;
@@ -22,10 +24,17 @@ import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
-    protected SwipeRefreshLayout swiper;
+    protected Context c;
+    protected AsyncTaskCallback mListener;
 
-    public SyncTask(SwipeRefreshLayout swiper) {
-        this.swiper = swiper;
+    public SyncTask(Context c) {
+        this.c = c;
+    }
+
+    public SyncTask(Context c,
+                    AsyncTaskCallback listener) {
+        this.c = c;
+        this.mListener = listener;
     }
 
     @Override
@@ -87,7 +96,18 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
     protected void refreshUsers() {
         User[] u = ServerManager.m.getUsers();
-        DatabaseHandler.h.writeUsers(u);
+
+        ContentValues[] values = new ContentValues[u.length];
+        for (int i = 0; i < u.length; i++) {
+            values[i] = new ContentValues();
+            values[i].put(SqlUserTable.COL_ID, u[i].id);
+            values[i].put(SqlUserTable.COL_NAME, u[i].name);
+        }
+
+        c.getContentResolver().bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUserTable.NAME),
+                values);
+
     }
 
     protected void refreshDevices() {
@@ -97,12 +117,17 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
     @Override
     protected void onPreExecute() {
-        swiper.setRefreshing(true);
+
+        if (mListener != null) {
+            mListener.onAsyncTaskStart();
+        }
     }
 
     @Override
     protected void onPostExecute(Integer integer) {
-        swiper.setRefreshing(false);
+        if (mListener != null) {
+            mListener.onAsyncTaskComplete();
+        }
     }
 }
 

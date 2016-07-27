@@ -15,7 +15,7 @@ public class SqlFoodTable {
 
     static {
         NAME = "Food";
-        COL_ID = "ID";
+        COL_ID = "_id";
         COL_NAME = "name";
         CREATE = "CREATE TABLE " + NAME + " (\n" +
                 "    " + COL_ID + " int UNSIGNED NOT NULL UNIQUE,\n" +

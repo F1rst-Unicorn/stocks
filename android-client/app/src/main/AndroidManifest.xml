@@ -31,6 +31,10 @@
             android:name=".LocationActivity"
             android:label="@string/title_activity_location"
             android:theme="@style/StocksTheme"></activity>
+
+        <provider
+            android:authorities="de.njsm.stocks.providers.StocksContentProvider"
+            android:name=".backend.db.StocksContentProvider"></provider>
     </application>
 
 </manifest>

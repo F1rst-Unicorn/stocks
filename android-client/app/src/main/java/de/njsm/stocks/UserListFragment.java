@@ -2,10 +2,14 @@ package de.njsm.stocks;
 
 
 import android.app.ListFragment;
+import android.app.LoaderManager;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,35 +17,85 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
-import de.njsm.stocks.backend.db.DatabaseHandler;
+import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
 
-public class UserListFragment extends ListFragment implements AbsListView.OnScrollListener {
+public class UserListFragment extends ListFragment
+        implements AbsListView.OnScrollListener,
+                   LoaderManager.LoaderCallbacks<Cursor> {
 
-    ListView mList;
+    private static final String KEY_ID = "ID";
+
+    SimpleCursorAdapter mAdapter;
     Cursor mCursor;
-
+    ListView mList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View result = super.onCreateView(inflater, container, savedInstanceState);
 
-        mCursor = DatabaseHandler.h.getUserCursor();
+        return result;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         String[] sourceName = {SqlUserTable.COL_NAME};
         int[] destIds = {android.R.id.text1};
 
-        SimpleCursorAdapter content = new SimpleCursorAdapter(
+        mAdapter = new SimpleCursorAdapter(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
-                mCursor,
+                null,
                 sourceName,
                 destIds,
                 0
         );
-        setListAdapter(content);
+        setListAdapter(mAdapter);
+        getLoaderManager().initLoader(0, null, this);
+    }
 
-        return result;
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri;
+
+        switch (id) {
+            case 0:
+                uri = Uri.parse("content://" + StocksContentProvider.AUTHORITY + "/" + SqlUserTable.NAME);
+
+            // Now create and return a CursorLoader that will take care of
+            // creating a Cursor for the data being displayed.
+            return new CursorLoader(getActivity(), uri,
+                    null, null, null,
+                    null);
+
+            case 1:
+                uri = Uri.parse("content://" +
+                        StocksContentProvider.AUTHORITY + "/" +
+                        SqlUserTable.NAME +
+                        "/" + args.getInt(KEY_ID));
+
+                // Now create and return a CursorLoader that will take care of
+                // creating a Cursor for the data being displayed.
+                return new CursorLoader(getActivity(), uri,
+                        null, null, null,
+                        null);
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+        mCursor = data;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
+        mCursor = null;
     }
 
     @Override
@@ -60,6 +114,9 @@ public class UserListFragment extends ListFragment implements AbsListView.OnScro
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        if (mCursor == null) {
+            return;
+        }
         int lastPos = mCursor.getPosition();
         mCursor.moveToPosition(position);
         int userId = mCursor.getInt(mCursor.getColumnIndex(SqlUserTable.COL_ID));

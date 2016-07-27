@@ -1,6 +1,7 @@
 package de.njsm.stocks.backend.network;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -22,14 +23,11 @@ import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class NewUserTask extends AsyncTask<String, Void, Integer> {
 
-    public UserListFragment fragment;
+    public Context c;
 
-    public NewUserTask(Fragment usersFragment) {
-        if (! (usersFragment instanceof UserListFragment)) {
-            throw new RuntimeException("Fragment is not UserListFragment");
-        }
+    public NewUserTask(Context c) {
 
-        fragment = (UserListFragment) usersFragment;
+        this.c = c;
 
     }
 
@@ -52,6 +50,8 @@ public class NewUserTask extends AsyncTask<String, Void, Integer> {
 
     @Override
     protected void onPostExecute(Integer integer) {
+        SyncTask task = new SyncTask(c);
+        task.execute();
     }
 }
 
