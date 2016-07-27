@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import de.njsm.stocks.backend.db.data.SqlDeviceTable;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class StocksContentProvider extends ContentProvider {
@@ -36,11 +37,16 @@ public class StocksContentProvider extends ContentProvider {
                         String[] selectionArgs,
                         String sortOrder) {
         Cursor result;
+        SQLiteDatabase db;
 
         switch (sMatcher.match(uri)) {
             case 0:
-                SQLiteDatabase db = mHandler.getReadableDatabase();
+                db = mHandler.getReadableDatabase();
                 result = db.rawQuery(SqlUserTable.SELECT_ALL, null);
+                break;
+            case 1:
+                db = mHandler.getReadableDatabase();
+                result = db.rawQuery(SqlDeviceTable.SELECT_ALL, null);
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
@@ -60,12 +66,16 @@ public class StocksContentProvider extends ContentProvider {
             case 0:
                 mHandler.writeUsers(values);
                 result = values.length;
-                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            case 1:
+                mHandler.writeDevices(values);
+                result = values.length;
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
         }
 
+        getContext().getContentResolver().notifyChange(uri, null);
         return result;
     }
 
@@ -94,5 +104,6 @@ public class StocksContentProvider extends ContentProvider {
     static {
         sMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sMatcher.addURI(AUTHORITY, SqlUserTable.NAME, 0);
+        sMatcher.addURI(AUTHORITY, SqlDeviceTable.NAME, 1);
     }
 }

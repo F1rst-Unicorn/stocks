@@ -320,6 +320,25 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
     }
 
+    public void writeDevices(ContentValues[] devs) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+            db.execSQL(SqlDeviceTable.CLEAR);
+
+            for (ContentValues u : devs) {
+                db.insertOrThrow(SqlDeviceTable.NAME, null, u);
+            }
+
+            db.setTransactionSuccessful();
+        } catch (SQLException e) {
+            Log.e(Config.log, "could not write devices", e);
+        } finally {
+            db.endTransaction();
+        }
+    }
+
     public Location[] getLocations() {
         Cursor c = null;
 

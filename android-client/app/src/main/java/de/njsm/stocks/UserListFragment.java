@@ -48,11 +48,11 @@ public class UserListFragment extends ListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         String[] sourceName = {SqlUserTable.COL_NAME};
-        int[] destIds = {android.R.id.text1};
+        int[] destIds = {R.id.item_name};
 
         mAdapter = new SimpleCursorAdapter(
                 getActivity(),
-                android.R.layout.simple_list_item_1,
+                R.layout.icon_list_item,
                 null,
                 sourceName,
                 destIds,
@@ -66,30 +66,12 @@ public class UserListFragment extends ListFragment
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri;
 
-        switch (id) {
-            case 0:
-                uri = Uri.parse("content://" + StocksContentProvider.AUTHORITY + "/" + SqlUserTable.NAME);
+        uri = Uri.parse("content://" + StocksContentProvider.AUTHORITY + "/" + SqlUserTable.NAME);
 
-            // Now create and return a CursorLoader that will take care of
-            // creating a Cursor for the data being displayed.
-            return new CursorLoader(getActivity(), uri,
-                    null, null, null,
-                    null);
+        return new CursorLoader(getActivity(), uri,
+                null, null, null,
+                null);
 
-            case 1:
-                uri = Uri.parse("content://" +
-                        StocksContentProvider.AUTHORITY + "/" +
-                        SqlUserTable.NAME +
-                        "/" + args.getInt(KEY_ID));
-
-                // Now create and return a CursorLoader that will take care of
-                // creating a Cursor for the data being displayed.
-                return new CursorLoader(getActivity(), uri,
-                        null, null, null,
-                        null);
-            default:
-                return null;
-        }
     }
 
     @Override

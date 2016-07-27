@@ -111,8 +111,19 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
     }
 
     protected void refreshDevices() {
-        UserDevice[] d = ServerManager.m.getDevices();
-        DatabaseHandler.h.writeDevices(d);
+        UserDevice[] u = ServerManager.m.getDevices();
+
+        ContentValues[] values = new ContentValues[u.length];
+        for (int i = 0; i < u.length; i++) {
+            values[i] = new ContentValues();
+            values[i].put(SqlDeviceTable.COL_ID, u[i].id);
+            values[i].put(SqlDeviceTable.COL_NAME, u[i].name);
+            values[i].put(SqlDeviceTable.COL_USER, u[i].userId);
+        }
+
+        c.getContentResolver().bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlDeviceTable.NAME),
+                values);
     }
 
     @Override
