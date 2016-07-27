@@ -54,7 +54,7 @@ public class DeviceAddCommandHandler extends CommandHandler {
                 d.userId = userId;
                 try {
                     ticket = c.getServerManager().addDevice(d);
-                    (new RefreshCommandHandler(c)).refreshDevices();
+                    (new RefreshCommandHandler(c, false)).refresh();
 
                     UserDeviceView[] devices = c.getDatabaseManager().getDevices(d.name);
 

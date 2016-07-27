@@ -34,7 +34,7 @@ public class LocationRemoveCommandHandler extends CommandHandler {
             for (Location loc : l) {
                 if (loc.id == id) {
                     c.getServerManager().removeLocation(loc);
-                    (new RefreshCommandHandler(c)).refreshLocations();
+                    (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
         } catch (SelectException e) {

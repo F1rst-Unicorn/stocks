@@ -37,6 +37,6 @@ public class UserAddCommandHandler extends CommandHandler {
 
         c.getServerManager().addUser(u);
 
-        (new RefreshCommandHandler(c)).refreshUsers();
+        (new RefreshCommandHandler(c, false)).refresh();
     }
 }

@@ -38,7 +38,7 @@ public class DeviceRemoveCommandHandler extends CommandHandler {
                     rawDevice.id = d.id;
                     rawDevice.name = d.name;
                     c.getServerManager().removeDevice(rawDevice);
-                    (new RefreshCommandHandler(c)).refreshDevices();
+                    (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
         } catch (SelectException e) {

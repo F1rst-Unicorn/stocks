@@ -31,6 +31,6 @@ public class FoodAddCommandHandler extends CommandHandler {
 
         c.getServerManager().addFood(f);
 
-        (new RefreshCommandHandler(c)).refreshFood();
+        (new RefreshCommandHandler(c, false)).refresh();
     }
 }

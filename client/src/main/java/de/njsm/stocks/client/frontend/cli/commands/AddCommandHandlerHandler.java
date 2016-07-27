@@ -71,7 +71,7 @@ public class AddCommandHandlerHandler extends CommandHandler {
             item.eatByDate = date;
 
             c.getServerManager().addItem(item);
-            (new RefreshCommandHandler(c)).refreshFoodItems();
+            (new RefreshCommandHandler(c, false)).refresh();
         } catch (SelectException e) {
             System.out.println(e.getMessage());
         }

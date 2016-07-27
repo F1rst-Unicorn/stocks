@@ -9,10 +9,20 @@ import java.util.logging.Level;
 
 public class RefreshCommandHandler extends CommandHandler {
 
+    protected boolean verbose;
+
     public RefreshCommandHandler(Configuration c) {
         this.c = c;
         command = "refresh";
         description = "Refresh the stocks system from the server";
+        verbose = true;
+    }
+
+    public RefreshCommandHandler(Configuration c, boolean verbose) {
+        this.c = c;
+        command = "refresh";
+        description = "Refresh the stocks system from the server";
+        this.verbose = verbose;
     }
 
     @Override
@@ -42,7 +52,7 @@ public class RefreshCommandHandler extends CommandHandler {
         }
 
         if (upToDate) {
-            System.out.println("Already up to date");
+            println("Already up to date");
         } else {
             dm.writeUpdates(serverUpdates);
         }
@@ -59,23 +69,23 @@ public class RefreshCommandHandler extends CommandHandler {
     public void refreshTable(String tableName) {
         switch (tableName) {
             case "User":
-                System.out.println("Refreshing users");
+                println("Refreshing users");
                 refreshUsers();
                 break;
             case "User_device":
-                System.out.println("Refreshing devices");
+                println("Refreshing devices");
                 refreshDevices();
                 break;
             case "Food":
-                System.out.println("Refreshing food");
+                println("Refreshing food");
                 refreshFood();
                 break;
             case "Food_item":
-                System.out.println("Refreshing food items");
+                println("Refreshing food items");
                 refreshFoodItems();
                 break;
             case "Location":
-                System.out.println("Refreshing locations");
+                println("Refreshing locations");
                 refreshLocations();
                 break;
             default:
@@ -120,6 +130,22 @@ public class RefreshCommandHandler extends CommandHandler {
                 serverLocations,
                 serverFood,
                 serverItems);
+    }
+
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
+
+
+
+    private void println(String message) {
+        if (verbose) {
+            System.out.println(message);
+        }
     }
 
 }

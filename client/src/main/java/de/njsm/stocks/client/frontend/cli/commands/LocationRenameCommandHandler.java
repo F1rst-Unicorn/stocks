@@ -40,7 +40,7 @@ public class LocationRenameCommandHandler extends CommandHandler {
             for (Location loc : l) {
                 if (loc.id == id){
                     c.getServerManager().renameLocation(loc, newName);
-                    (new RefreshCommandHandler(c)).refreshLocations();
+                    (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
 
