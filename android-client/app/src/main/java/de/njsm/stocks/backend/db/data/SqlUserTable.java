@@ -24,7 +24,7 @@ public class SqlUserTable {
                 ")";
         DROP = "DROP TABLE IF EXISTS " + NAME;
         CLEAR = "DELETE FROM " + NAME;
-        SELECT_ALL = "SELECT * FROM " + NAME;
+        SELECT_ALL = "SELECT rowid _id, * FROM " + NAME;
         SELECT_NAME = "SELECT * FROM " + NAME + " WHERE " + COL_NAME + "=?";
     }
 }

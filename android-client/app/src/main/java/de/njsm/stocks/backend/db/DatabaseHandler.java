@@ -133,32 +133,42 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
     }
 
-    public User[] getUsers() {
+    public Cursor getUserCursor() {
         Cursor c = null;
 
         try {
             SQLiteDatabase db = getReadableDatabase();
             c = db.rawQuery(SqlUserTable.SELECT_ALL, null);
-            ArrayList<User> result = new ArrayList<>();
-
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                User u = new User(
-                        c.getInt(c.getColumnIndex(SqlUserTable.COL_ID)),
-                        c.getString(c.getColumnIndex(SqlUserTable.COL_NAME)));
-                result.add(u);
-                c.moveToNext();
-            }
-            return result.toArray(new User[result.size()]);
 
         } catch (SQLException e) {
             Log.e(Config.log, "could not get users", e);
-            return new User[0];
-        } finally {
-            if (c != null) {
-                c.close();
-            }
         }
+
+        return c;
+    }
+
+    public User[] getUsers() {
+
+        Cursor c = getUserCursor();
+        ArrayList<User> result = new ArrayList<>();
+
+        if (c == null) {
+            return new User[0];
+        }
+
+        c.moveToFirst();
+        int id_col = c.getColumnIndex(SqlUserTable.COL_ID);
+        int name_col = c.getColumnIndex(SqlUserTable.COL_NAME);
+        while (!c.isAfterLast()) {
+            User u = new User(
+                    c.getInt(id_col),
+                    c.getString(name_col));
+            result.add(u);
+            c.moveToNext();
+        }
+
+        return result.toArray(new User[result.size()]);
+
     }
 
     public User[] getUsers(String name) {

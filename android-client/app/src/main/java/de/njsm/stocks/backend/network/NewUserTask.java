@@ -42,8 +42,6 @@ public class NewUserTask extends AsyncTask<String, Void, Integer> {
 
         User user = new User(0, params[0]);
         ServerManager.m.addUser(user);
-        User[] u = ServerManager.m.getUsers();
-        DatabaseHandler.h.writeUsers(u);
 
         return 0;
     }
@@ -54,7 +52,6 @@ public class NewUserTask extends AsyncTask<String, Void, Integer> {
 
     @Override
     protected void onPostExecute(Integer integer) {
-        fragment.reload();
     }
 }
 

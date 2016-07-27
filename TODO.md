@@ -4,7 +4,16 @@
 * Add emitting QR codes 
 
 ## Android
-* Implement Android app
+* Content Provider for local Database
+* Interact with Content Provider
+* Refreshing properly after user creation
+* Add settings (server name,...)
+* Change Icons in ActionBar
+* Support adding devices with ticket displaying
+* Support user removing by long press
+* Support user searching
+* Support device removal
+* Think of food display structure
 
 ## General
 * Store EAN Food IDs in database

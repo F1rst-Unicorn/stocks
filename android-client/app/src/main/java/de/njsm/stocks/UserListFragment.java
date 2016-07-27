@@ -3,63 +3,45 @@ package de.njsm.stocks;
 
 import android.app.ListFragment;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import java.lang.reflect.Array;
-
-import de.njsm.stocks.adapters.IconStringAdapter;
-import de.njsm.stocks.backend.data.User;
 import de.njsm.stocks.backend.db.DatabaseHandler;
+import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class UserListFragment extends ListFragment implements AbsListView.OnScrollListener {
 
-    User[] users;
     ListView mList;
+    Cursor mCursor;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View result = super.onCreateView(inflater, container, savedInstanceState);
-        reload();
+
+        mCursor = DatabaseHandler.h.getUserCursor();
+        String[] sourceName = {SqlUserTable.COL_NAME};
+        int[] destIds = {android.R.id.text1};
+
+        SimpleCursorAdapter content = new SimpleCursorAdapter(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                mCursor,
+                sourceName,
+                destIds,
+                0
+        );
+        setListAdapter(content);
 
         return result;
-    }
-
-    public void reload() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                users = DatabaseHandler.h.getUsers();
-                String[] userNames = new String[users.length];
-                int[] imageIds = new int[users.length];
-                for (int i = 0; i < users.length; i++){
-                    userNames[i] = users[i].name;
-                    imageIds[i] = R.drawable.ic_person_black_24dp;
-                }
-
-                final IconStringAdapter content = new IconStringAdapter(getActivity(),
-                        R.layout.icon_list_item,
-                        userNames,
-                        imageIds);
-
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setListAdapter(content);
-                        content.notifyDataSetChanged();
-                    }
-                });
-            }
-        }).start();
     }
 
     @Override
@@ -78,9 +60,15 @@ public class UserListFragment extends ListFragment implements AbsListView.OnScro
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        int lastPos = mCursor.getPosition();
+        mCursor.moveToPosition(position);
+        int userId = mCursor.getInt(mCursor.getColumnIndex(SqlUserTable.COL_ID));
+        String username = mCursor.getString(mCursor.getColumnIndex(SqlUserTable.COL_NAME));
+        mCursor.moveToPosition(lastPos);
+
         Intent i = new Intent(getActivity(), UserActivity.class);
-        i.putExtra(UserActivity.KEY_USER_ID, users[position].id);
-        i.putExtra(UserActivity.KEY_USER_NAME, users[position].name);
+        i.putExtra(UserActivity.KEY_USER_ID, userId);
+        i.putExtra(UserActivity.KEY_USER_NAME, username);
         startActivity(i);
     }
 
