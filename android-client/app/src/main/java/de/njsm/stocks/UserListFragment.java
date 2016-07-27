@@ -3,12 +3,15 @@ package de.njsm.stocks;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.support.v7.app.AlertDialog;
+import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -17,11 +20,14 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
+import de.njsm.stocks.backend.data.User;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
+import de.njsm.stocks.backend.network.DeleteUserTask;
 
 public class UserListFragment extends ListFragment
         implements AbsListView.OnScrollListener,
+        AdapterView.OnItemLongClickListener,
                    LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String KEY_ID = "ID";
@@ -103,12 +109,14 @@ public class UserListFragment extends ListFragment
         super.onStart();
         mList = getListView();
         mList.setOnScrollListener(this);
+        mList.setOnItemLongClickListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         mList.setOnScrollListener(null);
+        mList.setOnItemLongClickListener(null);
         mList = null;
     }
 
@@ -147,5 +155,32 @@ public class UserListFragment extends ListFragment
             enable = firstItemVisible && topOfFirstItemVisible;
         }
         swiper.setEnabled(enable);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.title_delete_user))
+                .setMessage(getResources().getString(R.string.dialog_delete_user))
+                .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        if (mCursor == null) {
+                            return;
+                        }
+                        int lastPos = mCursor.getPosition();
+                        mCursor.moveToPosition(position);
+                        int userId = mCursor.getInt(mCursor.getColumnIndex(SqlUserTable.COL_ID));
+                        String username = mCursor.getString(mCursor.getColumnIndex(SqlUserTable.COL_NAME));
+                        mCursor.moveToPosition(lastPos);
+                        DeleteUserTask task = new DeleteUserTask(getActivity());
+                        task.execute(new User(userId, username));
+                    }
+                })
+                .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                })
+                .show();
+        return true;
     }
 }

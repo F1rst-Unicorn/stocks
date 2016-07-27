@@ -191,6 +191,8 @@ public class MainActivity extends AppCompatActivity
     public void finished() {
         ServerManager.init(this);
         DatabaseHandler.init(this);
+        SyncTask task = new SyncTask(this);
+        task.execute();
         TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_name));
         if (view != null) {
             view.setText(prefs.getString(Config.usernameConfig, ""));

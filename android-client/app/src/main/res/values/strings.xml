@@ -6,6 +6,9 @@
 
     <string name="title_connection_setup">Connection Setup</string>
     <string name="title_settings">Settings</string>
+    <string name="title_activity_location">LocationActivity</string>
+    <string name="title_delete_user">Remove user</string>
+
 
     <!-- Main activity navigation drawer -->
     <string name="action_outline">Outline</string>
@@ -32,7 +35,6 @@
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>
-    <string name="error_no_server_name">No server name set</string>
     <string name="dialog_registering">Registering</string>
     <string name="dialog_get_cert">Getting server certificate</string>
     <string name="dialog_verify_cert">Checking server certificate</string>
@@ -50,7 +52,8 @@
     <string name="dialog_cancel">CANCEL</string>
     <string name="dialog_new_device">Create new device</string>
     <string name="dialog_new_user">Create new user</string>
-    <string name="title_activity_location">LocationActivity</string>
+    <string name="dialog_delete_user">Do you want to remove the user?</string>
 
+    <string name="error_no_server_name">No server name set</string>
 
 </resources>
