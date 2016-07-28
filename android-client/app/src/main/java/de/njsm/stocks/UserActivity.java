@@ -113,9 +113,10 @@ public class UserActivity extends AppCompatActivity
         Uri uri;
 
         uri = Uri.parse("content://" + StocksContentProvider.AUTHORITY + "/" + SqlDeviceTable.NAME);
+        String[] selectionArgs = {String.valueOf(userId) };
 
         return new CursorLoader(this, uri,
-                null, null, null,
+                null, null, selectionArgs,
                 null);
     }
 

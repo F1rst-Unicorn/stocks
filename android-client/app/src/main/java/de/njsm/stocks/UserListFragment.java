@@ -141,19 +141,22 @@ public class UserListFragment extends ListFragment
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        if (mCursor == null) {
+            return true;
+        }
+        int lastPos = mCursor.getPosition();
+        mCursor.moveToPosition(position);
+        final int userId = mCursor.getInt(mCursor.getColumnIndex(SqlUserTable.COL_ID));
+        final String username = mCursor.getString(mCursor.getColumnIndex(SqlUserTable.COL_NAME));
+        mCursor.moveToPosition(lastPos);
+
+        String message = String.format(getResources().getString(R.string.dialog_delete_user),
+                username);
         new AlertDialog.Builder(getActivity())
                 .setTitle(getResources().getString(R.string.title_delete_user))
-                .setMessage(getResources().getString(R.string.dialog_delete_user))
+                .setMessage(message)
                 .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        if (mCursor == null) {
-                            return;
-                        }
-                        int lastPos = mCursor.getPosition();
-                        mCursor.moveToPosition(position);
-                        int userId = mCursor.getInt(mCursor.getColumnIndex(SqlUserTable.COL_ID));
-                        String username = mCursor.getString(mCursor.getColumnIndex(SqlUserTable.COL_NAME));
-                        mCursor.moveToPosition(lastPos);
                         DeleteUserTask task = new DeleteUserTask(getActivity());
                         task.execute(new User(userId, username));
                     }

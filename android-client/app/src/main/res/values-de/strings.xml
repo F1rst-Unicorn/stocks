@@ -51,7 +51,7 @@
     <string name="dialog_store_settings">Speichere Einstellungen</string>
     <string name="dialog_new_device">Neues Gerät erstellen</string>
     <string name="dialog_new_user">Neuen Nutzer erstellen</string>
-    <string name="dialog_delete_user">Diesen Benutzer entfernen?</string>
+    <string name="dialog_delete_user">Benutzer "%s" entfernen?</string>
 
     <string name="error_no_server_name">Kein Server gesetzt</string>
 

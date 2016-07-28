@@ -37,16 +37,19 @@ public class StocksContentProvider extends ContentProvider {
                         String[] selectionArgs,
                         String sortOrder) {
         Cursor result;
-        SQLiteDatabase db;
+        SQLiteDatabase db = mHandler.getReadableDatabase();
 
         switch (sMatcher.match(uri)) {
             case 0:
-                db = mHandler.getReadableDatabase();
                 result = db.rawQuery(SqlUserTable.SELECT_ALL, null);
                 break;
             case 1:
-                db = mHandler.getReadableDatabase();
-                result = db.rawQuery(SqlDeviceTable.SELECT_ALL, null);
+                if (selectionArgs != null &&
+                        selectionArgs.length == 1) {
+                    result = db.rawQuery(SqlDeviceTable.SELECT_USER, selectionArgs);
+                } else {
+                    result = db.rawQuery(SqlDeviceTable.SELECT_ALL, null);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
