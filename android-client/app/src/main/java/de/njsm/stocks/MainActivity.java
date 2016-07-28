@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.main_content, outlineFragment)
                         .commit();
                 currentFragment = outlineFragment;
+                navigationView.setCheckedItem(R.id.outline);
             } else {
                 super.onBackPressed();
             }
