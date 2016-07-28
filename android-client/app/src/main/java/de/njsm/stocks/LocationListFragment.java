@@ -2,75 +2,92 @@ package de.njsm.stocks;
 
 
 import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
-import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.db.DatabaseHandler;
+import de.njsm.stocks.backend.db.StocksContentProvider;
+import de.njsm.stocks.backend.db.data.SqlLocationTable;
 
-public class LocationListFragment extends ListFragment implements AbsListView.OnScrollListener {
+public class LocationListFragment extends ListFragment
+        implements AbsListView.OnScrollListener,
+                   LoaderManager.LoaderCallbacks<Cursor>{
 
-    ListView list;
-    Location[] locations;
+    protected ListView mList;
+    protected SwipeRefreshLayout mSwiper;
+
+    protected Cursor mCursor;
+    protected SimpleCursorAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View result = super.onCreateView(inflater, container, savedInstanceState);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                locations = DatabaseHandler.h.getLocations();
-                String[] names = new String[locations.length];
-                for (int i = 0; i < locations.length; i++){
-                    names[i] = locations[i].name;
-                }
-
-                final ListAdapter content = new ArrayAdapter<>(getActivity(),
-                        android.R.layout.simple_list_item_1,
-                        names);
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setListAdapter(content);
-                    }
-                });
-            }
-        }).start();
+        mSwiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_overlay);
 
         return result;
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        String[] sourceName = {SqlLocationTable.COL_NAME};
+        int[] destIds = {android.R.id.text1};
+
+        mAdapter = new SimpleCursorAdapter(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                null,
+                sourceName,
+                destIds,
+                0
+        );
+
+        setListAdapter(mAdapter);
+        getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        list = getListView();
-        list.setOnScrollListener(this);
+        mList = getListView();
+        mList.setOnScrollListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        list.setOnScrollListener(null);
-        list = null;
+        mList.setOnScrollListener(null);
+        mList = null;
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        if (mCursor == null) {
+            return;
+        }
+        int lastPos = mCursor.getPosition();
+        mCursor.moveToPosition(position);
+        int locId = mCursor.getInt(mCursor.getColumnIndex(SqlLocationTable.COL_ID));
+        String locName = mCursor.getString(mCursor.getColumnIndex(SqlLocationTable.COL_NAME));
+        mCursor.moveToPosition(lastPos);
+
         Intent i = new Intent(getActivity(), LocationActivity.class);
-        i.putExtra(LocationActivity.KEY_LOCATION_ID, locations[position].id);
-        i.putExtra(LocationActivity.KEY_LOCATION_NAME, locations[position].name);
+        i.putExtra(LocationActivity.KEY_LOCATION_ID, locId);
+        i.putExtra(LocationActivity.KEY_LOCATION_NAME, locName);
         startActivity(i);
     }
 
@@ -81,16 +98,37 @@ public class LocationListFragment extends ListFragment implements AbsListView.On
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem,
                          int visibleItemCount, int totalItemCount) {
-        SwipeRefreshLayout swiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_overlay);
         boolean enable = false;
-        if(list != null && list.getChildCount() > 0){
-            // check if the first item of the list is visible
-            boolean firstItemVisible = list.getFirstVisiblePosition() == 0;
+        if(mList != null && mList.getChildCount() > 0){
+            // check if the first item of the mList is visible
+            boolean firstItemVisible = mList.getFirstVisiblePosition() == 0;
             // check if the top of the first item is visible
-            boolean topOfFirstItemVisible = list.getChildAt(0).getTop() == 0;
+            boolean topOfFirstItemVisible = mList.getChildAt(0).getTop() == 0;
             // enabling or disabling the refresh layout
             enable = firstItemVisible && topOfFirstItemVisible;
         }
-        swiper.setEnabled(enable);
+        mSwiper.setEnabled(enable);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME);
+
+        return new CursorLoader(getActivity(), uri,
+                null, null, null,
+                null);
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+        mCursor = data;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
+        mCursor = null;
     }
 }

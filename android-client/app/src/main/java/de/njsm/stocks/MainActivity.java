@@ -22,8 +22,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import de.njsm.stocks.backend.data.Location;
 import de.njsm.stocks.backend.db.DatabaseHandler;
 import de.njsm.stocks.backend.network.AsyncTaskCallback;
+import de.njsm.stocks.backend.network.NewLocationTask;
 import de.njsm.stocks.backend.network.NewUserTask;
 import de.njsm.stocks.backend.network.ServerManager;
 import de.njsm.stocks.backend.network.SyncTask;
@@ -226,6 +228,24 @@ public class MainActivity extends AppCompatActivity
                             String name = textField.getText().toString().trim();
                             NewUserTask task = new NewUserTask(MainActivity.this);
                             task.execute(name);
+                        }
+                    })
+                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    })
+                    .show();
+        } else if (currentFragment == locationsFragment) {
+            final EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
+            textField.setHint(getResources().getString(R.string.hint_location));
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.dialog_new_location))
+                    .setView(textField)
+                    .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            String name = textField.getText().toString().trim();
+                            NewLocationTask task = new NewLocationTask(MainActivity.this);
+                            task.execute(new Location(0, name));
                         }
                     })
                     .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {

@@ -375,7 +375,7 @@ public class IntentIntegrator {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String packageName;
                 if (targetApplications.contains(BS_PACKAGE)) {
-                    // Prefer to suggest download of BS if it's anywhere in the list
+                    // Prefer to suggest download of BS if it's anywhere in the mList
                     packageName = BS_PACKAGE;
                 } else {
                     // Otherwise, first option:

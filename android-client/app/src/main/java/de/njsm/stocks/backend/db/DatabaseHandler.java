@@ -27,6 +27,7 @@ import de.njsm.stocks.backend.db.data.SqlFoodTable;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.db.data.SqlUpdateTable;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
+import de.njsm.stocks.backend.network.SyncTask;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
@@ -34,6 +35,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public static final String DATABASE_NAME = "stocks.db";
 
     public static DatabaseHandler h;
+
+    protected Context mContext;
 
     public static void init(Context c) {
         if (h == null) {
@@ -43,6 +46,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        mContext = context;
     }
 
     @Override
@@ -55,6 +59,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             db.execSQL(SqlLocationTable.CREATE);
             db.execSQL(SqlFoodTable.CREATE);
             db.execSQL(SqlFoodItemTable.CREATE);
+            SyncTask task = new SyncTask(mContext);
+            task.execute();
         } catch (SQLException e) {
             Log.e(Config.log, "could not create table", e);
         }
@@ -379,6 +385,25 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 v.put(SqlLocationTable.COL_ID, u.id);
                 v.put(SqlLocationTable.COL_NAME, u.name);
                 db.insertOrThrow(SqlLocationTable.NAME, null, v);
+            }
+
+            db.setTransactionSuccessful();
+        } catch (SQLException e) {
+            Log.e(Config.log, "could not write locations", e);
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void writeLocations(ContentValues[] values) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+            db.execSQL(SqlLocationTable.CLEAR);
+
+            for (ContentValues u : values) {
+                db.insertOrThrow(SqlLocationTable.NAME, null, u);
             }
 
             db.setTransactionSuccessful();

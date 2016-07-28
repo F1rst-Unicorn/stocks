@@ -90,8 +90,18 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
     }
 
     protected void refreshLocations() {
-        Location[] l = ServerManager.m.getLocations();
-        DatabaseHandler.h.writeLocations(l);
+        Location[] u = ServerManager.m.getLocations();
+
+        ContentValues[] values = new ContentValues[u.length];
+        for (int i = 0; i < u.length; i++) {
+            values[i] = new ContentValues();
+            values[i].put(SqlLocationTable.COL_ID, u[i].id);
+            values[i].put(SqlLocationTable.COL_NAME, u[i].name);
+        }
+
+        c.getContentResolver().bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME),
+                values);
     }
 
     protected void refreshUsers() {

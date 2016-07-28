@@ -11,12 +11,12 @@ import android.os.Bundle;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
@@ -27,19 +27,22 @@ import de.njsm.stocks.backend.network.DeleteUserTask;
 
 public class UserListFragment extends ListFragment
         implements AbsListView.OnScrollListener,
-        AdapterView.OnItemLongClickListener,
+                   AdapterView.OnItemLongClickListener,
                    LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String KEY_ID = "ID";
 
-    SimpleCursorAdapter mAdapter;
-    Cursor mCursor;
-    ListView mList;
+    protected SimpleCursorAdapter mAdapter;
+    protected Cursor mCursor;
+
+    protected SwipeRefreshLayout mSwiper;
+    protected ListView mList;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = super.onCreateView(inflater, container, savedInstanceState);
+
+        mSwiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_overlay);
 
         return result;
     }
@@ -47,6 +50,7 @@ public class UserListFragment extends ListFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         String[] sourceName = {SqlUserTable.COL_NAME};
         int[] destIds = {R.id.item_name};
 
@@ -58,15 +62,14 @@ public class UserListFragment extends ListFragment
                 destIds,
                 0
         );
+
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri;
-
-        uri = Uri.parse("content://" + StocksContentProvider.AUTHORITY + "/" + SqlUserTable.NAME);
+        Uri uri = Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUserTable.NAME);
 
         return new CursorLoader(getActivity(), uri,
                 null, null, null,
@@ -126,7 +129,6 @@ public class UserListFragment extends ListFragment
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem,
                          int visibleItemCount, int totalItemCount) {
-        SwipeRefreshLayout swiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_overlay);
         boolean enable = false;
         if(mList != null && mList.getChildCount() > 0){
             // check if the first item of the mList is visible
@@ -136,7 +138,7 @@ public class UserListFragment extends ListFragment
             // enabling or disabling the refresh layout
             enable = firstItemVisible && topOfFirstItemVisible;
         }
-        swiper.setEnabled(enable);
+        mSwiper.setEnabled(enable);
     }
 
     @Override
@@ -162,8 +164,7 @@ public class UserListFragment extends ListFragment
                     }
                 })
                 .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
+                    public void onClick(DialogInterface dialog, int whichButton) {}
                 })
                 .show();
         return true;

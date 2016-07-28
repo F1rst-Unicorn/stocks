@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import de.njsm.stocks.backend.db.data.SqlDeviceTable;
+import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class StocksContentProvider extends ContentProvider {
@@ -51,6 +52,9 @@ public class StocksContentProvider extends ContentProvider {
                     result = db.rawQuery(SqlDeviceTable.SELECT_ALL, null);
                 }
                 break;
+            case 2:
+                result = db.rawQuery(SqlLocationTable.SELECT_ALL, null);
+                break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
         }
@@ -68,16 +72,17 @@ public class StocksContentProvider extends ContentProvider {
         switch (match) {
             case 0:
                 mHandler.writeUsers(values);
-                result = values.length;
                 break;
             case 1:
                 mHandler.writeDevices(values);
-                result = values.length;
+                break;
+            case 2:
+                mHandler.writeLocations(values);
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
         }
-
+        result = values.length;
         getContext().getContentResolver().notifyChange(uri, null);
         return result;
     }
@@ -108,5 +113,6 @@ public class StocksContentProvider extends ContentProvider {
         sMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sMatcher.addURI(AUTHORITY, SqlUserTable.NAME, 0);
         sMatcher.addURI(AUTHORITY, SqlDeviceTable.NAME, 1);
+        sMatcher.addURI(AUTHORITY, SqlLocationTable.NAME, 2);
     }
 }
