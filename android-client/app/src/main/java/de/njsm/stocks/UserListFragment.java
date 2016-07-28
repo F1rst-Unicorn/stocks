@@ -150,7 +150,7 @@ public class UserListFragment extends ListFragment
         final String username = mCursor.getString(mCursor.getColumnIndex(SqlUserTable.COL_NAME));
         mCursor.moveToPosition(lastPos);
 
-        String message = String.format(getResources().getString(R.string.dialog_delete_user),
+        String message = String.format(getResources().getString(R.string.dialog_delete_format),
                 username);
         new AlertDialog.Builder(getActivity())
                 .setTitle(getResources().getString(R.string.title_delete_user))

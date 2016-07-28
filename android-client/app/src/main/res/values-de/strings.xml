@@ -8,6 +8,7 @@
     <string name="title_settings">Einstellungen</string>
     <string name="title_activity_location">LocationActivity</string>
     <string name="title_delete_user">Benutzer entfernen</string>
+    <string name="title_delete_device">Gerät entfernen</string>
 
     <!-- Main activity navigation drawer -->
     <string name="action_outline">Übersicht</string>
@@ -51,7 +52,7 @@
     <string name="dialog_store_settings">Speichere Einstellungen</string>
     <string name="dialog_new_device">Neues Gerät erstellen</string>
     <string name="dialog_new_user">Neuen Nutzer erstellen</string>
-    <string name="dialog_delete_user">Benutzer "%s" entfernen?</string>
+    <string name="dialog_delete_format">"%s" entfernen?</string>
 
     <string name="error_no_server_name">Kein Server gesetzt</string>
 
