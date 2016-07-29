@@ -7,9 +7,7 @@ import java.util.Locale;
 
 import de.njsm.stocks.Config;
 import de.njsm.stocks.backend.data.Ticket;
-import de.njsm.stocks.backend.data.User;
 import de.njsm.stocks.backend.data.UserDevice;
-import de.njsm.stocks.zxing.IntentIntegrator;
 
 public class NewDeviceTask extends AsyncTask<String, Void, String> {
 

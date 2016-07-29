@@ -3,7 +3,6 @@ package de.njsm.stocks.backend.network;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import de.njsm.stocks.backend.data.User;
 import de.njsm.stocks.backend.data.UserDevice;
 
 public class DeleteDeviceTask extends AsyncTask<UserDevice, Void, Integer> {

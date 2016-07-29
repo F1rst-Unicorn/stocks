@@ -3,12 +3,7 @@ package de.njsm.stocks.backend.network;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import java.util.Locale;
-
-import de.njsm.stocks.Config;
 import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.data.Ticket;
-import de.njsm.stocks.backend.data.UserDevice;
 
 public class NewLocationTask extends AsyncTask<Location, Void, Integer> {
 

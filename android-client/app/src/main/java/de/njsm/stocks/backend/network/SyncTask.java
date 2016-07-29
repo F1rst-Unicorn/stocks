@@ -2,11 +2,17 @@ package de.njsm.stocks.backend.network;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import de.njsm.stocks.Config;
 import de.njsm.stocks.backend.data.Food;
@@ -15,12 +21,12 @@ import de.njsm.stocks.backend.data.Location;
 import de.njsm.stocks.backend.data.Update;
 import de.njsm.stocks.backend.data.User;
 import de.njsm.stocks.backend.data.UserDevice;
-import de.njsm.stocks.backend.db.DatabaseHandler;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlDeviceTable;
 import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
 import de.njsm.stocks.backend.db.data.SqlFoodTable;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
+import de.njsm.stocks.backend.db.data.SqlUpdateTable;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class SyncTask extends AsyncTask<Void, Void, Integer> {
@@ -46,7 +52,7 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
         }
 
         Update[] serverUpdates = ServerManager.m.getUpdates();
-        Update[] localUpdates = DatabaseHandler.h.getUpdates();
+        Update[] localUpdates = getUpdates();
 
         if (serverUpdates.length == 0 ||
                 localUpdates.length == 0) {
@@ -61,7 +67,7 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
             }
         }
 
-        DatabaseHandler.h.writeUpdates(serverUpdates);
+        writeUpdates(serverUpdates);
         Log.i(Config.log, "Sync successful");
         return 0;
     }
@@ -81,13 +87,39 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
     }
 
     protected void refreshFood() {
-        Food[] f = ServerManager.m.getFood();
-        DatabaseHandler.h.writeFood(f);
+        Food[] u = ServerManager.m.getFood();
+
+        ContentValues[] values = new ContentValues[u.length];
+        for (int i = 0; i < u.length; i++) {
+            values[i] = new ContentValues();
+            values[i].put(SqlFoodTable.COL_ID, u[i].id);
+            values[i].put(SqlFoodTable.COL_NAME, u[i].name);
+        }
+
+        c.getContentResolver().bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodTable.NAME),
+                values);
     }
 
     protected void refreshItems() {
-        FoodItem[] f = ServerManager.m.getFoodItems();
-        DatabaseHandler.h.writeItems(f);
+        FoodItem[] u = ServerManager.m.getFoodItems();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
+
+        ContentValues[] values = new ContentValues[u.length];
+        for (int i = 0; i < u.length; i++) {
+            values[i] = new ContentValues();
+            values[i].put(SqlFoodItemTable.COL_ID, u[i].id);
+            values[i].put(SqlFoodItemTable.COL_REGISTERS, u[i].registers);
+            values[i].put(SqlFoodItemTable.COL_BUYS, u[i].buys);
+            values[i].put(SqlFoodItemTable.COL_OF_TYPE, u[i].ofType);
+            values[i].put(SqlFoodItemTable.COL_STORED_IN, u[i].storedIn);
+            values[i].put(SqlFoodItemTable.COL_EAT_BY, format.format(u[i].eatByDate));
+
+        }
+
+        c.getContentResolver().bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodItemTable.NAME),
+                values);
     }
 
     protected void refreshLocations() {
@@ -134,6 +166,57 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
         c.getContentResolver().bulkInsert(
                 Uri.withAppendedPath(StocksContentProvider.baseUri, SqlDeviceTable.NAME),
+                values);
+    }
+
+    public Update[] getUpdates() {
+        Cursor cursor = c.getContentResolver().query(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+        assert cursor != null;
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
+
+        ArrayList<Update> result = new ArrayList<>();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Date date = null;
+            try {
+                date = format.parse(cursor.getString(cursor.getColumnIndex(SqlUpdateTable.COL_DATE)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Update u = new Update(cursor.getString(cursor.getColumnIndex(SqlUpdateTable.COL_NAME)),
+                    date);
+            result.add(u);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return result.toArray(new Update[result.size()]);
+
+    }
+
+    private void writeUpdates(Update[] serverUpdates) {
+        ContentValues[] values = new ContentValues[serverUpdates.length];
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
+
+        int i = 0;
+        for (Update u : serverUpdates) {
+            ContentValues v = new ContentValues();
+            v.put(SqlUpdateTable.COL_ID, i);
+            v.put(SqlUpdateTable.COL_NAME, u.table);
+            v.put(SqlUpdateTable.COL_DATE, format.format(u.lastUpdate));
+            values[i] = v;
+            i++;
+        }
+
+        c.getContentResolver().bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
                 values);
     }
 

@@ -23,7 +23,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.db.DatabaseHandler;
 import de.njsm.stocks.backend.network.AsyncTaskCallback;
 import de.njsm.stocks.backend.network.NewLocationTask;
 import de.njsm.stocks.backend.network.NewUserTask;
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         drawer.getChildAt(0).setSelected(true);
         toggle.syncState();
 
@@ -161,15 +160,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
         Fragment f;
@@ -205,7 +195,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void finished() {
         ServerManager.init(this);
-        DatabaseHandler.init(this);
         SyncTask task = new SyncTask(this);
         task.execute();
         TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_name));

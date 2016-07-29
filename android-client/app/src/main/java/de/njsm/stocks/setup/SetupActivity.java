@@ -1,16 +1,13 @@
 package de.njsm.stocks.setup;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
 
-import de.njsm.stocks.Config;
 import de.njsm.stocks.MainActivity;
 import de.njsm.stocks.R;
 import de.njsm.stocks.zxing.IntentIntegrator;

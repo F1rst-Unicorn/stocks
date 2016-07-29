@@ -1,12 +1,9 @@
 package de.njsm.stocks;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.util.Enumeration;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;

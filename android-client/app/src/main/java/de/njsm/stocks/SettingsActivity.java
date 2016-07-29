@@ -1,6 +1,5 @@
 package de.njsm.stocks;
 
-import android.preference.PreferenceActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 

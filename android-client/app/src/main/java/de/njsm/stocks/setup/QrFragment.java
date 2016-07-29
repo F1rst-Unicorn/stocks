@@ -18,12 +18,6 @@ public class QrFragment extends AbstractStep {
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
     public void onStepVisible() {
         // start qr reader
         Bundle extras = getActivity().getIntent().getExtras();

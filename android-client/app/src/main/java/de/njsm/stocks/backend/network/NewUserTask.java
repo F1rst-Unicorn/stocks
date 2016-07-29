@@ -1,25 +1,9 @@
 package de.njsm.stocks.backend.network;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 
-import de.njsm.stocks.Config;
-import de.njsm.stocks.UserListFragment;
-import de.njsm.stocks.backend.data.Food;
-import de.njsm.stocks.backend.data.FoodItem;
-import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.data.Update;
 import de.njsm.stocks.backend.data.User;
-import de.njsm.stocks.backend.data.UserDevice;
-import de.njsm.stocks.backend.db.DatabaseHandler;
-import de.njsm.stocks.backend.db.data.SqlDeviceTable;
-import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
-import de.njsm.stocks.backend.db.data.SqlFoodTable;
-import de.njsm.stocks.backend.db.data.SqlLocationTable;
-import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class NewUserTask extends AsyncTask<String, Void, Integer> {
 

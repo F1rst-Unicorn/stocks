@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.test.suitebuilder.annotation.Suppress;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,7 +28,6 @@ import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.security.auth.x500.X500Principal;
@@ -128,7 +125,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
 
         char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7',
                 '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        StringBuffer buf = new StringBuffer(digest.length * 2);
+        StringBuilder buf = new StringBuilder(digest.length * 2);
         for (byte aDigest : digest) {
             buf.append(hexDigits[(aDigest & 0xf0) >> 4]);
             buf.append(hexDigits[aDigest & 0x0f]);
@@ -137,7 +134,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         buf.delete(buf.length()-1, buf.length());
 
         String actualFpr = buf.toString();
-        String expectedFpr = extras.getString(Config.fprConfig);
+        String expectedFpr = extras.getString(Config.fprConfig, "");
 
         if (! expectedFpr.equals(actualFpr)) {
             throw new SecurityException(c.getResources().getString(R.string.dialog_wrong_fpr));

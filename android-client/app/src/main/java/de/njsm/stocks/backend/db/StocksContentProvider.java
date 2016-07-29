@@ -10,7 +10,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import de.njsm.stocks.backend.db.data.SqlDeviceTable;
+import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
+import de.njsm.stocks.backend.db.data.SqlFoodTable;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
+import de.njsm.stocks.backend.db.data.SqlUpdateTable;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
 
 public class StocksContentProvider extends ContentProvider {
@@ -53,6 +56,9 @@ public class StocksContentProvider extends ContentProvider {
             case 2:
                 result = db.rawQuery(SqlLocationTable.SELECT_ALL, null);
                 break;
+            case 5:
+                result = db.rawQuery(SqlUpdateTable.SELECT_ALL, null);
+                break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
         }
@@ -75,6 +81,15 @@ public class StocksContentProvider extends ContentProvider {
                 break;
             case 2:
                 mHandler.writeLocations(values);
+                break;
+            case 3:
+                mHandler.writeFood(values);
+                break;
+            case 4:
+                mHandler.writeItems(values);
+                break;
+            case 5:
+                mHandler.writeUpdates(values);
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
@@ -110,5 +125,8 @@ public class StocksContentProvider extends ContentProvider {
         sMatcher.addURI(AUTHORITY, SqlUserTable.NAME, 0);
         sMatcher.addURI(AUTHORITY, SqlDeviceTable.NAME, 1);
         sMatcher.addURI(AUTHORITY, SqlLocationTable.NAME, 2);
+        sMatcher.addURI(AUTHORITY, SqlFoodTable.NAME, 3);
+        sMatcher.addURI(AUTHORITY, SqlFoodItemTable.NAME, 4);
+        sMatcher.addURI(AUTHORITY, SqlUpdateTable.NAME, 5);
     }
 }
