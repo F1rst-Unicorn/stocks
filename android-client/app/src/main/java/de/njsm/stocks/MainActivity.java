@@ -112,6 +112,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (currentFragment == outlineFragment) {
+            navigationView.setCheckedItem(R.id.outline);
+        } else if (currentFragment == locationsFragment) {
+            navigationView.setCheckedItem(R.id.locations);
+        } else if (currentFragment == usersFragment) {
+            navigationView.setCheckedItem(R.id.users);
+        }
+
+    }
+
+    @Override
     public void onAsyncTaskStart() {
         swiper.setRefreshing(true);
     }

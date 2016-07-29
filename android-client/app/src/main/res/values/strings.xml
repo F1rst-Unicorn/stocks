@@ -11,7 +11,6 @@
     <string name="title_delete_device">Remove device</string>
 
 
-
     <!-- Main activity navigation drawer -->
     <string name="action_outline">Outline</string>
     <string name="action_users">Users</string>
@@ -59,6 +58,9 @@
     <string name="dialog_delete_format">Do you want to remove "%s"?</string>
 
     <string name="error_no_server_name">No server name set</string>
+
+    <string name="text_show_qr_code_friend">Let your new device read this code:</string>
+    <string name="title_ticket_activity">Ticket Transfer</string>
 
 
 </resources>

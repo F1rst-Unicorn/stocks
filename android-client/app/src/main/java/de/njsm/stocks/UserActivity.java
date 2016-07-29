@@ -3,6 +3,7 @@ package de.njsm.stocks;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -45,8 +46,17 @@ public class UserActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        mUserId = getIntent().getExtras().getInt(KEY_USER_ID);
-        mUsername = getIntent().getExtras().getString(KEY_USER_NAME);
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null &&
+                extras.containsKey(KEY_USER_NAME)) {
+            mUserId = extras.getInt(KEY_USER_ID);
+            mUsername = extras.getString(KEY_USER_NAME);
+        } else if (savedInstanceState != null &&
+                savedInstanceState.containsKey(KEY_USER_NAME)){
+            mUserId = savedInstanceState.getInt(KEY_USER_ID);
+            mUsername = savedInstanceState.getString(KEY_USER_NAME);
+        }
 
         TextView tv = (TextView) findViewById(R.id.user_detail_name);
         assert tv != null;
@@ -70,6 +80,21 @@ public class UserActivity extends AppCompatActivity
         getLoaderManager().initLoader(0, null, this);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_USER_ID, mUserId);
+        outState.putString(KEY_USER_NAME, mUsername);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        mUserId = savedInstanceState.getInt(KEY_USER_ID);
+        mUsername = savedInstanceState.getString(KEY_USER_NAME);
+    }
+
     public void addDevice(View v) {
         final EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
 
@@ -84,9 +109,12 @@ public class UserActivity extends AppCompatActivity
                 .setView(layout)
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        String name = textField.getText().toString();
+                        Intent i = new Intent(UserActivity.this, QrCodeDisplayActivity.class);
+                        i.putExtra(QrCodeDisplayActivity.KEY_TICKET, "test string");
+                        startActivity(i);
+                        /*String name = textField.getText().toString().trim();
                         NewDeviceTask task = new NewDeviceTask(UserActivity.this, UserActivity.this);
-                        task.execute(name, String.valueOf(UserActivity.this.mUserId), UserActivity.this.mUsername);
+                        task.execute(name, String.valueOf(UserActivity.this.mUserId), UserActivity.this.mUsername);*/
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
@@ -98,7 +126,9 @@ public class UserActivity extends AppCompatActivity
 
     @Override
     public void applyToTicket(String ticket) {
-        Log.i(Config.log, ticket);
+        Intent i = new Intent(this, QrCodeDisplayActivity.class);
+        i.putExtra(QrCodeDisplayActivity.KEY_TICKET, ticket);
+        startActivity(i);
     }
 
     @Override
