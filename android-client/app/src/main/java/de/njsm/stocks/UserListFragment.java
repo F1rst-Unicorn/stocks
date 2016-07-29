@@ -30,8 +30,6 @@ public class UserListFragment extends ListFragment
                    AdapterView.OnItemLongClickListener,
                    LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String KEY_ID = "ID";
-
     protected SimpleCursorAdapter mAdapter;
     protected Cursor mCursor;
 

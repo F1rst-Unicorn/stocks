@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 
@@ -134,6 +135,10 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
         c.getContentResolver().bulkInsert(
                 Uri.withAppendedPath(StocksContentProvider.baseUri, SqlDeviceTable.NAME),
                 values);
+    }
+
+    public void registerListener(@Nullable AsyncTaskCallback l) {
+        mListener = l;
     }
 
     @Override

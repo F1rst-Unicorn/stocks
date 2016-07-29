@@ -48,10 +48,6 @@ public class SetupActivity extends DotStepper {
                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra(setupFinished, setupFinished);
         i.putExtras(getExtras());
-        Log.i(Config.log, "SetupActivity fills: ");
-        for (String key : i.getExtras().keySet()) {
-            Log.i(Config.log, key + " --> " + i.getExtras().get(key));
-        }
         startActivity(i);
     }
 

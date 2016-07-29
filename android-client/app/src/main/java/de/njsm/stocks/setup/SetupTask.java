@@ -46,7 +46,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
 
     protected Activity c;
     protected Bundle extras;
-    protected ArrayList<SetupFinishedListener> listeners;
+    protected SetupFinishedListener mListener;
 
     protected ProgressDialog dialog;
 
@@ -61,7 +61,6 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         dialog = new ProgressDialog(c);
         this.c = c;
         extras = c.getIntent().getExtras();
-        listeners = new ArrayList<>(1);
     }
 
     @Override
@@ -262,8 +261,8 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         dialog.setProgress(dialog.getProgress()+1);
     }
 
-    public void addListener(SetupFinishedListener l) {
-        listeners.add(l);
+    public void registerListener(SetupFinishedListener l) {
+        mListener = l;
     }
 
     @Override
@@ -276,9 +275,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
                 .setCancelable(false);
 
         if (s.isSuccess()) {
-            for (SetupFinishedListener l : listeners){
-                l.finished();
-            }
+            mListener.finished();
             builder.setIcon(R.drawable.ic_check_black_24dp)
                     .setPositiveButton(c.getResources().getString(R.string.dialog_ok),
                             new DialogInterface.OnClickListener() {
@@ -295,10 +292,6 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
                     dialog.dismiss();
                     Intent i = new Intent(c, SetupActivity.class);
                     i.putExtras(extras);
-                    Log.i(Config.log, "SetupTask refills: ");
-                    for (String key : i.getExtras().keySet()) {
-                        Log.i(Config.log, key + " --> " + i.getExtras().get(key));
-                    }
                     c.startActivity(i);
                 }
             }).setNegativeButton(c.getResources().getString(R.string.dialog_abort),

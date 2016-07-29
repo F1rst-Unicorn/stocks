@@ -109,12 +109,9 @@ public class UserActivity extends AppCompatActivity
                 .setView(layout)
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        Intent i = new Intent(UserActivity.this, QrCodeDisplayActivity.class);
-                        i.putExtra(QrCodeDisplayActivity.KEY_TICKET, "test string");
-                        startActivity(i);
-                        /*String name = textField.getText().toString().trim();
+                        String name = textField.getText().toString().trim();
                         NewDeviceTask task = new NewDeviceTask(UserActivity.this, UserActivity.this);
-                        task.execute(name, String.valueOf(UserActivity.this.mUserId), UserActivity.this.mUsername);*/
+                        task.execute(name, String.valueOf(UserActivity.this.mUserId), UserActivity.this.mUsername);
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {

@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         if (getIntent().hasExtra(SetupActivity.setupFinished)) {
             getIntent().getExtras().remove(SetupActivity.setupFinished);
             SetupTask s = new SetupTask(this);
-            s.addListener(this);
+            s.registerListener(this);
             s.execute();
         } else if (! prefs.contains(Config.usernameConfig)) {
             Intent i = new Intent(this, SetupActivity.class);
@@ -169,7 +169,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 

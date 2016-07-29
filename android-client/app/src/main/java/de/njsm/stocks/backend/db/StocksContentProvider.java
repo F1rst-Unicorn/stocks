@@ -16,7 +16,6 @@ import de.njsm.stocks.backend.db.data.SqlUserTable;
 public class StocksContentProvider extends ContentProvider {
 
     public static final String AUTHORITY = "de.njsm.stocks.providers.StocksContentProvider";
-
     public static final Uri baseUri = Uri.parse("content://de.njsm.stocks.providers.StocksContentProvider");
 
     private static final UriMatcher sMatcher;
@@ -26,7 +25,6 @@ public class StocksContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mHandler = new DatabaseHandler(getContext());
-
         return true;
     }
 
@@ -67,7 +65,6 @@ public class StocksContentProvider extends ContentProvider {
     public int bulkInsert(@NonNull Uri uri,
                           @NonNull ContentValues[] values) {
         final int match = sMatcher.match(uri);
-        int result;
 
         switch (match) {
             case 0:
@@ -82,9 +79,8 @@ public class StocksContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
         }
-        result = values.length;
         getContext().getContentResolver().notifyChange(uri, null);
-        return result;
+        return values.length;
     }
 
     @Nullable

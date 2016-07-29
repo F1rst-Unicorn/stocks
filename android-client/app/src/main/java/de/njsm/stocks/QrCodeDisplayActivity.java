@@ -42,7 +42,7 @@ public class QrCodeDisplayActivity extends AppCompatActivity {
 
     public Bitmap generateQrCode(String myCodeText) throws WriterException {
         Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<EncodeHintType, ErrorCorrectionLevel>();
-        hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H); // H = 30% damage
+        hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
 
