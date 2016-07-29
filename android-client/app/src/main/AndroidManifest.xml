@@ -14,7 +14,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/StocksTheme.NoActionBar">
+            android:theme="@style/StocksTheme.NoActionBar"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,8 +41,11 @@
 
         <activity
             android:name=".LocationActivity"
-            android:label="@string/title_activity_location"
-            android:theme="@style/StocksTheme" />
+            android:label="@string/title_activity_location" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.njsm.stocks.MainActivity" />
+        </activity>
 
         <activity android:name=".QrCodeDisplayActivity"
             android:label="@string/title_ticket_activity">
