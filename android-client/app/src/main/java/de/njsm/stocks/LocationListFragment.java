@@ -4,25 +4,34 @@ package de.njsm.stocks;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import de.njsm.stocks.backend.data.Location;
+import de.njsm.stocks.backend.data.User;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
+import de.njsm.stocks.backend.db.data.SqlUserTable;
+import de.njsm.stocks.backend.network.DeleteLocationTask;
+import de.njsm.stocks.backend.network.DeleteUserTask;
 
 public class LocationListFragment extends ListFragment
         implements AbsListView.OnScrollListener,
-                   LoaderManager.LoaderCallbacks<Cursor>{
+                   LoaderManager.LoaderCallbacks<Cursor>,
+        AdapterView.OnItemLongClickListener{
 
     protected ListView mList;
     protected SwipeRefreshLayout mSwiper;
@@ -65,12 +74,14 @@ public class LocationListFragment extends ListFragment
         super.onStart();
         mList = getListView();
         mList.setOnScrollListener(this);
+        mList.setOnItemLongClickListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         mList.setOnScrollListener(null);
+        mList.setOnItemLongClickListener(null);
         mList = null;
     }
 
@@ -130,5 +141,34 @@ public class LocationListFragment extends ListFragment
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
         mCursor = null;
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if (mCursor == null) {
+            return true;
+        }
+        int lastPos = mCursor.getPosition();
+        mCursor.moveToPosition(i);
+        final int locId = mCursor.getInt(mCursor.getColumnIndex(SqlLocationTable.COL_ID));
+        final String locName = mCursor.getString(mCursor.getColumnIndex(SqlLocationTable.COL_NAME));
+        mCursor.moveToPosition(lastPos);
+
+        String message = String.format(getResources().getString(R.string.dialog_delete_format),
+                locName);
+        new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.title_delete_location))
+                .setMessage(message)
+                .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        DeleteLocationTask task = new DeleteLocationTask(getActivity());
+                        task.execute(new Location(locId, locName));
+                    }
+                })
+                .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {}
+                })
+                .show();
+        return true;
     }
 }

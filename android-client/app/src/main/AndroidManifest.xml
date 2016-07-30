@@ -41,7 +41,7 @@
 
         <activity
             android:name=".LocationActivity"
-            android:label="@string/title_activity_location" >
+            android:label="@string/title_activity_location">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.njsm.stocks.MainActivity" />

@@ -15,6 +15,7 @@ public class SqlFoodItemTable {
     public static final String DROP;
     public static final String CLEAR;
     public static final String SELECT_ALL;
+    public static final String SELECT_AGGREGATED_MIN_DATE;
 
     static {
         NAME = "Food_item";
@@ -40,5 +41,12 @@ public class SqlFoodItemTable {
         DROP = "DROP TABLE IF EXISTS " + NAME;
         CLEAR = "DELETE FROM " + NAME;
         SELECT_ALL = "SELECT * FROM " + NAME;
+        SELECT_AGGREGATED_MIN_DATE =
+                "SELECT i._id, f.name as name ,count(*) as amount ,i." + COL_EAT_BY + " as date " +
+                "FROM Food f, " + NAME + " i " +
+                "WHERE i." + COL_STORED_IN + "=? and f._id=i." + COL_OF_TYPE + " " +
+                "GROUP BY name " +
+                "HAVING i." + COL_EAT_BY + " = MIN(i." + COL_EAT_BY + ")" +
+                "ORDER BY date ASC;";
     }
 }

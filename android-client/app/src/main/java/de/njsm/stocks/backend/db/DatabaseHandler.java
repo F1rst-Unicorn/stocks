@@ -18,7 +18,7 @@ import de.njsm.stocks.backend.network.SyncTask;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
-    public static final int DATABASE_VERSION = 14;
+    public static final int DATABASE_VERSION = 15;
     public static final String DATABASE_NAME = "stocks.db";
 
     protected Context mContext;

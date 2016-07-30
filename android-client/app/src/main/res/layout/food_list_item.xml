@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Paprika"
+        android:id="@+id/item_food_name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@id/item_food_name"
+        android:paddingTop="4dp"
+        android:text="@string/text_amount"
+        android:id="@+id/amount_string"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@id/item_food_name"
+        android:layout_toRightOf="@id/amount_string"
+        android:paddingTop="4dp"
+        android:text="5"
+        android:id="@+id/item_food_amount" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@id/item_food_name"
+        android:layout_alignParentEnd="true"
+        android:paddingTop="4dp"
+        android:text="01.01.2018"
+        android:id="@+id/item_food_date"
+        android:layout_gravity="right"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_alarm_black_24dp"
+        android:layout_toLeftOf="@id/item_food_date"
+        android:layout_below="@id/item_food_name"
+        android:paddingRight="4dp"
+        />
+
+
+</RelativeLayout>
