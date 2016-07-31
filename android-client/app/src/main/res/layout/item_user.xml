@@ -4,21 +4,20 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/item_user_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:src="@drawable/ic_person_black_24dp"
-        android:id="@+id/item_icon"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
         android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
 
     <TextView
+        android:id="@+id/item_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/item_name"
+
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
         android:paddingStart="?android:attr/listPreferredItemPaddingStart"

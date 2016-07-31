@@ -3,13 +3,11 @@ package de.njsm.stocks;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,19 +65,19 @@ public class FoodFragment extends ListFragment implements
 
         String[] sourceName = {"date", "location", "user", "device"};
         int[] destIds = {
-                R.id.item_item_date,
-                R.id.item_item_location,
-                R.id.item_item_user,
-                R.id.item_item_device};
+                R.id.item_food_item_date,
+                R.id.item_food_item_location,
+                R.id.item_food_item_user,
+                R.id.item_food_item_device};
 
         mAdapter = new FoodItemCursorAdapter(
                 getActivity(),
-                R.layout.food_item_list_item,
+                R.layout.item_food_item,
                 null,
                 sourceName,
                 destIds,
                 0,
-                R.id.item_item_icon
+                R.id.item_food_item_icon
         );
         mAdapter.setViewBinder(this);
 

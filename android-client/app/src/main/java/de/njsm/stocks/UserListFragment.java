@@ -50,11 +50,11 @@ public class UserListFragment extends ListFragment
         super.onActivityCreated(savedInstanceState);
 
         String[] sourceName = {SqlUserTable.COL_NAME};
-        int[] destIds = {R.id.item_name};
+        int[] destIds = {R.id.item_user_name};
 
         mAdapter = new SimpleCursorAdapter(
                 getActivity(),
-                R.layout.icon_list_item,
+                R.layout.item_user,
                 null,
                 sourceName,
                 destIds,

@@ -25,7 +25,6 @@ import java.util.Locale;
 
 import de.njsm.stocks.adapters.FoodItemCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
-import de.njsm.stocks.backend.db.data.SqlLocationTable;
 
 public class FoodListFragment extends ListFragment implements
         AbsListView.OnScrollListener,
@@ -67,16 +66,16 @@ public class FoodListFragment extends ListFragment implements
         super.onActivityCreated(savedInstanceState);
 
         String[] sourceName = {"name", "amount", "date"};
-        int[] destIds = {R.id.item_food_name, R.id.item_food_amount, R.id.item_food_date};
+        int[] destIds = {R.id.item_food_outline_name, R.id.item_food_outline_count, R.id.item_food_outline_date};
 
         mAdapter = new FoodItemCursorAdapter(
                 getActivity(),
-                R.layout.food_list_item,
+                R.layout.item_food_outline,
                 null,
                 sourceName,
                 destIds,
                 0,
-                R.id.item_food_icon
+                R.id.item_food_outline_icon
         );
         mAdapter.setViewBinder(this);
 

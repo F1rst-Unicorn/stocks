@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:orientation="vertical"
     android:paddingLeft="@dimen/list_item_padding"
     android:paddingRight="@dimen/list_item_padding"
@@ -9,55 +10,63 @@
     android:paddingBottom="@dimen/list_item_padding">
 
     <TextView
+        android:id="@+id/item_food_outline_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Paprika"
-        android:id="@+id/item_food_name" />
+
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:id="@+id/amount_string"
+        android:id="@+id/item_food_outline_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@id/item_food_name"
+
+        style="@style/StocksTheme.TextSmall"
+        android:layout_below="@id/item_food_outline_name"
         android:paddingTop="4dp"
-        android:paddingEnd="4dp"
-        android:text="@string/text_amount"
-        />
+        android:text="@string/text_amount" />
 
     <TextView
+        android:id="@+id/item_food_outline_colon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@id/item_food_name"
-        android:layout_toEndOf="@id/amount_string"
+
+        style="@style/StocksTheme.TextSmall"
+        android:text=":"
+        android:layout_below="@id/item_food_outline_name"
+        android:layout_toEndOf="@id/item_food_outline_amount"
         android:paddingTop="4dp"
-        android:text="5"
-        android:id="@+id/item_food_amount" />
+        android:paddingEnd="@dimen/list_item_padding" />
+
+    <TextView
+        android:id="@+id/item_food_outline_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        style="@style/StocksTheme.TextSmall"
+        android:layout_below="@id/item_food_outline_name"
+        android:layout_toEndOf="@id/item_food_outline_colon"
+        android:paddingTop="4dp" />
 
     <ImageView
-        android:id="@+id/item_food_icon"
+        android:id="@+id/item_food_outline_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:src="@drawable/ic_alarm_black_24dp"
         android:layout_gravity="end"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/item_food_name"
-        />
+        android:layout_below="@id/item_food_outline_name" />
 
     <TextView
-        android:id="@+id/item_food_date"
+        android:id="@+id/item_food_outline_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_below="@id/item_food_name"
+        android:layout_below="@id/item_food_outline_name"
         android:paddingTop="4dp"
         android:paddingEnd="4dp"
-        android:text="01.01.2018"
-        android:layout_toStartOf="@id/item_food_icon"/>
-
-
-
+        android:layout_toStartOf="@id/item_food_outline_icon"/>
 
 </RelativeLayout>

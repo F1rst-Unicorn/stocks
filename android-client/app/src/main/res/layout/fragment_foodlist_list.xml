@@ -10,4 +10,4 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="de.njsm.stocks.FoodListFragment"
-    tools:listitem="@layout/food_list_item" />
+    tools:listitem="@layout/item_food_outline" />
