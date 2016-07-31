@@ -25,16 +25,15 @@ import java.util.Locale;
 
 import de.njsm.stocks.adapters.FoodItemCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
-import de.njsm.stocks.backend.db.data.SqlLocationTable;
 
-public class FoodListFragment extends ListFragment implements
+public class FoodFragment extends ListFragment implements
         AbsListView.OnScrollListener,
         LoaderManager.LoaderCallbacks<Cursor>,
         SimpleCursorAdapter.ViewBinder{
 
-    public static final String KEY_ID = "de.njsm.stocks.FoodListFragment.id";
+    public static final String KEY_ID = "de.njsm.stocks.FoodFragment.id";
 
-    protected int mLocationId;
+    protected int mFoodId;
 
     protected ListView mList;
     protected SwipeRefreshLayout mSwiper;
@@ -42,10 +41,10 @@ public class FoodListFragment extends ListFragment implements
     protected Cursor mCursor;
     protected SimpleCursorAdapter mAdapter;
 
-    public static FoodListFragment newInstance(int aLocationId) {
-        FoodListFragment fragment = new FoodListFragment();
+    public static FoodFragment newInstance(int aFoodId) {
+        FoodFragment fragment = new FoodFragment();
         Bundle args = new Bundle();
-        args.putInt(KEY_ID, aLocationId);
+        args.putInt(KEY_ID, aFoodId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,8 +55,8 @@ public class FoodListFragment extends ListFragment implements
                              Bundle savedInstanceState) {
         View result = super.onCreateView(inflater, container, savedInstanceState);
 
-        mLocationId = getArguments().getInt(KEY_ID, 0);
-        mSwiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.location_swipe);
+        mFoodId = getArguments().getInt(KEY_ID, 0);
+        mSwiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.food_swipe);
 
         return result;
     }
@@ -66,17 +65,21 @@ public class FoodListFragment extends ListFragment implements
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        String[] sourceName = {"name", "amount", "date"};
-        int[] destIds = {R.id.item_food_name, R.id.item_food_amount, R.id.item_food_date};
+        String[] sourceName = {"date", "location", "user", "device"};
+        int[] destIds = {
+                R.id.item_item_date,
+                R.id.item_item_location,
+                R.id.item_item_user,
+                R.id.item_item_device};
 
         mAdapter = new FoodItemCursorAdapter(
                 getActivity(),
-                R.layout.food_list_item,
+                R.layout.food_item_list_item,
                 null,
                 sourceName,
                 destIds,
                 0,
-                R.id.item_food_icon
+                R.id.item_item_icon
         );
         mAdapter.setViewBinder(this);
 
@@ -96,23 +99,6 @@ public class FoodListFragment extends ListFragment implements
         super.onStop();
         mList.setOnScrollListener(null);
         mList = null;
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        if (mCursor == null) {
-            return;
-        }
-        int lastPos = mCursor.getPosition();
-        mCursor.moveToPosition(position);
-        int foodId = mCursor.getInt(mCursor.getColumnIndex("food_id"));
-        String name = mCursor.getString(mCursor.getColumnIndex("name"));
-        mCursor.moveToPosition(lastPos);
-
-        Intent i = new Intent(getActivity(), FoodActivity.class);
-        i.putExtra(FoodActivity.KEY_ID, foodId);
-        i.putExtra(FoodActivity.KEY_NAME, name);
-        startActivity(i);
     }
 
     @Override
@@ -138,13 +124,13 @@ public class FoodListFragment extends ListFragment implements
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = Uri.withAppendedPath(
                 StocksContentProvider.baseUri,
-                StocksContentProvider.foodItemLocation);
+                StocksContentProvider.foodItemType);
 
         return new CursorLoader(
                 getActivity(),
                 uri,
                 null, null,
-                new String[] {String.valueOf(mLocationId)},
+                new String[] {String.valueOf(mFoodId)},
                 null);
 
     }
@@ -184,7 +170,7 @@ public class FoodListFragment extends ListFragment implements
     }
 
     private CharSequence prettyPrint(Date date) {
-        Date now = new Date();
-        return DateUtils.getRelativeTimeSpanString(date.getTime(), now.getTime(), 0L, DateUtils.FORMAT_ABBREV_ALL);
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy", Locale.US);
+        return format.format(date);
     }
 }

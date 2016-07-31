@@ -7,6 +7,7 @@
     <string name="title_connection_setup">Connection Setup</string>
     <string name="title_settings">Settings</string>
     <string name="title_activity_location">LocationActivity</string>
+    <string name="title_activity_food">FoodActivity</string>
     <string name="title_delete_user">Remove user</string>
     <string name="title_delete_device">Remove device</string>
     <string name="title_delete_location">Remove location</string>
@@ -63,6 +64,7 @@
 
     <string name="text_show_qr_code_friend">Let your new device read this code:</string>
     <string name="text_amount">Amount: </string>
+    <string name="text_buyer">Buyer</string>
 
 
 </resources>

@@ -22,6 +22,7 @@ public class StocksContentProvider extends ContentProvider {
     public static final Uri baseUri = Uri.parse("content://de.njsm.stocks.providers.StocksContentProvider");
 
     public static final String foodItemLocation = "Food_item/by_location";
+    public static final String foodItemType = "Food_item/by_food_type";
 
     private static final UriMatcher sMatcher;
 
@@ -63,6 +64,9 @@ public class StocksContentProvider extends ContentProvider {
                 break;
             case 6:
                 result = db.rawQuery(SqlFoodItemTable.SELECT_AGGREGATED_MIN_DATE, selectionArgs);
+                break;
+            case 7:
+                result = db.rawQuery(SqlFoodItemTable.SELECT_FOOD_TYPE_ALL, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
@@ -135,5 +139,6 @@ public class StocksContentProvider extends ContentProvider {
         sMatcher.addURI(AUTHORITY, SqlUpdateTable.NAME, 5);
 
         sMatcher.addURI(AUTHORITY, foodItemLocation, 6);
+        sMatcher.addURI(AUTHORITY, foodItemType, 7);
     }
 }
