@@ -6,11 +6,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 
 import de.njsm.stocks.backend.network.AsyncTaskCallback;
+import de.njsm.stocks.backend.network.SwipeSyncCallback;
 import de.njsm.stocks.backend.network.SyncTask;
 
-public class LocationActivity extends AppCompatActivity
-        implements SwipeRefreshLayout.OnRefreshListener,
-        AsyncTaskCallback{
+public class LocationActivity extends AppCompatActivity {
 
     public static final String KEY_LOCATION_ID = "de.njsm.stocks.LocationActivity.id";
     public static final String KEY_LOCATION_NAME = "de.njsm.stocks.LocationActivity.name";
@@ -29,7 +28,7 @@ public class LocationActivity extends AppCompatActivity
         mId = getIntent().getExtras().getInt(KEY_LOCATION_ID);
 
         mSwiper = (SwipeRefreshLayout) findViewById(R.id.location_swipe);
-        mSwiper.setOnRefreshListener(this);
+        mSwiper.setOnRefreshListener(new SwipeSyncCallback(mSwiper, this));
 
         setTitle(mLocation);
 
@@ -38,21 +37,5 @@ public class LocationActivity extends AppCompatActivity
                 .replace(R.id.location_content, listFragment)
                 .commit();
 
-    }
-
-    @Override
-    public void onRefresh() {
-        SyncTask task = new SyncTask(this, this);
-        task.execute();
-    }
-
-    @Override
-    public void onAsyncTaskStart() {
-        mSwiper.setRefreshing(true);
-    }
-
-    @Override
-    public void onAsyncTaskComplete() {
-        mSwiper.setRefreshing(false);
     }
 }

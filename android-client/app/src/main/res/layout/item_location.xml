@@ -5,17 +5,17 @@
     android:padding="@dimen/list_item_padding">
 
     <ImageView
-        android:id="@+id/item_user_icon"
+        android:id="@+id/item_location_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:src="@drawable/ic_person_black_24dp"
+        android:src="@drawable/ic_account_balance_wallet_black_24dp"
         android:gravity="center_vertical"
         android:paddingStart="?android:attr/listPreferredItemPaddingStart"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
 
     <TextView
-        android:id="@+id/item_user_name"
+        android:id="@+id/item_location_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 

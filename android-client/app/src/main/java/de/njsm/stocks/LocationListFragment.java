@@ -54,11 +54,11 @@ public class LocationListFragment extends ListFragment
         super.onActivityCreated(savedInstanceState);
 
         String[] sourceName = {SqlLocationTable.COL_NAME};
-        int[] destIds = {android.R.id.text1};
+        int[] destIds = {R.id.item_location_name};
 
         mAdapter = new SimpleCursorAdapter(
                 getActivity(),
-                android.R.layout.simple_list_item_1,
+                R.layout.item_location,
                 null,
                 sourceName,
                 destIds,

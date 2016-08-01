@@ -8,13 +8,14 @@
             android:icon="@drawable/ic_view_list_black_24dp"
             android:title="@string/action_outline" />
         <item
-            android:id="@+id/users"
-            android:icon="@drawable/ic_people_black_24dp"
-            android:title="@string/action_users"/>
-        <item
             android:id="@+id/locations"
             android:icon="@drawable/ic_account_balance_wallet_black_24dp"
             android:title="@string/action_locations"/>
+
+        <item
+            android:id="@+id/users"
+            android:icon="@drawable/ic_people_black_24dp"
+            android:title="@string/action_users"/>
 
     </group>
 

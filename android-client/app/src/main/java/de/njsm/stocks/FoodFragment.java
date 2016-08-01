@@ -33,7 +33,6 @@ public class FoodFragment extends ListFragment implements
 
     protected int mFoodId;
 
-    protected ListView mList;
     protected SwipeRefreshLayout mSwiper;
 
     protected Cursor mCursor;
@@ -54,7 +53,6 @@ public class FoodFragment extends ListFragment implements
         View result = super.onCreateView(inflater, container, savedInstanceState);
 
         mFoodId = getArguments().getInt(KEY_ID, 0);
-        mSwiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.food_swipe);
 
         return result;
     }
@@ -88,16 +86,18 @@ public class FoodFragment extends ListFragment implements
     @Override
     public void onStart() {
         super.onStart();
-        mList = getListView();
-        mList.setOnScrollListener(this);
+        mSwiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.food_swipe);
+        getListView().setOnScrollListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mList.setOnScrollListener(null);
-        mList = null;
+        getListView().setOnScrollListener(null);
+        mSwiper = null;
     }
+
+
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -107,11 +107,12 @@ public class FoodFragment extends ListFragment implements
     public void onScroll(AbsListView view, int firstVisibleItem,
                          int visibleItemCount, int totalItemCount) {
         boolean enable = false;
-        if(mList != null && mList.getChildCount() > 0){
+        ListView list = getListView();
+        if(list != null && list.getChildCount() > 0){
             // check if the first item of the mList is visible
-            boolean firstItemVisible = mList.getFirstVisiblePosition() == 0;
+            boolean firstItemVisible = list.getFirstVisiblePosition() == 0;
             // check if the top of the first item is visible
-            boolean topOfFirstItemVisible = mList.getChildAt(0).getTop() == 0;
+            boolean topOfFirstItemVisible = list.getChildAt(0).getTop() == 0;
             // enabling or disabling the refresh layout
             enable = firstItemVisible && topOfFirstItemVisible;
         }

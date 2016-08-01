@@ -27,6 +27,7 @@ import de.njsm.stocks.backend.network.AsyncTaskCallback;
 import de.njsm.stocks.backend.network.NewLocationTask;
 import de.njsm.stocks.backend.network.NewUserTask;
 import de.njsm.stocks.backend.network.ServerManager;
+import de.njsm.stocks.backend.network.SwipeSyncCallback;
 import de.njsm.stocks.backend.network.SyncTask;
 import de.njsm.stocks.setup.SetupActivity;
 import de.njsm.stocks.setup.SetupFinishedListener;
@@ -34,9 +35,7 @@ import de.njsm.stocks.setup.SetupTask;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-                   SetupFinishedListener,
-                   SwipeRefreshLayout.OnRefreshListener,
-        AsyncTaskCallback {
+                   SetupFinishedListener {
 
     protected DrawerLayout drawer;
     protected View content;
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity
 
         swiper = (SwipeRefreshLayout) findViewById(R.id.swipe_overlay);
         assert swiper != null;
-        swiper.setOnRefreshListener(this);
+        swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, this));
 
         content = findViewById(R.id.main_content);
         usersFragment = new UserListFragment();
@@ -121,16 +120,6 @@ public class MainActivity extends AppCompatActivity
             navigationView.setCheckedItem(R.id.users);
         }
 
-    }
-
-    @Override
-    public void onAsyncTaskStart() {
-        swiper.setRefreshing(true);
-    }
-
-    @Override
-    public void onAsyncTaskComplete() {
-        swiper.setRefreshing(false);
     }
 
     @Override
@@ -209,12 +198,6 @@ public class MainActivity extends AppCompatActivity
         if (view != null) {
             view.setText(prefs.getString(Config.deviceNameConfig, ""));
         }
-    }
-
-    @Override
-    public void onRefresh() {
-        SyncTask task = new SyncTask(this, this);
-        task.execute();
     }
 
     public void addEntity(View view) {
