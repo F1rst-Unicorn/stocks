@@ -35,6 +35,7 @@
     <string name="hint_fingerprint">Fingerprint</string>
     <string name="hint_ticket">Ticket</string>
     <string name="hint_location">Location</string>
+    <string name="hint_food">Food name</string>
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>
@@ -56,6 +57,7 @@
     <string name="dialog_new_device">Create new device</string>
     <string name="dialog_new_user">Create new user</string>
     <string name="dialog_new_location">Create new location</string>
+    <string name="dialog_new_food">Create new food</string>
     <string name="dialog_delete_format">Do you want to remove "%s"?</string>
 
     <string name="error_no_server_name">No server name set</string>

@@ -22,8 +22,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import de.njsm.stocks.backend.data.Food;
 import de.njsm.stocks.backend.data.Location;
 import de.njsm.stocks.backend.network.AsyncTaskCallback;
+import de.njsm.stocks.backend.network.NewFoodTask;
 import de.njsm.stocks.backend.network.NewLocationTask;
 import de.njsm.stocks.backend.network.NewUserTask;
 import de.njsm.stocks.backend.network.ServerManager;
@@ -38,7 +40,6 @@ public class MainActivity extends AppCompatActivity
                    SetupFinishedListener {
 
     protected DrawerLayout drawer;
-    protected View content;
     protected SwipeRefreshLayout swiper;
     protected NavigationView navigationView;
 
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity
         assert swiper != null;
         swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, this));
 
-        content = findViewById(R.id.main_content);
         usersFragment = new UserListFragment();
         locationsFragment = new LocationListFragment();
         outlineFragment = new OutlineFragment();
@@ -152,24 +152,19 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         Fragment f;
-        FloatingActionButton fab = ((FloatingActionButton) findViewById(R.id.fab));
-        assert fab != null;
 
         switch (item.getItemId()) {
             case R.id.users:
                 f = usersFragment;
-                fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
                 break;
             case R.id.locations:
                 f = locationsFragment;
-                fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
                 break;
             case R.id.settings:
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
             default:
                 f = outlineFragment;
-                fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_local_dining_white_24dp));
         }
 
         getFragmentManager().beginTransaction()
@@ -230,6 +225,24 @@ public class MainActivity extends AppCompatActivity
                             String name = textField.getText().toString().trim();
                             NewLocationTask task = new NewLocationTask(MainActivity.this);
                             task.execute(new Location(0, name));
+                        }
+                    })
+                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    })
+                    .show();
+        } else {
+            final EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
+            textField.setHint(getResources().getString(R.string.hint_food));
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.dialog_new_food))
+                    .setView(textField)
+                    .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            String name = textField.getText().toString().trim();
+                            NewFoodTask task = new NewFoodTask(MainActivity.this);
+                            task.execute(new Food(0, name));
                         }
                     })
                     .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {

@@ -34,6 +34,7 @@
     <string name="hint_fingerprint">Fingerprint</string>
     <string name="hint_ticket">Ticket</string>
     <string name="hint_location">Ort</string>
+    <string name="hint_food">Lebensmittel</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>
@@ -55,6 +56,7 @@
     <string name="dialog_new_device">Neues Gerät erstellen</string>
     <string name="dialog_new_user">Neuen Nutzer erstellen</string>
     <string name="dialog_new_location">Neuen Ort erstellen</string>
+    <string name="dialog_new_food">Neues Lebensmittel erstellen</string>
     <string name="dialog_delete_format">"%s" entfernen?</string>
 
     <string name="error_no_server_name">Kein Server gesetzt</string>
