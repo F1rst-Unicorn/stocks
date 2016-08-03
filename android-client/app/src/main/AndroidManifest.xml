@@ -56,7 +56,8 @@
         <activity
             android:name=".FoodActivity"
             android:label="@string/title_activity_food"
-            android:theme="@style/StocksTheme.NoActionBar"></activity>
+            android:theme="@style/StocksTheme.NoActionBar" />
+        <activity android:name=".AddFoodItemActivity"></activity>
     </application>
 
 </manifest>

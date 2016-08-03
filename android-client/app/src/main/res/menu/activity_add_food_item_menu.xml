@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/activity_add_food_item_done"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_check_white_24dp"
+        android:title="@string/action_save"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/activity_add_food_item_add_more"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_fast_forward_white_24dp"
+        android:title="@string/action_add_more"
+        app:showAsAction="ifRoom" />
+
+</menu>

@@ -1,6 +1,7 @@
 package de.njsm.stocks;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -56,9 +57,16 @@ public class FoodActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        getFragmentManager().beginTransaction()
-                .remove(mFragment)
-                .commit();
         mFragment = null;
+    }
+
+
+    public void addItem(View view) {
+        Intent i = new Intent(this, AddFoodItemActivity.class);
+        Bundle extras = new Bundle();
+        extras.putInt(AddFoodItemActivity.KEY_ID, mId);
+        extras.putString(AddFoodItemActivity.KEY_FOOD, mName);
+        i.putExtras(extras);
+        startActivity(i);
     }
 }

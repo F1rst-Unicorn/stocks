@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.data;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 @XmlRootElement
 public class FoodItem extends Data implements SqlAddable, SqlRemovable {
     public int id;
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss")
     public Date eatByDate;
     public int ofType;
     public int storedIn;

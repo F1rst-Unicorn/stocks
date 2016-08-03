@@ -20,6 +20,8 @@
     <string name="action_info">Über Stocks</string>
     <string name="action_refresh">Aktualisieren</string>
     <string name="action_search">Suchen</string>
+    <string name="action_save">Speichern</string>
+    <string name="action_add_more">Speichern und weiter</string>
     <string name="action_add">Hinzufügen</string>
 
     <string name="hint_servername">Server Hostname</string>
@@ -58,11 +60,13 @@
     <string name="dialog_new_location">Neuen Ort erstellen</string>
     <string name="dialog_new_food">Neues Lebensmittel erstellen</string>
     <string name="dialog_delete_format">"%s" entfernen?</string>
+    <string name="dialog_added">erfolgreich hinzugefügt</string>
 
     <string name="error_no_server_name">Kein Server gesetzt</string>
 
     <string name="text_show_qr_code_friend">Lass Dein neues Gerät diesen Code lesen:</string>
     <string name="text_amount">Menge</string>
     <string name="text_buyer">Käufer</string>
+    <string name="text_eat_by_date">Haltbarkeitsdatum:</string>
 
 </resources>
