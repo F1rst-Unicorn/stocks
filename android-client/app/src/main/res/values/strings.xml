@@ -7,11 +7,12 @@
     <string name="title_connection_setup">Connection Setup</string>
     <string name="title_settings">Settings</string>
     <string name="title_activity_location">LocationActivity</string>
-    <string name="title_activity_food">FoodActivity</string>
     <string name="title_delete_user">Remove user</string>
     <string name="title_delete_device">Remove device</string>
     <string name="title_delete_location">Remove location</string>
     <string name="title_ticket_activity">Ticket Transfer</string>
+    <string name="title_add_item">Add %s</string>
+    <string name="title_consume">Consume</string>
 
     <string name="action_outline">Outline</string>
     <string name="action_users">Users</string>
@@ -61,7 +62,9 @@
     <string name="dialog_new_location">Create new location</string>
     <string name="dialog_new_food">Create new food</string>
     <string name="dialog_delete_format">Do you want to remove "%s"?</string>
+    <string name="dialog_eat_format">Do you want to eat "%s"?</string>
     <string name="dialog_added">added successfully</string>
+    <string name="dialog_undo">undo</string>
 
     <string name="error_no_server_name">No server name set</string>
 

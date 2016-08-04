@@ -3,18 +3,12 @@ package de.njsm.stocks;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import de.njsm.stocks.backend.network.AsyncTaskCallback;
 import de.njsm.stocks.backend.network.SwipeSyncCallback;
-import de.njsm.stocks.backend.network.SyncTask;
 
 public class FoodActivity extends AppCompatActivity {
 
@@ -39,7 +33,7 @@ public class FoodActivity extends AppCompatActivity {
         mSwiper = (SwipeRefreshLayout) findViewById(R.id.food_swipe);
         mSwiper.setOnRefreshListener(new SwipeSyncCallback(mSwiper, this));
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_food_toolbar);
         setSupportActionBar(toolbar);
         setTitle(mName);
 
@@ -62,6 +56,7 @@ public class FoodActivity extends AppCompatActivity {
 
 
     public void addItem(View view) {
+
         Intent i = new Intent(this, AddFoodItemActivity.class);
         Bundle extras = new Bundle();
         extras.putInt(AddFoodItemActivity.KEY_ID, mId);

@@ -3,11 +3,13 @@ package de.njsm.stocks;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +24,13 @@ import java.util.Date;
 import java.util.Locale;
 
 import de.njsm.stocks.adapters.FoodItemCursorAdapter;
+import de.njsm.stocks.backend.data.FoodItem;
+import de.njsm.stocks.backend.data.Location;
 import de.njsm.stocks.backend.db.StocksContentProvider;
+import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
+import de.njsm.stocks.backend.db.data.SqlLocationTable;
+import de.njsm.stocks.backend.network.DeleteItemTask;
+import de.njsm.stocks.backend.network.DeleteLocationTask;
 
 public class FoodFragment extends ListFragment implements
         AbsListView.OnScrollListener,
@@ -97,7 +105,32 @@ public class FoodFragment extends ListFragment implements
         mSwiper = null;
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        if (mCursor == null) {
+            return;
+        }
+        int lastPos = mCursor.getPosition();
+        mCursor.moveToPosition(position);
+        final int itemId = mCursor.getInt(mCursor.getColumnIndex(SqlFoodItemTable.COL_ID));
+        mCursor.moveToPosition(lastPos);
 
+        String message = String.format(getResources().getString(R.string.dialog_eat_format),
+                getActivity().getTitle());
+        new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.title_consume))
+                .setMessage(message)
+                .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        DeleteItemTask task = new DeleteItemTask(getActivity());
+                        task.execute(new FoodItem(itemId, null, 0,0,0,0));
+                    }
+                })
+                .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {}
+                })
+                .show();
+    }
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {

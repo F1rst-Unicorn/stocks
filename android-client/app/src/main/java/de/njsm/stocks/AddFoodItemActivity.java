@@ -3,7 +3,6 @@ package de.njsm.stocks;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -45,7 +44,9 @@ public class AddFoodItemActivity extends AppCompatActivity implements
         mFood = extras.getString(KEY_FOOD);
         mId = extras.getInt(KEY_ID);
 
-        setTitle(mFood);
+        setTitle(String.format(
+                getResources().getString(R.string.title_add_item),
+                mFood));
 
         String[] from = {SqlLocationTable.COL_NAME};
         int[] to = {R.id.item_location_name};

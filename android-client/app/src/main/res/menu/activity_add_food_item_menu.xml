@@ -12,7 +12,7 @@
     <item
         android:id="@+id/activity_add_food_item_add_more"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_fast_forward_white_24dp"
+        android:icon="@drawable/ic_done_all_white_24dp"
         android:title="@string/action_add_more"
         app:showAsAction="ifRoom" />
 

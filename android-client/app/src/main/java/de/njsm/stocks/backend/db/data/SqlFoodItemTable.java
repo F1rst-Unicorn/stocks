@@ -57,6 +57,7 @@ public class SqlFoodItemTable {
                         "i." + COL_OF_TYPE + " = f._id AND " +
                         "i." + COL_BUYS + " = u._id AND " +
                         "i." + COL_REGISTERS + " = d._id AND " +
-                        "i." + COL_STORED_IN + " = l._id";
+                        "i." + COL_STORED_IN + " = l._id " +
+                "ORDER BY date ASC";
     }
 }
