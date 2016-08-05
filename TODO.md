@@ -5,6 +5,7 @@
 
 ## Android
 * Add settings (server name,...)
+* Add searching food
 
 ## General
 * Store EAN Food IDs in database
@@ -24,6 +25,3 @@
 
 ## Sentry
 * First access to database crashes due to driver not found
-
-## Android
-* Food is not removed in FoodListFragment if removed in FoodActivity

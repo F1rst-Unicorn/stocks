@@ -1,6 +1,7 @@
 package de.njsm.stocks.backend.db;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -88,22 +89,38 @@ public class StocksContentProvider extends ContentProvider {
     public int bulkInsert(@NonNull Uri uri,
                           @NonNull ContentValues[] values) {
         final int match = sMatcher.match(uri);
+        final ContentResolver resolver = getContext().getContentResolver();
+        Uri uri6 = Uri.withAppendedPath(baseUri, foodItemLocation);
+        Uri uri7 = Uri.withAppendedPath(baseUri, foodItemType);
+        Uri uri8 = Uri.withAppendedPath(baseUri, emptyFood);
+        Uri uri9 = Uri.withAppendedPath(baseUri, eatSoon);
+
 
         switch (match) {
             case 0:
                 mHandler.writeUsers(values);
+                resolver.notifyChange(uri7, null);
                 break;
             case 1:
                 mHandler.writeDevices(values);
+                resolver.notifyChange(uri7, null);
                 break;
             case 2:
                 mHandler.writeLocations(values);
+                resolver.notifyChange(uri7, null);
                 break;
             case 3:
                 mHandler.writeFood(values);
+                resolver.notifyChange(uri6, null);
+                resolver.notifyChange(uri7, null);
+                resolver.notifyChange(uri8, null);
+                resolver.notifyChange(uri9, null);
                 break;
             case 4:
                 mHandler.writeItems(values);
+                resolver.notifyChange(uri6, null);
+                resolver.notifyChange(uri8, null);
+                resolver.notifyChange(uri9, null);
                 break;
             case 5:
                 mHandler.writeUpdates(values);
@@ -111,7 +128,7 @@ public class StocksContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        resolver.notifyChange(uri, null);
         return values.length;
     }
 
