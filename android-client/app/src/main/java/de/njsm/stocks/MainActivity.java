@@ -251,6 +251,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showAllFood(View view) {
+        Intent i = new Intent(this, EatSoonActivity.class);
+        startActivity(i);
     }
 
     public void showMissingFood(View view) {

@@ -60,7 +60,8 @@
         <activity
             android:name=".TestActivity"
             android:theme="@style/StocksTheme.NoActionBar" />
-        <activity android:name=".EmptyFoodActivity"></activity>
+        <activity android:name=".EmptyFoodActivity" />
+        <activity android:name=".EatSoonActivity" />
     </application>
 
 </manifest>
