@@ -13,6 +13,7 @@
     <string name="title_ticket_activity">Tickettransfer</string>
     <string name="title_add_item">%s hinzufügen</string>
     <string name="title_consume">Konsumieren</string>
+    <string name="title_delete_food">Essen entfernen?</string>
 
     <string name="action_outline">Übersicht</string>
     <string name="action_users">Benutzer</string>
@@ -25,6 +26,7 @@
     <string name="action_save">Speichern</string>
     <string name="action_add_more">Speichern und weiter</string>
     <string name="action_add">Hinzufügen</string>
+    <string name="action_remove">Entfernen</string>
 
     <string name="hint_servername">Server Hostname</string>
     <string name="hint_expert">Expertenoptionen</string>
@@ -65,6 +67,7 @@
     <string name="dialog_eat_format">"%s" essen?</string>
     <string name="dialog_added">erfolgreich hinzugefügt</string>
     <string name="dialog_undo">Rückgängig</string>
+    <string name="dialog_delete_food">%s als Essenskategorie entfernen?</string>
 
     <string name="error_no_server_name">Kein Server gesetzt</string>
 

@@ -1,13 +1,21 @@
 package de.njsm.stocks;
 
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
+import de.njsm.stocks.backend.data.Food;
+import de.njsm.stocks.backend.data.FoodItem;
+import de.njsm.stocks.backend.network.DeleteFoodTask;
+import de.njsm.stocks.backend.network.DeleteItemTask;
 import de.njsm.stocks.backend.network.SwipeSyncCallback;
 
 public class FoodActivity extends AppCompatActivity {
@@ -46,6 +54,40 @@ public class FoodActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction()
                 .replace(R.id.food_content, mFragment)
                 .commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_food_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.activity_food_menu_delete:
+                String message = String.format(getResources().getString(R.string.dialog_delete_food),
+                        getTitle());
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.title_delete_food))
+                        .setMessage(message)
+                        .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                (new DeleteFoodTask(FoodActivity.this)).execute(new Food(mId, mName));
+                                onBackPressed();
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+
+                break;
+            default:
+        }
+        return true;
     }
 
     @Override

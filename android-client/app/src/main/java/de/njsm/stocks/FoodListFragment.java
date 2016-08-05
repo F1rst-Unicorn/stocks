@@ -78,9 +78,8 @@ public class FoodListFragment extends ListFragment implements
                 R.id.item_food_outline_icon
         );
         mAdapter.setViewBinder(this);
-
-        setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
+        setListAdapter(mAdapter);
     }
 
     @Override
@@ -88,6 +87,7 @@ public class FoodListFragment extends ListFragment implements
         super.onStart();
         mList = getListView();
         mList.setOnScrollListener(this);
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override

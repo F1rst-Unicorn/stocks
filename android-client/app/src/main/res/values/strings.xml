@@ -13,6 +13,7 @@
     <string name="title_ticket_activity">Ticket Transfer</string>
     <string name="title_add_item">Add %s</string>
     <string name="title_consume">Consume</string>
+    <string name="title_delete_food">Remove food?</string>
 
     <string name="action_outline">Outline</string>
     <string name="action_users">Users</string>
@@ -25,6 +26,7 @@
     <string name="action_save">Save</string>
     <string name="action_add_more">Add more</string>
     <string name="action_add">Add</string>
+    <string name="action_remove">Remove</string>
 
     <string name="hint_servername">Server host name</string>
     <string name="hint_expert">Expert options</string>
@@ -65,6 +67,7 @@
     <string name="dialog_eat_format">Do you want to eat "%s"?</string>
     <string name="dialog_added">added successfully</string>
     <string name="dialog_undo">undo</string>
+    <string name="dialog_delete_food">Remove %s as food category?</string>
 
     <string name="error_no_server_name">No server name set</string>
 
@@ -72,7 +75,6 @@
     <string name="text_amount">Amount</string>
     <string name="text_buyer">Buyer</string>
     <string name="text_eat_by_date">Date of expiry:</string>
-
 
 
 </resources>

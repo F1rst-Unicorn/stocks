@@ -4,13 +4,7 @@
 * Add emitting QR codes 
 
 ## Android
-* Interact with Content Provider
 * Add settings (server name,...)
-* Change Icons in ActionBar
-* Support adding devices with ticket displaying
-* Support user searching
-* Support device removal
-* Think of food display structure
 
 ## General
 * Store EAN Food IDs in database
@@ -30,3 +24,6 @@
 
 ## Sentry
 * First access to database crashes due to driver not found
+
+## Android
+* Food is not removed in FoodListFragment if removed in FoodActivity

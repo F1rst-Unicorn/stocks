@@ -3,9 +3,10 @@ package de.njsm.stocks.backend.network;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import de.njsm.stocks.backend.data.Food;
 import de.njsm.stocks.backend.data.FoodItem;
 
-public class DeleteFoodTask extends AsyncTask<FoodItem, Void, Integer> {
+public class DeleteFoodTask extends AsyncTask<Food, Void, Integer> {
 
     public Context c;
 
@@ -16,13 +17,13 @@ public class DeleteFoodTask extends AsyncTask<FoodItem, Void, Integer> {
     }
 
     @Override
-    protected Integer doInBackground(FoodItem... params) {
+    protected Integer doInBackground(Food... params) {
 
         if (android.os.Debug.isDebuggerConnected()) {
             android.os.Debug.waitForDebugger();
         }
 
-        ServerManager.m.removeItem(params[0]);
+        ServerManager.m.removeFood(params[0]);
 
         return 0;
     }
