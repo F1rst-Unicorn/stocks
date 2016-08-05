@@ -10,7 +10,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/StocksTheme">
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -22,14 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".setup.SetupActivity" />
-
         <activity
             android:name=".UserActivity"
             android:launchMode="singleTop"
             android:theme="@style/StocksTheme.NoActionBar" />
-
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_settings">
@@ -37,7 +33,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.njsm.stocks.MainActivity" />
         </activity>
-
         <activity
             android:name=".LocationActivity"
             android:label="@string/title_activity_location">
@@ -45,7 +40,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.njsm.stocks.MainActivity" />
         </activity>
-
         <activity
             android:name=".QrCodeDisplayActivity"
             android:label="@string/title_ticket_activity">
@@ -62,12 +56,11 @@
         <activity
             android:name=".FoodActivity"
             android:theme="@style/StocksTheme.NoActionBar" />
-
         <activity android:name=".AddFoodItemActivity" />
-
         <activity
             android:name=".TestActivity"
             android:theme="@style/StocksTheme.NoActionBar" />
+        <activity android:name=".EmptyFoodActivity"></activity>
     </application>
 
 </manifest>

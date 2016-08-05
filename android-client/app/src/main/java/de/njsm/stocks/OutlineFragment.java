@@ -18,4 +18,6 @@ public class OutlineFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_outline, container, false);
     }
 
+
+
 }

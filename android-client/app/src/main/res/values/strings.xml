@@ -27,6 +27,8 @@
     <string name="action_add_more">Add more</string>
     <string name="action_add">Add</string>
     <string name="action_remove">Remove</string>
+    <string name="action_missing_food">Missing food</string>
+    <string name="action_eat_next">What to eat next</string>
 
     <string name="hint_servername">Server host name</string>
     <string name="hint_expert">Expert options</string>

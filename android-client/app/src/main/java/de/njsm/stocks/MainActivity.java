@@ -249,4 +249,12 @@ public class MainActivity extends AppCompatActivity
                     .show();
         }
     }
+
+    public void showAllFood(View view) {
+    }
+
+    public void showMissingFood(View view) {
+        Intent i = new Intent(this, EmptyFoodActivity.class);
+        startActivity(i);
+    }
 }

@@ -27,6 +27,8 @@
     <string name="action_add_more">Speichern und weiter</string>
     <string name="action_add">Hinzufügen</string>
     <string name="action_remove">Entfernen</string>
+    <string name="action_missing_food">Fehlende Lebensmittel</string>
+    <string name="action_eat_next">Was bald abläuft</string>
 
     <string name="hint_servername">Server Hostname</string>
     <string name="hint_expert">Expertenoptionen</string>
