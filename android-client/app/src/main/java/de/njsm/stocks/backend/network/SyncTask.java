@@ -54,22 +54,32 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
         Update[] serverUpdates = ServerManager.m.getUpdates();
         Update[] localUpdates = getUpdates();
 
-        if (serverUpdates.length == 0 ||
-                localUpdates.length == 0) {
+        if (serverUpdates.length == 0) {
             Log.e(Config.log, "Array is empty " + serverUpdates.length + ", " +
                 localUpdates.length);
             return 0;
         }
-
-        for (int i = 0; i < serverUpdates.length; i++) {
-            if (serverUpdates[i].lastUpdate.after(localUpdates[i].lastUpdate)) {
-                refresh(serverUpdates[i].table);
+        if (localUpdates.length == 0) {
+            refreshAll();
+        } else {
+            for (int i = 0; i < serverUpdates.length; i++) {
+                if (serverUpdates[i].lastUpdate.after(localUpdates[i].lastUpdate)) {
+                    refresh(serverUpdates[i].table);
+                }
             }
         }
 
         writeUpdates(serverUpdates);
         Log.i(Config.log, "Sync successful");
         return 0;
+    }
+
+    private void refreshAll() {
+        refreshUsers();
+        refreshDevices();
+        refreshLocations();
+        refreshFood();
+        refreshItems();
     }
 
     protected void refresh(String table) {
