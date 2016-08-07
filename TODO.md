@@ -4,16 +4,16 @@
 * Add emitting QR codes 
 
 ## Android
-* Add settings (server name,...)
 * Add searching food
 
 ## General
-* Store EAN Food IDs in database
 * Add methods to get and clear pending tickets
 * Image support for Food
 * Remember maximum items per food to emit warnings based on thresholds
 * Add feature to move food between locations
-* Add EAN-13 numbers to food
+* Add EAN-13 code support
+
+
 
 # Open issues 
 
@@ -25,3 +25,8 @@
 
 ## Sentry
 * First access to database crashes due to driver not found
+
+
+
+# Internal
+* Add test suites
