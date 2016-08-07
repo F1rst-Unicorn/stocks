@@ -140,20 +140,24 @@ public class SqlDatabaseHandler {
         String addTicket = "INSERT INTO Ticket (ticket, belongs_device, created_on) VALUES (?,LAST_INSERT_ID(), NOW())";
         Ticket result = new Ticket();
         result.ticket = Ticket.generateTicket();
-        result.deviceId = d.id;
         Connection con = null;
 
         try {
             con = getConnection();
-            PreparedStatement sqlAddDevice = con.prepareStatement(d.getAddStmt());
+            PreparedStatement sqlAddDevice = con.prepareStatement(d.getAddStmt(), Statement.RETURN_GENERATED_KEYS);
             PreparedStatement sqlAddTicket = con.prepareStatement(addTicket);
 
             con.setAutoCommit(false);
             d.fillAddStmt(sqlAddDevice);
             sqlAddDevice.execute();
+            ResultSet keys = sqlAddDevice.getGeneratedKeys();
+            keys.next();
+            result.deviceId = keys.getInt(1);
 
             sqlAddTicket.setString(1, result.ticket);
             sqlAddTicket.execute();
+
+
             con.commit();
 
         } catch (SQLException e) {
