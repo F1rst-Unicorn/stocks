@@ -5,6 +5,11 @@
 
 ## Android
 * Add searching food
+* Switch date picker for usability
+* Pick sensible default location for items
+* Add button for full new sync
+* Add timeout between addings to prevent dropping updates
+* Only allow for one SyncTask at a time
 
 ## General
 * Add methods to get and clear pending tickets
