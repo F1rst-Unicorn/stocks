@@ -5,7 +5,6 @@
 
 ## Android
 * Add searching food
-* Switch date picker for usability
 * Pick sensible default location for items
 * Add button for full new sync
 * Add timeout between addings to prevent dropping updates

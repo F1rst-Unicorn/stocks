@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import de.njsm.stocks.backend.data.FoodItem;
 import de.njsm.stocks.backend.db.StocksContentProvider;
@@ -64,6 +65,9 @@ public class AddFoodItemActivity extends AppCompatActivity implements
 
         mSpinner = (Spinner) findViewById(R.id.activity_add_food_item_spinner);
         mSpinner.setAdapter(mAdapter);
+
+        DatePicker picker = (DatePicker) findViewById(R.id.activity_add_food_item_date);
+        picker.setMinDate((new Date()).getTime());
 
         getLoaderManager().initLoader(0, null, this);
     }
