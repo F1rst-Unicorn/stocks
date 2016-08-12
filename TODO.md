@@ -15,7 +15,6 @@
 * Image support for Food
 * Remember maximum items per food to emit warnings based on thresholds
 * Add feature to move food between locations
-* Add EAN-13 code support
 * Add history of actions
 * Add favourite food markers
 
