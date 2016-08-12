@@ -5,6 +5,10 @@
 
 ## Android
 * Add searching food
+* Add possibility to rename food and locations
+* Prevent usage of spaces in names
+* Add warning level (i.e. when to show alarm icon) setting
+* Add notifications for food to eat
 
 ## General
 * Add methods to get and clear pending tickets
@@ -13,6 +17,7 @@
 * Add feature to move food between locations
 * Add EAN-13 code support
 * Add history of actions
+* Add favourite food markers
 
 
 
