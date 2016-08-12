@@ -7,9 +7,6 @@
 * Add searching food
 * Pick sensible default location for items
 
-## Server
-* More verbose logging
-
 ## General
 * Add methods to get and clear pending tickets
 * Image support for Food
