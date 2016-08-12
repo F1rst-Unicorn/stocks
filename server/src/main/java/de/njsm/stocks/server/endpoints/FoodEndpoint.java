@@ -13,15 +13,17 @@ public class FoodEndpoint extends Endpoint {
 
     @GET
     @Produces("application/json")
-    public Data[] getFood() {
-        c.getLog().log(Level.INFO, "FoodEndpoint: Get food");
+    public Data[] getFood(@Context HttpServletRequest request) {
+        Principals uc = c.getContextFactory().getPrincipals(request);
+        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " gets food");
         return handler.get(FoodFactory.f);
     }
 
     @PUT
     @Consumes("application/json")
     public void addFood(@Context HttpServletRequest request, Food food){
-        c.getLog().log(Level.INFO, "FoodEndpoint: Adding food " + food.name);
+        Principals uc = c.getContextFactory().getPrincipals(request);
+        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " adds food " + food.name);
         handler.add(food);
     }
 
@@ -32,7 +34,9 @@ public class FoodEndpoint extends Endpoint {
                            Food food,
                            @PathParam("newname") String newName){
 
-        c.getLog().log(Level.INFO, "FoodEndpoint: Renaming food " + food.name + " -> " + newName);
+        Principals uc = c.getContextFactory().getPrincipals(request);
+        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() +
+                " renames food " + food.name + " -> " + newName);
         handler.rename(food, newName);
     }
 
@@ -42,15 +46,17 @@ public class FoodEndpoint extends Endpoint {
     public void removeFood(@Context HttpServletRequest request,
                            Food food) {
 
-        c.getLog().log(Level.INFO, "FoodEndpoint: Removing food " + food.name);
+        Principals uc = c.getContextFactory().getPrincipals(request);
+        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " removes food " + food.name);
         handler.remove(food);
     }
 
     @GET
     @Path("/fooditem")
     @Produces("application/json")
-    public Data[] getFoodItems() {
-        c.getLog().log(Level.INFO, "FoodEndpoint: Get food items");
+    public Data[] getFoodItems(@Context HttpServletRequest request) {
+        Principals uc = c.getContextFactory().getPrincipals(request);
+        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " gets food items");
         return handler.get(FoodItemFactory.f);
     }
 
@@ -61,7 +67,7 @@ public class FoodEndpoint extends Endpoint {
 
         try {
             Principals uc = c.getContextFactory().getPrincipals(request);
-            c.getLog().log(Level.INFO, "FoodEndpoint: Add food item");
+            c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " adds food item " + item.id);
             item.buys = uc.getUid();
             item.registers = uc.getDid();
             handler.add(item);
@@ -76,7 +82,8 @@ public class FoodEndpoint extends Endpoint {
     public void removeFoodItem(@Context HttpServletRequest request,
                                FoodItem item){
 
-        c.getLog().log(Level.INFO, "FoodEndpoint: Remove food item");
+        Principals uc = c.getContextFactory().getPrincipals(request);
+        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " removes food item " + item.id);
         handler.remove(item);
     }
 }

@@ -14,6 +14,7 @@ public class HttpsUserContextFactory{
     public Principals parseSubjectName(String subject){
         int[] indices = new int[3];
         int last_index = subject.lastIndexOf("=");
+        int start = last_index;
 
         // find indices of the $ signs
         for (int i = 0; i < 3; i++){
@@ -24,7 +25,7 @@ public class HttpsUserContextFactory{
             }
         }
 
-        return new Principals(subject.substring(0, indices[0]),
+        return new Principals(subject.substring(start + 1, indices[0]),
                 subject.substring(indices[1] + 1, indices[2]),
                 subject.substring(indices[0] + 1, indices[1]),
                 subject.substring(indices[2] + 1, subject.length()));

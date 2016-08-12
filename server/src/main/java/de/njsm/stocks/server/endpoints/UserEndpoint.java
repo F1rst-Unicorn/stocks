@@ -3,8 +3,11 @@ package de.njsm.stocks.server.endpoints;
 import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.User;
 import de.njsm.stocks.server.data.UserFactory;
+import de.njsm.stocks.server.internal.auth.Principals;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import java.util.logging.Level;
 
 @Path("/user")
@@ -18,27 +21,30 @@ public class UserEndpoint extends Endpoint {
 
     @PUT
     @Consumes("application/json")
-    public void addUser(User u) {
+    public void addUser(@Context HttpServletRequest request, User u) {
+        Principals uc = c.getContextFactory().getPrincipals(request);
         if (isNameValid(u.name)) {
             handler.add(u);
-            c.getLog().log(Level.INFO, "UserEndpoint: Add user " + u.name);
+            c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " adds user " + u.name);
         } else {
-            c.getLog().log(Level.INFO, "UserEndpoint: Tried to add invalid user " + u.name);
+            c.getLog().log(Level.WARNING, uc.getUsername() + "@" + uc.getDeviceName() + " tried to add invalid user " + u.name);
         }
     }
 
     @GET
     @Produces("application/json")
-    public Data[] getUsers() {
-        c.getLog().log(Level.INFO, "UserEndpoint: Get users");
+    public Data[] getUsers(@Context HttpServletRequest request) {
+        Principals uc = c.getContextFactory().getPrincipals(request);
+        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " gets users");
         return handler.get(UserFactory.f);
     }
 
     @PUT
     @Path("/remove")
     @Consumes("application/json")
-    public void deleteUser(User u) {
-        c.getLog().log(Level.INFO, "UserEndpoint: Delete user " + u.name);
+    public void deleteUser(@Context HttpServletRequest request, User u) {
+        Principals uc = c.getContextFactory().getPrincipals(request);
+        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " removes user " + u.name);
         handler.removeUser(u);
     }
 
