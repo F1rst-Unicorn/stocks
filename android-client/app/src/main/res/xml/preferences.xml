@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <Preference
+        android:key="pref_full_sync"
+        android:title="@string/title_new_sync"
+        android:summary="@string/dialog_new_sync"/>
+
+
 </PreferenceScreen>

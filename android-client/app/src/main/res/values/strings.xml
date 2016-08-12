@@ -14,6 +14,7 @@
     <string name="title_add_item">Add %s</string>
     <string name="title_consume">Consume</string>
     <string name="title_delete_food">Remove food?</string>
+    <string name="title_new_sync">Complete Sync</string>
 
     <string name="action_outline">Outline</string>
     <string name="action_users">Users</string>
@@ -70,6 +71,8 @@
     <string name="dialog_added">added successfully</string>
     <string name="dialog_undo">undo</string>
     <string name="dialog_delete_food">Remove %s as food category?</string>
+    <string name="dialog_new_sync">Fully resynchronise with server</string>
+    <string name="dialog_new_sync_done">Sync successful</string>
 
     <string name="error_no_server_name">No server name set</string>
 
@@ -77,6 +80,8 @@
     <string name="text_amount">Amount</string>
     <string name="text_buyer">Buyer</string>
     <string name="text_eat_by_date">Date of expiry:</string>
+
+
 
 
 </resources>
