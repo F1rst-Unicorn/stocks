@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Adapter;
 import android.widget.DatePicker;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -69,7 +70,7 @@ public class AddFoodItemActivity extends AppCompatActivity implements
         DatePicker picker = (DatePicker) findViewById(R.id.activity_add_food_item_date);
         picker.setMinDate((new Date()).getTime());
 
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(1, null, this);
     }
 
     @Override
@@ -121,23 +122,61 @@ public class AddFoodItemActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME);
-
-        return new CursorLoader(this, uri,
-                null, null, null,
-                null);
+        Uri uri;
+        switch(id) {
+            case 1:
+                uri = Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME);
+                return new CursorLoader(this, uri,
+                        null, null, null,
+                        null);
+            case 2:
+                uri = Uri.withAppendedPath(StocksContentProvider.baseUri, StocksContentProvider.maxLocation);
+                return new CursorLoader(this, uri,
+                        null, null, new String[] {String.valueOf(mId)},
+                        null);
+            default:
+                return null;
+        }
 
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter.swapCursor(data);
-        mCursor = data;
+        switch(loader.getId()) {
+            case 1:
+                mAdapter.swapCursor(data);
+                mCursor = data;
+                getLoaderManager().initLoader(2, null, this);
+                break;
+            case 2:
+                Spinner s = (Spinner) findViewById(R.id.activity_add_food_item_spinner);
+                data.moveToFirst();
+                int idToFind = data.getInt(data.getColumnIndex("_id"));
+                int colId = mCursor.getColumnIndex("_id");
+                int position = 0;
+                mCursor.moveToFirst();
+                while (mCursor.moveToNext()) {
+                    if (idToFind == mCursor.getInt(colId)) {
+                        break;
+                    }
+                    position++;
+                }
+                s.setSelection(position+1);
+                break;
+        }
+
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-        mCursor = null;
+    public void onLoaderReset(Loader<Cursor> loader) {        switch(loader.getId()) {
+        case 1:
+            mAdapter.swapCursor(null);
+            mCursor = null;
+            break;
+        case 2:
+            break;
+    }
+
+
     }
 }

@@ -5,7 +5,6 @@
 
 ## Android
 * Add searching food
-* Pick sensible default location for items
 
 ## General
 * Add methods to get and clear pending tickets

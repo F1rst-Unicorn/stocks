@@ -26,6 +26,7 @@ public class StocksContentProvider extends ContentProvider {
     public static final String foodItemType = "Food_item/by_food_type";
     public static final String emptyFood = "Food/empty";
     public static final String eatSoon = "Food/eat_soon";
+    public static final String maxLocation = "Location/eat_soon";
 
     private static final UriMatcher sMatcher;
 
@@ -76,6 +77,9 @@ public class StocksContentProvider extends ContentProvider {
                 break;
             case 9:
                 result = db.rawQuery(SqlFoodItemTable.SELECT_FOOD_EAT_SOON, null);
+                break;
+            case 10:
+                result = db.rawQuery(SqlFoodItemTable.SELECT_MAX_LOCATION, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
@@ -167,5 +171,6 @@ public class StocksContentProvider extends ContentProvider {
         sMatcher.addURI(AUTHORITY, foodItemType, 7);
         sMatcher.addURI(AUTHORITY, emptyFood, 8);
         sMatcher.addURI(AUTHORITY, eatSoon, 9);
+        sMatcher.addURI(AUTHORITY, maxLocation, 10);
     }
 }
