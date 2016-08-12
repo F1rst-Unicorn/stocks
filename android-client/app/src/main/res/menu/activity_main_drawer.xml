@@ -25,14 +25,6 @@
             android:id="@+id/settings"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/action_settings" />
-        <item
-            android:id="@+id/help"
-            android:icon="@drawable/ic_help_black_24dp"
-            android:title="@string/action_help" />
-        <item
-            android:id="@+id/about"
-            android:icon="@drawable/ic_info_black_24dp"
-            android:title="@string/action_info" />
 
     </group>
 
