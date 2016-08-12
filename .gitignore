@@ -13,3 +13,5 @@ target
 *.pkg.tar.xz
 deploy*/stocks/
 keystore
+
+spec/ER-diagram.png
