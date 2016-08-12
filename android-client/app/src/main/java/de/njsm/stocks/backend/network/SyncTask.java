@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.njsm.stocks.Config;
 import de.njsm.stocks.backend.data.Food;
@@ -34,6 +35,8 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
     protected Context c;
     protected AsyncTaskCallback mListener;
 
+    protected static AtomicBoolean sRunning = new AtomicBoolean(false);
+
     public SyncTask(Context c) {
         this.c = c;
     }
@@ -49,6 +52,10 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
         if (android.os.Debug.isDebuggerConnected()) {
             android.os.Debug.waitForDebugger();
+        }
+
+        if (!sRunning.compareAndSet(false, true)){
+            return 0;
         }
 
         Update[] serverUpdates = ServerManager.m.getUpdates();
@@ -71,6 +78,7 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
         writeUpdates(serverUpdates);
         Log.i(Config.log, "Sync successful");
+        sRunning.set(false);
         return 0;
     }
 

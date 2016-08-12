@@ -6,8 +6,6 @@
 ## Android
 * Add searching food
 * Pick sensible default location for items
-* Add timeout between addings to prevent dropping updates
-* Only allow for one SyncTask at a time
 
 ## General
 * Add methods to get and clear pending tickets
