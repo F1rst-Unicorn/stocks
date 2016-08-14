@@ -1,0 +1,9 @@
+language: java
+script:
+        - cd server
+        - mvn test
+        - cd ../sentry
+        - mvn test
+        - cd ../client
+        - mvn test
+
