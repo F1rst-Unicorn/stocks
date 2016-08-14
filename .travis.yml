@@ -9,3 +9,5 @@ script:
         - cd ../client
         - mvn test
 
+notifications:
+        email: false
