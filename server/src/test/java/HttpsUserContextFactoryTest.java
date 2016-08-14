@@ -54,6 +54,16 @@ public class HttpsUserContextFactoryTest {
 
         Principals p = uut.parseSubjectName(input);
 
+    }
+
+    @Test(expected = SecurityException.class)
+    public void tooManyDollars() {
+        String input = "/CN=omg$4$device$5$tooMuch";
+
+        HttpsUserContextFactory uut = new HttpsUserContextFactory();
+
+        Principals p = uut.parseSubjectName(input);
+
         Assert.assertEquals("", p.getUsername());
         Assert.assertEquals("", p.getDeviceName());
         Assert.assertEquals(1, p.getUid());

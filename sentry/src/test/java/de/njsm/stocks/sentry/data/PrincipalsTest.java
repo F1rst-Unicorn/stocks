@@ -1,5 +1,6 @@
 package de.njsm.stocks.sentry.data;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -67,5 +68,16 @@ public class PrincipalsTest {
         };
 
         Principals uut = new Principals(rawInput);
+    }
+
+    @Test
+    public void testEquality() {
+        Principals uut1 = new Principals("test", "test", 1, 2);
+        Principals uut2 = new Principals("test", "test", 1, 3);
+
+        Assert.assertTrue(uut1.equals(uut1));
+        Assert.assertTrue(uut2.equals(uut2));
+        Assert.assertFalse(uut1.equals(new Object()));
+        Assert.assertFalse(uut1.equals(uut2));
     }
 }

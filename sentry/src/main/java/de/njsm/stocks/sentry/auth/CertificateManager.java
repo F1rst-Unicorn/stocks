@@ -67,40 +67,24 @@ public class CertificateManager {
      * @param subject A subject name
      * @return The parsed principals
      */
-    Principals parseSubjectName(String subject) throws SecurityException {
-        List<Integer> indexList = new LinkedList<>();
-        int[] indices;
-        int last_index;
-        int begin = subject.lastIndexOf('=');
-        int i = 0;
+    public Principals parseSubjectName(String subject){
+        int[] indices = new int[3];
+        int last_index = subject.lastIndexOf("=");
+        int start = last_index;
 
         // find indices of the $ signs
-        last_index = begin;
-        while (last_index != -1){
-            int newIndex = subject.indexOf('$', last_index + 1);
-            if (newIndex != -1) {
-                indexList.add(newIndex);
+        for (int i = 0; i < 3; i++){
+            indices[i] = subject.indexOf('$', last_index+1);
+            last_index = indices[i];
+            if (last_index == -1){
+                throw new SecurityException("client name is malformed");
             }
-            last_index = newIndex;
         }
 
-        if (indexList.size() != 3){
-            throw new SecurityException("client name contains " + indexList.size() + " $ signs");
-        }
-
-        indices = new int[indexList.size()];
-        for (Integer index : indexList) {
-            indices[i] = index;
-            i++;
-        }
-
-        String[] rawInput = new String[4];
-        rawInput[0] = subject.substring(begin+1, indices[0]);
-        rawInput[1] = subject.substring(indices[0] + 1, indices[1]);
-        rawInput[2] = subject.substring(indices[1] + 1, indices[2]);
-        rawInput[3] = subject.substring(indices[2] + 1, subject.length());
-
-        return new Principals(rawInput);
+        return new Principals(subject.substring(start + 1, indices[0]),
+                subject.substring(indices[1] + 1, indices[2]),
+                subject.substring(indices[0] + 1, indices[1]),
+                subject.substring(indices[2] + 1, subject.length()));
 
     }
 }
