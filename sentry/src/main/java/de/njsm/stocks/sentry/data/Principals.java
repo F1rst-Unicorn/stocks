@@ -35,6 +35,10 @@ public class Principals {
         this.did = did;
     }
 
+    public Principals(String username, String deviceName, String uid, String did) {
+        this(new String[] {username, uid, deviceName, did});
+    }
+
     public String getUsername() {
         return username;
     }
