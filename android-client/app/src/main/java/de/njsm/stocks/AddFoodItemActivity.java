@@ -156,13 +156,13 @@ public class AddFoodItemActivity extends AppCompatActivity implements
                     int colId = mCursor.getColumnIndex("_id");
                     int position = 0;
                     mCursor.moveToFirst();
-                    while (mCursor.moveToNext()) {
+                    do {
                         if (idToFind == mCursor.getInt(colId)) {
                             break;
                         }
                         position++;
-                    }
-                    s.setSelection(position + 1);
+                    } while (mCursor.moveToNext());
+                    s.setSelection(position);
                 }
                 break;
         }
