@@ -45,4 +45,18 @@ public class HttpsUserContextFactoryTest {
         Assert.assertEquals(1, p.getUid());
         Assert.assertEquals(1, p.getDid());
     }
+
+    @Test(expected = SecurityException.class)
+    public void testMalformed() {
+        String input = "/CN=$1$1";
+
+        HttpsUserContextFactory uut = new HttpsUserContextFactory();
+
+        Principals p = uut.parseSubjectName(input);
+
+        Assert.assertEquals("", p.getUsername());
+        Assert.assertEquals("", p.getDeviceName());
+        Assert.assertEquals(1, p.getUid());
+        Assert.assertEquals(1, p.getDid());
+    }
 }

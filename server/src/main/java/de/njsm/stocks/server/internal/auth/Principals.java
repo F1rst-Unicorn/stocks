@@ -12,7 +12,7 @@ public class Principals {
     private int uid;
     private int did;
 
-    private Principals(String[] rawInput) {
+    public Principals(String[] rawInput) {
 
         if (rawInput.length != 4) {
             throw new SecurityException("client name malformed");
