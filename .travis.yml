@@ -3,12 +3,9 @@ jdk:
         - oraclejdk8
 script:
         - cd server
-        - mvn compile
         - mvn test
         - cd ../sentry
-        - mvn compile
         - mvn test
         - cd ../client
-        - mvn compile
         - mvn test
 
