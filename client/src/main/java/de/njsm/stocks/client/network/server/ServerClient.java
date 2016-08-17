@@ -64,4 +64,7 @@ public interface ServerClient {
     @PUT("/food/fooditem/remove")
     Call<Void> removeFoodItem(@Body FoodItem f);
 
+    @PUT("/food/fooditem/move/{newId}")
+    Call<Void> moveFoodItem(@Body FoodItem f, @Path("newId") int newLoc);
+
 }

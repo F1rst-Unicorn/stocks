@@ -89,11 +89,11 @@ public class FoodEndpoint extends Endpoint {
     }
 
     @PUT
-    @Path("/fooditem/move")
+    @Path("/fooditem/move/{newId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public void moveFoodItem(@Context HttpServletRequest request,
                              FoodItem item,
-                             int newLocId) {
+                             @PathParam("newId") int newLocId) {
         Principals uc = c.getContextFactory().getPrincipals(request);
         c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " moves food item " + item.id +
                 " to " + newLocId);
