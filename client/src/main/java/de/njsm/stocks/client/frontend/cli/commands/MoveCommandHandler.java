@@ -64,13 +64,6 @@ public class MoveCommandHandler extends CommandHandler {
         } else {
             locations = c.getDatabaseManager().getLocations(location);
         }
-
-        try {
-            locId = LocationCommandHandler.selectLocation(locations, location);
-        } catch (SelectException e) {
-            e.printStackTrace();
-        }
-
         if (food.equals("")) {
             foods = c.getDatabaseManager().getFood();
         } else {
@@ -78,9 +71,11 @@ public class MoveCommandHandler extends CommandHandler {
         }
 
         try {
+            locId = LocationCommandHandler.selectLocation(locations, location);
             foodId = FoodCommandHandler.selectFood(foods, food);
         } catch (SelectException e) {
             e.printStackTrace();
+            return;
         }
 
         FoodItem[] items = c.getDatabaseManager().getItems(foodId);

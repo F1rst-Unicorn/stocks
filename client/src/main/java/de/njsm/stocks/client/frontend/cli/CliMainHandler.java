@@ -17,7 +17,7 @@ public class CliMainHandler implements MainHandler {
         this.c = c;
 
         ArrayList<CommandHandler> commandHandler = new ArrayList<>();
-        commandHandler.add(new AddCommandHandlerHandler(c));
+        commandHandler.add(new AddCommandHandler(c));
         commandHandler.add(new MoveCommandHandler(c));
         commandHandler.add(new EatCommandHandler(c));
         commandHandler.add(new FoodCommandHandler(c));
