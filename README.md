@@ -11,7 +11,7 @@ See deploy-server/README.md for a detailed description
 
 ## Linux client installation
 
-See deploy-linux-client/README.md for a detailed description
+See deploy-client/README.md for a detailed description
 
 ## Android app installation
 
