@@ -24,10 +24,12 @@
 # Open issues 
 
 ## General
-* setup-ca script emits "unable to write random state"
+* Race condition when adding Food_item and retrieving updates afterwards. 
+Add command reaches server but client refresh does not get it. 
 
 ## Server
 * First access to database crashes due to driver not found
+* setup-ca script emits "unable to write random state"
 
 ## Sentry
 * First access to database crashes due to driver not found
