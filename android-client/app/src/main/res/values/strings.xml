@@ -15,6 +15,7 @@
     <string name="title_consume">Consume</string>
     <string name="title_delete_food">Remove food?</string>
     <string name="title_new_sync">Complete Sync</string>
+    <string name="title_move">Move</string>
 
     <string name="action_outline">Outline</string>
     <string name="action_users">Users</string>
@@ -73,6 +74,7 @@
     <string name="dialog_delete_food">Remove %s as food category?</string>
     <string name="dialog_new_sync">Fully resynchronise with server</string>
     <string name="dialog_new_sync_done">Sync successful</string>
+    <string name="dialog_move_item">Move to a different location</string>
 
     <string name="error_no_server_name">No server name set</string>
 

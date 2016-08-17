@@ -331,6 +331,20 @@ public class ServerManager {
         }
     }
 
+    public void move(FoodItem f, int newLoc) {
+        Call<Void> call = backend.moveFoodItem(f, newLoc);
+
+        try {
+            Response<Void> r = call.execute();
+
+            if (!r.isSuccessful()) {
+                Log.e(Config.log, "failed to move item: " + r.message());
+            }
+        } catch (IOException e) {
+            error(e);
+        }
+    }
+
     protected void error(IOException e) {
         Log.e(Config.log, "No connection to server: " + e.getMessage());
     }
