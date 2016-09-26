@@ -4,6 +4,8 @@
 * Add emitting QR codes 
 
 ## Android
+* Save crash logs
+* Edit eat-by date
 * Add searching food
 * Add possibility to rename food and locations
 * Prevent usage of spaces in names
@@ -24,16 +26,18 @@
 
 ## General
 * Race condition when adding Food_item and retrieving updates afterwards. 
-Add command reaches server but client refresh does not get it. 
+  Add command reaches server but client refresh does not get it. 
+* Vagrant testing
+* Ansible deployment
 
 ## Server
+* Simpler logging
 * First access to database crashes due to driver not found
 * setup-ca script emits "unable to write random state"
 
 ## Sentry
 * First access to database crashes due to driver not found
 
-
-
 # Internal
-* Add test suites
+* Add Unit testing
+* Add Integration testing
