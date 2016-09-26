@@ -9,11 +9,11 @@ import de.njsm.stocks.client.exceptions.SelectException;
 import java.text.ParseException;
 import java.util.Date;
 
-public class AddCommandHandlerHandler extends CommandHandler {
+public class AddCommandHandler extends CommandHandler {
 
     protected String location;
 
-    public AddCommandHandlerHandler(Configuration c) {
+    public AddCommandHandler(Configuration c) {
         command = "add";
         description = "Add a food item";
         this.c = c;

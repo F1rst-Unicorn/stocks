@@ -31,6 +31,9 @@ public class RefreshCommandHandler extends CommandHandler {
         if (word.equals("help")) {
             printHelp();
         } else {
+            if (command.hasArg('f')) {
+                c.getDatabaseManager().resetUpdates();
+            }
             refresh();
         }
     }
@@ -60,9 +63,8 @@ public class RefreshCommandHandler extends CommandHandler {
 
     @Override
     public void printHelp() {
-        String help = "refresh command\n" +
-                "\n" +
-                "\tGet the latest updates from the server";
+        String help = "Get the latest updates from the server\n" +
+                "\t-f\t\t\tForce update from server";
         System.out.println(help);
     }
 

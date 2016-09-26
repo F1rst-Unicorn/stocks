@@ -28,15 +28,15 @@ package() {
     cd "$srcdir/stocks"
     
     mkdir -p $pkgdir/usr/lib/stocks/
-    cp client/target/linux-client-${pkgver}-jar-with-dependencies.jar $pkgdir/usr/lib/stocks/client.jar
+    cp client/target/client-${pkgver}-jar-with-dependencies.jar $pkgdir/usr/lib/stocks/client.jar
     chmod -R 555 $pkgdir/usr/lib/stocks/
 
     mkdir -p $pkgdir/usr/bin/
-    cp deploy-linux-client/client.sh $pkgdir/usr/bin/stocks
+    cp deploy-client/client.sh $pkgdir/usr/bin/stocks
     chmod 555 $pkgdir/usr/bin/stocks
     
     mkdir -p $pkgdir/usr/share/stocks/
-    cp deploy-linux-client/schema.sql $pkgdir/usr/share/stocks/
+    cp deploy--client/schema.sql $pkgdir/usr/share/stocks/
     chmod 444 $pkgdir/usr/share/stocks/schema.sql
 
     mkdir -p $pkgdir/usr/share/licenses/$pkgname/

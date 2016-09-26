@@ -61,6 +61,18 @@ public class DatabaseManager {
         }
     }
 
+    public void resetUpdates() {
+        try {
+            Connection c = getConnection();
+            String sql = "UPDATE Updates SET last_update=0";
+            PreparedStatement s = c.prepareStatement(sql);
+            s.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public User[] getUsers() {
         try {
             Connection c = getConnection();

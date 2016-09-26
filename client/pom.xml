@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.njsm.stocks</groupId>
-    <artifactId>linux-client</artifactId>
+    <artifactId>client</artifactId>
     <version>0.3</version>
     <packaging>jar</packaging>
 
-    <name>Stocks management Linux client</name>
+    <name>Stocks management client</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
