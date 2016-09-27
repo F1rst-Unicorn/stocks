@@ -149,19 +149,21 @@ public class AddFoodItemActivity extends AppCompatActivity implements
                 getLoaderManager().initLoader(2, null, this);
                 break;
             case 2:
-                Spinner s = (Spinner) findViewById(R.id.activity_add_food_item_spinner);
-                data.moveToFirst();
-                int idToFind = data.getInt(data.getColumnIndex("_id"));
-                int colId = mCursor.getColumnIndex("_id");
-                int position = 0;
-                mCursor.moveToFirst();
-                while (mCursor.moveToNext()) {
-                    if (idToFind == mCursor.getInt(colId)) {
-                        break;
-                    }
-                    position++;
+                if (data.getCount() > 0) {
+                    Spinner s = (Spinner) findViewById(R.id.activity_add_food_item_spinner);
+                    data.moveToFirst();
+                    int idToFind = data.getInt(data.getColumnIndex("_id"));
+                    int colId = mCursor.getColumnIndex("_id");
+                    int position = 0;
+                    mCursor.moveToFirst();
+                    do {
+                        if (idToFind == mCursor.getInt(colId)) {
+                            break;
+                        }
+                        position++;
+                    } while (mCursor.moveToNext());
+                    s.setSelection(position);
                 }
-                s.setSelection(position+1);
                 break;
         }
 

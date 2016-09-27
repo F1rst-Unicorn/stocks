@@ -14,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -31,11 +33,13 @@ import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.network.DeleteItemTask;
 import de.njsm.stocks.backend.network.DeleteLocationTask;
+import de.njsm.stocks.backend.network.MoveItemTask;
 
 public class FoodFragment extends ListFragment implements
         AbsListView.OnScrollListener,
         LoaderManager.LoaderCallbacks<Cursor>,
-        SimpleCursorAdapter.ViewBinder{
+        SimpleCursorAdapter.ViewBinder,
+        AdapterView.OnItemLongClickListener{
 
     public static final String KEY_ID = "de.njsm.stocks.FoodFragment.id";
 
@@ -89,6 +93,7 @@ public class FoodFragment extends ListFragment implements
 
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
+        getListView().setOnItemLongClickListener(this);
     }
 
     @Override
@@ -204,5 +209,77 @@ public class FoodFragment extends ListFragment implements
     private CharSequence prettyPrint(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy", Locale.US);
         return format.format(date);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if (mCursor == null) {
+            return true;
+        }
+        int lastPos = mCursor.getPosition();
+        mCursor.moveToPosition(i);
+        final int itemId = mCursor.getInt(mCursor.getColumnIndex(SqlFoodItemTable.COL_ID));
+        mCursor.moveToPosition(lastPos);
+
+        final Spinner spinner = getLocationSpinner();
+
+        String message = getResources().getString(R.string.dialog_move_item);
+        new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.title_move))
+                .setMessage(message)
+                .setView(spinner)
+                .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        FoodItem i = new FoodItem(itemId, null, 0,0,0,0);
+                        MoveItemTask task = new MoveItemTask(getActivity(), i, (int) spinner.getSelectedItemId());
+                        task.execute();
+                    }
+                })
+                .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {}
+                })
+                .show();
+        return true;
+    }
+
+    protected Spinner getLocationSpinner() {
+        Spinner result;
+        result = new Spinner(getActivity());
+
+        String[] from = {SqlLocationTable.COL_NAME};
+        int[] to = {android.R.id.text1};
+
+        final SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                null,
+                from,
+                to,
+                0
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+        result.setAdapter(adapter);
+
+        getLoaderManager().initLoader(1, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+                Uri uri = Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME);
+                return new CursorLoader(FoodFragment.this.getActivity(), uri,
+                        null, null, null,
+                        null);
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+                adapter.swapCursor(cursor);
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> loader) {
+                adapter.swapCursor(null);
+            }
+        });
+
+        return result;
     }
 }

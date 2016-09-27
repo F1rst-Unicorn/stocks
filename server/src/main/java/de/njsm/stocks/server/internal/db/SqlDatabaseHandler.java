@@ -221,4 +221,28 @@ public class SqlDatabaseHandler {
         return new Data[0];
     }
 
+    public void moveItem(FoodItem item, int loc) {
+        Connection con = null;
+        String sqlString = "UPDATE Food_item SET stored_in=? WHERE ID=?";
+
+        try {
+
+            con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(sqlString);
+            stmt.setInt(1, loc);
+            stmt.setInt(2, item.id);
+            stmt.executeQuery();
+
+        } catch (SQLException e) {
+            c.getLog().log(Level.SEVERE, "Error moving item: " + e.getMessage());
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException e1) {
+                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                }
+            }
+        }
+    }
+
 }

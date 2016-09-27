@@ -16,7 +16,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="ER-diagram.svg"
-   inkscape:export-filename="/home/jan/Programme/Java/stocks/spec/ER-diagrampng"
+   inkscape:export-filename="/home/jan/Programme/Java/stocks/spec/ER-diagram.png"
    inkscape:export-xdpi="299"
    inkscape:export-ydpi="299">
   <defs
@@ -25,6 +25,34 @@
        is_visible="true"
        id="path-effect4463"
        effect="spiro" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4443"
+       is_visible="true" />
+    <inkscape:path-effect
+       is_visible="true"
+       id="path-effect4439"
+       effect="spiro" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4435"
+       is_visible="true" />
+    <inkscape:path-effect
+       is_visible="true"
+       id="path-effect4431"
+       effect="spiro" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4427"
+       is_visible="true" />
+    <inkscape:path-effect
+       is_visible="true"
+       id="path-effect4423"
+       effect="spiro" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4419"
+       is_visible="true" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect4490"
@@ -199,7 +227,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

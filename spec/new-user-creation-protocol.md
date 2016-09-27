@@ -33,7 +33,7 @@ The parts of the message mean the following:
 * ticket: A string of random characters which grants access to the new device
 * CA fpr: The SHA256 sum of the CA's key. 
 
-### CA retrival
+### CA retrieval
 The new user device will now contact the CA distribution point and download the 
 CA certificate. It will be compared to the fpr passed form the host. If the two
 don't match the protocol fails now. 

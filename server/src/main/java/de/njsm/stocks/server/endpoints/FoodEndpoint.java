@@ -6,6 +6,7 @@ import de.njsm.stocks.server.internal.auth.Principals;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import java.util.logging.Level;
 
 @Path("/food")
@@ -85,5 +86,17 @@ public class FoodEndpoint extends Endpoint {
         Principals uc = c.getContextFactory().getPrincipals(request);
         c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " removes food item " + item.id);
         handler.remove(item);
+    }
+
+    @PUT
+    @Path("/fooditem/move/{newId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void moveFoodItem(@Context HttpServletRequest request,
+                             FoodItem item,
+                             @PathParam("newId") int newLocId) {
+        Principals uc = c.getContextFactory().getPrincipals(request);
+        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " moves food item " + item.id +
+                " to " + newLocId);
+        handler.moveItem(item, newLocId);
     }
 }

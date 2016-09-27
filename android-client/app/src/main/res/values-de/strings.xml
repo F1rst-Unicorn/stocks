@@ -15,6 +15,7 @@
     <string name="title_consume">Konsumieren</string>
     <string name="title_delete_food">Essen entfernen?</string>
     <string name="title_new_sync">Vollständig neu synchronisieren</string>
+    <string name="title_move">Verschieben</string>
 
     <string name="action_outline">Übersicht</string>
     <string name="action_users">Benutzer</string>
@@ -73,6 +74,7 @@
     <string name="dialog_delete_food">%s als Essenskategorie entfernen?</string>
     <string name="dialog_new_sync">Vollständig Daten vom Server holen</string>
     <string name="dialog_new_sync_done">Transfer erfolgreich</string>
+    <string name="dialog_move_item">An einen anderen Ort verschieben</string>
 
     <string name="error_no_server_name">Kein Server gesetzt</string>
 

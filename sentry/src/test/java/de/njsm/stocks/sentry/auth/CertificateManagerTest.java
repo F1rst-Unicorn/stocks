@@ -1,6 +1,7 @@
 package de.njsm.stocks.sentry.auth;
 
 import de.njsm.stocks.sentry.data.Principals;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -64,8 +65,11 @@ public class CertificateManagerTest {
         CertificateManager uut = new CertificateManager();
 
         try {
-            Principals p = uut.getPrincipals("/usr/share/stocks/root/CA/intermediate/csr/user_1.csr.pem");
-            p.getDeviceName();
+            Principals p = uut.getPrincipals("src/test/res/user_1.csr.pem");
+            Assert.assertEquals("jan", p.getUsername());
+            Assert.assertEquals(1, p.getUid());
+            Assert.assertEquals("laptop", p.getDeviceName());
+            Assert.assertEquals(1, p.getDid());
         } catch (IOException e) {
             e.printStackTrace();
         }

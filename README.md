@@ -1,5 +1,7 @@
 # Stocks
 
+[![Build Status](https://travis-ci.org/F1rst-Unicorn/stocks.svg?branch=master)](https://travis-ci.org/F1rst-Unicorn/stocks)
+
 Stocks is a framework for helping people to keep track of their
 food stocks, periodic tasks and tasks in daily life. 
 
@@ -9,7 +11,7 @@ See deploy-server/README.md for a detailed description
 
 ## Linux client installation
 
-See deploy-linux-client/README.md for a detailed description
+See deploy-client/README.md for a detailed description
 
 ## Android app installation
 

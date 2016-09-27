@@ -61,6 +61,18 @@ public class DatabaseManager {
         }
     }
 
+    public void resetUpdates() {
+        try {
+            Connection c = getConnection();
+            String sql = "UPDATE Updates SET last_update=0";
+            PreparedStatement s = c.prepareStatement(sql);
+            s.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public User[] getUsers() {
         try {
             Connection c = getConnection();
@@ -279,6 +291,20 @@ public class DatabaseManager {
         return null;
     }
 
+    public Food[] getFood() {
+        try {
+            Connection c = getConnection();
+            String getFood = "SELECT * FROM Food";
+            PreparedStatement selectStmt = c.prepareStatement(getFood);
+            ResultSet rs = selectStmt.executeQuery();
+            ArrayList<Food> result = getFoodResults(rs);
+            return result.toArray(new Food[result.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public FoodView[] getItems() {
         try {
             Connection c = getConnection();
@@ -295,6 +321,31 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
             return new FoodView[0];
+        }
+    }
+
+    public FoodItem[] getItems(int foodId) {
+        try {
+            Connection c = getConnection();
+            FoodItemFactory factory = new FoodItemFactory();
+
+            String queryString = "SELECT * " +
+                    "FROM Food_item " +
+                    "WHERE of_type=?";
+
+            PreparedStatement sqlQuery = c.prepareStatement(queryString);
+            sqlQuery.setInt(1, foodId);
+            ResultSet rs = sqlQuery.executeQuery();
+            ArrayList<FoodItem> result = new ArrayList<>();
+            while (rs.next()) {
+                FoodItem i = (FoodItem) factory.createData(rs);
+                result.add(i);
+            }
+
+            return result.toArray(new FoodItem[result.size()]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new FoodItem[0];
         }
     }
 
