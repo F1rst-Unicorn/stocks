@@ -16,11 +16,8 @@
 * Add methods to get and clear pending tickets
 * Image support for Food
 * Remember maximum items per food to emit warnings based on thresholds
-* Add EAN-13 code support
 * Add history of actions
 * Add favourite food markers
-
-
 
 # Open issues 
 
@@ -29,11 +26,6 @@
   Add command reaches server but client refresh does not get it. 
 * Vagrant testing
 * Ansible deployment
-
-## Server
-* Simpler logging
-* First access to database crashes due to driver not found
-* setup-ca script emits "unable to write random state"
 
 ## Sentry
 * First access to database crashes due to driver not found
