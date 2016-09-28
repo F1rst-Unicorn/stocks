@@ -10,7 +10,12 @@ Import the schema in /usr/share/stocks-server/schema.sql into the database.
 ## CA
 
 Run the script in /usr/lib/stocks-server/setup-ca as user stocks to generate a 
-CA and all needed keys in /usr/share/stocks-server/root/CA. 
+CA and all needed keys. The script takes two arguments, provided as fully 
+qualified paths: The first is the directory where to install the CA. The second
+path is where to find the openSSL config templates. For production deployment 
+these are:
+* /usr/share/stocks-server/root/CA
+* /usr/share/stocks-server/
 
 ## nginx
 
