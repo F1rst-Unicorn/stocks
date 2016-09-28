@@ -12,10 +12,16 @@
 * 00005 : NEW  : Clear obsolete tickets
 * 00006 : NEW  : Image support for Food
 * 00007 : NEW  : Remember maximum items per food to emit warnings based on thresholds
-* 00008 : NEW  : Add history of actions
 * 00009 : NEW  : Add favourite food markers
+
+## Version 0.7
+* 00010 : NEW  : Edit eat-by date
 
 
 
 ## Version 1.0
 * 00003 : NEW  : setup-ca script emits "unable to write random state"
+* 00011 : NEW  : Race condition when adding Food_item and retrieving updates 
+                 afterwards. Add command reaches server but client refresh does 
+                 not get it. 
+
