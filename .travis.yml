@@ -10,4 +10,8 @@ script:
         - mvn test
 
 notifications:
-        email: false
+        email: 
+                recipients: 
+                        - f1rst_unicorn@njsm.de
+                on_success: never
+                on_failure: always
