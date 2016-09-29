@@ -17,6 +17,9 @@ script:
         - cd ../client
         - mvn test
 
+after_failure:
+        - cat /home/travis/build/F1rst-Unicorn/stocks/{server,sentry,client}/target/surfire-reports/*
+
 notifications:
         email: 
                 recipients: 
