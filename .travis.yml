@@ -1,9 +1,17 @@
 language: java
 jdk:
         - oraclejdk8
+addons:
+        - mariadb: '10.1'
+services:
+        - mariadb
+
+before_script:
+        - mysql -e 'create database stocks' -u root -p
+        - mysql -u root stocks < deploy-server/schema.sql
 script:
         - cd server
-        - mvn test
+        - mvn test -P travis
         - cd ../sentry
         - mvn test
         - cd ../client

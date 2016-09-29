@@ -14,9 +14,9 @@ public class SqlDatabaseHandler {
     private final String url;
     private final Config c;
 
-    public SqlDatabaseHandler() {
+    public SqlDatabaseHandler(Config c) {
 
-        c = new Config();
+        this.c = c;
 
         String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
         String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");

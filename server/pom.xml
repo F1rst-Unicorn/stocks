@@ -57,6 +57,32 @@
 
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <de.njsm.stocks.internal.db.databaseAddress>localhost</de.njsm.stocks.internal.db.databaseAddress>
+                <de.njsm.stocks.internal.db.databasePort>3306</de.njsm.stocks.internal.db.databasePort>
+                <de.njsm.stocks.internal.db.databaseName>stocks</de.njsm.stocks.internal.db.databaseName>
+                <de.njsm.stocks.internal.db.databaseUsername>server</de.njsm.stocks.internal.db.databaseUsername>
+                <de.njsm.stocks.internal.db.databasePassword>linux</de.njsm.stocks.internal.db.databasePassword>
+            </properties>
+        </profile>
+        <profile>
+            <id>travis</id>
+            <properties>
+                <de.njsm.stocks.internal.db.databaseAddress>localhost</de.njsm.stocks.internal.db.databaseAddress>
+                <de.njsm.stocks.internal.db.databasePort>3306</de.njsm.stocks.internal.db.databasePort>
+                <de.njsm.stocks.internal.db.databaseName>stocks</de.njsm.stocks.internal.db.databaseName>
+                <de.njsm.stocks.internal.db.databaseUsername>travis</de.njsm.stocks.internal.db.databaseUsername>
+                <de.njsm.stocks.internal.db.databasePassword></de.njsm.stocks.internal.db.databasePassword>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -66,6 +92,20 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <de.njsm.stocks.internal.db.databaseAddress>${de.njsm.stocks.internal.db.databaseAddress}</de.njsm.stocks.internal.db.databaseAddress>
+                        <de.njsm.stocks.internal.db.databasePort>${de.njsm.stocks.internal.db.databasePort}</de.njsm.stocks.internal.db.databasePort>
+                        <de.njsm.stocks.internal.db.databaseName>${de.njsm.stocks.internal.db.databaseName}</de.njsm.stocks.internal.db.databaseName>
+                        <de.njsm.stocks.internal.db.databaseUsername>${de.njsm.stocks.internal.db.databaseUsername}</de.njsm.stocks.internal.db.databaseUsername>
+                        <de.njsm.stocks.internal.db.databasePassword>${de.njsm.stocks.internal.db.databasePassword}</de.njsm.stocks.internal.db.databasePassword>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>

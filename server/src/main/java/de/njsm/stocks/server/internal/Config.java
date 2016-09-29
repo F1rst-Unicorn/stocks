@@ -13,7 +13,7 @@ public class Config {
     }
 
     public SqlDatabaseHandler getDbHandler() {
-        return new SqlDatabaseHandler();
+        return new SqlDatabaseHandler(this);
     }
 
     public X509CertificateAdmin getCertAdmin() {
