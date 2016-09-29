@@ -4,11 +4,11 @@ jdk:
 addons:
         - mariadb: '10.1'
 services:
-        - mariadb
+        - mysql
 
 before_script:
-        - mysql -e 'create database stocks' -u root -p
-        - mysql -u root stocks < deploy-server/schema.sql
+        - mysql -e 'create database stocks' -u root -p ''
+        - mysql -u root -p '' stocks < deploy-server/schema.sql
 script:
         - cd server
         - mvn test -P travis
