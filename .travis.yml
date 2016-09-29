@@ -6,6 +6,9 @@ addons:
 services:
         - mysql
 
+cache:
+        directories:
+                - $HOME/.m2
 before_script:
         - mysql -u root --password='' -e 'create database stocks'
         - mysql -u root --password='' stocks < deploy-server/schema.sql
