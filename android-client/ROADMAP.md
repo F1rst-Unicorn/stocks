@@ -4,6 +4,7 @@
 * 00000 : DONE : Basic functionality
 
 ## Version 0.5
+* 00011 : NEW  : Add simple user manual
 * 00001 : NEW  : Save crash logs
 * 00002 : NEW  : Edit eat-by date
 * 00003 : NEW  : Add searching food
