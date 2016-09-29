@@ -1,24 +1,36 @@
 #!/usr/bin/sh
 
-CA_ROOT=/usr/share/stocks-server/root/CA
+if [[ $# -ne 2 ]] ; then
+    echo "Usage: setup-ca.sh <target-dir> <config-template-dir>"
+    exit 1
+fi
+
+CA_ROOT=$1
+CONFIG_TEMPLATE_DIR=$2
 RANDFILE=$CA_ROOT/.rnd
 
 ## Set up the CA
-	cd $CA_ROOT
-	mkdir certs csr private newcerts crl
-	chmod 700 private
-	touch index.txt
-	echo 1000 > serial
-	echo 1000 > crlnumber
-	openssl genrsa -out private/ca.key.pem 4096
-	chmod 400 private/ca.key.pem
-	openssl req -config openssl.cnf -key private/ca.key.pem -new -x509 -days 365000 -sha256 -extensions v3_ca -out certs/ca.cert.pem \
+    mkdir -p $CA_ROOT
+    cd $CA_ROOT
+    cp $CONFIG_TEMPLATE_DIR/openssl.cnf .
+    sed -i "s&@@@CAROOT@@@&$CA_ROOT&g" openssl.cnf
+    mkdir certs csr private newcerts crl
+    chmod 700 private
+    touch index.txt
+    echo 1000 > serial
+    echo 1000 > crlnumber
+    openssl genrsa -out private/ca.key.pem 4096
+    chmod 400 private/ca.key.pem
+    openssl req -config openssl.cnf -key private/ca.key.pem -new -x509 -days 365000 -sha256 -extensions v3_ca -out certs/ca.cert.pem \
         -subj "/C=CH/ST=Zurich/L=Zurich/O=stocks/CN=stocks CA" -batch
     openssl ca -config openssl.cnf -gencrl -out crl/ca.crl.pem
     chmod 444 certs/ca.cert.pem
     
     ## Set up intermediate CA
+    mkdir -p intermediate
     cd intermediate
+    cp $CONFIG_TEMPLATE_DIR/openssl.cnf .
+    sed -i "s&@@@CAROOT@@@&$CA_ROOT&g" openssl.cnf
     mkdir certs csr private newcerts crl
     chmod 700 private
     touch index.txt
@@ -34,11 +46,8 @@ RANDFILE=$CA_ROOT/.rnd
     chmod 444 intermediate/certs/intermediate.cert.pem
     cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
     chmod 444 intermediate/certs/ca-chain.cert.pem
-    mkdir -p ../nginx
     openssl ca -config intermediate/openssl.cnf -gencrl -out intermediate/crl/intermediate.crl.pem
     cat crl/ca.crl.pem intermediate/crl/intermediate.crl.pem > intermediate/crl/whole.crl.pem
-    cp certs/ca.cert.pem ../nginx/ca
-    cp intermediate/certs/intermediate.cert.pem ../nginx/chain
     
     ## Server certificate
     cd intermediate

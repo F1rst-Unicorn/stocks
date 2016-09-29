@@ -19,6 +19,4 @@ Build the app with Android Studio and deploy it to your device
 
 ## Contributing
 
-If you want to get involved, just have a look at TODO.md for features to 
-to implement. You can also send me a message to get some hints about easy 
-features to start with. 
+Get in touch with me, if you are interested in contributing. 
