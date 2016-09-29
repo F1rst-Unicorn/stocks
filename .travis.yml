@@ -7,7 +7,7 @@ services:
         - mysql
 
 before_script:
-        - mysql -e -u root --password='' 'create database stocks'
+        - mysql -u root --password='' -e 'create database stocks'
         - mysql -u root --password='' stocks < deploy-server/schema.sql
 script:
         - cd server
