@@ -2,12 +2,15 @@ package de.njsm.stocks.server.internal.db;
 
 import de.njsm.stocks.server.data.*;
 import de.njsm.stocks.server.internal.Config;
+import de.njsm.stocks.server.internal.MockConfig;
+import de.njsm.stocks.server.internal.auth.MockAuthAdmin;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SqlDatabaseHandlerTest {
 
@@ -168,6 +171,98 @@ public class SqlDatabaseHandlerTest {
         }
 
         Assert.assertTrue(ticketPresent);
+    }
+
+    @Test
+    public void testGettingData() throws IOException, SQLException {
+        DatabaseHelper.resetSampleData();
+        Config c = new Config();
+        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
+        FoodFactory factory = new FoodFactory();
+        Data[] output;
+        int foodCount = 0;
+
+        output = uut.get(factory);
+
+        Assert.assertEquals(3, output.length);
+        for (Data d : output) {
+            if (d instanceof Food) {
+                Food f = (Food) d;
+                if (f.name.equals("Carrot")) {
+                    foodCount++;
+                }
+                if (f.name.equals("Beer")) {
+                    foodCount++;
+                }
+                if (f.name.equals("Cheese")) {
+                    foodCount++;
+                }
+            }
+        }
+        Assert.assertEquals(3, foodCount);
+    }
+
+    @Test
+    public void testMovingItems() throws IOException, SQLException {
+        DatabaseHelper.resetSampleData();
+        Config c = new Config();
+        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
+        Data[] output;
+        FoodItemFactory factory = new FoodItemFactory();
+        FoodItem i = new FoodItem();
+        int newLoc = 2; // from fridge to cupboard
+        boolean itemMoved = false;
+        i.id = 1;
+
+        uut.moveItem(i, newLoc);
+
+        output = uut.get(factory);
+
+        Assert.assertEquals(3, output.length);
+        for (Data d : output) {
+            if (d instanceof FoodItem) {
+                FoodItem f = (FoodItem) d;
+                if (f.id == i.id && f.storedIn == newLoc) {
+                    itemMoved = true;
+                }
+            }
+        }
+
+        Assert.assertTrue(itemMoved);
+    }
+
+    @Test
+    public void testRemoveDevice() throws IOException, SQLException {
+        DatabaseHelper.resetSampleData();
+        MockConfig c = new MockConfig();
+        MockAuthAdmin ca = (MockAuthAdmin) c.getCertAdmin();
+        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
+        UserDevice d = new UserDevice();
+        UserDeviceFactory factory = new UserDeviceFactory();
+        Data[] output;
+        int deviceCount = 0;
+        d.id = 2;
+
+        uut.removeDevice(d);
+
+        output = uut.get(factory);
+
+        List<Integer> revokedIds = ca.getRevokedIds();
+        Assert.assertEquals(1, revokedIds.size());
+        Assert.assertEquals(d.id, (int) revokedIds.get(0));
+        Assert.assertEquals(2, output.length);
+        for (Data data : output) {
+            if (data instanceof UserDevice) {
+                UserDevice dev = (UserDevice) data;
+                if (dev.name.equals("mobile")) {
+                    deviceCount++;
+                }
+                if (dev.name.equals("pending_device")) {
+                    deviceCount++;
+                }
+            }
+        }
+        Assert.assertEquals(2, deviceCount);
     }
 
     private Ticket[] getTickets() throws SQLException {

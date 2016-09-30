@@ -78,7 +78,7 @@
                 <de.njsm.stocks.internal.db.databasePort>3306</de.njsm.stocks.internal.db.databasePort>
                 <de.njsm.stocks.internal.db.databaseName>stocks</de.njsm.stocks.internal.db.databaseName>
                 <de.njsm.stocks.internal.db.databaseUsername>travis</de.njsm.stocks.internal.db.databaseUsername>
-                <de.njsm.stocks.internal.db.databasePassword></de.njsm.stocks.internal.db.databasePassword>
+                <de.njsm.stocks.internal.db.databasePassword/>
             </properties>
         </profile>
     </profiles>
