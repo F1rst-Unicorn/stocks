@@ -5,6 +5,7 @@ import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.MockConfig;
 import de.njsm.stocks.server.internal.auth.MockAuthAdmin;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,152 +15,158 @@ import java.util.List;
 
 public class SqlDatabaseHandlerTest {
 
+    @Before
+    public void resetDatabase() throws IOException, SQLException {
+        DatabaseHelper.resetSampleData();
+    }
+
     @Test
     public void testAddingUser() throws IOException, SQLException {
-        DatabaseHelper.resetSampleData();
         UserFactory factory = new UserFactory();
         User input = new User();
         Config c = new Config();
         Data[] output;
-        int userCount = 0;
+        int expectedUserCount = 3;
+        boolean[] hits = new boolean[expectedUserCount];
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
-
         input.name = "Mike";
+
 
         uut.add(input);
 
-        output = uut.get(factory);
 
-        Assert.assertEquals(3, output.length);
+        output = uut.get(factory);
+        Assert.assertEquals(expectedUserCount, output.length);
         for (Data d : output) {
             if (d instanceof User) {
                 if (((User) d).name.equals("Mike")) {
-                    userCount++;
+                    hits[0] = true;
                 }
                 if (((User) d).name.equals("Bob")) {
-                    userCount++;
+                    hits[1] = true;
                 }
                 if (((User) d).name.equals("Alice")) {
-                    userCount++;
+                    hits[2] = true;
                 }
             } else {
                 throw new IllegalArgumentException("Got non-user data entry");
             }
         }
-
-        Assert.assertEquals(3, userCount);
+        assertArrayTrue(hits);
     }
 
     @Test
     public void testRenamingFood() throws IOException, SQLException {
-        DatabaseHelper.resetSampleData();
         FoodFactory factory = new FoodFactory();
         Food input = new Food();
         Config c = new Config();
         Data[] output;
-        int foodCount = 0;
+        int expectedHits = 3;
+        boolean[] hits = new boolean[expectedHits];
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
-
         // rename carrots to peppers
         input.id = 1;
 
+
         uut.rename(input, "Pepper");
 
-        output = uut.get(factory);
 
-        Assert.assertEquals(3, output.length);
+        output = uut.get(factory);
+        Assert.assertEquals(expectedHits, output.length);
         for (Data d : output) {
             if (d instanceof Food) {
                 if (((Food) d).name.equals("Pepper")) {
-                    foodCount++;
+                    hits[0] = true;
                 }
                 if (((Food) d).name.equals("Beer")) {
-                    foodCount++;
+                    hits[1] = true;
                 }
                 if (((Food) d).name.equals("Cheese")) {
-                    foodCount++;
+                    hits[2] = true;
                 }
             } else {
                 throw new IllegalArgumentException("Got non-food data entry");
             }
         }
-
-        Assert.assertEquals(3, foodCount);
+        assertArrayTrue(hits);
     }
 
     @Test
     public void testRemovingFood() throws IOException, SQLException {
-        DatabaseHelper.resetSampleData();
         FoodFactory factory = new FoodFactory();
         Food input = new Food();
         Config c = new Config();
         Data[] output;
-        int foodCount = 0;
+        int expectedCount = 2;
+        boolean[] hits = new boolean[expectedCount];
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
-
         input.id = 1;
+
 
         uut.remove(input);
 
-        output = uut.get(factory);
 
-        Assert.assertEquals(2, output.length);
+        output = uut.get(factory);
+        Assert.assertEquals(expectedCount, output.length);
         for (Data d : output) {
             if (d instanceof Food) {
                 if (((Food) d).name.equals("Beer")) {
-                    foodCount++;
+                    hits[0] = true;
                 }
                 if (((Food) d).name.equals("Cheese")) {
-                    foodCount++;
+                    hits[1] = true;
                 }
             } else {
                 throw new IllegalArgumentException("Got non-food data entry");
             }
         }
 
-        Assert.assertEquals(2, foodCount);
+        assertArrayTrue(hits);
     }
 
     @Test
     public void testAddingDevice() throws IOException, SQLException {
-        DatabaseHelper.resetSampleData();
         Config c = new Config();
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         UserDevice input = new UserDevice();
         UserDeviceFactory factory = new UserDeviceFactory();
-        int deviceCount = 0;
+        int expectedDevices = 5;
+        boolean[] hits = new boolean[expectedDevices];
         int deviceId = -1;
         boolean ticketPresent = false;
         Data[] output;
-
         input.name = "new device";
         input.userId = 1;
 
+
         uut.addDevice(input);
 
-        output = uut.get(factory);
 
-        Assert.assertEquals(4, output.length);
+        output = uut.get(factory);
+        Assert.assertEquals(expectedDevices, output.length);
         for (Data d : output) {
             if (d instanceof UserDevice) {
                 if (((UserDevice) d).name.equals("mobile")) {
-                    deviceCount++;
+                    hits[0] = true;
+                }
+                if (((UserDevice) d).name.equals("mobile2")) {
+                    hits[1] = true;
                 }
                 if (((UserDevice) d).name.equals("laptop")) {
-                    deviceCount++;
+                    hits[2] = true;
                 }
                 if (((UserDevice) d).name.equals("pending_device")) {
-                    deviceCount++;
+                    hits[3] = true;
                 }
                 if (((UserDevice) d).name.equals("new device")) {
-                    deviceCount++;
+                    hits[4] = true;
                     deviceId = ((UserDevice) d).id;
                 }
             } else {
                 throw new IllegalArgumentException("Got non-device data entry");
             }
         }
-        Assert.assertEquals(4, deviceCount);
+        assertArrayTrue(hits);
 
         Ticket[] tickets = getTickets();
         Assert.assertEquals(2, tickets.length);
@@ -175,36 +182,37 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testGettingData() throws IOException, SQLException {
-        DatabaseHelper.resetSampleData();
         Config c = new Config();
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         FoodFactory factory = new FoodFactory();
         Data[] output;
-        int foodCount = 0;
+        int expectedCount = 3;
+        boolean[] hits = new boolean[expectedCount];
+
 
         output = uut.get(factory);
 
-        Assert.assertEquals(3, output.length);
+
+        Assert.assertEquals(expectedCount, output.length);
         for (Data d : output) {
             if (d instanceof Food) {
                 Food f = (Food) d;
                 if (f.name.equals("Carrot")) {
-                    foodCount++;
+                    hits[0] = true;
                 }
                 if (f.name.equals("Beer")) {
-                    foodCount++;
+                    hits[1] = true;
                 }
                 if (f.name.equals("Cheese")) {
-                    foodCount++;
+                    hits[2] = true;
                 }
             }
         }
-        Assert.assertEquals(3, foodCount);
+        assertArrayTrue(hits);
     }
 
     @Test
     public void testMovingItems() throws IOException, SQLException {
-        DatabaseHelper.resetSampleData();
         Config c = new Config();
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         Data[] output;
@@ -214,10 +222,11 @@ public class SqlDatabaseHandlerTest {
         boolean itemMoved = false;
         i.id = 1;
 
+
         uut.moveItem(i, newLoc);
 
-        output = uut.get(factory);
 
+        output = uut.get(factory);
         Assert.assertEquals(3, output.length);
         for (Data d : output) {
             if (d instanceof FoodItem) {
@@ -233,36 +242,81 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testRemoveDevice() throws IOException, SQLException {
-        DatabaseHelper.resetSampleData();
         MockConfig c = new MockConfig();
         MockAuthAdmin ca = (MockAuthAdmin) c.getCertAdmin();
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         UserDevice d = new UserDevice();
         UserDeviceFactory factory = new UserDeviceFactory();
         Data[] output;
-        int deviceCount = 0;
+        int deviceCount = 3;
+        boolean[] hits = new boolean[deviceCount];
         d.id = 2;
+
 
         uut.removeDevice(d);
 
-        output = uut.get(factory);
 
+        output = uut.get(factory);
         List<Integer> revokedIds = ca.getRevokedIds();
         Assert.assertEquals(1, revokedIds.size());
         Assert.assertEquals(d.id, (int) revokedIds.get(0));
-        Assert.assertEquals(2, output.length);
+        Assert.assertEquals(deviceCount, output.length);
         for (Data data : output) {
             if (data instanceof UserDevice) {
                 UserDevice dev = (UserDevice) data;
                 if (dev.name.equals("mobile")) {
-                    deviceCount++;
+                    hits[0] = true;
+                }
+                if (dev.name.equals("laptop")) {
+                    hits[1] = true;
                 }
                 if (dev.name.equals("pending_device")) {
-                    deviceCount++;
+                    hits[2] = true;
                 }
             }
         }
-        Assert.assertEquals(2, deviceCount);
+        assertArrayTrue(hits);
+    }
+
+    @Test
+    public void testRemoveUser() throws IOException, SQLException {
+        MockConfig c = new MockConfig();
+        MockAuthAdmin ca = (MockAuthAdmin) c.getCertAdmin();
+        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
+        User u = new User();
+        UserFactory factory = new UserFactory();
+        UserDeviceFactory devFactory = new UserDeviceFactory();
+        Data[] output;
+        int deviceCount = 2;
+        boolean[] hits = new boolean[deviceCount];
+        u.id = 1;
+
+
+        uut.removeUser(u);
+
+
+        output = uut.get(factory);
+        List<Integer> revokedIds = ca.getRevokedIds();
+        Assert.assertEquals(2, revokedIds.size());
+        Assert.assertTrue(revokedIds.contains(1));
+        Assert.assertTrue(revokedIds.contains(2));
+        Assert.assertEquals(1, output.length);
+        Assert.assertEquals(2, ((User) output[0]).id);
+
+        output = uut.get(devFactory);
+        Assert.assertEquals(deviceCount, output.length);
+        for (Data d : output) {
+            if (d instanceof UserDevice) {
+                UserDevice dev = (UserDevice) d;
+                if (dev.name.equals("laptop")) {
+                    hits[0] = true;
+                }
+                if (dev.name.equals("pending_device")) {
+                    hits[1] = true;
+                }
+            }
+        }
+        assertArrayTrue(hits);
     }
 
     private Ticket[] getTickets() throws SQLException {
@@ -279,5 +333,11 @@ public class SqlDatabaseHandlerTest {
             list.add(t);
         }
         return list.toArray(new Ticket[list.size()]);
+    }
+
+    private void assertArrayTrue(boolean[] array) {
+        for (boolean b : array) {
+            Assert.assertTrue(b);
+        }
     }
 }
