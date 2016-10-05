@@ -36,7 +36,7 @@ build() {
     cd ..
     cp sentry/target/sentry-$pkgver.war deploy-server/root/jetty-base/wars/sentry.war
                         
-    wget -4 -O jetty.tar.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.9.v20160517.tar.gz&r=1"
+    wget -4 -O jetty.tar.gz "http://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.3.12.v20160915/jetty-distribution-9.3.12.v20160915.tar.gz"
 }
 
 package() {
