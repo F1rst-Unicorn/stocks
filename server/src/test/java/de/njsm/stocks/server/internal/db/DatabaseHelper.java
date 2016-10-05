@@ -20,11 +20,11 @@ public class DatabaseHelper {
             "INSERT INTO Food (ID, name) VALUES (1, 'Carrot'), (2, 'Beer'), (3, 'Cheese')",
             "INSERT INTO Location (ID, name) VALUES (1, 'Fridge') , (2, 'Cupboard')",
             "INSERT INTO User (ID, name) VALUES (1, 'Bob'), (2, 'Alice')",
-            "INSERT INTO User_device (ID, name, belongs_to) VALUES (1, 'mobile', 1), (2, 'laptop', 2), (3, 'pending_device', 2)",
+            "INSERT INTO User_device (ID, name, belongs_to) VALUES (1, 'mobile', 1), (2, 'mobile2', 1), (3, 'laptop', 2), (4, 'pending_device', 2)",
             "INSERT INTO Food_item (ID, eat_by, registers, buys, stored_in, of_type) VALUES" +
-                    "(1, '2017-09-24 00:00:00', 1, 1, 1, 2)," +
-                    "(2, '2017-09-24 00:00:00', 1, 1, 1, 2)," +
-                    "(3, '2017-09-24 00:00:00', 1, 1, 1, 2)",
+                    "(1, '2017-09-24 00:00:00', 3, 2, 1, 2)," +
+                    "(2, '2017-09-24 00:00:00', 3, 2, 1, 2)," +
+                    "(3, '2017-09-24 00:00:00', 3, 2, 1, 2)",
             "INSERT INTO Ticket (ticket, belongs_device) VALUES ('AAAA', 3)",
             "SET FOREIGN_KEY_CHECKS = 1",
     };
