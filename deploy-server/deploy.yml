@@ -1,14 +1,47 @@
 - hosts: deployment-test
   vars:
-          stocks_version: 0.4-1
-          local_user: jan
           remote_user: jan
+          remote_mysql_password: ''
+          remote_pkg_dir: /home/{{ remote_user }}/Software
+          
+          stocks_pkg_dir: ~/Software/stocks-server
+          stocks_base: /usr/share/stocks-server
+          stocks_version: 0.4-1
+          stocks_pkg: stocks-server-{{ stocks_version }}-x86_64.pkg.tar.xz
 
   remote_user: root
   tasks:
   - name: Copy package
-    copy: src=~/Software/stocks-server/stocks-server-{{ stocks_version }}-x86_64.pkg.tar.xz dest=/home/jan/Software/
+    copy: >
+        src={{ stocks_pkg_dir }}/{{ stocks_pkg }}
+        dest={{ remote_pkg_dir }}
 
   - name: Install stocks package
-    command: pacman -U /home/jan/Software/stocks-server-{{ stocks_version }}-x86_64.pkg.tar.xz --noconfirm
+    command: pacman -U {{ remote_pkg_dir }}/{{ stocks_pkg }} --noconfirm
     become: yes
+
+  - name: Setup database
+    mysql_db: >
+        name=stocks 
+        state=present 
+        login_user=root 
+        login_password={{ remote_mysql_password }}
+
+  - name: Setup database user
+    mysql_user: >
+        name=stocks 
+        password=linux 
+        priv=stocks.*:ALL 
+        state=present 
+        login_user=root
+
+  - name: Import database schema
+    mysql_db: >
+        name=stocks 
+        state=import
+        target={{ stocks_base }}/schema.sql
+
+  - name: Create CA
+    command: /usr/lib/stocks-server/setup-ca {{ stocks_base }}/root/CA {{ stocks_base }}
+    become: yes
+    become_user: stocks
