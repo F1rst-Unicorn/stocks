@@ -3,7 +3,7 @@
 ## Ansible Installation
 
 To automatically deploy the server to a fresh machine the ansible playbook in 
-deploy-server/deploy.yml can be used. However, this is tight to certain 
+deploy-server/deploy.yml can be used. However, this is bound to certain 
 constraints, since the playbook assumes a clean machine. You should not use the
 playbook if one of the following holds:
 
