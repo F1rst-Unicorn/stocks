@@ -1,4 +1,4 @@
-- hosts: deployment-test
+- hosts: "{{ target_host | default('deployment-test')}}"
 
   vars:
       remote_user: jan
@@ -29,6 +29,7 @@
     systemd: >
         name=mysqld
         state=started
+        daemon_reload=yes
 
   - name: Setup database
     mysql_db: >
@@ -39,7 +40,7 @@
 
   - name: Setup database user
     mysql_user: >
-        name=stocks 
+        name=server
         password=linux 
         priv=stocks.*:ALL 
         state=present 

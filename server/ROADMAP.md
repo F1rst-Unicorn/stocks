@@ -7,7 +7,7 @@
 * 00012 : DONE : Provide unit tests and integrate them with maven
 * 00014 : DONE : Add Ansible playbook for deployment
 * 00001 : NEW  : Better logging, divide access from errors
-* 00002 : NEW  : First database access on new server causes exception
+* 00002 : INVALID : First database access on new server causes exception
 
 ## Version 0.6
 * 00005 : NEW  : Clear obsolete tickets
