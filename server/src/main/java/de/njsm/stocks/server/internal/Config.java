@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.internal;
 
+import de.njsm.stocks.server.internal.auth.AuthAdmin;
 import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
 import de.njsm.stocks.server.internal.db.SqlDatabaseHandler;
@@ -13,10 +14,10 @@ public class Config {
     }
 
     public SqlDatabaseHandler getDbHandler() {
-        return new SqlDatabaseHandler();
+        return new SqlDatabaseHandler(this);
     }
 
-    public X509CertificateAdmin getCertAdmin() {
+    public AuthAdmin getCertAdmin() {
         return new X509CertificateAdmin();
     }
 
