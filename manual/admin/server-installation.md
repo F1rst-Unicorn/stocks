@@ -9,10 +9,26 @@ playbook if one of the following holds:
 
  * The machine already has an nginx instance running with a custom nginx.conf
  * The machine already contains a database named stocks
- * One of the ports 10910, 10911, 10912, 10915 or 10916 is already in use
+ * One of the ports 10910, 10911, 10912, 10916 or 10917 is already in use
 
 If one of the constraints holds the configs have to be edited as described 
 below. 
+
+### Playbook variables
+
+The playbook defines many variables over which one can finetune the 
+installation. Their meaning is described below: 
+
+remote_user: The user over which the root privileges are acquired. 
+remote_mysql_password: The password of the root user on the target host
+remote_pkg_dir: Where to cache the pacman package on the target host
+stocks_pkg_dir: Where on the local host the package is stored
+stocks_base: Default install folder, Don't change this, only for readability
+stocks_version: The version of the package, should not be changed
+stocks_pkg: The name of the package file
+stocks_user: The first user to install. Change to your needs
+stocks_device: The first device to install. Change to your needs
+sudoers_line: The line added to sudoers. To simplify auditing
 
 ## Manual Installation
 

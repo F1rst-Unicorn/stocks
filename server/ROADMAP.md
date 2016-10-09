@@ -6,10 +6,10 @@
 ## Version 0.5
 * 00012 : DONE : Provide unit tests and integrate them with maven
 * 00014 : DONE : Add Ansible playbook for deployment
-* 00001 : NEW  : Better logging, divide access from errors
 * 00002 : INVALID : First database access on new server causes exception
 
 ## Version 0.6
+* 00001 : NEW  : Better logging, divide access from errors
 * 00005 : NEW  : Clear obsolete tickets
 * 00004 : NEW  : Add EAN-13 add and delete methods for food
 * 00006 : NEW  : Image support for Food

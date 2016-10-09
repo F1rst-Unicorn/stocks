@@ -7,7 +7,7 @@
           
       stocks_pkg_dir: ~/Software/stocks-server
       stocks_base: /usr/share/stocks-server
-      stocks_version: 0.4-1
+      stocks_version: 0.5-1
       stocks_pkg: stocks-server-{{ stocks_version }}-x86_64.pkg.tar.xz
 
       stocks_user: 'Jan'
