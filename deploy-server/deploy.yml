@@ -26,10 +26,9 @@
     command: pacman -U {{ remote_pkg_dir }}/{{ stocks_pkg }} --noconfirm
 
   - name: Start MariaDB
-    systemd: >
+    service: >
         name=mysqld
         state=started
-        daemon_reload=yes
 
   - name: Setup database
     mysql_db: >
@@ -106,12 +105,12 @@
         backup=True
 
   - name: Start jetty server
-    systemd: >
+    service: >
         name=stocks-jetty 
         state=started
 
   - name: Start nginx server
-    systemd: >
+    service: >
         name=nginx
         state=started
 
