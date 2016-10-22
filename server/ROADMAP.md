@@ -13,7 +13,7 @@
 * 00005 : NEW  : Clear obsolete tickets
 * 00004 : NEW  : Add EAN-13 add and delete methods for food
 * 00006 : NEW  : Image support for Food
-* 00015 : NEW  : Replace ansible systemd module by service calls
+* 00015 : DONE : Replace ansible systemd module by service calls
 
 ## Version 0.7
 * 00010 : NEW  : Edit eat-by date
