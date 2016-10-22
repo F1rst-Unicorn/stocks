@@ -21,19 +21,4 @@ public class Config {
         return new X509CertificateAdmin();
     }
 
-    public Logger getLog() {
-        Logger result = Logger.getLogger("stocks-client");
-        for (Handler h : result.getHandlers()) {
-            result.removeHandler(h);
-        }
-        result.setLevel(Level.ALL);
-        result.setUseParentHandlers(false);
-        ConsoleHandler handler = new ConsoleHandler();
-
-        Formatter formatter = new Formatter();
-        handler.setFormatter(formatter);
-        handler.setLevel(Level.ALL);
-        result.addHandler(handler);
-        return result;
-    }
 }

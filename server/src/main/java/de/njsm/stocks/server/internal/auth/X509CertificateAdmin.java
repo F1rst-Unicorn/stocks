@@ -2,6 +2,7 @@ package de.njsm.stocks.server.internal.auth;
 
 import de.njsm.stocks.server.internal.Config;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class X509CertificateAdmin implements AuthAdmin {
+
+    private static final Logger LOG = Logger.getLogger(X509CertificateAdmin.class);
 
     public void revokeCertificate(int id) {
 
@@ -22,11 +25,9 @@ public class X509CertificateAdmin implements AuthAdmin {
             p.waitFor();
             refreshCrl();
         } catch (IOException e){
-            (new Config()).getLog().log(Level.SEVERE,
-                    "X509CertificateAdmin: Failed to revoke certificate: " +
-                            e.getMessage());
+            LOG.error("Failed to revoke certificate", e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.error("Interrupted while waiting", e);
         }
 
     }
@@ -49,8 +50,10 @@ public class X509CertificateAdmin implements AuthAdmin {
 
             p = Runtime.getRuntime().exec(nginxCommand);
             p.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOG.error("Failed to reload CRL", e);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while waiting", e);
         }
     }
 }

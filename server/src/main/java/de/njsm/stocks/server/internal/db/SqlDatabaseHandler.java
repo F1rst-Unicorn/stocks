@@ -4,6 +4,7 @@ import de.njsm.stocks.server.data.*;
 import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.AuthAdmin;
 import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
+import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class SqlDatabaseHandler {
+
+    private static final Logger LOG = Logger.getLogger(SqlDatabaseHandler.class);
 
     private final String url;
     private final Config c;
@@ -46,12 +49,12 @@ public class SqlDatabaseHandler {
             d.fillAddStmt(stmt);
             stmt.execute();
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Database: Failed to add " + d.toString() + ": " + e.getMessage());
+            LOG.error("Failed to add " + d.toString(), e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Database: Failed to rollback: " + e1.getMessage());
+                    LOG.error("Failed to rollback", e1);
                 }
             }
         }
@@ -65,12 +68,12 @@ public class SqlDatabaseHandler {
             d.fillRenameStmt(stmt, newName);
             stmt.execute();
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Database: Failed to rename " + d.toString() + ": " + e.getMessage());
+            LOG.error("Failed to rename " + d.toString(), e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Database: Failed to rollback: " + e1.getMessage());
+                    LOG.error("Failed to rollback", e1);
                 }
             }
         }
@@ -84,12 +87,12 @@ public class SqlDatabaseHandler {
             d.fillRemoveStmt(stmt);
             stmt.execute();
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Database: Failed to remove " + d.toString() + ": " + e.getMessage());
+            LOG.error("Failed to remove " + d.toString(), e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Database: Failed to rollback: " + e1.getMessage());
+                    LOG.error("Failed to rollback", e1);
                 }
             }
         }
@@ -125,12 +128,12 @@ public class SqlDatabaseHandler {
 
             certificateList.forEach(ca::revokeCertificate);
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "Error deleting devices: " + e.getMessage());
+            LOG.error("Error deleting devices", e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                    LOG.error("Error while rollback", e1);
                 }
             }
         }
@@ -162,12 +165,12 @@ public class SqlDatabaseHandler {
             con.commit();
 
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Error adding device: " + e.getMessage());
+            LOG.error("Error adding device", e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                    LOG.error("Error while rollback", e1);
                 }
             }
             result.ticket = null;
@@ -190,12 +193,12 @@ public class SqlDatabaseHandler {
             c.getCertAdmin().revokeCertificate(u.id);
 
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "Error deleting devices: " + e.getMessage());
+            LOG.error("Error deleting devices", e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                    LOG.error("Error while rollback", e1);
                 }
             }
         }
@@ -210,12 +213,12 @@ public class SqlDatabaseHandler {
             List<Data> result = df.createDataList(rs);
             return result.toArray(new Data[result.size()]);
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Error getting data: " + e.getMessage());
+            LOG.error("Error getting data", e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                    LOG.error("Error while rollback", e1);
                 }
             }
         }
@@ -235,12 +238,12 @@ public class SqlDatabaseHandler {
             stmt.executeQuery();
 
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Error moving item: " + e.getMessage());
+            LOG.error("Error moving item", e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                    LOG.error("Error while rollback", e1);
                 }
             }
         }
