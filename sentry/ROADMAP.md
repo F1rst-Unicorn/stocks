@@ -5,4 +5,4 @@
 
 ## Version 0.5
 * 00001 : NEW  : First access to database crashes due to driver not found
-* 00002 : NEW  : Add Vagrant integration tests
+* 00002 : NEW  : Change logging to log4j and refine messages
