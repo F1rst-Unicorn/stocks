@@ -1,6 +1,6 @@
 # Maintainer: aliena <dairyman@njsm.de>
 pkgname=stocks
-pkgver=0.3
+pkgver=0.4
 pkgrel=1
 pkgdesc="Manages a household's stocks client"
 arch=('i686' 'x86_64')
@@ -12,7 +12,8 @@ depends=('jre8-openjdk'
          )
 makedepends=('git'
 			 'maven')
-source=("git://www.github.com/F1rst-Unicorn/stocks")
+branch=${STOCKSBRANCH:-master}
+source=("git://www.github.com/F1rst-Unicorn/stocks#branch=$branch")
 sha512sums=('SKIP')
 install=stocks.install
 
@@ -36,7 +37,7 @@ package() {
     chmod 555 $pkgdir/usr/bin/stocks
     
     mkdir -p $pkgdir/usr/share/stocks/
-    cp deploy--client/schema.sql $pkgdir/usr/share/stocks/
+    cp deploy-client/schema.sql $pkgdir/usr/share/stocks/
     chmod 444 $pkgdir/usr/share/stocks/schema.sql
 
     mkdir -p $pkgdir/usr/share/licenses/$pkgname/
