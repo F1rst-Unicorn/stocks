@@ -4,7 +4,7 @@
 
     <groupId>de.njsm.stocks</groupId>
     <artifactId>client</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <packaging>jar</packaging>
 
     <name>Stocks management client</name>
