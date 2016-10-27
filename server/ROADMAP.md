@@ -9,6 +9,7 @@
 * 00002 : INVALID : First database access on new server causes exception
 
 ## Version 0.6
+* 00016 : NEW  : Migrate from Jetty to Tomcat 8
 * 00001 : NEW  : Better logging, divide access from errors
 * 00005 : NEW  : Clear obsolete tickets
 * 00004 : NEW  : Add EAN-13 add and delete methods for food
