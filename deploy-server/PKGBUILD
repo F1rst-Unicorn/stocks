@@ -73,7 +73,7 @@ package() {
     
     mkdir -p $pkgdir/etc/$pkgname/
     cp deploy-server/stocks.properties $pkgdir/etc/$pkgname
-    cp deploy-server/log4j.xml $pkgdir/etc/stocks-server/log4j.xml
+    cp deploy-server/log4j.xml $pkgdir/etc/stocks-server/log4j2.xml
     
     mkdir -p $pkgdir/usr/share/doc/$pkgname
     cp README.md $pkgdir/usr/share/doc/$pkgname

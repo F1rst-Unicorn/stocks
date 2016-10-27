@@ -34,6 +34,7 @@
     <New id="webapp" class="org.eclipse.jetty.webapp.WebAppContext">
         <Set name="contextPath">/</Set>
         <Set name="war"><Property name="jetty.base" default="." />/wars/server.war</Set>
+        <Set name="extraClasspath">/etc/stocks-server/</Set>
     </New>
     
     <Set name="handler">

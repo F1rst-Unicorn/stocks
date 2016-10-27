@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration monitorInterval="60" >
+<Configuration monitorInterval="60" >
     
-    <appenders>
+    <Appenders>
     
-        <appender name="console" class="org.apache.log4j.ConsoleAppender">
-            <layout class="org.apache.log4j.PatternLayout">
-                <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %p %C:%L %m%n" />
-            </layout>
-        </appender>
+        <Appender name="console" class="org.apache.log4j.ConsoleAppender">
+            <Layout class="org.apache.log4j.PatternLayout">
+                <Param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %p %C:%L %m%n" />
+            </Layout>
+        </Appender>
         
-    </appenders>
+    </Appenders>
 
-    <loggers>
+    <Loggers>
         
-        <root>
-            <level value="INFO" />
-            <appender-ref ref="console" />
-        </root>
+        <Root level="info">
+            <AppenderRef ref="console"/>
+        </Root>
         
-    </loggers>
+    </Loggers>
     
-</configuration>
+</Configuration>
