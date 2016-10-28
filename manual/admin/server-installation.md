@@ -55,8 +55,15 @@ CA and all needed keys. The script takes two arguments, provided as fully
 qualified paths: The first is the directory where to install the CA. The second
 path is where to find the openSSL config templates. For production deployment 
 these arguments are:
+
 * /usr/share/stocks-server/root/CA
 * /usr/share/stocks-server/
+
+After the script has finished copy the files below to the nginx root which 
+defaults to /usr/share/stocks-server/root/nginx. 
+
+* /usr/share/stocks-server/root/CA/certs/ca.cert.pem
+* /usr/share/stocks-server/root/CA/intermediate/certs/ca-chain.cert.pem
 
 ### nginx
 
