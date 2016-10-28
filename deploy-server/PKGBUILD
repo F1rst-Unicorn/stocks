@@ -62,6 +62,7 @@ package() {
     cp deploy-server/nginx.conf $pkgdir/usr/share/$pkgname/nginx.example.conf
     
     mkdir -p $pkgdir/usr/share/$pkgname/root/CA/intermediate
+    mkdir -p $pkgdir/usr/share/$pkgname/root/nginx
     cp deploy-server/openssl.cnf $pkgdir/usr/share/$pkgname
     cp deploy-server/openssl_intermediate.cnf $pkgdir/usr/share/$pkgname
     
