@@ -19,13 +19,9 @@ below.
 The playbook defines many variables over which one can finetune the 
 installation. Their meaning is described below: 
 
-remote_user: The user over which the root privileges are acquired. 
-remote_mysql_password: The password of the root user on the target host
-remote_pkg_dir: Where to cache the pacman package on the target host
-stocks_pkg_dir: Where on the local host the package is stored
+target_host: The ansible host group on which to run the playbook
+remote_mysql_password: The password of the MySQL root user on the target host
 stocks_base: Default install folder, Don't change this, only for readability
-stocks_version: The version of the package, should not be changed
-stocks_pkg: The name of the package file
 stocks_user: The first user to install. Change to your needs
 stocks_device: The first device to install. Change to your needs
 sudoers_line: The line added to sudoers. To simplify auditing

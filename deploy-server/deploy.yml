@@ -1,14 +1,9 @@
 - hosts: "{{ target_host | default('deployment-test')}}"
 
   vars:
-      remote_user: jan
       remote_mysql_password: ''
-      remote_pkg_dir: /home/{{ remote_user }}/Software
           
-      stocks_pkg_dir: ~/Software/stocks-server
       stocks_base: /usr/share/stocks-server
-      stocks_version: 0.5-1
-      stocks_pkg: stocks-server-{{ stocks_version }}-x86_64.pkg.tar.xz
 
       stocks_user: 'Jan'
       stocks_device: 'Laptop'
@@ -17,14 +12,6 @@
 
   remote_user: root
   tasks:
-  - name: Copy package
-    copy: >
-        src={{ stocks_pkg_dir }}/{{ stocks_pkg }}
-        dest={{ remote_pkg_dir }}
-
-  - name: Install stocks package
-    command: pacman -U {{ remote_pkg_dir }}/{{ stocks_pkg }} --noconfirm
-
   - name: Start MariaDB
     service: >
         name=mysqld
