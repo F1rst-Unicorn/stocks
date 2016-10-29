@@ -7,7 +7,7 @@ cleanup() {
 
 check() {
         set +e
-        egrep $1 resources/curl
+        egrep "$1" resources/curl > /dev/null
         if [[ $? -ne 0 ]] ; then
                 echo "ERROR: Expected $1"
                 echo -n "       Actual "
@@ -32,44 +32,104 @@ set -e
 mkdir -p resources
 
 # Create first user
-curl http://$SERVER:10910/ca > resources/ca.crt
-curl http://$SERVER:10910/chain > resources/ca-chain.crt
+curl -sS http://$SERVER:10910/ca > resources/ca.crt
+curl -sS http://$SERVER:10910/chain > resources/ca-chain.crt
 
 openssl x509 -in resources/ca.crt -text >/dev/null
 openssl x509 -in resources/ca-chain.crt -text >/dev/null
 
-openssl genrsa -out resources/client.key.pem 4096
+openssl genrsa -out resources/client.key.pem 4096 2>/dev/null
 openssl req -new -sha256 -key resources/client.key.pem \
         -out resources/client.csr.pem \
         -subj '/CN=Jan$1$Laptop$1' -batch
 CSR=$(cat resources/client.csr.pem | tr \\n \& | sed 's/&/\\n/g')
 
-curl -XPOST --data "{\"deviceId\": 1, \"ticket\": \"0000\", \"pemFile\": \
+curl -sS -XPOST --data "{\"deviceId\": 1, \"ticket\": \"0000\", \"pemFile\": \
         \"$CSR\"}" \
         --cacert resources/ca-chain.crt \
         --insecure \
         --header 'content-type: application/json' \
         https://$SERVER:10911/uac/newuser > resources/response.json
 cat resources/response.json | \
-        sed 's/.*pemFile":.*"\(.*\)".*/\1/g' | \
+        sed -r 's/.*pemFile":.*"(.*)".*/\1/g' | \
         sed 's/\\n/%/g' | tr \% \\n > resources/client.crt.pem
 
 openssl x509 -in resources/client.crt.pem -text >/dev/null
+rm resources/response.json
+
+# Test invalid ticket rejection
+curl -sS -XPOST --data "{\"deviceId\": 1, \"ticket\": \"0000\", \"pemFile\": \
+        \"$CSR\"}" \
+        --cacert resources/ca-chain.crt \
+        --insecure \
+        --header 'content-type: application/json' \
+        https://$SERVER:10911/uac/newuser > resources/curl
+check '^\{"deviceId":1,"ticket":"0000"\}$'
 
 # check initial database
-curl $CURLARGS -XGET https://192.168.100.5:10912/user > resources/curl
+curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl # FIXME: remove this once server-00018 is solved
+curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl
 check '"id":1.*"name":"Jan"'
-curl $CURLARGS -XGET https://192.168.100.5:10912/device > resources/curl
+curl -sS $CURLARGS -XGET https://$SERVER:10912/device > resources/curl
 check '"id":1.*"name":"Laptop"'
-curl $CURLARGS -XGET https://192.168.100.5:10912/location > resources/curl
-check '^[]$'
-curl $CURLARGS -XGET https://192.168.100.5:10912/food > resources/curl
-check '^[]$'
-curl $CURLARGS -XGET https://192.168.100.5:10912/food/item > resources/curl
-check '^[]$'
+curl -sS $CURLARGS -XGET https://$SERVER:10912/location > resources/curl
+check '^\[\]$'
+curl -sS $CURLARGS -XGET https://$SERVER:10912/food > resources/curl
+check '^\[\]$'
+curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > resources/curl
+check '^\[\]$'
+
+# check location stuff
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/location \
+        --header 'content-type: application/json' \
+        --data '{"id":0,"name":"Fridge"}'
+curl -sS $CURLARGS -XGET https://$SERVER:10912/location > resources/curl
+check '^\[\{"id":[0-9]+,"name":"Fridge"\}\]$'
+ID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/location/Cupboard \
+        --header 'content-type: application/json' \
+        --data "{\"id\":$ID,\"name\":\"Fridge\"}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/location > resources/curl
+check "^\[\{\"id\":$ID,\"name\":\"Cupboard\"\}\]$"
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/location/remove \
+        --header 'content-type: application/json' \
+        --data "{\"id\":$ID,\"name\":\"Cupboard\"}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/location > resources/curl
+check '^\[\]$'
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/location \
+        --header 'content-type: application/json' \
+        --data '{"id":0,"name":"Fridge"}'
+curl -sS $CURLARGS -XGET https://$SERVER:10912/location > resources/curl
+check '^\[\{"id":[0-9]+,"name":"Fridge"\}\]$'
+LOCID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+
+# check user stuff
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/user \
+        --header 'content-type: application/json' \
+        --data '{"id":0,"name":"Second user"}'
+curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl
+check '^\[.*\{"id":[0-9]+,"name":"Second user"\}.*\]$'
+ID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),"name":"Second.*/\1/g')
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/user/remove \
+        --header 'content-type: application/json' \
+        --data "{\"id\":$ID,\"name\":\"Second user\"}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl
+check '^\[\{"id":[0-9]+,"name":"Jan"\}\]$'
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/user \
+        --header 'content-type: application/json' \
+        --data '{"id":0,"name":"John"}'
+curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl
+check '^\[.*\{"id":[0-9]+,"name":"John"\}.*\]$'
+USERID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),"name":"John.*/\1/g')
 
 
+# check food stuff
 
+# check item stuff
+
+# check device stuff
+ 
+# check ticket system
 
 cleanup
 echo SUCCESS
