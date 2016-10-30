@@ -124,8 +124,58 @@ USERID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),"name":"John.*/\1/g')
 
 
 # check food stuff
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/food \
+        --header 'content-type: application/json' \
+        --data '{"id":0,"name":"Sausage"}'
+curl -sS $CURLARGS -XGET https://$SERVER:10912/food > resources/curl
+check '^\[\{"id":[0-9]+,"name":"Sausage"\}\]$'
+ID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/Bread \
+        --header 'content-type: application/json' \
+        --data "{\"id\":$ID,\"name\":\"Sausage\"}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/food > resources/curl
+check "^\[\{\"id\":$ID,\"name\":\"Bread\"\}\]$"
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/remove \
+        --header 'content-type: application/json' \
+        --data "{\"id\":$ID,\"name\":\"Bread\"}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/food > resources/curl
+check '^\[\]$'
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/food \
+        --header 'content-type: application/json' \
+        --data '{"id":0,"name":"Bread"}'
+curl -sS $CURLARGS -XGET https://$SERVER:10912/food > resources/curl
+check '^\[\{"id":[0-9]+,"name":"Bread"\}\]$'
+FOODID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+
 
 # check item stuff
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/fooditem \
+        --header 'content-type: application/json' \
+        --data "{\"id\":0,
+                 \"eatByDate\":\"2017-01-01 00:00:00\",
+                 \"ofType\":$FOODID,
+                 \"storedIn\":$LOCID,
+                 \"registers\":1,
+                 \"buys\":1}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > resources/curl
+check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017-01-01\",\"ofType\":$FOODID,\"storedIn\":$LOCID,\"registers\":1,\"buys\":1\}\]"
+ID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/location \
+        --header 'content-type: application/json' \
+        --data '{"id":0,"name":"Cupboard"}'
+curl -sS $CURLARGS -XGET https://$SERVER:10912/location > resources/curl
+LOCTWOID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),"name":"Cup.*/\1/g')
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/fooditem/move/$LOCTWOID \
+        --header 'content-type: application/json' \
+        --data "{\"id\":$ID}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > resources/curl
+check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017-01-01\",\"ofType\":$FOODID,\"storedIn\":$LOCTWOID,\"registers\":1,\"buys\":1\}\]"
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/fooditem/remove \
+        --header 'content-type: application/json' \
+        --data "{\"id\":$ID}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > resources/curl
+check '^\[\]$'
+
 
 # check device stuff
  
