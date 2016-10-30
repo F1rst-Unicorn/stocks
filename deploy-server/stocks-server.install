@@ -8,12 +8,8 @@ post_install() {
     
     useradd -d / -g users stocks
     
-    mkdir -p /usr/share/stocks-server/root/jetty-base/resources
-    
     chown -R stocks:users /usr/share/stocks-server/root
     chown -R stocks:users /var/log/stocks-server
-    
-    echo "See /usr/share/doc/stocks-server/README for configuration overview"
 }
 
 ## arg 1:  the new package version

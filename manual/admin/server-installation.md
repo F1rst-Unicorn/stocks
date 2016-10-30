@@ -8,6 +8,7 @@ constraints, since the playbook assumes a clean machine. You should not use the
 playbook if one of the following holds:
 
  * The machine already has an nginx instance running with a custom nginx.conf
+ * The machine already has a tomcat 8 instance running with a custom server.xml
  * The machine already contains a database named stocks
  * One of the ports 10910, 10911, 10912, 10916 or 10917 is already in use
 
@@ -81,7 +82,12 @@ to your /etc/sudoers file
 stocks ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload
 ```
 
-### Jetty server
+### Tomcat 8
+
+Set up tomcat as a servlet container. For an example config have a look at 
+/usr/share/stocks-server/tomcat.xml. 
+
+### Stocks server
 
 To adapt the stocks server to your system, adjust the needed values in 
 /etc/stocks-server/stocks.properties. 
@@ -89,7 +95,7 @@ To adapt the stocks server to your system, adjust the needed values in
 ### Start up the components
 
 * Start mysql
-* Start jetty
+* Start tomcat
 * Start nginx
 
 ### Adding the first user

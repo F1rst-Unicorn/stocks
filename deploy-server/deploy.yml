@@ -107,9 +107,18 @@
         group=root
         backup=True
 
-  - name: Start jetty server
+  - name: Install tomcat config conservatively
+    copy: >
+        src={{ stocks_base }}/tomcat.xml
+        dest=/etc/tomcat8/server.xml
+        remote_src=True
+        owner=root
+        group=root
+        backup=True
+
+  - name: Start tomcat
     service: >
-        name=stocks-jetty 
+        name=tomcat8
         state=started
 
   - name: Start nginx server

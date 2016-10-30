@@ -10,17 +10,17 @@ depends=('jre8-openjdk'
          'java-environment'
          'nginx'
          'openssl'
-         'mariadb')
+         'mariadb'
+         'tomcat8')
 makedepends=('git'
-			 'wget'
-			 'maven')
+             'maven')
 branch=${STOCKSBRANCH:-master}
 source=("git://www.github.com/F1rst-Unicorn/stocks#branch=$branch")
 install=stocks-server.install
 sha512sums=('SKIP')
 backup=("etc/$pkgname/stocks.properties"
-		"usr/lib/$pkgname/server"
-		"usr/lib/$pkgname/setup-ca")
+	"usr/lib/$pkgname/server"
+	"usr/lib/$pkgname/setup-ca")
 		
 prepare() {
     # Verify that the correct PKGBUILD is used to prevent version conflicts
@@ -38,19 +38,13 @@ prepare() {
 build() {
     cd "$srcdir/stocks"
     
-    mkdir -p deploy-server/root/jetty-base/wars
-
     cd server
     mvn -Dmaven.test.skip=true clean package
     cd ..
-    cp server/target/server-*.war deploy-server/root/jetty-base/wars/server.war
 
     cd sentry
     mvn -Dmaven.test.skip=true clean package
     cd ..
-    cp sentry/target/sentry-*.war deploy-server/root/jetty-base/wars/sentry.war
-                        
-    wget -4 -O jetty.tar.gz "http://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.3.12.v20160915/jetty-distribution-9.3.12.v20160915.tar.gz"
 }
 
 package() {
@@ -60,34 +54,31 @@ package() {
     cp -r deploy-server/root $pkgdir/usr/share/$pkgname
     cp deploy-server/schema.sql $pkgdir/usr/share/$pkgname/schema.sql
     cp deploy-server/nginx.conf $pkgdir/usr/share/$pkgname/nginx.example.conf
+    cp deploy-server/tomcat-server.xml $pkgdir/usr/share/$pkgname/tomcat.xml
     
     mkdir -p $pkgdir/usr/share/$pkgname/root/CA/intermediate
     mkdir -p $pkgdir/usr/share/$pkgname/root/nginx
     cp deploy-server/openssl.cnf $pkgdir/usr/share/$pkgname
     cp deploy-server/openssl_intermediate.cnf $pkgdir/usr/share/$pkgname
     
-    mkdir -p $pkgdir/usr/lib/$pkgname/
+    mkdir -p $pkgdir/usr/lib/$pkgname
     cp deploy-server/setup-ca $pkgdir/usr/lib/$pkgname/
     cp deploy-server/server $pkgdir/usr/lib/$pkgname/
     cp deploy-server/nginx-reload $pkgdir/usr/lib/$pkgname/
     chmod -R 755 $pkgdir/usr/lib/$pkgname
+
+    mkdir -p $pkgdir/usr/share/tomcat8/webapps
+    cp server/target/server-*.war $pkgdir/usr/share/tomcat8/webapps/
+    cp sentry/target/sentry-*.war $pkgdir/usr/share/tomcat8/webapps/
     
     mkdir -p $pkgdir/etc/$pkgname/
     cp deploy-server/stocks.properties $pkgdir/etc/$pkgname
     
     mkdir -p $pkgdir/usr/share/doc/$pkgname
     cp README.md $pkgdir/usr/share/doc/$pkgname
+    cp -r manual $pkgdir/usr/share/doc/$pkgname
     chmod -R 755 $pkgdir/usr/share/doc/$pkgname
     
-    tar xzf jetty.tar.gz
-    mkdir -p $pkgdir/opt/stocks-jetty
-    mv jetty-distribution-*/* $pkgdir/opt/stocks-jetty
-    chown -R root:root $pkgdir/opt/stocks-jetty
-    rm -rf $pkgdir/opt/stocks-jetty/demo-base
-    
-    mkdir -p $pkgdir/usr/lib/systemd/system/
-    cp deploy-server/stocks-jetty.service $pkgdir/usr/lib/systemd/system/
-
     mkdir -p $pkgdir/usr/share/licenses/$pkgname/
     cp LICENSE.md $pkgdir/usr/share/licenses/$pkgname/
     
