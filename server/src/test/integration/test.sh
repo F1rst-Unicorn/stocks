@@ -1,10 +1,5 @@
 #!/usr/bin/bash
 
-# Call on exit or failure to cleanup
-cleanup() {
-        rm -rf resources
-}
-
 check() {
         set +e
         egrep "$1" resources/curl > /dev/null
@@ -18,20 +13,8 @@ check() {
         set -e
 }
 
-checkFile() {
-        set +e
-        egrep "$1" "$2" > /dev/null
-        if [[ $? -ne 0 ]] ; then
-                echo "ERROR: Expected $1"
-                echo -n "       Actual "
-                cat resources/curl
-                echo
-                exit 1
-        fi
-        set -e
-}
-
-CURLARGS="--cacert resources/ca-chain.crt --insecure --key resources/client.key.pem --cert resources/client.crt.pem"
+CURLARGS="--cacert resources/ca-chain.crt --insecure \
+        --key resources/client.key.pem --cert resources/client.crt.pem"
 
 if [[ $# -ne 1 ]] ; then
         echo "Usage: $0 <hostname/IP>"
@@ -68,9 +51,11 @@ cat resources/response.json | \
 
 openssl x509 -in resources/client.crt.pem -text >/dev/null
 rm resources/response.json
+echo Test first user: OK
 
 # check initial database
-curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl # FIXME: remove this once server-00018 is solved
+# FIXME: remove this line once server-00018 is solved
+curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl 
 curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl
 check '"id":1.*"name":"Jan"'
 curl -sS $CURLARGS -XGET https://$SERVER:10912/device > resources/curl
@@ -81,6 +66,7 @@ curl -sS $CURLARGS -XGET https://$SERVER:10912/food > resources/curl
 check '^\[\]$'
 curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > resources/curl
 check '^\[\]$'
+echo Test initial database: OK
 
 # check location stuff
 curl -sS $CURLARGS -XPUT https://$SERVER:10912/location \
@@ -105,6 +91,7 @@ curl -sS $CURLARGS -XPUT https://$SERVER:10912/location \
 curl -sS $CURLARGS -XGET https://$SERVER:10912/location > resources/curl
 check '^\[\{"id":[0-9]+,"name":"Fridge"\}\]$'
 LOCID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+echo Test locations: OK
 
 # check user stuff
 curl -sS $CURLARGS -XPUT https://$SERVER:10912/user \
@@ -124,6 +111,7 @@ curl -sS $CURLARGS -XPUT https://$SERVER:10912/user \
 curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl
 check '^\[.*\{"id":[0-9]+,"name":"John"\}.*\]$'
 USERID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),"name":"John.*/\1/g')
+echo Test users: OK
 
 
 # check food stuff
@@ -149,6 +137,7 @@ curl -sS $CURLARGS -XPUT https://$SERVER:10912/food \
 curl -sS $CURLARGS -XGET https://$SERVER:10912/food > resources/curl
 check '^\[\{"id":[0-9]+,"name":"Bread"\}\]$'
 FOODID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+echo Test food: OK
 
 
 # check item stuff
@@ -161,7 +150,8 @@ curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/fooditem \
                  \"registers\":1,
                  \"buys\":1}"
 curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > resources/curl
-check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017-01-01\",\"ofType\":$FOODID,\"storedIn\":$LOCID,\"registers\":1,\"buys\":1\}\]"
+check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017-01-01\",\"ofType\":$FOODID,\
+\"storedIn\":$LOCID,\"registers\":1,\"buys\":1\}\]"
 ID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
 curl -sS $CURLARGS -XPUT https://$SERVER:10912/location \
         --header 'content-type: application/json' \
@@ -172,12 +162,14 @@ curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/fooditem/move/$LOCTWOID \
         --header 'content-type: application/json' \
         --data "{\"id\":$ID}"
 curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > resources/curl
-check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017-01-01\",\"ofType\":$FOODID,\"storedIn\":$LOCTWOID,\"registers\":1,\"buys\":1\}\]"
+check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017-01-01\",\"ofType\":$FOODID,\
+\"storedIn\":$LOCTWOID,\"registers\":1,\"buys\":1\}\]"
 curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/fooditem/remove \
         --header 'content-type: application/json' \
         --data "{\"id\":$ID}"
 curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > resources/curl
 check '^\[\]$'
+echo Test food items: OK
 
 
 # check device stuff
@@ -201,13 +193,14 @@ curl -sS $CURLARGS -XGET https://$SERVER:10912/device > resources/curl
 check "^\[.*\{\"id\":[0-9]+,\"name\":\"Mobile\",\"userId\":$USERID\}.*\]$"
 DEVID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),"name":"Mobile.*/\1/g')
 TICKET=$(cat resources/newTicket.json | sed -r 's/.*"ticket":"(.*)".*/\1/g')
+echo Test devices: OK
  
 # check ticket system
 openssl genrsa -out resources/newClient.key.pem 4096 2>/dev/null
 
 ## test no ticket
 curl -sS -XPOST --data "{\"deviceId\": $DEVID, \"ticket\": \"\", \"pemFile\": \
-        \"$CSR\"}" \
+\"$CSR\"}" \
         --cacert resources/ca-chain.crt \
         --insecure \
         --header 'content-type: application/json' \
@@ -215,7 +208,7 @@ curl -sS -XPOST --data "{\"deviceId\": $DEVID, \"ticket\": \"\", \"pemFile\": \
 check "^\{\"deviceId\":$DEVID,\"ticket\":\"\"\}$"
 ## test wrong ticket
 curl -sS -XPOST --data "{\"deviceId\": $DEVID, \"ticket\": \"f\", \"pemFile\": \
-        \"$CSR\"}" \
+\"$CSR\"}" \
         --cacert resources/ca-chain.crt \
         --insecure \
         --header 'content-type: application/json' \
@@ -223,7 +216,7 @@ curl -sS -XPOST --data "{\"deviceId\": $DEVID, \"ticket\": \"f\", \"pemFile\": \
 check "^\{\"deviceId\":$DEVID,\"ticket\":\"f\"\}$"
 ## test wrong device id
 curl -sS -XPOST --data "{\"deviceId\":0,\"ticket\": \"$TICKET\", \"pemFile\": \
-        \"$CSR\"}" \
+\"$CSR\"}" \
         --cacert resources/ca-chain.crt \
         --insecure \
         --header 'content-type: application/json' \
@@ -234,8 +227,8 @@ openssl req -new -sha256 -key resources/newClient.key.pem \
         -out resources/wrong.csr.pem \
         -subj "/CN=John\$$USERID\$Mobile\$0" -batch
 WRONGCSR=$(cat resources/wrong.csr.pem | tr \\n \& | sed 's/&/\\n/g')
-curl -sS -XPOST --data "{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\",\"pemFile\":\
-        \"$WRONGCSR\"}" \
+curl -sS -XPOST --data "{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\",\
+\"pemFile\":\"$WRONGCSR\"}" \
         --cacert resources/ca-chain.crt \
         --insecure \
         --header 'content-type: application/json' \
@@ -245,8 +238,8 @@ openssl req -new -sha256 -key resources/newClient.key.pem \
         -out resources/wrong.csr.pem \
         -subj "/CN=John\$$USERID\$Mobil\$$DEVID" -batch
 WRONGCSR=$(cat resources/wrong.csr.pem | tr \\n \& | sed 's/&/\\n/g')
-curl -sS -XPOST --data "{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\",\"pemFile\":\
-        \"$WRONGCSR\"}" \
+curl -sS -XPOST --data "{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\",\
+\"pemFile\":\"$WRONGCSR\"}" \
         --cacert resources/ca-chain.crt \
         --insecure \
         --header 'content-type: application/json' \
@@ -256,8 +249,8 @@ openssl req -new -sha256 -key resources/newClient.key.pem \
         -out resources/wrong.csr.pem \
         -subj "/CN=Jan\$$USERID\$Mobile\$$DEVID" -batch
 WRONGCSR=$(cat resources/wrong.csr.pem | tr \\n \& | sed 's/&/\\n/g')
-curl -sS -XPOST --data "{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\",\"pemFile\":\
-        \"$WRONGCSR\"}" \
+curl -sS -XPOST --data "{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\",\
+\"pemFile\":\"$WRONGCSR\"}" \
         --cacert resources/ca-chain.crt \
         --insecure \
         --header 'content-type: application/json' \
@@ -270,8 +263,8 @@ openssl req -new -sha256 -key resources/newClient.key.pem \
         -subj "/CN=John\$$USERID\$Mobile\$$DEVID" -batch
 CSR=$(cat resources/newClient.csr.pem | tr \\n \& | sed 's/&/\\n/g')
 
-curl -sS -XPOST --data "{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\",\"pemFile\":\
-        \"$CSR\"}" \
+curl -sS -XPOST --data "{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\",\
+\"pemFile\":\"$CSR\"}" \
         --cacert resources/ca-chain.crt \
         --insecure \
         --header 'content-type: application/json' \
@@ -282,6 +275,7 @@ cat resources/response.json | \
 
 openssl x509 -in resources/newClient.crt.pem -text >/dev/null
 rm resources/response.json
+echo Test sentry: OK
 
 # test new client
 curl -sS -XGET --cacert resources/ca-chain.crt \
@@ -304,6 +298,7 @@ curl -sS -XGET --cacert resources/ca-chain.crt \
         https://$SERVER:10912/location \
         > resources/curl
 check '400 The SSL certificate error'
+echo Test revokation: OK
 
-cleanup
+rm -rf resources
 echo SUCCESS

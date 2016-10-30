@@ -11,7 +11,7 @@
 ## Version 0.6
 * 00018 : NEW  : First database access on new server causes exception
 * 00019 : DONE : Split ansible script into setup and installation part
-* 00017 : NEW  : Add integration test
+* 00017 : DONE : Add integration test
 * 00016 : NEW  : Migrate from Jetty to Tomcat 8
 * 00001 : NEW  : Better logging, divide access from errors
 * 00005 : NEW  : Clear obsolete tickets
