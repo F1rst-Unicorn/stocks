@@ -23,7 +23,7 @@
                         <Host 
                                 name="localhost"  
                                 appBase="/usr/share/stocks-server/root/sentry"
-                                unpackWARs="true" 
+                                unpackWARs="false" 
                                 autoDeploy="true">
                         </Host>
                 </Engine>
@@ -39,7 +39,7 @@
                         <Host 
                                 name="localhost"  
                                 appBase="/usr/share/stocks-server/root/server"
-                                unpackWARs="true" 
+                                unpackWARs="false" 
                                 autoDeploy="true">
                         </Host>
                 </Engine>
