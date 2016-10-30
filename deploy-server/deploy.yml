@@ -120,6 +120,7 @@
     copy: >
         src={{ stocks_base }}/setenv.sh
         dest=/usr/share/tomcat8/bin/setenv.sh
+        remote_src=True
         owner=root
         group=root
         backup=True

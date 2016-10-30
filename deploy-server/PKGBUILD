@@ -53,6 +53,7 @@ package() {
     cp deploy-server/schema.sql $pkgdir/usr/share/$pkgname/schema.sql
     cp deploy-server/nginx.conf $pkgdir/usr/share/$pkgname/nginx.example.conf
     cp deploy-server/tomcat-server.xml $pkgdir/usr/share/$pkgname/tomcat.xml
+    cp deploy-server/setenv.sh $pkgdir/usr/share/$pkgname/setenv.sh
     
     mkdir -p $pkgdir/usr/share/$pkgname/root/CA/intermediate
     mkdir -p $pkgdir/usr/share/$pkgname/root/nginx
