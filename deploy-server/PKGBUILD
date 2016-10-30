@@ -19,7 +19,6 @@ source=("git://www.github.com/F1rst-Unicorn/stocks#branch=$branch")
 install=stocks-server.install
 sha512sums=('SKIP')
 backup=("etc/$pkgname/stocks.properties"
-	"usr/lib/$pkgname/server"
 	"usr/lib/$pkgname/setup-ca")
 		
 prepare() {
@@ -51,7 +50,6 @@ package() {
     cd "$srcdir/stocks"
     
     mkdir -p $pkgdir/usr/share/$pkgname
-    cp -r deploy-server/root $pkgdir/usr/share/$pkgname
     cp deploy-server/schema.sql $pkgdir/usr/share/$pkgname/schema.sql
     cp deploy-server/nginx.conf $pkgdir/usr/share/$pkgname/nginx.example.conf
     cp deploy-server/tomcat-server.xml $pkgdir/usr/share/$pkgname/tomcat.xml
@@ -63,13 +61,12 @@ package() {
     
     mkdir -p $pkgdir/usr/lib/$pkgname
     cp deploy-server/setup-ca $pkgdir/usr/lib/$pkgname/
-    cp deploy-server/server $pkgdir/usr/lib/$pkgname/
     cp deploy-server/nginx-reload $pkgdir/usr/lib/$pkgname/
     chmod -R 755 $pkgdir/usr/lib/$pkgname
 
-    mkdir -p $pkgdir/usr/share/tomcat8/webapps
-    cp server/target/server-*.war $pkgdir/usr/share/tomcat8/webapps/
-    cp sentry/target/sentry-*.war $pkgdir/usr/share/tomcat8/webapps/
+    mkdir -p $pkgdir/usr/share/$pkgname/root/{server,sentry}
+    cp server/target/server-*.war $pkgdir/usr/share/$pkgname/root/server
+    cp sentry/target/sentry-*.war $pkgdir/usr/share/$pkgname/root/sentry
     
     mkdir -p $pkgdir/etc/$pkgname/
     cp deploy-server/stocks.properties $pkgdir/etc/$pkgname
