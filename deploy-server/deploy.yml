@@ -116,6 +116,14 @@
         group=root
         backup=True
 
+  - name: Install stocks properties to tomcat
+    copy: >
+        src={{ stocks_base }}/setenv.sh
+        dest=/usr/share/tomcat8/bin/setenv.sh
+        owner=root
+        group=root
+        backup=True
+
   - name: Start tomcat
     service: >
         name=tomcat8
