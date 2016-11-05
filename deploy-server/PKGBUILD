@@ -1,7 +1,7 @@
 # Maintainer: aliena <dairyman@njsm.de>
 pkgname=stocks-server
 pkgver=0.5
-pkgrel=1
+pkgrel=2
 pkgdesc="Manages a household's stocks"
 arch=('i686' 'x86_64')
 url="https://github.com/F1rst-Unicorn/stocks"
@@ -31,7 +31,14 @@ prepare() {
         echo "Cloned PKGBUILD has different version"
         echo "Please use the same PKGBUILD for building as the branch actually has"
         exit 1
-    fi    
+    fi
+    OUTPUT=$(grep "pkgrel=$pkgrel" PKGBUILD || true)
+    
+    if [ -z $OUTPUT ]; then
+        echo "Cloned PKGBUILD has different release"
+        echo "Please use the same PKGBUILD for building as the branch actually has"
+        exit 1
+    fi  
 }
 
 build() {
@@ -68,6 +75,7 @@ package() {
     mkdir -p $pkgdir/usr/share/$pkgname/root/{server,sentry}
     cp server/target/server-*.war $pkgdir/usr/share/$pkgname/root/server
     cp sentry/target/sentry-*.war $pkgdir/usr/share/$pkgname/root/sentry
+    chmod -R 555 $pkgdir/usr/share/$pkgname/root/{server,sentry}
     
     mkdir -p $pkgdir/etc/$pkgname/
     cp deploy-server/stocks.properties $pkgdir/etc/$pkgname
