@@ -22,7 +22,7 @@
                 <Engine name="Catalina" defaultHost="localhost">
                         <Host 
                                 name="localhost"  
-                                appBase="/usr/share/stocks-server/root/sentry"
+                                appBase="webapps/sentry"
                                 unpackWARs="false" 
                                 autoDeploy="true">
                         </Host>
@@ -38,7 +38,7 @@
                 <Engine name="Catalina" defaultHost="localhost">
                         <Host 
                                 name="localhost"  
-                                appBase="/usr/share/stocks-server/root/server"
+                                appBase="webapps/server"
                                 unpackWARs="false" 
                                 autoDeploy="true">
                         </Host>
