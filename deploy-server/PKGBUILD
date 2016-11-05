@@ -72,8 +72,8 @@ package() {
     cp deploy-server/nginx-reload $pkgdir/usr/lib/$pkgname/
     chmod -R 755 $pkgdir/usr/lib/$pkgname
 
-    install -D -o tomcat8 -g tomcat8 server/target/server-*.war $pkgdir/usr/share/tomcat8/webapps/server/server.war
-    install -D -o tomcat8 -g tomcat8 sentry/target/sentry-*.war $pkgdir/usr/share/tomcat8/webapps/sentry/sentry.war
+    install -D server/target/server-*.war $pkgdir/usr/share/$pkgname/server.war
+    install -D sentry/target/sentry-*.war $pkgdir/usr/share/$pkgname/sentry.war
     
     mkdir -p $pkgdir/etc/$pkgname/
     cp deploy-server/stocks.properties $pkgdir/etc/$pkgname

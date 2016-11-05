@@ -107,23 +107,21 @@
         group=root
         backup=True
 
-  - name: Install tomcat config conservatively
-    copy: >
-        src={{ stocks_base }}/tomcat.xml
-        dest=/etc/tomcat8/server.xml
-        remote_src=True
-        owner=root
-        group=root
-        backup=True
-
-  - name: Install stocks properties to tomcat
-    copy: >
-        src={{ stocks_base }}/setenv.sh
-        dest=/usr/share/tomcat8/bin/setenv.sh
-        remote_src=True
-        owner=root
-        group=root
-        backup=True
+  - name: Copy server
+  - file: >
+        src={{ stocks_base }}/server.war
+        dest=/usr/share/tomcat8/webapps/server.war
+        owner=tomcat8
+        group=tomcat8
+        state=link
+        
+  - name: Copy sentry
+  - file: >
+        src={{ stocks_base }}/sentry.war
+        dest=/usr/share/tomcat8/webapps/sentry.war
+        owner=tomcat8
+        group=tomcat8
+        state=link
 
   - name: Start tomcat
     service: >
