@@ -3,17 +3,16 @@ package de.njsm.stocks.server.internal.db;
 import de.njsm.stocks.server.data.*;
 import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.AuthAdmin;
-import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class SqlDatabaseHandler {
 
-    private static final Logger LOG = Logger.getLogger(SqlDatabaseHandler.class);
+    private static final Logger LOG = LogManager.getLogger(SqlDatabaseHandler.class);
 
     private final String url;
     private final Config c;

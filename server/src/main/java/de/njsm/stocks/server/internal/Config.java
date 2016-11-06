@@ -5,7 +5,8 @@ import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
 import de.njsm.stocks.server.internal.db.SqlDatabaseHandler;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.Properties;
 
 public class Config {
 
-    private static final Logger LOG = Logger.getLogger(Config.class);
+    private static final Logger LOG = LogManager.getLogger(Config.class);
 
     private static final String DB_ADDRESS_KEY = "de.njsm.stocks.internal.db.databaseAddress";
     private static final String DB_PORT_KEY = "de.njsm.stocks.internal.db.databasePort";

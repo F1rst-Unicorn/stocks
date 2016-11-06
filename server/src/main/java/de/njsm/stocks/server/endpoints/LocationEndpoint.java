@@ -4,7 +4,8 @@ import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.Location;
 import de.njsm.stocks.server.data.LocationFactory;
 import de.njsm.stocks.server.internal.auth.Principals;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -15,7 +16,7 @@ import java.util.logging.Level;
 @Path("/location")
 public class LocationEndpoint extends Endpoint {
 
-    private static final Logger LOG = Logger.getLogger(LocationEndpoint.class);
+    private static final Logger LOG = LogManager.getLogger(LocationEndpoint.class);
 
     @GET
     @Produces("application/json")

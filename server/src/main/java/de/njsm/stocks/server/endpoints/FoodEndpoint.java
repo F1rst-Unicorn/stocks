@@ -2,7 +2,8 @@ package de.njsm.stocks.server.endpoints;
 
 import de.njsm.stocks.server.data.*;
 import de.njsm.stocks.server.internal.auth.Principals;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -13,7 +14,7 @@ import java.util.logging.Level;
 @Path("/food")
 public class FoodEndpoint extends Endpoint {
 
-    private static final Logger LOG = Logger.getLogger(FoodEndpoint.class);
+    private static final Logger LOG = LogManager.getLogger(FoodEndpoint.class);
 
     @GET
     @Produces("application/json")

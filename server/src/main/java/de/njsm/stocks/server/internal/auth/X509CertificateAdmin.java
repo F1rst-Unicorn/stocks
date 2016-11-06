@@ -1,17 +1,16 @@
 package de.njsm.stocks.server.internal.auth;
 
-import de.njsm.stocks.server.internal.Config;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
 
 public class X509CertificateAdmin implements AuthAdmin {
 
-    private static final Logger LOG = Logger.getLogger(X509CertificateAdmin.class);
+    private static final Logger LOG = LogManager.getLogger(X509CertificateAdmin.class);
 
     public void revokeCertificate(int id) {
 
