@@ -2,12 +2,10 @@
 <Configuration monitorInterval="60" >
     
     <Appenders>
-    
-        <Appender name="console" class="org.apache.log4j.ConsoleAppender">
-            <Layout class="org.apache.log4j.PatternLayout">
-                <Param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %p %C:%L %m%n" />
-            </Layout>
-        </Appender>
+
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %p %C:%L %m%n" />
+        </Console>
         
     </Appenders>
 

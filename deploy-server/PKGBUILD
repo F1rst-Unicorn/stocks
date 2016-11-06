@@ -71,7 +71,6 @@ package() {
     install -D -m 444 sentry/target/sentry-*.war $pkgdir/usr/lib/$pkgname/sentry.war
     
     install -D -m 644 deploy-server/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
-    install -D -m 644 deploy-server/log4j.xml $pkgdir/etc/stocks-server/log4j2.xml
     
     install -D -m 444 README.md $pkgdir/usr/share/doc/$pkgname/README.md
     install -D -m 444 manual/admin/server-installation.md $pkgdir/usr/share/doc/$pkgname/
