@@ -1,9 +1,5 @@
 package de.njsm.stocks.server.internal.db;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
 
@@ -29,7 +25,7 @@ public class DatabaseHelper {
             "SET FOREIGN_KEY_CHECKS = 1",
     };
 
-    public static void resetSampleData() throws IOException, SQLException {
+    public static void resetSampleData() throws SQLException {
         Connection c = getConnection();
         Statement stmt = c.createStatement();
 

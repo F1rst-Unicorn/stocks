@@ -45,7 +45,7 @@ public class PrincipalsTest {
                 "5"
         };
 
-        Principals uut = new Principals(input);
+        new Principals(input);
 
     }
 
@@ -57,7 +57,7 @@ public class PrincipalsTest {
                 "device",
         };
 
-        Principals uut = new Principals(input);
+        new Principals(input);
 
     }
 }

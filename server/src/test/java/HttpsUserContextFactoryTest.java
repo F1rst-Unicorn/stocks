@@ -52,7 +52,7 @@ public class HttpsUserContextFactoryTest {
 
         HttpsUserContextFactory uut = new HttpsUserContextFactory();
 
-        Principals p = uut.parseSubjectName(input);
+        uut.parseSubjectName(input);
 
     }
 

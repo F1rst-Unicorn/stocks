@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import java.util.logging.Level;
 
 
 @Path("/location")

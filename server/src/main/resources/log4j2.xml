@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration monitorInterval="30" >
+    
+    <Appenders>
+
+        <RollingFile name="logfile" fileName="/var/log/stocks-server/stocks.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %p %C:%L %m%n" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+        </RollingFile>
+        
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name="de.njsm.stocks.server" level="info" additivity="false">
+            <AppenderRef ref="logfile"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="logfile"/>
+        </Root>
+        
+    </Loggers>
+    
+</Configuration>
