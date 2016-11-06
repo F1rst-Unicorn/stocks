@@ -14,7 +14,7 @@ public class DatabaseHandler {
     public DatabaseHandler() {
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mariadb.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             // Well, do you really want to use the database?
         }
