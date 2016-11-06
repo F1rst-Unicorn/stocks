@@ -7,7 +7,7 @@ food stocks, periodic tasks and tasks in daily life.
 
 ## Server installation
 
-See deploy-server/README.md for a detailed description
+See manual/admin/server-installation.md for a detailed description
 
 ## Linux client installation
 

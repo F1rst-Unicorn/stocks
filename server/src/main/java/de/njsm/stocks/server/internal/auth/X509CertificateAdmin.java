@@ -8,7 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class X509CertificateAdmin {
+public class X509CertificateAdmin implements AuthAdmin {
 
     public void revokeCertificate(int id) {
 

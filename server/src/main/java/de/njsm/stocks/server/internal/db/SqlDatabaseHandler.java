@@ -2,6 +2,7 @@ package de.njsm.stocks.server.internal.db;
 
 import de.njsm.stocks.server.data.*;
 import de.njsm.stocks.server.internal.Config;
+import de.njsm.stocks.server.internal.auth.AuthAdmin;
 import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
 
 import java.sql.*;
@@ -13,28 +14,28 @@ public class SqlDatabaseHandler {
 
     private final String url;
     private final Config c;
+    private final String username;
+    private final String password;
 
-    public SqlDatabaseHandler() {
+    public SqlDatabaseHandler(Config c) {
 
-        c = new Config();
+        this.c = c;
 
         String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
         String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
         String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
-        String user = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
-        String password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
+        username = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
+        password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
 
-        url = String.format("jdbc:mariadb://%s:%s/%s?user=%s&password=%s",
+        url = String.format("jdbc:mariadb://%s:%s/%s",
                 address,
                 port,
-                name,
-                user,
-                password);
+                name);
 
     }
 
     private Connection getConnection() throws SQLException {
-            return DriverManager.getConnection(url);
+            return DriverManager.getConnection(url, username, password);
     }
 
     public void add(SqlAddable d) {
@@ -98,7 +99,7 @@ public class SqlDatabaseHandler {
 
         String getDevicesQuery = "SELECT * FROM User_device WHERE belongs_to=?";
         String deleteDevicesCommand = "DELETE FROM User_device WHERE belongs_to=?";
-        X509CertificateAdmin ca = c.getCertAdmin();
+        AuthAdmin ca = c.getCertAdmin();
         List<Integer> certificateList = new ArrayList<>();
         Connection con = null;
 

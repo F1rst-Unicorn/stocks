@@ -1,0 +1,121 @@
+- hosts: "{{ target_host | default('deployment-test')}}"
+
+  vars:
+      remote_user: jan
+      remote_mysql_password: ''
+      remote_pkg_dir: /home/{{ remote_user }}/Software
+          
+      stocks_pkg_dir: ~/Software/stocks-server
+      stocks_base: /usr/share/stocks-server
+      stocks_version: 0.5-1
+      stocks_pkg: stocks-server-{{ stocks_version }}-x86_64.pkg.tar.xz
+
+      stocks_user: 'Jan'
+      stocks_device: 'Laptop'
+
+      sudoers_line: 'stocks ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload'
+
+  remote_user: root
+  tasks:
+  - name: Copy package
+    copy: >
+        src={{ stocks_pkg_dir }}/{{ stocks_pkg }}
+        dest={{ remote_pkg_dir }}
+
+  - name: Install stocks package
+    command: pacman -U {{ remote_pkg_dir }}/{{ stocks_pkg }} --noconfirm
+
+  - name: Start MariaDB
+    systemd: >
+        name=mysqld
+        state=started
+        daemon_reload=yes
+
+  - name: Setup database
+    mysql_db: >
+        name=stocks 
+        state=present 
+        login_user=root 
+        login_password={{ remote_mysql_password }}
+
+  - name: Setup database user
+    mysql_user: >
+        name=server
+        password=linux 
+        priv=stocks.*:ALL 
+        state=present 
+        login_user=root
+
+  - name: Import database schema
+    mysql_db: >
+        name=stocks 
+        state=import
+        target={{ stocks_base }}/schema.sql
+
+  - name: Create CA
+    command: /usr/lib/stocks-server/setup-ca {{ stocks_base }}/root/CA {{ stocks_base }}
+    become: yes
+    become_user: stocks
+
+  - name: Create nginx SSL
+    file: >
+        path=/etc/nginx/ssl state=directory
+
+  - name: Copy CA cert
+    copy: >
+        src={{ stocks_base }}/root/CA/certs/ca.cert.pem
+        dest=/etc/nginx/ssl/ca.cert.pem
+        remote_src=True
+        owner=root
+        group=root
+
+  - name: Copy CA chain
+    copy: >
+        src={{ stocks_base }}/root/CA/intermediate/certs/ca-chain.cert.pem
+        dest=/etc/nginx/ssl/ca-chain.cert.pem
+        remote_src=True
+        owner=root
+        group=root
+
+  - name: Copy server cert
+    copy: >
+        src={{ stocks_base }}/root/CA/intermediate/certs/server.cert.pem
+        dest=/etc/nginx/ssl/server.cert.pem
+        remote_src=True
+        owner=root
+        group=root
+
+  - name: Copy server key
+    copy: >
+        src={{ stocks_base }}/root/CA/intermediate/private/server.key.pem
+        dest=/etc/nginx/ssl/server.key.pem
+        remote_src=True
+        owner=root
+        group=root
+
+  - name: Add nginx reload to sudoers
+    shell: echo {{ sudoers_line }} >> /etc/sudoers
+
+  - name: Install nginx config conservatively
+    copy: >
+        src={{ stocks_base }}/nginx.example.conf
+        dest=/etc/nginx/nginx.conf
+        remote_src=True
+        owner=root
+        group=root
+        backup=True
+
+  - name: Start jetty server
+    systemd: >
+        name=stocks-jetty 
+        state=started
+
+  - name: Start nginx server
+    systemd: >
+        name=nginx
+        state=started
+
+  - name: Create first user ticket
+    shell: /usr/bin/mysql -u root -e "INSERT INTO User (name) VALUES ('{{ stocks_user }}');
+                INSERT INTO User_device (name, belongs_to) VALUES ('{{ stocks_device }}', LAST_INSERT_ID());
+                INSERT INTO Ticket (ticket, belongs_device) VALUES ('0000', LAST_INSERT_ID())" stocks
