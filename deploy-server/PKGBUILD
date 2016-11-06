@@ -65,8 +65,8 @@ package() {
     mkdir -p $pkgdir/usr/share/$pkgname/root/CA/intermediate
     mkdir -p $pkgdir/usr/share/$pkgname/root/nginx
     
-    install -D -m 544 deploy-server/setup-ca     $pkgdir/usr/lib/$pkgname/setup-ca
-    install -D -m 544 deploy-server/nginx-reload $pkgdir/usr/lib/$pkgname/nginx-reload
+    install -D -m 555 deploy-server/setup-ca     $pkgdir/usr/lib/$pkgname/setup-ca
+    install -D -m 555 deploy-server/nginx-reload $pkgdir/usr/lib/$pkgname/nginx-reload
     install -D -m 444 server/target/server-*.war $pkgdir/usr/lib/$pkgname/server.war
     install -D -m 444 sentry/target/sentry-*.war $pkgdir/usr/lib/$pkgname/sentry.war
     
