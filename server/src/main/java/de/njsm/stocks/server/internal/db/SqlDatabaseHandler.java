@@ -37,7 +37,7 @@ public class SqlDatabaseHandler {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            c.getLog().log(Level.SEVERE, "DB driver not present", e);
+            LOG.error("DB driver not present", e);
         }
     }
 
