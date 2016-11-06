@@ -14,8 +14,12 @@ import java.util.logging.Logger;
 @Path("/uac")
 public class UserGenerator {
 
-    private final DatabaseHandler handler = new DatabaseHandler();
+    private final DatabaseHandler handler;
     private final Logger log = Logger.getLogger("stocks");
+
+    public UserGenerator() throws ClassNotFoundException {
+        handler = new DatabaseHandler();
+    }
 
     /**
      * Get a new user certificate

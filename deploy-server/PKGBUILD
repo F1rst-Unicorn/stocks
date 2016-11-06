@@ -1,26 +1,25 @@
 # Maintainer: aliena <dairyman@njsm.de>
 pkgname=stocks-server
 pkgver=0.5
-pkgrel=1
+pkgrel=3
 pkgdesc="Manages a household's stocks"
-arch=('i686' 'x86_64')
+arch=('any')
 url="https://github.com/F1rst-Unicorn/stocks"
 license=('MIT')
 depends=('jre8-openjdk'
          'java-environment'
          'nginx'
          'openssl'
-         'mariadb')
+         'mariadb'
+         'tomcat8')
 makedepends=('git'
-			 'wget'
-			 'maven')
+             'maven')
 branch=${STOCKSBRANCH:-master}
 source=("git://www.github.com/F1rst-Unicorn/stocks#branch=$branch")
 install=stocks-server.install
 sha512sums=('SKIP')
 backup=("etc/$pkgname/stocks.properties"
-		"usr/lib/$pkgname/server"
-		"usr/lib/$pkgname/setup-ca")
+	"usr/lib/$pkgname/setup-ca")
 		
 prepare() {
     # Verify that the correct PKGBUILD is used to prevent version conflicts
@@ -32,63 +31,51 @@ prepare() {
         echo "Cloned PKGBUILD has different version"
         echo "Please use the same PKGBUILD for building as the branch actually has"
         exit 1
-    fi    
+    fi
+    OUTPUT=$(grep "pkgrel=$pkgrel" PKGBUILD || true)
+    
+    if [ -z $OUTPUT ]; then
+        echo "Cloned PKGBUILD has different release"
+        echo "Please use the same PKGBUILD for building as the branch actually has"
+        exit 1
+    fi  
 }
 
 build() {
     cd "$srcdir/stocks"
     
-    mkdir -p deploy-server/root/jetty-base/wars
-
     cd server
     mvn -Dmaven.test.skip=true clean package
     cd ..
-    cp server/target/server-*.war deploy-server/root/jetty-base/wars/server.war
 
     cd sentry
     mvn -Dmaven.test.skip=true clean package
     cd ..
-    cp sentry/target/sentry-*.war deploy-server/root/jetty-base/wars/sentry.war
-                        
-    wget -4 -O jetty.tar.gz "http://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.3.12.v20160915/jetty-distribution-9.3.12.v20160915.tar.gz"
 }
 
 package() {
     cd "$srcdir/stocks"
     
-    mkdir -p $pkgdir/usr/share/$pkgname
-    cp -r deploy-server/root $pkgdir/usr/share/$pkgname
-    cp deploy-server/schema.sql $pkgdir/usr/share/$pkgname/schema.sql
-    cp deploy-server/nginx.conf $pkgdir/usr/share/$pkgname/nginx.example.conf
+    install -D -m 444 deploy-server/schema.sql               $pkgdir/usr/share/$pkgname/schema.sql
+    install -D -m 444 deploy-server/nginx.conf               $pkgdir/usr/share/$pkgname/nginx.example.conf
+    install -D -m 444 deploy-server/tomcat-server.xml        $pkgdir/usr/share/$pkgname/server.xml
+    install -D -m 444 deploy-server/openssl.cnf              $pkgdir/usr/share/$pkgname/openssl.cnf
+    install -D -m 444 deploy-server/openssl_intermediate.cnf $pkgdir/usr/share/$pkgname/openssl_intermediate.cnf
     
     mkdir -p $pkgdir/usr/share/$pkgname/root/CA/intermediate
-    cp deploy-server/openssl.cnf $pkgdir/usr/share/$pkgname
-    cp deploy-server/openssl_intermediate.cnf $pkgdir/usr/share/$pkgname
+    mkdir -p $pkgdir/usr/share/$pkgname/root/nginx
     
-    mkdir -p $pkgdir/usr/lib/$pkgname/
-    cp deploy-server/setup-ca $pkgdir/usr/lib/$pkgname/
-    cp deploy-server/server $pkgdir/usr/lib/$pkgname/
-    cp deploy-server/nginx-reload $pkgdir/usr/lib/$pkgname/
-    chmod -R 755 $pkgdir/usr/lib/$pkgname
+    install -D -m 555 deploy-server/setup-ca     $pkgdir/usr/lib/$pkgname/setup-ca
+    install -D -m 555 deploy-server/nginx-reload $pkgdir/usr/lib/$pkgname/nginx-reload
+    install -D -m 444 server/target/server-*.war $pkgdir/usr/lib/$pkgname/server.war
+    install -D -m 444 sentry/target/sentry-*.war $pkgdir/usr/lib/$pkgname/sentry.war
     
-    mkdir -p $pkgdir/etc/$pkgname/
-    cp deploy-server/stocks.properties $pkgdir/etc/$pkgname
+    install -D -m 444 deploy-server/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
     
-    mkdir -p $pkgdir/usr/share/doc/$pkgname
-    cp README.md $pkgdir/usr/share/doc/$pkgname
-    chmod -R 755 $pkgdir/usr/share/doc/$pkgname
+    install -D -m 444 README.md $pkgdir/usr/share/doc/$pkgname/README.md
+    install -D -m 444 manual/admin/server-installation.md $pkgdir/usr/share/doc/$pkgname/
     
-    tar xzf jetty.tar.gz
-    mkdir -p $pkgdir/opt/stocks-jetty
-    mv jetty-distribution-*/* $pkgdir/opt/stocks-jetty
-    chown -R root:root $pkgdir/opt/stocks-jetty
-    rm -rf $pkgdir/opt/stocks-jetty/demo-base
-    
-    mkdir -p $pkgdir/usr/lib/systemd/system/
-    cp deploy-server/stocks-jetty.service $pkgdir/usr/lib/systemd/system/
-
-    mkdir -p $pkgdir/usr/share/licenses/$pkgname/
-    cp LICENSE.md $pkgdir/usr/share/licenses/$pkgname/
+    install -D -m 444 LICENSE.md $pkgdir/usr/share/licenses/$pkgname/LICENSE.md
     
     mkdir -p $pkgdir/var/log/$pkgname
     touch $pkgdir/var/log/$pkgname/stocks.log

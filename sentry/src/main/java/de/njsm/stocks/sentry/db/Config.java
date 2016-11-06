@@ -1,13 +1,8 @@
-package de.njsm.stocks.server.internal;
+package de.njsm.stocks.sentry.db;
 
-import de.njsm.stocks.server.internal.auth.AuthAdmin;
-import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
-import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
-import de.njsm.stocks.server.internal.db.SqlDatabaseHandler;
 import org.apache.commons.io.IOUtils;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.*;
@@ -28,6 +23,8 @@ public class Config {
     private String dbPassword;
     private String dbValidity;
 
+    private final Logger log = Logger.getLogger("stocks");
+
     public Config() {
         try {
             FileInputStream fis = new FileInputStream("/etc/stocks-server/stocks.properties");
@@ -36,7 +33,7 @@ public class Config {
             readProperties(p);
             IOUtils.closeQuietly(fis);
         } catch (IOException e) {
-            getLog().log(Level.SEVERE, "Failed to configure server!", e);
+            log.log(Level.SEVERE, "Failed to configure server!", e);
         }
     }
 
@@ -51,34 +48,6 @@ public class Config {
         dbUsername = p.getProperty(DB_USERNAME_KEY);
         dbPassword = p.getProperty(DB_PASSWORD_KEY);
         dbValidity = p.getProperty(DB_VALIDITY_KEY);
-    }
-
-    public HttpsUserContextFactory getContextFactory() {
-        return new HttpsUserContextFactory();
-    }
-
-    public SqlDatabaseHandler getDbHandler() {
-        return new SqlDatabaseHandler(this);
-    }
-
-    public AuthAdmin getCertAdmin() {
-        return new X509CertificateAdmin();
-    }
-
-    public Logger getLog() {
-        Logger result = Logger.getLogger("stocks-client");
-        for (Handler h : result.getHandlers()) {
-            result.removeHandler(h);
-        }
-        result.setLevel(Level.ALL);
-        result.setUseParentHandlers(false);
-        ConsoleHandler handler = new ConsoleHandler();
-
-        Formatter formatter = new Formatter();
-        handler.setFormatter(formatter);
-        handler.setLevel(Level.ALL);
-        result.addHandler(handler);
-        return result;
     }
 
     public String getDbAddress() {

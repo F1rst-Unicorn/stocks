@@ -21,17 +21,21 @@ public class SqlDatabaseHandler {
 
         this.c = c;
 
-        String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
-        String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
-        String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
-        username = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
-        password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
-
+        String address = c.getDbAddress();
+        String port = c.getDbPort();
+        String name = c.getDbName();
+        username = c.getDbUsername();
+        password = c.getDbPassword();
         url = String.format("jdbc:mariadb://%s:%s/%s",
                 address,
                 port,
                 name);
 
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            c.getLog().log(Level.SEVERE, "DB driver not present", e);
+        }
     }
 
     private Connection getConnection() throws SQLException {

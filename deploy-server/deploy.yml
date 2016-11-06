@@ -1,35 +1,22 @@
 - hosts: "{{ target_host | default('deployment-test')}}"
 
   vars:
-      remote_user: jan
       remote_mysql_password: ''
-      remote_pkg_dir: /home/{{ remote_user }}/Software
           
-      stocks_pkg_dir: ~/Software/stocks-server
       stocks_base: /usr/share/stocks-server
-      stocks_version: 0.5-1
-      stocks_pkg: stocks-server-{{ stocks_version }}-x86_64.pkg.tar.xz
+      stocks_lib:  /usr/lib/stocks-server
 
       stocks_user: 'Jan'
       stocks_device: 'Laptop'
 
-      sudoers_line: 'stocks ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload'
+      sudoers_line: 'tomcat8 ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload'
 
   remote_user: root
   tasks:
-  - name: Copy package
-    copy: >
-        src={{ stocks_pkg_dir }}/{{ stocks_pkg }}
-        dest={{ remote_pkg_dir }}
-
-  - name: Install stocks package
-    command: pacman -U {{ remote_pkg_dir }}/{{ stocks_pkg }} --noconfirm
-
   - name: Start MariaDB
-    systemd: >
+    service: >
         name=mysqld
         state=started
-        daemon_reload=yes
 
   - name: Setup database
     mysql_db: >
@@ -55,7 +42,23 @@
   - name: Create CA
     command: /usr/lib/stocks-server/setup-ca {{ stocks_base }}/root/CA {{ stocks_base }}
     become: yes
-    become_user: stocks
+    become_user: tomcat8
+
+  - name: Create CA download point
+    copy: >
+        src={{ stocks_base }}/root/CA/certs/ca.cert.pem
+        dest={{ stocks_base }}/root/nginx/ca
+        remote_src=True
+        owner=tomcat8
+        group=tomcat8
+
+  - name: Create chain download point
+    copy: >
+        src={{ stocks_base }}/root/CA/intermediate/certs/ca-chain.cert.pem
+        dest={{ stocks_base }}/root/nginx/chain
+        remote_src=True
+        owner=tomcat8
+        group=tomcat8
 
   - name: Create nginx SSL
     file: >
@@ -105,13 +108,38 @@
         group=root
         backup=True
 
-  - name: Start jetty server
-    systemd: >
-        name=stocks-jetty 
+  - name: Link server.war
+    file: >
+        src={{ stocks_lib }}/server.war
+        dest=/usr/share/tomcat8/webapps/server.war
+        owner=tomcat8
+        group=tomcat8
+        state=link
+        
+  - name: Link sentry.war
+    file: >
+        src={{ stocks_lib }}/sentry.war
+        dest=/usr/share/tomcat8/webapps/sentry.war
+        owner=tomcat8
+        group=tomcat8
+        state=link
+        
+  - name: Install tomcat config
+    copy: >
+        src={{ stocks_base }}/server.xml
+        dest=/usr/share/tomcat8/conf/server.xml
+        remote_src=True
+        owner=tomcat8
+        group=tomcat8
+        backup=True
+
+  - name: Start tomcat
+    service: >
+        name=tomcat8
         state=started
 
   - name: Start nginx server
-    systemd: >
+    service: >
         name=nginx
         state=started
 
