@@ -11,13 +11,9 @@ public class DatabaseHandler {
     private final String url;
     private final int validityTime;
 
-    public DatabaseHandler() {
+    public DatabaseHandler() throws ClassNotFoundException {
 
-        try {
-            Class.forName("com.mariadb.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            // Well, do you really want to use the database?
-        }
+        Class.forName("com.mariadb.jdbc.Driver");
 
         Config c = new Config();
         validityTime = Integer.parseInt(c.getDbValidity());
