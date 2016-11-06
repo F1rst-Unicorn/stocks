@@ -85,7 +85,7 @@ VALUES
     ('User', NOW()),
     ('User_device', NOW()),
     ('Food', NOW()),
-    ('Food_item', NOW());
+    ('Food_item', NOW()),
     ('EAN_number', NOW());
     
 DROP TABLE IF EXISTS EAN_number;
