@@ -29,12 +29,16 @@ public class SqlDatabaseHandler {
         String name = c.getDbName();
         username = c.getDbUsername();
         password = c.getDbPassword();
-
         url = String.format("jdbc:mariadb://%s:%s/%s",
                 address,
                 port,
                 name);
 
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            c.getLog().log(Level.SEVERE, "DB driver not present", e);
+        }
     }
 
     private Connection getConnection() throws SQLException {
