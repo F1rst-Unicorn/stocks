@@ -4,6 +4,7 @@
       remote_mysql_password: ''
           
       stocks_base: /usr/share/stocks-server
+      stocks_lib:  /usr/lib/stocks-server
 
       stocks_user: 'Jan'
       stocks_device: 'Laptop'
@@ -109,7 +110,7 @@
 
   - name: Link server.war
     file: >
-        src={{ stocks_base }}/server.war
+        src={{ stocks_lib }}/server.war
         dest=/usr/share/tomcat8/webapps/server.war
         owner=tomcat8
         group=tomcat8
@@ -117,7 +118,7 @@
         
   - name: Link sentry.war
     file: >
-        src={{ stocks_base }}/sentry.war
+        src={{ stocks_lib }}/sentry.war
         dest=/usr/share/tomcat8/webapps/sentry.war
         owner=tomcat8
         group=tomcat8

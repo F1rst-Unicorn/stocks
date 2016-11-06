@@ -8,6 +8,8 @@ post_install() {
     
     chown -R tomcat8:tomcat8 /usr/share/stocks-server/root
     chown -R tomcat8:tomcat8 /var/log/stocks-server
+
+    echo "See /usr/share/doc/stocks-server/server-installation.md for setup instructions"
 }
 
 ## arg 1:  the new package version

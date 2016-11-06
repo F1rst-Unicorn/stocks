@@ -9,8 +9,9 @@ playbook if one of the following holds:
 
  * The machine already has an nginx instance running with a custom nginx.conf
  * The machine already has a tomcat 8 instance running with a custom server.xml
- * The machine already contains a database named stocks
- * One of the ports 10910, 10911, 10912, 10916 or 10917 is already in use
+ * The machine already contains a mariadb database named stocks
+ * The machine already contains a mariadb user named server
+ * One of the ports 10910, 10911, 10912 or 10915 is already in use
 
 If one of the constraints holds the configs have to be edited as described 
 below. 
@@ -47,7 +48,7 @@ accessible to the server. Import the schema in
 
 ### CA
 
-Run the script in /usr/lib/stocks-server/setup-ca as user stocks to generate a 
+Run the script in /usr/lib/stocks-server/setup-ca as user tomcat8 to generate a 
 CA and all needed keys. The script takes two arguments, provided as fully 
 qualified paths: The first is the directory where to install the CA. The second
 path is where to find the openSSL config templates. For production deployment 
@@ -74,18 +75,18 @@ Give nginx access to the certificates generated above. Particularly
 * ca.cert.pem
 
 Furthermore the stocks server must be able to reload nginx to update the CRL
-nginx reads from. This means the user stocks must be allowed to execute 
+nginx reads from. This means the user tomcat8 must be allowed to execute 
 /usr/lib/stocks-server/nginx-reload as root via sudo. Add the following line
 to your /etc/sudoers file
 
 ```
-stocks ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload
+tomcat8 ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload
 ```
 
 ### Tomcat 8
 
 Set up tomcat as a servlet container. For an example config have a look at 
-/usr/share/stocks-server/tomcat.xml. 
+/usr/share/stocks-server/server.xml. 
 
 ### Stocks server
 
