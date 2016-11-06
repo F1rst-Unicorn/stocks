@@ -16,10 +16,11 @@
 * 00001 : DONE : Better logging, divide access from errors
 * 00005 : NEW  : Clear obsolete tickets
 * 00004 : NEW  : Add EAN-13 add and delete methods for food
-* 00006 : NEW  : Image support for Food
 * 00015 : DONE : Replace ansible systemd module by service calls
+* 00020 : NEW  : Update server admin doc: logging, symlinks tomcat
 
 ## Version 0.7
+* 00006 : NEW  : Image support for Food
 * 00010 : NEW  : Edit eat-by date
 * 00007 : NEW  : Remember maximum items per food to emit warnings based on thresholds
 
