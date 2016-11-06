@@ -54,8 +54,6 @@ rm resources/response.json
 echo Test first user: OK
 
 # check initial database
-# FIXME: remove this line once server-00018 is solved
-curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl 
 curl -sS $CURLARGS -XGET https://$SERVER:10912/user > resources/curl
 check '"id":1.*"name":"Jan"'
 curl -sS $CURLARGS -XGET https://$SERVER:10912/device > resources/curl
