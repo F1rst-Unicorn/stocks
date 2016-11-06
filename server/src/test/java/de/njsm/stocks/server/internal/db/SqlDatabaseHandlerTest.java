@@ -24,7 +24,7 @@ public class SqlDatabaseHandlerTest {
     public void testAddingUser() throws IOException, SQLException {
         UserFactory factory = new UserFactory();
         User input = new User();
-        Config c = new Config();
+        Config c = new Config(System.getProperties());
         Data[] output;
         int expectedUserCount = 3;
         boolean[] hits = new boolean[expectedUserCount];
@@ -59,7 +59,7 @@ public class SqlDatabaseHandlerTest {
     public void testRenamingFood() throws IOException, SQLException {
         FoodFactory factory = new FoodFactory();
         Food input = new Food();
-        Config c = new Config();
+        Config c = new Config(System.getProperties());
         Data[] output;
         int expectedHits = 3;
         boolean[] hits = new boolean[expectedHits];
@@ -95,7 +95,7 @@ public class SqlDatabaseHandlerTest {
     public void testRemovingFood() throws IOException, SQLException {
         FoodFactory factory = new FoodFactory();
         Food input = new Food();
-        Config c = new Config();
+        Config c = new Config(System.getProperties());
         Data[] output;
         int expectedCount = 2;
         boolean[] hits = new boolean[expectedCount];
@@ -126,7 +126,7 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testAddingDevice() throws IOException, SQLException {
-        Config c = new Config();
+        Config c = new Config(System.getProperties());
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         UserDevice input = new UserDevice();
         UserDeviceFactory factory = new UserDeviceFactory();
@@ -182,7 +182,7 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testGettingData() throws IOException, SQLException {
-        Config c = new Config();
+        Config c = new Config(System.getProperties());
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         FoodFactory factory = new FoodFactory();
         Data[] output;
@@ -213,7 +213,7 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testMovingItems() throws IOException, SQLException {
-        Config c = new Config();
+        Config c = new Config(System.getProperties());
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         Data[] output;
         FoodItemFactory factory = new FoodItemFactory();
@@ -242,7 +242,7 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testRemoveDevice() throws IOException, SQLException {
-        MockConfig c = new MockConfig();
+        MockConfig c = new MockConfig(System.getProperties());
         MockAuthAdmin ca = (MockAuthAdmin) c.getCertAdmin();
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         UserDevice d = new UserDevice();
@@ -280,7 +280,7 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testRemoveUser() throws IOException, SQLException {
-        MockConfig c = new MockConfig();
+        MockConfig c = new MockConfig(System.getProperties());
         MockAuthAdmin ca = (MockAuthAdmin) c.getCertAdmin();
         SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         User u = new User();

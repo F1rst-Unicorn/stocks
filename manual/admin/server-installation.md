@@ -8,8 +8,10 @@ constraints, since the playbook assumes a clean machine. You should not use the
 playbook if one of the following holds:
 
  * The machine already has an nginx instance running with a custom nginx.conf
- * The machine already contains a database named stocks
- * One of the ports 10910, 10911, 10912, 10916 or 10917 is already in use
+ * The machine already has a tomcat 8 instance running with a custom server.xml
+ * The machine already contains a mariadb database named stocks
+ * The machine already contains a mariadb user named server
+ * One of the ports 10910, 10911, 10912 or 10915 is already in use
 
 If one of the constraints holds the configs have to be edited as described 
 below. 
@@ -19,13 +21,9 @@ below.
 The playbook defines many variables over which one can finetune the 
 installation. Their meaning is described below: 
 
-remote_user: The user over which the root privileges are acquired. 
-remote_mysql_password: The password of the root user on the target host
-remote_pkg_dir: Where to cache the pacman package on the target host
-stocks_pkg_dir: Where on the local host the package is stored
+target_host: The ansible host group on which to run the playbook
+remote_mysql_password: The password of the MySQL root user on the target host
 stocks_base: Default install folder, Don't change this, only for readability
-stocks_version: The version of the package, should not be changed
-stocks_pkg: The name of the package file
 stocks_user: The first user to install. Change to your needs
 stocks_device: The first device to install. Change to your needs
 sudoers_line: The line added to sudoers. To simplify auditing
@@ -50,13 +48,20 @@ accessible to the server. Import the schema in
 
 ### CA
 
-Run the script in /usr/lib/stocks-server/setup-ca as user stocks to generate a 
+Run the script in /usr/lib/stocks-server/setup-ca as user tomcat8 to generate a 
 CA and all needed keys. The script takes two arguments, provided as fully 
 qualified paths: The first is the directory where to install the CA. The second
 path is where to find the openSSL config templates. For production deployment 
 these arguments are:
+
 * /usr/share/stocks-server/root/CA
 * /usr/share/stocks-server/
+
+After the script has finished copy the files below to the nginx root which 
+defaults to /usr/share/stocks-server/root/nginx. 
+
+* /usr/share/stocks-server/root/CA/certs/ca.cert.pem
+* /usr/share/stocks-server/root/CA/intermediate/certs/ca-chain.cert.pem
 
 ### nginx
 
@@ -70,15 +75,20 @@ Give nginx access to the certificates generated above. Particularly
 * ca.cert.pem
 
 Furthermore the stocks server must be able to reload nginx to update the CRL
-nginx reads from. This means the user stocks must be allowed to execute 
+nginx reads from. This means the user tomcat8 must be allowed to execute 
 /usr/lib/stocks-server/nginx-reload as root via sudo. Add the following line
 to your /etc/sudoers file
 
 ```
-stocks ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload
+tomcat8 ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload
 ```
 
-### Jetty server
+### Tomcat 8
+
+Set up tomcat as a servlet container. For an example config have a look at 
+/usr/share/stocks-server/server.xml. 
+
+### Stocks server
 
 To adapt the stocks server to your system, adjust the needed values in 
 /etc/stocks-server/stocks.properties. 
@@ -86,7 +96,7 @@ To adapt the stocks server to your system, adjust the needed values in
 ### Start up the components
 
 * Start mysql
-* Start jetty
+* Start tomcat
 * Start nginx
 
 ### Adding the first user

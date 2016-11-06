@@ -16,9 +16,9 @@ public class X509CertificateAdmin implements AuthAdmin {
     public void revokeCertificate(int id) {
 
         String command = String.format("openssl ca " +
-                "-config ../CA/intermediate/openssl.cnf " +
+                "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
                 "-batch " +
-                "-revoke ../CA/intermediate/certs/user_%d.cert.pem",
+                "-revoke /usr/share/stocks-server/root/CA/intermediate/certs/user_%d.cert.pem",
                 id);
         try {
             Process p = Runtime.getRuntime().exec(command);
@@ -34,18 +34,18 @@ public class X509CertificateAdmin implements AuthAdmin {
 
     private void refreshCrl() {
         String crlCommand = "openssl ca " +
-                "-config ../CA/intermediate/openssl.cnf " +
+                "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
                 "-gencrl " +
-                "-out ../CA/intermediate/crl/intermediate.crl.pem";
+                "-out /usr/share/stocks-server/root/CA/intermediate/crl/intermediate.crl.pem";
         String nginxCommand = "sudo /usr/lib/stocks-server/nginx-reload";
         
         try {
             Process p = Runtime.getRuntime().exec(crlCommand);
             p.waitFor();
 
-            FileOutputStream out = new FileOutputStream("../CA/intermediate/crl/whole.crl.pem");
-            IOUtils.copy(new FileInputStream("../CA/crl/ca.crl.pem"), out);
-            IOUtils.copy(new FileInputStream("../CA/intermediate/crl/intermediate.crl.pem"), out);
+            FileOutputStream out = new FileOutputStream("/usr/share/stocks-server/root/CA/intermediate/crl/whole.crl.pem");
+            IOUtils.copy(new FileInputStream("/usr/share/stocks-server/root/CA/crl/ca.crl.pem"), out);
+            IOUtils.copy(new FileInputStream("/usr/share/stocks-server/root/CA/intermediate/crl/intermediate.crl.pem"), out);
             out.close();
 
             p = Runtime.getRuntime().exec(nginxCommand);

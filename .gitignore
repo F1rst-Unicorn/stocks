@@ -1,5 +1,6 @@
 *~
 .directory
+*.swp
 
 # java build dirs
 lib
@@ -13,3 +14,6 @@ target
 *.pkg.tar.xz
 deploy*/stocks/
 keystore
+
+# test files
+server/src/test/integration/resources

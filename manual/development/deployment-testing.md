@@ -21,5 +21,5 @@ $ makepkg STOCKSBRANCH=dev-server
 
 ## Ansible deployment
 
-Once the package is built you can use the ansible-playbook in deploy-server/
-deploy.yml to test deployment via ansible. 
+Once the package is built and installed on the server you can use the 
+ansible-playbook in deploy-server/deploy.yml to test deployment via ansible. 
