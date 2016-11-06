@@ -7,15 +7,15 @@ food stocks, periodic tasks and tasks in daily life.
 
 ## Server installation
 
-See deploy-server/README.md for a detailed description
+See manual/admin/ for build and installation manuals. 
 
 ## Linux client installation
 
-See deploy-client/README.md for a detailed description
+See deploy-client/README.md for a detailed description.
 
 ## Android app installation
 
-Build the app with Android Studio and deploy it to your device
+Build the app with Android Studio and deploy it to your device.
 
 ## Contributing
 

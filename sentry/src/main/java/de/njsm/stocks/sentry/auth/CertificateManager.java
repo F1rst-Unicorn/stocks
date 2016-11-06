@@ -11,8 +11,8 @@ import java.util.List;
 
 public class CertificateManager {
 
-    public static final String csrFormatString = "../CA/intermediate/csr/%s.csr.pem";
-    public static final String certFormatString = "../CA/intermediate/certs/%s.cert.pem";
+    public static final String csrFormatString = "/usr/share/stocks-server/root/CA/intermediate/csr/%s.csr.pem";
+    public static final String certFormatString = "/usr/share/stocks-server/root/CA/intermediate/certs/%s.cert.pem";
 
     /**
      * Execute openssl command to generate new certificate
@@ -23,7 +23,7 @@ public class CertificateManager {
     public void generateCertificate(String userFile) throws IOException {
 
         String command = String.format("openssl ca " +
-                        "-config ../CA/intermediate/openssl.cnf " +
+                        "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
                         "-extensions usr_cert " +
                         "-notext " +
                         "-batch " +

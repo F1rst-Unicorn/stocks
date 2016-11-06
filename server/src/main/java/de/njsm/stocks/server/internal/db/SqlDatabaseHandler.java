@@ -2,39 +2,46 @@ package de.njsm.stocks.server.internal.db;
 
 import de.njsm.stocks.server.data.*;
 import de.njsm.stocks.server.internal.Config;
-import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
+import de.njsm.stocks.server.internal.auth.AuthAdmin;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class SqlDatabaseHandler {
 
+    private static final Logger LOG = LogManager.getLogger(SqlDatabaseHandler.class);
+
     private final String url;
     private final Config c;
+    private final String username;
+    private final String password;
 
-    public SqlDatabaseHandler() {
+    public SqlDatabaseHandler(Config c) {
 
-        c = new Config();
+        this.c = c;
 
-        String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
-        String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
-        String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
-        String user = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
-        String password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
-
-        url = String.format("jdbc:mariadb://%s:%s/%s?user=%s&password=%s",
+        String address = c.getDbAddress();
+        String port = c.getDbPort();
+        String name = c.getDbName();
+        username = c.getDbUsername();
+        password = c.getDbPassword();
+        url = String.format("jdbc:mariadb://%s:%s/%s",
                 address,
                 port,
-                name,
-                user,
-                password);
+                name);
 
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            LOG.error("DB driver not present", e);
+        }
     }
 
     private Connection getConnection() throws SQLException {
-            return DriverManager.getConnection(url);
+            return DriverManager.getConnection(url, username, password);
     }
 
     public void add(SqlAddable d) {
@@ -45,12 +52,12 @@ public class SqlDatabaseHandler {
             d.fillAddStmt(stmt);
             stmt.execute();
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Database: Failed to add " + d.toString() + ": " + e.getMessage());
+            LOG.error("Failed to add " + d.toString(), e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Database: Failed to rollback: " + e1.getMessage());
+                    LOG.error("Failed to rollback", e1);
                 }
             }
         }
@@ -64,12 +71,12 @@ public class SqlDatabaseHandler {
             d.fillRenameStmt(stmt, newName);
             stmt.execute();
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Database: Failed to rename " + d.toString() + ": " + e.getMessage());
+            LOG.error("Failed to rename " + d.toString(), e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Database: Failed to rollback: " + e1.getMessage());
+                    LOG.error("Failed to rollback", e1);
                 }
             }
         }
@@ -83,12 +90,12 @@ public class SqlDatabaseHandler {
             d.fillRemoveStmt(stmt);
             stmt.execute();
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Database: Failed to remove " + d.toString() + ": " + e.getMessage());
+            LOG.error("Failed to remove " + d.toString(), e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Database: Failed to rollback: " + e1.getMessage());
+                    LOG.error("Failed to rollback", e1);
                 }
             }
         }
@@ -98,7 +105,7 @@ public class SqlDatabaseHandler {
 
         String getDevicesQuery = "SELECT * FROM User_device WHERE belongs_to=?";
         String deleteDevicesCommand = "DELETE FROM User_device WHERE belongs_to=?";
-        X509CertificateAdmin ca = c.getCertAdmin();
+        AuthAdmin ca = c.getCertAdmin();
         List<Integer> certificateList = new ArrayList<>();
         Connection con = null;
 
@@ -124,12 +131,12 @@ public class SqlDatabaseHandler {
 
             certificateList.forEach(ca::revokeCertificate);
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "Error deleting devices: " + e.getMessage());
+            LOG.error("Error deleting devices", e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                    LOG.error("Error while rollback", e1);
                 }
             }
         }
@@ -161,12 +168,12 @@ public class SqlDatabaseHandler {
             con.commit();
 
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Error adding device: " + e.getMessage());
+            LOG.error("Error adding device", e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                    LOG.error("Error while rollback", e1);
                 }
             }
             result.ticket = null;
@@ -189,12 +196,12 @@ public class SqlDatabaseHandler {
             c.getCertAdmin().revokeCertificate(u.id);
 
         } catch (SQLException e){
-            c.getLog().log(Level.SEVERE, "Error deleting devices: " + e.getMessage());
+            LOG.error("Error deleting devices", e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                    LOG.error("Error while rollback", e1);
                 }
             }
         }
@@ -209,12 +216,12 @@ public class SqlDatabaseHandler {
             List<Data> result = df.createDataList(rs);
             return result.toArray(new Data[result.size()]);
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Error getting data: " + e.getMessage());
+            LOG.error("Error getting data", e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                    LOG.error("Error while rollback", e1);
                 }
             }
         }
@@ -234,12 +241,12 @@ public class SqlDatabaseHandler {
             stmt.executeQuery();
 
         } catch (SQLException e) {
-            c.getLog().log(Level.SEVERE, "Error moving item: " + e.getMessage());
+            LOG.error("Error moving item", e);
             if (con != null) {
                 try {
                     con.rollback();
                 } catch (SQLException e1) {
-                    c.getLog().log(Level.SEVERE, "Error while rollback: " + e1.getMessage());
+                    LOG.error("Error while rollback", e1);
                 }
             }
         }

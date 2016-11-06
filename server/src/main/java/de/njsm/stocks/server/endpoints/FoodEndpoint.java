@@ -2,21 +2,25 @@ package de.njsm.stocks.server.endpoints;
 
 import de.njsm.stocks.server.data.*;
 import de.njsm.stocks.server.internal.auth.Principals;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.logging.Level;
 
 @Path("/food")
 public class FoodEndpoint extends Endpoint {
+
+    private static final Logger LOG = LogManager.getLogger(FoodEndpoint.class);
 
     @GET
     @Produces("application/json")
     public Data[] getFood(@Context HttpServletRequest request) {
         Principals uc = c.getContextFactory().getPrincipals(request);
-        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " gets food");
+        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " gets food");
+
         return handler.get(FoodFactory.f);
     }
 
@@ -24,7 +28,8 @@ public class FoodEndpoint extends Endpoint {
     @Consumes("application/json")
     public void addFood(@Context HttpServletRequest request, Food food){
         Principals uc = c.getContextFactory().getPrincipals(request);
-        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " adds food " + food.name);
+        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " adds food " + food.name);
+
         handler.add(food);
     }
 
@@ -36,8 +41,9 @@ public class FoodEndpoint extends Endpoint {
                            @PathParam("newname") String newName){
 
         Principals uc = c.getContextFactory().getPrincipals(request);
-        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() +
+        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() +
                 " renames food " + food.name + " -> " + newName);
+
         handler.rename(food, newName);
     }
 
@@ -48,7 +54,8 @@ public class FoodEndpoint extends Endpoint {
                            Food food) {
 
         Principals uc = c.getContextFactory().getPrincipals(request);
-        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " removes food " + food.name);
+        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " removes food " + food.name);
+
         handler.remove(food);
     }
 
@@ -57,7 +64,8 @@ public class FoodEndpoint extends Endpoint {
     @Produces("application/json")
     public Data[] getFoodItems(@Context HttpServletRequest request) {
         Principals uc = c.getContextFactory().getPrincipals(request);
-        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " gets food items");
+        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " gets food items");
+
         return handler.get(FoodItemFactory.f);
     }
 
@@ -68,12 +76,12 @@ public class FoodEndpoint extends Endpoint {
 
         try {
             Principals uc = c.getContextFactory().getPrincipals(request);
-            c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " adds food item " + item.id);
+            LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " adds food item " + item.id);
             item.buys = uc.getUid();
             item.registers = uc.getDid();
             handler.add(item);
         } catch (SecurityException e) {
-            c.getLog().log(Level.SEVERE, "FoodEndpoint: security violation: " + e.getMessage());
+            LOG.error("Security violation", e);
         }
     }
 
@@ -84,7 +92,7 @@ public class FoodEndpoint extends Endpoint {
                                FoodItem item){
 
         Principals uc = c.getContextFactory().getPrincipals(request);
-        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " removes food item " + item.id);
+        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " removes food item " + item.id);
         handler.remove(item);
     }
 
@@ -95,7 +103,7 @@ public class FoodEndpoint extends Endpoint {
                              FoodItem item,
                              @PathParam("newId") int newLocId) {
         Principals uc = c.getContextFactory().getPrincipals(request);
-        c.getLog().log(Level.INFO, uc.getUsername() + "@" + uc.getDeviceName() + " moves food item " + item.id +
+        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " moves food item " + item.id +
                 " to " + newLocId);
         handler.moveItem(item, newLocId);
     }

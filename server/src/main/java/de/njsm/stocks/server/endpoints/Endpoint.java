@@ -8,7 +8,6 @@ class Endpoint {
     final Config c;
     final SqlDatabaseHandler handler;
 
-
     Endpoint() {
         c = new Config();
         handler = c.getDbHandler();

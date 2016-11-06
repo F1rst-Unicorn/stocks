@@ -9,6 +9,9 @@ CA_ROOT=$1
 CONFIG_TEMPLATE_DIR=$2
 RANDFILE=$CA_ROOT/.rnd
 
+set -e
+set -x
+
 ## Set up the CA
     mkdir -p $CA_ROOT
     cd $CA_ROOT
@@ -29,8 +32,8 @@ RANDFILE=$CA_ROOT/.rnd
     ## Set up intermediate CA
     mkdir -p intermediate
     cd intermediate
-    cp $CONFIG_TEMPLATE_DIR/openssl.cnf .
-    sed -i "s&@@@CAROOT@@@&$CA_ROOT&g" openssl.cnf
+    cp $CONFIG_TEMPLATE_DIR/openssl_intermediate.cnf openssl.cnf
+    sed -i "s&@@@CAROOT@@@&$CA_ROOT/intermediate&g" openssl.cnf
     mkdir certs csr private newcerts crl
     chmod 700 private
     touch index.txt

@@ -1,5 +1,6 @@
 *~
 .directory
+*.swp
 
 # java build dirs
 lib
@@ -15,3 +16,6 @@ deploy*/stocks/
 keystore
 
 spec/ER-diagram.png
+
+# test files
+server/src/test/integration/resources

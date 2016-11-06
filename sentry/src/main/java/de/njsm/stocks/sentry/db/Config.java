@@ -1,20 +1,13 @@
-package de.njsm.stocks.server.internal;
+package de.njsm.stocks.sentry.db;
 
-import de.njsm.stocks.server.internal.auth.AuthAdmin;
-import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
-import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
-import de.njsm.stocks.server.internal.db.SqlDatabaseHandler;
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.*;
 
 public class Config {
-
-    private static final Logger LOG = LogManager.getLogger(Config.class);
 
     private static final String DB_ADDRESS_KEY = "de.njsm.stocks.internal.db.databaseAddress";
     private static final String DB_PORT_KEY = "de.njsm.stocks.internal.db.databasePort";
@@ -30,6 +23,8 @@ public class Config {
     private String dbPassword;
     private String dbValidity;
 
+    private final Logger log = Logger.getLogger("stocks");
+
     public Config() {
         try {
             FileInputStream fis = new FileInputStream("/etc/stocks-server/stocks.properties");
@@ -38,7 +33,7 @@ public class Config {
             readProperties(p);
             IOUtils.closeQuietly(fis);
         } catch (IOException e) {
-            LOG.error("No stocks.properties found", e);
+            log.log(Level.SEVERE, "Failed to configure server!", e);
         }
     }
 
@@ -53,18 +48,6 @@ public class Config {
         dbUsername = p.getProperty(DB_USERNAME_KEY);
         dbPassword = p.getProperty(DB_PASSWORD_KEY);
         dbValidity = p.getProperty(DB_VALIDITY_KEY);
-    }
-
-    public HttpsUserContextFactory getContextFactory() {
-        return new HttpsUserContextFactory();
-    }
-
-    public SqlDatabaseHandler getDbHandler() {
-        return new SqlDatabaseHandler(this);
-    }
-
-    public AuthAdmin getCertAdmin() {
-        return new X509CertificateAdmin();
     }
 
     public String getDbAddress() {
