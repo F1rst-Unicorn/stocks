@@ -19,14 +19,14 @@ public class DatabaseHandler {
             // Well, do you really want to use the database?
         }
 
-        validityTime = Integer.parseInt(
-                System.getProperty("de.njsm.stocks.internal.ticketValidityTimeInMinutes", "10"));
+        Config c = new Config();
+        validityTime = Integer.parseInt(c.getDbValidity());
 
-        String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
-        String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
-        String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
-        String user = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
-        String password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
+        String address = c.getDbAddress();
+        String port = c.getDbPort();
+        String name = c.getDbName();
+        String user = c.getDbUsername();
+        String password = c.getDbPassword();
 
         url = String.format("jdbc:mariadb://%s:%s/%s?user=%s&password=%s",
                 address,
