@@ -6,7 +6,7 @@
       
       stocks_pkg_dir: ~/Software/stocks-server
       stocks_version: 0.5-2
-      stocks_pkg: stocks-server-{{ stocks_version }}-x86_64.pkg.tar.xz
+      stocks_pkg: stocks-server-{{ stocks_version }}-any.pkg.tar.xz
 
 
   remote_user: root
