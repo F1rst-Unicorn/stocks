@@ -107,21 +107,29 @@
         group=root
         backup=True
 
-  - name: Copy server
-  - file: >
+  - name: Link server.war
+    file: >
         src={{ stocks_base }}/server.war
         dest=/usr/share/tomcat8/webapps/server.war
         owner=tomcat8
         group=tomcat8
         state=link
         
-  - name: Copy sentry
-  - file: >
+  - name: Link sentry.war
+    file: >
         src={{ stocks_base }}/sentry.war
         dest=/usr/share/tomcat8/webapps/sentry.war
         owner=tomcat8
         group=tomcat8
         state=link
+        
+  - name: Install tomcat config
+    copy: >
+        src={{ stocks_base }}/server.xml
+        dest=/usr/share/tomcat8/conf/server.xml
+        owner=tomcat8
+        group=tomcat8
+        backup=True
 
   - name: Start tomcat
     service: >
