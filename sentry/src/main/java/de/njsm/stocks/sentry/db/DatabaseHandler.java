@@ -13,7 +13,7 @@ public class DatabaseHandler {
 
     public DatabaseHandler() throws ClassNotFoundException {
 
-        Class.forName("com.mariadb.jdbc.Driver");
+        Class.forName("org.mariadb.jdbc.Driver");
 
         Config c = new Config();
         validityTime = Integer.parseInt(c.getDbValidity());
