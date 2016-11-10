@@ -2,11 +2,15 @@ package de.njsm.stocks.sentry.db;
 
 import de.njsm.stocks.sentry.auth.CertificateManager;
 import de.njsm.stocks.sentry.data.Principals;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.sql.*;
 
 public class DatabaseHandler {
+
+    private static final Logger LOG = LogManager.getLogger(DatabaseHandler.class);
 
     private final String url;
     private final int validityTime;
@@ -71,6 +75,7 @@ public class DatabaseHandler {
                 return now.before(valid_till_date) &&
                         storedId == deviceId;
             } else {
+                LOG.debug("No ticket found for deviceId " + deviceId);
                 return false;
             }
 
