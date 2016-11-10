@@ -17,7 +17,7 @@
 * 00005 : NEW  : Clear obsolete tickets
 * 00004 : NEW  : Add EAN-13 add and delete methods for food
 * 00015 : DONE : Replace ansible systemd module by service calls
-* 00020 : NEW  : Update server admin doc: logging, symlinks tomcat
+* 00020 : DONE : Update server admin doc: logging, symlinks tomcat
 
 ## Version 1.1
 * 00006 : NEW  : Image support for Food
