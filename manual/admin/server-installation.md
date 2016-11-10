@@ -23,7 +23,8 @@ installation. Their meaning is described below:
 
 target_host: The ansible host group on which to run the playbook
 remote_mysql_password: The password of the MySQL root user on the target host
-stocks_base: Default install folder, Don't change this, only for readability
+stocks_base: Default install folder. Don't change this, only for readability
+stocks_lib: Default lib folder. Don't change this, only for readability
 stocks_user: The first user to install. Change to your needs
 stocks_device: The first device to install. Change to your needs
 sudoers_line: The line added to sudoers. To simplify auditing
@@ -86,7 +87,15 @@ tomcat8 ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload
 ### Tomcat 8
 
 Set up tomcat as a servlet container. For an example config have a look at 
-/usr/share/stocks-server/server.xml. 
+/usr/share/stocks-server/server.xml. If you have no tomcat 8 running on the 
+target server, you can simply copy the config to /etc/tomcat8/server.xml. 
+
+Then you have to link the two webapps into tomcat: 
+
+```
+ln -s /usr/lib/stocks-server/server.war /usr/share/tomcat8/webapps/server.war
+ln -s /usr/lib/stocks-server/sentry.war /usr/share/tomcat8/webapps/sentry.war
+```
 
 ### Stocks server
 

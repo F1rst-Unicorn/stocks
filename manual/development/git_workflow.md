@@ -19,6 +19,12 @@ If a branch does not exist, this means that it is at the same commit as the
 master branch, so to start new features, first the corresponding dev branch
 has to be created. 
 
+### Special branch dev-sentry
+Since the sentry does not have an own package it has to be evaluated for each
+version whether it can be merged into master directly or whether it depends
+on new server features. In this case it is delivered with the new version of 
+the server instead. 
+
 ## Feature branches
 Each feature needed for a new version is implemented in a separate feature 
 branch. The naming convention is subcomponent-featureid, where the subcomponent
