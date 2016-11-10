@@ -1,15 +1,17 @@
 package de.njsm.stocks.sentry.auth;
 
 import de.njsm.stocks.sentry.data.Principals;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 public class CertificateManager {
+
+    private static final Logger LOG = LogManager.getLogger(CertificateManager.class);
 
     public static final String csrFormatString = "/usr/share/stocks-server/root/CA/intermediate/csr/%s.csr.pem";
     public static final String certFormatString = "/usr/share/stocks-server/root/CA/intermediate/certs/%s.cert.pem";
@@ -18,7 +20,6 @@ public class CertificateManager {
      * Execute openssl command to generate new certificate
      *
      * @param userFile The userFile string, i.e. the file name without extension
-     * @throws IOException
      */
     public void generateCertificate(String userFile) throws IOException {
 
@@ -37,7 +38,7 @@ public class CertificateManager {
         try {
             p.waitFor();
         } catch (InterruptedException e){
-            e.printStackTrace();
+            LOG.error("Interrupted: ", e);
         }
     }
 
