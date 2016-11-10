@@ -1,7 +1,7 @@
 # Maintainer: aliena <dairyman@njsm.de>
 pkgname=stocks-server
 pkgver=0.5
-pkgrel=4
+pkgrel=5
 pkgdesc="Manages a household's stocks"
 arch=('any')
 url="https://github.com/F1rst-Unicorn/stocks"
