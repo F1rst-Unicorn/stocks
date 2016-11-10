@@ -50,29 +50,24 @@ public class CertificateManagerTest {
         }
         input = input.concat(testInput[testInput.length-1]);
 
-        Principals p = uut.parseSubjectName(input);
+        uut.parseSubjectName(input);
     }
 
     @Test(expected = SecurityException.class)
     public void testTooFewDollars() {
         CertificateManager uut = new CertificateManager();
 
-        Principals p = uut.parseSubjectName("CN=username$devicename$4");
+        uut.parseSubjectName("CN=username$devicename$4");
     }
 
     @Test
-    public void testParseCsr() {
+    public void testParseCsr() throws IOException {
         CertificateManager uut = new CertificateManager();
-
-        try {
-            Principals p = uut.getPrincipals("src/test/res/user_1.csr.pem");
-            Assert.assertEquals("jan", p.getUsername());
-            Assert.assertEquals(1, p.getUid());
-            Assert.assertEquals("laptop", p.getDeviceName());
-            Assert.assertEquals(1, p.getDid());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Principals p = uut.getPrincipals("src/test/res/user_1.csr.pem");
+        Assert.assertEquals("jan", p.getUsername());
+        Assert.assertEquals(1, p.getUid());
+        Assert.assertEquals("laptop", p.getDeviceName());
+        Assert.assertEquals(1, p.getDid());
 
     }
 

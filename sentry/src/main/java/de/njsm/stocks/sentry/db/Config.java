@@ -1,13 +1,16 @@
 package de.njsm.stocks.sentry.db;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.*;
 
 public class Config {
+
+    private static final Logger LOG = LogManager.getLogger(Config.class);
 
     private static final String DB_ADDRESS_KEY = "de.njsm.stocks.internal.db.databaseAddress";
     private static final String DB_PORT_KEY = "de.njsm.stocks.internal.db.databasePort";
@@ -23,8 +26,6 @@ public class Config {
     private String dbPassword;
     private String dbValidity;
 
-    private final Logger log = Logger.getLogger("stocks");
-
     public Config() {
         try {
             FileInputStream fis = new FileInputStream("/etc/stocks-server/stocks.properties");
@@ -33,7 +34,7 @@ public class Config {
             readProperties(p);
             IOUtils.closeQuietly(fis);
         } catch (IOException e) {
-            log.log(Level.SEVERE, "Failed to configure server!", e);
+            LOG.error("Failed to configure server!", e);
         }
     }
 
