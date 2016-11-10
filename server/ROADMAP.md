@@ -8,7 +8,7 @@
 * 00014 : DONE : Add Ansible playbook for deployment
 * 00002 : INVALID : First database access on new server causes exception
 
-## Version 0.6
+## Version 1.0
 * 00018 : DONE : First database access on new server causes exception
 * 00019 : DONE : Split ansible script into setup and installation part
 * 00017 : DONE : Add integration test
@@ -19,12 +19,12 @@
 * 00015 : DONE : Replace ansible systemd module by service calls
 * 00020 : NEW  : Update server admin doc: logging, symlinks tomcat
 
-## Version 0.7
+## Version 1.1
 * 00006 : NEW  : Image support for Food
 * 00010 : NEW  : Edit eat-by date
 * 00007 : NEW  : Remember maximum items per food to emit warnings based on thresholds
 
-## Version 1.0
+## Version 1.2
 * 00009 : NEW  : Add favourite food markers
 * 00003 : NEW  : setup-ca script emits "unable to write random state"
 * 00011 : NEW  : Race condition when adding Food_item and retrieving updates 
