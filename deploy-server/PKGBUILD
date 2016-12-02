@@ -1,7 +1,7 @@
 # Maintainer: aliena <dairyman@njsm.de>
 pkgname=stocks-server
-pkgver=0.5
-pkgrel=4
+pkgver=0.5.6
+pkgrel=1
 pkgdesc="Manages a household's stocks"
 arch=('any')
 url="https://github.com/F1rst-Unicorn/stocks"
@@ -14,8 +14,8 @@ depends=('jre8-openjdk'
          'tomcat8')
 makedepends=('git'
              'maven')
-branch=${STOCKSBRANCH:-master}
-source=("git://www.github.com/F1rst-Unicorn/stocks#branch=$branch")
+__branch=${STOCKSBRANCH:-master}
+source=("git://www.github.com/F1rst-Unicorn/stocks#branch=$__branch")
 install=stocks-server.install
 sha512sums=('SKIP')
 backup=("etc/$pkgname/stocks.properties"
@@ -73,7 +73,8 @@ package() {
     install -D -m 644 deploy-server/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
     
     install -D -m 444 README.md $pkgdir/usr/share/doc/$pkgname/README.md
-    install -D -m 444 manual/admin/server-installation.md $pkgdir/usr/share/doc/$pkgname/
+    install -D -m 444 manual/server-admin/server-installation.md $pkgdir/usr/share/doc/$pkgname/
+    install -D -m 444 manual/server-admin/maintainance.md $pkgdir/usr/share/doc/$pkgname/
     
     install -D -m 444 LICENSE.md $pkgdir/usr/share/licenses/$pkgname/LICENSE.md
     

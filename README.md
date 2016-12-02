@@ -5,11 +5,11 @@
 Stocks is a framework for helping people to keep track of their
 food stocks, periodic tasks and tasks in daily life. 
 
-## Server installation
+## Server
 
-See manual/admin/ for build and installation manuals. 
+See manual/admin/ for build and maintainance manuals. 
 
-## Linux client installation
+## Linux client
 
 See deploy-client/README.md for a detailed description.
 
