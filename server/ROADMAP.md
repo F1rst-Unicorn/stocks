@@ -14,7 +14,7 @@
 * 00017 : DONE : Add integration test
 * 00016 : DONE : Migrate from Jetty to Tomcat 8
 * 00001 : DONE : Better logging, divide access from errors
-* 00005 : NEW  : Clear obsolete tickets
+* 00005 : CANCELLED  : Clear obsolete tickets
 * 00004 : NEW  : Add EAN-13 add and delete methods for food
 * 00015 : DONE : Replace ansible systemd module by service calls
 * 00020 : DONE : Update server admin doc: logging, symlinks tomcat
