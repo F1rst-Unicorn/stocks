@@ -6,9 +6,14 @@ public class HttpsUserContextFactory{
 
 
     public Principals getPrincipals(HttpServletRequest request) {
-
         String clientName = request.getHeader("X-SSL-Client-S-DN");
         return parseSubjectName(clientName);
+    }
+
+    public boolean isNameValid(String name) {
+        int noDollar = name.indexOf('$');
+        int noEqual  = name.indexOf('=');
+        return noDollar == -1 && noEqual == -1;
     }
 
     public Principals parseSubjectName(String subject){

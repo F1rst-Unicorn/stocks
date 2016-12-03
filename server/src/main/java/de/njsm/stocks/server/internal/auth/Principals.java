@@ -59,4 +59,8 @@ public class Principals {
     public String toString() {
         return username + "$" + uid + "$" + deviceName + "$" + did;
     }
+
+    public String getReadableString() {
+        return username + "@" + deviceName;
+    }
 }
