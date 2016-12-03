@@ -18,7 +18,7 @@
 * 00004 : NEW  : Add EAN-13 add and delete methods for food
 * 00015 : DONE : Replace ansible systemd module by service calls
 * 00020 : DONE : Update server admin doc: logging, symlinks tomcat
-* 00021 : NEW  : Clean up codebase
+* 00021 : DONE : Clean up codebase
 
 ## Version 1.1
 * 00006 : NEW  : Image support for Food
