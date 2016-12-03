@@ -13,10 +13,10 @@ public class FoodFactory extends DataFactory {
     }
 
     @Override
-    public Data createData(ResultSet rs) throws SQLException {
-        Food f = new Food();
-        f.id = rs.getInt("ID");
-        f.name = rs.getString("name");
-        return f;
+    public Data createData(ResultSet inputSet) throws SQLException {
+        Food result = new Food();
+        result.id = inputSet.getInt("ID");
+        result.name = inputSet.getString("name");
+        return result;
     }
 }

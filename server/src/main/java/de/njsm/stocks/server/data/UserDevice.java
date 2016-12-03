@@ -9,7 +9,8 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class UserDevice extends Data implements SqlAddable, SqlRemovable{
+public class UserDevice extends Data implements SqlAddable,
+                                                SqlRemovable {
     public int id;
     public String name;
     public int userId;

@@ -13,11 +13,11 @@ public class EanNumberFactory extends DataFactory {
     }
 
     @Override
-    protected Data createData(ResultSet rs) throws SQLException {
-        EanNumber n = new EanNumber();
-        n.id = rs.getInt("ID");
-        n.eanCode = rs.getString("number");
-        n.identifiesFood = rs.getInt("identifies");
-        return n;
+    protected Data createData(ResultSet inputSet) throws SQLException {
+        EanNumber result = new EanNumber();
+        result.id = inputSet.getInt("ID");
+        result.eanCode = inputSet.getString("number");
+        result.identifiesFood = inputSet.getInt("identifies");
+        return result;
     }
 }

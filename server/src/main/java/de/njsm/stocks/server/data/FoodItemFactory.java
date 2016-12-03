@@ -13,14 +13,14 @@ public class FoodItemFactory extends DataFactory {
     }
 
     @Override
-    public Data createData(ResultSet rs) throws SQLException {
-        FoodItem i = new FoodItem();
-        i.id = rs.getInt("ID");
-        i.eatByDate = rs.getDate("eat_by");
-        i.ofType = rs.getInt("of_type");
-        i.storedIn = rs.getInt("stored_in");
-        i.registers = rs.getInt("registers");
-        i.buys = rs.getInt("buys");
-        return i;
+    public Data createData(ResultSet inputSet) throws SQLException {
+        FoodItem result = new FoodItem();
+        result.id = inputSet.getInt("ID");
+        result.eatByDate = inputSet.getDate("eat_by");
+        result.ofType = inputSet.getInt("of_type");
+        result.storedIn = inputSet.getInt("stored_in");
+        result.registers = inputSet.getInt("registers");
+        result.buys = inputSet.getInt("buys");
+        return result;
     }
 }

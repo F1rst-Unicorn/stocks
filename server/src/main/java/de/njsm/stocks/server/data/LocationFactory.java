@@ -13,10 +13,10 @@ public class LocationFactory extends DataFactory {
     }
 
     @Override
-    public Data createData(ResultSet rs) throws SQLException {
-        Location l = new Location();
-        l.id = rs.getInt("ID");
-        l.name = rs.getString("name");
-        return l;
+    public Data createData(ResultSet inputSet) throws SQLException {
+        Location result = new Location();
+        result.id = inputSet.getInt("ID");
+        result.name = inputSet.getString("name");
+        return result;
     }
 }

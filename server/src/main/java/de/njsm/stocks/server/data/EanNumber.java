@@ -17,12 +17,6 @@ public class EanNumber extends Data implements SqlAddable, SqlRemovable {
     public EanNumber() {
     }
 
-    public EanNumber(int id, String eanCode, int identifiesFood) {
-        this.id = id;
-        this.eanCode = eanCode;
-        this.identifiesFood = identifiesFood;
-    }
-
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
         stmt.setString(1, eanCode);

@@ -9,23 +9,32 @@ import java.security.SecureRandom;
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
 public class Ticket extends Data {
+
+    @JsonIgnore
+    private static final int TICKET_LENGTH = 64;
+
     public int deviceId;
     public String ticket;
     public String pemFile;
 
     @JsonIgnore
     public static String generateTicket() {
-        int ticket_length = 64;         // this conforms to database ticket size
-        SecureRandom rng = new SecureRandom();
-        byte[] content = new byte[ticket_length];
+        SecureRandom generator = new SecureRandom();
+        byte[] content = new byte[TICKET_LENGTH];
 
-        for (int i = 0; i < ticket_length; i++){
-            byte b;
-            do {
-                b = (byte) rng.nextInt();
-            } while (!Character.isLetterOrDigit(b));
-            content[i] = b;
+        for (int i = 0; i < TICKET_LENGTH; i++){
+            content[i] = getNextByte(generator);
         }
+
         return new String(content);
+    }
+
+    @JsonIgnore
+    private static byte getNextByte(SecureRandom generator) {
+        byte result;
+        do {
+            result = (byte) generator.nextInt();
+        } while (!Character.isLetterOrDigit(result));
+        return result;
     }
 }
