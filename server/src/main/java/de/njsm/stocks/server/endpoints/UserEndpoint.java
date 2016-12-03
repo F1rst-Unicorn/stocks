@@ -16,39 +16,36 @@ public class UserEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(UserEndpoint.class);
 
-    private static boolean isNameValid(String name) {
-        int noDollar = name.indexOf('$');
-        int noEqual  = name.indexOf('=');
-        return noDollar == -1 && noEqual == -1;
-    }
-
     @PUT
     @Consumes("application/json")
-    public void addUser(@Context HttpServletRequest request, User u) {
-        Principals uc = c.getContextFactory().getPrincipals(request);
-        if (isNameValid(u.name)) {
-            handler.add(u);
-            LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " adds user " + u.name);
+    public void addUser(@Context HttpServletRequest request,
+                        User userToAdd) {
+
+        if (c.getContextFactory().isNameValid(userToAdd.name)) {
+            logAccess(LOG, request, "adds user " + userToAdd.name);
+            handler.add(userToAdd);
+
         } else {
-            LOG.warn(uc.getUsername() + "@" + uc.getDeviceName() + " tried to add invalid user " + u.name);
+            Principals client = c.getContextFactory().getPrincipals(request);
+            LOG.warn(client.getReadableString()
+                    + "tried to add invalid user " + userToAdd.name);
         }
     }
 
     @GET
     @Produces("application/json")
     public Data[] getUsers(@Context HttpServletRequest request) {
-        Principals uc = c.getContextFactory().getPrincipals(request);
-        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " gets users");
+        logAccess(LOG, request, "gets users");
         return handler.get(UserFactory.f);
     }
 
     @PUT
     @Path("/remove")
     @Consumes("application/json")
-    public void deleteUser(@Context HttpServletRequest request, User u) {
-        Principals uc = c.getContextFactory().getPrincipals(request);
-        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " removes user " + u.name);
-        handler.removeUser(u);
+    public void deleteUser(@Context HttpServletRequest request,
+                           User userToDelete) {
+        logAccess(LOG, request, "removes user " + userToDelete.name);
+        handler.removeUser(userToDelete);
     }
 
 }

@@ -17,13 +17,12 @@ class Endpoint {
         handler = c.getDbHandler();
     }
 
-    public void logAccess(Logger targetLog,
+    protected void logAccess(Logger targetLog,
                           HttpServletRequest request,
                           String description) {
         Principals userInfo = c.getContextFactory().getPrincipals(request);
-        String logEntry = String.format("%s@%s %s",
-                userInfo.getUsername(),
-                userInfo.getDeviceName(),
+        String logEntry = String.format("%s %s",
+                userInfo.getReadableString(),
                 description);
 
         targetLog.info(logEntry);

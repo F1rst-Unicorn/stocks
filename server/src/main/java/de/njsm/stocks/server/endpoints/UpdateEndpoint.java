@@ -20,8 +20,7 @@ public class UpdateEndpoint extends Endpoint {
     @GET
     @Produces("application/json")
     public Data[] getUpdates(@Context HttpServletRequest request) {
-        Principals uc = c.getContextFactory().getPrincipals(request);
-        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " gets updates");
+        logAccess(LOG, request, "gets updates");
         return handler.get(UpdateFactory.f);
     }
 }

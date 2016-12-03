@@ -21,30 +21,35 @@ public class DeviceEndpoint extends Endpoint {
     @PUT
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Ticket addDevice(@Context HttpServletRequest request, UserDevice d) {
-        Principals uc = c.getContextFactory().getPrincipals(request);
-        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " adds device " + d.name);
+    public Ticket addDevice(@Context HttpServletRequest request,
+                            UserDevice deviceToAdd) {
 
-        return handler.addDevice(d);
+        if (c.getContextFactory().isNameValid(deviceToAdd.name)) {
+            logAccess(LOG, request, "adds device " + deviceToAdd.name);
+            return handler.addDevice(deviceToAdd);
+
+        } else {
+            Principals client = c.getContextFactory().getPrincipals(request);
+            LOG.warn(client.getReadableString()
+                    + "tried to add invalid device " + deviceToAdd.name);
+            return new Ticket();
+        }
     }
 
     @GET
     @Produces("application/json")
     public Data[] getDevices(@Context HttpServletRequest request){
-        Principals uc = c.getContextFactory().getPrincipals(request);
-        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " gets devices");
-
+        logAccess(LOG, request, "gets devices");
         return handler.get(UserDeviceFactory.f);
     }
 
     @PUT
     @Path("/remove")
     @Consumes("application/json")
-    public void removeDevice(@Context HttpServletRequest request, UserDevice d){
-        Principals uc = c.getContextFactory().getPrincipals(request);
-        LOG.info(uc.getUsername() + "@" + uc.getDeviceName() + " removes device");
-
-        handler.removeDevice(d);
+    public void removeDevice(@Context HttpServletRequest request,
+                             UserDevice deviceToRemove){
+        logAccess(LOG, request, "removes device " + deviceToRemove.name);
+        handler.removeDevice(deviceToRemove);
     }
 
 
