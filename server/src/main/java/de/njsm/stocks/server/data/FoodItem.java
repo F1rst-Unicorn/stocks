@@ -21,6 +21,23 @@ public class FoodItem extends Data implements SqlAddable,
     public int registers;
     public int buys;
 
+    public FoodItem() {
+    }
+
+    public FoodItem(int id,
+                    Date eatByDate,
+                    int ofType,
+                    int storedIn,
+                    int registers,
+                    int buys) {
+        this.id = id;
+        this.eatByDate = eatByDate;
+        this.ofType = ofType;
+        this.storedIn = storedIn;
+        this.registers = registers;
+        this.buys = buys;
+    }
+
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
         stmt.setDate(1, new java.sql.Date(eatByDate.getTime()));
@@ -49,8 +66,4 @@ public class FoodItem extends Data implements SqlAddable,
         return "DELETE FROM Food_item WHERE ID=?";
     }
 
-    @Override
-    public String toString() {
-        return "FoodItem (" + id + ", " + eatByDate + ", " + ofType + ")";
-    }
 }
