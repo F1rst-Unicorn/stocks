@@ -19,19 +19,23 @@ public class EanNumberFactoryTest {
 
     private int resultSetSize;
 
+    private EanNumberFactory uut;
+    private ResultSet rs;
+
     @Before
-    public void setup() {
+    public void setup() throws SQLException {
         idReference = 1;
         codeReference = "123-123-123";
         identifiesReference = 3;
         resultSetSize = 3;
+
+        rs = setupResultSet();
+        uut = new EanNumberFactory();
+
     }
 
     @Test
     public void testSingleCreation() throws SQLException {
-        ResultSet rs = setupResultSet();
-        EanNumberFactory uut = new EanNumberFactory();
-
         Data rawResult = uut.createData(rs);
 
         Assert.assertTrue(rawResult instanceof EanNumber);
@@ -44,11 +48,9 @@ public class EanNumberFactoryTest {
 
     @Test
     public void testBulkCreation() throws SQLException {
-        ResultSet rs = setupResultSet();
-        EanNumberFactory uut = new EanNumberFactory();
-
         List<Data> resultList = uut.createDataList(rs);
 
+        Assert.assertEquals(resultSetSize, resultList.size());
         for (Data rawResult : resultList) {
             Assert.assertTrue(rawResult instanceof EanNumber);
             EanNumber result = (EanNumber) rawResult;
@@ -60,8 +62,8 @@ public class EanNumberFactoryTest {
 
     @Test
     public void testGetQuery() {
-        EanNumberFactory uut = new EanNumberFactory();
         String expectedQuery = "SELECT * FROM EAN_number";
+
         String actualQuery = uut.getQuery();
 
         Assert.assertEquals(expectedQuery, actualQuery);
@@ -69,15 +71,17 @@ public class EanNumberFactoryTest {
 
     private ResultSet setupResultSet() throws SQLException {
         ResultSet rs = Mockito.mock(ResultSet.class);
+
         Answer<Boolean> a = new Answer<Boolean>() {
             private int callCounter;
             @Override
             public Boolean answer(InvocationOnMock invocation) throws Throwable {
                 callCounter++;
-                return callCounter >= resultSetSize;
+                return callCounter <= resultSetSize;
             }
         };
         Mockito.when(rs.next()).thenAnswer(a);
+
         Mockito.when(rs.getInt("ID")).thenReturn(idReference);
         Mockito.when(rs.getString("number")).thenReturn(codeReference);
         Mockito.when(rs.getInt("identifies")).thenReturn(identifiesReference);

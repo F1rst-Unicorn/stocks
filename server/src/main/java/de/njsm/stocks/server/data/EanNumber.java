@@ -17,6 +17,12 @@ public class EanNumber extends Data implements SqlAddable, SqlRemovable {
     public EanNumber() {
     }
 
+    public EanNumber(int id, String eanCode, int identifiesFood) {
+        this.id = id;
+        this.eanCode = eanCode;
+        this.identifiesFood = identifiesFood;
+    }
+
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
         stmt.setString(1, eanCode);
@@ -25,7 +31,7 @@ public class EanNumber extends Data implements SqlAddable, SqlRemovable {
 
     @Override
     public String getAddStmt() {
-        return "INSERT INTO EAN_Number (number, identifies) VALUES (?,?)";
+        return "INSERT INTO EAN_number (number, identifies) VALUES (?,?)";
     }
 
     @Override
@@ -35,6 +41,6 @@ public class EanNumber extends Data implements SqlAddable, SqlRemovable {
 
     @Override
     public String getRemoveStmt() {
-        return "DELETE FROM EAN_Number WHERE ID=?";
+        return "DELETE FROM EAN_number WHERE ID=?";
     }
 }
