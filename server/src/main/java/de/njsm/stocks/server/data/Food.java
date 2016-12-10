@@ -16,6 +16,14 @@ public class Food extends Data implements SqlAddable,
     public int id;
     public String name;
 
+    public Food() {
+    }
+
+    public Food(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
         stmt.setString(1, name);
