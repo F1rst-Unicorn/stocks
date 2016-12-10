@@ -1,6 +1,5 @@
 package de.njsm.stocks.server.internal.db;
 
-import java.io.IOException;
 import java.sql.*;
 
 public class DatabaseHelper {
@@ -13,6 +12,7 @@ public class DatabaseHelper {
             "DELETE FROM User_device",
             "DELETE FROM Ticket",
             "DELETE FROM Location",
+            "DELETE FROM EAN_number",
             "INSERT INTO Food (ID, name) VALUES (1, 'Carrot'), (2, 'Beer'), (3, 'Cheese')",
             "INSERT INTO Location (ID, name) VALUES (1, 'Fridge') , (2, 'Cupboard')",
             "INSERT INTO User (ID, name) VALUES (1, 'Bob'), (2, 'Alice')",
@@ -22,6 +22,7 @@ public class DatabaseHelper {
                     "(2, '2017-09-24 00:00:00', 3, 2, 1, 2)," +
                     "(3, '2017-09-24 00:00:00', 3, 2, 1, 2)",
             "INSERT INTO Ticket (ticket, belongs_device) VALUES ('AAAA', 3)",
+            "INSERT INTO EAN_number (number, identifies) VALUES ('EAN BEER', 2)",
             "SET FOREIGN_KEY_CHECKS = 1",
     };
 

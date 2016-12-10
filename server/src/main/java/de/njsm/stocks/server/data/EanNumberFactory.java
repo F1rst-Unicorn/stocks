@@ -9,7 +9,7 @@ public class EanNumberFactory extends DataFactory {
 
     @Override
     public String getQuery() {
-        return "SELECT * FROM EAN_Number";
+        return "SELECT * FROM EAN_number";
     }
 
     @Override
