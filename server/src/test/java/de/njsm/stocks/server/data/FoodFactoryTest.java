@@ -37,12 +37,8 @@ public class FoodFactoryTest {
     public void testSingleCreation() throws SQLException {
         Data rawResult = uut.createData(rs);
 
-        Assert.assertTrue(rawResult instanceof Food);
-        Food result = (Food) rawResult;
-        Assert.assertEquals(idReference, result.id);
-        Assert.assertEquals(nameReference, result.name);
+        assertReferenceEquality(rawResult);
     }
-
 
     @Test
     public void testBulkCreation() throws SQLException {
@@ -50,10 +46,7 @@ public class FoodFactoryTest {
 
         Assert.assertEquals(resultSetSize, resultList.size());
         for (Data rawResult : resultList) {
-            Assert.assertTrue(rawResult instanceof Food);
-            Food result = (Food) rawResult;
-            Assert.assertEquals(idReference, result.id);
-            Assert.assertEquals(nameReference, result.name);
+            assertReferenceEquality(rawResult);
         }
     }
 
@@ -71,6 +64,7 @@ public class FoodFactoryTest {
 
         Answer<Boolean> a = new Answer<Boolean>() {
             private int callCounter;
+
             @Override
             public Boolean answer(InvocationOnMock invocation) throws Throwable {
                 callCounter++;
@@ -82,5 +76,12 @@ public class FoodFactoryTest {
         Mockito.when(rs.getInt("ID")).thenReturn(idReference);
         Mockito.when(rs.getString("name")).thenReturn(nameReference);
         return rs;
+    }
+
+    private void assertReferenceEquality(Data rawResult) {
+        Assert.assertTrue(rawResult instanceof Food);
+        Food result = (Food) rawResult;
+        Assert.assertEquals(idReference, result.id);
+        Assert.assertEquals(nameReference, result.name);
     }
 }

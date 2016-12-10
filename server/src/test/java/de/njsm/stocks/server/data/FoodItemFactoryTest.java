@@ -48,7 +48,6 @@ public class FoodItemFactoryTest {
         assertReferenceEquality(rawResult);
     }
 
-
     @Test
     public void testBulkCreation() throws SQLException {
         List<Data> resultList = uut.createDataList(rs);

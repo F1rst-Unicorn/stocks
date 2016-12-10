@@ -38,13 +38,8 @@ public class EanNumberFactoryTest {
     public void testSingleCreation() throws SQLException {
         Data rawResult = uut.createData(rs);
 
-        Assert.assertTrue(rawResult instanceof EanNumber);
-        EanNumber result = (EanNumber) rawResult;
-        Assert.assertEquals(idReference, result.id);
-        Assert.assertEquals(codeReference, result.eanCode);
-        Assert.assertEquals(identifiesReference, result.identifiesFood);
+        assertReferenceEquality(rawResult);
     }
-
 
     @Test
     public void testBulkCreation() throws SQLException {
@@ -52,11 +47,7 @@ public class EanNumberFactoryTest {
 
         Assert.assertEquals(resultSetSize, resultList.size());
         for (Data rawResult : resultList) {
-            Assert.assertTrue(rawResult instanceof EanNumber);
-            EanNumber result = (EanNumber) rawResult;
-            Assert.assertEquals(idReference, result.id);
-            Assert.assertEquals(codeReference, result.eanCode);
-            Assert.assertEquals(identifiesReference, result.identifiesFood);
+            assertReferenceEquality(rawResult);
         }
     }
 
@@ -86,5 +77,13 @@ public class EanNumberFactoryTest {
         Mockito.when(rs.getString("number")).thenReturn(codeReference);
         Mockito.when(rs.getInt("identifies")).thenReturn(identifiesReference);
         return rs;
+    }
+
+    private void assertReferenceEquality(Data rawResult) {
+        Assert.assertTrue(rawResult instanceof EanNumber);
+        EanNumber result = (EanNumber) rawResult;
+        Assert.assertEquals(idReference, result.id);
+        Assert.assertEquals(codeReference, result.eanCode);
+        Assert.assertEquals(identifiesReference, result.identifiesFood);
     }
 }
