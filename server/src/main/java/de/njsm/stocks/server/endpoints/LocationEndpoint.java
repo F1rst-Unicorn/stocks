@@ -3,6 +3,7 @@ package de.njsm.stocks.server.endpoints;
 import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.Location;
 import de.njsm.stocks.server.data.LocationFactory;
+import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.Principals;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +17,13 @@ import javax.ws.rs.core.Context;
 public class LocationEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(LocationEndpoint.class);
+
+    public LocationEndpoint() {
+    }
+
+    public LocationEndpoint(Config c) {
+        super(c);
+    }
 
     @GET
     @Produces("application/json")
