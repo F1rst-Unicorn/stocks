@@ -4,6 +4,10 @@ It is only possible to upgrade the server version to the next each. For a
 successful upgrade just follow the instructions listed here in the order they
 are listed, from your current version, to the version you want to upgrade to.
 
+## 1.0.0
+
+Just perform the distribution's upgrade procedure. 
+
 ## 0.5.7
 
 Changes in the database model require a database migration. Shut down the server
