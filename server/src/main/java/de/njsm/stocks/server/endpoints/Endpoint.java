@@ -13,7 +13,7 @@ class Endpoint {
     final Config c;
     final DatabaseHandler handler;
 
-    Endpoint() {
+    public Endpoint() {
         c = new Config();
         handler = c.getDbHandler();
     }

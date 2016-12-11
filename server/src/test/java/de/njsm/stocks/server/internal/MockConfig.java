@@ -16,6 +16,7 @@ public class MockConfig extends Config {
     public MockConfig(Properties p) {
         super(p);
         ca = new MockAuthAdmin();
+        db = Mockito.mock(DatabaseHandler.class);
     }
 
     public MockConfig() {

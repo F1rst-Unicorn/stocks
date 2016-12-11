@@ -3,6 +3,7 @@ package de.njsm.stocks.server.endpoints;
 import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.EanNumber;
 import de.njsm.stocks.server.data.EanNumberFactory;
+import de.njsm.stocks.server.internal.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +15,14 @@ import javax.ws.rs.core.MediaType;
 public class EanEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(EanEndpoint.class);
+
+    public EanEndpoint() {
+        super();
+    }
+
+    public EanEndpoint(Config c) {
+        super(c);
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

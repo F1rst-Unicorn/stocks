@@ -4,9 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 
 public class HttpsUserContextFactory{
 
+    public static final String SSL_CLIENT_KEY = "X-SSL-Client-S-DN";
+
 
     public Principals getPrincipals(HttpServletRequest request) {
-        String clientName = request.getHeader("X-SSL-Client-S-DN");
+        String clientName = request.getHeader(SSL_CLIENT_KEY);
         return parseSubjectName(clientName);
     }
 
