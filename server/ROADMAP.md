@@ -19,7 +19,7 @@
 * 00015 : DONE : Replace ansible systemd module by service calls
 * 00020 : DONE : Update server admin doc: logging, symlinks tomcat
 * 00021 : DONE : Clean up codebase
-* 00022 : NEW  : Close DB connections after usage or reuse it 
+* 00022 : DONE : Close DB connections after usage or reuse it 
 
 ## Version 1.1
 * 00006 : NEW  : Image support for Food
