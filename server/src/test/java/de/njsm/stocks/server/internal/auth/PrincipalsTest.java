@@ -1,3 +1,5 @@
+package de.njsm.stocks.server.internal.auth;
+
 import de.njsm.stocks.server.internal.auth.Principals;
 import org.junit.Assert;
 import org.junit.Test;
