@@ -29,7 +29,6 @@ public class Config {
     private String dbName;
     private String dbUsername;
     private String dbPassword;
-    private String dbValidity;
 
     public Config() {
         try {
@@ -53,7 +52,6 @@ public class Config {
         dbName = p.getProperty(DB_NAME_KEY);
         dbUsername = p.getProperty(DB_USERNAME_KEY);
         dbPassword = p.getProperty(DB_PASSWORD_KEY);
-        dbValidity = p.getProperty(DB_VALIDITY_KEY);
     }
 
     public HttpsUserContextFactory getContextFactory() {
@@ -86,9 +84,5 @@ public class Config {
 
     public String getDbPassword() {
         return dbPassword;
-    }
-
-    public String getDbValidity() {
-        return dbValidity;
     }
 }

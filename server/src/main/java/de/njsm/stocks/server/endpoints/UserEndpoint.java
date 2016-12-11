@@ -3,6 +3,7 @@ package de.njsm.stocks.server.endpoints;
 import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.User;
 import de.njsm.stocks.server.data.UserFactory;
+import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.Principals;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +22,7 @@ public class UserEndpoint extends Endpoint {
     public void addUser(@Context HttpServletRequest request,
                         User userToAdd) {
 
-        if (c.getContextFactory().isNameValid(userToAdd.name)) {
+        if (HttpsUserContextFactory.isNameValid(userToAdd.name)) {
             logAccess(LOG, request, "adds user " + userToAdd.name);
             handler.add(userToAdd);
 

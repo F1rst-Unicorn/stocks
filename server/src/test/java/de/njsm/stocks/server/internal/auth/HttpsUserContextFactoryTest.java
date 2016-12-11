@@ -5,7 +5,39 @@ import de.njsm.stocks.server.internal.auth.Principals;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HttpsUserContextFactoryTest {
+
+    @Test
+    public void testValidNames() {
+        List<String> inputList = new ArrayList<>();
+        inputList.add("John");
+        inputList.add("mike");
+        inputList.add("fdsaiofpra");
+        inputList.add("Henry8th");
+        inputList.add("123flowerpower");
+        inputList.add(">> Master <<");
+        inputList.add("!\"\\^,.;:§%&/()?+*#'-_<>|");
+
+        for (String input : inputList) {
+            Assert.assertTrue(HttpsUserContextFactory.isNameValid(input));
+        }
+    }
+
+    @Test
+    public void testInvalidNames() {
+        List<String> inputList = new ArrayList<>();
+        inputList.add("Adversary$1");
+        inputList.add("AdversaryDevice$1");
+        inputList.add("CN=John");
+        inputList.add("==> Fool <==");
+
+        for (String input : inputList) {
+            Assert.assertFalse(HttpsUserContextFactory.isNameValid(input));
+        }
+    }
 
     @Test
     public void testParsing() {

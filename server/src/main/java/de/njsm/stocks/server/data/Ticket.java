@@ -11,11 +11,20 @@ import java.security.SecureRandom;
 public class Ticket extends Data {
 
     @JsonIgnore
-    private static final int TICKET_LENGTH = 64;
+    public static final int TICKET_LENGTH = 64;
 
     public int deviceId;
     public String ticket;
     public String pemFile;
+
+    public Ticket() {
+    }
+
+    public Ticket(int deviceId, String ticket, String pemFile) {
+        this.deviceId = deviceId;
+        this.ticket = ticket;
+        this.pemFile = pemFile;
+    }
 
     @JsonIgnore
     public static String generateTicket() {

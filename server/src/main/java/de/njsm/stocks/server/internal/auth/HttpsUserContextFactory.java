@@ -12,7 +12,7 @@ public class HttpsUserContextFactory{
         return parseSubjectName(clientName);
     }
 
-    public boolean isNameValid(String name) {
+    public static boolean isNameValid(String name) {
         int noDollar = name.indexOf('$');
         int noEqual  = name.indexOf('=');
         return noDollar == -1 && noEqual == -1;

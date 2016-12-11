@@ -4,6 +4,8 @@ import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.Ticket;
 import de.njsm.stocks.server.data.UserDevice;
 import de.njsm.stocks.server.data.UserDeviceFactory;
+import de.njsm.stocks.server.internal.Config;
+import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.Principals;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,13 +20,20 @@ public class DeviceEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(DeviceEndpoint.class);
 
+    public DeviceEndpoint() {
+    }
+
+    public DeviceEndpoint(Config c) {
+        super(c);
+    }
+
     @PUT
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
     public Ticket addDevice(@Context HttpServletRequest request,
                             UserDevice deviceToAdd) {
 
-        if (c.getContextFactory().isNameValid(deviceToAdd.name)) {
+        if (HttpsUserContextFactory.isNameValid(deviceToAdd.name)) {
             logAccess(LOG, request, "adds device " + deviceToAdd.name);
             return handler.addDevice(deviceToAdd);
 

@@ -17,7 +17,6 @@ public class EanEndpoint extends Endpoint {
     private static final Logger LOG = LogManager.getLogger(EanEndpoint.class);
 
     public EanEndpoint() {
-        super();
     }
 
     public EanEndpoint(Config c) {
