@@ -15,6 +15,15 @@ public class UserDevice extends Data implements SqlAddable,
     public String name;
     public int userId;
 
+    public UserDevice() {
+    }
+
+    public UserDevice(int id, String name, int userId) {
+        this.id = id;
+        this.name = name;
+        this.userId = userId;
+    }
+
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
         stmt.setString(1, name);
@@ -38,8 +47,4 @@ public class UserDevice extends Data implements SqlAddable,
         return "DELETE FROM User_device WHERE ID=?";
     }
 
-    @Override
-    public String toString() {
-        return "Device (" + id + ", " + name + ")";
-    }
 }
