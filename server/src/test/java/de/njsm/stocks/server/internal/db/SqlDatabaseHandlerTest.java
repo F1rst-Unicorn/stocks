@@ -7,6 +7,8 @@ import de.njsm.stocks.server.internal.auth.MockAuthAdmin;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.sql.*;
@@ -15,20 +17,26 @@ import java.util.List;
 
 public class SqlDatabaseHandlerTest {
 
+    private MockConfig c;
+    private MockAuthAdmin ca;
+    private SqlDatabaseHandler uut;
+
     @Before
     public void resetDatabase() throws IOException, SQLException {
         DatabaseHelper.resetSampleData();
+
+        c = new MockConfig(System.getProperties());
+        ca = (MockAuthAdmin) c.getCertAdmin();
+        uut = new SqlDatabaseHandler(c);
     }
 
     @Test
     public void testAddingUser() throws IOException, SQLException {
         UserFactory factory = new UserFactory();
         User input = new User();
-        Config c = new Config(System.getProperties());
         Data[] output;
         int expectedUserCount = 3;
         boolean[] hits = new boolean[expectedUserCount];
-        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         input.name = "Mike";
 
 
@@ -59,11 +67,9 @@ public class SqlDatabaseHandlerTest {
     public void testRenamingFood() throws IOException, SQLException {
         FoodFactory factory = new FoodFactory();
         Food input = new Food();
-        Config c = new Config(System.getProperties());
         Data[] output;
         int expectedHits = 3;
         boolean[] hits = new boolean[expectedHits];
-        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         // rename carrots to peppers
         input.id = 1;
 
@@ -95,11 +101,9 @@ public class SqlDatabaseHandlerTest {
     public void testRemovingFood() throws IOException, SQLException {
         FoodFactory factory = new FoodFactory();
         Food input = new Food();
-        Config c = new Config(System.getProperties());
         Data[] output;
         int expectedCount = 2;
         boolean[] hits = new boolean[expectedCount];
-        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         input.id = 1;
 
 
@@ -126,8 +130,6 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testAddingDevice() throws IOException, SQLException {
-        Config c = new Config(System.getProperties());
-        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         UserDevice input = new UserDevice();
         UserDeviceFactory factory = new UserDeviceFactory();
         int expectedDevices = 5;
@@ -182,8 +184,6 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testGettingData() throws IOException, SQLException {
-        Config c = new Config(System.getProperties());
-        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         FoodFactory factory = new FoodFactory();
         Data[] output;
         int expectedCount = 3;
@@ -213,8 +213,6 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testMovingItems() throws IOException, SQLException {
-        Config c = new Config(System.getProperties());
-        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         Data[] output;
         FoodItemFactory factory = new FoodItemFactory();
         FoodItem i = new FoodItem();
@@ -242,9 +240,6 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testRemoveDevice() throws IOException, SQLException {
-        MockConfig c = new MockConfig(System.getProperties());
-        MockAuthAdmin ca = (MockAuthAdmin) c.getCertAdmin();
-        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         UserDevice d = new UserDevice();
         UserDeviceFactory factory = new UserDeviceFactory();
         Data[] output;
@@ -280,9 +275,6 @@ public class SqlDatabaseHandlerTest {
 
     @Test
     public void testRemoveUser() throws IOException, SQLException {
-        MockConfig c = new MockConfig(System.getProperties());
-        MockAuthAdmin ca = (MockAuthAdmin) c.getCertAdmin();
-        SqlDatabaseHandler uut = new SqlDatabaseHandler(c);
         User u = new User();
         UserFactory factory = new UserFactory();
         UserDeviceFactory devFactory = new UserDeviceFactory();
@@ -317,6 +309,32 @@ public class SqlDatabaseHandlerTest {
             }
         }
         assertArrayTrue(hits);
+    }
+
+    @Test
+    public void testRollbackWithNull() {
+        uut.rollback(null);
+    }
+
+    @Test
+    public void testRollbackWithConnection() throws SQLException {
+        Connection con = Mockito.mock(Connection.class);
+
+        uut.rollback(con);
+
+        Mockito.verify(con).rollback();
+        Mockito.verifyNoMoreInteractions(con);
+    }
+
+    @Test
+    public void testRollbackWithException() throws SQLException {
+        Connection con = Mockito.mock(Connection.class);
+        Mockito.doThrow(new SQLException("Mockito")).when(con).rollback();
+
+        uut.rollback(con);
+
+        Mockito.verify(con).rollback();
+        Mockito.verifyNoMoreInteractions(con);
     }
 
     private Ticket[] getTickets() throws SQLException {

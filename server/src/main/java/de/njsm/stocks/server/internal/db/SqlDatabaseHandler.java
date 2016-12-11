@@ -54,13 +54,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
             stmt.execute();
         } catch (SQLException e) {
             LOG.error("Failed to add " + d.toString(), e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException e1) {
-                    LOG.error("Failed to rollback", e1);
-                }
-            }
+            rollback(con);
         }
     }
 
@@ -74,13 +68,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
             stmt.execute();
         } catch (SQLException e) {
             LOG.error("Failed to rename " + d.toString(), e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException e1) {
-                    LOG.error("Failed to rollback", e1);
-                }
-            }
+            rollback(con);
         }
     }
 
@@ -94,13 +82,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
             stmt.execute();
         } catch (SQLException e) {
             LOG.error("Failed to remove " + d.toString(), e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException e1) {
-                    LOG.error("Failed to rollback", e1);
-                }
-            }
+            rollback(con);
         }
     }
 
@@ -136,13 +118,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
             certificateList.forEach(ca::revokeCertificate);
         } catch (SQLException e){
             LOG.error("Error deleting devices", e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException e1) {
-                    LOG.error("Error while rollback", e1);
-                }
-            }
+            rollback(con);
         }
     }
 
@@ -174,13 +150,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
 
         } catch (SQLException e) {
             LOG.error("Error adding device", e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException e1) {
-                    LOG.error("Error while rollback", e1);
-                }
-            }
+            rollback(con);
             result.ticket = null;
         }
         return result;
@@ -203,13 +173,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
 
         } catch (SQLException e){
             LOG.error("Error deleting devices", e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException e1) {
-                    LOG.error("Error while rollback", e1);
-                }
-            }
+            rollback(con);
         }
     }
 
@@ -224,13 +188,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
             return result.toArray(new Data[result.size()]);
         } catch (SQLException e) {
             LOG.error("Error getting data", e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException e1) {
-                    LOG.error("Error while rollback", e1);
-                }
-            }
+            rollback(con);
         }
         return new Data[0];
     }
@@ -250,12 +208,16 @@ public class SqlDatabaseHandler implements DatabaseHandler{
 
         } catch (SQLException e) {
             LOG.error("Error moving item", e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException e1) {
-                    LOG.error("Error while rollback", e1);
-                }
+            rollback(con);
+        }
+    }
+
+    protected void rollback(Connection con) {
+        if (con != null) {
+            try {
+                con.rollback();
+            } catch (SQLException e1) {
+                LOG.error("Error while rollback", e1);
             }
         }
     }
