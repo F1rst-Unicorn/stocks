@@ -1,6 +1,7 @@
 package de.njsm.stocks.server.endpoints;
 
 import de.njsm.stocks.server.data.*;
+import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.Principals;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +15,13 @@ import javax.ws.rs.core.MediaType;
 public class FoodEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(FoodEndpoint.class);
+
+    public FoodEndpoint() {
+    }
+
+    public FoodEndpoint(Config c) {
+        super(c);
+    }
 
     @GET
     @Produces("application/json")

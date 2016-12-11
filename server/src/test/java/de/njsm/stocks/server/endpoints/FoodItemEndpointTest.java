@@ -9,53 +9,48 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class LocationEndpointTest extends BaseTestEndpoint {
+import java.util.Date;
+
+public class FoodItemEndpointTest extends BaseTestEndpoint {
 
     private Config c;
-    private Location testItem;
+    private FoodItem testItem;
 
-    private LocationEndpoint uut;
+    private FoodEndpoint uut;
 
     @Before
     public void setup() {
         c = new MockConfig(System.getProperties());
-        Mockito.when(c.getDbHandler().get(LocationFactory.f))
+        Mockito.when(c.getDbHandler().get(FoodItemFactory.f))
                 .thenReturn(new Data[0]);
-        testItem = new Location(1, "Fridge");
+        testItem = new FoodItem(1,
+                new Date(),
+                2, 3, 4, 5);
 
-        uut = new LocationEndpoint(c);
+        uut = new FoodEndpoint(c);
     }
 
     @Test
-    public void testGettingLocations() {
-        Data[] result = uut.getLocations(createMockRequest());
+    public void testGettingFoodItems() {
+        Data[] result = uut.getFoodItems(createMockRequest());
 
         Assert.assertNotNull(result);
         Assert.assertEquals(0, result.length);
-        Mockito.verify(c.getDbHandler()).get(LocationFactory.f);
+        Mockito.verify(c.getDbHandler()).get(FoodItemFactory.f);
         Mockito.verifyNoMoreInteractions(c.getDbHandler());
     }
 
     @Test
-    public void testAddingLocation() {
-        uut.addLocation(createMockRequest(), testItem);
+    public void testAddingFoodItem() {
+        uut.addFoodItem(createMockRequest(), testItem);
 
         Mockito.verify(c.getDbHandler()).add(testItem);
         Mockito.verifyNoMoreInteractions(c.getDbHandler());
     }
 
     @Test
-    public void testRenamingLocation() {
-        String newLocation = "Basement";
-        uut.renameLocation(createMockRequest(), testItem, newLocation);
-
-        Mockito.verify(c.getDbHandler()).rename(testItem, newLocation);
-        Mockito.verifyNoMoreInteractions(c.getDbHandler());
-    }
-
-    @Test
-    public void testRemovingLocation() {
-        uut.removeLocation(createMockRequest(), testItem);
+    public void testRemovingFoodItem() {
+        uut.removeFoodItem(createMockRequest(), testItem);
 
         Mockito.verify(c.getDbHandler()).remove(testItem);
         Mockito.verifyNoMoreInteractions(c.getDbHandler());
