@@ -12,6 +12,7 @@ public class FoodTest {
 
     private int idReference;
     private String nameReference;
+    private String newNameReference;
 
     private Food uut;
 
@@ -19,6 +20,7 @@ public class FoodTest {
     public void setup() {
         idReference = 1;
         nameReference = "Carrot";
+        newNameReference = "Beer";
 
         uut = new Food(idReference,
                 nameReference);
@@ -47,6 +49,26 @@ public class FoodTest {
         String actualStmt = uut.getAddStmt();
 
         Assert.assertEquals(expectedStmt, actualStmt);
+    }
+
+    @Test
+    public void testGetRename() {
+        String expectedStmt = "UPDATE Food SET name=? WHERE ID=?";
+
+        String actualStmt = uut.getRenameStmt();
+
+        Assert.assertEquals(expectedStmt, actualStmt);
+    }
+
+    @Test
+    public void testFillingRename() throws SQLException {
+        PreparedStatement stmt = Mockito.mock(PreparedStatement.class);
+
+        uut.fillRenameStmt(stmt, newNameReference);
+
+        Mockito.verify(stmt).setString(1, newNameReference);
+        Mockito.verify(stmt).setInt(2, idReference);
+        Mockito.verifyNoMoreInteractions(stmt);
     }
 
     @Test
