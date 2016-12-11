@@ -31,7 +31,7 @@ public class DeviceEndpointTest extends BaseTestEndpoint {
     }
 
     @Test
-    public void testGettingNumbers() {
+    public void testGettingDevice() {
         Data[] result = uut.getDevices(createMockRequest());
 
         Assert.assertNotNull(result);
@@ -68,7 +68,7 @@ public class DeviceEndpointTest extends BaseTestEndpoint {
     }
 
     @Test
-    public void testRemovingNumber() {
+    public void testRemovingDevice() {
         uut.removeDevice(createMockRequest(), testItem);
 
         Mockito.verify(c.getDbHandler()).removeDevice(testItem);

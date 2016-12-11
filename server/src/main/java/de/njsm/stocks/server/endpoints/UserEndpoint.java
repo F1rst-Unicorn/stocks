@@ -3,6 +3,7 @@ package de.njsm.stocks.server.endpoints;
 import de.njsm.stocks.server.data.Data;
 import de.njsm.stocks.server.data.User;
 import de.njsm.stocks.server.data.UserFactory;
+import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.Principals;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +17,13 @@ import javax.ws.rs.core.Context;
 public class UserEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(UserEndpoint.class);
+
+    public UserEndpoint() {
+    }
+
+    public UserEndpoint(Config c) {
+        super(c);
+    }
 
     @PUT
     @Consumes("application/json")
@@ -43,7 +51,7 @@ public class UserEndpoint extends Endpoint {
     @PUT
     @Path("/remove")
     @Consumes("application/json")
-    public void deleteUser(@Context HttpServletRequest request,
+    public void removeUser(@Context HttpServletRequest request,
                            User userToDelete) {
         logAccess(LOG, request, "removes user " + userToDelete.name);
         handler.removeUser(userToDelete);
