@@ -15,6 +15,14 @@ public class User extends Data implements SqlAddable,
     public int id;
     public String name;
 
+    public User() {
+    }
+
+    public User(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
         stmt.setString(1, name);
@@ -38,8 +46,4 @@ public class User extends Data implements SqlAddable,
         return "DELETE FROM User WHERE ID=?";
     }
 
-    @Override
-    public String toString() {
-        return "User (" + id + ", " + name + ")";
-    }
 }
