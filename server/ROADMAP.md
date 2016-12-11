@@ -21,6 +21,7 @@
 * 00021 : DONE : Clean up codebase
 
 ## Version 1.1
+* 00022 : NEW  : Close DB connections after usage or reuse it 
 * 00006 : NEW  : Image support for Food
 * 00010 : NEW  : Edit eat-by date
 * 00007 : NEW  : Remember maximum items per food to emit warnings based on thresholds
