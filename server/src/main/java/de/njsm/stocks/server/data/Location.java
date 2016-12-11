@@ -16,6 +16,14 @@ public class Location extends Data implements SqlAddable,
     public int id;
     public String name;
 
+    public Location() {
+    }
+
+    public Location(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
         stmt.setString(1, name);
@@ -50,8 +58,4 @@ public class Location extends Data implements SqlAddable,
         return "DELETE FROM Location WHERE ID=?";
     }
 
-    @Override
-    public String toString() {
-        return "Location (" + id + ", " + name + ")";
-    }
 }
