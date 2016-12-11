@@ -5,16 +5,12 @@ import de.njsm.stocks.server.data.EanNumber;
 import de.njsm.stocks.server.data.EanNumberFactory;
 import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.MockConfig;
-import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import javax.servlet.http.HttpServletRequest;
-
-public class EanEndpointTest extends BaseEndpointTest {
+public class EanEndpointTest extends BaseTestEndpoint {
 
     private Config c;
     private EanNumber testItem;

@@ -5,7 +5,7 @@ import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class BaseEndpointTest {
+public class BaseTestEndpoint {
 
     protected String userString = "John$5$Mobile$1";
 
