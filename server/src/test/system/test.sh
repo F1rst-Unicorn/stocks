@@ -137,6 +137,35 @@ check '^\[\{"id":[0-9]+,"name":"Bread"\}\]$'
 FOODID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
 echo Test food: OK
 
+# check EAN stuff
+set -x
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/ean \
+        --header 'content-type: application/json' \
+        --data "{\"id\":0,
+                 \"eanCode\":\"123-123-12345\",
+                 \"identifiesFood\":$FOODID}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/ean > resources/curl
+check "^\[\{\"id\":[0-9]+,\"eanCode\":\"123-123-12345\"\
+\"identifiesFood\":$FOODID\}\]$"
+ID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/ean/remove \
+        --header 'content-type: application/json' \
+        --data "{\"id\":$ID,\
+                \"eanCode\":\"123-123-12345\",\
+                \"identifiesFood\":$FOODID\}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/ean > resources/curl
+check '^\[\]$'
+curl -sS $CURLARGS -XPUT https://$SERVER:10912/ean \
+        --header 'content-type: application/json' \
+        --data "{\"id\":0,
+                 \"eanCode\":\"123-123-12345\",
+                 \"identifiesFood\":$FOODID}"
+curl -sS $CURLARGS -XGET https://$SERVER:10912/ean > resources/curl
+check "^\[\{\"id\":[0-9]+,\"eanCode\":\"123-123-12345\"\
+\"identifiesFood\":$FOODID\}\]$"
+EANID=$(cat resources/curl | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+echo Test EAN numbers: OK
+set +x
 
 # check item stuff
 curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/fooditem \

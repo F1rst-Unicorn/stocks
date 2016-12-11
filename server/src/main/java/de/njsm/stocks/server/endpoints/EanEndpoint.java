@@ -12,6 +12,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+@Path("/ean")
 public class EanEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(EanEndpoint.class);

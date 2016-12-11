@@ -18,4 +18,4 @@ keystore
 spec/ER-diagram.png
 
 # test files
-server/src/test/integration/resources
+server/src/test/system/resources
