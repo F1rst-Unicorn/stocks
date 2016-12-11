@@ -55,6 +55,8 @@ public class SqlDatabaseHandler implements DatabaseHandler{
         } catch (SQLException e) {
             LOG.error("Failed to add " + d.toString(), e);
             rollback(con);
+        } finally {
+            close(con);
         }
     }
 
@@ -69,6 +71,8 @@ public class SqlDatabaseHandler implements DatabaseHandler{
         } catch (SQLException e) {
             LOG.error("Failed to rename " + d.toString(), e);
             rollback(con);
+        } finally {
+            close(con);
         }
     }
 
@@ -83,6 +87,8 @@ public class SqlDatabaseHandler implements DatabaseHandler{
         } catch (SQLException e) {
             LOG.error("Failed to remove " + d.toString(), e);
             rollback(con);
+        } finally {
+            close(con);
         }
     }
 
@@ -119,6 +125,8 @@ public class SqlDatabaseHandler implements DatabaseHandler{
         } catch (SQLException e){
             LOG.error("Error deleting devices", e);
             rollback(con);
+        } finally {
+            close(con);
         }
     }
 
@@ -152,6 +160,8 @@ public class SqlDatabaseHandler implements DatabaseHandler{
             LOG.error("Error adding device", e);
             rollback(con);
             result.ticket = null;
+        } finally {
+            close(con);
         }
         return result;
     }
@@ -174,6 +184,8 @@ public class SqlDatabaseHandler implements DatabaseHandler{
         } catch (SQLException e){
             LOG.error("Error deleting devices", e);
             rollback(con);
+        } finally {
+            close(con);
         }
     }
 
@@ -189,6 +201,8 @@ public class SqlDatabaseHandler implements DatabaseHandler{
         } catch (SQLException e) {
             LOG.error("Error getting data", e);
             rollback(con);
+        } finally {
+            close(con);
         }
         return new Data[0];
     }
@@ -209,6 +223,18 @@ public class SqlDatabaseHandler implements DatabaseHandler{
         } catch (SQLException e) {
             LOG.error("Error moving item", e);
             rollback(con);
+        } finally {
+            close(con);
+        }
+    }
+
+    protected void close(Connection con) {
+        if (con != null) {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                LOG.error("Error closing connection", e);
+            }
         }
     }
 
