@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SqlDatabaseHandler {
+public class SqlDatabaseHandler implements DatabaseHandler{
 
     private static final Logger LOG = LogManager.getLogger(SqlDatabaseHandler.class);
 
@@ -44,6 +44,7 @@ public class SqlDatabaseHandler {
             return DriverManager.getConnection(url, username, password);
     }
 
+    @Override
     public void add(SqlAddable d) {
         Connection con = null;
         try {
@@ -63,6 +64,7 @@ public class SqlDatabaseHandler {
         }
     }
 
+    @Override
     public void rename(SqlRenamable d, String newName) {
         Connection con = null;
         try {
@@ -82,6 +84,7 @@ public class SqlDatabaseHandler {
         }
     }
 
+    @Override
     public void remove(SqlRemovable d) {
         Connection con = null;
         try {
@@ -101,6 +104,7 @@ public class SqlDatabaseHandler {
         }
     }
 
+    @Override
     public void removeUser(User u){
 
         String getDevicesQuery = "SELECT * FROM User_device WHERE belongs_to=?";
@@ -142,6 +146,7 @@ public class SqlDatabaseHandler {
         }
     }
 
+    @Override
     public Ticket addDevice(UserDevice d) {
 
         String addTicket = "INSERT INTO Ticket (ticket, belongs_device, created_on) VALUES (?,LAST_INSERT_ID(), NOW())";
@@ -181,6 +186,7 @@ public class SqlDatabaseHandler {
         return result;
     }
 
+    @Override
     public void removeDevice(UserDevice u){
 
         Connection con = null;
@@ -207,6 +213,7 @@ public class SqlDatabaseHandler {
         }
     }
 
+    @Override
     public Data[] get(DataFactory df) {
         Connection con = null;
         try {
@@ -228,6 +235,7 @@ public class SqlDatabaseHandler {
         return new Data[0];
     }
 
+    @Override
     public void moveItem(FoodItem item, int loc) {
         Connection con = null;
         String sqlString = "UPDATE Food_item SET stored_in=? WHERE ID=?";
