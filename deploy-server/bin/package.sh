@@ -18,7 +18,7 @@ cd $STOCKS_ROOT/deploy-server
 makepkg -fc
 cd $CWD
 
-gpg --detach-sign --use-agent -u 36CF2994 $STOCKS_ROOT/deploy-server/*.xz
+gpg --detach-sign --use-agent $STOCKS_ROOT/deploy-server/*.xz
 
 mv $STOCKS_ROOT/deploy-server/*.sig $STOCKS_ROOT/deploy-server/target
 mv $STOCKS_ROOT/deploy-server/*.xz $STOCKS_ROOT/deploy-server/target

@@ -27,7 +27,8 @@
 * 00025 : NEW  : Remove duplicate code in test/upgrade and test/system
 * 00006 : NEW  : Image support for Food
 * 00010 : NEW  : Edit eat-by date
-* 00007 : NEW  : Remember maximum items per food to emit warnings based on thresholds
+* 00007 : NEW  : Remember maximum items per food to emit warnings on shortage
+* 00026 : NEW  : Write SAD with sequence diagrams
 
 ## Version 1.2
 * 00009 : NEW  : Add favourite food markers
