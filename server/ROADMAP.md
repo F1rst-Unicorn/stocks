@@ -32,6 +32,7 @@
 * 00027 : NEW  : Add system tests for Updates Table
 * 00028 : NEW  : Decouple server, timeouts and fail fast
 * 00029 : NEW  : Perform locking on CA
+* 00030 : NEW  : Database versioning and concurrency
 
 ## Version 1.2
 * 00009 : NEW  : Add favourite food markers
