@@ -13,6 +13,10 @@
 * 00005 : NEW  : Prevent usage of spaces in names
 * 00006 : NEW  : Add warning level (i.e. when to show alarm icon) setting
 * 00007 : NEW  : Add notifications for food to eat
+* 00012 : NEW  : Implement own QR/EAN scanner
+* 00013 : NEW  : Link android contacts with users
+* 00014 : NEW  : Improve devices activity
+* 00015 : NEW  : Fix crash after idle time
 
 ## Version 0.7
 * 00008 : NEW  : Image support for Food
