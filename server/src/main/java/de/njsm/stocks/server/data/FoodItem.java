@@ -11,7 +11,8 @@ import java.util.Date;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class FoodItem extends Data implements SqlAddable, SqlRemovable {
+public class FoodItem extends Data implements SqlAddable,
+                                              SqlRemovable {
     public int id;
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss")
     public Date eatByDate;
@@ -19,6 +20,23 @@ public class FoodItem extends Data implements SqlAddable, SqlRemovable {
     public int storedIn;
     public int registers;
     public int buys;
+
+    public FoodItem() {
+    }
+
+    public FoodItem(int id,
+                    Date eatByDate,
+                    int ofType,
+                    int storedIn,
+                    int registers,
+                    int buys) {
+        this.id = id;
+        this.eatByDate = eatByDate;
+        this.ofType = ofType;
+        this.storedIn = storedIn;
+        this.registers = registers;
+        this.buys = buys;
+    }
 
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
@@ -32,7 +50,8 @@ public class FoodItem extends Data implements SqlAddable, SqlRemovable {
     @Override
     @JsonIgnore
     public String getAddStmt() {
-        return "INSERT INTO Food_item (eat_by, of_type, stored_in, registers, buys) " +
+        return "INSERT INTO Food_item " +
+                "(eat_by, of_type, stored_in, registers, buys) " +
                 "VALUES (?,?,?,?,?)";
     }
 
@@ -47,8 +66,4 @@ public class FoodItem extends Data implements SqlAddable, SqlRemovable {
         return "DELETE FROM Food_item WHERE ID=?";
     }
 
-    @Override
-    public String toString() {
-        return "FoodItem (" + id + ", " + eatByDate + ", " + ofType + ")";
-    }
 }

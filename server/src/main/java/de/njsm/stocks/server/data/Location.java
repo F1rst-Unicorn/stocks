@@ -9,9 +9,20 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemovable {
+public class Location extends Data implements SqlAddable,
+                                              SqlRenamable,
+                                              SqlRemovable {
+    
     public int id;
     public String name;
+
+    public Location() {
+    }
+
+    public Location(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
@@ -47,8 +58,4 @@ public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemov
         return "DELETE FROM Location WHERE ID=?";
     }
 
-    @Override
-    public String toString() {
-        return "Location (" + id + ", " + name + ")";
-    }
 }

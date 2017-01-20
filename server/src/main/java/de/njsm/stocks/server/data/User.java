@@ -10,9 +10,18 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class User extends Data implements SqlAddable, SqlRemovable {
+public class User extends Data implements SqlAddable,
+                                          SqlRemovable {
     public int id;
     public String name;
+
+    public User() {
+    }
+
+    public User(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
@@ -37,8 +46,4 @@ public class User extends Data implements SqlAddable, SqlRemovable {
         return "DELETE FROM User WHERE ID=?";
     }
 
-    @Override
-    public String toString() {
-        return "User (" + id + ", " + name + ")";
-    }
 }

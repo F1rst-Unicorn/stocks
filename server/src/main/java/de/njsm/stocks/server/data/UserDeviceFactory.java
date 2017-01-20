@@ -13,11 +13,11 @@ public class UserDeviceFactory extends DataFactory {
     }
 
     @Override
-    public Data createData(ResultSet rs) throws SQLException {
-        UserDevice d = new UserDevice();
-        d.id = rs.getInt("ID");
-        d.name = rs.getString("name");
-        d.userId = rs.getInt("belongs_to");
-        return d;
+    public Data createData(ResultSet inputSet) throws SQLException {
+        UserDevice result = new UserDevice();
+        result.id = inputSet.getInt("ID");
+        result.name = inputSet.getString("name");
+        result.userId = inputSet.getInt("belongs_to");
+        return result;
     }
 }

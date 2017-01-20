@@ -2,31 +2,31 @@ package de.njsm.stocks.sentry.db;
 
 import de.njsm.stocks.sentry.auth.CertificateManager;
 import de.njsm.stocks.sentry.data.Principals;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.sql.*;
 
 public class DatabaseHandler {
 
+    private static final Logger LOG = LogManager.getLogger(DatabaseHandler.class);
+
     private final String url;
     private final int validityTime;
 
-    public DatabaseHandler() {
+    public DatabaseHandler() throws ClassNotFoundException {
 
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            // Well, do you really want to use the database?
-        }
+        Class.forName("org.mariadb.jdbc.Driver");
 
-        validityTime = Integer.parseInt(
-                System.getProperty("de.njsm.stocks.internal.ticketValidityTimeInMinutes", "10"));
+        Config c = new Config();
+        validityTime = Integer.parseInt(c.getDbValidity());
 
-        String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
-        String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
-        String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
-        String user = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
-        String password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
+        String address = c.getDbAddress();
+        String port = c.getDbPort();
+        String name = c.getDbName();
+        String user = c.getDbUsername();
+        String password = c.getDbPassword();
 
         url = String.format("jdbc:mariadb://%s:%s/%s?user=%s&password=%s",
                 address,
@@ -75,6 +75,7 @@ public class DatabaseHandler {
                 return now.before(valid_till_date) &&
                         storedId == deviceId;
             } else {
+                LOG.debug("No ticket found for deviceId " + deviceId);
                 return false;
             }
 

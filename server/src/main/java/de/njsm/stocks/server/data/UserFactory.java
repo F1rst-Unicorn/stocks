@@ -13,10 +13,10 @@ public class UserFactory extends DataFactory {
     }
 
     @Override
-    public Data createData(ResultSet rs) throws SQLException {
-        User u = new User();
-        u.id = rs.getInt("ID");
-        u.name = rs.getString("name");
-        return u;
+    public Data createData(ResultSet inputSet) throws SQLException {
+        User result = new User();
+        result.id = inputSet.getInt("ID");
+        result.name = inputSet.getString("name");
+        return result;
     }
 }

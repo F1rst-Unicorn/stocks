@@ -4,18 +4,23 @@ import de.njsm.stocks.sentry.auth.CertificateManager;
 import de.njsm.stocks.sentry.data.Ticket;
 import de.njsm.stocks.sentry.db.DatabaseHandler;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Path("/uac")
 public class UserGenerator {
 
-    private final DatabaseHandler handler = new DatabaseHandler();
-    private final Logger log = Logger.getLogger("stocks");
+    private static final Logger LOG = LogManager.getLogger(UserGenerator.class);
+
+    private final DatabaseHandler handler;
+
+    public UserGenerator() throws ClassNotFoundException {
+        handler = new DatabaseHandler();
+    }
 
     /**
      * Get a new user certificate
@@ -49,11 +54,11 @@ public class UserGenerator {
             FileInputStream input = new FileInputStream(certFileName);
             ticket.pemFile = IOUtils.toString(input);
             input.close();
-            log.log(Level.INFO, "sentry: Authorised new device with ID " + ticket.deviceId);
+            LOG.info("Authorised new device with ID " + ticket.deviceId);
             return ticket;
 
         } catch (Exception e) {
-            log.log(Level.SEVERE, "sentry failed: " + e.getMessage());
+            LOG.warn("Error while ticket handling", e);
             ticket.pemFile = null;
             return ticket;
         }

@@ -13,10 +13,10 @@ public class UpdateFactory extends DataFactory {
     }
 
     @Override
-    public Data createData(ResultSet rs) throws SQLException {
-        Update u = new Update();
-        u.table = rs.getString("table_name");
-        u.lastUpdate = rs.getTimestamp("last_update");
-        return u;
+    public Data createData(ResultSet inputSet) throws SQLException {
+        Update result = new Update();
+        result.table = inputSet.getString("table_name");
+        result.lastUpdate = inputSet.getTimestamp("last_update");
+        return result;
     }
 }

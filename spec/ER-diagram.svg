@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="1459.1918mm"
+   width="1908.1112mm"
    height="715.62659mm"
-   viewBox="0 0 5170.3646 2535.6847"
+   viewBox="0 0 6761.024 2535.6847"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -21,6 +21,10 @@
    inkscape:export-ydpi="299">
   <defs
      id="defs4">
+    <inkscape:path-effect
+       is_visible="true"
+       id="path-effect4463"
+       effect="spiro" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect4443"
@@ -169,6 +173,22 @@
        effect="spiro"
        id="path-effect4329"
        is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4418"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4414-3"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4390"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4386"
+       is_visible="true" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -178,8 +198,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.25000001"
-     inkscape:cx="2210.7995"
-     inkscape:cy="882.08392"
+     inkscape:cx="2321.2821"
+     inkscape:cy="1070.4406"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -196,8 +216,8 @@
     <inkscape:grid
        type="xygrid"
        id="grid4591"
-       originx="1325.2618"
-       originy="724.97385" />
+       originx="2915.9214"
+       originy="724.9739" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -215,7 +235,7 @@
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(1325.2617,758.34869)">
+     transform="translate(2915.9212,758.34869)">
     <rect
        y="137.46706"
        x="8.6873131"
@@ -1251,87 +1271,182 @@
            height="220.396"
            width="510.00009"
            id="rect4496" /></flowRegion><flowPara
-         id="flowPara4498">server only</flowPara></flowRoot>    <path
+         id="flowPara4498">server only</flowPara></flowRoot>    <rect
+       y="-176.68881"
+       x="-2634.8953"
+       height="167.4328"
+       width="617.70825"
+       id="rect4465"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#ffaf36;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4344-6"
+       width="601.44482"
+       height="151.52289"
+       x="-2627.4707"
+       y="-167.84996" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4362"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;line-height:125%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="translate(-1953.5728,-11.110721)"><flowRegion
+         id="flowRegion4364"><rect
+           id="rect4366"
+           width="572.00012"
+           height="239.396"
+           x="-626.29456"
+           y="-133.55688"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'" /></flowRegion><flowPara
+         id="flowPara4368">EAN_number</flowPara></flowRoot>    <rect
+       transform="matrix(0.93948155,-0.3425995,0.93948155,0.3425995,0,0)"
+       y="-1011.3683"
+       x="-752.60455"
+       height="320.85654"
+       width="320.85654"
+       id="rect4370-7"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.73911428;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#00c39b;fill-opacity:1;stroke:#000000;stroke-width:3.71627998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4372"
+       width="285.9191"
+       height="285.9191"
+       x="-736.73865"
+       y="-994.73999"
+       transform="matrix(0.93768472,-0.34748722,0.93768472,0.34748722,0,0)" />
+    <flowRoot
+       transform="translate(-883.73681,-13.376881)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;line-height:125%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="flowRoot4374"
+       xml:space="preserve"><flowRegion
+         id="flowRegion4376"><rect
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'"
+           y="-133.55688"
+           x="-626.29456"
+           height="248.396"
+           width="848.00006"
+           id="rect4378" /></flowRegion><flowPara
+         id="flowPara4380">identifies</flowPara><flowPara
+         id="flowPara4382-5" /></flowRoot>    <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m -1218.7416,-487.17293 85.1058,0"
-       id="path4417"
-       inkscape:path-effect="#path-effect4419"
-       inkscape:original-d="m -1218.7416,-487.17293 85.1058,0"
+       d="M -1055.8446,-88.967491 -863.84461,-341.96749"
+       id="path4384"
+       inkscape:path-effect="#path-effect4386"
+       inkscape:original-d="M -1055.8446,-88.967491 -863.84461,-341.96749"
+       inkscape:connector-curvature="0" />
+    <ellipse
+       style="fill:#ffd46b;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="ellipse4392"
+       cx="-2729.6643"
+       cy="165.17358"
+       rx="184.7569"
+       ry="59.093925" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4394"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;line-height:125%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="translate(-2226.5607,250.126)"><flowRegion
+         id="flowRegion4396"><rect
+           id="rect4398"
+           width="398.00009"
+           height="238.396"
+           x="-626.29456"
+           y="-133.55688"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'" /></flowRegion><flowPara
+         id="flowPara4400"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:70px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'">number</flowPara></flowRoot>    <ellipse
+       ry="59.093925"
+       rx="144.45181"
+       cy="160.93097"
+       cx="-2130.7446"
+       id="ellipse4402"
+       style="fill:#ffd46b;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <flowRoot
+       transform="translate(-1536.4243,247.29757)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;line-height:125%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="flowRoot4404"
+       xml:space="preserve"><flowRegion
+         id="flowRegion4406"><rect
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'"
+           y="-133.55688"
+           x="-626.29456"
+           height="238.396"
+           width="398.00009"
+           id="rect4408" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:70px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'"
+         id="flowPara4410">ID</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -2134.8446,102.03251 6.125,-111.9062512"
+       id="path4412-3"
+       inkscape:path-effect="#path-effect4414-3"
+       inkscape:original-d="m -2134.8446,102.03251 6.125,-111.9062512"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <path
-       sodipodi:nodetypes="cc"
-       inkscape:connector-curvature="0"
-       inkscape:original-d="m -1054.7416,1156.827 85.10579,0"
-       inkscape:path-effect="#path-effect4423"
-       id="path4421"
-       d="m -1054.7416,1156.827 85.10579,0"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m -238.74162,1706.827 85.10579,0"
-       id="path4425"
-       inkscape:path-effect="#path-effect4427"
-       inkscape:original-d="m -238.74162,1706.827 85.10579,0"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
-    <path
-       sodipodi:nodetypes="cc"
-       inkscape:connector-curvature="0"
-       inkscape:original-d="m 195.25837,76.827042 85.10579,0"
-       inkscape:path-effect="#path-effect4431"
-       id="path4429"
-       d="m 195.25837,76.827042 85.10579,0"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 1271.2583,1184.827 85.1058,0"
-       id="path4433"
-       inkscape:path-effect="#path-effect4435"
-       inkscape:original-d="m 1271.2583,1184.827 85.1058,0"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
-    <path
-       sodipodi:nodetypes="cc"
-       inkscape:connector-curvature="0"
-       inkscape:original-d="m 1509.2583,-587.17295 85.1058,0"
-       inkscape:path-effect="#path-effect4439"
-       id="path4437"
-       d="m 1509.2583,-587.17295 85.1058,0"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 2817.2583,-571.17295 85.1058,0"
-       id="path4441"
-       inkscape:path-effect="#path-effect4443"
-       inkscape:original-d="m 2817.2583,-571.17295 85.1058,0"
+       d="m -2639.8447,114.03251 52.4375,-124.0000012"
+       id="path4416"
+       inkscape:path-effect="#path-effect4418"
+       inkscape:original-d="m -2639.8447,114.03251 52.4375,-124.0000012"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <flowRoot
-       transform="translate(2558,-441.99997)"
+       transform="translate(46.917112,-368.03251)"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       id="flowRoot4445"
+       id="flowRoot4420"
        xml:space="preserve"><flowRegion
-         id="flowRegion4447"><rect
+         id="flowRegion4422"><rect
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'"
            y="-11.637794"
            x="-992"
            height="236"
            width="166"
-           id="rect4449" /></flowRegion><flowPara
+           id="rect4424" /></flowRegion><flowPara
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:75px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'"
-         id="flowPara4451">1</flowPara></flowRoot>    <flowRoot
-       xml:space="preserve"
-       id="flowRoot4453"
+         id="flowPara4426">1</flowPara></flowRoot>    <flowRoot
+       transform="translate(-991.08291,-162.03251)"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       transform="translate(3640,-439.99997)"><flowRegion
-         id="flowRegion4455"><rect
-           id="rect4457"
+       id="flowRoot4428"
+       xml:space="preserve"><flowRegion
+         id="flowRegion4430"><rect
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'"
+           y="-11.637794"
+           x="-992"
+           height="236"
+           width="166"
+           id="rect4432" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:75px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'"
+         id="flowPara4434">N</flowPara><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:75px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'"
+         id="flowPara4436" /></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4438"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="translate(-991.08291,-162.03251)"><flowRegion
+         id="flowRegion4440"><rect
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'"
+           id="rect4442"
            width="166"
            height="236"
            x="-992"
-           y="-11.637794"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'" /></flowRegion><flowPara
-         id="flowPara4459"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:75px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'">1</flowPara></flowRoot>  </g>
+           y="-11.637794" /></flowRegion><flowPara
+         id="flowPara4444"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:75px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'">N</flowPara><flowPara
+         id="flowPara4446"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:75px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans'" /></flowRoot>    <path
+       inkscape:connector-curvature="0"
+       inkscape:original-d="m -1646.1884,-84.654991 -371.229,-0.826364"
+       inkscape:path-effect="#path-effect4463"
+       id="path4461"
+       d="m -1646.1884,-84.654991 -371.229,-0.826364"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -1646.7196,-92.248741 -369.4824,-0.525507"
+       id="path4388"
+       inkscape:path-effect="#path-effect4390"
+       inkscape:original-d="m -1646.7196,-92.248741 -369.4824,-0.525507"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+  </g>
 </svg>

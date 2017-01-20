@@ -6,14 +6,10 @@ pre_install() {
 ## arg 1:  the new package version
 post_install() {
     
-    useradd -d / -g users stocks
-    
-    mkdir -p /usr/share/stocks-server/root/jetty-base/resources
-    
-    chown -R stocks:users /usr/share/stocks-server/root
-    chown -R stocks:users /var/log/stocks-server
-    
-    echo "See /usr/share/doc/stocks-server/README for configuration overview"
+    chown -R tomcat8:tomcat8 /usr/share/stocks-server/root
+    chown -R tomcat8:tomcat8 /var/log/stocks-server
+
+    echo "See /usr/share/doc/stocks-server/server-installation.md for setup instructions"
 }
 
 ## arg 1:  the new package version
@@ -25,8 +21,8 @@ pre_upgrade() {
 ## arg 1:  the new package version
 ## arg 2:  the old package version
 post_upgrade() {
-    chown -R stocks:users /usr/share/stocks-server/root
-    chown -R stocks:users /var/log/stocks-server
+    chown -R tomcat8:tomcat8 /usr/share/stocks-server/root
+    chown -R tomcat8:tomcat8 /var/log/stocks-server
 }
 
 ## arg 1:  the old package version
@@ -36,6 +32,6 @@ pre_remove() {
 
 ## arg 1:  the old package version
 post_remove() {
-	userdel stocks
 	rm -rf /usr/share/stocks-server
+	rm -rf /usr/share/tomcat8/webapps/{server,sentry}.war
 }

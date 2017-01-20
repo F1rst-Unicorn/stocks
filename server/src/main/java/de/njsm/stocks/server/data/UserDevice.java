@@ -9,10 +9,20 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class UserDevice extends Data implements SqlAddable, SqlRemovable{
+public class UserDevice extends Data implements SqlAddable,
+                                                SqlRemovable {
     public int id;
     public String name;
     public int userId;
+
+    public UserDevice() {
+    }
+
+    public UserDevice(int id, String name, int userId) {
+        this.id = id;
+        this.name = name;
+        this.userId = userId;
+    }
 
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
@@ -37,8 +47,4 @@ public class UserDevice extends Data implements SqlAddable, SqlRemovable{
         return "DELETE FROM User_device WHERE ID=?";
     }
 
-    @Override
-    public String toString() {
-        return "Device (" + id + ", " + name + ")";
-    }
 }

@@ -1,5 +1,6 @@
 *~
 .directory
+*.swp
 
 # java build dirs
 lib
@@ -13,3 +14,8 @@ target
 *.pkg.tar.xz
 deploy*/stocks/
 keystore
+
+spec/ER-diagram.png
+
+# test files
+server/src/test/system/resources
