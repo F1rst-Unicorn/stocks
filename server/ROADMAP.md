@@ -29,6 +29,9 @@
 * 00010 : NEW  : Edit eat-by date
 * 00007 : NEW  : Remember maximum items per food to emit warnings on shortage
 * 00026 : NEW  : Write SAD with sequence diagrams
+* 00027 : NEW  : Add system tests for Updates Table
+* 00028 : NEW  : Decouple server, timeouts and fail fast
+* 00029 : NEW  : Perform locking on CA
 
 ## Version 1.2
 * 00009 : NEW  : Add favourite food markers
