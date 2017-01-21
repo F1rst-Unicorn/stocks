@@ -12,13 +12,12 @@ depends=('jre8-openjdk'
          )
 makedepends=('git'
 			 'maven')
-branch=${STOCKSBRANCH:-master}
-source=("git://www.github.com/F1rst-Unicorn/stocks#branch=$branch")
+source=("http://do.not.use.com/stocks.tar")
 sha512sums=('SKIP')
 install=stocks.install
 
 build() {
-    cd "$srcdir/stocks"
+    cd "$srcdir/"
 
     cd client
     mvn -Dmaven.test.skip=true package
@@ -26,7 +25,7 @@ build() {
 }
 
 package() {
-    cd "$srcdir/stocks"
+    cd "$srcdir/"
     
     mkdir -p $pkgdir/usr/lib/stocks/
     cp client/target/client-${pkgver}-jar-with-dependencies.jar $pkgdir/usr/lib/stocks/client.jar
