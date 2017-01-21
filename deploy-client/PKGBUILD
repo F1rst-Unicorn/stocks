@@ -32,14 +32,16 @@ package() {
     chmod -R 555 $pkgdir/usr/lib/stocks/
 
     mkdir -p $pkgdir/usr/bin/
-    cp deploy-client/client.sh $pkgdir/usr/bin/stocks
+    cp deploy-client/config/client.sh $pkgdir/usr/bin/stocks
     chmod 555 $pkgdir/usr/bin/stocks
     
     mkdir -p $pkgdir/usr/share/stocks/
-    cp deploy-client/schema.sql $pkgdir/usr/share/stocks/
+    cp deploy-client/config/schema.sql $pkgdir/usr/share/stocks/
     chmod 444 $pkgdir/usr/share/stocks/schema.sql
 
     mkdir -p $pkgdir/usr/share/licenses/$pkgname/
     cp LICENSE.md $pkgdir/usr/share/licenses/$pkgname/
     
+    mkdir -p $pkgdir/usr/share/doc/$pkgname/
+    cp manual/client/README.md $pkgdir/usr/share/doc/$pkgname/
 }

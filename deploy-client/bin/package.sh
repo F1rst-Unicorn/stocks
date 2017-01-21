@@ -1,14 +1,13 @@
 #!/bin/bash
 
 set -e
-set -x
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 CWD=$(pwd)
 
 mkdir -p $STOCKS_ROOT/deploy-client/target
 
-tar -cvf $STOCKS_ROOT/deploy-client/stocks.tar \
+tar -cf $STOCKS_ROOT/deploy-client/stocks.tar \
         --exclude=android-client \
         --exclude=target \
         --exclude=deploy-server \
