@@ -10,6 +10,7 @@
 * 00006 : NEW  : Improve displaying food lists
 * 00007 : NEW  : Enable entering names with spaces
 * 00008 : DONE : Add release build management
+* 00009 : NEW  : Refactor client for testability
 
 ## Version 0.6
 * 00001 : NEW  : Add emitting QR codes for new users
