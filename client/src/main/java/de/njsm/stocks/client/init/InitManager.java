@@ -11,6 +11,8 @@ import de.njsm.stocks.client.network.TcpHost;
 import java.io.File;
 import java.io.IOException;
 
+import static de.njsm.stocks.client.config.Configuration.CONFIG_PATH;
+
 public class InitManager {
 
     private final Configuration newConfiguration;
@@ -25,6 +27,18 @@ public class InitManager {
     }
 
     public void initialise() throws InitialisationException {
+        if (isFirstStartup()) {
+            runFirstInitialisation();
+        } else {
+            // TODO Log
+        }
+    }
+
+    private boolean isFirstStartup() {
+        return ! new File(CONFIG_PATH).exists();
+    }
+
+    private void runFirstInitialisation() throws InitialisationException {
         try {
             initialiseConfigFile();
             getServerProperties(f.getConfigActor());
@@ -34,10 +48,11 @@ public class InitManager {
         } catch (IOException e) {
             destroyKeystore();
             throw new InitialisationException("blablabla");
+            // TODO Log
         }
     }
 
-    private void getServerProperties(ConfigGenerator source) throws IOException {
+    private void getServerProperties(ConfigGenerator source) {
         String serverName = source.getServerName();
         int[] ports = source.getPorts();
 
@@ -81,13 +96,14 @@ public class InitManager {
         } catch (Exception e) {
             destroyKeystore();
             throw new InitialisationException("Certificate generation failed");
+            // TODO Log
         } finally {
             cleanUpTemporaryFiles();
         }
     }
 
     private void initialiseConfigFile() throws IOException {
-        File configFile = new File(Configuration.CONFIG_PATH);
+        File configFile = new File(CONFIG_PATH);
         configFile.getParentFile().mkdirs();
     }
 

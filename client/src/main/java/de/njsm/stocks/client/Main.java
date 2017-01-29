@@ -27,6 +27,7 @@ public class Main {
 
             f.getMainHandler(c).run(args);
         } catch (PrintableException e) {
+            // TODO Log
             System.err.println(e.getMessage());
             System.err.println("For details consider the log file");
             System.exit(1);

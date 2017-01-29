@@ -34,6 +34,7 @@ public class SentryManager {
             Call<Ticket> callback = backend.requestCertificate(ticket);
             return callback.execute();
         } catch (IOException e) {
+            // TODO Log
             throw new NetworkException("Connection to sentry failed", e);
         }
     }
@@ -42,10 +43,12 @@ public class SentryManager {
         if (response.isSuccess()) {
             Ticket responseTicket = response.body();
             if (responseTicket.pemFile == null) {
+                // TODO Log
                 throw new NetworkException("Server rejected ticket!");
             }
             return responseTicket.pemFile;
         } else {
+            // TODO Log
             throw new NetworkException("Sentry returned error");
         }
     }

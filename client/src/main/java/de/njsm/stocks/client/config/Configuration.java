@@ -1,8 +1,10 @@
 package de.njsm.stocks.client.config;
 
 import de.njsm.stocks.client.exceptions.InitialisationException;
+import de.njsm.stocks.client.exceptions.InvalidConfigException;
 import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
 import de.njsm.stocks.client.frontend.cli.InputReader;
+import de.njsm.stocks.client.network.TcpHost;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.storage.DatabaseManager;
 
@@ -12,7 +14,7 @@ import java.util.logging.*;
 
 public class Configuration {
 
-    public static final String STOCKS_HOME = System.getProperty("user.home") + "/.stocks";
+    public static final String STOCKS_HOME = System.getProperty("user.stocks.dir") + "/.stocks";
     public static final String CONFIG_PATH = STOCKS_HOME + "/config";
     public static final String KEYSTORE_PATH = STOCKS_HOME + "/keystore";
     public static final String DB_PATH = STOCKS_HOME + "/stocks.db";
@@ -71,15 +73,17 @@ public class Configuration {
         } catch (IOException e) {
             throw new InitialisationException("Settings could not be read " +
                     "from " + CONFIG_PATH);
+            // TODO Log
         }
     }
 
     public void saveConfig() throws InitialisationException {
         try {
+            checkSanity();
             Properties p = populateProperties();
             fileHandler.writePropertiesToFile(CONFIG_PATH, p);
         } catch (IOException e){
-            getLog().log(Level.SEVERE, "Configuration: Failed to store config: " + e.getMessage());
+            // TODO Log
             throw new InitialisationException("Could not save config file", e);
         }
     }
@@ -178,7 +182,7 @@ public class Configuration {
         return log;
     }
 
-    private void populateConfiguration(Properties p) throws InitialisationException {
+    protected void populateConfiguration(Properties p) throws InitialisationException {
         serverName = p.getProperty(SERVER_NAME_CONFIG);
         caPort = getIntProperty(p, CA_PORT_CONFIG);
         ticketPort = getIntProperty(p, TICKET_PORT_CONFIG);
@@ -190,7 +194,7 @@ public class Configuration {
         fingerprint = p.getProperty(FINGERPRINT_CONFIG);
     }
 
-    private Properties populateProperties() {
+    protected Properties populateProperties() {
         Properties result = new Properties();
         result.setProperty(SERVER_NAME_CONFIG, serverName);
         result.setProperty(CA_PORT_CONFIG, String.valueOf(caPort));
@@ -204,7 +208,7 @@ public class Configuration {
         return result;
     }
 
-    private int getIntProperty(Properties source, String key) throws InitialisationException{
+    protected int getIntProperty(Properties source, String key) throws InitialisationException {
         String rawValue = null;
         try {
             rawValue = source.getProperty(key);
@@ -212,10 +216,43 @@ public class Configuration {
         } catch (NumberFormatException e) {
             throw new InitialisationException("Configuration '" + key + "' is " +
                     "'" + rawValue + "' which is not a number");
+            // TODO Log
         }
     }
 
-    private void checkSanity() throws InitialisationException {
+    protected void checkSanity() throws InitialisationException {
+        validateString("server name", serverName);
+        validatePort(caPort);
+        validatePort(ticketPort);
+        validatePort(serverPort);
+        validateString("username", username);
+        validateString("device name", deviceName);
+        validateString("fingerprint", fingerprint);
+        validateInt("user ID", userId);
+        validateInt("device ID", deviceId);
+    }
+
+    protected void validatePort(int port) throws InvalidConfigException {
+        if (! TcpHost.isValidPort(port)) {
+            throw new InvalidConfigException("Port " + port + " is invalid");
+            // TODO Log
+        }
+    }
+
+    protected void validateString(String key, String value) throws InvalidConfigException {
+        if (value == null || value.isEmpty()) {
+            throw new InvalidConfigException("'" + value + "' is not valid " +
+                    "for " + key);
+            // TODO Log
+        }
+    }
+
+    protected void validateInt(String key, int value) throws InvalidConfigException {
+        if (value == 0) {
+            throw new InvalidConfigException("'" + value + "' is not valid " +
+                    "for " + key);
+            // TODO Log
+        }
     }
 
 }

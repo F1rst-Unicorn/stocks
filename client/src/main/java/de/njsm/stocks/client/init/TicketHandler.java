@@ -10,6 +10,7 @@ import de.njsm.stocks.client.network.sentry.SentryManager;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -103,8 +104,10 @@ public class TicketHandler {
             writeToFile(certificate, CERT_FILE_PATH);
             importCertificate("client");
         } catch (PrintableException e) {
+            // TODO Log
             throw new InitialisationException(e.getMessage(), e);
         } catch (IOException e) {
+            // TODO Log
             throw new InitialisationException("There is a problem with the files", e);
         }
     }
@@ -116,28 +119,42 @@ public class TicketHandler {
         waitList.clear();
     }
 
-    private String getFprFromFile() throws Exception {
-        String command = "openssl x509 " +
-                "-noout " +
-                "-text " +
-                "-fingerprint " +
-                "-sha256 " +
-                "-in " + CA_FILE_PATH;
-        Process p = Runtime.getRuntime().exec(command);
-        p.waitFor();
-        String output = IOUtils.toString(p.getInputStream());
+    private String getFprFromFile() throws InitialisationException {
+        String result;
+        try {
+            String command = "openssl x509 " +
+                    "-noout " +
+                    "-text " +
+                    "-fingerprint " +
+                    "-sha256 " +
+                    "-in " + CA_FILE_PATH;
+            Process p = Runtime.getRuntime().exec(command);
+            p.waitFor(5, TimeUnit.SECONDS);
+            String output = IOUtils.toString(p.getInputStream());
+            result = matchFingerprintInOutput(output);
+        } catch (IOException e) {
+            // TODO Log
+            throw new InitialisationException(e.getMessage());
+        } catch (InterruptedException e) {
+            // TODO Log
+            throw new InitialisationException("Reading " + CA_FILE_PATH +
+                    " took too long");
+        }
+        return result;
+    }
 
+    private String matchFingerprintInOutput(String output) throws IOException {
+        String result;
         Pattern pattern = Pattern.compile("SHA256 Fingerprint=.*");
         Matcher match = pattern.matcher(output);
-        String result;
-        if (match.find()){
+        if (match.find()) {
             result = match.group(0);
-            result = result.substring(result.indexOf('=')+1, result.length());
+            result = result.substring(result.indexOf('=') + 1, result.length());
+            return result;
         } else {
+            // TODO Log
             throw new IOException("Failed to parse fingerprint");
         }
-
-        return result;
     }
 
     private void importCertificate(String file) throws IOException {
@@ -159,17 +176,23 @@ public class TicketHandler {
         try {
             p.waitFor(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
+            // TODO Log
         }
     }
 
-    private void downloadCertificate (TcpHost caHost, String urlResource, String destPath) throws Exception {
-        URL website = new URL(String.format("http://%s/%s",
-                caHost.toString(), urlResource));
-        ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-        FileOutputStream fos = new FileOutputStream(destPath);
-        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        rbc.close();
-        fos.close();
+    private void downloadCertificate (TcpHost caHost, String urlResource, String destPath) throws InitialisationException {
+        String url = String.format("http://%s/%s", caHost.toString(), urlResource);
+        try {
+            URL website = new URL(url);
+            String response = IOUtils.toString(website.openStream());
+            writeToFile(response, destPath);
+        } catch (MalformedURLException e) {
+            // TODO Log
+            throw new InitialisationException(url + " is invalid");
+        } catch (IOException e) {
+            // TODO Log
+            throw new InitialisationException(e.getMessage());
+        }
     }
 
     private String readFromFile(String path) throws IOException {
