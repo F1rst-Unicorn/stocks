@@ -39,6 +39,7 @@ is written. This includes in particular
 * Model documentation (changes in the DB in ER, etc.)
 * User documentation
 * Integration tests (if possible)
+* System tests
 
 Only features that prove themselves verified to work properly are merged into 
 the dev branch. 
