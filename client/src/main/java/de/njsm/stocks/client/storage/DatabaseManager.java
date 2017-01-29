@@ -2,7 +2,7 @@ package de.njsm.stocks.client.storage;
 
 import de.njsm.stocks.client.data.*;
 import de.njsm.stocks.client.data.view.FoodView;
-import de.njsm.stocks.client.Configuration;
+import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.SelectException;
 
@@ -16,7 +16,7 @@ public class DatabaseManager {
     }
 
     protected Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:" + Configuration.dbPath);
+        return DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
     }
 
     public Update[] getUpdates() {

@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.Configuration;
+import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.data.User;
 import de.njsm.stocks.client.exceptions.SelectException;
 import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;

@@ -1,7 +1,8 @@
 package de.njsm.stocks.client.network.server;
 
 import de.njsm.stocks.client.data.*;
-import de.njsm.stocks.client.Configuration;
+import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.network.HttpClientFactory;
 import retrofit.*;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class ServerManager {
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(url)
-                    .client(c.getClient())
+                    .client(HttpClientFactory.getClient())
                     .addConverterFactory(JacksonConverterFactory.create())
                     .build();
 

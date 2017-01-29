@@ -11,4 +11,9 @@ public class Ticket extends Data {
     public String ticket;
     public String pemFile;
 
+    public Ticket(int deviceId, String ticket, String pemFile) {
+        this.deviceId = deviceId;
+        this.ticket = ticket;
+        this.pemFile = pemFile;
+    }
 }

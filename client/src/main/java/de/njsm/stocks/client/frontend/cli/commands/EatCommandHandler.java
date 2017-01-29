@@ -3,7 +3,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.data.Food;
 import de.njsm.stocks.client.data.FoodItem;
 import de.njsm.stocks.client.exceptions.SelectException;
-import de.njsm.stocks.client.Configuration;
+import de.njsm.stocks.client.config.Configuration;
 
 public class EatCommandHandler extends CommandHandler {
 

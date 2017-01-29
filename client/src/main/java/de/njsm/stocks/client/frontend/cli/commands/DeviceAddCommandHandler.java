@@ -4,7 +4,7 @@ import de.njsm.stocks.client.data.Ticket;
 import de.njsm.stocks.client.data.UserDevice;
 import de.njsm.stocks.client.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.SelectException;
-import de.njsm.stocks.client.Configuration;
+import de.njsm.stocks.client.config.Configuration;
 
 public class DeviceAddCommandHandler extends CommandHandler {
 
