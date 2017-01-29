@@ -16,4 +16,7 @@ public class Ticket extends Data {
         this.ticket = ticket;
         this.pemFile = pemFile;
     }
+
+    public Ticket() {
+    }
 }
