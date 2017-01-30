@@ -2,10 +2,13 @@
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 
+set -e
+
 # virsh reset
 sudo virsh snapshot-revert dp-client-server initialised-running
 sleep 1
 
+rm -rf $STOCKS_ROOT/client/src/test/system/tmp
 mkdir -p $STOCKS_ROOT/client/src/test/system/tmp/.stocks
 cp $STOCKS_ROOT/client/src/test/system/{stocks.db,tmp/.stocks/}
 
