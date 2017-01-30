@@ -71,8 +71,7 @@ public class Configuration {
             populateConfiguration(propertiesFromFile);
             checkSanity();
         } catch (IOException e) {
-            throw new InitialisationException("Settings could not be read " +
-                    "from " + CONFIG_PATH);
+            throw new InitialisationException("Settings could not be read");
             // TODO Log
         }
     }
@@ -84,7 +83,7 @@ public class Configuration {
             fileHandler.writePropertiesToFile(CONFIG_PATH, p);
         } catch (IOException e){
             // TODO Log
-            throw new InitialisationException("Could not save config file", e);
+            throw new InitialisationException("Settings could not be saved", e);
         }
     }
 
@@ -241,15 +240,15 @@ public class Configuration {
 
     protected void validateString(String key, String value) throws InvalidConfigException {
         if (value == null || value.isEmpty()) {
-            throw new InvalidConfigException("'" + value + "' is not valid " +
+            throw new InvalidConfigException("'" + value + "' is invalid " +
                     "for " + key);
             // TODO Log
         }
     }
 
     protected void validateInt(String key, int value) throws InvalidConfigException {
-        if (value == 0) {
-            throw new InvalidConfigException("'" + value + "' is not valid " +
+        if (value <= 0) {
+            throw new InvalidConfigException("'" + value + "' is invalid " +
                     "for " + key);
             // TODO Log
         }
