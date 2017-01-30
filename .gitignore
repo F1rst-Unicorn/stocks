@@ -20,3 +20,4 @@ spec/ER-diagram.png
 # test files
 server/src/test/system/resources
 client/src/test/system/resources
+stocks.db
