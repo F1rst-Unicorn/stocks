@@ -36,7 +36,7 @@ public class FoodListCommandHandler extends CommandHandler {
             if (word.equals("help")) {
                 printHelp();
             } else {
-                c.getLog().severe("Unknown command " + word);
+                // TODO Log
             }
             return;
         }
@@ -89,7 +89,7 @@ public class FoodListCommandHandler extends CommandHandler {
 
             listFood();
         } catch (ParseException e) {
-            c.getLog().severe(e.getMessage());
+            // TODO Log
         }
     }
 

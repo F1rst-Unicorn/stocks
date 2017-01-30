@@ -28,7 +28,7 @@ public class ServerManager {
             backend = retrofit.create(ServerClient.class);
             this.c = c;
         } catch (Exception e) {
-            c.getLog().log(Level.SEVERE, "Failed to set up ServerManager: " + e.getMessage());
+            // TODO Log
         }
     }
 
@@ -41,7 +41,7 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                c.getLog().log(Level.SEVERE, "failed to retrieve updates: " + r.message());
+                // TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -58,7 +58,7 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                c.getLog().log(Level.SEVERE, "failed to retrieve users: " + r.message());
+                // TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -73,7 +73,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to create user: " + r.message());
+                // TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -87,7 +87,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to remove user: " + r.message());
+                // TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -103,7 +103,7 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                c.getLog().log(Level.SEVERE, "failed to retrieve devices: " + r.message());
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -118,7 +118,7 @@ public class ServerManager {
             Response<Ticket> r = call.execute();
 
             if (!r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to create device: " + r.message());
+// TODO Log
             } else {
                 return r.body();
             }
@@ -135,7 +135,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to remove device: " + r.message());
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -151,7 +151,7 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                c.getLog().log(Level.SEVERE, "failed to retrieve locations: " + r.message());
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -165,8 +165,8 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (! r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to add location: " + r.message());
+            if (!r.isSuccess()) {
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -179,8 +179,8 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (! r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to remove location: " + r.message());
+            if (!r.isSuccess()) {
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -194,7 +194,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to rename location: " + r.message());
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -210,7 +210,7 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                c.getLog().log(Level.SEVERE, "failed to retrieve food: " + r.message());
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -224,8 +224,8 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (! r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to add food: " + r.message());
+            if (!r.isSuccess()) {
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -238,8 +238,8 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (! r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to remove food: " + r.message());
+            if (!r.isSuccess()) {
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -253,7 +253,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to rename food: " + r.message());
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -269,7 +269,7 @@ public class ServerManager {
             if (r.isSuccess()) {
                 return r.body();
             } else {
-                c.getLog().log(Level.SEVERE, "failed to retrieve food items: " + r.message());
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -283,8 +283,8 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (! r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to add food item: " + r.message());
+            if (!r.isSuccess()) {
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -298,7 +298,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to remove item: " + r.message());
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -312,7 +312,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccess()) {
-                c.getLog().log(Level.SEVERE, "failed to move item: " + r.message());
+// TODO Log
             }
         } catch (IOException e) {
             error(e);
@@ -320,7 +320,7 @@ public class ServerManager {
     }
 
     protected void error(IOException e) {
-        c.getLog().log(Level.SEVERE, "No connection to server: " + e.getMessage());
+// TODO Log
     }
 
 }

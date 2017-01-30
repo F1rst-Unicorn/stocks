@@ -91,7 +91,7 @@ public class RefreshCommandHandler extends CommandHandler {
                 refreshLocations();
                 break;
             default:
-                c.getLog().log(Level.WARNING, "Trying to refresh invalid table: " + tableName);
+                // TODO Log
                 break;
         }
     }

@@ -20,6 +20,7 @@ public class Main {
     public static void main (String[] args) {
 
         try {
+            LOG.info("Starting up");
             UIFactory f = new CliFactory();
             PropertiesFileHandler fileHandler = new PropertiesFileHandlerImpl();
 
@@ -32,7 +33,7 @@ public class Main {
 
             f.getMainHandler(c).run(args);
         } catch (PrintableException e) {
-            // TODO Log
+            LOG.error("", e);
             System.err.println(e.getMessage());
             System.err.println("For details consider the log file");
             System.exit(1);

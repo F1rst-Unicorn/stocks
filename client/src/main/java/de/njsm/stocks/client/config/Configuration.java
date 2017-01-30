@@ -7,12 +7,16 @@ import de.njsm.stocks.client.frontend.cli.InputReader;
 import de.njsm.stocks.client.network.TcpHost;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.storage.DatabaseManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.Properties;
-import java.util.logging.*;
 
 public class Configuration {
+
+    private static final Logger LOG = LogManager.getLogger(Configuration.class);
+
 
     public static final String STOCKS_HOME = System.getProperty("user.stocks.dir") + "/.stocks";
     public static final String CONFIG_PATH = STOCKS_HOME + "/config";
@@ -42,47 +46,36 @@ public class Configuration {
     private int deviceId;
     private String fingerprint;
 
-    private final Logger log;
     private ServerManager serverInterface;
     private DatabaseManager databaseInterface;
     private final InputReader userInputReader;
     private final PropertiesFileHandler fileHandler;
 
     public Configuration (PropertiesFileHandler fileHandler) {
-
-        log = Logger.getLogger("stocks-client");
-        for (Handler h : log.getHandlers()) {
-            log.removeHandler(h);
-        }
-        log.setLevel(Level.ALL);
-        log.setUseParentHandlers(false);
-        ConsoleHandler handler = new ConsoleHandler();
-        handler.setFormatter(new SimpleFormatter());
-        handler.setLevel(Level.ALL);
-        log.addHandler(handler);
-
         this.fileHandler = fileHandler;
         userInputReader = new EnhancedInputReader(System.in);
     }
 
     public void loadConfig() throws InitialisationException {
+        LOG.info("Loading configuration from " + CONFIG_PATH);
         try {
             Properties propertiesFromFile = fileHandler.readProperties(CONFIG_PATH);
             populateConfiguration(propertiesFromFile);
             checkSanity();
         } catch (IOException e) {
+            LOG.error("While reading properties from " + CONFIG_PATH, e);
             throw new InitialisationException("Settings could not be read");
-            // TODO Log
         }
     }
 
     public void saveConfig() throws InitialisationException {
+        LOG.info("Saving configuration to file " + CONFIG_PATH);
         try {
             checkSanity();
             Properties p = populateProperties();
             fileHandler.writePropertiesToFile(CONFIG_PATH, p);
         } catch (IOException e){
-            // TODO Log
+            LOG.error("While writing properties to " + CONFIG_PATH, e);
             throw new InitialisationException("Settings could not be saved", e);
         }
     }
@@ -177,10 +170,6 @@ public class Configuration {
         return fingerprint;
     }
 
-    public Logger getLog() {
-        return log;
-    }
-
     protected void populateConfiguration(Properties p) throws InitialisationException {
         serverName = p.getProperty(SERVER_NAME_CONFIG);
         caPort = getIntProperty(p, CA_PORT_CONFIG);
@@ -213,13 +202,15 @@ public class Configuration {
             rawValue = source.getProperty(key);
             return Integer.parseInt(rawValue);
         } catch (NumberFormatException e) {
+            LOG.error("Configuration contains invalid entry " + key + " -> " + rawValue);
+            LOG.error("", e);
             throw new InitialisationException("Configuration '" + key + "' is " +
                     "'" + rawValue + "' which is not a number");
-            // TODO Log
         }
     }
 
     protected void checkSanity() throws InitialisationException {
+        LOG.info("Sanity check started");
         validateString("server name", serverName);
         validatePort(caPort);
         validatePort(ticketPort);
@@ -229,28 +220,29 @@ public class Configuration {
         validateString("fingerprint", fingerprint);
         validateInt("user ID", userId);
         validateInt("device ID", deviceId);
+        LOG.info("Sanity check successful");
     }
 
     protected void validatePort(int port) throws InvalidConfigException {
         if (! TcpHost.isValidPort(port)) {
+            LOG.error("Invalid port " + port);
             throw new InvalidConfigException("Port " + port + " is invalid");
-            // TODO Log
         }
     }
 
     protected void validateString(String key, String value) throws InvalidConfigException {
         if (value == null || value.isEmpty()) {
+            LOG.error("Invalid string " + key + " -> " + value);
             throw new InvalidConfigException("'" + value + "' is invalid " +
                     "for " + key);
-            // TODO Log
         }
     }
 
     protected void validateInt(String key, int value) throws InvalidConfigException {
         if (value <= 0) {
+            LOG.error("Invalid int " + key + " -> " + value);
             throw new InvalidConfigException("'" + value + "' is invalid " +
                     "for " + key);
-            // TODO Log
         }
     }
 
