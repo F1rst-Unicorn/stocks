@@ -22,9 +22,17 @@
 * 00022 : DONE : Close DB connections after usage or reuse it 
 
 ## Version 1.1
+* 00023 : NEW  : Use injection framework for enpoint config
+* 00024 : NEW  : Test all components in integration tests
+* 00025 : DONE : Remove duplicate code in test/upgrade and test/system
 * 00006 : NEW  : Image support for Food
 * 00010 : NEW  : Edit eat-by date
-* 00007 : NEW  : Remember maximum items per food to emit warnings based on thresholds
+* 00007 : NEW  : Remember maximum items per food to emit warnings on shortage
+* 00026 : NEW  : Write SAD with sequence diagrams
+* 00027 : NEW  : Add system tests for Updates Table
+* 00028 : NEW  : Decouple server, timeouts and fail fast
+* 00029 : NEW  : Perform locking on CA
+* 00030 : NEW  : Database versioning and concurrency
 
 ## Version 1.2
 * 00009 : NEW  : Add favourite food markers

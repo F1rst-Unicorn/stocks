@@ -47,9 +47,11 @@ public class RefreshCommandHandler extends CommandHandler {
 
         boolean upToDate = true;
 
-        for (int i = 0; i < serverUpdates.length; i++){
-            if (serverUpdates[i].lastUpdate.after(localUpdates[i].lastUpdate)) {
-                refreshTable(serverUpdates[i].table);
+        for (Update u : serverUpdates){
+            Update localUpdate = getLocalUpdate(localUpdates, u.table);
+            if (localUpdate != null &&
+                    u.lastUpdate.after(localUpdate.lastUpdate)) {
+                refreshTable(u.table);
                 upToDate = false;
             }
         }
@@ -59,6 +61,15 @@ public class RefreshCommandHandler extends CommandHandler {
         } else {
             dm.writeUpdates(serverUpdates);
         }
+    }
+
+    private Update getLocalUpdate(Update[] localUpdates, String table) {
+        for (Update u : localUpdates) {
+            if (u.table.equals(table)) {
+                return u;
+            }
+        }
+        return null;
     }
 
     @Override
