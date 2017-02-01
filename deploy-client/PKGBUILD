@@ -29,7 +29,7 @@ package() {
     cd "$srcdir/stocks"
     
     mkdir -p $pkgdir/usr/lib/stocks/
-    cp client/target/client-${pkgver}-jar-with-dependencies.jar $pkgdir/usr/lib/stocks/client.jar
+    cp client/target/client-*-jar-with-dependencies.jar $pkgdir/usr/lib/stocks/client.jar
     chmod -R 555 $pkgdir/usr/lib/stocks/
 
     mkdir -p $pkgdir/usr/bin/
