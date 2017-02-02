@@ -43,3 +43,21 @@ is written. This includes in particular
 
 Only features that prove themselves verified to work properly are merged into 
 the dev branch. 
+
+## SOS branches
+In case a severe bug is found that needs immediate fix the work is done of an
+SOS branch of that component (e.g. sos-server or sos-android). The SOS branch
+is checked out directly from master. 
+The fix has to be scoped to the bug at hand. For merging back the same criteria
+as for feature branches apply. The fix will be merged directly to master and
+the patch version of the package is incremented. The last commit of the SOS
+branch is tagged with the new version. 
+
+## Merging cross-component features
+The branches form a 3-layer tree hierarchy. master is the root of the tree and
+has the component's dev branches as children. These components have the feature
+branches as children. 
+It is only allowed to merge from and to branches which are direct ancestors of
+the branch at hand. This prevents features from passing by the QA of a component
+by being introduced by a different component which accidentally merged premature
+changes. 
