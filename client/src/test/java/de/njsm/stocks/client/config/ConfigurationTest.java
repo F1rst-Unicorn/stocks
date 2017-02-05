@@ -2,13 +2,11 @@ package de.njsm.stocks.client.config;
 
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.exceptions.InvalidConfigException;
-import de.njsm.stocks.client.network.TcpHost;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import java.io.IOException;
 import java.util.Properties;

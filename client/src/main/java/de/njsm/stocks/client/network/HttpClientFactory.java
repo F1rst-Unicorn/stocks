@@ -48,4 +48,31 @@ public class HttpClientFactory {
         }
 
     }
+
+    public static OkHttpClient getClient(KeyStore ks) throws CryptoException {
+
+        try {
+            LOG.info("Getting new http client");
+
+            TrustManagerFactory tmf = TrustManagerFactory
+                    .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(ks);
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(ks, Configuration.KEYSTORE_PASSWORD.toCharArray());
+
+            SSLContext context = SSLContext.getInstance("TLSv1.2");
+            context.init(kmf.getKeyManagers(),
+                    tmf.getTrustManagers(),
+                    new SecureRandom());
+
+            return new OkHttpClient()
+                    .setSslSocketFactory(context.getSocketFactory())
+                    .setHostnameVerifier((s, sslSession) -> true);
+        } catch (Exception e) {
+            LOG.error("Failed to create new http client", e);
+            throw new CryptoException("There is a problem with the key store", e);
+        }
+
+    }
 }

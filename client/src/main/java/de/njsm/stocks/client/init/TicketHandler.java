@@ -1,211 +1,89 @@
 package de.njsm.stocks.client.init;
 
-import de.njsm.stocks.client.config.Configuration;
+import com.squareup.okhttp.OkHttpClient;
 import de.njsm.stocks.client.data.Ticket;
+import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
-import de.njsm.stocks.client.exceptions.PrintableException;
+import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.network.HttpClientFactory;
 import de.njsm.stocks.client.network.TcpHost;
 import de.njsm.stocks.client.network.sentry.SentryManager;
-import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.IOException;
 
-public class TicketHandler {
+class TicketHandler {
 
-    private final LinkedList<Process> waitList;
-    private final TcpHost ticketHost;
+    private static final Logger LOG = LogManager.getLogger(TicketHandler.class);
 
-    static final String CA_FILE_PATH = Configuration.STOCKS_HOME + "/ca.cert.pem";
-    static final String INTERMEDIATE_FILE_PATH = Configuration.STOCKS_HOME + "/intermediate.cert.pem";
-    static final String CSR_FILE_PATH = Configuration.STOCKS_HOME + "/client.csr.pem";
-    static final String CERT_FILE_PATH = Configuration.STOCKS_HOME + "/client.cert.pem";
+    private final NetworkHandler networkHandler;
+    private final KeystoreHandler keystoreHandler;
+    private String csr;
 
-    TicketHandler (TcpHost ticketHost) {
-        waitList = new LinkedList<>();
-        this.ticketHost = ticketHost;
+    TicketHandler (KeystoreHandler keystoreHandler,
+                   NetworkHandler networkHandler) {
+        this.keystoreHandler = keystoreHandler;
+        this.networkHandler = networkHandler;
     }
 
-    void generateKey(String username, String deviceName, int[] ids) throws Exception {
-
-        String cn = String.format("%s$%d$%s$%d", username, ids[0], deviceName, ids[1]);
-        String keyGenCommand = String.format("keytool -genkeypair " +
-                        "-dname CN=%s,OU=%s,O=%s " +
-                        "-alias %s " +
-                        "-keyalg RSA " +
-                        "-keysize 4096 " +
-                        "-keypass %s " +
-                        "-keystore %s " +
-                        "-storepass %s ",
-                cn,
-                "User",
-                "stocks",
-                "client",
-                Configuration.KEYSTORE_PASSWORD,
-                Configuration.KEYSTORE_PATH,
-                Configuration.KEYSTORE_PASSWORD);
-        Process p = Runtime.getRuntime().exec(keyGenCommand);
-        InputStream resultStream = p.getInputStream();
-        InputStream errorStream = p.getErrorStream();
-        IOUtils.copy(resultStream, System.out);
-        IOUtils.copy(errorStream, System.out);
-        waitList.add(p);
+    void generateKey() throws CryptoException {
+        keystoreHandler.generateNewKey();
     }
 
-    void generateCsr() throws Exception {
-        String getCsrCommand = String.format("keytool -certreq " +
-                        "-alias client " +
-                        "-file %s " +
-                        "-keypass %s " +
-                        "-keystore %s " +
-                        "-storepass %s ",
-                CSR_FILE_PATH,
-                Configuration.KEYSTORE_PASSWORD,
-                Configuration.KEYSTORE_PATH,
-                Configuration.KEYSTORE_PASSWORD);
-        Process p = Runtime.getRuntime().exec(getCsrCommand);
-        InputStream resultStream = p.getInputStream();
-        InputStream errorStream = p.getErrorStream();
-        IOUtils.copy(resultStream, System.out);
-        IOUtils.copy(errorStream, System.out);
-        waitList.add(p);
+    void generateCsr(String username, String deviceName, int uid, int did) throws CryptoException {
+        String subjectName = generateSubjectName(username, deviceName, uid, did);
+        csr = keystoreHandler.generateCsr(subjectName);
     }
 
-    void verifyServerCa(TcpHost caHost, String fingerprint) throws Exception {
-        downloadCertificate(caHost, "ca", CA_FILE_PATH);
-        downloadCertificate(caHost, "chain", INTERMEDIATE_FILE_PATH);
-
-        String fprFromCa = getFprFromFile();
-        if (! fprFromCa.equals(fingerprint)){
-            throw new SecurityException(String.format("fingerprints do not match!\nLocal: %s\nOther: %s",
-                    fingerprint,
-                    fprFromCa));
-        }
-
-        importCertificate("ca");
-        importCertificate("intermediate");
-    }
-
-    void handleTicket(String ticket, int id) throws InitialisationException {
+    void verifyServerCa(TcpHost caHost, String fingerprint) throws InitialisationException {
         try {
-            SentryManager manager = new SentryManager(HttpClientFactory.getClient(),
-                    ticketHost);
-            String pemFile = readFromFile(CSR_FILE_PATH);
-            Ticket request = new Ticket(id, ticket, pemFile);
-            String certificate = manager.requestCertificate(request);
-            writeToFile(certificate, CERT_FILE_PATH);
-            importCertificate("client");
-        } catch (PrintableException e) {
-            // TODO Log
-            throw new InitialisationException(e.getMessage(), e);
+            String caCert = networkHandler.downloadDocument(caHost, "ca");
+            String chainCert = networkHandler.downloadDocument(caHost, "chain");
+
+            String fprFromCa = keystoreHandler.getFingerPrintFromPem(caCert);
+            if (!fprFromCa.equals(fingerprint)) {
+                LOG.error("Fingerprints do not match!");
+                LOG.error("Local: " + fingerprint);
+                LOG.error("Other: " + fprFromCa);
+                throw new InitialisationException("Fingerprints do not match. Search for typing errors or there is a MitM attack");
+            }
+
+            keystoreHandler.importCaCertificate(caCert);
+            keystoreHandler.importIntermediateCertificate(chainCert);
+        } catch (CryptoException e) {
+            LOG.error(e);
+            throw new InitialisationException("Fingerprint comparison failed", e);
+        }
+    }
+
+    void handleTicket(TcpHost ticketHost, String ticket, int id) throws InitialisationException {
+        try {
+            Ticket request = new Ticket(id, ticket, csr);
+            SentryManager sentryManager = createSentryManager(ticketHost);
+            networkHandler.setNetworkBackend(sentryManager);
+            String certificate = networkHandler.handleTicket(request);
+            keystoreHandler.importClientCertificate(certificate);
+            keystoreHandler.store();
+        } catch (NetworkException e) {
+            LOG.error("Sentry communication failed", e);
+            throw new InitialisationException("Network communication failed", e);
         } catch (IOException e) {
-            // TODO Log
-            throw new InitialisationException("There is a problem with the files", e);
+            LOG.error("Could not store initialised keystore", e);
+            throw new InitialisationException("Keystore storing failed", e);
+        } catch (CryptoException e) {
+            LOG.error(e);
+            throw new InitialisationException("Could not handle ticket", e);
         }
     }
 
-    void waitFor() throws InterruptedException {
-        for (Process p : waitList) {
-            p.waitFor();
-        }
-        waitList.clear();
+    String generateSubjectName(String username, String deviceName, int uid, int did) {
+        return String.format("%s$%d$%s$%d", username, uid, deviceName, did);
     }
 
-    private String getFprFromFile() throws InitialisationException {
-        String result;
-        try {
-            String command = "openssl x509 " +
-                    "-noout " +
-                    "-text " +
-                    "-fingerprint " +
-                    "-sha256 " +
-                    "-in " + CA_FILE_PATH;
-            Process p = Runtime.getRuntime().exec(command);
-            p.waitFor(5, TimeUnit.SECONDS);
-            String output = IOUtils.toString(p.getInputStream());
-            result = matchFingerprintInOutput(output);
-        } catch (IOException e) {
-            // TODO Log
-            throw new InitialisationException(e.getMessage());
-        } catch (InterruptedException e) {
-            // TODO Log
-            throw new InitialisationException("Reading " + CA_FILE_PATH +
-                    " took too long");
-        }
-        return result;
-    }
-
-    private String matchFingerprintInOutput(String output) throws IOException {
-        String result;
-        Pattern pattern = Pattern.compile("SHA256 Fingerprint=.*");
-        Matcher match = pattern.matcher(output);
-        if (match.find()) {
-            result = match.group(0);
-            result = result.substring(result.indexOf('=') + 1, result.length());
-            return result;
-        } else {
-            // TODO Log
-            throw new IOException("Failed to parse fingerprint");
-        }
-    }
-
-    private void importCertificate(String file) throws IOException {
-        String command = String.format("keytool -importcert " +
-                        "-noprompt " +
-                        "-alias %s " +
-                        "-file %s " +
-                        "-keypass %s " +
-                        "-keystore %s " +
-                        "-storepass %s ",
-                file,
-                Configuration.STOCKS_HOME + "/" + file + ".cert.pem",
-                Configuration.KEYSTORE_PASSWORD,
-                Configuration.KEYSTORE_PATH,
-                Configuration.KEYSTORE_PASSWORD);
-        Process p = Runtime.getRuntime().exec(command);
-        IOUtils.copy(p.getInputStream(), System.out);
-        IOUtils.copy(p.getErrorStream(), System.out);
-        try {
-            p.waitFor(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            // TODO Log
-        }
-    }
-
-    private void downloadCertificate (TcpHost caHost, String urlResource, String destPath) throws InitialisationException {
-        String url = String.format("http://%s/%s", caHost.toString(), urlResource);
-        try {
-            URL website = new URL(url);
-            String response = IOUtils.toString(website.openStream());
-            writeToFile(response, destPath);
-        } catch (MalformedURLException e) {
-            // TODO Log
-            throw new InitialisationException(url + " is invalid");
-        } catch (IOException e) {
-            // TODO Log
-            throw new InitialisationException(e.getMessage());
-        }
-    }
-
-    private String readFromFile(String path) throws IOException {
-        FileInputStream source = new FileInputStream(path);
-        String result = IOUtils.toString(source);
-        source.close();
-        return result;
-    }
-
-    private void writeToFile(String content, String path) throws IOException {
-        FileOutputStream output = new FileOutputStream(path);
-        IOUtils.write(content.getBytes(), output);
-        output.close();
+    private SentryManager createSentryManager(TcpHost ticketHost) throws CryptoException {
+        OkHttpClient httpClient = HttpClientFactory.getClient(keystoreHandler.getKeyStore());
+        return new SentryManager(httpClient, ticketHost);
     }
 
 }
