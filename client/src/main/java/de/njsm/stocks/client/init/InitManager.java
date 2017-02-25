@@ -88,9 +88,8 @@ public class InitManager {
                     new NetworkHandlerImpl());
             String username = source.getUsername();
             String deviceName = source.getDeviceName();
-            int[] ids = source.getUserIds();
-            int uid = ids[0];
-            int did = ids[1];
+            int uid = source.getUserId();
+            int did = source.getDeviceId();
             String fingerprint = source.getCaFingerprint();
             String ticket = source.getTicket();
 
