@@ -70,7 +70,9 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
             refreshAll();
         } else {
             for (int i = 0; i < serverUpdates.length; i++) {
-                if (serverUpdates[i].lastUpdate.after(localUpdates[i].lastUpdate)) {
+                Update localUpdate = getLocalUpdate(localUpdates, serverUpdates[i].table);
+                if (localUpdate != null
+                        && serverUpdates[i].lastUpdate.after(localUpdates[i].lastUpdate)) {
                     refresh(serverUpdates[i].table);
                 }
             }
@@ -80,6 +82,15 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
         Log.i(Config.log, "Sync successful");
         sRunning.set(false);
         return 0;
+    }
+
+    private Update getLocalUpdate(Update[] localUpdates, String table) {
+        for (Update u : localUpdates) {
+            if (u.table.equals(table)) {
+                return u;
+            }
+        }
+        return null;
     }
 
     private void refreshAll() {
