@@ -18,7 +18,10 @@ cd $STOCKS_ROOT/deploy-client
 makepkg -fc
 cd $CWD
 
-gpg --detach-sign --use-agent $STOCKS_ROOT/deploy-client/*.xz
+if [[ -z $NO_SIGNATURE ]] ; then
+    gpg --detach-sign --use-agent $STOCKS_ROOT/deploy-client/*.xz
+    mv $STOCKS_ROOT/deploy-server/*.sig $STOCKS_ROOT/deploy-server/target
+fi
 
 mv $STOCKS_ROOT/deploy-client/*.sig $STOCKS_ROOT/deploy-client/target
 mv $STOCKS_ROOT/deploy-client/*.xz $STOCKS_ROOT/deploy-client/target
