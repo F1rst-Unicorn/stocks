@@ -35,7 +35,8 @@ public class Main {
         } catch (PrintableException e) {
             LOG.error("", e);
             System.err.println(e.getMessage());
-            System.err.println("For details consider the log file");
+            System.err.println("For details consider the log file at " +
+                    "~/.stocks/stocks.log");
             System.exit(1);
         }
     }
