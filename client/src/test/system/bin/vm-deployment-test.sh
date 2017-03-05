@@ -17,7 +17,7 @@ ansible-playbook \
 rm -rf $STOCKS_ROOT/client/src/test/system/tmp
 mkdir -p $STOCKS_ROOT/client/src/test/system/tmp/.stocks
 echo ".read $STOCKS_ROOT/deploy-client/config/schema.sql" | \
-        sqlite3 $STOCKS_ROOT/client/src/test/system/.stocks/stocks.db
+        sqlite3 $STOCKS_ROOT/client/src/test/system/tmp/.stocks/stocks.db
 
 FINGERPRINT=$(curl -s http://dp-client-server:10910/ca | \
         openssl x509 -noout -sha256 -fingerprint | \
