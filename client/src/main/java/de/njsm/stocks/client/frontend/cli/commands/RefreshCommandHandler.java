@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.Configuration;
+import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.data.*;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.storage.DatabaseManager;
@@ -47,9 +47,11 @@ public class RefreshCommandHandler extends CommandHandler {
 
         boolean upToDate = true;
 
-        for (int i = 0; i < serverUpdates.length; i++){
-            if (serverUpdates[i].lastUpdate.after(localUpdates[i].lastUpdate)) {
-                refreshTable(serverUpdates[i].table);
+        for (Update u : serverUpdates){
+            Update localUpdate = getLocalUpdate(localUpdates, u.table);
+            if (localUpdate != null &&
+                    u.lastUpdate.after(localUpdate.lastUpdate)) {
+                refreshTable(u.table);
                 upToDate = false;
             }
         }
@@ -59,6 +61,15 @@ public class RefreshCommandHandler extends CommandHandler {
         } else {
             dm.writeUpdates(serverUpdates);
         }
+    }
+
+    private Update getLocalUpdate(Update[] localUpdates, String table) {
+        for (Update u : localUpdates) {
+            if (u.table.equals(table)) {
+                return u;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -91,7 +102,7 @@ public class RefreshCommandHandler extends CommandHandler {
                 refreshLocations();
                 break;
             default:
-                c.getLog().log(Level.WARNING, "Trying to refresh invalid table: " + tableName);
+                // TODO Log
                 break;
         }
     }

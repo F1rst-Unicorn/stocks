@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.frontend.cli;
 
-import de.njsm.stocks.client.Configuration;
+import de.njsm.stocks.client.config.Configuration;
 import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
 import jline.console.history.History;
@@ -18,7 +18,7 @@ public class EnhancedInputReader extends InputReader {
         try {
             reader = new ConsoleReader();
 
-            History file = new FileHistory(new File(Configuration.stocksHome + "/history"));
+            History file = new FileHistory(new File(Configuration.STOCKS_HOME + "/history"));
             reader.setHistory(file);
             reader.setHistoryEnabled(true);
         } catch (IOException e) {

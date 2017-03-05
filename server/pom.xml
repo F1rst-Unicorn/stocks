@@ -108,6 +108,16 @@
                 <de.njsm.stocks.internal.db.databasePassword/>
             </properties>
         </profile>
+        <profile>
+            <id>teamcity</id>
+            <properties>
+                <de.njsm.stocks.internal.db.databaseAddress>localhost</de.njsm.stocks.internal.db.databaseAddress>
+                <de.njsm.stocks.internal.db.databasePort>3306</de.njsm.stocks.internal.db.databasePort>
+                <de.njsm.stocks.internal.db.databaseName>stocks</de.njsm.stocks.internal.db.databaseName>
+                <de.njsm.stocks.internal.db.databaseUsername>server</de.njsm.stocks.internal.db.databaseUsername>
+                <de.njsm.stocks.internal.db.databasePassword>linux</de.njsm.stocks.internal.db.databasePassword>
+            </properties>
+        </profile>
     </profiles>
 
     <build>

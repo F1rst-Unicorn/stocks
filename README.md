@@ -11,7 +11,7 @@ See manual/admin/ for build and maintainance manuals.
 
 ## Linux client
 
-See deploy-client/README.md for a detailed description.
+See manual/client/README.md for a detailed description.
 
 ## Android app installation
 

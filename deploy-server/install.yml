@@ -4,8 +4,8 @@
       remote_user: jan
       remote_pkg_dir: /home/{{ remote_user }}/Software
       
-      stocks_pkg_dir: ~/Software/stocks-server
-      stocks_version: 1.0.0-1
+      stocks_pkg_dir: "{{ playbook_dir }}/target"
+      stocks_version: 1.0.1-1
       stocks_pkg: stocks-server-{{ stocks_version }}-any.pkg.tar.xz
 
 
