@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import de.njsm.stocks.backend.data.Food;
@@ -63,25 +65,25 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void uncaughtException(Thread t, Throwable e) {
                 try {
-                    e.printStackTrace();
-
                     File dir = Environment.getExternalStorageDirectory();
 
                     if (dir == null) {
                         dir = Environment.getDataDirectory();
                     }
 
-                    final File logfile = new File(dir, "stocks_crashlog_" + (new Date()).toString() + ".txt");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
+                    final File logfile = new File(dir, "stocks_crashlog_" + sdf.format(new Date()) + ".txt");
                     final FileOutputStream os = new FileOutputStream(logfile);
                     final PrintWriter pw = new PrintWriter(os);
                     e.printStackTrace(pw);
+                    Log.d("UncaughtEHandler", logfile.getAbsolutePath());
                     pw.flush();
                     pw.close();
 
                 } catch(Exception e1) {
-                    //Crap, what to do here?
+                    Log.e("UncaughtEHandler", "Exception during crash logging");
+                    e1.printStackTrace();
                 }
-
                 androidHandler.uncaughtException(t, e);
             }
         });
