@@ -6,7 +6,7 @@
 ## Version 0.5
 * 00017 : NEW  : Update Android SDK and gradle
 * 00011 : NEW  : Add simple user manual
-* 00001 : NEW  : Save crash logs
+* 00001 : DONE : Save crash logs
 * 00002 : NEW  : Edit eat-by date
 * 00003 : NEW  : Add searching food
 * 00016 : DONE : Fix update table array index error
