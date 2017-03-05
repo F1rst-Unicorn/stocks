@@ -26,13 +26,20 @@ check() {
         set -e
 }
 
+fail() {
+        echo $1
+        exit 1
+}
+
 # arg 1: Root of the resources path
 createFirstUser() {
     curl -sS http://$SERVER:10910/ca > $RESOURCES/ca.crt
     curl -sS http://$SERVER:10910/chain > $RESOURCES/ca-chain.crt
 
-    openssl x509 -in $RESOURCES/ca.crt -text >/dev/null
-    openssl x509 -in $RESOURCES/ca-chain.crt -text >/dev/null
+    openssl x509 -in $RESOURCES/ca.crt -text >/dev/null || \
+            fail "ca.crt received from server is no valid certificate"
+    openssl x509 -in $RESOURCES/ca-chain.crt -text >/dev/null || \
+            fail "ca-chain.crt received from server is no valid certificate"
 
     openssl genrsa -out $RESOURCES/client.key.pem 4096 2>/dev/null
     openssl req -new -sha256 -key $RESOURCES/client.key.pem \
@@ -50,7 +57,8 @@ createFirstUser() {
             sed -r 's/.*pemFile":.*"(.*)".*/\1/g' | \
             sed 's/\\n/%/g' | tr \% \\n > $RESOURCES/client.crt.pem
 
-    openssl x509 -in $RESOURCES/client.crt.pem -text >/dev/null
+    openssl x509 -in $RESOURCES/client.crt.pem -text >/dev/null || \
+            fail "client.crt.pem received from sentry is no valid certificate"
     rm $RESOURCES/response.json
     echo Test first user: OK
 
