@@ -2,7 +2,7 @@ package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.frontend.MainHandler;
 import de.njsm.stocks.client.frontend.cli.commands.*;
-import de.njsm.stocks.client.Configuration;
+import de.njsm.stocks.client.config.Configuration;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class CliMainHandler implements MainHandler {
                 command = Command.createCommand(args);
                 m.handleCommand(command);
             } catch (ParseException e) {
-                c.getLog().severe("Invalid command: " + e.getMessage());
+                // TODO Log
             }
         } else {
             while (!endRequested) {
@@ -56,7 +56,7 @@ public class CliMainHandler implements MainHandler {
                             command = Command.createCommand(input);
                             m.handleCommand(command);
                         } catch (ParseException e) {
-                            c.getLog().severe("Invalid Command: " + e.getMessage());
+                            // TODO Log
                         }
                 }
             }

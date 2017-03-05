@@ -1,7 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.data.Location;
-import de.njsm.stocks.client.Configuration;
+import de.njsm.stocks.client.config.Configuration;
 
 public class LocationAddCommandHandler extends CommandHandler {
 

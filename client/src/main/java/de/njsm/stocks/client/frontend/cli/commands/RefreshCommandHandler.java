@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.Configuration;
+import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.data.*;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.storage.DatabaseManager;
@@ -102,7 +102,7 @@ public class RefreshCommandHandler extends CommandHandler {
                 refreshLocations();
                 break;
             default:
-                c.getLog().log(Level.WARNING, "Trying to refresh invalid table: " + tableName);
+                // TODO Log
                 break;
         }
     }

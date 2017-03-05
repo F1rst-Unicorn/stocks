@@ -41,16 +41,17 @@ public class CliCertificateGenerator implements CertificateGenerator {
     }
 
     @Override
-    public int[] getUserIds() {
-        String format = "Please give the Id for the %s: ";
-        String[] args = {"user", "user's device"};
-        int[] result = new int[2];
-
-        for (int i = 0; i < result.length; i++) {
-            result[i] = reader.nextInt(String.format(format, args[i]));
-        }
-
-        return result;
+    public int getUserId() {
+        return getId("User");
     }
 
+    @Override
+    public int getDeviceId() {
+        return getId("device");
+    }
+
+    private int getId(String key) {
+        String prompt = String.format("Please give the Id for the %s: ", key);
+        return reader.nextInt(prompt);
+    }
 }
