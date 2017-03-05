@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.Date;
 
 import de.njsm.stocks.backend.data.Food;
 import de.njsm.stocks.backend.data.Location;
@@ -50,6 +56,36 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        final Thread.UncaughtExceptionHandler androidHandler = Thread.getDefaultUncaughtExceptionHandler();
+
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                try {
+                    e.printStackTrace();
+
+                    File dir = Environment.getExternalStorageDirectory();
+
+                    if (dir == null) {
+                        dir = Environment.getDataDirectory();
+                    }
+
+                    final File logfile = new File(dir, "stocks_crashlog_" + (new Date()).toString() + ".txt");
+                    final FileOutputStream os = new FileOutputStream(logfile);
+                    final PrintWriter pw = new PrintWriter(os);
+                    e.printStackTrace(pw);
+                    pw.flush();
+                    pw.close();
+
+                } catch(Exception e1) {
+                    //Crap, what to do here?
+                }
+
+                androidHandler.uncaughtException(t, e);
+            }
+        });
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_food_toolbar);
         setSupportActionBar(toolbar);
