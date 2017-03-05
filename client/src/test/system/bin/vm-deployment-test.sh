@@ -8,8 +8,8 @@ set -e
 sudo virsh snapshot-revert dp-client-server clean-running
 sleep 1
 
-ansible-playbook -e target_host=dp-client-server $STOCKS_ROOT/deploy-server/install.yml
-ansible-playbook -e target_host=dp-client-server stocks_user=Jack stocks_device=Device $STOCKS_ROOT/deploy-serverdeploy.yml
+ansible-playbook -e "target_host=dp-client-server" $STOCKS_ROOT/deploy-server/install.yml
+ansible-playbook -e "target_host=dp-client-server stocks_user=Jack stocks_device=Device" $STOCKS_ROOT/deploy-serverdeploy.yml
 
 rm -rf $STOCKS_ROOT/client/src/test/system/tmp
 mkdir -p $STOCKS_ROOT/client/src/test/system/tmp/.stocks
