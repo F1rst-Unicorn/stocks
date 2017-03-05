@@ -16,10 +16,6 @@ public class EatSoonActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eat_soon);
 
-        //Provoke a crash
-        Bundle bundle = null;
-        bundle.toString();
-
         mSwiper = (SwipeRefreshLayout) findViewById(R.id.eat_soon_swipe);
         mSwiper.setOnRefreshListener(new SwipeSyncCallback(mSwiper, this));
 
