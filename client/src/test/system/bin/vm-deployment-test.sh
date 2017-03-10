@@ -27,7 +27,7 @@ echo -e "$SERVER\n\n\n\nJack\nDevice\n1\n1\n\
 $FINGERPRINT\n\
 0000\nrefresh\nuser\ndev\nfood\nloc\nquit\n" \
         | java -jar -Duser.stocks.dir=$STOCKS_ROOT/client/src/test/system/tmp \
-        $STOCKS_ROOT/client/target/client-*-jar-with-dependencies.jar
+        $STOCKS_ROOT/client/target/client-*.jar
 
 rm -rf $STOCKS_ROOT/client/src/test/system/tmp
 sudo virsh snapshot-revert $SERVER clean
