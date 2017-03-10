@@ -7,8 +7,8 @@
       stocks_base: /usr/share/stocks-server
       stocks_lib:  /usr/lib/stocks-server
 
-      stocks_user: 'Jan'
-      stocks_device: 'Laptop'
+      stocks_user: 'Jack'
+      stocks_device: 'Device'
 
       sudoers_line: 'tomcat8 ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload'
 

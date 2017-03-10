@@ -1,8 +1,7 @@
 - hosts: "{{ target_host | default('deployment-test')}}"
 
   vars:
-      remote_user: jan
-      remote_pkg_dir: /home/{{ remote_user }}/Software
+      remote_pkg_dir: /tmp
       
       stocks_pkg_dir: "{{ playbook_dir }}/target"
       stocks_version: 1.0.1-1
