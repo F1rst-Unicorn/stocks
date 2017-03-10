@@ -44,7 +44,7 @@ createFirstUser() {
     openssl genrsa -out $RESOURCES/client.key.pem 4096 2>/dev/null
     openssl req -new -sha256 -key $RESOURCES/client.key.pem \
             -out $RESOURCES/client.csr.pem \
-            -subj '/CN=Jan$1$Laptop$1' -batch
+            -subj '/CN=Jack$1$Device$1' -batch
     CSR=$(cat $RESOURCES/client.csr.pem | tr \\n \& | sed 's/&/\\n/g')
 
     curl -sS -XPOST --data "{\"deviceId\": 1, \"ticket\": \"0000\", \"pemFile\": \
@@ -67,9 +67,9 @@ createFirstUser() {
 
 checkInitialServer() {
     curl -sS $CURLARGS -XGET https://$SERVER:10912/user > $CURL_FILE
-    check '"id":1.*"name":"Jan"'
+    check '"id":1.*"name":"Jack"'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/device > $CURL_FILE
-    check '"id":1.*"name":"Laptop"'
+    check '"id":1.*"name":"Device"'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/location > $CURL_FILE
     check '^\[\]$'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food > $CURL_FILE
@@ -116,7 +116,7 @@ checkUsers() {
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Second user\"}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/user > $CURL_FILE
-    check '^\[\{"id":[0-9]+,"name":"Jan"\}\]$'
+    check '^\[\{"id":[0-9]+,"name":"Jack"\}\]$'
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/user \
             --header 'content-type: application/json' \
             --data '{"id":0,"name":"John"}'
@@ -225,7 +225,7 @@ checkDevicesAndRevocation() {
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Mobile\"}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/device > $CURL_FILE
-    check '^\[\{"id":1,"name":"Laptop","userId":1\}\]$'
+    check '^\[\{"id":1,"name":"Device","userId":1\}\]$'
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/device \
             --header 'content-type: application/json' \
             --data "{\"id\":0,\"name\":\"Mobile\",\"userId\":$USERID}" \
@@ -288,7 +288,7 @@ checkDevicesAndRevocation() {
     check "^\{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\"\}$"
     openssl req -new -sha256 -key $RESOURCES/newClient.key.pem \
             -out $RESOURCES/wrong.csr.pem \
-            -subj "/CN=Jan\$$USERID\$Mobile\$$DEVID" -batch
+            -subj "/CN=Jack\$$USERID\$Mobile\$$DEVID" -batch
     WRONGCSR=$(cat $RESOURCES/wrong.csr.pem | tr \\n \& | sed 's/&/\\n/g')
     curl -sS -XPOST --data "{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\",\
     \"pemFile\":\"$WRONGCSR\"}" \
