@@ -4,7 +4,7 @@
 * 00000 : DONE : Basic functionality
 
 ## Version 0.5
-* 00017 : NEW  : Update Android SDK and gradle
+* 00017 : DONE : Update Android SDK and gradle
 * 00011 : NEW  : Add simple user manual
 * 00001 : NEW  : Save crash logs
 * 00002 : NEW  : Edit eat-by date
