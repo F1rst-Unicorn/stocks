@@ -10,7 +10,6 @@ sleep 1
 
 ansible-playbook $STOCKS_ROOT/deploy-server/install.yml
 ansible-playbook \
-        -e "stocks_user=Jack stocks_device=Device"\
         $STOCKS_ROOT/deploy-server/deploy.yml
 
 sudo virsh snapshot-delete dp-server initialised-running || true
