@@ -9,7 +9,9 @@
 * 00001 : NEW  : Save crash logs
 * 00002 : NEW  : Edit eat-by date
 * 00003 : NEW  : Add searching food
-* 00016 : DONE : Fix update table array index error
+* 00016 : OPEN : Fix update table array index error
+* 00018 : NEW  : Add system tests
+* 00019 : NEW  : Fix crash after long idle time
 
 ## Version 0.6
 * 00005 : NEW  : Prevent usage of spaces in names
