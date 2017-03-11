@@ -26,6 +26,8 @@ public class InitManager {
     private TcpHost caHost;
     private TcpHost ticketHost;
 
+    private TicketHandler ticketHandler;
+
     public InitManager(UIFactory f, PropertiesFileHandler fileHandler) {
         this.f = f;
         newConfiguration = new Configuration(fileHandler);
@@ -46,12 +48,16 @@ public class InitManager {
 
     private void runFirstInitialisation() throws InitialisationException {
         try {
+            ticketHandler = new TicketHandler(
+                    new KeyStoreHandlerImpl(),
+                    new NetworkHandlerImpl());
             initialiseConfigFile();
             getServerProperties(f.getConfigActor());
             createHosts();
             initCertificates(f.getCertGenerator());
             newConfiguration.saveConfig();
-        } catch (IOException e) {
+        } catch (IOException |
+                CryptoException e) {
             LOG.error("Error during initialisation", e);
             LOG.error("Reverting keystore file");
             destroyKeystore();
@@ -83,9 +89,7 @@ public class InitManager {
 
     private void initCertificates(CertificateGenerator source) throws InitialisationException {
         try {
-            TicketHandler handler = new TicketHandler(
-                    new KeyStoreHandlerImpl(),
-                    new NetworkHandlerImpl());
+
             String username = source.getUsername();
             String deviceName = source.getDeviceName();
             int uid = source.getUserId();
@@ -93,10 +97,10 @@ public class InitManager {
             String fingerprint = source.getCaFingerprint();
             String ticket = source.getTicket();
 
-            handler.generateKey();
-            handler.verifyServerCa(caHost, fingerprint);
-            handler.generateCsr(username, deviceName, uid, did);
-            handler.handleTicket(ticketHost, ticket, did);
+            ticketHandler.generateKey();
+            ticketHandler.verifyServerCa(caHost, fingerprint);
+            ticketHandler.generateCsr(username, deviceName, uid, did);
+            ticketHandler.handleTicket(ticketHost, ticket, did);
 
             newConfiguration.setUsername(username);
             newConfiguration.setDeviceName(deviceName);

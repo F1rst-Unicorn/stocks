@@ -21,6 +21,10 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class KeyStoreHandlerImpl implements KeystoreHandler {
 
@@ -36,11 +40,14 @@ public class KeyStoreHandlerImpl implements KeystoreHandler {
     private Certificate intermediateCert;
     private Certificate clientCert;
 
+    private Future<KeyPair> keyPairResult;
+
 
     public KeyStoreHandlerImpl() throws CryptoException {
         try {
             keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(null);
+            startKeyGeneration();
         } catch (KeyStoreException |
                 IOException |
                 CertificateException |
@@ -53,12 +60,10 @@ public class KeyStoreHandlerImpl implements KeystoreHandler {
     @Override
     public void generateNewKey() throws CryptoException {
         try {
-            KeyPairGenerator gen = KeyPairGenerator.getInstance(keyAlgName);
-            gen.initialize(keySize);
-            clientKeys = gen.generateKeyPair();
-        } catch (NoSuchAlgorithmException e) {
-            LOG.error(e);
-            throw new CryptoException("Crypto algorithm not available");
+            clientKeys = keyPairResult.get();
+        } catch (InterruptedException |
+                ExecutionException e) {
+            throw new CryptoException("Error in keystore setup", e);
         }
     }
 
@@ -153,6 +158,12 @@ public class KeyStoreHandlerImpl implements KeystoreHandler {
     @Override
     public KeyStore getKeyStore() {
         return keystore;
+    }
+
+    private void startKeyGeneration() {
+        ExecutorService threadPool = Executors.newFixedThreadPool(1);
+        AsyncKeyGenerator task = new AsyncKeyGenerator(keyAlgName, keySize);
+        keyPairResult = threadPool.submit(task);
     }
 
     private String convertCsrToString(PKCS10CertificationRequest csr) throws IOException {

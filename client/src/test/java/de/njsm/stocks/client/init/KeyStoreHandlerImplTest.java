@@ -2,21 +2,19 @@ package de.njsm.stocks.client.init;
 
 import de.njsm.stocks.client.exceptions.CryptoException;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class KeyStoreHandlerImplTest {
 
-    private KeyStoreHandlerImpl uut;
+    private static KeyStoreHandlerImpl uut;
 
-    @Before
-    public void setup() throws CryptoException {
+    @BeforeClass
+    public static void setup() throws CryptoException {
         uut = new KeyStoreHandlerImpl();
     }
 
