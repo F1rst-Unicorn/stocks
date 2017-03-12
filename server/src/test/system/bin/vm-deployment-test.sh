@@ -15,8 +15,6 @@ ansible-playbook \
 sudo virsh snapshot-delete dp-server initialised-running || true
 sudo virsh snapshot-create-as dp-server --name initialised-running
 
-sleep 10
-
 $STOCKS_ROOT/server/src/test/system/bin/fresh-installation-test.sh dp-server
 
 sudo virsh snapshot-revert dp-server clean
