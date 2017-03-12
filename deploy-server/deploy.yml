@@ -150,3 +150,9 @@
     shell: /usr/bin/mysql -u root --password='{{ remote_mysql_password }}' -e "INSERT INTO User (name) VALUES ('{{ stocks_user }}');
                 INSERT INTO User_device (name, belongs_to) VALUES ('{{ stocks_device }}', LAST_INSERT_ID());
                 INSERT INTO Ticket (ticket, belongs_device) VALUES ('0000', LAST_INSERT_ID())" stocks
+
+  - name: Wait for Tomcat startup
+    wait_for: 
+        host: 127.0.0.1
+        port: 10915
+        state: started
