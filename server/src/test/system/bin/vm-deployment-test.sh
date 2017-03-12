@@ -10,13 +10,10 @@ sleep 1
 
 ansible-playbook $STOCKS_ROOT/deploy-server/install.yml
 ansible-playbook \
-        -e "stocks_user=Jack stocks_device=Device"\
         $STOCKS_ROOT/deploy-server/deploy.yml
 
 sudo virsh snapshot-delete dp-server initialised-running || true
 sudo virsh snapshot-create-as dp-server --name initialised-running
-
-sleep 10
 
 $STOCKS_ROOT/server/src/test/system/bin/fresh-installation-test.sh dp-server
 
