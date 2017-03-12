@@ -1,5 +1,6 @@
 package de.njsm.stocks.client.init;
 
+import de.njsm.stocks.client.Main;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.CryptoException;
 import org.apache.commons.io.input.ReaderInputStream;
@@ -22,8 +23,6 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class KeyStoreHandlerImpl implements KeystoreHandler {
@@ -161,9 +160,8 @@ public class KeyStoreHandlerImpl implements KeystoreHandler {
     }
 
     private void startKeyGeneration() {
-        ExecutorService threadPool = Executors.newFixedThreadPool(1);
         AsyncKeyGenerator task = new AsyncKeyGenerator(keyAlgName, keySize);
-        keyPairResult = threadPool.submit(task);
+        keyPairResult = Main.threadPool.submit(task);
     }
 
     private String convertCsrToString(PKCS10CertificationRequest csr) throws IOException {

@@ -3,6 +3,7 @@
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 
 set -e
+set -x
 
 if [[ -z $CI_SERVER ]] ; then
     SERVER=dp-client-server
@@ -27,6 +28,7 @@ echo -e "$SERVER\n\n\n\nJack\nDevice\n1\n1\n\
 $FINGERPRINT\n\
 0000\nrefresh\nuser\ndev\nfood\nloc\nquit\n" \
         | java -jar -Duser.stocks.dir=$STOCKS_ROOT/client/src/test/system/tmp \
+        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9999 \
         $STOCKS_ROOT/client/target/client-*.jar
 
 rm -rf $STOCKS_ROOT/client/src/test/system/tmp
