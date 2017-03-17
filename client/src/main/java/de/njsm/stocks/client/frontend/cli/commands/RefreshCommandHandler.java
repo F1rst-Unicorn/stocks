@@ -3,19 +3,23 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.data.*;
 import de.njsm.stocks.client.network.server.ServerManager;
+import de.njsm.stocks.client.storage.DatabaseException;
 import de.njsm.stocks.client.storage.DatabaseManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.logging.Level;
+import java.util.Arrays;
+import java.util.List;
 
 public class RefreshCommandHandler extends CommandHandler {
 
-    protected boolean verbose;
+    private static final Logger LOG = LogManager.getLogger(RefreshCommandHandler.class);
+
+
+    private boolean verbose;
 
     public RefreshCommandHandler(Configuration c) {
-        this.c = c;
-        command = "refresh";
-        description = "Refresh the stocks system from the server";
-        verbose = true;
+        this(c, true);
     }
 
     public RefreshCommandHandler(Configuration c, boolean verbose) {
@@ -31,39 +35,50 @@ public class RefreshCommandHandler extends CommandHandler {
         if (word.equals("help")) {
             printHelp();
         } else {
-            if (command.hasArg('f')) {
-                c.getDatabaseManager().resetUpdates();
-            }
-            refresh();
+            boolean fullUpdate = command.hasArg('f');
+            refresh(fullUpdate);
         }
     }
 
     public void refresh() {
-        ServerManager sm = c.getServerManager();
-        DatabaseManager dm = c.getDatabaseManager();
+        refresh(false);
+    }
 
-        Update[] serverUpdates = sm.getUpdates();
-        Update[] localUpdates = dm.getUpdates();
+    public void refresh(boolean resetUpdates) {
+        try {
+            ServerManager sm = c.getServerManager();
+            DatabaseManager dm = c.getDatabaseManager();
 
-        boolean upToDate = true;
-
-        for (Update u : serverUpdates){
-            Update localUpdate = getLocalUpdate(localUpdates, u.table);
-            if (localUpdate != null &&
-                    u.lastUpdate.after(localUpdate.lastUpdate)) {
-                refreshTable(u.table);
-                upToDate = false;
+            if (resetUpdates) {
+                dm.resetUpdates();
             }
-        }
 
-        if (upToDate) {
-            println("Already up to date");
-        } else {
-            dm.writeUpdates(serverUpdates);
+            Update[] serverUpdates = sm.getUpdates();
+            List<Update> localUpdates = dm.getUpdates();
+
+            boolean upToDate = true;
+
+            for (Update u : serverUpdates) {
+                Update localUpdate = getLocalUpdate(localUpdates, u.table);
+                if (localUpdate != null &&
+                        u.lastUpdate.after(localUpdate.lastUpdate)) {
+                    refreshTable(u.table);
+                    upToDate = false;
+                }
+            }
+
+            if (upToDate) {
+                println("Already up to date");
+            } else {
+                dm.writeUpdates(Arrays.asList(serverUpdates));
+            }
+        } catch (DatabaseException e) {
+            LOG.error("Error during database interaction", e);
+            println("Refreshing not possible");
         }
     }
 
-    private Update getLocalUpdate(Update[] localUpdates, String table) {
+    private Update getLocalUpdate(List<Update> localUpdates, String table) {
         for (Update u : localUpdates) {
             if (u.table.equals(table)) {
                 return u;
@@ -144,16 +159,6 @@ public class RefreshCommandHandler extends CommandHandler {
                 serverFood,
                 serverItems);
     }
-
-    public boolean isVerbose() {
-        return verbose;
-    }
-
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
-    }
-
-
 
     private void println(String message) {
         if (verbose) {

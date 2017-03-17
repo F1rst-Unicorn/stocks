@@ -151,5 +151,18 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <user.stocks.dir>${basedir}/src/test/resources</user.stocks.dir>
+                <sql.schema.path>${basedir}/../deploy-client/config/schema.sql</sql.schema.path>
+            </properties>
+        </profile>
+    </profiles>
+
 
 </project>

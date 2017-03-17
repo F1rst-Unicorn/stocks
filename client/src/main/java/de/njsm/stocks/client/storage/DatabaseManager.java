@@ -1,27 +1,32 @@
 package de.njsm.stocks.client.storage;
 
+import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.data.*;
 import de.njsm.stocks.client.data.view.FoodView;
-import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.SelectException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseManager {
 
-    public DatabaseManager() {
+    private static final Logger LOG = LogManager.getLogger(DatabaseManager.class);
 
+    public DatabaseManager() {
+        LOG.info("DB is at " + Configuration.DB_PATH);
     }
 
-    protected Connection getConnection() throws SQLException {
+    private Connection getConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
     }
 
-    public Update[] getUpdates() {
-        try {
-            Connection c = getConnection();
+    public List<Update> getUpdates() throws DatabaseException {
+        LOG.info("Getting updates");
+        try (Connection c = getConnection()) {
             String sql = "SELECT * FROM Updates";
             PreparedStatement s = c.prepareStatement(sql);
 
@@ -34,18 +39,17 @@ public class DatabaseManager {
                 result.add(u);
             }
 
-            return result.toArray(new Update[result.size()]);
-
+            return result;
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get updates", e);
         }
-        return null;
     }
 
 
-    public void writeUpdates(Update[] u) {
-        try {
-            Connection c = getConnection();
+    public void writeUpdates(List<Update> u) throws DatabaseException {
+        LOG.info("Writing updates");
+        try (Connection c = getConnection()) {
+            c.setAutoCommit(false);
             String sql = "UPDATE Updates SET last_update=? WHERE table_name=?";
             PreparedStatement s = c.prepareStatement(sql);
 
@@ -55,21 +59,21 @@ public class DatabaseManager {
                 s.setString(2, item.table);
                 s.execute();
             }
-
+            c.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not write updates", e);
         }
     }
 
-    public void resetUpdates() {
-        try {
-            Connection c = getConnection();
+    public void resetUpdates() throws DatabaseException {
+        LOG.info("Resetting updates");
+        try (Connection c = getConnection()) {
             String sql = "UPDATE Updates SET last_update=0";
             PreparedStatement s = c.prepareStatement(sql);
             s.execute();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not reset updates", e);
         }
     }
 
@@ -303,25 +307,6 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public FoodView[] getItems() {
-        try {
-            Connection c = getConnection();
-
-            String queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                    "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                    "ORDER BY f.ID ASC, i.eat_by ASC";
-
-            PreparedStatement sqlQuery = c.prepareStatement(queryString);
-            ResultSet rs = sqlQuery.executeQuery();
-            ArrayList<FoodView> result = getFoodView(rs);
-
-            return result.toArray(new FoodView[result.size()]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new FoodView[0];
-        }
     }
 
     public FoodItem[] getItems(int foodId) {
