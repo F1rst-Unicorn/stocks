@@ -34,6 +34,12 @@ public class DatabaseHelper {
                     "(4, 'Food', '1970-01-01 01:00:00.000')," +
                     "(5, 'Food_item', '1970-01-01 01:00:00.000')",
 
+            "INSERT INTO User (`ID`, `name`) VALUES " +
+                    "(1, 'John'), " +
+                    "(2, 'Jack'), " +
+                    "(3, 'Juliette'), " +
+                    "(4, 'Jason'), " +
+                    "(5, 'Justin')"
     };
 
     void setupDatabase() throws SQLException, IOException {
@@ -51,7 +57,9 @@ public class DatabaseHelper {
         (new File(Configuration.DB_PATH)).delete();
     }
 
-    private void createFile() throws SQLException {
+    private void createFile() throws SQLException, IOException {
+        File dbFile = new File(Configuration.DB_PATH);
+        dbFile.getParentFile().mkdirs();
         dbConnection = DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
     }
 
