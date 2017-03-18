@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.data.view.UserDeviceView;
+import de.njsm.stocks.common.data.view.UserDeviceView;
 import de.njsm.stocks.client.frontend.cli.InputReader;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.SelectException;
@@ -39,20 +39,20 @@ public class DeviceCommandHandler extends CommandHandler {
         m.printHelp();
     }
 
-    public static int selectDevice(UserDeviceView[] d, String name) throws SelectException {
+    public static int selectDevice(List<UserDeviceView> d, String name) throws SelectException {
         InputReader scanner = new EnhancedInputReader(System.in);
         int result;
 
-        if (d.length == 1) {
-            result = d[0].id;
-        } else if (d.length == 0) {
+        if (d.size() == 1) {
+            result = d.get(0).id;
+        } else if (d.size() == 0) {
             throw new SelectException("No such device found: " + name);
         } else {
             System.out.println("Several devices found");
             for (UserDeviceView dev : d) {
                 System.out.println("\t" + dev.id + ": " + dev.user + "'s " + dev.name);
             }
-            result = scanner.nextInt("Choose one ", d[0].id);
+            result = scanner.nextInt("Choose one ", d.get(0).id);
         }
         return result;
     }

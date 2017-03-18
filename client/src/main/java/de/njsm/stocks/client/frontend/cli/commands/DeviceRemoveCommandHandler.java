@@ -1,9 +1,12 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
+import de.njsm.stocks.client.storage.DatabaseException;
 import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.data.view.UserDeviceView;
+import de.njsm.stocks.common.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.SelectException;
+
+import java.util.List;
 
 public class DeviceRemoveCommandHandler extends CommandHandler {
 
@@ -29,7 +32,7 @@ public class DeviceRemoveCommandHandler extends CommandHandler {
 
     public void removeDevice(String name) {
         try {
-            UserDeviceView[] devices = c.getDatabaseManager().getDevices(name);
+            List<UserDeviceView> devices = c.getDatabaseManager().getDevices(name);
             int id = DeviceCommandHandler.selectDevice(devices, name);
 
             for (UserDeviceView d : devices) {
@@ -41,7 +44,8 @@ public class DeviceRemoveCommandHandler extends CommandHandler {
                     (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
-        } catch (SelectException e) {
+        } catch (SelectException |
+                DatabaseException e) {
             System.out.println(e.getMessage());
         }
     }

@@ -3,8 +3,9 @@ package de.njsm.stocks.client.storage;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.SelectException;
 import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.client.data.view.FoodView;
-import de.njsm.stocks.client.data.view.UserDeviceView;
+import de.njsm.stocks.common.data.view.FoodView;
+import de.njsm.stocks.common.data.view.UserDeviceView;
+import de.njsm.stocks.common.data.view.UserDeviceViewFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -145,64 +146,64 @@ public class DatabaseManager {
         }
     }
 
-    public void writeDevices(UserDevice[] u) {
+    public void writeDevices(List<UserDevice> u) throws DatabaseException {
+        LOG.info("Writing devices");
+        String insertDevices = "INSERT INTO User_device (`ID`, name, belongs_to) VALUES (?,?,?)";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-
-            (new DatabaseOperator(c)).clearTable("User_device");
-            String insertDevices = "INSERT INTO User_device (`ID`, name, belongs_to) VALUES (?,?,?)";
-
+            c = getConnectionWithoutAutoCommit();
+            clearTable(c, "User_device");
             PreparedStatement insertStmt = c.prepareStatement(insertDevices);
 
             for (UserDevice dev : u) {
-                insertStmt.setInt(1, dev.id);
-                insertStmt.setString(2, dev.name);
-                insertStmt.setInt(3, dev.userId);
+                dev.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
-
             c.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            rollback(c);
+            throw new DatabaseException("Could not write devices", e);
+        } finally {
+            close(c);
         }
     }
 
-    public UserDeviceView[] getDevices() {
-        try {
-            Connection c = getConnection();
-            String queryDevices = "SELECT d.id, d.name, u.name as belongs_to " +
-                    "FROM User_device d, User u " +
-                    "WHERE d.belongs_to=u.ID";
+    public List<UserDeviceView> getDevices() throws DatabaseException {
+        LOG.info("Getting all devices");
+        String queryDevices = UserDeviceViewFactory.f.getQuery();
+        Connection c = null;
 
+        try {
+            c = getConnection();
             PreparedStatement p = c.prepareStatement(queryDevices);
-
             ResultSet rs = p.executeQuery();
-            ArrayList<UserDeviceView> result = getDeviceResults(rs);
-            return result.toArray(new UserDeviceView[result.size()]);
-
+            return UserDeviceViewFactory.f.getViewList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get all devices", e);
+        } finally {
+            close(c);
         }
-        return null;
     }
 
-    public UserDeviceView[] getDevices(String name) {
-        try {
-            Connection c = getConnection();
-            String queryDevices = "SELECT * FROM User_device WHERE name=?";
+    public List<UserDeviceView> getDevices(String name) throws DatabaseException {
+        LOG.info("Getting devices for " + name);
+        String queryDevices = "SELECT d.id, d.name, u.name as belongs_to " +
+                "FROM User_device d, User u " +
+                "WHERE d.belongs_to=u.ID AND d.name=?";
+        Connection c = null;
 
+        try {
+            c = getConnection();
             PreparedStatement p = c.prepareStatement(queryDevices);
             p.setString(1, name);
-
             ResultSet rs = p.executeQuery();
-            ArrayList<UserDeviceView> result = getDeviceResults(rs);
-            return result.toArray(new UserDeviceView[result.size()]);
-
+            return UserDeviceViewFactory.f.getViewList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get devices", e);
+        } finally {
+            close(c);
         }
-        return null;
     }
 
     public Location[] getLocations() {

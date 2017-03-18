@@ -37,7 +37,16 @@ public class DatabaseHelper {
             "INSERT INTO User (`ID`, `name`) VALUES " +
                     "(1, 'John'), " +
                     "(2, 'Jack'), " +
-                    "(3, 'Juliette') "
+                    "(3, 'Juliette') ",
+
+            "INSERT INTO User_device (`ID`, `name`, `belongs_to`) VALUES " +
+                    "(1, 'Mobile', 1), " +
+                    "(2, 'Mobile', 2), " +
+                    "(3, 'Mobile', 3), " +
+                    "(4, 'Laptop', 1), " +
+                    "(5, 'Desktop-PC', 1), " +
+                    "(6, 'PC-Work', 2), " +
+                    "(7, 'Laptop', 3)"
     };
 
     void setupDatabase() throws SQLException, IOException {

@@ -127,8 +127,8 @@ public class RefreshCommandHandler extends CommandHandler {
         c.getDatabaseManager().writeUsers(serverUsers);
     }
 
-    public void refreshDevices() {
-        UserDevice[] serverDevices = c.getServerManager().getDevices();
+    public void refreshDevices() throws DatabaseException {
+        List<UserDevice> serverDevices = Arrays.asList(c.getServerManager().getDevices());
         c.getDatabaseManager().writeDevices(serverDevices);
     }
 

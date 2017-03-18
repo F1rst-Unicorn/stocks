@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.data.view;
+package de.njsm.stocks.common.data.view;
 
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;

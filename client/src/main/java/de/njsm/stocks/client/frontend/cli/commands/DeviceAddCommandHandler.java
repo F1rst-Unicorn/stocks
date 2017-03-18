@@ -2,10 +2,12 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
-import de.njsm.stocks.client.data.view.UserDeviceView;
+import de.njsm.stocks.common.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.SelectException;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.storage.DatabaseException;
+
+import java.util.List;
 
 public class DeviceAddCommandHandler extends CommandHandler {
 
@@ -57,13 +59,13 @@ public class DeviceAddCommandHandler extends CommandHandler {
                     ticket = c.getServerManager().addDevice(d);
                     (new RefreshCommandHandler(c, false)).refresh();
 
-                    UserDeviceView[] devices = c.getDatabaseManager().getDevices(d.name);
+                    List<UserDeviceView> devices = c.getDatabaseManager().getDevices(d.name);
 
                     System.out.println("Creation successful. The new device needs these parameters:");
                     System.out.println("\tUser name: " + username);
                     System.out.println("\tDevice name: " + name);
                     System.out.println("\tUser ID: " + userId);
-                    System.out.println("\tDevice ID: " + devices[devices.length-1].id);
+                    System.out.println("\tDevice ID: " + devices.get(devices.size()-1).id);
                     System.out.println("\tFingerprint: " + c.getFingerprint());
                     System.out.println("\tTicket: " + ticket.ticket);
                 } catch (RuntimeException e) {

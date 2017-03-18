@@ -1,9 +1,17 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.data.view.UserDeviceView;
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.storage.DatabaseException;
+import de.njsm.stocks.common.data.view.UserDeviceView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public class DeviceListCommandHandler extends CommandHandler {
+
+    private static final Logger LOG = LogManager.getLogger(DeviceListCommandHandler.class);
+
 
     public DeviceListCommandHandler(Configuration c) {
         this.c = c;
@@ -17,11 +25,15 @@ public class DeviceListCommandHandler extends CommandHandler {
     }
 
     public void listDevices() {
-        UserDeviceView[] devices = c.getDatabaseManager().getDevices();
-        System.out.println("Current devices: ");
+        try {
+            List<UserDeviceView> devices = c.getDatabaseManager().getDevices();
+            System.out.println("Current devices: ");
 
-        for (UserDeviceView dev : devices) {
-            System.out.println("\t" + dev.id + ": " + dev.user + "'s " + dev.name);
+            for (UserDeviceView dev : devices) {
+                System.out.println("\t" + dev.id + ": " + dev.user + "'s " + dev.name);
+            }
+        } catch (DatabaseException e) {
+            LOG.error("Could not list devices", e);
         }
     }
 

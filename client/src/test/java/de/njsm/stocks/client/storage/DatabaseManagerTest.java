@@ -2,6 +2,8 @@ package de.njsm.stocks.client.storage;
 
 import de.njsm.stocks.common.data.Update;
 import de.njsm.stocks.common.data.User;
+import de.njsm.stocks.common.data.UserDevice;
+import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.junit.*;
 import org.mockito.Mockito;
 
@@ -10,6 +12,9 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 
 public class DatabaseManagerTest {
 
@@ -42,11 +47,11 @@ public class DatabaseManagerTest {
         for (Update u : updates) {
             Assert.assertEquals("Wrong for " + u.table, new Date(0L), u.lastUpdate);
         }
-        Assert.assertTrue(updates.stream().anyMatch(u -> u.table.equals("Location")));
-        Assert.assertTrue(updates.stream().anyMatch(u -> u.table.equals("User")));
-        Assert.assertTrue(updates.stream().anyMatch(u -> u.table.equals("User_device")));
-        Assert.assertTrue(updates.stream().anyMatch(u -> u.table.equals("Food")));
-        Assert.assertTrue(updates.stream().anyMatch(u -> u.table.equals("Food_item")));
+        assertTrue(updates.stream().anyMatch(u -> u.table.equals("Location")));
+        assertTrue(updates.stream().anyMatch(u -> u.table.equals("User")));
+        assertTrue(updates.stream().anyMatch(u -> u.table.equals("User_device")));
+        assertTrue(updates.stream().anyMatch(u -> u.table.equals("Food")));
+        assertTrue(updates.stream().anyMatch(u -> u.table.equals("Food_item")));
     }
 
     @Test
@@ -62,7 +67,7 @@ public class DatabaseManagerTest {
         List<Update> output = uut.getUpdates();
         for (Update u : output) {
             if (u.table.equals(inputItem.table)) {
-                Assert.assertEquals(inputItem.lastUpdate, u.lastUpdate);
+                assertEquals(inputItem.lastUpdate, u.lastUpdate);
             }
         }
     }
@@ -74,7 +79,7 @@ public class DatabaseManagerTest {
 
         List<Update> updates = uut.getUpdates();
         for (Update u : updates) {
-            Assert.assertEquals(new Date(0L), u.lastUpdate);
+            assertEquals(new Date(0L), u.lastUpdate);
         }
     }
 
@@ -87,8 +92,7 @@ public class DatabaseManagerTest {
 
         List<User> output = uut.getUsers();
 
-        Assert.assertEquals(3, output.size());
-        Assert.assertTrue(output.stream().allMatch(u -> expectedOutput.contains(u)));
+        assertThat(output, is(expectedOutput));
     }
     
     @Test
@@ -97,8 +101,8 @@ public class DatabaseManagerTest {
         
         List<User> output = uut.getUsers(user.name);
         
-        Assert.assertEquals(1, output.size());
-        Assert.assertTrue(output.stream().anyMatch(u -> u.equals(user)));
+        assertEquals(1, output.size());
+        assertTrue(output.stream().anyMatch(u -> u.equals(user)));
     }
 
     @Test
@@ -110,8 +114,52 @@ public class DatabaseManagerTest {
         uut.writeUsers(input);
 
         List<User> output = uut.getUsers();
-        Assert.assertEquals(1, output.size());
-        Assert.assertTrue(output.stream().allMatch(u -> u.equals(inputItem)));
+        assertThat(output, is(input));
+    }
+
+    @Test
+    public void gettingDevicesWorks() throws DatabaseException {
+        List<UserDeviceView> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new UserDeviceView(1, "Mobile", "John"));
+        expectedOutput.add(new UserDeviceView(2, "Mobile", "Jack"));
+        expectedOutput.add(new UserDeviceView(3, "Mobile", "Juliette"));
+        expectedOutput.add(new UserDeviceView(4, "Laptop", "John"));
+        expectedOutput.add(new UserDeviceView(5, "Desktop-PC", "John"));
+        expectedOutput.add(new UserDeviceView(6, "PC-Work", "Jack"));
+        expectedOutput.add(new UserDeviceView(7, "Laptop", "Juliette"));
+
+        List<UserDeviceView> output = uut.getDevices();
+
+        assertThat(output, is(expectedOutput));
+    }
+
+    @Test
+    public void gettingFilteredDevicesWorks() throws DatabaseException {
+        List<UserDeviceView> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new UserDeviceView(1, "Mobile", "John"));
+        expectedOutput.add(new UserDeviceView(2, "Mobile", "Jack"));
+        expectedOutput.add(new UserDeviceView(3, "Mobile", "Juliette"));
+
+        List<UserDeviceView> output = uut.getDevices("Mobile");
+
+        assertThat(output, is(expectedOutput));
+    }
+
+    @Test
+    public void writingDevicesWorks() throws DatabaseException {
+        List<UserDevice> input = new LinkedList<>();
+        input.add(new UserDevice(1, "Mobile", 1));
+        input.add(new UserDevice(2, "Mobile", 2));
+        input.add(new UserDevice(3, "Mobile", 3));
+        List<UserDeviceView> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new UserDeviceView(1, "Mobile", "John"));
+        expectedOutput.add(new UserDeviceView(2, "Mobile", "Jack"));
+        expectedOutput.add(new UserDeviceView(3, "Mobile", "Juliette"));
+
+        uut.writeDevices(input);
+
+        List<UserDeviceView> result = uut.getDevices();
+        assertThat(result, is(expectedOutput));
     }
 
     @Test
