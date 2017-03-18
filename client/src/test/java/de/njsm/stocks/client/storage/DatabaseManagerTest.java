@@ -176,4 +176,19 @@ public class DatabaseManagerTest {
         Mockito.verify(c).rollback();
         Mockito.verifyNoMoreInteractions(c);
     }
+
+    @Test
+    public void noCloseOnNullConnection() {
+        DatabaseManager.close(null);
+    }
+
+    @Test
+    public void testClosing() throws SQLException {
+        Connection c = Mockito.mock(Connection.class);
+
+        DatabaseManager.close(c);
+
+        Mockito.verify(c).close();
+        Mockito.verifyNoMoreInteractions(c);
+    }
 }

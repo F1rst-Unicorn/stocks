@@ -18,7 +18,6 @@ public class DatabaseManager {
     private static final Logger LOG = LogManager.getLogger(DatabaseManager.class);
 
     public DatabaseManager() {
-
     }
 
     private Connection getConnection() throws SQLException {
@@ -255,7 +254,7 @@ public class DatabaseManager {
         try {
             Connection c = getConnection();
             c.setAutoCommit(false);
-            (new DatabaseOperator(c)).clearTable("Location");
+            clearTable(c, "Location");
             String insertLocations = "INSERT INTO Location (`ID`, name) VALUES (?,?)";
 
             PreparedStatement insertStmt = c.prepareStatement(insertLocations);
@@ -274,9 +273,8 @@ public class DatabaseManager {
 
     public void writeFood(Food[] f) {
         try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-            (new DatabaseOperator(c)).clearTable("Food");
+            Connection c = getConnectionWithoutAutoCommit();
+            clearTable(c, "Food");
             String insertFood = "INSERT INTO Food (`ID`, name) VALUES (?,?)";
 
             PreparedStatement insertStmt = c.prepareStatement(insertFood);
@@ -400,22 +398,15 @@ public class DatabaseManager {
 
     public void writeFoodItems(FoodItem[] f) {
         try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-            (new DatabaseOperator(c)).clearTable("Food_item");
-            String insertFood = "INSERT INTO Food_item " +
-                    "(`ID`, of_type, stored_in, registers, buys, eat_by) VALUES (?,?,?,?,?,?)";
+            Connection c = getConnectionWithoutAutoCommit();
+            clearTable(c, "Food_item");
+            String insertItem = "INSERT INTO Food_item " +
+                    "(`ID`, eat_by, of_type, stored_in, registers, buys) VALUES (?,?,?,?,?,?)";
 
-            PreparedStatement insertStmt = c.prepareStatement(insertFood);
+            PreparedStatement insertStmt = c.prepareStatement(insertItem);
 
             for (FoodItem food : f) {
-                java.sql.Timestamp sqlDate = new java.sql.Timestamp(food.eatByDate.getTime());
-                insertStmt.setInt(1, food.id);
-                insertStmt.setInt(2, food.ofType);
-                insertStmt.setInt(3, food.storedIn);
-                insertStmt.setInt(4, food.registers);
-                insertStmt.setInt(5, food.buys);
-                insertStmt.setTimestamp(6, sqlDate);
+                food.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
 
@@ -461,62 +452,48 @@ public class DatabaseManager {
                          Food[] foods,
                          FoodItem[] items) {
         try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-            DatabaseOperator op = new DatabaseOperator(c);
+            Connection c = getConnectionWithoutAutoCommit();
 
             String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
             String insertDevice = "INSERT INTO User_device (`ID`, name, belongs_to) VALUES (?,?,?)";
             String insertLocation = "INSERT INTO Location (`ID`, name) VALUES (?,?)";
             String insertFood = "INSERT INTO User (`ID`, name) VALUES (?,?)";
-            String insertItem = "INSERT INTO Food_item " +
-                    "(`ID`, of_type, stored_in, registers, buys, eat_by) VALUES (?,?,?,?,?,?)";
+            String insertItem = "INSERT INTO Food_item (`ID`, eat_by, of_type, stored_in, registers, buys) VALUES (?,?,?,?,?,?)";
 
             PreparedStatement insertStmt = c.prepareStatement(insertUser);
 
-            op.clearTable("User");
-            op.clearTable("User_device");
-            op.clearTable("Location");
-            op.clearTable("Food");
-            op.clearTable("FoodItem");
+            clearTable(c, "User");
+            clearTable(c, "User_device");
+            clearTable(c, "Location");
+            clearTable(c, "Food");
+            clearTable(c, "FoodItem");
 
             for (User user : users) {
-                insertStmt.setInt(1, user.id);
-                insertStmt.setString(2, user.name);
+                user.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
 
             insertStmt = c.prepareStatement(insertDevice);
             for (UserDevice dev : devices) {
-                insertStmt.setInt(1, dev.id);
-                insertStmt.setString(2, dev.name);
-                insertStmt.setInt(3, dev.userId);
+                dev.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
 
             insertStmt = c.prepareStatement(insertLocation);
             for (Location loc : locations) {
-                insertStmt.setInt(1, loc.id);
-                insertStmt.setString(2, loc.name);
+                loc.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
 
             insertStmt = c.prepareStatement(insertFood);
             for (Food food : foods) {
-                insertStmt.setInt(1, food.id);
-                insertStmt.setString(2, food.name);
+                food.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
 
             insertStmt = c.prepareStatement(insertItem);
             for (FoodItem food : items) {
-                java.sql.Timestamp sqlDate = new java.sql.Timestamp(food.eatByDate.getTime());
-                insertStmt.setInt(1, food.id);
-                insertStmt.setInt(2, food.ofType);
-                insertStmt.setInt(3, food.storedIn);
-                insertStmt.setInt(4, food.registers);
-                insertStmt.setInt(5, food.buys);
-                insertStmt.setTimestamp(6, sqlDate);
+                food.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
 
@@ -526,7 +503,7 @@ public class DatabaseManager {
         }
     }
 
-    protected ArrayList<FoodView> getFoodView(ResultSet rs) throws SQLException {
+    private ArrayList<FoodView> getFoodView(ResultSet rs) throws SQLException {
         ArrayList<FoodView> result = new ArrayList<>();
         int lastId = -1;
         FoodView f = null;
@@ -578,18 +555,6 @@ public class DatabaseManager {
         return result;
     }
 
-    private ArrayList<UserDeviceView> getDeviceResults(ResultSet rs) throws SQLException {
-        ArrayList<UserDeviceView> result = new ArrayList<>();
-        while (rs.next()) {
-            UserDeviceView d = new UserDeviceView();
-            d.name = rs.getString("name");
-            d.id = rs.getInt("ID");
-            d.user = rs.getString("belongs_to");
-            result.add(d);
-        }
-        return result;
-    }
-
     private static void clearTable(Connection c, String name) throws SQLException {
         LOG.info("Clearing table " + name);
         String sqlString = "DELETE FROM " + name;
@@ -618,5 +583,4 @@ public class DatabaseManager {
             }
         }
     }
-
 }
