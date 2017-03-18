@@ -24,25 +24,35 @@ public class DatabaseManager {
         return DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
     }
 
+    private Connection getConnectionWithoutAutoCommit() throws SQLException {
+        Connection result = getConnection();
+        result.setAutoCommit(false);
+        return result;
+    }
+
     public List<Update> getUpdates() throws DatabaseException {
         LOG.info("Getting updates");
-        try (Connection c = getConnection()) {
-            String sql = UpdateFactory.f.getQuery();
-            PreparedStatement s = c.prepareStatement(sql);
+        String sql = UpdateFactory.f.getQuery();
+        Connection c = null;
 
+        try {
+            c = getConnection();
+            PreparedStatement s = c.prepareStatement(sql);
             return UpdateFactory.f.createUpdateList(s.executeQuery());
         } catch (SQLException e) {
             throw new DatabaseException("Could not get updates", e);
+        } finally {
+            close(c);
         }
     }
 
     public void writeUpdates(List<Update> u) throws DatabaseException {
         LOG.info("Writing updates");
+        String sql = "UPDATE Updates SET last_update=? WHERE table_name=?";
         Connection c = null;
+
         try {
-            c = getConnection();
-            c.setAutoCommit(false);
-            String sql = "UPDATE Updates SET last_update=? WHERE table_name=?";
+            c = getConnectionWithoutAutoCommit();
             PreparedStatement s = c.prepareStatement(sql);
 
             for (Update item : u) {
@@ -55,68 +65,83 @@ public class DatabaseManager {
         } catch (SQLException e) {
             rollback(c);
             throw new DatabaseException("Could not write updates", e);
+        } finally {
+            close(c);
         }
     }
 
     public void resetUpdates() throws DatabaseException {
         LOG.info("Resetting updates");
-        try (Connection c = getConnection()) {
-            String sql = "UPDATE Updates SET last_update=0";
+        String sql = "UPDATE Updates SET last_update=0";
+        Connection c = null;
+
+        try {
+            c = getConnection();
             PreparedStatement s = c.prepareStatement(sql);
             s.execute();
-
         } catch (SQLException e) {
             throw new DatabaseException("Could not reset updates", e);
+        } finally {
+            close(c);
         }
     }
 
     public List<User> getUsers() throws DatabaseException {
         LOG.info("Getting all users");
-        try (Connection c = getConnection()){
-            String queryUsers = UserFactory.f.getQuery();
+        String queryUsers = UserFactory.f.getQuery();
+        Connection c = null;
 
+        try {
+            c = getConnection();
             PreparedStatement p = c.prepareStatement(queryUsers);
-
             ResultSet rs = p.executeQuery();
             return UserFactory.f.createUserList(rs);
         } catch (SQLException e) {
             throw new DatabaseException("Could not get all users", e);
+        } finally {
+            close(c);
         }
     }
 
     public List<User> getUsers(String name) throws DatabaseException {
         LOG.info("Getting users matching name '" + name + "'");
-        try (Connection c = getConnection()){
-            String queryUsers = "SELECT * FROM User WHERE name=?";
+        String queryUsers = "SELECT * FROM User WHERE name=?";
+        Connection c = null;
 
+        try {
+            c = getConnection();
             PreparedStatement p = c.prepareStatement(queryUsers);
             p.setString(1, name);
-
             ResultSet rs = p.executeQuery();
             return UserFactory.f.createUserList(rs);
         } catch (SQLException e) {
             throw new DatabaseException("Could not get filtered users", e);
+        } finally {
+            close(c);
         }
     }
 
     public void writeUsers(List<User> u) throws DatabaseException {
         LOG.info("Writing users");
-        try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
+        String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
 
+        Connection c = null;
+
+        try {
+            c = getConnectionWithoutAutoCommit();
             clearTable(c, "User");
-            String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
             PreparedStatement insertStmt = c.prepareStatement(insertUser);
 
             for (User user : u) {
                 user.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
-
             c.commit();
         } catch (SQLException e) {
+            rollback(c);
             throw new DatabaseException("Could not write users", e);
+        } finally {
+            close(c);
         }
     }
 
@@ -579,6 +604,16 @@ public class DatabaseManager {
                 LOG.info("Successful rollback");
             } catch (SQLException e) {
                 LOG.error("Rollback failed", e);
+            }
+        }
+    }
+
+    static void close(Connection con) {
+        if (con != null) {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                LOG.error("Error closing connection", e);
             }
         }
     }
