@@ -1,10 +1,10 @@
 package de.njsm.stocks.client.storage;
 
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.data.*;
+import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.client.data.view.FoodView;
 import de.njsm.stocks.client.data.view.UserDeviceView;
-import de.njsm.stocks.client.exceptions.SelectException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,7 +48,9 @@ public class DatabaseManager {
 
     public void writeUpdates(List<Update> u) throws DatabaseException {
         LOG.info("Writing updates");
-        try (Connection c = getConnection()) {
+        Connection c = null;
+        try {
+            c = getConnection();
             c.setAutoCommit(false);
             String sql = "UPDATE Updates SET last_update=? WHERE table_name=?";
             PreparedStatement s = c.prepareStatement(sql);
@@ -61,6 +63,7 @@ public class DatabaseManager {
             }
             c.commit();
         } catch (SQLException e) {
+            rollback(c);
             throw new DatabaseException("Could not write updates", e);
         }
     }
@@ -77,7 +80,8 @@ public class DatabaseManager {
         }
     }
 
-    public User[] getUsers() {
+    public List<User> getUsers() throws DatabaseException {
+        LOG.info("Getting all users");
         try {
             Connection c = getConnection();
             String queryUsers = "SELECT * FROM User";
@@ -85,39 +89,36 @@ public class DatabaseManager {
             PreparedStatement p = c.prepareStatement(queryUsers);
 
             ResultSet rs = p.executeQuery();
-            ArrayList<User> result = getUserResult(rs);
-            return result.toArray(new User[result.size()]);
+            return getUserResult(rs);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get all users", e);
         }
-        return null;
     }
 
-    public User[] getUsers(String name) {
-        try {
-            Connection c = getConnection();
+    public List<User> getUsers(String name) throws DatabaseException {
+        LOG.info("Getting users matching name '" + name + "'");
+        try (Connection c = getConnection()){
             String queryUsers = "SELECT * FROM User WHERE name=?";
 
             PreparedStatement p = c.prepareStatement(queryUsers);
             p.setString(1, name);
 
             ResultSet rs = p.executeQuery();
-            ArrayList<User> result = getUserResult(rs);
-            return result.toArray(new User[result.size()]);
+            return getUserResult(rs);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get filtered users", e);
         }
-        return null;
     }
 
-    public void writeUsers(User[] u) {
+    public void writeUsers(List<User> u) throws DatabaseException {
+        LOG.info("Writing users");
         try {
             Connection c = getConnection();
             c.setAutoCommit(false);
 
-            (new DatabaseOperator(c)).clearTable("User");
+            clearTable(c, "User");
             String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
             PreparedStatement insertStmt = c.prepareStatement(insertUser);
 
@@ -129,7 +130,7 @@ public class DatabaseManager {
 
             c.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not write users", e);
         }
     }
 
@@ -543,7 +544,7 @@ public class DatabaseManager {
         return result;
     }
 
-    protected ArrayList<User> getUserResult(ResultSet rs) throws SQLException {
+    private List<User> getUserResult(ResultSet rs) throws SQLException {
         ArrayList<User> result = new ArrayList<>();
         while (rs.next()) {
             User u = new User();
@@ -554,7 +555,7 @@ public class DatabaseManager {
         return result;
     }
 
-    protected ArrayList<Location> getLocationResults(ResultSet rs) throws SQLException {
+    private ArrayList<Location> getLocationResults(ResultSet rs) throws SQLException {
         ArrayList<Location> result = new ArrayList<>();
         while (rs.next()) {
             Location l = new Location();
@@ -565,7 +566,7 @@ public class DatabaseManager {
         return result;
     }
 
-    protected ArrayList<Food> getFoodResults(ResultSet rs) throws SQLException {
+    private ArrayList<Food> getFoodResults(ResultSet rs) throws SQLException {
         ArrayList<Food> result = new ArrayList<>();
         while (rs.next()) {
             Food f = new Food();
@@ -576,7 +577,7 @@ public class DatabaseManager {
         return result;
     }
 
-    protected ArrayList<UserDeviceView> getDeviceResults(ResultSet rs) throws SQLException {
+    private ArrayList<UserDeviceView> getDeviceResults(ResultSet rs) throws SQLException {
         ArrayList<UserDeviceView> result = new ArrayList<>();
         while (rs.next()) {
             UserDeviceView d = new UserDeviceView();
@@ -588,5 +589,23 @@ public class DatabaseManager {
         return result;
     }
 
+    private static void clearTable(Connection c, String name) throws SQLException {
+        LOG.info("Clearing table " + name);
+        String sqlString = "DELETE FROM " + name;
+        PreparedStatement s = c.prepareStatement(sqlString);
+        s.execute();
+    }
+
+    static void rollback(Connection c) {
+        if (c != null) {
+            try {
+                LOG.warn("Rolling back transaction");
+                c.rollback();
+                LOG.info("Successful rollback");
+            } catch (SQLException e) {
+                LOG.error("Rollback failed", e);
+            }
+        }
+    }
 
 }

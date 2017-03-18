@@ -1,7 +1,7 @@
 package de.njsm.stocks.client.init;
 
 import com.squareup.okhttp.OkHttpClient;
-import de.njsm.stocks.client.data.Ticket;
+import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.exceptions.NetworkException;

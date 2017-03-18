@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.data;
+package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -8,9 +8,17 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemovable {
+public class Food extends Data implements SqlAddable, SqlRenamable, SqlRemovable {
     public int id;
     public String name;
+
+    public Food(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Food() {
+    }
 
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
@@ -19,7 +27,7 @@ public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemov
 
     @Override
     public String getAddStmt() {
-        return "INSERT INTO Location (name) VALUES (?)";
+        return "INSERT INTO User (name) VALUES (?)";
     }
 
     @Override
@@ -30,7 +38,7 @@ public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemov
 
     @Override
     public String getRenameStmt() {
-        return "UPDATE Location SET name=? WHERE ID=?";
+        return "UPDATE Food SET name=? WHERE ID=?";
     }
 
     @Override
@@ -40,11 +48,29 @@ public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemov
 
     @Override
     public String getRemoveStmt() {
-        return "DELETE FROM Location WHERE ID=?";
+        return "DELETE FROM Food WHERE ID=?";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Food food = (Food) o;
+
+        if (id != food.id) return false;
+        return name.equals(food.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + name.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
-        return "Location (" + id + ", " + name + ")";
+        return "Food (" + id + ", " + name + ")";
     }
 }

@@ -1,7 +1,7 @@
 package de.njsm.stocks.client.data.view;
 
-import de.njsm.stocks.client.data.Food;
-import de.njsm.stocks.client.data.FoodItem;
+import de.njsm.stocks.common.data.Food;
+import de.njsm.stocks.common.data.FoodItem;
 
 import java.util.LinkedList;
 import java.util.List;

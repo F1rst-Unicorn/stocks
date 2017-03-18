@@ -1,7 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.data.User;
+import de.njsm.stocks.common.data.User;
 import de.njsm.stocks.client.exceptions.SelectException;
 import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
 import de.njsm.stocks.client.frontend.cli.InputReader;
@@ -39,19 +39,19 @@ public class UserCommandHandler extends CommandHandler {
         m.printHelp();
     }
 
-    public static int selectUser(User[] users, String name) throws SelectException {
+    public static int selectUser(List<User> users, String name) throws SelectException {
         InputReader scanner = new EnhancedInputReader(System.in);
         int result;
-        if (users.length == 1) {
-            result = users[0].id;
-        } else if (users.length == 0) {
+        if (users.size() == 1) {
+            result = users.get(0).id;
+        } else if (users.size() == 0) {
             throw new SelectException("No such user found: " + name);
         } else {
             System.out.println("Several users found");
             for (User u : users) {
                 System.out.println("\t" + u.id + ": " + u.name);
             }
-            result = scanner.nextInt("Choose one ", users[0].id);
+            result = scanner.nextInt("Choose one ", users.get(0).id);
         }
         return result;
     }

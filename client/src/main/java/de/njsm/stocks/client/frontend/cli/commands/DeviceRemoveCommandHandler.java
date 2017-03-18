@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.data.UserDevice;
+import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.SelectException;

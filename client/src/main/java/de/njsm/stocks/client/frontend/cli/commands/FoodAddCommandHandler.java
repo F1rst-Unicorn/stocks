@@ -1,7 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.data.Food;
+import de.njsm.stocks.common.data.Food;
 
 public class FoodAddCommandHandler extends CommandHandler {
 

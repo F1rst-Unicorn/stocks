@@ -1,10 +1,10 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.data.*;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.storage.DatabaseException;
 import de.njsm.stocks.client.storage.DatabaseManager;
+import de.njsm.stocks.common.data.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -94,7 +94,7 @@ public class RefreshCommandHandler extends CommandHandler {
         System.out.println(help);
     }
 
-    public void refreshTable(String tableName) {
+    public void refreshTable(String tableName) throws DatabaseException {
         switch (tableName) {
             case "User":
                 println("Refreshing users");
@@ -122,8 +122,8 @@ public class RefreshCommandHandler extends CommandHandler {
         }
     }
 
-    public void refreshUsers() {
-        User[] serverUsers = c.getServerManager().getUsers();
+    public void refreshUsers() throws DatabaseException {
+        List<User> serverUsers = Arrays.asList(c.getServerManager().getUsers());
         c.getDatabaseManager().writeUsers(serverUsers);
     }
 

@@ -1,8 +1,11 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.data.User;
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.common.data.User;
 import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.storage.DatabaseException;
+
+import java.util.List;
 
 public class UserRemoveCommandHandler extends CommandHandler {
 
@@ -28,7 +31,7 @@ public class UserRemoveCommandHandler extends CommandHandler {
 
     public void removeUser(String name) {
         try {
-            User[] users = c.getDatabaseManager().getUsers(name);
+            List<User> users = c.getDatabaseManager().getUsers(name);
             int id = UserCommandHandler.selectUser(users, name);
 
             for (User u : users) {
@@ -37,7 +40,8 @@ public class UserRemoveCommandHandler extends CommandHandler {
                     (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
-        } catch (SelectException e) {
+        } catch (SelectException |
+                DatabaseException e) {
             System.out.println(e.getMessage());
         }
     }

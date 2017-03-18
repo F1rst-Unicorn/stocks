@@ -1,9 +1,9 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.data.Food;
-import de.njsm.stocks.client.data.FoodItem;
-import de.njsm.stocks.client.data.Location;
+import de.njsm.stocks.common.data.Food;
+import de.njsm.stocks.common.data.FoodItem;
+import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.client.exceptions.SelectException;
 
 import java.text.SimpleDateFormat;

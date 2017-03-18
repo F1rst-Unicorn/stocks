@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.data;
+package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -16,6 +16,18 @@ public class FoodItem extends Data implements SqlAddable, SqlRemovable {
     public int storedIn;
     public int registers;
     public int buys;
+
+    public FoodItem(int id, Date eatByDate, int ofType, int storedIn, int registers, int buys) {
+        this.id = id;
+        this.eatByDate = eatByDate;
+        this.ofType = ofType;
+        this.storedIn = storedIn;
+        this.registers = registers;
+        this.buys = buys;
+    }
+
+    public FoodItem() {
+    }
 
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
@@ -40,6 +52,32 @@ public class FoodItem extends Data implements SqlAddable, SqlRemovable {
     @Override
     public String getRemoveStmt() {
         return "DELETE FROM Food_item WHERE ID=?";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FoodItem foodItem = (FoodItem) o;
+
+        if (id != foodItem.id) return false;
+        if (ofType != foodItem.ofType) return false;
+        if (storedIn != foodItem.storedIn) return false;
+        if (registers != foodItem.registers) return false;
+        if (buys != foodItem.buys) return false;
+        return eatByDate.equals(foodItem.eatByDate);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + eatByDate.hashCode();
+        result = 31 * result + ofType;
+        result = 31 * result + storedIn;
+        result = 31 * result + registers;
+        result = 31 * result + buys;
+        return result;
     }
 
     @Override

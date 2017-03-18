@@ -1,12 +1,14 @@
 package de.njsm.stocks.client.network.server;
 
-import de.njsm.stocks.client.data.*;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.network.HttpClientFactory;
-import retrofit.*;
+import de.njsm.stocks.common.data.*;
+import retrofit.Call;
+import retrofit.JacksonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 import java.io.IOException;
-import java.util.logging.Level;
 
 public class ServerManager {
 

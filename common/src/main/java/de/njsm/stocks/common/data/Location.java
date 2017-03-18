@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.data;
+package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -8,9 +8,17 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class Food extends Data implements SqlAddable, SqlRenamable, SqlRemovable {
+public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemovable {
     public int id;
     public String name;
+
+    public Location(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Location() {
+    }
 
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
@@ -19,7 +27,7 @@ public class Food extends Data implements SqlAddable, SqlRenamable, SqlRemovable
 
     @Override
     public String getAddStmt() {
-        return "INSERT INTO User (name) VALUES (?)";
+        return "INSERT INTO Location (name) VALUES (?)";
     }
 
     @Override
@@ -30,7 +38,7 @@ public class Food extends Data implements SqlAddable, SqlRenamable, SqlRemovable
 
     @Override
     public String getRenameStmt() {
-        return "UPDATE Food SET name=? WHERE ID=?";
+        return "UPDATE Location SET name=? WHERE ID=?";
     }
 
     @Override
@@ -40,11 +48,29 @@ public class Food extends Data implements SqlAddable, SqlRenamable, SqlRemovable
 
     @Override
     public String getRemoveStmt() {
-        return "DELETE FROM Food WHERE ID=?";
+        return "DELETE FROM Location WHERE ID=?";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Location location = (Location) o;
+
+        if (id != location.id) return false;
+        return name.equals(location.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + name.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
-        return "Food (" + id + ", " + name + ")";
+        return "Location (" + id + ", " + name + ")";
     }
 }

@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.data;
+package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -12,6 +12,15 @@ public class UserDevice extends Data implements SqlAddable, SqlRemovable{
     public int id;
     public String name;
     public int userId;
+
+    public UserDevice(int id, String name, int userId) {
+        this.id = id;
+        this.name = name;
+        this.userId = userId;
+    }
+
+    public UserDevice() {
+    }
 
     @Override
     public void fillAddStmt(PreparedStatement stmt) throws SQLException {
@@ -32,6 +41,26 @@ public class UserDevice extends Data implements SqlAddable, SqlRemovable{
     @Override
     public String getRemoveStmt() {
         return "DELETE FROM User_device WHERE ID=?";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserDevice that = (UserDevice) o;
+
+        if (id != that.id) return false;
+        if (userId != that.userId) return false;
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + userId;
+        return result;
     }
 
     @Override

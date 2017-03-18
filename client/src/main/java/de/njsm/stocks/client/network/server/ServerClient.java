@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.network.server;
 
-import de.njsm.stocks.client.data.*;
+import de.njsm.stocks.common.data.*;
 import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.GET;

@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.storage;
 
-import de.njsm.stocks.client.data.Update;
+import de.njsm.stocks.common.data.Update;
+import de.njsm.stocks.common.data.User;
 import org.junit.*;
 
 import java.util.Date;
@@ -34,9 +35,15 @@ public class DatabaseManagerTest {
 
         List<Update> updates = uut.getUpdates();
 
+        Assert.assertEquals(5, updates.size());
         for (Update u : updates) {
             Assert.assertEquals("Wrong for " + u.table, new Date(0L), u.lastUpdate);
         }
+        Assert.assertTrue(updates.stream().anyMatch(u -> u.table.equals("Location")));
+        Assert.assertTrue(updates.stream().anyMatch(u -> u.table.equals("User")));
+        Assert.assertTrue(updates.stream().anyMatch(u -> u.table.equals("User_device")));
+        Assert.assertTrue(updates.stream().anyMatch(u -> u.table.equals("Food")));
+        Assert.assertTrue(updates.stream().anyMatch(u -> u.table.equals("Food_item")));
     }
 
     @Test
@@ -66,5 +73,49 @@ public class DatabaseManagerTest {
         for (Update u : updates) {
             Assert.assertEquals(new Date(0L), u.lastUpdate);
         }
+    }
+
+    @Test
+    public void gettingAllUsersWorks() throws DatabaseException {
+
+        List<User> output = uut.getUsers();
+
+        Assert.assertEquals(5, output.size());
+        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals("John")));
+        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals("Jack")));
+        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals("Juliette")));
+        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals("Jason")));
+        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals("Justin")));
+    }
+    
+    @Test
+    public void gettingFilteredUsersWorks() throws DatabaseException {
+        String name = "John";
+        
+        List<User> output = uut.getUsers(name);
+        
+        Assert.assertEquals(1, output.size());
+        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals(name)));
+    }
+
+    @Test
+    public void writingUsersWorks() throws DatabaseException {
+        List<User> input = new LinkedList<>();
+        User inputItem = new User();
+        inputItem.name = "John";
+        inputItem.id = 2;
+        input.add(inputItem);
+
+        uut.writeUsers(input);
+
+        List<User> output = uut.getUsers();
+
+        Assert.assertEquals(1, output.size());
+        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals(inputItem.name)));
+    }
+
+    @Test
+    public void noRollbackOnNullConnection() {
+        DatabaseManager.rollback(null);
     }
 }

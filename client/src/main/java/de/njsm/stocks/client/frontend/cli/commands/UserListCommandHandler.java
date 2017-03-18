@@ -1,7 +1,10 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.data.User;
+import de.njsm.stocks.common.data.User;
+import de.njsm.stocks.client.storage.DatabaseException;
+
+import java.util.List;
 
 public class UserListCommandHandler extends CommandHandler {
 
@@ -17,11 +20,15 @@ public class UserListCommandHandler extends CommandHandler {
     }
 
     public void listUsers() {
-        User[] u = c.getDatabaseManager().getUsers();
-        System.out.println("Current users: ");
+        try {
+            List<User> u = c.getDatabaseManager().getUsers();
+            System.out.println("Current users: ");
 
-        for (User user : u) {
-            System.out.println("\t" + user.id + ": " + user.name);
+            for (User user : u) {
+                System.out.println("\t" + user.id + ": " + user.name);
+            }
+        } catch (DatabaseException e)  {
+            e.printStackTrace();
         }
     }
 

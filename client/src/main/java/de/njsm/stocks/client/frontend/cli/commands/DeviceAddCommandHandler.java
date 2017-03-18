@@ -1,10 +1,11 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.data.Ticket;
-import de.njsm.stocks.client.data.UserDevice;
+import de.njsm.stocks.common.data.Ticket;
+import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.client.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.SelectException;
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.storage.DatabaseException;
 
 public class DeviceAddCommandHandler extends CommandHandler {
 
@@ -71,7 +72,8 @@ public class DeviceAddCommandHandler extends CommandHandler {
             } else {
                 System.out.println("Aborted.");
             }
-        } catch (SelectException e) {
+        } catch (SelectException |
+                DatabaseException e) {
             System.out.println(e.getMessage());
         }
 

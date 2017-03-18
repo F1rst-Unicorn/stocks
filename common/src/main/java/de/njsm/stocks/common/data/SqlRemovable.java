@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.data;
+package de.njsm.stocks.common.data;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
