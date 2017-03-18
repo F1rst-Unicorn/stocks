@@ -39,6 +39,16 @@ public class FoodItem extends Data implements SqlAddable, SqlRemovable {
     }
 
     @Override
+    public void fillAddStmtWithId(PreparedStatement stmt) throws SQLException {
+        stmt.setInt(1, id);
+        stmt.setDate(2, new java.sql.Date(eatByDate.getTime()));
+        stmt.setInt(3, ofType);
+        stmt.setInt(4, storedIn);
+        stmt.setInt(5, registers);
+        stmt.setInt(6, buys);
+    }
+
+    @Override
     public String getAddStmt() {
         return "INSERT INTO Food_item (eat_by, of_type, stored_in, registers, buys) " +
                 "VALUES (?,?,?,?,?)";

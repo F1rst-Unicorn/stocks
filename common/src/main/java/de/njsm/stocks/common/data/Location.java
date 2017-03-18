@@ -26,6 +26,12 @@ public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemov
     }
 
     @Override
+    public void fillAddStmtWithId(PreparedStatement stmt) throws SQLException {
+        stmt.setInt(1, id);
+        stmt.setString(2, name);
+    }
+
+    @Override
     public String getAddStmt() {
         return "INSERT INTO Location (name) VALUES (?)";
     }

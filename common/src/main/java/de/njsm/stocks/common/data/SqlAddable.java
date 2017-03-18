@@ -7,5 +7,7 @@ public interface SqlAddable {
 
     void fillAddStmt(PreparedStatement stmt) throws SQLException;
 
+    void fillAddStmtWithId(PreparedStatement stmt) throws SQLException;
+
     String getAddStmt();
 }

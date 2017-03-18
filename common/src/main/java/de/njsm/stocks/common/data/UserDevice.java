@@ -29,6 +29,13 @@ public class UserDevice extends Data implements SqlAddable, SqlRemovable{
     }
 
     @Override
+    public void fillAddStmtWithId(PreparedStatement stmt) throws SQLException {
+        stmt.setInt(1, id);
+        stmt.setString(2, name);
+        stmt.setInt(3, userId);
+    }
+
+    @Override
     public String getAddStmt() {
         return "INSERT INTO User_device (name, belongs_to) VALUES (?,?)";
     }

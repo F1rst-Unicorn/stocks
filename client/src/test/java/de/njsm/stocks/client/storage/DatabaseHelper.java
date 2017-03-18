@@ -37,9 +37,7 @@ public class DatabaseHelper {
             "INSERT INTO User (`ID`, `name`) VALUES " +
                     "(1, 'John'), " +
                     "(2, 'Jack'), " +
-                    "(3, 'Juliette'), " +
-                    "(4, 'Jason'), " +
-                    "(5, 'Justin')"
+                    "(3, 'Juliette') "
     };
 
     void setupDatabase() throws SQLException, IOException {

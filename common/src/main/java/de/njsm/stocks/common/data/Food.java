@@ -26,6 +26,12 @@ public class Food extends Data implements SqlAddable, SqlRenamable, SqlRemovable
     }
 
     @Override
+    public void fillAddStmtWithId(PreparedStatement stmt) throws SQLException {
+        stmt.setInt(1, id);
+        stmt.setString(2, name);
+    }
+
+    @Override
     public String getAddStmt() {
         return "INSERT INTO User (name) VALUES (?)";
     }

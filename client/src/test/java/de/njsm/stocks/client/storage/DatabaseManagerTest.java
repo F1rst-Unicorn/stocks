@@ -3,7 +3,10 @@ package de.njsm.stocks.client.storage;
 import de.njsm.stocks.common.data.Update;
 import de.njsm.stocks.common.data.User;
 import org.junit.*;
+import org.mockito.Mockito;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,45 +80,52 @@ public class DatabaseManagerTest {
 
     @Test
     public void gettingAllUsersWorks() throws DatabaseException {
+        List<User> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new User(1, "John"));
+        expectedOutput.add(new User(2, "Jack"));
+        expectedOutput.add(new User(3, "Juliette"));
 
         List<User> output = uut.getUsers();
 
-        Assert.assertEquals(5, output.size());
-        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals("John")));
-        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals("Jack")));
-        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals("Juliette")));
-        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals("Jason")));
-        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals("Justin")));
+        Assert.assertEquals(3, output.size());
+        Assert.assertTrue(output.stream().allMatch(u -> expectedOutput.contains(u)));
     }
     
     @Test
     public void gettingFilteredUsersWorks() throws DatabaseException {
-        String name = "John";
+        User user = new User(1, "John");
         
-        List<User> output = uut.getUsers(name);
+        List<User> output = uut.getUsers(user.name);
         
         Assert.assertEquals(1, output.size());
-        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals(name)));
+        Assert.assertTrue(output.stream().anyMatch(u -> u.equals(user)));
     }
 
     @Test
     public void writingUsersWorks() throws DatabaseException {
         List<User> input = new LinkedList<>();
-        User inputItem = new User();
-        inputItem.name = "John";
-        inputItem.id = 2;
+        User inputItem = new User(2, "John");
         input.add(inputItem);
 
         uut.writeUsers(input);
 
         List<User> output = uut.getUsers();
-
         Assert.assertEquals(1, output.size());
-        Assert.assertTrue(output.stream().anyMatch(u -> u.name.equals(inputItem.name)));
+        Assert.assertTrue(output.stream().allMatch(u -> u.equals(inputItem)));
     }
 
     @Test
     public void noRollbackOnNullConnection() {
         DatabaseManager.rollback(null);
+    }
+
+    @Test
+    public void testRollback() throws SQLException {
+        Connection c = Mockito.mock(Connection.class);
+
+        DatabaseManager.rollback(c);
+
+        Mockito.verify(c).rollback();
+        Mockito.verifyNoMoreInteractions(c);
     }
 }

@@ -17,7 +17,7 @@ public class DatabaseManager {
     private static final Logger LOG = LogManager.getLogger(DatabaseManager.class);
 
     public DatabaseManager() {
-        LOG.info("DB is at " + Configuration.DB_PATH);
+
     }
 
     private Connection getConnection() throws SQLException {
@@ -27,24 +27,14 @@ public class DatabaseManager {
     public List<Update> getUpdates() throws DatabaseException {
         LOG.info("Getting updates");
         try (Connection c = getConnection()) {
-            String sql = "SELECT * FROM Updates";
+            String sql = UpdateFactory.f.getQuery();
             PreparedStatement s = c.prepareStatement(sql);
 
-            ArrayList<Update> result = new ArrayList<>(5);
-            ResultSet rs = s.executeQuery();
-            while (rs.next()) {
-                Update u = new Update();
-                u.table = rs.getString("table_name");
-                u.lastUpdate = rs.getTimestamp("last_update");
-                result.add(u);
-            }
-
-            return result;
+            return UpdateFactory.f.createUpdateList(s.executeQuery());
         } catch (SQLException e) {
             throw new DatabaseException("Could not get updates", e);
         }
     }
-
 
     public void writeUpdates(List<Update> u) throws DatabaseException {
         LOG.info("Writing updates");
@@ -82,15 +72,13 @@ public class DatabaseManager {
 
     public List<User> getUsers() throws DatabaseException {
         LOG.info("Getting all users");
-        try {
-            Connection c = getConnection();
-            String queryUsers = "SELECT * FROM User";
+        try (Connection c = getConnection()){
+            String queryUsers = UserFactory.f.getQuery();
 
             PreparedStatement p = c.prepareStatement(queryUsers);
 
             ResultSet rs = p.executeQuery();
-            return getUserResult(rs);
-
+            return UserFactory.f.createUserList(rs);
         } catch (SQLException e) {
             throw new DatabaseException("Could not get all users", e);
         }
@@ -105,8 +93,7 @@ public class DatabaseManager {
             p.setString(1, name);
 
             ResultSet rs = p.executeQuery();
-            return getUserResult(rs);
-
+            return UserFactory.f.createUserList(rs);
         } catch (SQLException e) {
             throw new DatabaseException("Could not get filtered users", e);
         }
@@ -123,8 +110,7 @@ public class DatabaseManager {
             PreparedStatement insertStmt = c.prepareStatement(insertUser);
 
             for (User user : u) {
-                insertStmt.setInt(1, user.id);
-                insertStmt.setString(2, user.name);
+                user.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
 
@@ -540,17 +526,6 @@ public class DatabaseManager {
         }
         if (f != null) {
             result.add(f);
-        }
-        return result;
-    }
-
-    private List<User> getUserResult(ResultSet rs) throws SQLException {
-        ArrayList<User> result = new ArrayList<>();
-        while (rs.next()) {
-            User u = new User();
-            u.name = rs.getString("name");
-            u.id = rs.getInt("ID");
-            result.add(u);
         }
         return result;
     }
