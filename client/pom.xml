@@ -148,6 +148,17 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <user.stocks.dir>${user.stocks.dir}</user.stocks.dir>
+                        <sql.schema.path>${sql.schema.path}</sql.schema.path>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -158,7 +169,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <user.stocks.dir>${basedir}/src/test/resources</user.stocks.dir>
+                <user.stocks.dir>${basedir}/src/test/system/resources</user.stocks.dir>
                 <sql.schema.path>${basedir}/../deploy-client/config/schema.sql</sql.schema.path>
             </properties>
         </profile>
