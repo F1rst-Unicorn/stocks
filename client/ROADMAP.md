@@ -11,6 +11,7 @@
 * 00007 : NEW  : Enable entering names with spaces
 * 00008 : DONE : Add release build management
 * 00009 : WIP  : Refactor client for testability
+* 00010 : NEW  : Verify output in system tests
 
 ## Version 0.6
 * 00001 : NEW  : Add emitting QR codes for new users
