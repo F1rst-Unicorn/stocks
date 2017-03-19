@@ -257,6 +257,18 @@ public class DatabaseManagerTest {
     }
 
     @Test
+    public void testWritingFoodItems() throws Exception {
+        List<FoodItem> input = new LinkedList<>();
+        input.add(new FoodItem(8, new Timestamp(0L), 7, 3, 3, 3));
+        input.add(new FoodItem(9, new Timestamp(0L), 7, 4, 3, 3));
+
+        uut.writeFoodItems(input);
+
+        List<FoodItem> output = uut.getItems(7);
+        assertThat(output, is(input));
+    }
+
+    @Test
     public void noRollbackOnNullConnection() {
         DatabaseManager.rollback(null);
     }

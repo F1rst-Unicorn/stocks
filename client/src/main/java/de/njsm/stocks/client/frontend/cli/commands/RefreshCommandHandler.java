@@ -142,22 +142,9 @@ public class RefreshCommandHandler extends CommandHandler {
         c.getDatabaseManager().writeFood(serverFood);
     }
 
-    public void refreshFoodItems() {
-        FoodItem[] serverItems = c.getServerManager().getFoodItems();
+    public void refreshFoodItems() throws DatabaseException {
+        List<FoodItem> serverItems = Arrays.asList(c.getServerManager().getFoodItems());
         c.getDatabaseManager().writeFoodItems(serverItems);
-    }
-
-    public void refreshAll() {
-        User[] serverUsers = c.getServerManager().getUsers();
-        UserDevice[] serverDevices = c.getServerManager().getDevices();
-        Location[] serverLocations = c.getServerManager().getLocations();
-        Food[] serverFood = c.getServerManager().getFood();
-        FoodItem[] serverItems = c.getServerManager().getFoodItems();
-        c.getDatabaseManager().writeAll(serverUsers,
-                serverDevices,
-                serverLocations,
-                serverFood,
-                serverItems);
     }
 
     private void println(String message) {

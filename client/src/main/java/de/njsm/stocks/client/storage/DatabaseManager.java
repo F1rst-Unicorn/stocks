@@ -412,24 +412,26 @@ public class DatabaseManager {
         }
     }
 
-    public void writeFoodItems(FoodItem[] f) {
-        try {
-            Connection c = getConnectionWithoutAutoCommit();
-            clearTable(c, "Food_item");
-            String insertItem = "INSERT INTO Food_item " +
-                    "(`ID`, eat_by, of_type, stored_in, registers, buys) VALUES (?,?,?,?,?,?)";
+    public void writeFoodItems(List<FoodItem> f) throws DatabaseException {
+        LOG.info("Writing food items");
+        String insertItem = "INSERT INTO Food_item " +
+                "(`ID`, eat_by, of_type, stored_in, registers, buys) VALUES (?,?,?,?,?,?)";
+        Connection c = null;
 
+        try {
+            c = getConnectionWithoutAutoCommit();
+            clearTable(c, "Food_item");
             PreparedStatement insertStmt = c.prepareStatement(insertItem);
 
             for (FoodItem food : f) {
                 food.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
-
             c.commit();
-
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not write food items");
+        } finally {
+            close(c);
         }
     }
 
@@ -460,63 +462,6 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return -1;
-    }
-
-    public void writeAll(User[] users,
-                         UserDevice[] devices,
-                         Location[] locations,
-                         Food[] foods,
-                         FoodItem[] items) {
-        try {
-            Connection c = getConnectionWithoutAutoCommit();
-
-            String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
-            String insertDevice = "INSERT INTO User_device (`ID`, name, belongs_to) VALUES (?,?,?)";
-            String insertLocation = "INSERT INTO Location (`ID`, name) VALUES (?,?)";
-            String insertFood = "INSERT INTO User (`ID`, name) VALUES (?,?)";
-            String insertItem = "INSERT INTO Food_item (`ID`, eat_by, of_type, stored_in, registers, buys) VALUES (?,?,?,?,?,?)";
-
-            PreparedStatement insertStmt = c.prepareStatement(insertUser);
-
-            clearTable(c, "User");
-            clearTable(c, "User_device");
-            clearTable(c, "Location");
-            clearTable(c, "Food");
-            clearTable(c, "FoodItem");
-
-            for (User user : users) {
-                user.fillAddStmtWithId(insertStmt);
-                insertStmt.execute();
-            }
-
-            insertStmt = c.prepareStatement(insertDevice);
-            for (UserDevice dev : devices) {
-                dev.fillAddStmtWithId(insertStmt);
-                insertStmt.execute();
-            }
-
-            insertStmt = c.prepareStatement(insertLocation);
-            for (Location loc : locations) {
-                loc.fillAddStmtWithId(insertStmt);
-                insertStmt.execute();
-            }
-
-            insertStmt = c.prepareStatement(insertFood);
-            for (Food food : foods) {
-                food.fillAddStmtWithId(insertStmt);
-                insertStmt.execute();
-            }
-
-            insertStmt = c.prepareStatement(insertItem);
-            for (FoodItem food : items) {
-                food.fillAddStmtWithId(insertStmt);
-                insertStmt.execute();
-            }
-
-            c.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     private ArrayList<FoodView> getFoodView(ResultSet rs) throws SQLException {
