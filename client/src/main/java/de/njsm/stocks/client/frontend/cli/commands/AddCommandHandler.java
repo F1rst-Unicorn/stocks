@@ -1,5 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
+import de.njsm.stocks.client.storage.DatabaseException;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.common.data.FoodItem;
@@ -8,6 +9,7 @@ import de.njsm.stocks.client.exceptions.SelectException;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 public class AddCommandHandler extends CommandHandler {
 
@@ -72,7 +74,8 @@ public class AddCommandHandler extends CommandHandler {
 
             c.getServerManager().addItem(item);
             (new RefreshCommandHandler(c, false)).refresh();
-        } catch (SelectException e) {
+        } catch (SelectException |
+                DatabaseException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -89,14 +92,14 @@ public class AddCommandHandler extends CommandHandler {
         }
     }
 
-    protected int selectLocation(int foodId) throws SelectException {
+    protected int selectLocation(int foodId) throws SelectException, DatabaseException {
         if (! location.equals("")) {
-            Location[] inputLoc = c.getDatabaseManager().getLocations(location);
+            List<Location> inputLoc = c.getDatabaseManager().getLocations(location);
             return LocationCommandHandler.selectLocation(inputLoc, location);
         }
-        Location[] l = c.getDatabaseManager().getLocationsForFoodType(foodId);
+        List<Location> l = c.getDatabaseManager().getLocationsForFoodType(foodId);
 
-        if (l.length == 0) {
+        if (l.size() == 0) {
             return selectLocation();
         } else {
             int result;
@@ -104,7 +107,7 @@ public class AddCommandHandler extends CommandHandler {
             for (Location loc : l) {
                 System.out.println("\t" + loc.id + ": " + loc.name);
             }
-            result = c.getReader().nextInt("Choose one or type -1 for new location", l[0].id);
+            result = c.getReader().nextInt("Choose one or type -1 for new location", l.get(0).id);
 
             if (result == -1) {
                 return selectLocation();
@@ -114,9 +117,9 @@ public class AddCommandHandler extends CommandHandler {
         }
     }
 
-    protected int selectLocation() throws SelectException {
+    protected int selectLocation() throws SelectException, DatabaseException {
         String location = c.getReader().next("Where is it stored?  ");
-        Location[] locs = c.getDatabaseManager().getLocations(location);
+        List<Location> locs = c.getDatabaseManager().getLocations(location);
         return LocationCommandHandler.selectLocation(locs, location);
     }
 

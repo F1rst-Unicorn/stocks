@@ -46,7 +46,34 @@ public class DatabaseHelper {
                     "(4, 'Laptop', 1), " +
                     "(5, 'Desktop-PC', 1), " +
                     "(6, 'PC-Work', 2), " +
-                    "(7, 'Laptop', 3)"
+                    "(7, 'Laptop', 3)",
+
+            "INSERT INTO Location (`ID`, `name`) VALUES " +
+                    "(1, 'Fridge'), " +
+                    "(2, 'Cupboard'), " +
+                    "(3, 'Cupboard'), " +
+                    "(4, 'Basement')",
+
+            "INSERT INTO Food (`ID`, `name`) VALUES " +
+                    "(1, 'Beer')," +
+                    "(2, 'Carrot')," +
+                    "(3, 'Bread')," +
+                    "(4, 'Milk')," +
+                    "(5, 'Yoghurt')," +
+                    "(6, 'Raspberry jam')," +
+                    "(7, 'Apple juice')",
+
+            "INSERT INTO Food_item (`ID`, eat_by, of_type, stored_in, registers, buys) " +
+                    "VALUES " +
+                    "(1, '0', 1, 1, 2, 2), " +
+                    "(2, '0', 1, 1, 2, 2), " +
+                    "(3, '0', 3, 2, 1, 1), " +
+                    "(4, '0', 4, 1, 1, 1), " +
+                    "(5, '0', 1, 1, 2, 2), " +
+                    "(6, '0', 1, 1, 2, 2), " +
+                    "(7, '0', 6, 3, 2, 2), " +
+                    "(8, '0', 7, 3, 3, 3), " +
+                    "(9, '0', 7, 4, 3, 3)"
     };
 
     void setupDatabase() throws SQLException, IOException {
@@ -73,18 +100,22 @@ public class DatabaseHelper {
     private void sourceSchema() throws IOException, SQLException {
         FileInputStream is = new FileInputStream(DB_SCHEMA);
         String file = IOUtils.toString(is);
+        is.close();
+
         List<String> script = Arrays.asList(file.split(";"));
         script.set(script.size() - 1, "DELETE FROM Food");
         runSqlScript(script);
-        is.close();
         dbConnection.close();
     }
 
     private void runSqlScript(List<String> script) throws SQLException {
+        dbConnection.setAutoCommit(false);
+        Statement statement = dbConnection.createStatement();
         for (String command : script) {
-            Statement statement = dbConnection.createStatement();
             statement.execute(command);
             statement.close();
         }
+        dbConnection.commit();
+        dbConnection.setAutoCommit(true);
     }
 }

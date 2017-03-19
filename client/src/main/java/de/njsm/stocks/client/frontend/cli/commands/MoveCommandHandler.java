@@ -1,14 +1,20 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.storage.DatabaseException;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.Location;
-import de.njsm.stocks.client.exceptions.SelectException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class MoveCommandHandler extends CommandHandler {
+
+    private static final Logger LOG = LogManager.getLogger(MoveCommandHandler.class);
 
     protected String location;
     protected String food;
@@ -53,54 +59,58 @@ public class MoveCommandHandler extends CommandHandler {
     }
 
     protected void moveFood() {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        Location[] locations;
-        Food[] foods;
-        int locId = -1;
-        int foodId = -1;
-
-        if (location.equals("")) {
-            locations = c.getDatabaseManager().getLocations();
-        } else {
-            locations = c.getDatabaseManager().getLocations(location);
-        }
-        if (food.equals("")) {
-            foods = c.getDatabaseManager().getFood();
-        } else {
-            foods = c.getDatabaseManager().getFood(food);
-        }
-
         try {
-            locId = LocationCommandHandler.selectLocation(locations, location);
-            foodId = FoodCommandHandler.selectFood(foods, food);
-        } catch (SelectException e) {
-            e.printStackTrace();
-            return;
-        }
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+            List<Location> locations;
+            Food[] foods;
+            int locId = -1;
+            int foodId = -1;
 
-        FoodItem[] items = c.getDatabaseManager().getItems(foodId);
-
-        if (items.length == 0) {
-            System.out.println("There is nothing to move here...");
-            return;
-        }
-
-        System.out.println("Please choose an item");
-        for (FoodItem i : items) {
-            System.out.println(i.id + ": " + format.format(i.eatByDate));
-        }
-
-        int itemId = c.getReader().nextInt("Which one?", items[0].id);
-        int index = 0;
-        for (FoodItem i : items) {
-            if (i.id == itemId) {
-                break;
+            if (location.equals("")) {
+                locations = c.getDatabaseManager().getLocations();
+            } else {
+                locations = c.getDatabaseManager().getLocations(location);
             }
-            index++;
+            if (food.equals("")) {
+                foods = c.getDatabaseManager().getFood();
+            } else {
+                foods = c.getDatabaseManager().getFood(food);
+            }
+
+            try {
+                locId = LocationCommandHandler.selectLocation(locations, location);
+                foodId = FoodCommandHandler.selectFood(foods, food);
+            } catch (SelectException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            FoodItem[] items = c.getDatabaseManager().getItems(foodId);
+
+            if (items.length == 0) {
+                System.out.println("There is nothing to move here...");
+                return;
+            }
+
+            System.out.println("Please choose an item");
+            for (FoodItem i : items) {
+                System.out.println(i.id + ": " + format.format(i.eatByDate));
+            }
+
+            int itemId = c.getReader().nextInt("Which one?", items[0].id);
+            int index = 0;
+            for (FoodItem i : items) {
+                if (i.id == itemId) {
+                    break;
+                }
+                index++;
+            }
+
+            items[index].eatByDate = null;
+            c.getServerManager().move(items[index], locId);
+        } catch (DatabaseException e) {
+            LOG.error("Could not move food", e);
+            System.out.println("Could not move food");
         }
-
-        items[index].eatByDate = null;
-        c.getServerManager().move(items[index], locId);
-
     }
 }

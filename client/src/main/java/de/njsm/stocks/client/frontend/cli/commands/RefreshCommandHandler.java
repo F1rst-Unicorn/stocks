@@ -132,8 +132,8 @@ public class RefreshCommandHandler extends CommandHandler {
         c.getDatabaseManager().writeDevices(serverDevices);
     }
 
-    public void refreshLocations() {
-        Location[] serverLocations = c.getServerManager().getLocations();
+    public void refreshLocations() throws DatabaseException {
+        List<Location> serverLocations = Arrays.asList(c.getServerManager().getLocations());
         c.getDatabaseManager().writeLocations(serverLocations);
     }
 

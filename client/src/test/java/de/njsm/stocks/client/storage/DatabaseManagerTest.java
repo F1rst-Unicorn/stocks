@@ -1,5 +1,6 @@
 package de.njsm.stocks.client.storage;
 
+import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.Update;
 import de.njsm.stocks.common.data.User;
 import de.njsm.stocks.common.data.UserDevice;
@@ -160,6 +161,53 @@ public class DatabaseManagerTest {
 
         List<UserDeviceView> result = uut.getDevices();
         assertThat(result, is(expectedOutput));
+    }
+
+    @Test
+    public void testGettingLocations() throws Exception {
+        List<Location> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new Location(1, "Fridge"));
+        expectedOutput.add(new Location(2, "Cupboard"));
+        expectedOutput.add(new Location(3, "Cupboard"));
+        expectedOutput.add(new Location(4, "Basement"));
+
+        List<Location> output = uut.getLocations();
+
+        assertThat(output, is(expectedOutput));
+    }
+
+    @Test
+    public void testGettingFilteredLocations() throws Exception {
+        List<Location> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new Location(2, "Cupboard"));
+        expectedOutput.add(new Location(3, "Cupboard"));
+
+        List<Location> output = uut.getLocations("Cupboard");
+
+        assertThat(output, is(expectedOutput));
+    }
+
+    @Test
+    public void testGettingLocationsForFoodType() throws Exception {
+        List<Location> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new Location(3, "Cupboard"));
+        expectedOutput.add(new Location(4, "Basement"));
+
+        List<Location> output = uut.getLocationsForFoodType(7);
+
+        assertThat(output, is(expectedOutput));
+    }
+
+    @Test
+    public void testWritingLocations() throws Exception {
+        List<Location> input = new LinkedList<>();
+        input.add(new Location(3, "Cupboard"));
+        input.add(new Location(4, "Basement"));
+
+        uut.writeLocations(input);
+
+        List<Location> output = uut.getLocations();
+        assertThat(output, is(input));
     }
 
     @Test

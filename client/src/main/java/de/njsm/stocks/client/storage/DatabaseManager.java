@@ -205,69 +205,81 @@ public class DatabaseManager {
         }
     }
 
-    public Location[] getLocations() {
+    public List<Location> getLocations() throws DatabaseException {
+        LOG.info("Getting all locations");
+        String getLocations = LocationFactory.f.getQuery();
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            String getLocations = "SELECT * FROM Location";
+            c = getConnection();
             PreparedStatement selectStmt = c.prepareStatement(getLocations);
             ResultSet rs = selectStmt.executeQuery();
-            ArrayList<Location> result = getLocationResults(rs);
-            return result.toArray(new Location[result.size()]);
+            return LocationFactory.f.createLocationList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get locations", e);
+        } finally {
+            close(c);
         }
-        return null;
     }
 
-    public Location[] getLocations(String name) {
+    public List<Location> getLocations(String name) throws DatabaseException {
+        LOG.info("Getting locations matching name '" + name + "'");
+        String getLocations = "SELECT * FROM Location WHERE name=?";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            String getLocations = "SELECT * FROM Location WHERE name=?";
+            c = getConnection();
             PreparedStatement selectStmt = c.prepareStatement(getLocations);
             selectStmt.setString(1, name);
             ResultSet rs = selectStmt.executeQuery();
-            ArrayList<Location> result = getLocationResults(rs);
-            return result.toArray(new Location[result.size()]);
+            return LocationFactory.f.createLocationList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get locations", e);
+        } finally {
+            close(c);
         }
-        return null;
     }
 
-    public Location[] getLocationsForFoodType(int foodId) {
+    public List<Location> getLocationsForFoodType(int foodId) throws DatabaseException {
+        LOG.info("Getting locations for food type " + foodId);
+        String getLocations = "SELECT DISTINCT l.ID, l.name " +
+                "FROM Location l, Food_item i " +
+                "WHERE i.of_type=? AND i.stored_in=l.ID";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            String getLocations = "SELECT DISTINCT l.ID, l.name " +
-                    "FROM Location l, Food_item i " +
-                    "WHERE i.of_type=? AND i.stored_in=l.ID";
+            c = getConnection();
             PreparedStatement stmt = c.prepareStatement(getLocations);
             stmt.setInt(1, foodId);
-            ArrayList<Location> result = getLocationResults(stmt.executeQuery());
-            return result.toArray(new Location[result.size()]);
+            ResultSet rs = stmt.executeQuery();
+            return LocationFactory.f.createLocationList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get locations", e);
+        } finally {
+            close(c);
         }
-        return null;
     }
 
-    public void writeLocations(Location[] l) {
-        try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-            clearTable(c, "Location");
-            String insertLocations = "INSERT INTO Location (`ID`, name) VALUES (?,?)";
+    public void writeLocations(List<Location> l) throws DatabaseException {
+        LOG.info("Writing locations");
+        String insertLocations = "INSERT INTO Location (`ID`, name) VALUES (?,?)";
+        Connection c = null;
 
+        try {
+            c = getConnectionWithoutAutoCommit();
+            clearTable(c, "Location");
             PreparedStatement insertStmt = c.prepareStatement(insertLocations);
 
             for (Location loc : l) {
-                insertStmt.setInt(1, loc.id);
-                insertStmt.setString(2, loc.name);
+                loc.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
-
             c.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            rollback(c);
+            throw new DatabaseException("Could not write locations", e);
+        } finally {
+            close(c);
         }
     }
 

@@ -1,8 +1,11 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.storage.DatabaseException;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.client.exceptions.SelectException;
+
+import java.util.List;
 
 public class LocationRenameCommandHandler extends CommandHandler {
 
@@ -34,7 +37,7 @@ public class LocationRenameCommandHandler extends CommandHandler {
 
     public void renameLocation(String name, String newName) {
         try {
-            Location[] l = c.getDatabaseManager().getLocations(name);
+            List<Location> l = c.getDatabaseManager().getLocations(name);
             int id = LocationCommandHandler.selectLocation(l, name);
 
             for (Location loc : l) {
@@ -46,6 +49,8 @@ public class LocationRenameCommandHandler extends CommandHandler {
 
         } catch (SelectException e) {
             System.out.println(e.getMessage());
+        } catch (DatabaseException e) {
+            e.printStackTrace();
         }
 
     }

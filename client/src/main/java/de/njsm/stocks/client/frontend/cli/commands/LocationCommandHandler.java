@@ -40,20 +40,20 @@ public class LocationCommandHandler extends CommandHandler {
         m.printHelp();
     }
 
-    public static int selectLocation(Location[] l, String name) throws SelectException {
+    public static int selectLocation(List<Location> l, String name) throws SelectException {
         InputReader scanner = new EnhancedInputReader(System.in);
         int result;
 
-        if (l.length == 1) {
-            result = l[0].id;
-        } else if (l.length == 0) {
+        if (l.size() == 1) {
+            result = l.get(0).id;
+        } else if (l.size() == 0) {
             throw new SelectException("No such location found: " + name);
         } else {
             System.out.println("Several locations found");
             for (Location loc : l) {
                 System.out.println("\t" + loc.id + ": " + loc.name);
             }
-            result = scanner.nextInt("Choose one ", l[0].id);
+            result = scanner.nextInt("Choose one ", l.get(0).id);
         }
         return result;
     }

@@ -1,8 +1,11 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.exceptions.SelectException;
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.storage.DatabaseException;
 import de.njsm.stocks.common.data.Location;
+
+import java.util.List;
 
 public class LocationRemoveCommandHandler extends CommandHandler {
 
@@ -28,7 +31,7 @@ public class LocationRemoveCommandHandler extends CommandHandler {
 
     public void removeLocation(String name) {
         try {
-            Location[] l = c.getDatabaseManager().getLocations(name);
+            List<Location> l = c.getDatabaseManager().getLocations(name);
             int id = LocationCommandHandler.selectLocation(l, name);
 
             for (Location loc : l) {
@@ -37,7 +40,8 @@ public class LocationRemoveCommandHandler extends CommandHandler {
                     (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
-        } catch (SelectException e) {
+        } catch (SelectException |
+                DatabaseException e) {
             System.out.println(e.getMessage());
         }
     }
