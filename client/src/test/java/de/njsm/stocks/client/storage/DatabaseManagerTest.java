@@ -1,9 +1,6 @@
 package de.njsm.stocks.client.storage;
 
-import de.njsm.stocks.common.data.Location;
-import de.njsm.stocks.common.data.Update;
-import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.common.data.UserDevice;
+import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.junit.*;
 import org.mockito.Mockito;
@@ -207,6 +204,43 @@ public class DatabaseManagerTest {
         uut.writeLocations(input);
 
         List<Location> output = uut.getLocations();
+        assertThat(output, is(input));
+    }
+
+    @Test
+    public void testGettingAllFood() throws Exception {
+        List<Food> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new Food(1, "Beer"));
+        expectedOutput.add(new Food(2, "Carrot"));
+        expectedOutput.add(new Food(3, "Bread"));
+        expectedOutput.add(new Food(4, "Milk"));
+        expectedOutput.add(new Food(5, "Yoghurt"));
+        expectedOutput.add(new Food(6, "Raspberry jam"));
+        expectedOutput.add(new Food(7, "Apple juice"));
+
+        List<Food> output = uut.getFood();
+
+        assertThat(output, is(expectedOutput));
+    }
+
+    @Test
+    public void testGettingFilteredFood() throws Exception {
+        List<Food> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new Food(4, "Milk"));
+
+        List<Food> output = uut.getFood("Milk");
+
+        assertThat(output, is(expectedOutput));
+    }
+
+    @Test
+    public void testWritingFood() throws Exception {
+        List<Food> input = new LinkedList<>();
+        input.add(new Food(4, "Milk"));
+
+        uut.writeFood(input);
+
+        List<Food> output = uut.getFood();
         assertThat(output, is(input));
     }
 

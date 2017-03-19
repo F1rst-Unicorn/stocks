@@ -59,7 +59,7 @@ public class AddCommandHandler extends CommandHandler {
 
     public void addFood(Command command, String type) {
         try {
-            Food[] foods = c.getDatabaseManager().getFood(type);
+            List<Food> foods = c.getDatabaseManager().getFood(type);
             int foodId = FoodCommandHandler.selectFood(foods, type);
             int locId = selectLocation(foodId);
 

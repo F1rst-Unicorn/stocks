@@ -1,8 +1,11 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.storage.DatabaseException;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.client.exceptions.SelectException;
+
+import java.util.List;
 
 public class FoodRenameCommandHandler extends CommandHandler {
 
@@ -35,7 +38,7 @@ public class FoodRenameCommandHandler extends CommandHandler {
 
     public void renameFood(String name, String newName) {
         try {
-            Food[] l = c.getDatabaseManager().getFood(name);
+            List<Food> l = c.getDatabaseManager().getFood(name);
             int id = FoodCommandHandler.selectFood(l, name);
 
             for (Food food : l) {
@@ -44,7 +47,8 @@ public class FoodRenameCommandHandler extends CommandHandler {
                     (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
-        } catch (SelectException e) {
+        } catch (SelectException |
+                DatabaseException e) {
             System.out.println(e.getMessage());
         }
 

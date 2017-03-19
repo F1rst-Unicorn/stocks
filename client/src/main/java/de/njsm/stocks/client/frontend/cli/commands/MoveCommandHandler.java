@@ -62,7 +62,7 @@ public class MoveCommandHandler extends CommandHandler {
         try {
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
             List<Location> locations;
-            Food[] foods;
+            List<Food> foods;
             int locId = -1;
             int foodId = -1;
 

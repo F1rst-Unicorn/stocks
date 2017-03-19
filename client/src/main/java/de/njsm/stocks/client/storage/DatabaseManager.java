@@ -283,53 +283,62 @@ public class DatabaseManager {
         }
     }
 
-    public void writeFood(Food[] f) {
-        try {
-            Connection c = getConnectionWithoutAutoCommit();
-            clearTable(c, "Food");
-            String insertFood = "INSERT INTO Food (`ID`, name) VALUES (?,?)";
+    public void writeFood(List<Food> f) throws DatabaseException {
+        LOG.info("Writing food");
+        String insertFood = "INSERT INTO Food (`ID`, name) VALUES (?,?)";
+        Connection c = null;
 
+        try {
+            c = getConnectionWithoutAutoCommit();
+            clearTable(c, "Food");
             PreparedStatement insertStmt = c.prepareStatement(insertFood);
 
             for (Food food : f) {
-                insertStmt.setInt(1, food.id);
-                insertStmt.setString(2, food.name);
+                food.fillAddStmtWithId(insertStmt);
                 insertStmt.execute();
             }
-
             c.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            rollback(c);
+            throw new DatabaseException("Could not write food", e);
+        } finally {
+            close(c);
         }
     }
 
-    public Food[] getFood(String name) {
+    public List<Food> getFood(String name) throws DatabaseException {
+        LOG.info("Getting food matching name '" + name + "'");
+        String getFood = "SELECT * FROM Food WHERE name=?";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            String getFood = "SELECT * FROM Food WHERE name=?";
+            c = getConnection();
             PreparedStatement selectStmt = c.prepareStatement(getFood);
             selectStmt.setString(1, name);
             ResultSet rs = selectStmt.executeQuery();
-            ArrayList<Food> result = getFoodResults(rs);
-            return result.toArray(new Food[result.size()]);
+            return FoodFactory.f.createFoodList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get food", e);
+        } finally {
+            close(c);
         }
-        return null;
     }
 
-    public Food[] getFood() {
+    public List<Food> getFood() throws DatabaseException {
+        LOG.info("Getting all food");
+        String getFood = FoodFactory.f.getQuery();
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            String getFood = "SELECT * FROM Food";
+            c = getConnection();
             PreparedStatement selectStmt = c.prepareStatement(getFood);
             ResultSet rs = selectStmt.executeQuery();
-            ArrayList<Food> result = getFoodResults(rs);
-            return result.toArray(new Food[result.size()]);
+            return FoodFactory.f.createFoodList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get food", e);
+        } finally {
+            close(c);
         }
-        return null;
     }
 
     public FoodItem[] getItems(int foodId) {

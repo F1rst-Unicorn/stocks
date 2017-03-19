@@ -137,8 +137,8 @@ public class RefreshCommandHandler extends CommandHandler {
         c.getDatabaseManager().writeLocations(serverLocations);
     }
 
-    public void refreshFood() {
-        Food[] serverFood = c.getServerManager().getFood();
+    public void refreshFood() throws DatabaseException {
+        List<Food> serverFood = Arrays.asList(c.getServerManager().getFood());
         c.getDatabaseManager().writeFood(serverFood);
     }
 

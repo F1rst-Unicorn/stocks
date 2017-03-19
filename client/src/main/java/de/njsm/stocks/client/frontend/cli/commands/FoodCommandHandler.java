@@ -40,20 +40,20 @@ public class FoodCommandHandler extends CommandHandler {
         m.printHelp();
     }
 
-    public static int selectFood(Food[] f, String name) throws SelectException {
+    public static int selectFood(List<Food> f, String name) throws SelectException {
         InputReader scanner = new EnhancedInputReader(System.in);
         int result;
 
-        if (f.length == 1) {
-            result = f[0].id;
-        } else if (f.length == 0) {
+        if (f.size() == 1) {
+            result = f.get(0).id;
+        } else if (f.size() == 0) {
             throw new SelectException("No such food found: " + name);
         } else {
             System.out.println("Several food types found");
             for (Food food : f) {
                 System.out.println("\t" + food.id + ": " + food.name);
             }
-            result = scanner.nextInt("Choose one ", f[0].id);
+            result = scanner.nextInt("Choose one ", f.get(0).id);
         }
         return result;
     }
