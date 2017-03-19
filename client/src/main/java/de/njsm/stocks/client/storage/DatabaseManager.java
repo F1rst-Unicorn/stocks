@@ -341,28 +341,23 @@ public class DatabaseManager {
         }
     }
 
-    public FoodItem[] getItems(int foodId) {
+    public List<FoodItem> getItems(int foodId) throws DatabaseException {
+        LOG.info("Getting food items of type " + foodId);
+        String queryString = "SELECT * " +
+                "FROM Food_item " +
+                "WHERE of_type=?";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            FoodItemFactory factory = new FoodItemFactory();
-
-            String queryString = "SELECT * " +
-                    "FROM Food_item " +
-                    "WHERE of_type=?";
-
+            c = getConnection();
             PreparedStatement sqlQuery = c.prepareStatement(queryString);
             sqlQuery.setInt(1, foodId);
             ResultSet rs = sqlQuery.executeQuery();
-            ArrayList<FoodItem> result = new ArrayList<>();
-            while (rs.next()) {
-                FoodItem i = (FoodItem) factory.createData(rs);
-                result.add(i);
-            }
-
-            return result.toArray(new FoodItem[result.size()]);
+            return FoodItemFactory.f.createFoodItemList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return new FoodItem[0];
+            throw new DatabaseException("Could not get food items", e);
+        } finally {
+            close(c);
         }
     }
 
@@ -549,28 +544,6 @@ public class DatabaseManager {
             lastId = id;
         }
         if (f != null) {
-            result.add(f);
-        }
-        return result;
-    }
-
-    private ArrayList<Location> getLocationResults(ResultSet rs) throws SQLException {
-        ArrayList<Location> result = new ArrayList<>();
-        while (rs.next()) {
-            Location l = new Location();
-            l.name = rs.getString("name");
-            l.id = rs.getInt("ID");
-            result.add(l);
-        }
-        return result;
-    }
-
-    private ArrayList<Food> getFoodResults(ResultSet rs) throws SQLException {
-        ArrayList<Food> result = new ArrayList<>();
-        while (rs.next()) {
-            Food f = new Food();
-            f.name = rs.getString("name");
-            f.id = rs.getInt("ID");
             result.add(f);
         }
         return result;

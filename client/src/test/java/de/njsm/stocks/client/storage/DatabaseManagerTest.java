@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -242,6 +243,17 @@ public class DatabaseManagerTest {
 
         List<Food> output = uut.getFood();
         assertThat(output, is(input));
+    }
+
+    @Test
+    public void testGettingFoodItems() throws Exception {
+        List<FoodItem> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new FoodItem(8, new Timestamp(0L), 7, 3, 3, 3));
+        expectedOutput.add(new FoodItem(9, new Timestamp(0L), 7, 4, 3, 3));
+
+        List<FoodItem> output = uut.getItems(7);
+
+        assertThat(output, is(expectedOutput));
     }
 
     @Test

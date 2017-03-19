@@ -85,9 +85,9 @@ public class MoveCommandHandler extends CommandHandler {
                 return;
             }
 
-            FoodItem[] items = c.getDatabaseManager().getItems(foodId);
+            List<FoodItem> items = c.getDatabaseManager().getItems(foodId);
 
-            if (items.length == 0) {
+            if (items.size() == 0) {
                 System.out.println("There is nothing to move here...");
                 return;
             }
@@ -97,7 +97,7 @@ public class MoveCommandHandler extends CommandHandler {
                 System.out.println(i.id + ": " + format.format(i.eatByDate));
             }
 
-            int itemId = c.getReader().nextInt("Which one?", items[0].id);
+            int itemId = c.getReader().nextInt("Which one?", items.get(0).id);
             int index = 0;
             for (FoodItem i : items) {
                 if (i.id == itemId) {
@@ -106,8 +106,8 @@ public class MoveCommandHandler extends CommandHandler {
                 index++;
             }
 
-            items[index].eatByDate = null;
-            c.getServerManager().move(items[index], locId);
+            items.get(index).eatByDate = null;
+            c.getServerManager().move(items.get(index), locId);
         } catch (DatabaseException e) {
             LOG.error("Could not move food", e);
             System.out.println("Could not move food");

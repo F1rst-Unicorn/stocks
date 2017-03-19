@@ -10,11 +10,17 @@ import java.util.Date;
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
 public class FoodItem extends Data implements SqlAddable, SqlRemovable {
+
     public int id;
+
     public Date eatByDate;
+
     public int ofType;
+
     public int storedIn;
+
     public int registers;
+
     public int buys;
 
     public FoodItem(int id, Date eatByDate, int ofType, int storedIn, int registers, int buys) {
