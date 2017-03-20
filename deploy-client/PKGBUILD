@@ -19,9 +19,7 @@ install=stocks.install
 build() {
     cd "$srcdir/"
 
-    cd client
     mvn -Dmaven.test.skip=true package
-    cd ..
 }
 
 package() {
