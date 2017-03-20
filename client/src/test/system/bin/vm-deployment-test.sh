@@ -35,4 +35,4 @@ client.exec,dumponexit=true,output=file\
 rm -rf $STOCKS_ROOT/client/src/test/system/tmp
 sudo virsh snapshot-revert $SERVER clean
 
-echo "##teamcity[jacocoReport dataPath='/tmp/jacoco-client.exec']"
+echo "##teamcity[jacocoReport dataPath='/tmp/jacoco-client.exec' includes='de.njsm.stocks.*']"
