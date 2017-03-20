@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.storage.DatabaseException;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.view.FoodView;
 
@@ -8,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ValueRange;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -109,42 +111,44 @@ public class FoodListCommandHandler extends CommandHandler {
     }
 
     public void listFood() {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+            Pattern p = Pattern.compile(regex);
+            List<FoodView> food = c.getDatabaseManager().getItems(user, location);
+            Date listUntil = new Date(new Date().getTime() + daysLeft * 1000L * 60L * 60L * 24L);
+            int printedItems;
+            StringBuffer outBuf = new StringBuffer();
 
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        Pattern p = Pattern.compile(regex);
-        FoodView[] food = c.getDatabaseManager().getItems(user, location);
-        Date listUntil = new Date(new Date().getTime() + daysLeft * 1000L * 60L * 60L * 24L);
-        int printedItems;
-        StringBuffer outBuf = new StringBuffer();
+            for (FoodView f : food) {
+                printedItems = 0;
+                f.getItems().removeIf((item) -> item.eatByDate.after(listUntil));
 
-        for (FoodView f : food) {
-            printedItems = 0;
-            f.getItems().removeIf((item) -> item.eatByDate.after(listUntil));
+                if ((!existing || (existing && !f.getItems().isEmpty())) &&
+                        range.isValidValue(f.getItems().size()) &&
+                        p.matcher(f.getFood().name).find()) {
 
-            if ((!existing || (existing && !f.getItems().isEmpty())) &&
-                    range.isValidValue(f.getItems().size())          &&
-                    p.matcher(f.getFood().name).find()) {
-
-                outBuf.append("\t" + f.getItems().size() + "x " + f.getFood().name + "\n");
-                if (!quiet) {
-                    for (FoodItem i : f.getItems()) {
-                        outBuf.append("\t\t" + format.format(i.eatByDate) + "\n");
-                        printedItems++;
-                        if (printedItems >= limit) {
-                            break;
+                    outBuf.append("\t" + f.getItems().size() + "x " + f.getFood().name + "\n");
+                    if (!quiet) {
+                        for (FoodItem i : f.getItems()) {
+                            outBuf.append("\t\t" + format.format(i.eatByDate) + "\n");
+                            printedItems++;
+                            if (printedItems >= limit) {
+                                break;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if (outBuf.length() != 0) {
-            System.out.println("Current food: ");
-            System.out.print(outBuf.toString());
-        } else {
-            System.out.println("No food to show...");
+            if (outBuf.length() != 0) {
+                System.out.println("Current food: ");
+                System.out.print(outBuf.toString());
+            } else {
+                System.out.println("No food to show...");
+            }
+        } catch (DatabaseException e) {
+            System.out.println("Error getting items");
         }
-
     }
 
 }

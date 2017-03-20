@@ -361,55 +361,59 @@ public class DatabaseManager {
         }
     }
 
-    public FoodView[] getItems(String user, String location) {
+    public List<FoodView> getItems(String user, String location) throws DatabaseException {
+        LOG.info("Getting items matching user '" + user + "' and location '" + location + "'");
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-
-            String queryString;
-            PreparedStatement sqlQuery;
-
-            if (user.equals("")) {
-                if (location.equals("")) {
-                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                            "ORDER BY f.ID ASC, i.eat_by ASC";
-                    sqlQuery = c.prepareStatement(queryString);
-                } else {
-                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                            "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
-                            "ORDER BY f.ID ASC, i.eat_by ASC";
-                    sqlQuery = c.prepareStatement(queryString);
-                    sqlQuery.setString(1, location);
-                }
-            } else {
-                if (location.equals("")) {
-                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                            "WHERE i.buys in (SELECT ID FROM User WHERE name=?) " +
-                            "ORDER BY f.ID ASC, i.eat_by ASC";
-                    sqlQuery = c.prepareStatement(queryString);
-                    sqlQuery.setString(1, user);
-                } else {
-                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                            "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
-                            "AND i.buys in (SELECT ID FROM User WHERE name=?) " +
-                            "ORDER BY f.ID ASC, i.eat_by ASC";
-                    sqlQuery = c.prepareStatement(queryString);
-                    sqlQuery.setString(1, location);
-                    sqlQuery.setString(2, user);
-                }
-            }
-
+            c = getConnection();
+            PreparedStatement sqlQuery = getStatementFilteringBy(user, location, c);
             ResultSet rs = sqlQuery.executeQuery();
-            ArrayList<FoodView> result = getFoodView(rs);
-
-            return result.toArray(new FoodView[result.size()]);
+            return getFoodView(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return new FoodView[0];
+            throw new DatabaseException("Could not get items", e);
+        } finally {
+            close(c);
         }
+    }
+
+    private PreparedStatement getStatementFilteringBy(String user, String location, Connection c) throws SQLException {
+        String queryString;
+        PreparedStatement sqlQuery;
+        if (user.equals("")) {
+            if (location.equals("")) {
+                queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                        "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
+                        "ORDER BY f.ID ASC, i.eat_by ASC";
+                sqlQuery = c.prepareStatement(queryString);
+            } else {
+                queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                        "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
+                        "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
+                        "ORDER BY f.ID ASC, i.eat_by ASC";
+                sqlQuery = c.prepareStatement(queryString);
+                sqlQuery.setString(1, location);
+            }
+        } else {
+            if (location.equals("")) {
+                queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                        "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
+                        "WHERE i.buys in (SELECT ID FROM User WHERE name=?) " +
+                        "ORDER BY f.ID ASC, i.eat_by ASC";
+                sqlQuery = c.prepareStatement(queryString);
+                sqlQuery.setString(1, user);
+            } else {
+                queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                        "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
+                        "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
+                        "AND i.buys in (SELECT ID FROM User WHERE name=?) " +
+                        "ORDER BY f.ID ASC, i.eat_by ASC";
+                sqlQuery = c.prepareStatement(queryString);
+                sqlQuery.setString(1, location);
+                sqlQuery.setString(2, user);
+            }
+        }
+        return sqlQuery;
     }
 
     public void writeFoodItems(List<FoodItem> f) throws DatabaseException {
@@ -435,33 +439,31 @@ public class DatabaseManager {
         }
     }
 
-    public int getNextItem(int foodId) throws SelectException {
+    public int getNextItem(int foodId) throws SelectException, DatabaseException {
+        LOG.info("Getting next item for food id " + foodId);
+        String query = "SELECT * " +
+                "FROM Food_item " +
+                "WHERE of_type=? " +
+                "ORDER BY eat_by ASC " +
+                "LIMIT 1";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-
-            String query = "SELECT * " +
-                    "FROM Food_item " +
-                    "WHERE of_type=? " +
-                    "ORDER BY eat_by ASC " +
-                    "LIMIT 1";
-
+            c = getConnection();
             PreparedStatement stmt = c.prepareStatement(query);
             stmt.setInt(1, foodId);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                int result = rs.getInt("ID");
-                rs.close();
-                return result;
+                return rs.getInt("ID");
             } else {
-                rs.close();
                 throw new SelectException("You don't have any...");
             }
-
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get next food item", e);
+        } finally {
+            close(c);
         }
-        return -1;
     }
 
     private ArrayList<FoodView> getFoodView(ResultSet rs) throws SQLException {
@@ -481,8 +483,8 @@ public class DatabaseManager {
                 f = new FoodView(newFood);
             }
             FoodItem i = new FoodItem();
+            i.eatByDate = rs.getTimestamp("date");
             i.ofType = id;
-            i.eatByDate = rs.getDate("date");
             if (i.eatByDate != null) {
                 f.add(i);
             }

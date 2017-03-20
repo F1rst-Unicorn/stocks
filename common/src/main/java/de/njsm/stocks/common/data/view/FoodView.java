@@ -28,4 +28,30 @@ public class FoodView {
     public Food getFood() {
         return food;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FoodView foodView = (FoodView) o;
+
+        if (!food.equals(foodView.food)) return false;
+        return items.equals(foodView.items);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = food.hashCode();
+        result = 31 * result + items.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "FoodView{" +
+                "food=" + food +
+                ", items=" + items +
+                '}';
+    }
 }

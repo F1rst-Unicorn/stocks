@@ -98,6 +98,6 @@ public class FoodItem extends Data implements SqlAddable, SqlRemovable {
 
     @Override
     public String toString() {
-        return "FoodItem (" + id + ", " + eatByDate + ", " + ofType + ")";
+        return "FoodItem (" + id + ", " + eatByDate + ", " + ofType + ", " + storedIn + ", " + registers + ", " + buys + ")";
     }
 }

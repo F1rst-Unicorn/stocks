@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.storage;
 
 import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.common.data.view.FoodView;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.junit.*;
 import org.mockito.Mockito;
@@ -269,6 +270,65 @@ public class DatabaseManagerTest {
     }
 
     @Test
+    public void testGettingNextItem() throws Exception {
+        assertEquals(3, uut.getNextItem(3));
+        assertEquals(2, uut.getNextItem(1));
+    }
+
+    @Test
+    public void testGettingFoodOfUser() throws DatabaseException {
+        List<FoodView> entireFood = getEntireFood();
+        FoodView item = entireFood.get(6);
+        List<FoodView> expectedOutput = new LinkedList<>();
+        expectedOutput.add(item);
+
+        List<FoodView> output = uut.getItems("Juliette", "");
+
+        assertEquals(expectedOutput, output);
+    }
+
+    @Test
+    public void testGettingAllFoodItems() throws DatabaseException {
+
+        List<FoodView> output = uut.getItems("", "");
+
+        assertEquals(getEntireFood(), output);
+    }
+
+    @Test
+    public void testGettingFoodOfLocation() throws DatabaseException {
+        List<FoodView> expectedOutput = new LinkedList<>();
+        FoodView item = new FoodView(new Food(7, "Apple juice"));
+        item.add(new FoodItem(0, new Timestamp(0L), 7, 0, 0, 0));
+        expectedOutput.add(item);
+
+        List<FoodView> output = uut.getItems("", "Basement");
+
+        assertEquals(expectedOutput, output);
+    }
+
+    @Test
+    public void testGettingFoodOfLocationAndUser() throws DatabaseException {
+        List<FoodView> expectedOutput = new LinkedList<>();
+        FoodView item = new FoodView(new Food(7, "Apple juice"));
+        item.add(new FoodItem(0, new Timestamp(0L), 7, 0, 0, 0));
+        expectedOutput.add(item);
+
+        List<FoodView> output = uut.getItems("Juliette", "Basement");
+
+        assertEquals(expectedOutput, output);
+    }
+
+    @Test
+    public void testGettingItemsWithTooStrongAttributes() throws DatabaseException {
+        List<FoodView> expectedOutput = new LinkedList<>();
+
+        List<FoodView> output = uut.getItems("John", "Basement");
+
+        assertEquals(expectedOutput, output);
+    }
+
+    @Test
     public void noRollbackOnNullConnection() {
         DatabaseManager.rollback(null);
     }
@@ -296,5 +356,42 @@ public class DatabaseManagerTest {
 
         Mockito.verify(c).close();
         Mockito.verifyNoMoreInteractions(c);
+    }
+
+    private List<FoodView> getEntireFood() {
+        List<FoodView> expectedOutput = new LinkedList<>();
+        FoodView item;
+
+        item = new FoodView(new Food(1, "Beer"));
+        item.add(new FoodItem(0, new Timestamp(1000L), 1, 0, 0, 0));
+        item.add(new FoodItem(0, new Timestamp(2000L), 1, 0, 0, 0));
+        item.add(new FoodItem(0, new Timestamp(3000L), 1, 0, 0, 0));
+        item.add(new FoodItem(0, new Timestamp(4000L), 1, 0, 0, 0));
+        expectedOutput.add(item);
+
+        item = new FoodView(new Food(2, "Carrot"));
+        expectedOutput.add(item);
+
+        item = new FoodView(new Food(3, "Bread"));
+        item.add(new FoodItem(0, new Timestamp(0L), 3, 0, 0, 0));
+        expectedOutput.add(item);
+
+        item = new FoodView(new Food(4, "Milk"));
+        item.add(new FoodItem(0, new Timestamp(0L), 4, 0, 0, 0));
+        expectedOutput.add(item);
+
+        item = new FoodView(new Food(5, "Yoghurt"));
+        expectedOutput.add(item);
+
+        item = new FoodView(new Food(6, "Raspberry jam"));
+        item.add(new FoodItem(0, new Timestamp(0L), 6, 0, 0, 0));
+        expectedOutput.add(item);
+
+        item = new FoodView(new Food(7, "Apple juice"));
+        item.add(new FoodItem(0, new Timestamp(0L), 7, 0, 0, 0));
+        item.add(new FoodItem(0, new Timestamp(0L), 7, 0, 0, 0));
+        expectedOutput.add(item);
+
+        return expectedOutput;
     }
 }
