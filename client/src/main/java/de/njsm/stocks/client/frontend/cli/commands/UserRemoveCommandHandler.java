@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.common.data.User;
 import de.njsm.stocks.client.exceptions.SelectException;
 import de.njsm.stocks.client.exceptions.DatabaseException;
@@ -41,7 +42,8 @@ public class UserRemoveCommandHandler extends CommandHandler {
                 }
             }
         } catch (SelectException |
-                DatabaseException e) {
+                DatabaseException |
+                NetworkException e) {
             System.out.println(e.getMessage());
         }
     }

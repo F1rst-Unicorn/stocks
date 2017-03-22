@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.common.data.view.UserDeviceView;
@@ -45,7 +46,8 @@ public class DeviceRemoveCommandHandler extends CommandHandler {
                 }
             }
         } catch (SelectException |
-                DatabaseException e) {
+                DatabaseException |
+                NetworkException e) {
             System.out.println(e.getMessage());
         }
     }

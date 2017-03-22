@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.common.data.Food;
 
 public class FoodAddCommandHandler extends CommandHandler {
@@ -26,11 +27,15 @@ public class FoodAddCommandHandler extends CommandHandler {
     }
 
     public void addFood(String name) {
-        Food f = new Food();
-        f.name = name;
+        try {
+            Food f = new Food();
+            f.name = name;
 
-        c.getServerManager().addFood(f);
+            c.getServerManager().addFood(f);
 
-        (new RefreshCommandHandler(c, false)).refresh();
+            (new RefreshCommandHandler(c, false)).refresh();
+        } catch (NetworkException e) {
+            // TODO LOG
+        }
     }
 }

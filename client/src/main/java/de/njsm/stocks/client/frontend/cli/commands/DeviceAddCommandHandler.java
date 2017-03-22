@@ -1,5 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
+import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.common.data.view.UserDeviceView;
@@ -75,7 +76,8 @@ public class DeviceAddCommandHandler extends CommandHandler {
                 System.out.println("Aborted.");
             }
         } catch (SelectException |
-                DatabaseException e) {
+                DatabaseException |
+                NetworkException e) {
             System.out.println(e.getMessage());
         }
 

@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.storage.DatabaseManager;
@@ -72,7 +73,8 @@ public class RefreshCommandHandler extends CommandHandler {
             } else {
                 dm.writeUpdates(Arrays.asList(serverUpdates));
             }
-        } catch (DatabaseException e) {
+        } catch (DatabaseException |
+                NetworkException e) {
             LOG.error("Error during database interaction", e);
             println("Refreshing not possible");
         }
@@ -94,7 +96,7 @@ public class RefreshCommandHandler extends CommandHandler {
         System.out.println(help);
     }
 
-    public void refreshTable(String tableName) throws DatabaseException {
+    public void refreshTable(String tableName) throws DatabaseException, NetworkException {
         switch (tableName) {
             case "User":
                 println("Refreshing users");
@@ -122,27 +124,27 @@ public class RefreshCommandHandler extends CommandHandler {
         }
     }
 
-    public void refreshUsers() throws DatabaseException {
+    public void refreshUsers() throws DatabaseException, NetworkException {
         List<User> serverUsers = Arrays.asList(c.getServerManager().getUsers());
         c.getDatabaseManager().writeUsers(serverUsers);
     }
 
-    public void refreshDevices() throws DatabaseException {
+    public void refreshDevices() throws DatabaseException, NetworkException {
         List<UserDevice> serverDevices = Arrays.asList(c.getServerManager().getDevices());
         c.getDatabaseManager().writeDevices(serverDevices);
     }
 
-    public void refreshLocations() throws DatabaseException {
+    public void refreshLocations() throws DatabaseException, NetworkException {
         List<Location> serverLocations = Arrays.asList(c.getServerManager().getLocations());
         c.getDatabaseManager().writeLocations(serverLocations);
     }
 
-    public void refreshFood() throws DatabaseException {
+    public void refreshFood() throws DatabaseException, NetworkException {
         List<Food> serverFood = Arrays.asList(c.getServerManager().getFood());
         c.getDatabaseManager().writeFood(serverFood);
     }
 
-    public void refreshFoodItems() throws DatabaseException {
+    public void refreshFoodItems() throws DatabaseException, NetworkException {
         List<FoodItem> serverItems = Arrays.asList(c.getServerManager().getFoodItems());
         c.getDatabaseManager().writeFoodItems(serverItems);
     }
