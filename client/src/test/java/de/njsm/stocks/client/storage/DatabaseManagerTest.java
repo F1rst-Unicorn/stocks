@@ -299,7 +299,7 @@ public class DatabaseManagerTest {
     public void testGettingFoodOfLocation() throws DatabaseException {
         List<FoodView> expectedOutput = new LinkedList<>();
         FoodView item = new FoodView(new Food(7, "Apple juice"));
-        item.add(new FoodItem(0, new Timestamp(0L), 7, 0, 0, 0));
+        item.add(new Timestamp(0L));
         expectedOutput.add(item);
 
         List<FoodView> output = uut.getItems("", "Basement");
@@ -311,7 +311,7 @@ public class DatabaseManagerTest {
     public void testGettingFoodOfLocationAndUser() throws DatabaseException {
         List<FoodView> expectedOutput = new LinkedList<>();
         FoodView item = new FoodView(new Food(7, "Apple juice"));
-        item.add(new FoodItem(0, new Timestamp(0L), 7, 0, 0, 0));
+        item.add(new Timestamp(0L));
         expectedOutput.add(item);
 
         List<FoodView> output = uut.getItems("Juliette", "Basement");
@@ -363,33 +363,33 @@ public class DatabaseManagerTest {
         FoodView item;
 
         item = new FoodView(new Food(1, "Beer"));
-        item.add(new FoodItem(0, new Timestamp(1000L), 1, 0, 0, 0));
-        item.add(new FoodItem(0, new Timestamp(2000L), 1, 0, 0, 0));
-        item.add(new FoodItem(0, new Timestamp(3000L), 1, 0, 0, 0));
-        item.add(new FoodItem(0, new Timestamp(4000L), 1, 0, 0, 0));
+        item.add(new Timestamp(1000L));
+        item.add(new Timestamp(2000L));
+        item.add(new Timestamp(3000L));
+        item.add(new Timestamp(4000L));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(2, "Carrot"));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(3, "Bread"));
-        item.add(new FoodItem(0, new Timestamp(0L), 3, 0, 0, 0));
+        item.add(new Timestamp(0L));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(4, "Milk"));
-        item.add(new FoodItem(0, new Timestamp(0L), 4, 0, 0, 0));
+        item.add(new Timestamp(0L));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(5, "Yoghurt"));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(6, "Raspberry jam"));
-        item.add(new FoodItem(0, new Timestamp(0L), 6, 0, 0, 0));
+        item.add(new Timestamp(0L));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(7, "Apple juice"));
-        item.add(new FoodItem(0, new Timestamp(0L), 7, 0, 0, 0));
-        item.add(new FoodItem(0, new Timestamp(0L), 7, 0, 0, 0));
+        item.add(new Timestamp(0L));
+        item.add(new Timestamp(0L));
         expectedOutput.add(item);
 
         return expectedOutput;

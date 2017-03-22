@@ -1,8 +1,8 @@
 package de.njsm.stocks.common.data.view;
 
 import de.njsm.stocks.common.data.Food;
-import de.njsm.stocks.common.data.FoodItem;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,18 +10,18 @@ public class FoodView {
 
     protected final Food food;
 
-    protected final List<FoodItem> items;
+    private final List<Date> items;
 
     public FoodView(Food food) {
         this.food = food;
         this.items = new LinkedList<>();
     }
 
-    public void add(FoodItem i) {
+    public void add(Date i) {
         items.add(i);
     }
 
-    public List<FoodItem> getItems() {
+    public List<Date> getItems() {
         return items;
     }
 

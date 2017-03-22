@@ -2,7 +2,6 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.storage.DatabaseException;
-import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.view.FoodView;
 
 import java.text.ParseException;
@@ -121,7 +120,7 @@ public class FoodListCommandHandler extends CommandHandler {
 
             for (FoodView f : food) {
                 printedItems = 0;
-                f.getItems().removeIf((item) -> item.eatByDate.after(listUntil));
+                f.getItems().removeIf((item) -> item.after(listUntil));
 
                 if ((!existing || (existing && !f.getItems().isEmpty())) &&
                         range.isValidValue(f.getItems().size()) &&
@@ -129,8 +128,8 @@ public class FoodListCommandHandler extends CommandHandler {
 
                     outBuf.append("\t" + f.getItems().size() + "x " + f.getFood().name + "\n");
                     if (!quiet) {
-                        for (FoodItem i : f.getItems()) {
-                            outBuf.append("\t\t" + format.format(i.eatByDate) + "\n");
+                        for (Date date : f.getItems()) {
+                            outBuf.append("\t\t" + format.format(date) + "\n");
                             printedItems++;
                             if (printedItems >= limit) {
                                 break;

@@ -378,36 +378,32 @@ public class DatabaseManager {
     }
 
     private PreparedStatement getStatementFilteringBy(String user, String location, Connection c) throws SQLException {
+        String queryStringTemplate = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type %s" +
+                "ORDER BY f.ID ASC, i.eat_by ASC";
         String queryString;
         PreparedStatement sqlQuery;
         if (user.equals("")) {
             if (location.equals("")) {
-                queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                        "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                        "ORDER BY f.ID ASC, i.eat_by ASC";
+                String filterClause = "";
+                queryString = String.format(queryStringTemplate, filterClause);
                 sqlQuery = c.prepareStatement(queryString);
             } else {
-                queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                        "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                        "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
-                        "ORDER BY f.ID ASC, i.eat_by ASC";
+                String filterClause = "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?)";
+                queryString = String.format(queryStringTemplate, filterClause);
                 sqlQuery = c.prepareStatement(queryString);
                 sqlQuery.setString(1, location);
             }
         } else {
             if (location.equals("")) {
-                queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                        "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                        "WHERE i.buys in (SELECT ID FROM User WHERE name=?) " +
-                        "ORDER BY f.ID ASC, i.eat_by ASC";
+                String filterClause = "WHERE i.buys in (SELECT ID FROM User WHERE name=?)";
+                queryString = String.format(queryStringTemplate, filterClause);
                 sqlQuery = c.prepareStatement(queryString);
                 sqlQuery.setString(1, user);
             } else {
-                queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                        "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                        "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
-                        "AND i.buys in (SELECT ID FROM User WHERE name=?) " +
-                        "ORDER BY f.ID ASC, i.eat_by ASC";
+                String filterClause = "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
+                        "AND i.buys in (SELECT ID FROM User WHERE name=?)";
+                queryString = String.format(queryStringTemplate, filterClause);
                 sqlQuery = c.prepareStatement(queryString);
                 sqlQuery.setString(1, location);
                 sqlQuery.setString(2, user);
@@ -482,11 +478,9 @@ public class DatabaseManager {
                 newFood.name = rs.getString("name");
                 f = new FoodView(newFood);
             }
-            FoodItem i = new FoodItem();
-            i.eatByDate = rs.getTimestamp("date");
-            i.ofType = id;
-            if (i.eatByDate != null) {
-                f.add(i);
+            Timestamp date = rs.getTimestamp("date");
+            if (date != null && f != null) {
+                f.add(date);
             }
             lastId = id;
         }
