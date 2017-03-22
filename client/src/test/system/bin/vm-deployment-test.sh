@@ -28,8 +28,6 @@ $FINGERPRINT\n\
 0000\nrefresh\nuser\ndev\nfood\nloc\nquit\n" \
         | java -jar -Duser.stocks.dir=$STOCKS_ROOT/client/src/test/system/tmp \
         -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9999 \
-        -javaagent:/opt/jacoco/lib/jacocoagent.jar=destfile=/tmp/jacoco-\
-client.exec,dumponexit=true,output=file\
         $STOCKS_ROOT/client/target/client-*.jar
 
 rm -rf $STOCKS_ROOT/client/src/test/system/tmp
