@@ -24,29 +24,14 @@ public class HttpClientFactory {
             LOG.info("Getting new http client");
             LOG.info("Keystore is " + Configuration.KEYSTORE_PATH);
 
-            TrustManagerFactory tmf = TrustManagerFactory
-                    .getInstance(TrustManagerFactory.getDefaultAlgorithm());
             KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
             ks.load(new FileInputStream(Configuration.KEYSTORE_PATH),
                     Configuration.KEYSTORE_PASSWORD.toCharArray());
-            tmf.init(ks);
 
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            kmf.init(ks, Configuration.KEYSTORE_PASSWORD.toCharArray());
-
-            SSLContext context = SSLContext.getInstance("TLSv1.2");
-            context.init(kmf.getKeyManagers(),
-                    tmf.getTrustManagers(),
-                    new SecureRandom());
-
-            return new OkHttpClient()
-                    .setSslSocketFactory(context.getSocketFactory())
-                    .setHostnameVerifier((s, sslSession) -> true);
+            return getClient(ks);
         } catch (Exception e) {
-            LOG.error("Failed to create new http client", e);
-            throw new CryptoException("There is a problem with the key store", e);
+            throw error(e);
         }
-
     }
 
     public static OkHttpClient getClient(KeyStore ks) throws CryptoException {
@@ -70,9 +55,13 @@ public class HttpClientFactory {
                     .setSslSocketFactory(context.getSocketFactory())
                     .setHostnameVerifier((s, sslSession) -> true);
         } catch (Exception e) {
-            LOG.error("Failed to create new http client", e);
-            throw new CryptoException("There is a problem with the key store", e);
+            throw error(e);
         }
 
+    }
+
+    private static CryptoException error(Exception e) throws CryptoException {
+        LOG.error("Failed to create new http client", e);
+        throw new CryptoException("There is a problem with the key store", e);
     }
 }
