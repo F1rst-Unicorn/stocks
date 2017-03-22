@@ -5,7 +5,7 @@ import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.SelectException;
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.storage.DatabaseException;
+import de.njsm.stocks.client.exceptions.DatabaseException;
 
 import java.util.List;
 

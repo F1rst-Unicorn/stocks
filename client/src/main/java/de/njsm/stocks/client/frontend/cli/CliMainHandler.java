@@ -10,10 +10,10 @@ import java.util.ArrayList;
 
 public class CliMainHandler implements MainHandler {
 
-    protected final CommandManager m;
-    protected final Configuration c;
+    private final CommandManager m;
+    private final Configuration c;
 
-    public CliMainHandler(Configuration c) {
+    CliMainHandler(Configuration c) {
         this.c = c;
 
         ArrayList<CommandHandler> commandHandler = new ArrayList<>();
@@ -32,12 +32,10 @@ public class CliMainHandler implements MainHandler {
     @Override
     public void run(String[] args) {
         boolean endRequested = false;
-        Command command;
 
         if (args.length > 0) {
             try {
-                command = Command.createCommand(args);
-                m.handleCommand(command);
+                executeCommand(args);
             } catch (ParseException e) {
                 // TODO Log
             }
@@ -53,8 +51,7 @@ public class CliMainHandler implements MainHandler {
                         break;
                     default:
                         try {
-                            command = Command.createCommand(input);
-                            m.handleCommand(command);
+                            executeCommand(args);
                         } catch (ParseException e) {
                             // TODO Log
                         }
@@ -62,6 +59,12 @@ public class CliMainHandler implements MainHandler {
             }
         }
         c.getReader().shutdown();
+    }
+
+    private void executeCommand(String[] args) throws ParseException {
+        Command command;
+        command = Command.createCommand(args);
+        m.handleCommand(command);
     }
 
 }

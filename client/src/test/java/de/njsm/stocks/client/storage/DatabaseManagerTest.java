@@ -1,5 +1,6 @@
 package de.njsm.stocks.client.storage;
 
+import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.FoodView;
 import de.njsm.stocks.common.data.view.UserDeviceView;

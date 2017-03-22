@@ -1,7 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.storage.DatabaseException;
+import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.common.data.Location;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

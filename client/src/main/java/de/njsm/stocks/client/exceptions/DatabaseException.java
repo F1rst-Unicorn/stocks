@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.storage;
+package de.njsm.stocks.client.exceptions;
 
 public class DatabaseException extends Exception {
 

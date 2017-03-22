@@ -21,7 +21,6 @@ public class Main {
     public static final ExecutorService threadPool = Executors.newFixedThreadPool(1);
 
     public static void main (String[] args) {
-
         int exitCode = 0;
 
         try {
@@ -38,14 +37,18 @@ public class Main {
 
             f.getMainHandler(c).run(args);
         } catch (PrintableException e) {
-            LOG.error("", e);
-            System.err.println(e.getMessage());
-            System.err.println("For details consider the log file at " +
-                    "~/.stocks/stocks.log");
-            exitCode = 1;
+            exitCode = handleError(e);
         } finally {
             threadPool.shutdown();
         }
         System.exit(exitCode);
+    }
+
+    private static int handleError(PrintableException e) {
+        LOG.error("", e);
+        System.err.println(e.getMessage());
+        System.err.println("For details consider the log file at " +
+                "~/.stocks/stocks.log");
+        return 1;
     }
 }
