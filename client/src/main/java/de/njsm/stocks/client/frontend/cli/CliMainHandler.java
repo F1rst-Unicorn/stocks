@@ -32,10 +32,12 @@ public class CliMainHandler implements MainHandler {
     @Override
     public void run(String[] args) {
         boolean endRequested = false;
+        Command command;
 
         if (args.length > 0) {
             try {
-                executeCommand(args);
+                command = Command.createCommand(args);
+                m.handleCommand(command);
             } catch (ParseException e) {
                 // TODO Log
             }
@@ -51,7 +53,8 @@ public class CliMainHandler implements MainHandler {
                         break;
                     default:
                         try {
-                            executeCommand(args);
+                            command = Command.createCommand(input);
+                            m.handleCommand(command);
                         } catch (ParseException e) {
                             // TODO Log
                         }
@@ -60,11 +63,4 @@ public class CliMainHandler implements MainHandler {
         }
         c.getReader().shutdown();
     }
-
-    private void executeCommand(String[] args) throws ParseException {
-        Command command;
-        command = Command.createCommand(args);
-        m.handleCommand(command);
-    }
-
 }

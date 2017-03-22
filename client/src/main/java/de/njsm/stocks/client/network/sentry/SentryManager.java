@@ -15,7 +15,7 @@ public class SentryManager {
     private static final Logger LOG = LogManager.getLogger(SentryManager.class);
 
 
-    protected SentryClient backend;
+    private SentryClient backend;
 
     public SentryManager(OkHttpClient httpClient, TcpHost sentryHost) {
         String url = String.format("https://%s/", sentryHost.toString());

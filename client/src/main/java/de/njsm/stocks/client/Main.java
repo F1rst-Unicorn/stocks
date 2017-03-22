@@ -33,7 +33,7 @@ public class Main {
 
             im.initialise();
 
-            c.loadConfig();
+            c.initialise();
 
             f.getMainHandler(c).run(args);
         } catch (PrintableException e) {

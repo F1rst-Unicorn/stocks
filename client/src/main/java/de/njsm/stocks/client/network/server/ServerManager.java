@@ -1,8 +1,10 @@
 package de.njsm.stocks.client.network.server;
 
-import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.network.HttpClientFactory;
+import com.squareup.okhttp.OkHttpClient;
+import de.njsm.stocks.client.network.TcpHost;
 import de.njsm.stocks.common.data.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import retrofit.Call;
 import retrofit.JacksonConverterFactory;
 import retrofit.Response;
@@ -12,26 +14,22 @@ import java.io.IOException;
 
 public class ServerManager {
 
+    private static final Logger LOG = LogManager.getLogger(ServerManager.class);
+
     protected ServerClient backend;
-    protected Configuration c;
 
-    public ServerManager(Configuration c) {
-        try {
-            String url = String.format("https://%s:%d/",
-                    c.getServerName(),
-                    c.getServerPort());
+    public ServerManager(OkHttpClient httpClient, TcpHost serverHost) {
+        String url = String.format("https://%s:%d/",
+                serverHost.getHostname(),
+                serverHost.getPort());
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(url)
-                    .client(HttpClientFactory.getClient())
-                    .addConverterFactory(JacksonConverterFactory.create())
-                    .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .client(httpClient)
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build();
 
-            backend = retrofit.create(ServerClient.class);
-            this.c = c;
-        } catch (Exception e) {
-            // TODO Log
-        }
+        backend = retrofit.create(ServerClient.class);
     }
 
     public Update[] getUpdates() {
