@@ -101,6 +101,8 @@ public class Command {
             buf.append(" ");
         }
 
+        buf.deleteCharAt(buf.length()-1);
+
         return buf.toString();
     }
 

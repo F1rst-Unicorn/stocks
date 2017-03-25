@@ -68,9 +68,8 @@ public class CommandTest {
     public void resettingCommandWorks() throws Exception {
         String input = "food add";
         Command uut = Command.createCommand(input);
-        int numberOfWords = 2;
 
-        for (int i = 0; i < numberOfWords; i++) {
+        while (uut.hasNext()) {
             uut.next();
         }
         uut.reset();
@@ -140,4 +139,14 @@ public class CommandTest {
         uut.getParamRange('d');
     }
 
+    @Test
+    public void testToString() throws Exception {
+        String input = "food add --n sausage --l 3-4 -esa";
+        Command uut = Command.createCommand(input);
+        String expectedOutput = "food add -a -e -l=3-4 -n=sausage -s";
+
+        String output = uut.toString();
+
+        Assert.assertEquals(expectedOutput, output);
+    }
 }
