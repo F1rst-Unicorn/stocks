@@ -4,7 +4,7 @@ import de.njsm.stocks.client.frontend.MainHandler;
 import de.njsm.stocks.client.frontend.cli.commands.*;
 import de.njsm.stocks.client.config.Configuration;
 
-import java.text.ParseException;
+import de.njsm.stocks.client.exceptions.ParseException;
 import java.util.ArrayList;
 
 

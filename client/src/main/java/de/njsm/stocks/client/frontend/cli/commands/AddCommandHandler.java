@@ -9,7 +9,7 @@ import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.client.exceptions.SelectException;
 
-import java.text.ParseException;
+import de.njsm.stocks.client.exceptions.ParseException;
 import java.util.Date;
 import java.util.List;
 

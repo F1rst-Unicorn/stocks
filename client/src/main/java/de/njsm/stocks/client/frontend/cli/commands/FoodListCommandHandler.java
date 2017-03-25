@@ -5,7 +5,7 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.view.FoodView;
 
-import java.text.ParseException;
+import de.njsm.stocks.client.exceptions.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ValueRange;
 import java.util.Date;
@@ -83,7 +83,7 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
                 try {
                     Pattern.compile(regex);
                 } catch (PatternSyntaxException e) {
-                    throw new ParseException("regex is not valid", 0);
+                    throw new ParseException("regex is not valid");
                 }
             } else {
                 regex = ".*";

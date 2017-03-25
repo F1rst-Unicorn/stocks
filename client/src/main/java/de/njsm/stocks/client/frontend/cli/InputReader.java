@@ -1,8 +1,9 @@
 package de.njsm.stocks.client.frontend.cli;
 
+import de.njsm.stocks.client.exceptions.ParseException;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -128,7 +129,11 @@ public class InputReader {
         if (input.length() > 0 && input.charAt(0) == '+') {
             result = parseRelative(input);
         } else {
-            result = parser.parse(input);
+            try {
+                result = parser.parse(input);
+            } catch (java.text.ParseException e) {
+                throw new ParseException("Could not parse date", e);
+            }
         }
         return result;
     }
@@ -139,7 +144,8 @@ public class InputReader {
         try {
             amount = Integer.parseInt(input.substring(1, input.length() - 1));
         } catch (NumberFormatException e) {
-            throw new ParseException(input, 1);
+            throw new ParseException(input);
+
         }
 
         Date result;
@@ -151,7 +157,7 @@ public class InputReader {
                 result = new Date(new Date().getTime() + amount * 1000L * 60L * 60L * 24L * 30L);
                 break;
             default:
-                throw new ParseException(input, input.length()-1);
+                throw new ParseException(input);
         }
         return result;
     }

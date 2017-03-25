@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.frontend.cli;
 
-import java.text.ParseException;
+import de.njsm.stocks.client.exceptions.ParseException;
 import java.time.temporal.ValueRange;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -55,7 +55,7 @@ public class Command {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throw new ParseException("Parameter for -" + c + " is not a number", 0);
+            throw new ParseException("Parameter for -" + c + " is not a number");
         }
     }
 
@@ -79,7 +79,7 @@ public class Command {
                 return ValueRange.of(inf, sup);
             }
         } else {
-            throw new ParseException("Not a range: " + value, 0);
+            throw new ParseException("Not a range: " + value);
         }
     }
 
@@ -147,11 +147,11 @@ public class Command {
 
     protected void handleParameterisedArgument(Iterator<String> it, String word) throws ParseException  {
         if (word.length() != 3) {
-            throw new ParseException("Only one argument allowed at once: " + word, 0);
+            throw new ParseException("Only one argument allowed at once: " + word);
         }
 
         if (!it.hasNext()) {
-            throw new ParseException("Missing parameter for " + word, 0);
+            throw new ParseException("Missing parameter for " + word);
         }
 
         String parameter = it.next();
