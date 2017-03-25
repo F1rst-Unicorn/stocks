@@ -1,5 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
+import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.CommandManager;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 import de.njsm.stocks.client.frontend.cli.InputReader;
 import de.njsm.stocks.client.config.Configuration;
@@ -9,7 +11,7 @@ import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DeviceCommandHandler extends CommandHandler {
+public class DeviceCommandHandler extends AbstractCommandHandler {
 
     protected final CommandManager m;
 
@@ -18,7 +20,7 @@ public class DeviceCommandHandler extends CommandHandler {
         this.command = "dev";
         this.description = "Manage the devices accessing the stocks system";
 
-        List<CommandHandler> commandList = new LinkedList<>();
+        List<AbstractCommandHandler> commandList = new LinkedList<>();
         commandList.add(new DeviceAddCommandHandler(c));
         commandList.add(new DeviceListCommandHandler(c));
         commandList.add(new DeviceRemoveCommandHandler(c));

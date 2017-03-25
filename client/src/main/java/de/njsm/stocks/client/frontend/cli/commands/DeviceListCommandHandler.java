@@ -2,13 +2,14 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-public class DeviceListCommandHandler extends CommandHandler {
+public class DeviceListCommandHandler extends AbstractCommandHandler {
 
     private static final Logger LOG = LogManager.getLogger(DeviceListCommandHandler.class);
 

@@ -2,6 +2,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
+import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.client.exceptions.SelectException;
@@ -9,7 +10,7 @@ import de.njsm.stocks.client.config.Configuration;
 
 import java.util.List;
 
-public class EatCommandHandler extends CommandHandler {
+public class EatCommandHandler extends AbstractCommandHandler {
 
     public EatCommandHandler(Configuration c) {
         command = "eat";

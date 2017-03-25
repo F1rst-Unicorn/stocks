@@ -1,5 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
+import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.CommandManager;
 import de.njsm.stocks.client.frontend.cli.InputReader;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.common.data.Location;
@@ -9,7 +11,7 @@ import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationCommandHandler extends CommandHandler {
+public class LocationCommandHandler extends AbstractCommandHandler {
 
     protected final CommandManager m;
 
@@ -18,7 +20,7 @@ public class LocationCommandHandler extends CommandHandler {
         description = "Manage the locations to store food";
         this.c = c;
 
-        List<CommandHandler> commands = new ArrayList<>();
+        List<AbstractCommandHandler> commands = new ArrayList<>();
         commands.add(new LocationAddCommandHandler(c));
         commands.add(new LocationListCommandHandler(c));
         commands.add(new LocationRenameCommandHandler(c));

@@ -2,6 +2,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
+import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.common.data.FoodItem;
@@ -12,7 +13,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-public class AddCommandHandler extends CommandHandler {
+public class AddCommandHandler extends AbstractCommandHandler {
 
     protected String location;
 

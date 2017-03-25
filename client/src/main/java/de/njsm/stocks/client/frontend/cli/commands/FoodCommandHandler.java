@@ -1,6 +1,8 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.CommandManager;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.client.exceptions.SelectException;
 import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
@@ -9,7 +11,7 @@ import de.njsm.stocks.client.frontend.cli.InputReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoodCommandHandler extends CommandHandler {
+public class FoodCommandHandler extends AbstractCommandHandler {
 
     protected final CommandManager m;
 
@@ -18,7 +20,7 @@ public class FoodCommandHandler extends CommandHandler {
         description = "Manage the food types";
         this.c = c;
 
-        List<CommandHandler> commands = new ArrayList<>();
+        List<AbstractCommandHandler> commands = new ArrayList<>();
         commands.add(new FoodAddCommandHandler(c));
         commands.add(new FoodListCommandHandler(c));
         commands.add(new FoodRenameCommandHandler(c));

@@ -1,5 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
+import de.njsm.stocks.client.frontend.cli.Command;
 import org.junit.Assert;
 import org.junit.Test;
 

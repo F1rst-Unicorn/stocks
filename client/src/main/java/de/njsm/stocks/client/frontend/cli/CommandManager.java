@@ -1,17 +1,19 @@
-package de.njsm.stocks.client.frontend.cli.commands;
+package de.njsm.stocks.client.frontend.cli;
+
+import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
 
 import java.util.List;
 
 public class CommandManager {
 
-    protected final List<CommandHandler> commandHandler;
+    protected final List<AbstractCommandHandler> commandHandler;
     protected final String prefix;
 
-    public CommandManager(List<CommandHandler> commands) {
+    public CommandManager(List<AbstractCommandHandler> commands) {
         this(commands, "");
     }
 
-    public CommandManager(List<CommandHandler> commands, String prefix) {
+    public CommandManager(List<AbstractCommandHandler> commands, String prefix) {
         commandHandler = commands;
         this.prefix = prefix;
     }
@@ -25,7 +27,7 @@ public class CommandManager {
             commandFound = true;
         }
 
-        for (CommandHandler c : commandHandler) {
+        for (AbstractCommandHandler c : commandHandler) {
             if (c.canHandle(word)){
                 c.handle(command);
                 commandFound = true;
@@ -45,7 +47,7 @@ public class CommandManager {
             System.out.println("Possible commands for " + prefix + ":");
         }
 
-        for (CommandHandler c : commandHandler){
+        for (AbstractCommandHandler c : commandHandler){
             System.out.println("\t" + prefix + " " + c.toString());
         }
         System.out.println("Type '<command> help' for specific help to that command");

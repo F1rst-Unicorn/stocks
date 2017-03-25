@@ -1,8 +1,9 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.frontend.cli.Command;
 
-public abstract class CommandHandler {
+public abstract class AbstractCommandHandler {
 
     protected String command;
     protected String description;

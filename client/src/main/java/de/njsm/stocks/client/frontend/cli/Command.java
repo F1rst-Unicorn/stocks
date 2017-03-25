@@ -1,6 +1,4 @@
-package de.njsm.stocks.client.frontend.cli.commands;
-
-import de.njsm.stocks.client.frontend.cli.InputReader;
+package de.njsm.stocks.client.frontend.cli;
 
 import java.text.ParseException;
 import java.time.temporal.ValueRange;
@@ -10,9 +8,9 @@ import java.util.regex.Pattern;
 
 public class Command {
 
-    protected final Map<Character, String> arguments;
-    protected final List<String> command;
-    protected Iterator<String> commandIt;
+    private final Map<Character, String> arguments;
+    private final List<String> command;
+    private Iterator<String> commandIt;
 
     public static Command createCommand(String input) throws ParseException {
         Command result = new Command();

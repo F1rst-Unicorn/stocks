@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.exceptions.NetworkException;
+import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.common.data.view.UserDeviceView;
@@ -10,7 +11,7 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 
 import java.util.List;
 
-public class DeviceAddCommandHandler extends CommandHandler {
+public class DeviceAddCommandHandler extends AbstractCommandHandler {
 
     public DeviceAddCommandHandler(Configuration c) {
         this.c = c;

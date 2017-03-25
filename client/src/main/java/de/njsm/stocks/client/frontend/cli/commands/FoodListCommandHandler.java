@@ -2,6 +2,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.view.FoodView;
 
 import java.text.ParseException;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class FoodListCommandHandler extends CommandHandler {
+public class FoodListCommandHandler extends AbstractCommandHandler {
 
     protected boolean quiet;
     protected boolean existing;

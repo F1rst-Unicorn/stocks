@@ -2,6 +2,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.NetworkException;
+import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.storage.DatabaseManager;
@@ -12,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Arrays;
 import java.util.List;
 
-public class RefreshCommandHandler extends CommandHandler {
+public class RefreshCommandHandler extends AbstractCommandHandler {
 
     private static final Logger LOG = LogManager.getLogger(RefreshCommandHandler.class);
 

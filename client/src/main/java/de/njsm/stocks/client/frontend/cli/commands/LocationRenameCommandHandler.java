@@ -3,12 +3,13 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
+import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.client.exceptions.SelectException;
 
 import java.util.List;
 
-public class LocationRenameCommandHandler extends CommandHandler {
+public class LocationRenameCommandHandler extends AbstractCommandHandler {
 
     public LocationRenameCommandHandler(Configuration c) {
         this.c = c;

@@ -1,6 +1,8 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.CommandManager;
 import de.njsm.stocks.common.data.User;
 import de.njsm.stocks.client.exceptions.SelectException;
 import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
@@ -9,7 +11,7 @@ import de.njsm.stocks.client.frontend.cli.InputReader;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UserCommandHandler extends CommandHandler {
+public class UserCommandHandler extends AbstractCommandHandler {
 
     protected final CommandManager m;
 
@@ -18,7 +20,7 @@ public class UserCommandHandler extends CommandHandler {
         description = "Manage the users of the stocks system";
         this.c = c;
 
-        List<CommandHandler> commandList = new LinkedList<>();
+        List<AbstractCommandHandler> commandList = new LinkedList<>();
         commandList.add(new UserAddCommandHandler(c));
         commandList.add(new UserListCommandHandler(c));
         commandList.add(new UserRemoveCommandHandler(c));

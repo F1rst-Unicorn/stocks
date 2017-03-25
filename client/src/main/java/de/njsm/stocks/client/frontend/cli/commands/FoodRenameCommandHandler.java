@@ -3,12 +3,13 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
+import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.client.exceptions.SelectException;
 
 import java.util.List;
 
-public class FoodRenameCommandHandler extends CommandHandler {
+public class FoodRenameCommandHandler extends AbstractCommandHandler {
 
     public FoodRenameCommandHandler(Configuration c) {
         this.c = c;
