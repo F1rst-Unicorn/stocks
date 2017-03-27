@@ -5,7 +5,7 @@ import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
-import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.config.Configuration;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class EatCommandHandler extends AbstractCommandHandler {
 
             c.getServerManager().removeItem(item);
             (new RefreshCommandHandler(c, false)).refresh();
-        } catch (SelectException |
+        } catch (InputException |
                 DatabaseException |
                 NetworkException e) {
             System.out.println(e.getMessage());

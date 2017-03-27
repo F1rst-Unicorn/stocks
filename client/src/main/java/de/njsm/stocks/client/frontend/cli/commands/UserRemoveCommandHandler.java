@@ -4,7 +4,7 @@ import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class UserRemoveCommandHandler extends AbstractCommandHandler {
                     (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
-        } catch (SelectException |
+        } catch (InputException |
                 DatabaseException |
                 NetworkException e) {
             System.out.println(e.getMessage());

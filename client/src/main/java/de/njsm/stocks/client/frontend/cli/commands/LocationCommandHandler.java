@@ -5,7 +5,7 @@ import de.njsm.stocks.client.frontend.cli.CommandManager;
 import de.njsm.stocks.client.frontend.cli.InputReader;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.common.data.Location;
-import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
 
 import java.util.ArrayList;
@@ -42,14 +42,14 @@ public class LocationCommandHandler extends AbstractCommandHandler {
         m.printHelp();
     }
 
-    public static int selectLocation(List<Location> l, String name) throws SelectException {
+    public static int selectLocation(List<Location> l, String name) throws InputException {
         InputReader scanner = new EnhancedInputReader(System.in);
         int result;
 
         if (l.size() == 1) {
             result = l.get(0).id;
         } else if (l.size() == 0) {
-            throw new SelectException("No such location found: " + name);
+            throw new InputException("No such location found: " + name);
         } else {
             System.out.println("Several locations found");
             for (Location loc : l) {

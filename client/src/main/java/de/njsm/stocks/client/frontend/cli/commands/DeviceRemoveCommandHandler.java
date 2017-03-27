@@ -6,7 +6,7 @@ import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.common.data.view.UserDeviceView;
-import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.exceptions.InputException;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class DeviceRemoveCommandHandler extends AbstractCommandHandler {
                     (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
-        } catch (SelectException |
+        } catch (InputException |
                 DatabaseException |
                 NetworkException e) {
             System.out.println(e.getMessage());

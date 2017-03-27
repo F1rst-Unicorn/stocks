@@ -2,7 +2,7 @@ package de.njsm.stocks.client.storage;
 
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
-import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.FoodView;
 import de.njsm.stocks.common.data.view.UserDeviceView;
@@ -436,7 +436,7 @@ public class DatabaseManager {
         }
     }
 
-    public int getNextItem(int foodId) throws SelectException, DatabaseException {
+    public int getNextItem(int foodId) throws InputException, DatabaseException {
         LOG.info("Getting next item for food id " + foodId);
         String query = "SELECT * " +
                 "FROM Food_item " +
@@ -454,7 +454,7 @@ public class DatabaseManager {
             if (rs.next()) {
                 return rs.getInt("ID");
             } else {
-                throw new SelectException("You don't have any...");
+                throw new InputException("You don't have any...");
             }
         } catch (SQLException e) {
             throw new DatabaseException("Could not get next food item", e);

@@ -5,6 +5,9 @@ import de.njsm.stocks.client.frontend.cli.commands.*;
 import de.njsm.stocks.client.config.Configuration;
 
 import de.njsm.stocks.client.exceptions.ParseException;
+import de.njsm.stocks.client.frontend.cli.commands.add.AddCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.add.InputCollector;
+
 import java.util.ArrayList;
 
 
@@ -16,8 +19,16 @@ public class CliMainHandler implements MainHandler {
     CliMainHandler(Configuration c) {
         this.c = c;
 
+        ScreenWriter writer = new ScreenWriter(System.out);
+        InputCollector addCollector = new InputCollector(c.getDatabaseManager(),
+                c.getReader(),
+                writer);
+
         ArrayList<AbstractCommandHandler> commandHandler = new ArrayList<>();
-        commandHandler.add(new AddCommandHandler(c));
+        commandHandler.add(new AddCommandHandler(addCollector,
+                c.getServerManager(),
+                new RefreshCommandHandler(c, false),
+                writer));
         commandHandler.add(new MoveCommandHandler(c));
         commandHandler.add(new EatCommandHandler(c));
         commandHandler.add(new FoodCommandHandler(c));

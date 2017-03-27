@@ -5,7 +5,7 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.Location;
-import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.exceptions.InputException;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class LocationRenameCommandHandler extends AbstractCommandHandler {
                 }
             }
 
-        } catch (SelectException e) {
+        } catch (InputException e) {
             System.out.println(e.getMessage());
         } catch (DatabaseException |
                 NetworkException e) {

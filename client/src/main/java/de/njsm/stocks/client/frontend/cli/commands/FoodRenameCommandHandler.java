@@ -5,7 +5,7 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.Food;
-import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.exceptions.InputException;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class FoodRenameCommandHandler extends AbstractCommandHandler {
                     (new RefreshCommandHandler(c, false)).refresh();
                 }
             }
-        } catch (SelectException |
+        } catch (InputException |
                 DatabaseException |
                 NetworkException e) {
             System.out.println(e.getMessage());

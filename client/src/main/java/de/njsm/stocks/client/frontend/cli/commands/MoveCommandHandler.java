@@ -2,7 +2,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.NetworkException;
-import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.common.data.Food;
@@ -82,7 +82,7 @@ public class MoveCommandHandler extends AbstractCommandHandler {
             try {
                 locId = LocationCommandHandler.selectLocation(locations, location);
                 foodId = FoodCommandHandler.selectFood(foods, food);
-            } catch (SelectException e) {
+            } catch (InputException e) {
                 e.printStackTrace();
                 return;
             }

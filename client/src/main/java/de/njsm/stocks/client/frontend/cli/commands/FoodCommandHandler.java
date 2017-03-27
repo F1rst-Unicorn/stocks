@@ -4,7 +4,7 @@ import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.CommandManager;
 import de.njsm.stocks.common.data.Food;
-import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
 import de.njsm.stocks.client.frontend.cli.InputReader;
 
@@ -42,14 +42,14 @@ public class FoodCommandHandler extends AbstractCommandHandler {
         m.printHelp();
     }
 
-    public static int selectFood(List<Food> f, String name) throws SelectException {
+    public static int selectFood(List<Food> f, String name) throws InputException {
         InputReader scanner = new EnhancedInputReader(System.in);
         int result;
 
         if (f.size() == 1) {
             result = f.get(0).id;
         } else if (f.size() == 0) {
-            throw new SelectException("No such food found: " + name);
+            throw new InputException("No such food found: " + name);
         } else {
             System.out.println("Several food types found");
             for (Food food : f) {
