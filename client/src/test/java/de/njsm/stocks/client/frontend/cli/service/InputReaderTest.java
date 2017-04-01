@@ -1,6 +1,7 @@
-package de.njsm.stocks.client.frontend.cli;
+package de.njsm.stocks.client.frontend.cli.service;
 
 import de.njsm.stocks.client.exceptions.ParseException;
+import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import jline.console.ConsoleReader;
 import org.junit.After;
 import org.junit.Before;

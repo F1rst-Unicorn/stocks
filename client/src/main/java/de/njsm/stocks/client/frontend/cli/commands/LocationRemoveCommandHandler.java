@@ -5,14 +5,17 @@ import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.ScreenWriter;
+import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
+import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.common.data.Location;
 
 import java.util.List;
 
 public class LocationRemoveCommandHandler extends AbstractCommandHandler {
 
-    public LocationRemoveCommandHandler(Configuration c, ScreenWriter writer) {
+    private Selector selector;
+
+    public LocationRemoveCommandHandler(Configuration c, ScreenWriter writer, Selector selector) {
         super(writer);
         this.c = c;
         this.command = "remove";
@@ -36,7 +39,7 @@ public class LocationRemoveCommandHandler extends AbstractCommandHandler {
     public void removeLocation(String name) {
         try {
             List<Location> l = c.getDatabaseManager().getLocations(name);
-            int id = LocationCommandHandler.selectLocation(l, name);
+            int id = selector.selectLocation(l, name).id;
 
             for (Location loc : l) {
                 if (loc.id == id) {

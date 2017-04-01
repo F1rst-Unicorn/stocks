@@ -1,6 +1,8 @@
 package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.exceptions.ParseException;
+import de.njsm.stocks.client.frontend.cli.service.InputReader;
+
 import java.time.temporal.ValueRange;
 import java.util.*;
 import java.util.regex.Matcher;

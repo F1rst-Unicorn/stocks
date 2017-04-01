@@ -1,10 +1,8 @@
 package de.njsm.stocks.client.frontend.cli.service;
 
 import de.njsm.stocks.client.exceptions.InputException;
-import de.njsm.stocks.client.frontend.cli.InputReader;
-import de.njsm.stocks.client.frontend.cli.ScreenWriter;
-import de.njsm.stocks.common.data.FoodItem;
-import de.njsm.stocks.common.data.User;
+import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.common.data.view.UserDeviceView;
 
 import java.util.List;
 
@@ -36,6 +34,23 @@ public class Selector {
         }
     }
 
+    public Food selectFood(List<Food> f, String name) throws InputException {
+        if (f.size() == 1) {
+            return f.get(0);
+        } else if (f.size() == 0) {
+            throw new InputException("No such food found: " + name);
+        } else {
+            writer.printFood("Several food types found", f);
+            int resultId = reader.nextInt("Choose one ", f.get(0).id);
+            Food result = f.stream().filter(food -> food.id == resultId).findFirst().orElse(null);
+            if (result == null) {
+                throw new InputException("You did an invalid selection");
+            } else {
+                return result;
+            }
+        }
+    }
+
     public FoodItem selectItem(List<FoodItem> items) throws InputException {
         if (items.isEmpty()) {
             throw new InputException("No items found");
@@ -53,5 +68,41 @@ public class Selector {
         }
     }
 
+    public Location selectLocation(List<Location> l, String name) throws InputException {
+        if (l.size() == 1) {
+            return l.get(0);
+        } else if (l.size() == 0) {
+            throw new InputException("No such location found: " + name);
+        } else {
+            writer.printLocations("Several locations found", l);
+            int resultId = reader.nextInt("Choose one ", l.get(0).id);
+            Location result = l.stream().filter(i -> i.id == resultId).findFirst().orElse(null);
+            if (result == null) {
+                throw new InputException("You did an invalid selection");
+            } else {
+                return result;
+            }
+        }
+    }
 
+
+    public UserDeviceView selectDevice(List<UserDeviceView> d, String name) throws InputException {
+        if (d.size() == 1) {
+            return d.get(0);
+        } else if (d.size() == 0) {
+            throw new InputException("No such device found: " + name);
+        } else {
+            System.out.println("Several devices found");
+            for (UserDeviceView dev : d) {
+                System.out.println("\t" + dev.id + ": " + dev.user + "'s " + dev.name);
+            }
+            int resultId = reader.nextInt("Choose one ", d.get(0).id);
+            UserDeviceView result = d.stream().filter(i -> i.id == resultId).findFirst().orElse(null);
+            if (result == null) {
+                throw new InputException("You did an invalid selection");
+            } else {
+                return result;
+            }
+        }
+    }
 }

@@ -3,10 +3,8 @@ package de.njsm.stocks.client.frontend.cli.commands.move;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.InputReader;
-import de.njsm.stocks.client.frontend.cli.ScreenWriter;
-import de.njsm.stocks.client.frontend.cli.commands.FoodCommandHandler;
-import de.njsm.stocks.client.frontend.cli.commands.LocationCommandHandler;
+import de.njsm.stocks.client.frontend.cli.service.InputReader;
+import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.Food;
@@ -37,13 +35,13 @@ public class InputCollector {
 
     FoodItem createItem(Command command) throws DatabaseException, InputException {
         String foodFromUser = getInputFood(command);
-        int foodToMove = getFoodToMove(foodFromUser);
+        Food foodToMove = getFoodToMove(foodFromUser);
         return getItemToMove(foodToMove);
     }
 
     int createLocationId(Command command) throws DatabaseException, InputException {
         String locationFromUser = getInputLocation(command);
-        return resolveLocation(locationFromUser);
+        return resolveLocation(locationFromUser).id;
     }
 
     private String getInputFood(Command command) throws DatabaseException {
@@ -63,13 +61,13 @@ public class InputCollector {
         return reader.next("What to move? ");
     }
 
-    private int getFoodToMove(String food) throws DatabaseException, InputException {
+    private Food getFoodToMove(String food) throws DatabaseException, InputException {
         List<Food> foodList = dbManager.getFood(food);
-        return FoodCommandHandler.selectFood(foodList, food);
+        return selector.selectFood(foodList, food);
     }
 
-    private FoodItem getItemToMove(int foodId) throws DatabaseException, InputException {
-        List<FoodItem> items = listItemsOfType(foodId);
+    private FoodItem getItemToMove(Food food) throws DatabaseException, InputException {
+        List<FoodItem> items = listItemsOfType(food);
         return selector.selectItem(items);
     }
 
@@ -85,9 +83,9 @@ public class InputCollector {
         return result;
     }
 
-    private int resolveLocation(String locationFromUser) throws DatabaseException, InputException {
+    private Location resolveLocation(String locationFromUser) throws DatabaseException, InputException {
         List<Location> locations = dbManager.getLocations(locationFromUser);
-        return LocationCommandHandler.selectLocation(locations, locationFromUser);
+        return selector.selectLocation(locations, locationFromUser);
     }
 
     private String askForLocation() throws DatabaseException {
@@ -105,8 +103,8 @@ public class InputCollector {
         writer.printLocations("Available locations: ", locationList);
     }
 
-    private List<FoodItem> listItemsOfType(int foodId) throws DatabaseException {
-        List<FoodItem> items = dbManager.getItems(foodId);
+    private List<FoodItem> listItemsOfType(Food food) throws DatabaseException {
+        List<FoodItem> items = dbManager.getItems(food.id);
         writer.printItems("Items of this food type: ", items);
         return items;
     }

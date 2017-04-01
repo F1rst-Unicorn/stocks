@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.frontend.CertificateGenerator;
+import de.njsm.stocks.client.frontend.cli.service.InputReader;
 
 public class CliCertificateGenerator implements CertificateGenerator {
 

@@ -1,19 +1,22 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
+import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.ScreenWriter;
+import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
+import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.common.data.UserDevice;
-import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.common.data.view.UserDeviceView;
-import de.njsm.stocks.client.exceptions.InputException;
 
 import java.util.List;
 
 public class DeviceRemoveCommandHandler extends AbstractCommandHandler {
 
-    public DeviceRemoveCommandHandler(Configuration c, ScreenWriter writer) {
+    private Selector selector;
+
+    public DeviceRemoveCommandHandler(Configuration c, ScreenWriter writer, Selector selector) {
         super(writer);
         this.c = c;
         this.command = "remove";
@@ -37,7 +40,7 @@ public class DeviceRemoveCommandHandler extends AbstractCommandHandler {
     public void removeDevice(String name) {
         try {
             List<UserDeviceView> devices = c.getDatabaseManager().getDevices(name);
-            int id = DeviceCommandHandler.selectDevice(devices, name);
+            int id = selector.selectDevice(devices, name).id;
 
             for (UserDeviceView d : devices) {
                 if (d.id == id) {

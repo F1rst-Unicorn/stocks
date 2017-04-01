@@ -4,10 +4,9 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.InputReader;
-import de.njsm.stocks.client.frontend.cli.ScreenWriter;
-import de.njsm.stocks.client.frontend.cli.commands.FoodCommandHandler;
-import de.njsm.stocks.client.frontend.cli.commands.LocationCommandHandler;
+import de.njsm.stocks.client.frontend.cli.service.InputReader;
+import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
+import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
@@ -20,22 +19,26 @@ public class InputCollector {
 
     private DatabaseManager dbManager;
 
+    private Selector selector;
+
     private InputReader reader;
 
     private ScreenWriter writer;
 
     public InputCollector(DatabaseManager dbManager,
+                          Selector selector,
                           InputReader reader,
                           ScreenWriter writer) {
         this.dbManager = dbManager;
+        this.selector = selector;
         this.reader = reader;
         this.writer = writer;
     }
 
     FoodItem createFoodItem(Command c) throws DatabaseException, InputException {
         FoodItem result = new FoodItem();
-        result.ofType = resolveFood(c);
-        result.storedIn = resolveLocation(c, result.ofType);
+        result.ofType = resolveFood(c).id;
+        result.storedIn = resolveLocation(c, result.ofType).id;
         result.eatByDate = resolveDate(c);
         return result;
     }
@@ -60,10 +63,10 @@ public class InputCollector {
         return reader.nextDate("Eat before:  ");
     }
 
-    private int resolveFood(Command c) throws DatabaseException, InputException {
+    private Food resolveFood(Command c) throws DatabaseException, InputException {
         String type = getFoodName(c);
         List<Food> foods = dbManager.getFood(type);
-        return FoodCommandHandler.selectFood(foods, type);
+        return selector.selectFood(foods, type);
     }
 
     private String getFoodName(Command c) {
@@ -76,7 +79,7 @@ public class InputCollector {
         return type;
     }
 
-    private int resolveLocation(Command c, int foodId) throws DatabaseException, InputException {
+    private Location resolveLocation(Command c, int foodId) throws DatabaseException, InputException {
         if (c.hasArg('l')) {
             return getLocationFromCommand(c);
         } else {
@@ -84,7 +87,7 @@ public class InputCollector {
         }
     }
 
-    private int suggestLocationsBasedOnFoodType(int foodId) throws DatabaseException, InputException {
+    private Location suggestLocationsBasedOnFoodType(int foodId) throws DatabaseException, InputException {
         List<Location> l = dbManager.getLocationsForFoodType(foodId);
 
         if (l.isEmpty()) {
@@ -94,33 +97,30 @@ public class InputCollector {
         }
     }
 
-    private int getLocationFromExistingFood(List<Location> l) throws InputException, DatabaseException {
-        listLocations(l);
-        int result = reader.nextInt("Choose one or type -1 for new location", l.get(0).id);
+    private Location getLocationFromExistingFood(List<Location> l) throws InputException, DatabaseException {
+        writer.printLocations("Some food already in:", l);
+        int resultId = reader.nextInt("Choose one or type -1 for new location", l.get(0).id);
+        Location result = l.stream().filter(i -> i.id == resultId).findFirst().orElse(null);
 
-        if (result == -1) {
+        if (result == null) {
             return getLocationFromUser();
         } else {
             return result;
         }
     }
 
-    private void listLocations(List<Location> l) {
-        writer.printLocations("Some food already in:", l);
-    }
-
-    private int getLocationFromCommand(Command c) throws DatabaseException, InputException {
+    private Location getLocationFromCommand(Command c) throws DatabaseException, InputException {
         String location = c.getParam('l');
         return getLocationByName(location);
     }
 
-    private int getLocationFromUser() throws InputException, DatabaseException {
+    private Location getLocationFromUser() throws InputException, DatabaseException {
         String location = reader.next("Where is it stored?  ");
         return getLocationByName(location);
     }
 
-    private int getLocationByName(String location) throws DatabaseException, InputException {
+    private Location getLocationByName(String location) throws DatabaseException, InputException {
         List<Location> locations = dbManager.getLocations(location);
-        return LocationCommandHandler.selectLocation(locations, location);
+        return selector.selectLocation(locations, location);
     }
 }

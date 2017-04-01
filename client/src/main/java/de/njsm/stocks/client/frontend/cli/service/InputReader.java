@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.frontend.cli;
+package de.njsm.stocks.client.frontend.cli.service;
 
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.ParseException;
@@ -54,7 +54,7 @@ public class InputReader {
         }
     }
 
-    void shutdown() {
+    public void shutdown() {
         if (reader.getHistory() instanceof FileHistory){
             try {
                 ((FileHistory) reader.getHistory()).flush();
@@ -136,7 +136,7 @@ public class InputReader {
         return noDollar == -1 && noEqual == -1;
     }
 
-    static Date parseDate(String input) throws ParseException {
+    public static Date parseDate(String input) throws ParseException {
         Date result;
         SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yyyy");
         if (input.length() > 0 && input.charAt(0) == '+') {

@@ -3,7 +3,8 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.ScreenWriter;
+import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
+import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.client.exceptions.InputException;
@@ -13,12 +14,14 @@ import java.util.List;
 
 public class EatCommandHandler extends AbstractCommandHandler {
 
-    public EatCommandHandler(Configuration c, ScreenWriter writer) {
+    private Selector selector;
+
+    public EatCommandHandler(Configuration c, ScreenWriter writer, Selector selector) {
         super(writer);
         command = "eat";
         description = "Eat a food item";
         this.c = c;
-
+        this.selector = selector;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class EatCommandHandler extends AbstractCommandHandler {
     public void eatFood(String type) {
         try {
             List<Food> foods = c.getDatabaseManager().getFood(type);
-            int foodId = FoodCommandHandler.selectFood(foods, type);
+            int foodId = selector.selectFood(foods, type).id;
             int itemId = c.getDatabaseManager().getNextItem(foodId);
 
             FoodItem item = new FoodItem();

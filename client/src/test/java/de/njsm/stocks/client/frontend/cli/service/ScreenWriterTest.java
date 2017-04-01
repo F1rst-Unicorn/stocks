@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.frontend.cli;
+package de.njsm.stocks.client.frontend.cli.service;
 
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
