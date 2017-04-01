@@ -57,7 +57,7 @@ public class CliMainHandler implements MainHandler {
                 refresher,
                 writer));
         commandHandler.add(new MoveCommandHandler(c.getServerManager(),
-                moveCollector, writer));
+                moveCollector, writer, refresher));
         commandHandler.add(new EatCommandHandler(c, writer, selector, refresher));
         commandHandler.add(new FoodCommandHandler(c, writer, selector, refresher));
         commandHandler.add(new LocationCommandHandler(c, writer, selector, refresher));
