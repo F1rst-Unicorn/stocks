@@ -24,9 +24,9 @@ public class ScreenWriter {
 
     public void printFood(String headline, List<Food> foodList) {
         if (foodList.isEmpty()) {
-            outputStream.println("\tNo food there...");
+            println("\tNo food there...");
         } else {
-            outputStream.println(headline);
+            println(headline);
 
             for (Food f : foodList) {
                 printFood(f);
@@ -35,14 +35,14 @@ public class ScreenWriter {
     }
 
     public void printFood(Food f) {
-        outputStream.println("\t" + f.id + ": " + f.name);
+        println("\t" + f.id + ": " + f.name);
     }
 
     public void printLocations(String headline, List<Location> locations) {
         if (locations.isEmpty()) {
-            outputStream.println("\tNo locations there...");
+            println("\tNo locations there...");
         } else {
-            outputStream.println(headline);
+            println(headline);
 
             for (Location loc : locations) {
                 printLocation(loc);
@@ -51,14 +51,14 @@ public class ScreenWriter {
     }
 
     public void printLocation(Location loc) {
-        outputStream.println("\t" + loc.id + ": " + loc.name);
+        println("\t" + loc.id + ": " + loc.name);
     }
 
     public void printItems(String headline, List<FoodItem> items) {
         if (items.isEmpty()) {
-            outputStream.println("\tNo items to show...");
+            println("\tNo items there...");
         } else {
-            outputStream.println(headline);
+            println(headline);
 
             for (FoodItem i : items) {
                 printItem(i);
@@ -67,6 +67,6 @@ public class ScreenWriter {
     }
 
     public void printItem(FoodItem i) {
-        outputStream.println("\t\t" + i.id + ": " + format.format(i.eatByDate));
+        println("\t\t" + i.id + ": " + format.format(i.eatByDate));
     }
 }
