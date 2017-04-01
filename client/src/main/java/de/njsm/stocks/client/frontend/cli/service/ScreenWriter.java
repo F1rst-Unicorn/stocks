@@ -1,9 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.service;
 
-import de.njsm.stocks.common.data.Food;
-import de.njsm.stocks.common.data.FoodItem;
-import de.njsm.stocks.common.data.Location;
-import de.njsm.stocks.common.data.User;
+import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.common.data.view.UserDeviceView;
 
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
@@ -82,6 +80,21 @@ public class ScreenWriter {
             println(headline);
             for (User u : users) {
                 printUser(u);
+            }
+        }
+    }
+
+    public void printUserDeviceView(UserDeviceView device) {
+        println("\t" + device.id + ": " + device.user + "'s " + device.name);
+    }
+
+    public void printUserDeviceViews(String headline, List<UserDeviceView> devices) {
+        if (devices.isEmpty()) {
+            println("No devices there...");
+        } else {
+            println(headline);
+            for (UserDeviceView d : devices) {
+                printUserDeviceView(d);
             }
         }
     }

@@ -4,6 +4,7 @@ import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.User;
+import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -206,5 +207,40 @@ public class ScreenWriterTest {
         verify(mockStream).println(headline);
         verify(mockStream).println("\t" + user1.id + ": " + user1.name);
         verify(mockStream).println("\t" + user2.id + ": " + user2.name);
+    }
+
+    @Test
+    public void testPrintingUserDevice() throws Exception {
+        UserDeviceView input = new UserDeviceView(3, "Mobile", "Jack");
+        String expectedOutput = "\t" + input.id + ": " + input.user + "'s " + input.name;
+
+        uut.printUserDeviceView(input);
+
+        verify(mockStream).println(expectedOutput);
+    }
+
+    @Test
+    public void printingEmptyDeviceListGivesMessage() throws Exception {
+        String message = "No devices there...";
+
+        uut.printUserDeviceViews("Unused headline", Collections.emptyList());
+
+        verify(mockStream).println(message);
+    }
+
+    @Test
+    public void printingUserDevicesGivesList() throws Exception {
+        String headline = "some headline";
+        List<UserDeviceView> users = new LinkedList<>();
+        UserDeviceView dev1 = new UserDeviceView(3, "Mobile", "Jack");
+        UserDeviceView dev2 = new UserDeviceView(4, "Laptop", "Jack");
+        users.add(dev1);
+        users.add(dev2);
+
+        uut.printUserDeviceViews(headline, users);
+
+        verify(mockStream).println(headline);
+        verify(mockStream).println("\t" + dev1.id + ": " + dev1.user + "'s " + dev1.name);
+        verify(mockStream).println("\t" + dev2.id + ": " + dev2.user + "'s " + dev2.name);
     }
 }

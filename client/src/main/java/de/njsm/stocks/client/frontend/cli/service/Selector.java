@@ -92,10 +92,7 @@ public class Selector {
         } else if (d.size() == 0) {
             throw new InputException("No such device found: " + name);
         } else {
-            System.out.println("Several devices found");
-            for (UserDeviceView dev : d) {
-                System.out.println("\t" + dev.id + ": " + dev.user + "'s " + dev.name);
-            }
+            writer.printUserDeviceViews("Several devices found", d);
             int resultId = reader.nextInt("Choose one ", d.get(0).id);
             UserDeviceView result = d.stream().filter(i -> i.id == resultId).findFirst().orElse(null);
             if (result == null) {
