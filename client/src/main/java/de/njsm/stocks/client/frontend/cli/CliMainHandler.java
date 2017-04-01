@@ -56,8 +56,8 @@ public class CliMainHandler implements MainHandler {
         commandHandler.add(new FoodCommandHandler(c, writer));
         commandHandler.add(new LocationCommandHandler(c, writer));
         commandHandler.add(new RefreshCommandHandler(c, writer));
-        commandHandler.add(new UserCommandHandler(c, writer));
-        commandHandler.add(new DeviceCommandHandler(c, writer));
+        commandHandler.add(new UserCommandHandler(c, writer, selector));
+        commandHandler.add(new DeviceCommandHandler(c, writer, selector));
 
         m = new CommandManager(commandHandler);
     }

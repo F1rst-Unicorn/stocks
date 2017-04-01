@@ -3,6 +3,7 @@ package de.njsm.stocks.client.frontend.cli;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.Location;
+import de.njsm.stocks.common.data.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -170,5 +171,40 @@ public class ScreenWriterTest {
         assertEquals(headline, captor.getAllValues().get(0));
         assertEquals(item1Text, captor.getAllValues().get(1));
         assertEquals(item2Text, captor.getAllValues().get(2));
+    }
+
+    @Test
+    public void testPrintingUser() throws Exception {
+        User input = new User(3, "Jack");
+        String expectedOutput = "\t" + input.id + ": " + input.name;
+
+        uut.printUser(input);
+
+        verify(mockStream).println(expectedOutput);
+    }
+
+    @Test
+    public void printingEmptyUserListGivesMessage() throws Exception {
+        String message = "No users there...";
+
+        uut.printUsers("Unused headline", Collections.emptyList());
+
+        verify(mockStream).println(message);
+    }
+
+    @Test
+    public void printingUsersGivesUserList() throws Exception {
+        String headline = "some headline";
+        List<User> users = new LinkedList<>();
+        User user1 = new User(3, "Jack");
+        User user2 = new User(4, "Juliette");
+        users.add(user1);
+        users.add(user2);
+
+        uut.printUsers(headline, users);
+
+        verify(mockStream).println(headline);
+        verify(mockStream).println("\t" + user1.id + ": " + user1.name);
+        verify(mockStream).println("\t" + user2.id + ": " + user2.name);
     }
 }

@@ -3,6 +3,7 @@ package de.njsm.stocks.client.frontend.cli;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.Location;
+import de.njsm.stocks.common.data.User;
 
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
@@ -68,5 +69,20 @@ public class ScreenWriter {
 
     public void printItem(FoodItem i) {
         println("\t\t" + i.id + ": " + format.format(i.eatByDate));
+    }
+
+    public void printUser(User input) {
+        println("\t" + input.id + ": " + input.name);
+    }
+
+    public void printUsers(String headline, List<User> users) {
+        if (users.isEmpty()) {
+            println("No users there...");
+        } else {
+            println(headline);
+            for (User u : users) {
+                printUser(u);
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.frontend.cli.*;
+import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.InputException;
@@ -12,14 +13,14 @@ public class DeviceCommandHandler extends AbstractCommandHandler {
 
     protected final CommandManager m;
 
-    public DeviceCommandHandler(Configuration c, ScreenWriter writer) {
+    public DeviceCommandHandler(Configuration c, ScreenWriter writer, Selector selector) {
         super(writer);
         this.c = c;
         this.command = "dev";
         this.description = "Manage the devices accessing the stocks system";
 
         List<AbstractCommandHandler> commandList = new LinkedList<>();
-        commandList.add(new DeviceAddCommandHandler(c, writer));
+        commandList.add(new DeviceAddCommandHandler(c, writer, selector));
         commandList.add(new DeviceListCommandHandler(c, writer));
         commandList.add(new DeviceRemoveCommandHandler(c, writer));
         this.m = new CommandManager(commandList, command);
