@@ -4,6 +4,7 @@ import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.ScreenWriter;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.client.exceptions.InputException;
 
@@ -11,7 +12,8 @@ import java.util.List;
 
 public class LocationRenameCommandHandler extends AbstractCommandHandler {
 
-    public LocationRenameCommandHandler(Configuration c) {
+    public LocationRenameCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         this.c = c;
         this.command = "rename";
         this.description = "Rename a location";
@@ -45,7 +47,7 @@ public class LocationRenameCommandHandler extends AbstractCommandHandler {
             for (Location loc : l) {
                 if (loc.id == id){
                     c.getServerManager().renameLocation(loc, newName);
-                    (new RefreshCommandHandler(c, false)).refresh();
+                    (new RefreshCommandHandler(c, writer, false)).refresh();
                 }
             }
 

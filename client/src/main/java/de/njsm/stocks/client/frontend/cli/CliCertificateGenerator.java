@@ -7,7 +7,7 @@ public class CliCertificateGenerator implements CertificateGenerator {
     private final InputReader reader;
 
     CliCertificateGenerator() {
-        reader = new EnhancedInputReader(System.in);
+        reader = new InputReader(System.in);
     }
 
     @Override

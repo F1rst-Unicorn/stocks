@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.exceptions;
 
-public class InputException extends Exception {
+public class InputException extends PrintableException {
 
     public InputException() {
         super();

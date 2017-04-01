@@ -3,6 +3,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.storage.DatabaseManager;
@@ -20,11 +21,12 @@ public class RefreshCommandHandler extends AbstractCommandHandler {
 
     private boolean verbose;
 
-    public RefreshCommandHandler(Configuration c) {
-        this(c, true);
+    public RefreshCommandHandler(Configuration c, ScreenWriter writer) {
+        this(c, writer, true);
     }
 
-    public RefreshCommandHandler(Configuration c, boolean verbose) {
+    public RefreshCommandHandler(Configuration c, ScreenWriter writer, boolean verbose) {
+        super(writer);
         this.c = c;
         command = "refresh";
         description = "Refresh the stocks system from the server";

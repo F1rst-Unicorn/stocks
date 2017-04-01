@@ -4,7 +4,7 @@ import com.squareup.okhttp.OkHttpClient;
 import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.exceptions.InvalidConfigException;
-import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
+import de.njsm.stocks.client.frontend.cli.InputReader;
 import de.njsm.stocks.client.frontend.cli.InputReader;
 import de.njsm.stocks.client.network.HttpClientFactory;
 import de.njsm.stocks.client.network.TcpHost;
@@ -56,7 +56,7 @@ public class Configuration {
 
     public Configuration (PropertiesFileHandler fileHandler) {
         this.fileHandler = fileHandler;
-        userInputReader = new EnhancedInputReader(System.in);
+        userInputReader = new InputReader(System.in);
         databaseInterface = new DatabaseManager();
     }
 

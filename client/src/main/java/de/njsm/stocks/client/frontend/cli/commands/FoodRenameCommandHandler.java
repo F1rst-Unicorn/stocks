@@ -4,6 +4,7 @@ import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.ScreenWriter;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.client.exceptions.InputException;
 
@@ -11,7 +12,8 @@ import java.util.List;
 
 public class FoodRenameCommandHandler extends AbstractCommandHandler {
 
-    public FoodRenameCommandHandler(Configuration c) {
+    public FoodRenameCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         this.c = c;
         this.command = "rename";
         this.description = "Rename a food type";
@@ -46,7 +48,7 @@ public class FoodRenameCommandHandler extends AbstractCommandHandler {
             for (Food food : l) {
                 if (food.id == id) {
                     c.getServerManager().renameFood(food, newName);
-                    (new RefreshCommandHandler(c, false)).refresh();
+                    (new RefreshCommandHandler(c, writer, false)).refresh();
                 }
             }
         } catch (InputException |

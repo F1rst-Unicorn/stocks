@@ -5,13 +5,15 @@ import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.ScreenWriter;
 import de.njsm.stocks.common.data.Location;
 
 import java.util.List;
 
 public class LocationRemoveCommandHandler extends AbstractCommandHandler {
 
-    public LocationRemoveCommandHandler(Configuration c) {
+    public LocationRemoveCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         this.c = c;
         this.command = "remove";
         this.description = "Remove a location from the system";
@@ -39,7 +41,7 @@ public class LocationRemoveCommandHandler extends AbstractCommandHandler {
             for (Location loc : l) {
                 if (loc.id == id) {
                     c.getServerManager().removeLocation(loc);
-                    (new RefreshCommandHandler(c, false)).refresh();
+                    (new RefreshCommandHandler(c, writer, false)).refresh();
                 }
             }
         } catch (InputException |

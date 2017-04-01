@@ -16,28 +16,27 @@ public class AddCommandHandler extends AbstractCommandHandler {
 
     private static final Logger LOG = LogManager.getLogger(AddCommandHandler.class);
 
-    private InputCollector inputCollector;
+    private final InputCollector inputCollector;
 
-    private ServerManager serverManager;
+    private final ServerManager serverManager;
 
-    private RefreshCommandHandler refreshCommandHandler;
-
-    private ScreenWriter writer;
+    private final RefreshCommandHandler refreshCommandHandler;
 
     public AddCommandHandler(InputCollector inputCollector,
                              ServerManager serverManager,
                              RefreshCommandHandler refreshCommandHandler,
                              ScreenWriter writer) {
+        super(writer);
         command = "add";
         description = "Add a food item";
         this.inputCollector = inputCollector;
         this.refreshCommandHandler = refreshCommandHandler;
         this.serverManager = serverManager;
-        this.writer = writer;
     }
 
     @Override
     public void handle(Command command) {
+        LOG.info("Handling add command: " + command.toString());
         if (command.hasNext()) {
             printHelp();
         } else {
@@ -61,14 +60,11 @@ public class AddCommandHandler extends AbstractCommandHandler {
             serverManager.addItem(item);
             refreshCommandHandler.refresh();
         } catch (NetworkException e) {
-            writer.println("There is a problem with the server connection");
-            LOG.error("Network action failed", e);
+            logNetworkError(e);
         } catch (DatabaseException e) {
-            writer.println("There is a problem with the local stocks copy");
-            LOG.error("Database action failed", e);
+            logDatabaseError(e);
         } catch (InputException e) {
-            writer.println("The command cannot executed with this input");
-            LOG.error("Problem with the input", e);
+            logInputError(e);
         }
     }
 }

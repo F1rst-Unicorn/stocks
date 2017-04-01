@@ -1,12 +1,9 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.CommandManager;
+import de.njsm.stocks.client.frontend.cli.*;
 import de.njsm.stocks.common.data.User;
 import de.njsm.stocks.client.exceptions.InputException;
-import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
-import de.njsm.stocks.client.frontend.cli.InputReader;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,15 +12,16 @@ public class UserCommandHandler extends AbstractCommandHandler {
 
     protected final CommandManager m;
 
-    public UserCommandHandler(Configuration c) {
+    public UserCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         command = "user";
         description = "Manage the users of the stocks system";
         this.c = c;
 
         List<AbstractCommandHandler> commandList = new LinkedList<>();
-        commandList.add(new UserAddCommandHandler(c));
-        commandList.add(new UserListCommandHandler(c));
-        commandList.add(new UserRemoveCommandHandler(c));
+        commandList.add(new UserAddCommandHandler(c, writer));
+        commandList.add(new UserListCommandHandler(c, writer));
+        commandList.add(new UserRemoveCommandHandler(c, writer));
         m = new CommandManager(commandList, "user");
     }
 
@@ -32,7 +30,7 @@ public class UserCommandHandler extends AbstractCommandHandler {
         if (command.hasNext()) {
             m.handleCommand(command);
         } else {
-            new UserListCommandHandler(c).handle(command);
+            new UserListCommandHandler(c, writer).handle(command);
         }
     }
 
@@ -42,7 +40,7 @@ public class UserCommandHandler extends AbstractCommandHandler {
     }
 
     public static int selectUser(List<User> users, String name) throws InputException {
-        InputReader scanner = new EnhancedInputReader(System.in);
+        InputReader scanner = new InputReader(System.in);
         int result;
         if (users.size() == 1) {
             result = users.get(0).id;

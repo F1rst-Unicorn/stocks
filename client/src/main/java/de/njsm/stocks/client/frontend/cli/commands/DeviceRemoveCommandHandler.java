@@ -3,6 +3,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.ScreenWriter;
 import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.common.data.view.UserDeviceView;
@@ -12,7 +13,8 @@ import java.util.List;
 
 public class DeviceRemoveCommandHandler extends AbstractCommandHandler {
 
-    public DeviceRemoveCommandHandler(Configuration c) {
+    public DeviceRemoveCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         this.c = c;
         this.command = "remove";
         this.description = "Remove a device";
@@ -43,7 +45,7 @@ public class DeviceRemoveCommandHandler extends AbstractCommandHandler {
                     rawDevice.id = d.id;
                     rawDevice.name = d.name;
                     c.getServerManager().removeDevice(rawDevice);
-                    (new RefreshCommandHandler(c, false)).refresh();
+                    (new RefreshCommandHandler(c, writer, false)).refresh();
                 }
             }
         } catch (InputException |

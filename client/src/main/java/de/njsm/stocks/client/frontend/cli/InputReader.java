@@ -1,7 +1,12 @@
 package de.njsm.stocks.client.frontend.cli;
 
+import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.ParseException;
+import jline.console.ConsoleReader;
+import jline.console.history.FileHistory;
+import jline.console.history.History;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -9,46 +14,37 @@ import java.util.Date;
 
 public class InputReader {
 
-    protected final InputStream in;
-
-
+    private ConsoleReader reader;
 
     public InputReader(InputStream input) {
-        in = input;
+        try {
+            reader = new ConsoleReader(input, System.out);
+
+            History file = new FileHistory(new File(Configuration.STOCKS_HOME + "/history"));
+            reader.setHistory(file);
+            reader.setHistoryEnabled(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String next(String prompt) {
-        StringBuilder result = new StringBuilder();
-        byte[] buffer = new byte[32];
-        int bytesRead;
-
-        System.out.print(prompt);
+        reader.setPrompt(prompt);
         try {
-            do {
-                bytesRead = in.read(buffer);
-                boolean newLineFound = false;
-                int i;
-
-                for (i = 0; i < bytesRead; i++) {
-                    if (buffer[i] == (byte) '\n'){
-                        newLineFound = true;
-                        break;
-                    }
-                }
-
-                if (newLineFound) {
-                    result.append(new String(buffer, 0, i));
-                    break;
-                } else {
-                    result.append(new String(buffer));
-                }
-
-            } while (bytesRead != -1);
+            return reader.readLine();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
             return "";
         }
-        return result.toString();
+    }
+
+    public void shutdown() {
+        if (reader.getHistory() instanceof FileHistory){
+            try {
+                ((FileHistory) reader.getHistory()).flush();
+            } catch (IOException e) {
+                System.out.println("History not saved: " + e.getMessage());
+            }
+        }
     }
 
     public String nextName(String prompt) {
@@ -161,10 +157,4 @@ public class InputReader {
         }
         return result;
     }
-
-    public void shutdown() {
-
-    }
-
-
 }

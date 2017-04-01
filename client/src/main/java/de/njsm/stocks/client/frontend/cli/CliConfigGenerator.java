@@ -7,7 +7,7 @@ public class CliConfigGenerator implements ConfigGenerator {
     private final InputReader reader;
 
     CliConfigGenerator() {
-        reader = new EnhancedInputReader(System.in);
+        reader = new InputReader(System.in);
     }
 
     @Override

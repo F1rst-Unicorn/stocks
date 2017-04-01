@@ -3,6 +3,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.ScreenWriter;
 import de.njsm.stocks.common.data.User;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.DatabaseException;
@@ -11,7 +12,8 @@ import java.util.List;
 
 public class UserRemoveCommandHandler extends AbstractCommandHandler {
 
-    public UserRemoveCommandHandler(Configuration c) {
+    public UserRemoveCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         this.c = c;
         this.command = "remove";
         this.description = "Remove a user";
@@ -39,7 +41,7 @@ public class UserRemoveCommandHandler extends AbstractCommandHandler {
             for (User u : users) {
                 if (u.id == id) {
                     c.getServerManager().removeUser(u);
-                    (new RefreshCommandHandler(c, false)).refresh();
+                    (new RefreshCommandHandler(c, writer, false)).refresh();
                 }
             }
         } catch (InputException |

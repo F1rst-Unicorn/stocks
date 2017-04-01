@@ -2,6 +2,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.ScreenWriter;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.common.data.view.UserDeviceView;
@@ -13,7 +14,8 @@ import java.util.List;
 
 public class DeviceAddCommandHandler extends AbstractCommandHandler {
 
-    public DeviceAddCommandHandler(Configuration c) {
+    public DeviceAddCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         this.c = c;
         this.command = "add";
         this.description = "Add a device";
@@ -59,7 +61,7 @@ public class DeviceAddCommandHandler extends AbstractCommandHandler {
                 d.userId = userId;
                 try {
                     ticket = c.getServerManager().addDevice(d);
-                    (new RefreshCommandHandler(c, false)).refresh();
+                    (new RefreshCommandHandler(c, writer, false)).refresh();
 
                     List<UserDeviceView> devices = c.getDatabaseManager().getDevices(d.name);
 

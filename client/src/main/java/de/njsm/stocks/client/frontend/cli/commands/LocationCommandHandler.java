@@ -1,12 +1,9 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.CommandManager;
-import de.njsm.stocks.client.frontend.cli.InputReader;
+import de.njsm.stocks.client.frontend.cli.*;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.client.exceptions.InputException;
-import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +12,17 @@ public class LocationCommandHandler extends AbstractCommandHandler {
 
     protected final CommandManager m;
 
-    public LocationCommandHandler(Configuration c) {
+    public LocationCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         command = "loc";
         description = "Manage the locations to store food";
         this.c = c;
 
         List<AbstractCommandHandler> commands = new ArrayList<>();
-        commands.add(new LocationAddCommandHandler(c));
-        commands.add(new LocationListCommandHandler(c));
-        commands.add(new LocationRenameCommandHandler(c));
-        commands.add(new LocationRemoveCommandHandler(c));
+        commands.add(new LocationAddCommandHandler(c, writer));
+        commands.add(new LocationListCommandHandler(c, writer));
+        commands.add(new LocationRenameCommandHandler(c, writer));
+        commands.add(new LocationRemoveCommandHandler(c, writer));
         m = new CommandManager(commands, command);
     }
 
@@ -33,7 +31,7 @@ public class LocationCommandHandler extends AbstractCommandHandler {
         if (command.hasNext()) {
             m.handleCommand(command);
         } else {
-            new LocationListCommandHandler(c).handle(command);
+            new LocationListCommandHandler(c, writer).handle(command);
         }
     }
 
@@ -43,7 +41,7 @@ public class LocationCommandHandler extends AbstractCommandHandler {
     }
 
     public static int selectLocation(List<Location> l, String name) throws InputException {
-        InputReader scanner = new EnhancedInputReader(System.in);
+        InputReader scanner = new InputReader(System.in);
         int result;
 
         if (l.size() == 1) {

@@ -87,7 +87,7 @@ public class InputCollector {
     private int suggestLocationsBasedOnFoodType(int foodId) throws DatabaseException, InputException {
         List<Location> l = dbManager.getLocationsForFoodType(foodId);
 
-        if (l.size() == 0) {
+        if (l.isEmpty()) {
             return getLocationFromUser();
         } else {
             return getLocationFromExistingFood(l);
@@ -106,10 +106,7 @@ public class InputCollector {
     }
 
     private void listLocations(List<Location> l) {
-        writer.println("Some food already in:");
-        for (Location loc : l) {
-            writer.println("\t" + loc.id + ": " + loc.name);
-        }
+        writer.printLocations("Some food already in:", l);
     }
 
     private int getLocationFromCommand(Command c) throws DatabaseException, InputException {

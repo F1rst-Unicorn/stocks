@@ -3,6 +3,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.ScreenWriter;
 import de.njsm.stocks.common.data.Location;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +14,8 @@ public class LocationListCommandHandler extends AbstractCommandHandler {
 
     private static final Logger LOG = LogManager.getLogger(LocationListCommandHandler.class);
 
-    public LocationListCommandHandler(Configuration c) {
+    public LocationListCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         this.c = c;
         this.command = "list";
         this.description = "List the available food locations";

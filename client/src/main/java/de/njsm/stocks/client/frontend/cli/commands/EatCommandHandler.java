@@ -3,6 +3,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.ScreenWriter;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.client.exceptions.InputException;
@@ -12,7 +13,8 @@ import java.util.List;
 
 public class EatCommandHandler extends AbstractCommandHandler {
 
-    public EatCommandHandler(Configuration c) {
+    public EatCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         command = "eat";
         description = "Eat a food item";
         this.c = c;
@@ -51,7 +53,7 @@ public class EatCommandHandler extends AbstractCommandHandler {
             item.registers = c.getDeviceId();
 
             c.getServerManager().removeItem(item);
-            (new RefreshCommandHandler(c, false)).refresh();
+            (new RefreshCommandHandler(c, writer, false)).refresh();
         } catch (InputException |
                 DatabaseException |
                 NetworkException e) {

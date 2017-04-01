@@ -1,12 +1,9 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.CommandManager;
+import de.njsm.stocks.client.frontend.cli.*;
 import de.njsm.stocks.common.data.view.UserDeviceView;
-import de.njsm.stocks.client.frontend.cli.InputReader;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.InputException;
-import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,15 +12,16 @@ public class DeviceCommandHandler extends AbstractCommandHandler {
 
     protected final CommandManager m;
 
-    public DeviceCommandHandler(Configuration c) {
+    public DeviceCommandHandler(Configuration c, ScreenWriter writer) {
+        super(writer);
         this.c = c;
         this.command = "dev";
         this.description = "Manage the devices accessing the stocks system";
 
         List<AbstractCommandHandler> commandList = new LinkedList<>();
-        commandList.add(new DeviceAddCommandHandler(c));
-        commandList.add(new DeviceListCommandHandler(c));
-        commandList.add(new DeviceRemoveCommandHandler(c));
+        commandList.add(new DeviceAddCommandHandler(c, writer));
+        commandList.add(new DeviceListCommandHandler(c, writer));
+        commandList.add(new DeviceRemoveCommandHandler(c, writer));
         this.m = new CommandManager(commandList, command);
     }
 
@@ -32,7 +30,7 @@ public class DeviceCommandHandler extends AbstractCommandHandler {
         if (command.hasNext()) {
             m.handleCommand(command);
         } else {
-            new DeviceListCommandHandler(c).handle(command);
+            new DeviceListCommandHandler(c, writer).handle(command);
         }
     }
 
@@ -42,7 +40,7 @@ public class DeviceCommandHandler extends AbstractCommandHandler {
     }
 
     public static int selectDevice(List<UserDeviceView> d, String name) throws InputException {
-        InputReader scanner = new EnhancedInputReader(System.in);
+        InputReader scanner = new InputReader(System.in);
         int result;
 
         if (d.size() == 1) {
