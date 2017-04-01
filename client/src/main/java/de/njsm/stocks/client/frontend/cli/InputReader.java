@@ -9,13 +9,17 @@ import jline.console.history.History;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class InputReader {
 
+    private PrintStream output;
+
     private ConsoleReader reader;
 
+    @Deprecated
     public InputReader(InputStream input) {
         try {
             reader = new ConsoleReader(input, System.out);
@@ -23,6 +27,19 @@ public class InputReader {
             History file = new FileHistory(new File(Configuration.STOCKS_HOME + "/history"));
             reader.setHistory(file);
             reader.setHistoryEnabled(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public InputReader(ConsoleReader reader, PrintStream output) {
+        this.output = output;
+        try {
+            this.reader = reader;
+
+            History file = new FileHistory(new File(Configuration.STOCKS_HOME + "/history"));
+            this.reader.setHistory(file);
+            this.reader.setHistoryEnabled(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,12 +54,12 @@ public class InputReader {
         }
     }
 
-    public void shutdown() {
+    void shutdown() {
         if (reader.getHistory() instanceof FileHistory){
             try {
                 ((FileHistory) reader.getHistory()).flush();
             } catch (IOException e) {
-                System.out.println("History not saved: " + e.getMessage());
+                output.println("History not saved: " + e.getMessage());
             }
         }
     }
@@ -70,7 +87,7 @@ public class InputReader {
                     result = Integer.parseInt(input);
                 } catch (NumberFormatException e) {
                     result = Integer.MIN_VALUE;
-                    System.out.print("That's not a number. Try again: ");
+                    output.print("That's not a number. Try again: ");
                 }
             }
         } while (result == Integer.MIN_VALUE);
@@ -86,7 +103,7 @@ public class InputReader {
                 result = Integer.parseInt(input);
             } catch (NumberFormatException e) {
                 result = -1;
-                System.out.print("That's not a number. Try again: ");
+                output.print("That's not a number. Try again: ");
             }
 
         } while (result == -1);
@@ -95,16 +112,16 @@ public class InputReader {
 
     public Date nextDate(String prompt) {
         String input = next(prompt);
-        Date result = null;
+        Date result;
 
-        while (result == null) {
+        do {
             try {
                 result = parseDate(input);
             } catch (ParseException e) {
                 input = next("Invalid date. Try again: ");
                 result = null;
             }
-        }
+        } while (result == null);
         return result;
     }
 
@@ -119,9 +136,9 @@ public class InputReader {
         return noDollar == -1 && noEqual == -1;
     }
 
-    public static Date parseDate(String input) throws ParseException {
+    static Date parseDate(String input) throws ParseException {
         Date result;
-        SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yy");
+        SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yyyy");
         if (input.length() > 0 && input.charAt(0) == '+') {
             result = parseRelative(input);
         } else {

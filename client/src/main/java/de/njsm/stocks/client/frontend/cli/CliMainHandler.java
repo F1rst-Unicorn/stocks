@@ -9,7 +9,9 @@ import de.njsm.stocks.client.frontend.cli.commands.add.InputCollector;
 import de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.client.storage.DatabaseManager;
+import jline.console.ConsoleReader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -22,7 +24,13 @@ public class CliMainHandler implements MainHandler {
         this.c = c;
 
         ScreenWriter writer = new ScreenWriter(System.out);
-        InputReader reader = new InputReader(System.in);
+        InputReader reader = null;
+        try {
+            reader = new InputReader(new ConsoleReader(System.in, System.out), System.out);
+        } catch (IOException e) {
+            writer.println("Could not initialise prompt");
+            System.exit(1);
+        }
         Selector selector = new Selector(writer, reader);
         DatabaseManager dbManager = new DatabaseManager();
 
