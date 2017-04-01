@@ -1,14 +1,18 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.common.data.Food;
 
 public class FoodAddCommandHandler extends AbstractCommandHandler {
 
-    public FoodAddCommandHandler(Configuration c, ScreenWriter writer) {
+    private Refresher refresher;
+
+    public FoodAddCommandHandler(Configuration c, ScreenWriter writer, Refresher refresher) {
         super(writer);
         this.c = c;
         this.command = "add";
@@ -36,8 +40,10 @@ public class FoodAddCommandHandler extends AbstractCommandHandler {
 
             c.getServerManager().addFood(f);
 
-            (new RefreshCommandHandler(c, writer, false)).refresh();
+            refresher.refresh();
         } catch (NetworkException e) {
+            // TODO LOG
+        } catch (DatabaseException e) {
             // TODO LOG
         }
     }

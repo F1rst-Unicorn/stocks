@@ -5,6 +5,7 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.common.data.Ticket;
@@ -18,12 +19,15 @@ public class DeviceAddCommandHandler extends AbstractCommandHandler {
 
     private Selector selector;
 
-    public DeviceAddCommandHandler(Configuration c, ScreenWriter writer, Selector selector) {
+    private Refresher refresher;
+
+    public DeviceAddCommandHandler(Configuration c, ScreenWriter writer, Selector selector, Refresher refresher) {
         super(writer);
         this.c = c;
         this.command = "add";
         this.description = "Add a device";
         this.selector = selector;
+        this.refresher = refresher;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class DeviceAddCommandHandler extends AbstractCommandHandler {
                 d.userId = u.id;
                 try {
                     ticket = c.getServerManager().addDevice(d);
-                    (new RefreshCommandHandler(c, writer, false)).refresh();
+                    refresher.refresh();
 
                     List<UserDeviceView> devices = c.getDatabaseManager().getDevices(d.name);
 

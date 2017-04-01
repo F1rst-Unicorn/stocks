@@ -1,18 +1,23 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
+import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.common.data.Location;
-import de.njsm.stocks.client.config.Configuration;
 
 public class LocationAddCommandHandler extends AbstractCommandHandler {
 
-    public LocationAddCommandHandler(Configuration c, ScreenWriter writer) {
+    private Refresher refresher;
+
+    public LocationAddCommandHandler(Configuration c, ScreenWriter writer, Refresher refresher) {
         super(writer);
         this.c = c;
         this.command = "add";
         this.description = "Add a new food location to the system";
+        this.refresher = refresher;
     }
 
     @Override
@@ -36,8 +41,10 @@ public class LocationAddCommandHandler extends AbstractCommandHandler {
 
             c.getServerManager().addLocation(l);
 
-            (new RefreshCommandHandler(c, writer, false)).refresh();
+            refresher.refresh();
         } catch (NetworkException e) {
+            // TODO LOG
+        } catch (DatabaseException e) {
             // TODO LOG
         }
     }

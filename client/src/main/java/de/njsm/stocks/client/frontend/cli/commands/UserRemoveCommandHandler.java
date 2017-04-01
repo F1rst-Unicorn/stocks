@@ -5,6 +5,7 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.common.data.User;
@@ -15,7 +16,9 @@ public class UserRemoveCommandHandler extends AbstractCommandHandler {
 
     private Selector selector;
 
-    public UserRemoveCommandHandler(Configuration c, ScreenWriter writer, Selector selector) {
+    private Refresher refresher;
+
+    public UserRemoveCommandHandler(Configuration c, ScreenWriter writer, Selector selector, Refresher refresher) {
         super(writer);
         this.c = c;
         this.command = "remove";
@@ -45,7 +48,7 @@ public class UserRemoveCommandHandler extends AbstractCommandHandler {
             for (User u : users) {
                 if (u.id == user.id) {
                     c.getServerManager().removeUser(u);
-                    (new RefreshCommandHandler(c, writer, false)).refresh();
+                    refresher.refresh();
                 }
             }
         } catch (InputException |

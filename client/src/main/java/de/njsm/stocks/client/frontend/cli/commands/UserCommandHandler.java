@@ -3,6 +3,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.CommandManager;
+import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.frontend.cli.service.Selector;
 
@@ -13,16 +14,16 @@ public class UserCommandHandler extends AbstractCommandHandler {
 
     protected final CommandManager m;
 
-    public UserCommandHandler(Configuration c, ScreenWriter writer, Selector selector) {
+    public UserCommandHandler(Configuration c, ScreenWriter writer, Selector selector, Refresher refresher) {
         super(writer);
         command = "user";
         description = "Manage the users of the stocks system";
         this.c = c;
 
         List<AbstractCommandHandler> commandList = new LinkedList<>();
-        commandList.add(new UserAddCommandHandler(c, writer));
+        commandList.add(new UserAddCommandHandler(c, writer, refresher));
         commandList.add(new UserListCommandHandler(c, writer));
-        commandList.add(new UserRemoveCommandHandler(c, writer, selector));
+        commandList.add(new UserRemoveCommandHandler(c, writer, selector, refresher));
         m = new CommandManager(commandList, "user");
     }
 

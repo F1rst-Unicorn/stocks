@@ -1,19 +1,24 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.service.InputReader;
+import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.client.frontend.cli.service.InputReader;
 
 public class UserAddCommandHandler extends AbstractCommandHandler {
 
-    public UserAddCommandHandler(Configuration c, ScreenWriter writer) {
+    private Refresher refresher;
+
+    public UserAddCommandHandler(Configuration c, ScreenWriter writer, Refresher refresher) {
         super(writer);
         this.c = c;
         this.command = "add";
         this.description = "Add a new user";
+        this.refresher = refresher;
     }
 
     @Override
@@ -42,8 +47,10 @@ public class UserAddCommandHandler extends AbstractCommandHandler {
 
             c.getServerManager().addUser(u);
 
-            (new RefreshCommandHandler(c, writer, false)).refresh();
+            refresher.refresh();
         } catch (NetworkException e) {
+            // TODO LOG
+        } catch (DatabaseException e) {
             // TODO LOG
         }
     }

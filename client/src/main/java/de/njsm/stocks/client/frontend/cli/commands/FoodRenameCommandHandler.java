@@ -5,6 +5,7 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.common.data.Food;
@@ -15,12 +16,15 @@ public class FoodRenameCommandHandler extends AbstractCommandHandler {
 
     private Selector selector;
 
-    public FoodRenameCommandHandler(Configuration c, ScreenWriter writer, Selector selector) {
+    private Refresher refresher;
+
+    public FoodRenameCommandHandler(Configuration c, ScreenWriter writer, Selector selector, Refresher refresher) {
         super(writer);
         this.c = c;
         this.command = "rename";
         this.description = "Rename a food type";
         this.selector = selector;
+        this.refresher = refresher;
     }
 
     @Override
@@ -52,7 +56,7 @@ public class FoodRenameCommandHandler extends AbstractCommandHandler {
             for (Food food : l) {
                 if (food.id == id) {
                     c.getServerManager().renameFood(food, newName);
-                    (new RefreshCommandHandler(c, writer, false)).refresh();
+                    refresher.refresh();
                 }
             }
         } catch (InputException |
