@@ -13,24 +13,15 @@ import de.njsm.stocks.common.data.Location;
 
 import java.util.List;
 
-public class InputCollector {
+public class InputCollector extends Selector {
 
     private DatabaseManager dbManager;
 
-    private ScreenWriter writer;
-
-    private InputReader reader;
-
-    private Selector selector;
-
     public InputCollector(DatabaseManager dbManager,
-                          Selector selector,
                           ScreenWriter writer,
                           InputReader reader) {
+        super(writer, reader);
         this.dbManager = dbManager;
-        this.selector = selector;
-        this.writer = writer;
-        this.reader = reader;
     }
 
     FoodItem createItem(Command command) throws DatabaseException, InputException {
@@ -63,12 +54,12 @@ public class InputCollector {
 
     private Food getFoodToMove(String food) throws DatabaseException, InputException {
         List<Food> foodList = dbManager.getFood(food);
-        return selector.selectFood(foodList, food);
+        return selectFood(foodList, food);
     }
 
     private FoodItem getItemToMove(Food food) throws DatabaseException, InputException {
         List<FoodItem> items = listItemsOfType(food);
-        return selector.selectItem(items);
+        return selectItem(items);
     }
 
     private String getInputLocation(Command c) throws DatabaseException {
@@ -85,7 +76,7 @@ public class InputCollector {
 
     private Location resolveLocation(String locationFromUser) throws DatabaseException, InputException {
         List<Location> locations = dbManager.getLocations(locationFromUser);
-        return selector.selectLocation(locations, locationFromUser);
+        return selectLocation(locations, locationFromUser);
     }
 
     private String askForLocation() throws DatabaseException {

@@ -10,10 +10,13 @@ public class UserDeviceView extends Data {
 
     public String user;
 
-    public UserDeviceView(int id, String name, String user) {
+    public int userId;
+
+    public UserDeviceView(int id, String name, String user, int userId) {
         this.id = id;
         this.name = name;
         this.user = user;
+        this.userId = userId;
     }
 
     public UserDeviceView() {
@@ -27,6 +30,7 @@ public class UserDeviceView extends Data {
         UserDeviceView that = (UserDeviceView) o;
 
         if (id != that.id) return false;
+        if (userId != that.userId) return false;
         if (!name.equals(that.name)) return false;
         return user.equals(that.user);
     }
@@ -36,6 +40,7 @@ public class UserDeviceView extends Data {
         int result = id;
         result = 31 * result + name.hashCode();
         result = 31 * result + user.hashCode();
+        result = 31 * result + userId;
         return result;
     }
 
@@ -45,6 +50,7 @@ public class UserDeviceView extends Data {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", user='" + user + '\'' +
+                ", userId=" + userId +
                 '}';
     }
 }

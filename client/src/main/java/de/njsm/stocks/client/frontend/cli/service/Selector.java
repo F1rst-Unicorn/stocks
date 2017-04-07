@@ -8,9 +8,9 @@ import java.util.List;
 
 public class Selector {
 
-    private ScreenWriter writer;
+    protected ScreenWriter writer;
 
-    private InputReader reader;
+    protected InputReader reader;
 
     public Selector(ScreenWriter writer, InputReader reader) {
         this.writer = writer;

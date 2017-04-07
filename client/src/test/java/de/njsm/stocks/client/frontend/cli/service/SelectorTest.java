@@ -136,7 +136,7 @@ public class SelectorTest {
 
     @Test
     public void selectingSingleUserDeviceListGivesItem() throws Exception {
-        UserDeviceView expectedOutput = new UserDeviceView(3, "Mobile", "Jack");
+        UserDeviceView expectedOutput = new UserDeviceView(3, "Mobile", "Jack", 1);
         List<UserDeviceView> list = Collections.singletonList(expectedOutput);
 
         UserDeviceView output = uut.selectDevice(list, expectedOutput.name);

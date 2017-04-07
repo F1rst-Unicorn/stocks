@@ -6,6 +6,10 @@ import de.njsm.stocks.client.frontend.MainHandler;
 import de.njsm.stocks.client.frontend.cli.commands.*;
 import de.njsm.stocks.client.frontend.cli.commands.add.AddCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.add.InputCollector;
+import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceAddCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceListCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceRemoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.refresh.RefreshCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
@@ -41,15 +45,20 @@ public class CliMainHandler implements MainHandler {
 
         InputCollector addCollector = new InputCollector(
                 dbManager,
-                selector,
                 reader,
                 writer);
         de.njsm.stocks.client.frontend.cli.commands.move.InputCollector moveCollector =
                 new de.njsm.stocks.client.frontend.cli.commands.move.InputCollector(
                         dbManager,
-                        selector,
                         writer,
                         reader);
+
+        de.njsm.stocks.client.frontend.cli.commands.dev.InputCollector devCollector =
+                new de.njsm.stocks.client.frontend.cli.commands.dev.InputCollector(reader, dbManager, writer);
+        DeviceListCommandHandler listDevices = new DeviceListCommandHandler(writer, dbManager);
+        DeviceAddCommandHandler addDevices = new DeviceAddCommandHandler(c, writer, refresher, devCollector, dbManager, c.getServerManager());
+        DeviceRemoveCommandHandler removeDevices = new DeviceRemoveCommandHandler(writer, refresher, devCollector, c.getServerManager());
+        CommandManager devManager = new CommandManager(listDevices, addDevices, removeDevices);
 
         ArrayList<AbstractCommandHandler> commandHandler = new ArrayList<>();
         commandHandler.add(new AddCommandHandler(addCollector,
@@ -63,7 +72,7 @@ public class CliMainHandler implements MainHandler {
         commandHandler.add(new LocationCommandHandler(c, writer, selector, refresher));
         commandHandler.add(new RefreshCommandHandler(writer, refresher));
         commandHandler.add(new UserCommandHandler(c, writer, selector, refresher));
-        commandHandler.add(new DeviceCommandHandler(c, writer, selector, refresher));
+        commandHandler.add(new DeviceCommandHandler(devManager, listDevices, writer));
 
         m = new CommandManager(commandHandler);
     }

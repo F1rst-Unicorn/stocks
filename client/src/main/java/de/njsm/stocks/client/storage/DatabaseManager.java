@@ -188,7 +188,7 @@ public class DatabaseManager {
 
     public List<UserDeviceView> getDevices(String name) throws DatabaseException {
         LOG.info("Getting devices for " + name);
-        String queryDevices = "SELECT d.id, d.name, u.name as belongs_to " +
+        String queryDevices = "SELECT d.id, d.name, u.name as belongs_to, u.ID as belongs_id " +
                 "FROM User_device d, User u " +
                 "WHERE d.belongs_to=u.ID AND d.name=?";
         Connection c = null;

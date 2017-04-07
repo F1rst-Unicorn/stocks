@@ -2,12 +2,13 @@ package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class CommandManager {
 
-    protected final List<AbstractCommandHandler> commandHandler;
-    protected final String prefix;
+    private final List<AbstractCommandHandler> commandHandler;
+    private String prefix;
 
     public CommandManager(List<AbstractCommandHandler> commands) {
         this(commands, "");
@@ -16,6 +17,11 @@ public class CommandManager {
     public CommandManager(List<AbstractCommandHandler> commands, String prefix) {
         commandHandler = commands;
         this.prefix = prefix;
+    }
+
+    public CommandManager(AbstractCommandHandler... commands) {
+        this.commandHandler = Arrays.asList(commands);
+        this.prefix = "";
     }
 
     public void handleCommand(Command command) {
@@ -38,6 +44,10 @@ public class CommandManager {
         if (! commandFound){
             System.out.println("Unknown command: " + word);
         }
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     public void printHelp() {

@@ -14,7 +14,7 @@ public class UserDeviceViewFactory extends DataFactory {
 
     @Override
     public String getQuery() {
-        return "SELECT d.id, d.name, u.name as belongs_to " +
+        return "SELECT d.id, d.name, u.name as belongs_to, u.ID as belongs_id " +
                 "FROM User_device d, User u " +
                 "WHERE d.belongs_to=u.ID";
     }
@@ -37,6 +37,7 @@ public class UserDeviceViewFactory extends DataFactory {
         result.name = rs.getString("name");
         result.id = rs.getInt("ID");
         result.user = rs.getString("belongs_to");
+        result.userId = rs.getInt("belongs_id");
         return result;
     }
 }

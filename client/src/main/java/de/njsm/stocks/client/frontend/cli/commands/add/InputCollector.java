@@ -15,24 +15,15 @@ import de.njsm.stocks.common.data.Location;
 import java.util.Date;
 import java.util.List;
 
-public class InputCollector {
+public class InputCollector extends Selector {
 
     private DatabaseManager dbManager;
 
-    private Selector selector;
-
-    private InputReader reader;
-
-    private ScreenWriter writer;
-
     public InputCollector(DatabaseManager dbManager,
-                          Selector selector,
                           InputReader reader,
                           ScreenWriter writer) {
+        super(writer, reader);
         this.dbManager = dbManager;
-        this.selector = selector;
-        this.reader = reader;
-        this.writer = writer;
     }
 
     FoodItem createFoodItem(Command c) throws DatabaseException, InputException {
@@ -66,7 +57,7 @@ public class InputCollector {
     private Food resolveFood(Command c) throws DatabaseException, InputException {
         String type = getFoodName(c);
         List<Food> foods = dbManager.getFood(type);
-        return selector.selectFood(foods, type);
+        return selectFood(foods, type);
     }
 
     private String getFoodName(Command c) {
@@ -121,6 +112,6 @@ public class InputCollector {
 
     private Location getLocationByName(String location) throws DatabaseException, InputException {
         List<Location> locations = dbManager.getLocations(location);
-        return selector.selectLocation(locations, location);
+        return selectLocation(locations, location);
     }
 }

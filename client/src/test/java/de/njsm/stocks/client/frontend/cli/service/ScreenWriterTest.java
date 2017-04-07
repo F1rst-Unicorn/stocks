@@ -211,7 +211,7 @@ public class ScreenWriterTest {
 
     @Test
     public void testPrintingUserDevice() throws Exception {
-        UserDeviceView input = new UserDeviceView(3, "Mobile", "Jack");
+        UserDeviceView input = new UserDeviceView(3, "Mobile", "Jack", 1);
         String expectedOutput = "\t" + input.id + ": " + input.user + "'s " + input.name;
 
         uut.printUserDeviceView(input);
@@ -232,8 +232,8 @@ public class ScreenWriterTest {
     public void printingUserDevicesGivesList() throws Exception {
         String headline = "some headline";
         List<UserDeviceView> users = new LinkedList<>();
-        UserDeviceView dev1 = new UserDeviceView(3, "Mobile", "Jack");
-        UserDeviceView dev2 = new UserDeviceView(4, "Laptop", "Jack");
+        UserDeviceView dev1 = new UserDeviceView(3, "Mobile", "Jack", 1);
+        UserDeviceView dev2 = new UserDeviceView(4, "Laptop", "Jack", 1);
         users.add(dev1);
         users.add(dev2);
 

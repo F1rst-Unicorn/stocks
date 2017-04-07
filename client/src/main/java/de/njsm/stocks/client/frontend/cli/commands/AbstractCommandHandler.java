@@ -16,7 +16,9 @@ public abstract class AbstractCommandHandler {
     protected final ScreenWriter writer;
 
     protected String command;
+
     protected String description;
+
     protected Configuration c;
 
     public AbstractCommandHandler(ScreenWriter writer) {
