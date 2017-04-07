@@ -10,6 +10,7 @@ import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceAddCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceListCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceRemoveCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.eat.EatCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.refresh.RefreshCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
@@ -53,6 +54,9 @@ public class CliMainHandler implements MainHandler {
                         writer,
                         reader);
 
+        de.njsm.stocks.client.frontend.cli.commands.eat.InputCollector eatCollector =
+                new de.njsm.stocks.client.frontend.cli.commands.eat.InputCollector(writer, reader, dbManager);
+
         de.njsm.stocks.client.frontend.cli.commands.dev.InputCollector devCollector =
                 new de.njsm.stocks.client.frontend.cli.commands.dev.InputCollector(reader, dbManager, writer);
         DeviceListCommandHandler listDevices = new DeviceListCommandHandler(writer, dbManager);
@@ -67,7 +71,7 @@ public class CliMainHandler implements MainHandler {
                 writer));
         commandHandler.add(new MoveCommandHandler(c.getServerManager(),
                 moveCollector, writer, refresher));
-        commandHandler.add(new EatCommandHandler(c, writer, selector, refresher));
+        commandHandler.add(new EatCommandHandler(c, c.getServerManager(), writer, eatCollector, refresher));
         commandHandler.add(new FoodCommandHandler(c, writer, selector, refresher));
         commandHandler.add(new LocationCommandHandler(c, writer, selector, refresher));
         commandHandler.add(new RefreshCommandHandler(writer, refresher));
