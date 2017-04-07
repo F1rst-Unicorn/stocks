@@ -13,6 +13,10 @@ import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceRemoveCommandHandle
 import de.njsm.stocks.client.frontend.cli.commands.eat.EatCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.refresh.RefreshCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.user.UserAddCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.user.UserCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.user.UserListCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.user.UserRemoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
@@ -64,6 +68,13 @@ public class CliMainHandler implements MainHandler {
         DeviceRemoveCommandHandler removeDevices = new DeviceRemoveCommandHandler(writer, refresher, devCollector, c.getServerManager());
         CommandManager devManager = new CommandManager(listDevices, addDevices, removeDevices);
 
+        de.njsm.stocks.client.frontend.cli.commands.user.InputCollector userCollector =
+                new de.njsm.stocks.client.frontend.cli.commands.user.InputCollector(writer, reader, dbManager);
+        UserListCommandHandler listUsers = new UserListCommandHandler(dbManager, writer);
+        UserAddCommandHandler addUsers = new UserAddCommandHandler(writer, c.getServerManager(), userCollector, refresher);
+        UserRemoveCommandHandler removeUsers = new UserRemoveCommandHandler(writer, c.getServerManager(), userCollector, refresher);
+        CommandManager userManager = new CommandManager(listDevices, addDevices, removeDevices);
+
         ArrayList<AbstractCommandHandler> commandHandler = new ArrayList<>();
         commandHandler.add(new AddCommandHandler(addCollector,
                 c.getServerManager(),
@@ -75,7 +86,7 @@ public class CliMainHandler implements MainHandler {
         commandHandler.add(new FoodCommandHandler(c, writer, selector, refresher));
         commandHandler.add(new LocationCommandHandler(c, writer, selector, refresher));
         commandHandler.add(new RefreshCommandHandler(writer, refresher));
-        commandHandler.add(new UserCommandHandler(c, writer, selector, refresher));
+        commandHandler.add(new UserCommandHandler(userManager, listUsers, writer));
         commandHandler.add(new DeviceCommandHandler(devManager, listDevices, writer));
 
         m = new CommandManager(commandHandler);
