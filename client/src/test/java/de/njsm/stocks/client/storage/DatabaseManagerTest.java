@@ -272,8 +272,10 @@ public class DatabaseManagerTest {
 
     @Test
     public void testGettingNextItem() throws Exception {
-        assertEquals(3, uut.getNextItem(3));
-        assertEquals(2, uut.getNextItem(1));
+        FoodItem item1 = new FoodItem(3, new Timestamp(0L), 3, 2, 1, 1);
+        FoodItem item2 = new FoodItem(2, new Timestamp(1000L), 1, 1, 2, 2);
+        assertEquals(item1, uut.getNextItem(3));
+        assertEquals(item2, uut.getNextItem(1));
     }
 
     @Test

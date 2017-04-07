@@ -27,7 +27,7 @@ public class FoodItemFactory extends DataFactory {
         return result;
     }
 
-    private FoodItem createDataTyped(ResultSet rs) throws SQLException {
+    public FoodItem createDataTyped(ResultSet rs) throws SQLException {
         FoodItem i = new FoodItem();
         i.id = rs.getInt("ID");
         i.eatByDate = rs.getTimestamp("eat_by");

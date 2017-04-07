@@ -23,22 +23,19 @@ public class InputCollector extends Selector {
 
 
     public FoodItem resolveItem(Command c) throws InputException, DatabaseException {
-        String name;
-        if (c.hasNext()) {
-            name = c.next();
-        } else {
-            name = askForFoodName();
-        }
+        String name = resolveName(c);
 
         List<Food> foods = dbManager.getFood(name);
-        int foodId = selectFood(foods, name).id;
-        int itemId = dbManager.getNextItem(foodId);
+        Food food = selectFood(foods, name);
+        return dbManager.getNextItem(food.id);
+    }
 
-        FoodItem item = new FoodItem();
-        item.id = itemId;
-        item.ofType = foodId;
-
-        return item;
+    private String resolveName(Command c) {
+        if (c.hasNext()) {
+            return c.next();
+        } else {
+            return askForFoodName();
+        }
     }
 
     private String askForFoodName() {

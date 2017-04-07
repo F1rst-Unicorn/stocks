@@ -436,7 +436,7 @@ public class DatabaseManager {
         }
     }
 
-    public int getNextItem(int foodId) throws InputException, DatabaseException {
+    public FoodItem getNextItem(int foodId) throws InputException, DatabaseException {
         LOG.info("Getting next item for food id " + foodId);
         String query = "SELECT * " +
                 "FROM Food_item " +
@@ -452,7 +452,7 @@ public class DatabaseManager {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return rs.getInt("ID");
+                return FoodItemFactory.f.createDataTyped(rs);
             } else {
                 throw new InputException("You don't have any...");
             }
