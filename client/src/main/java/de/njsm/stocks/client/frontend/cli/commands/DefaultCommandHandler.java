@@ -22,9 +22,9 @@ public class DefaultCommandHandler extends AggregatedCommandHandler {
     }
 
     public DefaultCommandHandler(ScreenWriter writer,
+                                 AbstractCommandHandler defaultHandler,
                                  String command,
                                  String description,
-                                 AbstractCommandHandler defaultHandler,
                                  AbstractCommandHandler... handlers) {
         super(writer, handlers);
         this.command = command;
