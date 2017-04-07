@@ -73,7 +73,7 @@ public class CliMainHandler implements MainHandler {
         UserListCommandHandler listUsers = new UserListCommandHandler(dbManager, writer);
         UserAddCommandHandler addUsers = new UserAddCommandHandler(writer, c.getServerManager(), userCollector, refresher);
         UserRemoveCommandHandler removeUsers = new UserRemoveCommandHandler(writer, c.getServerManager(), userCollector, refresher);
-        CommandManager userManager = new CommandManager(listDevices, addDevices, removeDevices);
+        CommandManager userManager = new CommandManager(listUsers, addUsers, removeUsers);
 
         ArrayList<AbstractCommandHandler> commandHandler = new ArrayList<>();
         commandHandler.add(new AddCommandHandler(addCollector,
