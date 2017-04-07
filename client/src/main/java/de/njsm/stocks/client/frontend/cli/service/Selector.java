@@ -85,7 +85,6 @@ public class Selector {
         }
     }
 
-
     public UserDeviceView selectDevice(List<UserDeviceView> d, String name) throws InputException {
         if (d.size() == 1) {
             return d.get(0);
