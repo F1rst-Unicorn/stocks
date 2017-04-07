@@ -1,30 +1,34 @@
-package de.njsm.stocks.client.frontend.cli;
+package de.njsm.stocks.client.frontend.cli.commands;
 
-import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
+import de.njsm.stocks.client.frontend.cli.Command;
+import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class CommandManager {
+public class AggregatedCommandHandler extends AbstractCommandHandler {
 
     private final List<AbstractCommandHandler> commandHandler;
     private String prefix;
 
-    public CommandManager(List<AbstractCommandHandler> commands) {
-        this(commands, "");
+    public AggregatedCommandHandler(ScreenWriter writer, List<AbstractCommandHandler> commands) {
+        this(writer, commands, "");
     }
 
-    public CommandManager(List<AbstractCommandHandler> commands, String prefix) {
+    public AggregatedCommandHandler(ScreenWriter writer, List<AbstractCommandHandler> commands, String prefix) {
+        super(writer);
         commandHandler = commands;
         this.prefix = prefix;
     }
 
-    public CommandManager(AbstractCommandHandler... commands) {
+    public AggregatedCommandHandler(ScreenWriter writer, AbstractCommandHandler... commands) {
+        super(writer);
         this.commandHandler = Arrays.asList(commands);
         this.prefix = "";
     }
 
-    public void handleCommand(Command command) {
+    @Override
+    public void handle(Command command) {
         String word = command.next();
         boolean commandFound = false;
 
@@ -42,7 +46,7 @@ public class CommandManager {
         }
 
         if (! commandFound){
-            System.out.println("Unknown command: " + word);
+            writer.println("Unknown command: " + word);
         }
     }
 
@@ -52,14 +56,14 @@ public class CommandManager {
 
     public void printHelp() {
         if (prefix.equals("")){
-            System.out.println("Possible commands:");
+            writer.println("Possible commands:");
         } else {
-            System.out.println("Possible commands for " + prefix + ":");
+            writer.println("Possible commands for " + prefix + ":");
         }
 
         for (AbstractCommandHandler c : commandHandler){
-            System.out.println("\t" + prefix + " " + c.toString());
+            writer.println("\t" + prefix + " " + c.toString());
         }
-        System.out.println("Type '<command> help' for specific help to that command");
+        writer.println("Type '<command> help' for specific help to that command");
     }
 }

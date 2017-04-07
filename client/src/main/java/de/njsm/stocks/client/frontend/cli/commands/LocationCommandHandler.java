@@ -2,7 +2,6 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.CommandManager;
 import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.frontend.cli.service.Selector;
@@ -12,7 +11,7 @@ import java.util.List;
 
 public class LocationCommandHandler extends AbstractCommandHandler {
 
-    protected final CommandManager m;
+    protected final AggregatedCommandHandler m;
 
     private Selector selector;
 
@@ -29,13 +28,13 @@ public class LocationCommandHandler extends AbstractCommandHandler {
         commands.add(new LocationListCommandHandler(c, writer));
         commands.add(new LocationRenameCommandHandler(c, writer, selector, refresher));
         commands.add(new LocationRemoveCommandHandler(c, writer, selector, refresher));
-        m = new CommandManager(commands, command);
+        m = new AggregatedCommandHandler(writer, commands, command);
     }
 
     @Override
     public void handle(Command command) {
         if (command.hasNext()) {
-            m.handleCommand(command);
+            m.handle(command);
         } else {
             new LocationListCommandHandler(c, writer).handle(command);
         }

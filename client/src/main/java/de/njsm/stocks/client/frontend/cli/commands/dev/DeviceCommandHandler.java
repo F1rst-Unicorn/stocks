@@ -1,17 +1,17 @@
 package de.njsm.stocks.client.frontend.cli.commands.dev;
 
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.CommandManager;
+import de.njsm.stocks.client.frontend.cli.commands.AggregatedCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 
 public class DeviceCommandHandler extends AbstractCommandHandler {
 
-    private final CommandManager m;
+    private final AggregatedCommandHandler m;
 
     private AbstractCommandHandler defaultHandler;
 
-    public DeviceCommandHandler(CommandManager subcommandManager,
+    public DeviceCommandHandler(AggregatedCommandHandler subcommandManager,
                                 AbstractCommandHandler defaultHandler,
                                 ScreenWriter writer) {
         super(writer);
@@ -25,7 +25,7 @@ public class DeviceCommandHandler extends AbstractCommandHandler {
     @Override
     public void handle(Command command) {
         if (command.hasNext()) {
-            m.handleCommand(command);
+            m.handle(command);
         } else {
             defaultHandler.handle(command);
         }

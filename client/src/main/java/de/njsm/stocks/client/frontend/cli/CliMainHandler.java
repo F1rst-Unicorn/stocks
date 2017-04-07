@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class CliMainHandler implements MainHandler {
 
-    private final CommandManager m;
+    private final AggregatedCommandHandler m;
     private final Configuration c;
 
     CliMainHandler(Configuration c) {
@@ -66,14 +66,14 @@ public class CliMainHandler implements MainHandler {
         DeviceListCommandHandler listDevices = new DeviceListCommandHandler(writer, dbManager);
         DeviceAddCommandHandler addDevices = new DeviceAddCommandHandler(c, writer, refresher, devCollector, dbManager, c.getServerManager());
         DeviceRemoveCommandHandler removeDevices = new DeviceRemoveCommandHandler(writer, refresher, devCollector, c.getServerManager());
-        CommandManager devManager = new CommandManager(listDevices, addDevices, removeDevices);
+        AggregatedCommandHandler devManager = new AggregatedCommandHandler(writer, listDevices, addDevices, removeDevices);
 
         de.njsm.stocks.client.frontend.cli.commands.user.InputCollector userCollector =
                 new de.njsm.stocks.client.frontend.cli.commands.user.InputCollector(writer, reader, dbManager);
         UserListCommandHandler listUsers = new UserListCommandHandler(dbManager, writer);
         UserAddCommandHandler addUsers = new UserAddCommandHandler(writer, c.getServerManager(), userCollector, refresher);
         UserRemoveCommandHandler removeUsers = new UserRemoveCommandHandler(writer, c.getServerManager(), userCollector, refresher);
-        CommandManager userManager = new CommandManager(listUsers, addUsers, removeUsers);
+        AggregatedCommandHandler userManager = new AggregatedCommandHandler(writer, listUsers, addUsers, removeUsers);
 
         ArrayList<AbstractCommandHandler> commandHandler = new ArrayList<>();
         commandHandler.add(new AddCommandHandler(addCollector,
@@ -89,7 +89,7 @@ public class CliMainHandler implements MainHandler {
         commandHandler.add(new UserCommandHandler(userManager, listUsers, writer));
         commandHandler.add(new DeviceCommandHandler(devManager, listDevices, writer));
 
-        m = new CommandManager(commandHandler);
+        m = new AggregatedCommandHandler(writer, commandHandler);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class CliMainHandler implements MainHandler {
         if (args.length > 0) {
             try {
                 command = Command.createCommand(args);
-                m.handleCommand(command);
+                m.handle(command);
             } catch (ParseException e) {
                 // TODO Log
             }
@@ -117,7 +117,7 @@ public class CliMainHandler implements MainHandler {
                     default:
                         try {
                             command = Command.createCommand(input);
-                            m.handleCommand(command);
+                            m.handle(command);
                         } catch (ParseException e) {
                             // TODO Log
                         }
