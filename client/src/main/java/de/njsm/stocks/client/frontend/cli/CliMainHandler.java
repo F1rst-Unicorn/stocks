@@ -7,14 +7,12 @@ import de.njsm.stocks.client.frontend.cli.commands.*;
 import de.njsm.stocks.client.frontend.cli.commands.add.AddCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.add.InputCollector;
 import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceAddCommandHandler;
-import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceListCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceRemoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.eat.EatCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.refresh.RefreshCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.user.UserAddCommandHandler;
-import de.njsm.stocks.client.frontend.cli.commands.user.UserCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.user.UserListCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.user.UserRemoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
@@ -66,14 +64,16 @@ public class CliMainHandler implements MainHandler {
         DeviceListCommandHandler listDevices = new DeviceListCommandHandler(writer, dbManager);
         DeviceAddCommandHandler addDevices = new DeviceAddCommandHandler(c, writer, refresher, devCollector, dbManager, c.getServerManager());
         DeviceRemoveCommandHandler removeDevices = new DeviceRemoveCommandHandler(writer, refresher, devCollector, c.getServerManager());
-        AggregatedCommandHandler devManager = new AggregatedCommandHandler(writer, listDevices, addDevices, removeDevices);
+        DefaultCommandHandler devManager = new DefaultCommandHandler(writer, "devices", "Manage the devices accessing the stocks system",
+                listDevices, addDevices, removeDevices);
 
         de.njsm.stocks.client.frontend.cli.commands.user.InputCollector userCollector =
                 new de.njsm.stocks.client.frontend.cli.commands.user.InputCollector(writer, reader, dbManager);
         UserListCommandHandler listUsers = new UserListCommandHandler(dbManager, writer);
         UserAddCommandHandler addUsers = new UserAddCommandHandler(writer, c.getServerManager(), userCollector, refresher);
         UserRemoveCommandHandler removeUsers = new UserRemoveCommandHandler(writer, c.getServerManager(), userCollector, refresher);
-        AggregatedCommandHandler userManager = new AggregatedCommandHandler(writer, listUsers, addUsers, removeUsers);
+        DefaultCommandHandler userCommandHandler = new DefaultCommandHandler(writer, "user", "Manage the users of the stocks system",
+                listUsers, addUsers, removeUsers);
 
         ArrayList<AbstractCommandHandler> commandHandler = new ArrayList<>();
         commandHandler.add(new AddCommandHandler(addCollector,
@@ -86,8 +86,8 @@ public class CliMainHandler implements MainHandler {
         commandHandler.add(new FoodCommandHandler(c, writer, selector, refresher));
         commandHandler.add(new LocationCommandHandler(c, writer, selector, refresher));
         commandHandler.add(new RefreshCommandHandler(writer, refresher));
-        commandHandler.add(new UserCommandHandler(userManager, listUsers, writer));
-        commandHandler.add(new DeviceCommandHandler(devManager, listDevices, writer));
+        commandHandler.add(userCommandHandler);
+        commandHandler.add(devManager);
 
         m = new AggregatedCommandHandler(writer, commandHandler);
     }
