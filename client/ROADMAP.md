@@ -12,6 +12,9 @@
 * 00008 : DONE : Add release build management
 * 00009 : WIP  : Refactor client for testability
 * 00010 : NEW  : Verify output in system tests
+* 00011 : NEW  : Use dependency injection
+* 00012 : NEW  : Make sure select methods return index from list
+* 00013 : NEW  : Refactor input parsing to lower dependencies
 
 ## Version 0.6
 * 00001 : NEW  : Add emitting QR codes for new users
