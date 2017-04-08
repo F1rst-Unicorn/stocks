@@ -21,7 +21,7 @@ public class InputCollector extends Selector {
     }
 
     public Food resolveFood(Command c) throws DatabaseException, InputException {
-        String name = getName(c);
+        String name = getName("Food name: ", c);
         List<Food> food = dbManager.getFood(name);
         return selectFood(food, name);    }
 

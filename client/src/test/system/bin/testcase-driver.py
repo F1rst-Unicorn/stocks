@@ -25,6 +25,7 @@ class TestCase:
         self.actualOutput = self.actualOutput.split("\n")
         self.actualOutput = self.actualOutput[1:len(self.actualOutput)-2]
         self.actualOutput = "\n".join(self.actualOutput)
+        print(self.actualOutput)
 
 
     def check(self, index):

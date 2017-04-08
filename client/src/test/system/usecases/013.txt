@@ -1,0 +1,3 @@
+Title: List locations by default command
+Input: loc
+Output: ^Current locations: \n\t1: Fridge\n\t2: Cupboard\n\t3: Basement$

@@ -31,7 +31,7 @@ public class FoodRenameCommandHandler extends AbstractCommandHandler {
     public void handle(Command command) {
         try {
             Food food = inputCollector.resolveFood(command);
-            String newName = inputCollector.getName(command);
+            String newName = inputCollector.getName("New name: ", command);
             serverManager.renameFood(food, newName);
             refresher.refresh();
         } catch (NetworkException e) {
