@@ -9,10 +9,9 @@ sudo virsh snapshot-revert dp-server clean-running
 sleep 1
 
 ansible-playbook $STOCKS_ROOT/deploy-server/install.yml
-ansible-playbook \
-        $STOCKS_ROOT/deploy-server/deploy.yml
+ansible-playbook $STOCKS_ROOT/deploy-server/deploy.yml
 
-sleep 10
+sleep 15
 
 sudo virsh snapshot-delete dp-server initialised-running || true
 sudo virsh snapshot-create-as dp-server --name initialised-running
