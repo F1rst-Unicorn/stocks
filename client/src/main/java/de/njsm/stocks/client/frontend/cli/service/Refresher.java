@@ -50,6 +50,9 @@ public class Refresher {
                 upToDate = false;
             }
         }
+
+        dbManager.writeUpdates(Arrays.asList(serverUpdates));
+
         return upToDate;
     }
 
