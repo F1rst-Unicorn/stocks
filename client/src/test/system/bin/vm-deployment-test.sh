@@ -19,6 +19,10 @@ mkdir -p $STOCKS_ROOT/client/src/test/system/tmp/.stocks
 echo ".read $STOCKS_ROOT/deploy-client/config/schema.sql" | \
         sqlite3 $STOCKS_ROOT/client/src/test/system/tmp/.stocks/stocks.db
 
+echo
+echo "##teamcity[testSuiteStarted name='Client System Test']"
+
+echo "##teamcity[testStarted name='Initialisation']"
 FINGERPRINT=$(curl -s http://$SERVER:10910/ca | \
         openssl x509 -noout -sha256 -fingerprint | \
         head -n 1 | sed 's/.*=//')
@@ -28,8 +32,7 @@ $FINGERPRINT\n\
 0000\nquit\n" | \
         java -jar -Duser.stocks.dir=$STOCKS_ROOT/client/src/test/system/tmp \
         $STOCKS_ROOT/client/target/client-*.jar
-
-echo
+echo "##teamcity[testFinished name='Initialisation']"
 
 for TESTCASE in $(find $STOCKS_ROOT/client/src/test/system/usecases -type f | sort)
 do
@@ -37,9 +40,9 @@ do
     python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py $TESTCASE
     cd - >/dev/null
 done
-
+echo "##teamcity[testSuiteFinished name='Client System Test']"
 echo
-echo SUCCESS
+
 
 rm -rf $STOCKS_ROOT/client/src/test/system/tmp
 sudo virsh snapshot-revert $SERVER clean

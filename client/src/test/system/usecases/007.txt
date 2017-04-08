@@ -1,0 +1,4 @@
+Title: List devices after refresh
+Input: dev list
+Output: ^Current devices:
+    1: Jack' Device$

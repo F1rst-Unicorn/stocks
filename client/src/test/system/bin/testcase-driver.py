@@ -28,14 +28,15 @@ class TestCase:
 
 
     def check(self, index):
-        matcher = re.match(self.referenceOutput, self.actualOutput)
+        matcher = re.match(self.referenceOutput,
+                self.actualOutput, re.MULTILINE)
         if matcher is None:
             sys.stderr.write(index + " failed!\n\n")
             sys.stderr.write("Expected: " + self.referenceOutput + "\n\n")
             sys.stderr.write("Actual:   " + self.actualOutput + "\n")
-            sys.exit(1)
-        else:
-            print("[ OK ] " + self.title)
+            print("##teamcity[testFailed name='" + self.title + "' message='"
+                    + "Comparison failed' expected='" + self.referenceOutput
+                    + "' actual='" + self.actualOutput + "']")
 
 
 def main(arguments):
@@ -45,8 +46,11 @@ def main(arguments):
     testcaseFileName = arguments[1]
     testcase = parseFileFromName(testcaseFileName)
 
+    print("##teamcity[testStarted name='" + testcase.title + "']")
     testcase.run()
     testcase.check(testcaseFileName)
+    print("##teamcity[testFinished name='" + testcase.title + "']")
+
 
 def parseFileFromName(fileName):
     with open(fileName, 'r') as testcaseFile:
