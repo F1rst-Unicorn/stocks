@@ -10,6 +10,7 @@ import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceAddCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceListCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.dev.DeviceRemoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.eat.EatCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.loc.*;
 import de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.refresh.RefreshCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.user.UserAddCommandHandler;
@@ -75,17 +76,22 @@ public class CliMainHandler implements MainHandler {
         DefaultCommandHandler userCommandHandler = new DefaultCommandHandler(writer, listUsers, "user", "Manage the users of the stocks system",
                 listUsers, addUsers, removeUsers);
 
+        de.njsm.stocks.client.frontend.cli.commands.loc.InputCollector locationCollector =
+                new de.njsm.stocks.client.frontend.cli.commands.loc.InputCollector(writer, reader, dbManager);
+        LocationListCommandHandler listLocs = new LocationListCommandHandler(writer, dbManager);
+        LocationAddCommandHandler addLoc = new LocationAddCommandHandler(writer, refresher, locationCollector, c.getServerManager());
+        LocationRemoveCommandHandler removeLoc = new LocationRemoveCommandHandler(writer, locationCollector, refresher, c.getServerManager());
+        LocationRenameCommandHandler renameLoc = new LocationRenameCommandHandler(writer, locationCollector, refresher, c.getServerManager());
+        DefaultCommandHandler locationCommandHandler = new DefaultCommandHandler(writer, listLocs, "loc", "Manage the locations to store food",
+                listLocs, addLoc, removeLoc, renameLoc);
+
         ArrayList<AbstractCommandHandler> commandHandler = new ArrayList<>();
-        commandHandler.add(new AddCommandHandler(addCollector,
-                c.getServerManager(),
-                refresher,
-                writer));
-        commandHandler.add(new MoveCommandHandler(c.getServerManager(),
-                moveCollector, writer, refresher));
+        commandHandler.add(new AddCommandHandler(addCollector, c.getServerManager(), refresher, writer));
+        commandHandler.add(new MoveCommandHandler(c.getServerManager(), moveCollector, writer, refresher));
         commandHandler.add(new EatCommandHandler(c, c.getServerManager(), writer, eatCollector, refresher));
         commandHandler.add(new FoodCommandHandler(c, writer, selector, refresher));
-        commandHandler.add(new LocationCommandHandler(c, writer, selector, refresher));
         commandHandler.add(new RefreshCommandHandler(writer, refresher));
+        commandHandler.add(locationCommandHandler);
         commandHandler.add(userCommandHandler);
         commandHandler.add(devManager);
 
