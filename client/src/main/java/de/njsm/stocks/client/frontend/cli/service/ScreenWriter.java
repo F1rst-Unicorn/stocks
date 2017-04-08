@@ -23,7 +23,7 @@ public class ScreenWriter {
 
     public void printFood(String headline, List<Food> foodList) {
         if (foodList.isEmpty()) {
-            println("\tNo food there...");
+            println("No food there...");
         } else {
             println(headline);
 
@@ -39,7 +39,7 @@ public class ScreenWriter {
 
     public void printLocations(String headline, List<Location> locations) {
         if (locations.isEmpty()) {
-            println("\tNo locations there...");
+            println("No locations there...");
         } else {
             println(headline);
 
@@ -55,7 +55,7 @@ public class ScreenWriter {
 
     public void printItems(String headline, List<FoodItem> items) {
         if (items.isEmpty()) {
-            println("\tNo items there...");
+            println("No items there...");
         } else {
             println(headline);
 

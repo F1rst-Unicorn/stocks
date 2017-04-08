@@ -13,26 +13,29 @@ class TestCase:
 
     def run(self):
         process = subprocess.Popen(
-                        ["java -jar -Duser.stocks.dir=client/src/test/system/tmp "
+                        ["java -jar "
+                       + "-Duser.stocks.dir=client/src/test/system/tmp "
                        + "client/target/client-*.jar"],
                        stdin=subprocess.PIPE,
                        stdout=subprocess.PIPE,
                        shell=True)
-        self.actualOutput,dummy = process.communicate(str.encode(self.input + "\nquit\n"))
+        self.actualOutput,dummy = process.communicate(
+                str.encode(self.input + "\nquit\n"))
         self.actualOutput = self.actualOutput.decode("utf-8")
-        self.actualOutput = self.actualOutput.split("\n")[1:]
-        self.actualOutput = self.actualOutput[0:len(self.actualOutput)-2]
+        self.actualOutput = self.actualOutput.split("\n")
+        self.actualOutput = self.actualOutput[1:len(self.actualOutput)-2]
         self.actualOutput = "\n".join(self.actualOutput)
 
 
-    def check(self):
+    def check(self, index):
         matcher = re.match(self.referenceOutput, self.actualOutput)
         if matcher is None:
-            print("Failed!\nExpected: " + self.referenceOutput + "\nActual:   " +
-                    self.actualOutput)
+            sys.stderr.write(index + " failed!\n\n")
+            sys.stderr.write("Expected: " + self.referenceOutput + "\n\n")
+            sys.stderr.write("Actual:   " + self.actualOutput + "\n")
             sys.exit(1)
         else:
-            print("Passed  use case '" + self.title + "'")
+            print("[ OK ] " + self.title)
 
 
 def main(arguments):
@@ -42,11 +45,8 @@ def main(arguments):
     testcaseFileName = arguments[1]
     testcase = parseFileFromName(testcaseFileName)
 
-    print("Running use case '" + testcase.title + "'")
-
     testcase.run()
-
-    testcase.check()
+    testcase.check(testcaseFileName)
 
 def parseFileFromName(fileName):
     with open(fileName, 'r') as testcaseFile:
@@ -54,40 +54,20 @@ def parseFileFromName(fileName):
         lines = content.split("\n")
         title = lines[0].replace("Title: ", "")
         input = lines[1].replace("Input: ", "")
+        input = transformEscapes(input)
         output = lines[2]
         output = output.replace("Output: ", "")
-        output = output.replace("\\n", "\n")
-        output = output.replace("\\t", "\t")
+        output = transformEscapes(output)
         result = TestCase(title, input, output)
         return result
 
+def transformEscapes(string):
+    string = string.replace("\\n", "\n")
+    string = string.replace("\\t", "\t")
+    return string
+
 def printUsage():
     print("Usage: testcase-driver <filename>")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
     main(sys.argv)

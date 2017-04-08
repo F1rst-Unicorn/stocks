@@ -65,7 +65,7 @@ public class ScreenWriterTest {
 
     @Test
     public void printingEmptyLocationListShowsConstantMessage() throws Exception {
-        String message = "\tNo locations there...";
+        String message = "No locations there...";
 
         uut.printLocations("Unused headline", Collections.emptyList());
 
@@ -103,7 +103,7 @@ public class ScreenWriterTest {
 
     @Test
     public void printingEmptyFoodListShowsConstantMessage() throws Exception {
-        String message = "\tNo food there...";
+        String message = "No food there...";
 
         uut.printFood("Unused headline", Collections.emptyList());
 
@@ -143,7 +143,7 @@ public class ScreenWriterTest {
 
     @Test
     public void printingEmptyFoodItemListShowsConstantMessage() throws Exception {
-        String message = "\tNo items there...";
+        String message = "No items there...";
 
         uut.printItems("Unused headline", Collections.emptyList());
 

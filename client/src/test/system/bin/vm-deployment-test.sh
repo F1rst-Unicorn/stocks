@@ -29,12 +29,17 @@ $FINGERPRINT\n\
         java -jar -Duser.stocks.dir=$STOCKS_ROOT/client/src/test/system/tmp \
         $STOCKS_ROOT/client/target/client-*.jar
 
-for TESTCASE in $(find $STOCKS_ROOT/client/src/test/system/usecases -type f )
+echo
+
+for TESTCASE in $(find $STOCKS_ROOT/client/src/test/system/usecases -type f | sort)
 do
     cd $STOCKS_ROOT
     python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py $TESTCASE
-    cd -
+    cd - >/dev/null
 done
+
+echo
+echo SUCCESS
 
 rm -rf $STOCKS_ROOT/client/src/test/system/tmp
 sudo virsh snapshot-revert $SERVER clean
