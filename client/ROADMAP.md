@@ -10,7 +10,7 @@
 * 00006 : NEW  : Improve displaying food lists
 * 00007 : NEW  : Enable entering names with spaces
 * 00008 : DONE : Add release build management
-* 00009 : WIP  : Refactor client for testability
+* 00009 : DONE : Refactor client for testability
 * 00010 : NEW  : Verify output in system tests
 * 00011 : NEW  : Use dependency injection
 * 00012 : DONE : Make sure select methods return index from list
