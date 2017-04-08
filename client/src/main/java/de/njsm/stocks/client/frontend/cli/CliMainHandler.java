@@ -72,7 +72,7 @@ public class CliMainHandler implements MainHandler {
         DeviceListCommandHandler listDevices = new DeviceListCommandHandler(writer, dbManager);
         DeviceAddCommandHandler addDevices = new DeviceAddCommandHandler(c, writer, refresher, devCollector, dbManager, c.getServerManager());
         DeviceRemoveCommandHandler removeDevices = new DeviceRemoveCommandHandler(writer, refresher, devCollector, c.getServerManager());
-        DefaultCommandHandler devManager = new DefaultCommandHandler(writer, listDevices, "devices", "Manage the devices accessing the stocks system",
+        DefaultCommandHandler devManager = new DefaultCommandHandler(writer, listDevices, "dev", "Manage the devices accessing the stocks system",
                 listDevices, addDevices, removeDevices);
 
         de.njsm.stocks.client.frontend.cli.commands.user.InputCollector userCollector =
