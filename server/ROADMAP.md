@@ -33,6 +33,7 @@
 * 00028 : NEW  : Decouple server, timeouts and fail fast
 * 00029 : NEW  : Perform locking on CA
 * 00030 : NEW  : Database versioning and concurrency
+* 00031 : NEW  : Add TeamCity service messages for system tests
 
 ## Version 1.2
 * 00009 : NEW  : Add favourite food markers
