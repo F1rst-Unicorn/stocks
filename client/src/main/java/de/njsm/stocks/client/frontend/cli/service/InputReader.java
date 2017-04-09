@@ -48,7 +48,12 @@ public class InputReader {
     public String next(String prompt) {
         reader.setPrompt(prompt);
         try {
-            return reader.readLine();
+            String input = reader.readLine();
+            if (input == null) {
+                return "\n";
+            } else {
+                return input;
+            }
         } catch (IOException e) {
             return "";
         }

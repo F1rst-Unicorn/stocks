@@ -139,6 +139,7 @@ public class CliMainHandler implements MainHandler {
                         endRequested = true;
                         break;
                     case "":
+                    case "\n":
                         break;
                     default:
                         try {
