@@ -28,7 +28,7 @@ public abstract class AbstractCommandHandler {
     public abstract void handle(Command command);
 
     public void printHelp() {
-        System.out.println("No help page found...");
+        writer.println("No help page found...");
     }
 
     public boolean canHandle(String command) {

@@ -54,6 +54,6 @@ public class RefreshCommandHandler extends AbstractCommandHandler {
     public void printHelp() {
         String help = "Get the latest updates from the server\n" +
                 "\t-f\t\t\tForce update from server";
-        System.out.println(help);
+        writer.println(help);
     }
 }

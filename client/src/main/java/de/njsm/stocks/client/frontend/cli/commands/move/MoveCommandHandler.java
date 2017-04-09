@@ -43,9 +43,9 @@ public class MoveCommandHandler extends AbstractCommandHandler {
     public void printHelp() {
         String text = "Move a food item to a different location\n" +
                 "\t--f string\t\t\tfood: The food type to move\n" +
-                "\t--l string\t\t\tlocation: Where to put the food\n\n";
+                "\t--l string\t\t\tlocation: Where to put the food\n";
 
-        System.out.print(text);
+        writer.println(text);
     }
 
     private void handleMoveCommand(Command command) {

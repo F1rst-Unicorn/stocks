@@ -79,12 +79,12 @@ public class DeviceAddCommandHandler extends AbstractCommandHandler {
     }
 
     private void printNewDevice(UserDeviceView device, Ticket ticket) throws DatabaseException {
-        System.out.println("Creation successful. The new device needs these parameters:");
-        System.out.println("\tUser name: " + device.user);
-        System.out.println("\tDevice name: " + device.name);
-        System.out.println("\tUser ID: " + device.userId);
-        System.out.println("\tDevice ID: " + device.id);
-        System.out.println("\tFingerprint: " + configuration.getFingerprint());
-        System.out.println("\tTicket: " + ticket.ticket);
+        writer.println("Creation successful. The new device needs these parameters:");
+        writer.println("\tUser name: " + device.user);
+        writer.println("\tDevice name: " + device.name);
+        writer.println("\tUser ID: " + device.userId);
+        writer.println("\tDevice ID: " + device.id);
+        writer.println("\tFingerprint: " + configuration.getFingerprint());
+        writer.println("\tTicket: " + ticket.ticket);
     }
 }
