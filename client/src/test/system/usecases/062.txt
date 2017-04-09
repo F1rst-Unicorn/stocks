@@ -1,0 +1,3 @@
+Title: Eat single item
+Input: eat Bread
+Output: ^$
