@@ -36,8 +36,10 @@ class TestCase:
             sys.stderr.write("Expected: " + self.referenceOutput + "\n\n")
             sys.stderr.write("Actual:   " + self.actualOutput + "\n")
             print("##teamcity[testFailed name='" + self.title + "' message='"
-                    + "Comparison failed' expected='" + self.referenceOutput
-                    + "' actual='" + self.actualOutput + "']")
+                    + "Comparison failed' expected='"
+                    + self.referenceOutput.replace("\n", "\\n") +
+                    + "' actual='" + self.actualOutput.replace("\n", "\\n")
+                    + "']")
 
 
 def main(arguments):
