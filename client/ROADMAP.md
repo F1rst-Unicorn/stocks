@@ -11,7 +11,7 @@
 * 00007 : NEW  : Enable entering names with spaces
 * 00008 : DONE : Add release build management
 * 00009 : DONE : Refactor client for testability
-* 00010 : NEW  : Verify output in system tests
+* 00010 : DONE : Verify output in system tests
 * 00011 : NEW  : Use dependency injection
 * 00012 : DONE : Make sure select methods return index from list
 * 00013 : NEW  : Refactor input parsing to lower dependencies
