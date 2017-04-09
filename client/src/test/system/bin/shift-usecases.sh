@@ -18,5 +18,5 @@ for file in `find $STOCKS_ROOT/client/src/test/system/usecases -type f | \
     NEWNAME=`echo $file | sed -r 's$.*/([0-9]*)\.txt$\1$g'`
     NEWNAME=$(($NEWNAME + 1))
     NEWNAME=$NEWNAME.txt
-    echo mv $file $STOCKS_ROOT/client/src/test/system/usecases/$NEWNAME
+    mv $file $STOCKS_ROOT/client/src/test/system/usecases/$NEWNAME
 done
