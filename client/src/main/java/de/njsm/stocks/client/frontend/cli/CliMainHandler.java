@@ -30,12 +30,16 @@ import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import jline.console.ConsoleReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class CliMainHandler implements MainHandler {
+
+    private static final Logger LOG = LogManager.getLogger(CliMainHandler.class);
 
     private final AggregatedCommandHandler m;
     private final Configuration c;
@@ -124,7 +128,7 @@ public class CliMainHandler implements MainHandler {
                 command = Command.createCommand(args);
                 m.handle(command);
             } catch (ParseException e) {
-                // TODO Log
+                LOG.error("Could not parse command", e);
             }
         } else {
             while (!endRequested) {
@@ -141,7 +145,7 @@ public class CliMainHandler implements MainHandler {
                             command = Command.createCommand(input);
                             m.handle(command);
                         } catch (ParseException e) {
-                            // TODO Log
+                            LOG.error("Could not parse command", e);
                         }
                 }
             }

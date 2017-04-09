@@ -39,6 +39,7 @@ public class Main {
         } catch (PrintableException e) {
             exitCode = handleError(e);
         } finally {
+            LOG.info("Shutting down");
             threadPool.shutdown();
         }
         System.exit(exitCode);

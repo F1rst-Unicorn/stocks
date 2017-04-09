@@ -62,6 +62,6 @@ public abstract class AbstractCommandHandler {
 
     protected void logInputError(InputException e) {
         writer.println(e.getMessage());
-        LOG.error("Problem with the input", e);
+        LOG.warn("Problem with the input", e);
     }
 }

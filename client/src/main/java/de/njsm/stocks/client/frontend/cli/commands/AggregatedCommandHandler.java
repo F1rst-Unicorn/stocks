@@ -2,11 +2,15 @@ package de.njsm.stocks.client.frontend.cli.commands;
 
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class AggregatedCommandHandler extends AbstractCommandHandler {
+
+    private static final Logger LOG = LogManager.getLogger(AggregatedCommandHandler.class);
 
     private final List<AbstractCommandHandler> commandHandler;
     private String prefix;
@@ -29,6 +33,7 @@ public class AggregatedCommandHandler extends AbstractCommandHandler {
 
     @Override
     public void handle(Command command) {
+        LOG.info("Handling " + command.toString());
         String word = command.next();
         boolean commandFound = false;
 
