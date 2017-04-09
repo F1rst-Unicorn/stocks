@@ -1,0 +1,3 @@
+Title: Move interactively
+Input: move\nBread\nFreezer
+Output: ^Available food: \n\t1: Beer\n\t2: Carrot\n\t3: Bread\n\t4: Cheese\n\t5: Ham\nWhat to move\? Bread\nAvailable locations: \n\t1: Fridge\n\t2: Cupboard\n\t3: Basement\n\t4: Freezer\nWhere to move to\? Freezer$

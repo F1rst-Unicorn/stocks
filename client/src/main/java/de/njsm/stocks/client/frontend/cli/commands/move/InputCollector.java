@@ -58,7 +58,7 @@ public class InputCollector extends Selector {
     }
 
     private FoodItem getItemToMove(Food food) throws DatabaseException, InputException {
-        List<FoodItem> items = listItemsOfType(food);
+        List<FoodItem> items = dbManager.getItems(food.id);
         return selectItem(items);
     }
 
@@ -92,11 +92,5 @@ public class InputCollector extends Selector {
     private void listLocations() throws DatabaseException {
         List<Location> locationList = dbManager.getLocations();
         writer.printLocations("Available locations: ", locationList);
-    }
-
-    private List<FoodItem> listItemsOfType(Food food) throws DatabaseException {
-        List<FoodItem> items = dbManager.getItems(food.id);
-        writer.printItems("Items of this food type: ", items);
-        return items;
     }
 }
