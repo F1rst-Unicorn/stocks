@@ -25,8 +25,7 @@ public class InputCollector extends Selector {
     }
 
     User determineUser(Command c) throws DatabaseException, InputException {
-        writer.println("Who is the owner?");
-        String ownerName = resolveName(c, "User name: ");
+        String ownerName = resolveName(c, "Owner name: ");
         return resolveUser(ownerName);
     }
 
@@ -51,7 +50,7 @@ public class InputCollector extends Selector {
         if (c.hasNext()) {
             String inputName = c.next();
             if (InputReader.isNameValid(inputName)) {
-                return c.next();
+                return inputName;
             } else {
                 writer.println("Name may not contain '=' or '$'");
             }
