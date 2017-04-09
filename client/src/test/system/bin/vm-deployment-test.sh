@@ -43,4 +43,5 @@ done
 echo "##teamcity[testSuiteFinished name='Client System Test']"
 echo
 
-
+rm -rf $STOCKS_ROOT/client/src/test/system/tmp
+sudo virsh snapshot-revert $SERVER clean
