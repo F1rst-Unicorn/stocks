@@ -1,0 +1,3 @@
+Title: Do nothing on empty input
+Input: 
+Output: ^$
