@@ -37,8 +37,9 @@ class TestCase:
             sys.stderr.write("Actual:   " + self.actualOutput + "\n")
             print("##teamcity[testFailed name='" + self.title + "' message='"
                     + "Comparison failed' expected='"
-                    + self.referenceOutput.replace("\n", "\\n")
-                    + "' actual='" + self.actualOutput.replace("\n", "\\n")
+                    + escapeForTeamcity(self.referenceOutput)
+                    + "' actual='"
+                    + escapeForTeamcity(self.actualOutput)
                     + "']")
 
 
@@ -72,6 +73,14 @@ def transformEscapes(string):
     string = string.replace("\\n", "\n")
     string = string.replace("\\t", "\t")
     return string
+
+def escapeForTeamcity(string):
+    return (string
+            .replace("\n", "|n")
+            .replace("'", "|'")
+            .replace("[", "|[")
+            .replace("]", "|]")
+            )
 
 def printUsage():
     print("Usage: testcase-driver <filename>")
