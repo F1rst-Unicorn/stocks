@@ -1,0 +1,57 @@
+quit
+user list
+quit
+dev list
+quit
+loc list
+quit
+food
+quit
+refresh
+quit
+user list
+quit
+dev list
+quit
+loc add Fridge
+quit
+loc add Cupboard
+quit
+loc
+quit
+loc add Basemnet
+quit
+loc rename Basemnet Basement
+quit
+loc list
+quit
+loc add
+quit
+food add
+quit
+food add Bread
+quit
+food
+quit
+food rename
+quit
+food add Carrot
+quit
+food list
+quit
+food rename Carrot
+quit
+food rename Carrot
+quit
+food list
+quit
+refresh
+quit
+refresh -f
+quit
+user add Juliette
+quit
+user add
+quit
+user list
+quit

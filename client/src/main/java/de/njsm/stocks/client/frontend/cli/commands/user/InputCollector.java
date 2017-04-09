@@ -22,16 +22,25 @@ public class InputCollector extends Selector {
     }
 
     public User resolveUser(Command c) throws InputException, DatabaseException {
-        String name;
+        String name = resolveName(c);
+        List<User> users = dbManager.getUsers(name);
+        return selectUser(users, name);
+    }
 
+    public User resolveNewUser(Command c) {
+        User result = new User();
+        result.name = resolveName(c);
+        return result;
+    }
+
+    private String resolveName(Command c) {
+        String name;
         if (c.hasNext()) {
             name = c.next();
         } else {
             name = askForName();
         }
-
-        List<User> users = dbManager.getUsers(name);
-        return selectUser(users, name);
+        return name;
     }
 
     private String askForName() {

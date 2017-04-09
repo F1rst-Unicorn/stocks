@@ -1,7 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands.user;
 
 import de.njsm.stocks.client.exceptions.DatabaseException;
-import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
@@ -30,15 +29,13 @@ public class UserAddCommandHandler extends AbstractCommandHandler {
     @Override
     public void handle(Command command) {
         try {
-            User userToAdd = inputCollector.resolveUser(command);
+            User userToAdd = inputCollector.resolveNewUser(command);
             serverManager.addUser(userToAdd);
             refresher.refresh();
         } catch (DatabaseException e) {
             logDatabaseError(e);
         } catch (NetworkException e) {
             logNetworkError(e);
-        } catch (InputException e) {
-            logInputError(e);
         }
     }
 }

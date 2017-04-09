@@ -1,0 +1,349 @@
+2017-04-09 11:21:23.410 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:23.490 INFO de.njsm.stocks.client.init.InitManager:38 Starting initialisation process
+2017-04-09 11:21:23.498 INFO de.njsm.stocks.client.init.AsyncKeyGenerator:27 Start keypair generation
+2017-04-09 11:21:23.502 INFO de.njsm.stocks.client.init.AsyncKeyGenerator:30 Initialised
+2017-04-09 11:21:23.507 INFO de.njsm.stocks.client.init.InitManager:77 Server hostname is dp-client-server
+2017-04-09 11:21:23.508 INFO de.njsm.stocks.client.init.InitManager:78 CA port is 10910
+2017-04-09 11:21:23.508 INFO de.njsm.stocks.client.init.InitManager:79 Ticket port is 10911
+2017-04-09 11:21:23.508 INFO de.njsm.stocks.client.init.InitManager:80 Server port is 10912
+2017-04-09 11:21:29.129 INFO de.njsm.stocks.client.init.AsyncKeyGenerator:36 Keypair generation finished
+2017-04-09 11:21:29.130 INFO de.njsm.stocks.client.init.NetworkHandlerImpl:26 Downloading certificate from http://dp-client-server:10910/ca
+2017-04-09 11:21:29.142 INFO de.njsm.stocks.client.init.NetworkHandlerImpl:26 Downloading certificate from http://dp-client-server:10910/chain
+2017-04-09 11:21:29.225 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:29.320 INFO de.njsm.stocks.client.network.sentry.SentryManager:29 New ticket backend to https://dp-client-server:10911/
+2017-04-09 11:21:29.320 INFO de.njsm.stocks.client.network.sentry.SentryManager:33 Requesting ticket
+2017-04-09 11:21:30.456 INFO de.njsm.stocks.client.network.sentry.SentryManager:63 Sentry request was successful
+2017-04-09 11:21:30.458 INFO de.njsm.stocks.client.config.Configuration:80 Saving configuration to file /home/jan/Programme/Java/stocks/client/src/test/system/bin/../../../../../client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:30.459 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:30.459 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:30.461 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from /home/jan/Programme/Java/stocks/client/src/test/system/bin/../../../../../client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:30.462 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:30.462 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:30.462 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:30.462 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is /home/jan/Programme/Java/stocks/client/src/test/system/bin/../../../../../client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:30.463 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:30.839 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:30.921 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:30.921 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:30.922 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:30.922 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:30.923 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:30.923 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:30.940 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:31.077 INFO de.njsm.stocks.client.storage.DatabaseManager:91 Getting all users
+2017-04-09 11:21:31.487 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:31.569 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:31.570 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:31.570 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:31.570 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:31.571 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:31.571 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:31.586 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:31.702 INFO de.njsm.stocks.client.storage.DatabaseManager:173 Getting all devices
+2017-04-09 11:21:32.123 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:32.203 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:32.203 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:32.203 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:32.203 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:32.204 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:32.204 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:32.221 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:32.337 INFO de.njsm.stocks.client.storage.DatabaseManager:210 Getting all locations
+2017-04-09 11:21:32.771 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:32.852 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:32.852 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:32.852 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:32.853 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:32.853 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:32.854 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:32.870 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:32.987 INFO de.njsm.stocks.client.storage.DatabaseManager:366 Getting items matching user '' and location ''
+2017-04-09 11:21:33.434 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:33.518 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:33.518 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:33.519 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:33.519 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:33.520 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:33.520 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:33.536 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:34.440 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:34.511 INFO de.njsm.stocks.client.storage.DatabaseManager:265 Writing locations
+2017-04-09 11:21:34.512 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Location
+2017-04-09 11:21:34.707 INFO de.njsm.stocks.client.storage.DatabaseManager:126 Writing users
+2017-04-09 11:21:34.707 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table User
+2017-04-09 11:21:34.882 INFO de.njsm.stocks.client.storage.DatabaseManager:150 Writing devices
+2017-04-09 11:21:34.882 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table User_device
+2017-04-09 11:21:35.198 INFO de.njsm.stocks.client.storage.DatabaseManager:288 Writing food
+2017-04-09 11:21:35.198 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Food
+2017-04-09 11:21:35.355 INFO de.njsm.stocks.client.storage.DatabaseManager:417 Writing food items
+2017-04-09 11:21:35.355 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Food_item
+2017-04-09 11:21:35.486 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:36.011 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:36.096 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:36.096 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:36.096 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:36.097 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:36.098 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:36.098 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:36.114 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:36.234 INFO de.njsm.stocks.client.storage.DatabaseManager:91 Getting all users
+2017-04-09 11:21:36.716 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:36.821 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:36.821 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:36.821 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:36.822 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:36.823 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:36.823 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:36.845 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:36.975 INFO de.njsm.stocks.client.storage.DatabaseManager:173 Getting all devices
+2017-04-09 11:21:37.400 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:37.481 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:37.482 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:37.482 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:37.483 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:37.483 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:37.483 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:37.501 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:37.941 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:38.012 INFO de.njsm.stocks.client.storage.DatabaseManager:265 Writing locations
+2017-04-09 11:21:38.012 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Location
+2017-04-09 11:21:38.185 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:38.843 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:38.948 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:38.948 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:38.949 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:38.950 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:38.951 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:38.951 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:38.977 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:39.565 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:39.631 INFO de.njsm.stocks.client.storage.DatabaseManager:265 Writing locations
+2017-04-09 11:21:39.632 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Location
+2017-04-09 11:21:39.778 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:40.320 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:40.403 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:40.403 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:40.404 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:40.404 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:40.404 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:40.404 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:40.420 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:40.538 INFO de.njsm.stocks.client.storage.DatabaseManager:210 Getting all locations
+2017-04-09 11:21:41.198 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:41.343 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:41.343 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:41.344 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:41.345 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:41.346 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:41.346 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:41.369 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:42.385 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:42.453 INFO de.njsm.stocks.client.storage.DatabaseManager:265 Writing locations
+2017-04-09 11:21:42.453 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Location
+2017-04-09 11:21:43.416 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:44.054 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:44.142 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:44.143 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:44.143 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:44.144 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:44.144 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:44.144 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:44.160 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:44.285 INFO de.njsm.stocks.client.storage.DatabaseManager:227 Getting locations matching name 'Basemnet'
+2017-04-09 11:21:44.646 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:44.654 INFO de.njsm.stocks.client.storage.DatabaseManager:265 Writing locations
+2017-04-09 11:21:44.655 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Location
+2017-04-09 11:21:44.793 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:45.359 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:45.442 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:45.443 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:45.443 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:45.444 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:45.445 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:45.445 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:45.462 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:45.593 INFO de.njsm.stocks.client.storage.DatabaseManager:210 Getting all locations
+2017-04-09 11:21:46.012 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:46.097 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:46.097 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:46.097 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:46.098 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:46.098 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:46.099 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:46.117 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:46.544 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:46.612 INFO de.njsm.stocks.client.storage.DatabaseManager:265 Writing locations
+2017-04-09 11:21:46.612 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Location
+2017-04-09 11:21:46.848 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:47.451 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:47.531 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:47.531 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:47.532 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:47.532 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:47.533 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:47.533 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:47.552 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:48.510 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:48.581 INFO de.njsm.stocks.client.storage.DatabaseManager:288 Writing food
+2017-04-09 11:21:48.581 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Food
+2017-04-09 11:21:48.747 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:49.253 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:49.336 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:49.336 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:49.336 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:49.337 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:49.337 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:49.338 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:49.355 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:49.811 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:49.885 INFO de.njsm.stocks.client.storage.DatabaseManager:288 Writing food
+2017-04-09 11:21:49.886 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Food
+2017-04-09 11:21:50.036 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:50.612 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:50.721 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:50.721 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:50.722 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:50.722 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:50.723 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:50.723 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:50.741 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:50.872 INFO de.njsm.stocks.client.storage.DatabaseManager:366 Getting items matching user '' and location ''
+2017-04-09 11:21:51.303 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:51.381 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:51.381 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:51.382 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:51.382 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:51.383 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:51.387 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:51.404 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:51.540 INFO de.njsm.stocks.client.storage.DatabaseManager:311 Getting food matching name 'Bread'
+2017-04-09 11:21:51.974 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:51.985 INFO de.njsm.stocks.client.storage.DatabaseManager:288 Writing food
+2017-04-09 11:21:51.985 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Food
+2017-04-09 11:21:52.130 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:52.667 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:52.757 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:52.758 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:52.758 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:52.758 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:52.759 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:52.759 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:52.774 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:53.467 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:53.556 INFO de.njsm.stocks.client.storage.DatabaseManager:288 Writing food
+2017-04-09 11:21:53.557 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Food
+2017-04-09 11:21:53.764 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:54.299 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:54.383 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:54.383 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:54.384 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:54.384 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:54.385 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:54.385 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:54.404 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:54.532 INFO de.njsm.stocks.client.storage.DatabaseManager:366 Getting items matching user '' and location ''
+2017-04-09 11:21:54.970 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:55.054 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:55.055 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:55.056 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:55.057 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:55.058 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:55.058 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:55.081 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:55.299 INFO de.njsm.stocks.client.storage.DatabaseManager:311 Getting food matching name 'Carrot'
+2017-04-09 11:21:55.384 ERROR de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler:65 Problem with the input
+de.njsm.stocks.client.exceptions.InputException: You did an invalid selection
+	at de.njsm.stocks.client.frontend.cli.service.Selector.selectFood(Selector.java:47) ~[client-0.4.jar:?]
+	at de.njsm.stocks.client.frontend.cli.commands.food.InputCollector.resolveFood(InputCollector.java:26) ~[client-0.4.jar:?]
+	at de.njsm.stocks.client.frontend.cli.commands.food.FoodRenameCommandHandler.handle(FoodRenameCommandHandler.java:33) [client-0.4.jar:?]
+	at de.njsm.stocks.client.frontend.cli.commands.AggregatedCommandHandler.handle(AggregatedCommandHandler.java:42) [client-0.4.jar:?]
+	at de.njsm.stocks.client.frontend.cli.commands.DefaultCommandHandler.handle(DefaultCommandHandler.java:39) [client-0.4.jar:?]
+	at de.njsm.stocks.client.frontend.cli.commands.AggregatedCommandHandler.handle(AggregatedCommandHandler.java:42) [client-0.4.jar:?]
+	at de.njsm.stocks.client.frontend.cli.CliMainHandler.run(CliMainHandler.java:142) [client-0.4.jar:?]
+	at de.njsm.stocks.client.Main.main(Main.java:38) [client-0.4.jar:?]
+2017-04-09 11:21:55.839 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:55.919 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:55.919 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:55.920 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:55.920 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:55.921 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:55.921 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:55.941 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:56.062 INFO de.njsm.stocks.client.storage.DatabaseManager:311 Getting food matching name 'Carrot'
+2017-04-09 11:21:56.443 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:56.453 INFO de.njsm.stocks.client.storage.DatabaseManager:288 Writing food
+2017-04-09 11:21:56.454 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Food
+2017-04-09 11:21:56.618 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:57.144 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:57.228 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:57.228 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:57.228 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:57.228 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:57.229 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:57.229 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:57.247 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:57.363 INFO de.njsm.stocks.client.storage.DatabaseManager:366 Getting items matching user '' and location ''
+2017-04-09 11:21:57.770 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:57.853 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:57.854 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:57.854 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:57.855 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:57.855 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:57.855 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:57.872 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:58.224 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:58.287 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:21:58.923 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:21:59.003 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:21:59.003 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:21:59.004 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:21:59.004 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:21:59.005 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:21:59.005 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:21:59.021 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:21:59.157 INFO de.njsm.stocks.client.storage.DatabaseManager:75 Resetting updates
+2017-04-09 11:21:59.614 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:21:59.623 INFO de.njsm.stocks.client.storage.DatabaseManager:265 Writing locations
+2017-04-09 11:21:59.623 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Location
+2017-04-09 11:21:59.777 INFO de.njsm.stocks.client.storage.DatabaseManager:126 Writing users
+2017-04-09 11:21:59.778 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table User
+2017-04-09 11:22:00.100 INFO de.njsm.stocks.client.storage.DatabaseManager:150 Writing devices
+2017-04-09 11:22:00.101 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table User_device
+2017-04-09 11:22:00.269 INFO de.njsm.stocks.client.storage.DatabaseManager:288 Writing food
+2017-04-09 11:22:00.269 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Food
+2017-04-09 11:22:00.449 INFO de.njsm.stocks.client.storage.DatabaseManager:417 Writing food items
+2017-04-09 11:22:00.450 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table Food_item
+2017-04-09 11:22:00.647 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:22:01.187 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:22:01.268 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:22:01.268 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:22:01.268 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:22:01.269 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:22:01.269 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:22:01.269 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:22:01.286 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:22:01.716 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:22:01.784 INFO de.njsm.stocks.client.storage.DatabaseManager:126 Writing users
+2017-04-09 11:22:01.784 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table User
+2017-04-09 11:22:01.960 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:22:02.481 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:22:02.563 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:22:02.564 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:22:02.564 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:22:02.564 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:22:02.565 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:22:02.565 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:22:02.582 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:22:03.458 INFO de.njsm.stocks.client.storage.DatabaseManager:35 Getting updates
+2017-04-09 11:22:03.525 INFO de.njsm.stocks.client.storage.DatabaseManager:126 Writing users
+2017-04-09 11:22:03.525 INFO de.njsm.stocks.client.storage.DatabaseManager:495 Clearing table User
+2017-04-09 11:22:03.784 INFO de.njsm.stocks.client.storage.DatabaseManager:51 Writing updates
+2017-04-09 11:22:04.484 INFO de.njsm.stocks.client.Main:27 Starting up
+2017-04-09 11:22:04.565 INFO de.njsm.stocks.client.init.InitManager:41 Client is already initialised
+2017-04-09 11:22:04.565 INFO de.njsm.stocks.client.config.Configuration:68 Loading configuration from client/src/test/system/tmp/.stocks/config
+2017-04-09 11:22:04.566 INFO de.njsm.stocks.client.config.Configuration:217 Sanity check started
+2017-04-09 11:22:04.566 INFO de.njsm.stocks.client.config.Configuration:227 Sanity check successful
+2017-04-09 11:22:04.567 INFO de.njsm.stocks.client.network.HttpClientFactory:24 Getting new http client
+2017-04-09 11:22:04.567 INFO de.njsm.stocks.client.network.HttpClientFactory:25 Keystore is client/src/test/system/tmp/.stocks/keystore
+2017-04-09 11:22:04.583 INFO de.njsm.stocks.client.network.HttpClientFactory:40 Getting new http client
+2017-04-09 11:22:04.698 INFO de.njsm.stocks.client.storage.DatabaseManager:91 Getting all users

@@ -1,0 +1,11 @@
+#stocks configuration
+#Sun Apr 09 11:21:30 CEST 2017
+de.njsm.stocks.client.deviceId=1
+de.njsm.stocks.client.username=Jack
+de.njsm.stocks.client.fingerprint=7F\:40\:EB\:D6\:91\:A5\:84\:62\:D4\:48\:5C\:41\:7A\:7A\:C8\:FC\:03\:EB\:92\:C3\:F3\:F5\:C7\:39\:9E\:00\:BC\:3C\:7D\:FA\:47\:E8
+de.njsm.stocks.client.caPort=10910
+de.njsm.stocks.client.userId=1
+de.njsm.stocks.client.deviceName=Device
+de.njsm.stocks.client.ticketPort=10911
+de.njsm.stocks.client.serverName=dp-client-server
+de.njsm.stocks.client.serverPort=10912
