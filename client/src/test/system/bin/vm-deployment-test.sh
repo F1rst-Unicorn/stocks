@@ -34,12 +34,9 @@ $FINGERPRINT\n\
         $STOCKS_ROOT/client/target/client-*.jar
 echo "##teamcity[testFinished name='Initialisation']"
 
-for TESTCASE in $(find $STOCKS_ROOT/client/src/test/system/usecases -type f | sort)
-do
-    cd $STOCKS_ROOT
-    python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py $TESTCASE
-    cd - >/dev/null
-done
+python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
+        `find $STOCKS_ROOT/client/src/test/system/usecases -type f | sort`
+
 echo "##teamcity[testSuiteFinished name='Client System Test']"
 echo
 

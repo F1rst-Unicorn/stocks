@@ -42,12 +42,12 @@ class TestCase:
                     + escapeForTeamcity(self.actualOutput)
                     + "']")
 
-
 def main(arguments):
-    if len(arguments) != 1:
-        printUsage
+    for testcase in arguments[1:len(arguments)]:
+        handleOneTest(testcase)
 
-    testcaseFileName = arguments[1]
+
+def handleOneTest(testcaseFileName):
     testcase = parseFileFromName(testcaseFileName)
 
     print("##teamcity[testStarted name='" + testcase.title + "']")
