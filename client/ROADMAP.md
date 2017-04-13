@@ -15,6 +15,7 @@
 * 00011 : NEW  : Use dependency injection
 * 00012 : DONE : Make sure select methods return index from list
 * 00013 : NEW  : Refactor input parsing to lower dependencies
+* 00015 : NEW  : Fix broken system tests
 
 ## Version 0.6
 * 00001 : NEW  : Add emitting QR codes for new users
