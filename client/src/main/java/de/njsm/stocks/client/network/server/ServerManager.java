@@ -45,7 +45,7 @@ public class ServerManager {
                 throw error(r, "Error getting updates");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -75,7 +75,7 @@ public class ServerManager {
                 throw error(r, "Error adding user");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -89,7 +89,7 @@ public class ServerManager {
                 throw error(r, "Error removing user");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -105,7 +105,7 @@ public class ServerManager {
                 throw error(r, "Error getting devices");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -121,7 +121,7 @@ public class ServerManager {
                 return r.body();
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -135,7 +135,7 @@ public class ServerManager {
                 throw error(r, "Error removing device");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -151,7 +151,7 @@ public class ServerManager {
                 throw error(r, "Error getting locations");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -165,7 +165,7 @@ public class ServerManager {
                 throw error(r, "Error adding location");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -179,7 +179,7 @@ public class ServerManager {
                 throw error(r, "Error removing location");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -193,7 +193,7 @@ public class ServerManager {
                 throw error(r, "Error renaming location");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -209,7 +209,7 @@ public class ServerManager {
                 throw error(r, "Error getting food");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -223,7 +223,7 @@ public class ServerManager {
                 throw error(r, "Error adding food");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -237,7 +237,7 @@ public class ServerManager {
                 throw error(r, "Error removing food");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -251,7 +251,7 @@ public class ServerManager {
                 throw error(r, "Error renaming food");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -267,7 +267,7 @@ public class ServerManager {
                 throw error(r, "Error getting food items");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -281,7 +281,7 @@ public class ServerManager {
                 throw error(r, "Error adding food item");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -295,7 +295,7 @@ public class ServerManager {
                 throw error(r, "Error removing food item");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
@@ -309,7 +309,7 @@ public class ServerManager {
                 throw error(r, "Error moving food item");
             }
         } catch (IOException e) {
-            throw new NetworkException("Error connecting to the server");
+            throw new NetworkException("Error connecting to the server", e);
         }
     }
 
