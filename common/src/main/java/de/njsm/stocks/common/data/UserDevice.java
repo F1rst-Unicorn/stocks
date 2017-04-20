@@ -2,6 +2,7 @@ package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
+import de.njsm.stocks.common.data.visitor.VisitorException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class UserDevice extends Data implements SqlAddable, SqlRemovable{
+public class UserDevice extends Data implements SqlRemovable{
     public int id;
     public String name;
     public int userId;
@@ -24,26 +25,14 @@ public class UserDevice extends Data implements SqlAddable, SqlRemovable{
     }
 
     @Override
-    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) throws VisitorException {
         return visitor.userDevice(this, input);
     }
 
-    @Override
-    public void fillAddStmt(PreparedStatement stmt) throws SQLException {
-        stmt.setString(1, name);
-        stmt.setInt(2, userId);
-    }
-
-    @Override
     public void fillAddStmtWithId(PreparedStatement stmt) throws SQLException {
         stmt.setInt(1, id);
         stmt.setString(2, name);
         stmt.setInt(3, userId);
-    }
-
-    @Override
-    public String getAddStmt() {
-        return "INSERT INTO User_device (name, belongs_to) VALUES (?,?)";
     }
 
     @Override

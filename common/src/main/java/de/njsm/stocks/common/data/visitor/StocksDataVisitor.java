@@ -4,18 +4,18 @@ import de.njsm.stocks.common.data.*;
 
 public interface StocksDataVisitor<I, O> {
 
-    O visit(Data data, I input);
+    O visit(Data data, I input) throws VisitorException;
 
-    O food(Food food, I input);
+    O food(Food food, I input) throws VisitorException;
 
-    O foodItem(FoodItem item, I input);
+    O foodItem(FoodItem item, I input) throws VisitorException;
 
-    O user(User u, I input);
+    O user(User u, I input) throws VisitorException;
 
-    O userDevice(UserDevice device, I input);
+    O userDevice(UserDevice device, I input) throws VisitorException;
 
-    O location(Location location, I input);
+    O location(Location location, I input) throws VisitorException;
 
-    O update(Update update, I input);
+    O update(Update update, I input) throws VisitorException;
 
 }

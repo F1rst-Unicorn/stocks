@@ -2,6 +2,7 @@ package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
+import de.njsm.stocks.common.data.visitor.VisitorException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemovable {
+public class Location extends Data implements SqlRenamable, SqlRemovable {
     public int id;
     public String name;
 
@@ -22,24 +23,13 @@ public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemov
     }
 
     @Override
-    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) throws VisitorException {
         return visitor.location(this, input);
     }
 
-    @Override
-    public void fillAddStmt(PreparedStatement stmt) throws SQLException {
-        stmt.setString(1, name);
-    }
-
-    @Override
     public void fillAddStmtWithId(PreparedStatement stmt) throws SQLException {
         stmt.setInt(1, id);
         stmt.setString(2, name);
-    }
-
-    @Override
-    public String getAddStmt() {
-        return "INSERT INTO Location (name) VALUES (?)";
     }
 
     @Override
