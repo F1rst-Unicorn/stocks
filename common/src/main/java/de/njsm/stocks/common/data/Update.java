@@ -1,5 +1,6 @@
 package de.njsm.stocks.common.data;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -7,6 +8,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.DEFAULT,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @XmlRootElement
 public class Update extends Data {
 

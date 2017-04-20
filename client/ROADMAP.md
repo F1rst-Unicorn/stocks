@@ -16,7 +16,7 @@
 * 00012 : DONE : Make sure select methods return index from list
 * 00013 : NEW  : Refactor input parsing to lower dependencies
 * 00015 : NEW  : Fix broken system tests
-* 00016 : NEW  : Prevent sending SQL statements in JSON
+* 00016 : DONE : Prevent sending SQL statements in JSON
 * 00017 : NEW  : Add visitors for common data
 
 ## Version 0.6
