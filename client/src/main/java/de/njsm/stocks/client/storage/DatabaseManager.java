@@ -37,18 +37,7 @@ public class DatabaseManager {
 
     public List<Update> getUpdates() throws DatabaseException {
         LOG.info("Getting updates");
-        String sql = UpdateFactory.f.getQuery();
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement s = c.prepareStatement(sql);
-            return UpdateFactory.f.createUpdateList(s.executeQuery());
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get updates", e);
-        } finally {
-            close(c);
-        }
+        return (List<Update>) getData(UpdateFactory.f);
     }
 
     public void writeUpdates(List<Update> u) throws DatabaseException {
@@ -73,19 +62,7 @@ public class DatabaseManager {
 
     public List<User> getUsers() throws DatabaseException {
         LOG.info("Getting all users");
-        String queryUsers = UserFactory.f.getQuery();
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement p = c.prepareStatement(queryUsers);
-            ResultSet rs = p.executeQuery();
-            return UserFactory.f.createUserList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get all users", e);
-        } finally {
-            close(c);
-        }
+        return (List<User>) getData(UserFactory.f);
     }
 
     public List<User> getUsers(String name) throws DatabaseException {
@@ -116,19 +93,7 @@ public class DatabaseManager {
 
     public List<UserDeviceView> getDevices() throws DatabaseException {
         LOG.info("Getting all devices");
-        String queryDevices = UserDeviceViewFactory.f.getQuery();
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement p = c.prepareStatement(queryDevices);
-            ResultSet rs = p.executeQuery();
-            return UserDeviceViewFactory.f.getViewList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get all devices", e);
-        } finally {
-            close(c);
-        }
+        return (List<UserDeviceView>) getData(UserDeviceViewFactory.f);
     }
 
     public List<UserDeviceView> getDevices(String name) throws DatabaseException {
@@ -153,19 +118,7 @@ public class DatabaseManager {
 
     public List<Location> getLocations() throws DatabaseException {
         LOG.info("Getting all locations");
-        String getLocations = LocationFactory.f.getQuery();
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement selectStmt = c.prepareStatement(getLocations);
-            ResultSet rs = selectStmt.executeQuery();
-            return LocationFactory.f.createLocationList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get locations", e);
-        } finally {
-            close(c);
-        }
+        return (List<Location>) getData(LocationFactory.f);
     }
 
     public List<Location> getLocations(String name) throws DatabaseException {
@@ -234,19 +187,7 @@ public class DatabaseManager {
 
     public List<Food> getFood() throws DatabaseException {
         LOG.info("Getting all food");
-        String getFood = FoodFactory.f.getQuery();
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement selectStmt = c.prepareStatement(getFood);
-            ResultSet rs = selectStmt.executeQuery();
-            return FoodFactory.f.createFoodList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get food", e);
-        } finally {
-            close(c);
-        }
+        return (List<Food>) getData(FoodFactory.f);
     }
 
     public List<FoodItem> getItems(int foodId) throws DatabaseException {
@@ -389,6 +330,22 @@ public class DatabaseManager {
         } catch (SQLException | VisitorException e) {
             rollback(c);
             throw new DatabaseException("Could not write " + table, e);
+        } finally {
+            close(c);
+        }
+    }
+
+    private List<? extends Data> getData(DataFactory factory) throws DatabaseException {
+        String query = factory.getQuery();
+        Connection c = null;
+
+        try {
+            c = getConnection();
+            PreparedStatement p = c.prepareStatement(query);
+            ResultSet rs = p.executeQuery();
+            return factory.createDataList(rs);
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not get all data", e);
         } finally {
             close(c);
         }
