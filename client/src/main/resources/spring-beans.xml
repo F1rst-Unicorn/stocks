@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <util:constant id="stdin" static-field="java.lang.System.in" />
+
+    <util:constant id="stdout" static-field="java.lang.System.out" />
+
+    <bean id="propertiesFileHandler" class="de.njsm.stocks.client.config.PropertiesFileHandlerImpl" />
+
+    <bean id="uiFactory" class="de.njsm.stocks.client.frontend.cli.CliFactory" />
+
+    <bean id="networkHandler" class="de.njsm.stocks.client.init.NetworkHandlerImpl" />
+
+    <bean id="keystoreHandler" class="de.njsm.stocks.client.init.KeyStoreHandlerImpl" />
+
+    <bean id="ticketHandler" class="de.njsm.stocks.client.init.TicketHandler" >
+        <constructor-arg index="0" ref="keystoreHandler" />
+        <constructor-arg index="1" ref="networkHandler" />
+    </bean>
+
+    <bean id="initManager" class="de.njsm.stocks.client.init.InitManager">
+        <constructor-arg index="0" ref="uiFactory" />
+        <constructor-arg index="1" ref="ticketHandler" />
+        <constructor-arg index="2" ref="propertiesFileHandler" />
+    </bean>
+
+    <bean id="configuration" class="de.njsm.stocks.client.config.Configuration" >
+        <constructor-arg index="0" ref="propertiesFileHandler" />
+    </bean>
+
+    <bean id="consoleReader" class="jline.console.ConsoleReader">
+        <constructor-arg index="0" ref="stdin" />
+        <constructor-arg index="1" ref="stdout" />
+    </bean>
+
+    <bean id="inputReader" class="de.njsm.stocks.client.frontend.cli.service.InputReader">
+        <constructor-arg index="0" ref="consoleReader"/>
+        <constructor-arg index="1" ref="stdout" />
+    </bean>
+
+    <bean id="dbManager" class="de.njsm.stocks.client.storage.DatabaseManager" />
+
+</beans>
