@@ -4,6 +4,7 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
@@ -29,7 +30,7 @@ public class FoodAddCommandHandler extends AbstractCommandHandler {
     @Override
     public void handle(Command command) {
         try {
-            Food food = inputCollector.resolveNewFood(command);
+            Food food = inputCollector.createFood(command);
             serverManager.addFood(food);
             refresher.refresh();
         } catch (NetworkException e) {
