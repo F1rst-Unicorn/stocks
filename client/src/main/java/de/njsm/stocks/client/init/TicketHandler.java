@@ -27,6 +27,10 @@ class TicketHandler {
         this.networkHandler = networkHandler;
     }
 
+    void startBackgroundWork() {
+        keystoreHandler.startKeyGeneration();
+    }
+
     void generateKey() throws CryptoException {
         keystoreHandler.generateNewKey();
     }

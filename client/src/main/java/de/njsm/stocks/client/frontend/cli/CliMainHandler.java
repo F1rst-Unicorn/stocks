@@ -43,12 +43,12 @@ public class CliMainHandler implements MainHandler {
 
     private final AggregatedCommandHandler m;
     private final Configuration c;
+    private InputReader reader;
 
     CliMainHandler(Configuration c) {
         this.c = c;
 
         ScreenWriter writer = new ScreenWriter(System.out);
-        InputReader reader = null;
         try {
             reader = new InputReader(new ConsoleReader(System.in, System.out), System.out);
         } catch (IOException e) {
@@ -132,7 +132,7 @@ public class CliMainHandler implements MainHandler {
             }
         } else {
             while (!endRequested) {
-                String input = c.getReader().next("stocks $ ");
+                String input = reader.next("stocks $ ");
 
                 switch (input) {
                     case "quit":
@@ -151,6 +151,6 @@ public class CliMainHandler implements MainHandler {
                 }
             }
         }
-        c.getReader().shutdown();
+        reader.shutdown();
     }
 }

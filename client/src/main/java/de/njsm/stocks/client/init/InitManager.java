@@ -28,8 +28,11 @@ public class InitManager {
 
     private TicketHandler ticketHandler;
 
-    public InitManager(UIFactory f, PropertiesFileHandler fileHandler) {
+    public InitManager(UIFactory f,
+                       TicketHandler ticketHandler,
+                       PropertiesFileHandler fileHandler) {
         this.f = f;
+        this.ticketHandler = ticketHandler;
         newConfiguration = new Configuration(fileHandler);
     }
 
@@ -48,16 +51,13 @@ public class InitManager {
 
     private void runFirstInitialisation() throws InitialisationException {
         try {
-            ticketHandler = new TicketHandler(
-                    new KeyStoreHandlerImpl(),
-                    new NetworkHandlerImpl());
+            ticketHandler.startBackgroundWork();
             initialiseConfigFile();
             getServerProperties(f.getConfigActor());
             createHosts();
             initCertificates(f.getCertGenerator());
             newConfiguration.saveConfig();
-        } catch (IOException |
-                CryptoException e) {
+        } catch (IOException e) {
             LOG.error("Error during initialisation", e);
             LOG.error("Reverting keystore file");
             destroyKeystore();

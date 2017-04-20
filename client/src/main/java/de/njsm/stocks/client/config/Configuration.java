@@ -4,15 +4,13 @@ import com.squareup.okhttp.OkHttpClient;
 import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.exceptions.InvalidConfigException;
-import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import de.njsm.stocks.client.network.HttpClientFactory;
 import de.njsm.stocks.client.network.TcpHost;
 import de.njsm.stocks.client.network.server.ServerManager;
-import de.njsm.stocks.client.storage.DatabaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Properties;
 
 public class Configuration {
@@ -49,14 +47,10 @@ public class Configuration {
     private String fingerprint;
 
     private ServerManager serverInterface;
-    private final DatabaseManager databaseInterface;
-    private final InputReader userInputReader;
     private final PropertiesFileHandler fileHandler;
 
     public Configuration (PropertiesFileHandler fileHandler) {
         this.fileHandler = fileHandler;
-        userInputReader = new InputReader(System.in);
-        databaseInterface = new DatabaseManager();
     }
 
     public void initialise() throws InitialisationException {
@@ -90,16 +84,6 @@ public class Configuration {
 
     public ServerManager getServerManager() {
         return serverInterface;
-    }
-
-    public DatabaseManager getDatabaseManager() {
-        if (databaseInterface == null) {
-        }
-        return databaseInterface;
-    }
-
-    public InputReader getReader() {
-        return userInputReader;
     }
 
     public void setServerName(String serverName) {
