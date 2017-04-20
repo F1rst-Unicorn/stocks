@@ -17,7 +17,7 @@
 * 00013 : NEW  : Refactor input parsing to lower dependencies
 * 00015 : NEW  : Fix broken system tests
 * 00016 : NEW  : Prevent sending SQL statements in JSON
-* 00017 : NEW  : Add visitors for common data
+* 00017 : DONE : Add visitors for common data
 
 ## Version 0.6
 * 00001 : NEW  : Add emitting QR codes for new users
