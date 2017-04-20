@@ -5,6 +5,7 @@ import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
+import de.njsm.stocks.client.service.TimeProvider;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.view.FoodView;
 import org.apache.logging.log4j.LogManager;
@@ -31,13 +32,18 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
 
     private DatabaseManager dbManager;
 
+    private TimeProvider timeProvider;
+
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
-    public FoodListCommandHandler(ScreenWriter writer, DatabaseManager dbManager) {
+    public FoodListCommandHandler(ScreenWriter writer,
+                                  DatabaseManager dbManager,
+                                  TimeProvider timeProvider) {
         super(writer);
         this.command = "list";
         this.description = "List food in stock";
         this.dbManager = dbManager;
+        this.timeProvider = timeProvider;
     }
 
     @Override
@@ -160,7 +166,7 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
     private StringBuilder renderFoodList(List<FoodView> food) {
         StringBuilder outBuf = new StringBuilder();
         for (FoodView f : food) {
-            Date listUntil = new Date(new Date().getTime() + daysLeft * 1000L * 60L * 60L * 24L);
+            Date listUntil = new Date(timeProvider.getTime() + daysLeft * 1000L * 60L * 60L * 24L);
             f.getItems().removeIf((item) -> item.after(listUntil));
 
             if ((!existing || (existing && !f.getItems().isEmpty())) &&

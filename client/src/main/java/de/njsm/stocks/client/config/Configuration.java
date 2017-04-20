@@ -7,12 +7,16 @@ import de.njsm.stocks.client.exceptions.InvalidConfigException;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import de.njsm.stocks.client.network.HttpClientFactory;
 import de.njsm.stocks.client.network.TcpHost;
+import de.njsm.stocks.client.network.server.ServerClient;
 import de.njsm.stocks.client.network.server.ServerManager;
+import de.njsm.stocks.client.service.TimeProviderImpl;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import retrofit.JacksonConverterFactory;
+import retrofit.Retrofit;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Properties;
 
 public class Configuration {
@@ -55,7 +59,7 @@ public class Configuration {
 
     public Configuration (PropertiesFileHandler fileHandler) {
         this.fileHandler = fileHandler;
-        userInputReader = new InputReader(System.in);
+        userInputReader = new InputReader(System.in, new TimeProviderImpl());
         databaseInterface = new DatabaseManager();
     }
 
@@ -253,7 +257,16 @@ public class Configuration {
     private void setupServerManager() throws InitialisationException {
         try {
             OkHttpClient httpClient = HttpClientFactory.getClient();
-            serverInterface = new ServerManager(httpClient, new TcpHost(serverName, serverPort));
+            String url = String.format("https://%s:%d/",
+                    serverName,
+                    serverPort);
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(url)
+                    .client(httpClient)
+                    .addConverterFactory(JacksonConverterFactory.create())
+                    .build();
+            serverInterface = new ServerManager(retrofit.create(ServerClient.class));
         } catch (CryptoException e) {
             LOG.error("While creating HTTP client", e);
             throw new InitialisationException("Keystore could not be read");

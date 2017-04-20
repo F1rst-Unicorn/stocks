@@ -2,6 +2,7 @@ package de.njsm.stocks.client.frontend.cli.service;
 
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.ParseException;
+import de.njsm.stocks.client.service.TimeProvider;
 import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
 import jline.console.history.History;
@@ -19,9 +20,12 @@ public class InputReader {
 
     private ConsoleReader reader;
 
+    private TimeProvider timeProvider;
+
     @Deprecated
-    public InputReader(InputStream input) {
+    public InputReader(InputStream input, TimeProvider timeProvider) {
         try {
+            this.timeProvider = timeProvider;
             reader = new ConsoleReader(input, System.out);
 
             History file = new FileHistory(new File(Configuration.STOCKS_HOME + "/history"));
@@ -32,8 +36,9 @@ public class InputReader {
         }
     }
 
-    public InputReader(ConsoleReader reader, PrintStream output) {
+    public InputReader(ConsoleReader reader, PrintStream output, TimeProvider timeProvider) {
         this.output = output;
+        this.timeProvider = timeProvider;
         try {
             this.reader = reader;
 
@@ -141,11 +146,15 @@ public class InputReader {
         return noDollar == -1 && noEqual == -1;
     }
 
-    public static Date parseDate(String input) throws ParseException {
+    public Date parseDate(String input) throws ParseException {
+        return parseDate(input, timeProvider);
+    }
+
+    public static Date parseDate(String input, TimeProvider timeProvider) throws ParseException {
         Date result;
         SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yyyy");
         if (input.length() > 0 && input.charAt(0) == '+') {
-            result = parseRelative(input);
+            result = parseRelative(input, timeProvider);
         } else {
             try {
                 result = parser.parse(input);
@@ -156,7 +165,7 @@ public class InputReader {
         return result;
     }
 
-    protected static Date parseRelative(String input) throws ParseException {
+    protected static Date parseRelative(String input, TimeProvider timeProvider) throws ParseException {
         char unit = input.charAt(input.length()-1);
         int amount;
         try {
@@ -169,10 +178,10 @@ public class InputReader {
         Date result;
         switch (unit) {
             case 'd':
-                result = new Date(new Date().getTime() + amount * 1000L * 60L * 60L * 24L);
+                result = new Date(timeProvider.getTime() + amount * 1000L * 60L * 60L * 24L);
                 break;
             case 'm':
-                result = new Date(new Date().getTime() + amount * 1000L * 60L * 60L * 24L * 30L);
+                result = new Date(timeProvider.getTime() + amount * 1000L * 60L * 60L * 24L * 30L);
                 break;
             default:
                 throw new ParseException(input);

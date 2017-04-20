@@ -2,13 +2,14 @@ package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.frontend.CertificateGenerator;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
+import de.njsm.stocks.client.service.TimeProviderImpl;
 
 public class CliCertificateGenerator implements CertificateGenerator {
 
     private final InputReader reader;
 
     CliCertificateGenerator() {
-        reader = new InputReader(System.in);
+        reader = new InputReader(System.in, new TimeProviderImpl());
     }
 
     @Override

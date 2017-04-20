@@ -26,8 +26,10 @@ import de.njsm.stocks.client.frontend.cli.commands.user.UserAddCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.user.UserListCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.user.UserRemoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
-import de.njsm.stocks.client.frontend.cli.service.Refresher;
+import de.njsm.stocks.client.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
+import de.njsm.stocks.client.service.TimeProvider;
+import de.njsm.stocks.client.service.TimeProviderImpl;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import jline.console.ConsoleReader;
 import org.apache.logging.log4j.LogManager;
@@ -49,8 +51,9 @@ public class CliMainHandler implements MainHandler {
 
         ScreenWriter writer = new ScreenWriter(System.out);
         InputReader reader = null;
+        TimeProvider timeProvider = new TimeProviderImpl();
         try {
-            reader = new InputReader(new ConsoleReader(System.in, System.out), System.out);
+            reader = new InputReader(new ConsoleReader(System.in, System.out), System.out, timeProvider);
         } catch (IOException e) {
             writer.println("Could not initialise prompt");
             System.exit(1);
@@ -61,7 +64,8 @@ public class CliMainHandler implements MainHandler {
         InputCollector addCollector = new InputCollector(
                 dbManager,
                 reader,
-                writer);
+                writer,
+                timeProvider);
         de.njsm.stocks.client.frontend.cli.commands.move.InputCollector moveCollector =
                 new de.njsm.stocks.client.frontend.cli.commands.move.InputCollector(
                         dbManager,
@@ -98,7 +102,7 @@ public class CliMainHandler implements MainHandler {
 
         de.njsm.stocks.client.frontend.cli.commands.food.InputCollector foodCollector =
                 new de.njsm.stocks.client.frontend.cli.commands.food.InputCollector(writer, reader, dbManager);
-        FoodListCommandHandler listFood = new FoodListCommandHandler(writer, dbManager);
+        FoodListCommandHandler listFood = new FoodListCommandHandler(writer, dbManager, timeProvider);
         FoodAddCommandHandler addFood = new FoodAddCommandHandler(writer, refresher, foodCollector, c.getServerManager());
         FoodRemoveCommandHandler removeFood = new FoodRemoveCommandHandler(writer, foodCollector, refresher, c.getServerManager());
         FoodRenameCommandHandler renameFood = new FoodRenameCommandHandler(writer, foodCollector, refresher, c.getServerManager());

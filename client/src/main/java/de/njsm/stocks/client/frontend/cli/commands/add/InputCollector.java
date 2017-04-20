@@ -7,6 +7,7 @@ import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.frontend.cli.service.Selector;
+import de.njsm.stocks.client.service.TimeProvider;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodItem;
@@ -19,14 +20,19 @@ public class InputCollector extends Selector {
 
     private DatabaseManager dbManager;
 
+    private TimeProvider timeProvider;
+
     public InputCollector(DatabaseManager dbManager,
                           InputReader reader,
-                          ScreenWriter writer) {
+                          ScreenWriter writer,
+                          TimeProvider timeProvider) {
         super(writer, reader);
         this.dbManager = dbManager;
+        this.timeProvider = timeProvider;
     }
 
     FoodItem createFoodItem(Command c) throws DatabaseException, InputException {
+        c.setTimeProvider(timeProvider);
         FoodItem result = new FoodItem();
         result.ofType = resolveFood(c).id;
         result.storedIn = resolveLocation(c, result.ofType).id;

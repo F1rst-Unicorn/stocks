@@ -2,6 +2,7 @@ package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
+import de.njsm.stocks.client.service.TimeProvider;
 
 import java.time.temporal.ValueRange;
 import java.util.*;
@@ -13,6 +14,8 @@ public class Command {
     private final Map<Character, String> arguments;
     private final List<String> command;
     private Iterator<String> commandIt;
+
+    private TimeProvider timeProvider;
 
     public static Command createCommand(String input) throws ParseException {
         Command result = new Command();
@@ -63,7 +66,10 @@ public class Command {
 
     public Date getParamDate(char c) throws ParseException {
         String value = arguments.get(c);
-        return InputReader.parseDate(value);
+        if (timeProvider != null)
+            return InputReader.parseDate(value, timeProvider);
+        else
+            throw new ParseException("No TimeProvider set");
     }
 
     public ValueRange getParamRange(char c) throws ParseException {
@@ -106,6 +112,10 @@ public class Command {
         buf.deleteCharAt(buf.length()-1);
 
         return buf.toString();
+    }
+
+    public void setTimeProvider(TimeProvider timeProvider) {
+        this.timeProvider = timeProvider;
     }
 
     protected Command() {
@@ -161,6 +171,5 @@ public class Command {
         String parameter = it.next();
         arguments.put(word.charAt(2), parameter);
     }
-
 
 }

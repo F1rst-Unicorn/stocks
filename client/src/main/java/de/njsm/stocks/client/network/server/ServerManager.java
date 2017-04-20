@@ -1,15 +1,12 @@
 package de.njsm.stocks.client.network.server;
 
-import com.squareup.okhttp.OkHttpClient;
 import de.njsm.stocks.client.exceptions.NetworkException;
-import de.njsm.stocks.client.network.TcpHost;
+import de.njsm.stocks.client.service.TimeProviderImpl;
 import de.njsm.stocks.common.data.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import retrofit.Call;
-import retrofit.JacksonConverterFactory;
 import retrofit.Response;
-import retrofit.Retrofit;
 
 import java.io.IOException;
 
@@ -19,18 +16,8 @@ public class ServerManager {
 
     private ServerClient backend;
 
-    public ServerManager(OkHttpClient httpClient, TcpHost serverHost) {
-        String url = String.format("https://%s:%d/",
-                serverHost.getHostname(),
-                serverHost.getPort());
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .client(httpClient)
-                .addConverterFactory(JacksonConverterFactory.create())
-                .build();
-
-        backend = retrofit.create(ServerClient.class);
+    public ServerManager(ServerClient backend) {
+        this.backend = backend;
     }
 
     public Update[] getUpdates() throws NetworkException {
@@ -40,13 +27,20 @@ public class ServerManager {
             Response<Update[]> r = call.execute();
 
             if (r.isSuccess()) {
-                return r.body();
+                return transformUpdates(r.body());
             } else {
                 throw error(r, "Error getting updates");
             }
         } catch (IOException e) {
             throw new NetworkException("Error connecting to the server", e);
         }
+    }
+
+    private Update[] transformUpdates(Update[] body) {
+        for (Update update : body) {
+            update.lastUpdate = TimeProviderImpl.convertUtcToLocaltime(update.lastUpdate);
+        }
+        return body;
     }
 
     public User[] getUsers() throws NetworkException {
@@ -262,13 +256,20 @@ public class ServerManager {
             Response<FoodItem[]> r = u.execute();
 
             if (r.isSuccess()) {
-                return r.body();
+                return transformItems(r.body());
             } else {
                 throw error(r, "Error getting food items");
             }
         } catch (IOException e) {
             throw new NetworkException("Error connecting to the server", e);
         }
+    }
+
+    private FoodItem[] transformItems(FoodItem[] body) {
+        for (FoodItem item : body) {
+            item.eatByDate = TimeProviderImpl.convertUtcToLocaltime(item.eatByDate);
+        }
+        return body;
     }
 
     public void addItem(FoodItem f) throws NetworkException {
