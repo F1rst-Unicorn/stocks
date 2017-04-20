@@ -1,6 +1,7 @@
 package de.njsm.stocks.common.data.view;
 
 import de.njsm.stocks.common.data.Data;
+import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 
 public class UserDeviceView extends Data {
 
@@ -20,6 +21,11 @@ public class UserDeviceView extends Data {
     }
 
     public UserDeviceView() {
+    }
+
+    @Override
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
+        return visitor.userDeviceView(this, input);
     }
 
     @Override
