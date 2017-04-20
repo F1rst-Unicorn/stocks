@@ -14,7 +14,7 @@
 * 00010 : DONE : Verify output in system tests
 * 00011 : NEW  : Use dependency injection
 * 00012 : DONE : Make sure select methods return index from list
-* 00013 : NEW  : Refactor input parsing to lower dependencies
+* 00013 : DONE : Refactor input parsing to lower dependencies
 * 00015 : NEW  : Fix broken system tests
 * 00016 : DONE : Prevent sending SQL statements in JSON
 * 00017 : DONE : Add visitors for common data
