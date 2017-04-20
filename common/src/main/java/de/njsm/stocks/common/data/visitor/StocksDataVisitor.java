@@ -1,6 +1,7 @@
 package de.njsm.stocks.common.data.visitor;
 
 import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.common.data.view.UserDeviceView;
 
 public interface StocksDataVisitor<I, O> {
 
@@ -17,5 +18,10 @@ public interface StocksDataVisitor<I, O> {
     O location(Location location, I input) throws VisitorException;
 
     O update(Update update, I input) throws VisitorException;
+
+    O ticket(Ticket t, I input) throws VisitorException;
+
+    O userDeviceView(UserDeviceView userDeviceView, I input) throws VisitorException;
+
 
 }

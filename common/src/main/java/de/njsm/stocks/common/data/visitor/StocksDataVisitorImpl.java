@@ -1,6 +1,7 @@
 package de.njsm.stocks.common.data.visitor;
 
 import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.common.data.view.UserDeviceView;
 
 public class StocksDataVisitorImpl<I, O> implements StocksDataVisitor<I, O> {
 
@@ -36,6 +37,16 @@ public class StocksDataVisitorImpl<I, O> implements StocksDataVisitor<I, O> {
 
     @Override
     public O update(Update update, I input) {
+        return null;
+    }
+
+    @Override
+    public O ticket(Ticket t, I input) throws VisitorException {
+        return null;
+    }
+
+    @Override
+    public O userDeviceView(UserDeviceView userDeviceView, I input) throws VisitorException {
         return null;
     }
 }

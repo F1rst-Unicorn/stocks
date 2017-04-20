@@ -3,6 +3,7 @@ package de.njsm.stocks.common.data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
+import de.njsm.stocks.common.data.visitor.VisitorException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
@@ -24,7 +25,7 @@ public class Update extends Data {
     }
 
     @Override
-    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) throws VisitorException {
         return visitor.update(this, input);
     }
 
