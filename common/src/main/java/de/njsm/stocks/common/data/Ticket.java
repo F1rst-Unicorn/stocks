@@ -2,7 +2,6 @@ package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
-import de.njsm.stocks.common.data.visitor.VisitorException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,7 +22,7 @@ public class Ticket extends Data {
     }
 
     @Override
-    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) throws VisitorException {
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
         return visitor.ticket(this, input);
     }
 

@@ -1,6 +1,6 @@
 package de.njsm.stocks.common.data.visitor;
 
-public class VisitorException extends Exception {
+public class VisitorException extends RuntimeException {
 
     public VisitorException() {
         super();

@@ -2,7 +2,6 @@ package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
-import de.njsm.stocks.common.data.visitor.VisitorException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
@@ -37,17 +36,8 @@ public class FoodItem extends Data implements SqlRemovable {
     public FoodItem() {
     }
 
-    public void fillAddStmtWithId(PreparedStatement stmt) throws SQLException {
-        stmt.setInt(1, id);
-        stmt.setDate(2, new java.sql.Date(eatByDate.getTime()));
-        stmt.setInt(3, ofType);
-        stmt.setInt(4, storedIn);
-        stmt.setInt(5, registers);
-        stmt.setInt(6, buys);
-    }
-
     @Override
-    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) throws VisitorException {
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
         return visitor.foodItem(this, input);
     }
 

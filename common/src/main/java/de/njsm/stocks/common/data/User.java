@@ -3,7 +3,6 @@ package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
-import de.njsm.stocks.common.data.visitor.VisitorException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
@@ -24,13 +23,8 @@ public class User extends Data implements SqlRemovable {
     }
 
     @Override
-    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) throws VisitorException {
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
         return visitor.user(this, input);
-    }
-
-    public void fillAddStmtWithId(PreparedStatement stmt) throws SQLException {
-        stmt.setInt(1, id);
-        stmt.setString(2, name);
     }
 
     @Override

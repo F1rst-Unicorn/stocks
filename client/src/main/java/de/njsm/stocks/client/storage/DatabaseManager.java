@@ -7,6 +7,8 @@ import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.FoodView;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 import de.njsm.stocks.common.data.view.UserDeviceViewFactory;
+import de.njsm.stocks.common.data.visitor.SqlAddWithIdVisitor;
+import de.njsm.stocks.common.data.visitor.VisitorException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -125,8 +127,8 @@ public class DatabaseManager {
     public void writeUsers(List<User> u) throws DatabaseException {
         LOG.info("Writing users");
         String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
-
         Connection c = null;
+        SqlAddWithIdVisitor stmtFiller = new SqlAddWithIdVisitor();
 
         try {
             c = getConnectionWithoutAutoCommit();
@@ -134,11 +136,11 @@ public class DatabaseManager {
             PreparedStatement insertStmt = c.prepareStatement(insertUser);
 
             for (User user : u) {
-                user.fillAddStmtWithId(insertStmt);
+                stmtFiller.visit(user, insertStmt);
                 insertStmt.execute();
             }
             c.commit();
-        } catch (SQLException e) {
+        } catch (SQLException | VisitorException e) {
             rollback(c);
             throw new DatabaseException("Could not write users", e);
         } finally {
@@ -150,6 +152,7 @@ public class DatabaseManager {
         LOG.info("Writing devices");
         String insertDevices = "INSERT INTO User_device (`ID`, name, belongs_to) VALUES (?,?,?)";
         Connection c = null;
+        SqlAddWithIdVisitor stmtFiller = new SqlAddWithIdVisitor();
 
         try {
             c = getConnectionWithoutAutoCommit();
@@ -157,11 +160,11 @@ public class DatabaseManager {
             PreparedStatement insertStmt = c.prepareStatement(insertDevices);
 
             for (UserDevice dev : u) {
-                dev.fillAddStmtWithId(insertStmt);
+                stmtFiller.visit(dev, insertStmt);
                 insertStmt.execute();
             }
             c.commit();
-        } catch (SQLException e) {
+        } catch (SQLException | VisitorException e) {
             rollback(c);
             throw new DatabaseException("Could not write devices", e);
         } finally {
@@ -265,6 +268,7 @@ public class DatabaseManager {
         LOG.info("Writing locations");
         String insertLocations = "INSERT INTO Location (`ID`, name) VALUES (?,?)";
         Connection c = null;
+        SqlAddWithIdVisitor stmtFiller = new SqlAddWithIdVisitor();
 
         try {
             c = getConnectionWithoutAutoCommit();
@@ -272,11 +276,11 @@ public class DatabaseManager {
             PreparedStatement insertStmt = c.prepareStatement(insertLocations);
 
             for (Location loc : l) {
-                loc.fillAddStmtWithId(insertStmt);
+                stmtFiller.visit(loc, insertStmt);
                 insertStmt.execute();
             }
             c.commit();
-        } catch (SQLException e) {
+        } catch (SQLException | VisitorException e) {
             rollback(c);
             throw new DatabaseException("Could not write locations", e);
         } finally {
@@ -288,6 +292,7 @@ public class DatabaseManager {
         LOG.info("Writing food");
         String insertFood = "INSERT INTO Food (`ID`, name) VALUES (?,?)";
         Connection c = null;
+        SqlAddWithIdVisitor stmtFiller = new SqlAddWithIdVisitor();
 
         try {
             c = getConnectionWithoutAutoCommit();
@@ -295,11 +300,11 @@ public class DatabaseManager {
             PreparedStatement insertStmt = c.prepareStatement(insertFood);
 
             for (Food food : f) {
-                food.fillAddStmtWithId(insertStmt);
+                stmtFiller.visit(food, insertStmt);
                 insertStmt.execute();
             }
             c.commit();
-        } catch (SQLException e) {
+        } catch (SQLException | VisitorException e) {
             rollback(c);
             throw new DatabaseException("Could not write food", e);
         } finally {
@@ -418,6 +423,7 @@ public class DatabaseManager {
         String insertItem = "INSERT INTO Food_item " +
                 "(`ID`, eat_by, of_type, stored_in, registers, buys) VALUES (?,?,?,?,?,?)";
         Connection c = null;
+        SqlAddWithIdVisitor stmtFiller = new SqlAddWithIdVisitor();
 
         try {
             c = getConnectionWithoutAutoCommit();
@@ -425,11 +431,11 @@ public class DatabaseManager {
             PreparedStatement insertStmt = c.prepareStatement(insertItem);
 
             for (FoodItem food : f) {
-                food.fillAddStmtWithId(insertStmt);
+                stmtFiller.visit(food, insertStmt);
                 insertStmt.execute();
             }
             c.commit();
-        } catch (SQLException e) {
+        } catch (SQLException | VisitorException e) {
             throw new DatabaseException("Could not write food items");
         } finally {
             close(c);
