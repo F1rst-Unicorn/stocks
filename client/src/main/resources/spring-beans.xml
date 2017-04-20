@@ -2,7 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+       default-lazy-init="true">
 
     <util:constant id="stdin" static-field="java.lang.System.in" />
 
@@ -204,8 +205,8 @@
 
     <bean id="foodHandler" class="de.njsm.stocks.client.frontend.cli.commands.DefaultCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
-        <constructor-arg index="1" type="java.lang.String" value="loc" />
-        <constructor-arg index="2" type="java.lang.String" value="Manage the locations to store food" />
+        <constructor-arg index="1" type="java.lang.String" value="food" />
+        <constructor-arg index="2" type="java.lang.String" value="Manage the food types" />
         <constructor-arg index="3" ref="foodList" />
         <constructor-arg index="4">
             <list>
