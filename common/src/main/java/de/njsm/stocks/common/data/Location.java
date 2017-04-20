@@ -1,6 +1,7 @@
 package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
@@ -18,6 +19,11 @@ public class Location extends Data implements SqlAddable, SqlRenamable, SqlRemov
     }
 
     public Location() {
+    }
+
+    @Override
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
+        return visitor.location(this, input);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
@@ -20,6 +21,11 @@ public class UserDevice extends Data implements SqlAddable, SqlRemovable{
     }
 
     public UserDevice() {
+    }
+
+    @Override
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
+        return visitor.userDevice(this, input);
     }
 
     @Override
