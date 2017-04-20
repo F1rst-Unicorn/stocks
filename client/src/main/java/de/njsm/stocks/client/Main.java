@@ -3,7 +3,7 @@ package de.njsm.stocks.client;
 
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.PrintableException;
-import de.njsm.stocks.client.frontend.UIFactory;
+import de.njsm.stocks.client.frontend.MainHandler;
 import de.njsm.stocks.client.init.InitManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,14 +25,14 @@ public class Main {
 
         try {
             ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-            UIFactory f = context.getBean(UIFactory.class);
             InitManager im = context.getBean(InitManager.class);
             Configuration c = context.getBean(Configuration.class);
 
             im.initialise();
             c.initialise();
 
-            f.getMainHandler(c).run(args);
+            MainHandler runner = context.getBean(MainHandler.class);
+            runner.run(args);
         } catch (PrintableException e) {
             exitCode = handleError(e);
         } finally {

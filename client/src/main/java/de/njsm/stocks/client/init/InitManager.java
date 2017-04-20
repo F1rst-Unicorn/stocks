@@ -6,7 +6,6 @@ import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.frontend.CertificateGenerator;
 import de.njsm.stocks.client.frontend.ConfigGenerator;
-import de.njsm.stocks.client.frontend.UIFactory;
 import de.njsm.stocks.client.network.TcpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,17 +20,22 @@ public class InitManager {
     private static final Logger LOG = LogManager.getLogger(InitManager.class);
 
     private final Configuration newConfiguration;
-    private final UIFactory f;
+
+    private final ConfigGenerator configGenerator;
+
+    private final CertificateGenerator certificateGenerator;
 
     private TcpHost caHost;
     private TcpHost ticketHost;
 
     private TicketHandler ticketHandler;
 
-    public InitManager(UIFactory f,
+    public InitManager(ConfigGenerator configGenerator,
+                       CertificateGenerator certificateGenerator,
                        TicketHandler ticketHandler,
                        PropertiesFileHandler fileHandler) {
-        this.f = f;
+        this.configGenerator = configGenerator;
+        this.certificateGenerator = certificateGenerator;
         this.ticketHandler = ticketHandler;
         newConfiguration = new Configuration(fileHandler);
     }
@@ -53,9 +57,9 @@ public class InitManager {
         try {
             ticketHandler.startBackgroundWork();
             initialiseConfigFile();
-            getServerProperties(f.getConfigActor());
+            getServerProperties(configGenerator);
             createHosts();
-            initCertificates(f.getCertGenerator());
+            initCertificates(certificateGenerator);
             newConfiguration.saveConfig();
         } catch (IOException e) {
             LOG.error("Error during initialisation", e);
