@@ -327,6 +327,7 @@ public class DatabaseManager {
         try {
             c = getConnectionWithoutAutoCommit();
             backend.writeData(c, table, list);
+            c.commit();
         } catch (SQLException | VisitorException e) {
             rollback(c);
             throw new DatabaseException("Could not write " + table, e);

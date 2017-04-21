@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.storage;
 
 import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.FoodView;
 import de.njsm.stocks.common.data.view.UserDeviceView;
@@ -276,6 +277,16 @@ public class DatabaseManagerTest {
         FoodItem item2 = new FoodItem(2, new Timestamp(1000L), 1, 1, 2, 2);
         assertEquals(item1, uut.getNextItem(3));
         assertEquals(item2, uut.getNextItem(1));
+    }
+
+    @Test
+    public void gettingItemOfEmptyFoodThrowsException() throws Exception {
+        try {
+            uut.getNextItem(2);
+            fail();
+        } catch (InputException e) {
+            assertEquals("You don't have any...", e.getMessage());
+        }
     }
 
     @Test

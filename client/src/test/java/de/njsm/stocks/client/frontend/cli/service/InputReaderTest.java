@@ -1,7 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.service;
 
 import de.njsm.stocks.client.exceptions.ParseException;
-import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import jline.console.ConsoleReader;
 import org.junit.After;
 import org.junit.Before;
@@ -56,6 +55,17 @@ public class InputReaderTest {
         verify(inMock).readLine();
         assertEquals(prompt, captor.getValue());
         assertEquals(expectedOutput, output);
+    }
+
+    @Test
+    public void readingNullGivesLineBreak() throws Exception {
+        when(inMock.readLine()).thenReturn(null);
+
+        String output = uut.next("");
+
+        assertEquals("\n", output);
+        verify(inMock).readLine();
+        verify(inMock).setPrompt("");
     }
 
     @Test
