@@ -16,6 +16,7 @@ public class KeyStoreHandlerImplTest {
     @BeforeClass
     public static void setup() throws CryptoException {
         uut = new KeyStoreHandlerImpl();
+        uut.startKeyGeneration();
     }
 
     @Test

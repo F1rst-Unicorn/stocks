@@ -6,9 +6,11 @@ import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
 import de.njsm.stocks.client.service.Refresher;
+import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.common.data.FoodItem;
+import de.njsm.stocks.common.data.Location;
 
 public class MoveCommandHandler extends AbstractCommandHandler {
 
@@ -50,9 +52,9 @@ public class MoveCommandHandler extends AbstractCommandHandler {
 
     private void handleMoveCommand(Command command) {
         try {
-            FoodItem item = inputCollector.createItem(command);
-            int locationId = inputCollector.createLocationId(command);
-            serverManager.move(item, locationId);
+            FoodItem item = inputCollector.determineItem(command);
+            Location location = inputCollector.determineDestinationLocation(command);
+            serverManager.move(item, location.id);
             refresher.refresh();
         } catch (NetworkException e) {
             logNetworkError(e);

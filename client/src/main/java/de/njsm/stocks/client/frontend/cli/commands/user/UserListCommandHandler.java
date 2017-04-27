@@ -13,7 +13,7 @@ public class UserListCommandHandler extends AbstractCommandHandler {
 
     private DatabaseManager dbManager;
 
-    public UserListCommandHandler(DatabaseManager dbManager, ScreenWriter writer) {
+    public UserListCommandHandler(ScreenWriter writer, DatabaseManager dbManager) {
         super(writer);
         this.command = "list";
         this.description = "List the users";

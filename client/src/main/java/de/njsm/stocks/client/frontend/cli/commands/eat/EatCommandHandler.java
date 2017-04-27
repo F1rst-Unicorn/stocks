@@ -7,6 +7,7 @@ import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
 import de.njsm.stocks.client.service.Refresher;
+import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.common.data.FoodItem;
@@ -43,7 +44,7 @@ public class EatCommandHandler extends AbstractCommandHandler {
     }
 
     private void handleInternally(Command c) throws NetworkException, DatabaseException, InputException {
-        FoodItem item = inputCollector.resolveItem(c);
+        FoodItem item = inputCollector.determineNextItem(c);
         serverManager.removeItem(item);
         refresher.refresh();
     }

@@ -7,6 +7,7 @@ import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
 import de.njsm.stocks.client.service.Refresher;
+import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.storage.DatabaseManager;
@@ -60,7 +61,7 @@ public class DeviceAddCommandHandler extends AbstractCommandHandler {
 
     private void handleInternally(Command command) throws DatabaseException, InputException, NetworkException {
         User owner = inputCollector.determineUser(command);
-        UserDevice deviceToAdd = inputCollector.determineNewDevice(command, owner);
+        UserDevice deviceToAdd = inputCollector.createDevice(command, owner);
         if (inputCollector.confirm()) {
             addNewDevice(deviceToAdd);
         }

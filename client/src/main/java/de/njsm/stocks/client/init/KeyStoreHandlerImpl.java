@@ -46,7 +46,6 @@ public class KeyStoreHandlerImpl implements KeystoreHandler {
         try {
             keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(null);
-            startKeyGeneration();
         } catch (KeyStoreException |
                 IOException |
                 CertificateException |
@@ -159,7 +158,8 @@ public class KeyStoreHandlerImpl implements KeystoreHandler {
         return keystore;
     }
 
-    private void startKeyGeneration() {
+    @Override
+    public void startKeyGeneration() {
         AsyncKeyGenerator task = new AsyncKeyGenerator(keyAlgName, keySize);
         keyPairResult = Main.threadPool.submit(task);
     }

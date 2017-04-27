@@ -8,8 +8,8 @@ public class CliCertificateGenerator implements CertificateGenerator {
 
     private final InputReader reader;
 
-    CliCertificateGenerator() {
-        reader = new InputReader(System.in, new TimeProviderImpl());
+    CliCertificateGenerator(InputReader reader) {
+        this.reader = reader;
     }
 
     @Override

@@ -6,6 +6,7 @@ import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
 import de.njsm.stocks.client.service.Refresher;
+import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.common.data.User;
@@ -30,7 +31,7 @@ public class UserRemoveCommandHandler extends AbstractCommandHandler {
     @Override
     public void handle(Command command) {
         try {
-            User userToRemove = inputCollector.resolveUser(command);
+            User userToRemove = inputCollector.determineUser(command);
             serverManager.removeUser(userToRemove);
             refresher.refresh();
         } catch (DatabaseException e) {

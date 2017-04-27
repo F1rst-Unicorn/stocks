@@ -8,8 +8,8 @@ public class CliConfigGenerator implements ConfigGenerator {
 
     private final InputReader reader;
 
-    CliConfigGenerator() {
-        reader = new InputReader(System.in, new TimeProviderImpl());
+    CliConfigGenerator(InputReader reader) {
+        this.reader = reader;
     }
 
     @Override

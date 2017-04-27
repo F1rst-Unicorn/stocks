@@ -9,7 +9,6 @@ import jline.console.history.History;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,19 +21,6 @@ public class InputReader {
 
     private TimeProvider timeProvider;
 
-    @Deprecated
-    public InputReader(InputStream input, TimeProvider timeProvider) {
-        try {
-            this.timeProvider = timeProvider;
-            reader = new ConsoleReader(input, System.out);
-
-            History file = new FileHistory(new File(Configuration.STOCKS_HOME + "/history"));
-            reader.setHistory(file);
-            reader.setHistoryEnabled(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public InputReader(ConsoleReader reader, PrintStream output, TimeProvider timeProvider) {
         this.output = output;

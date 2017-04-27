@@ -1,6 +1,8 @@
 package de.njsm.stocks.common.data;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
@@ -8,8 +10,13 @@ import java.sql.SQLException;
 import java.util.Date;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.DEFAULT,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @XmlRootElement
-public class FoodItem extends Data implements SqlAddable, SqlRemovable {
+public class FoodItem extends Data implements SqlRemovable {
 
     public int id;
 
@@ -36,28 +43,8 @@ public class FoodItem extends Data implements SqlAddable, SqlRemovable {
     }
 
     @Override
-    public void fillAddStmt(PreparedStatement stmt) throws SQLException {
-        stmt.setDate(1, new java.sql.Date(eatByDate.getTime()));
-        stmt.setInt(2, ofType);
-        stmt.setInt(3, storedIn);
-        stmt.setInt(4, registers);
-        stmt.setInt(5, buys);
-    }
-
-    @Override
-    public void fillAddStmtWithId(PreparedStatement stmt) throws SQLException {
-        stmt.setInt(1, id);
-        stmt.setDate(2, new java.sql.Date(eatByDate.getTime()));
-        stmt.setInt(3, ofType);
-        stmt.setInt(4, storedIn);
-        stmt.setInt(5, registers);
-        stmt.setInt(6, buys);
-    }
-
-    @Override
-    public String getAddStmt() {
-        return "INSERT INTO Food_item (eat_by, of_type, stored_in, registers, buys) " +
-                "VALUES (?,?,?,?,?)";
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
+        return visitor.foodItem(this, input);
     }
 
     @Override

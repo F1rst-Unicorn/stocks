@@ -1,15 +1,22 @@
 package de.njsm.stocks.common.data;
 
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.DEFAULT,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @XmlRootElement
-public class User extends Data implements SqlAddable, SqlRemovable {
+public class User extends Data implements SqlRemovable {
     public int id;
     public String name;
 
@@ -22,19 +29,8 @@ public class User extends Data implements SqlAddable, SqlRemovable {
     }
 
     @Override
-    public void fillAddStmt(PreparedStatement stmt) throws SQLException {
-        stmt.setString(1, name);
-    }
-
-    @Override
-    public void fillAddStmtWithId(PreparedStatement stmt) throws SQLException {
-        stmt.setInt(1, id);
-        stmt.setString(2, name);
-    }
-
-    @Override
-    public String getAddStmt() {
-        return "INSERT INTO User (name) VALUES (?)";
+    public <I, O> O accept(StocksDataVisitor<I, O> visitor, I input) {
+        return visitor.user(this, input);
     }
 
     @Override

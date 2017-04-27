@@ -21,5 +21,7 @@ public interface KeystoreHandler {
 
     KeyStore getKeyStore();
 
+    void startKeyGeneration();
+
     void store() throws IOException;
 }
