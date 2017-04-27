@@ -57,7 +57,7 @@
 
     <bean id="serverManager" factory-bean="configuration" factory-method="getServerManager" />
 
-    <bean id="refresher" class="de.njsm.stocks.client.frontend.cli.service.Refresher" >
+    <bean id="refresher" class="de.njsm.stocks.client.service.Refresher" >
         <constructor-arg index="0" ref="serverManager" />
         <constructor-arg index="1" ref="dbManager" />
     </bean>
