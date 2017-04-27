@@ -11,6 +11,8 @@
 
     <bean id="propertiesFileHandler" class="de.njsm.stocks.client.config.PropertiesFileHandlerImpl" />
 
+    <bean id="timeProvider" class="de.njsm.stocks.client.service.TimeProviderImpl" />
+
     <bean id="consoleReader" class="jline.console.ConsoleReader">
         <constructor-arg index="0" ref="stdin" />
         <constructor-arg index="1" ref="stdout" />
@@ -19,6 +21,7 @@
     <bean id="inputReader" class="de.njsm.stocks.client.frontend.cli.service.InputReader">
         <constructor-arg index="0" ref="consoleReader"/>
         <constructor-arg index="1" ref="stdout" />
+        <constructor-arg index="2" ref="timeProvider" />
     </bean>
 
     <bean id="configGenerator" class="de.njsm.stocks.client.frontend.cli.CliConfigGenerator">
@@ -180,6 +183,7 @@
     <bean id="foodList" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodListCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="dbManager" />
+        <constructor-arg index="2" ref="timeProvider" />
     </bean>
 
     <bean id="foodAdd" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodAddCommandHandler">
