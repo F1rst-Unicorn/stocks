@@ -58,7 +58,19 @@
 
     <bean id="dbManager" class="de.njsm.stocks.client.storage.DatabaseManager" />
 
-    <bean id="serverManager" factory-bean="configuration" factory-method="getServerManager" />
+    <bean id="dateConverter" class="de.njsm.stocks.common.data.visitor.DateToLocaltimeConverter" />
+
+    <bean id="serverDataConverter" class="de.njsm.stocks.client.network.server.DataConverter" >
+        <constructor-arg>
+            <list>
+                <ref bean="dateConverter" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="serverManager" factory-bean="configuration" factory-method="getServerManager" >
+        <property name="converter" ref="serverDataConverter" />
+    </bean>
 
     <bean id="refresher" class="de.njsm.stocks.client.service.Refresher" >
         <constructor-arg index="0" ref="serverManager" />

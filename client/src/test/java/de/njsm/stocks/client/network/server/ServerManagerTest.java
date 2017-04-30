@@ -3,6 +3,7 @@ package de.njsm.stocks.client.network.server;
 import de.njsm.stocks.client.Utils;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.Update;
+import de.njsm.stocks.common.data.visitor.DateToLocaltimeConverter;
 import org.junit.Before;
 import org.junit.Test;
 import retrofit.Call;
@@ -10,6 +11,7 @@ import retrofit.Callback;
 import retrofit.Response;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -22,10 +24,14 @@ public class ServerManagerTest {
 
     private ServerClient client;
 
+    private DataConverter converter;
+
     @Before
     public void setup() throws Exception {
         client = mock(ServerClient.class);
+        converter = new DataConverter(Collections.singletonList(new DateToLocaltimeConverter()));
         uut = new ServerManager(client);
+        uut.setConverter(converter);
     }
 
     @Test

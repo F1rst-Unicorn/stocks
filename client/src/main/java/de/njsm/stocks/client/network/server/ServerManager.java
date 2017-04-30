@@ -1,7 +1,6 @@
 package de.njsm.stocks.client.network.server;
 
 import de.njsm.stocks.client.exceptions.NetworkException;
-import de.njsm.stocks.client.service.TimeProviderImpl;
 import de.njsm.stocks.common.data.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,8 +15,14 @@ public class ServerManager {
 
     private ServerClient backend;
 
+    private DataConverter converter;
+
     public ServerManager(ServerClient backend) {
         this.backend = backend;
+    }
+
+    public void setConverter(DataConverter converter) {
+        this.converter = converter;
     }
 
     public Update[] getUpdates() throws NetworkException {
@@ -27,20 +32,15 @@ public class ServerManager {
             Response<Update[]> r = call.execute();
 
             if (r.isSuccess()) {
-                return transformUpdates(r.body());
+                Update[] result = r.body();
+                converter.convert(result);
+                return result;
             } else {
                 throw error(r, "Error getting updates");
             }
         } catch (IOException e) {
             throw new NetworkException("Error connecting to the server", e);
         }
-    }
-
-    private Update[] transformUpdates(Update[] body) {
-        for (Update update : body) {
-            update.lastUpdate = TimeProviderImpl.convertUtcToLocaltime(update.lastUpdate);
-        }
-        return body;
     }
 
     public User[] getUsers() throws NetworkException {
@@ -50,7 +50,9 @@ public class ServerManager {
             Response<User[]> r = call.execute();
 
             if (r.isSuccess()) {
-                return r.body();
+                User[] result = r.body();
+                converter.convert(result);
+                return result;
             } else {
                 throw error(r, "Error getting users");
             }
@@ -94,7 +96,9 @@ public class ServerManager {
             Response<UserDevice[]> r = u.execute();
 
             if (r.isSuccess()) {
-                return r.body();
+                UserDevice[] result = r.body();
+                converter.convert(result);
+                return result;
             } else {
                 throw error(r, "Error getting devices");
             }
@@ -112,7 +116,9 @@ public class ServerManager {
             if (!r.isSuccess()) {
                 throw error(r, "Error adding device");
             } else {
-                return r.body();
+                Ticket result = r.body();
+                converter.convert(result);
+                return result;
             }
         } catch (IOException e) {
             throw new NetworkException("Error connecting to the server", e);
@@ -140,7 +146,9 @@ public class ServerManager {
             Response<Location[]> r = u.execute();
 
             if (r.isSuccess()) {
-                return r.body();
+                Location[] result = r.body();
+                converter.convert(result);
+                return result;
             } else {
                 throw error(r, "Error getting locations");
             }
@@ -198,7 +206,9 @@ public class ServerManager {
             Response<Food[]> r = u.execute();
 
             if (r.isSuccess()) {
-                return r.body();
+                Food[] result = r.body();
+                converter.convert(result);
+                return result;
             } else {
                 throw error(r, "Error getting food");
             }
@@ -256,20 +266,15 @@ public class ServerManager {
             Response<FoodItem[]> r = u.execute();
 
             if (r.isSuccess()) {
-                return transformItems(r.body());
+                FoodItem[] result = r.body();
+                converter.convert(result);
+                return result;
             } else {
                 throw error(r, "Error getting food items");
             }
         } catch (IOException e) {
             throw new NetworkException("Error connecting to the server", e);
         }
-    }
-
-    private FoodItem[] transformItems(FoodItem[] body) {
-        for (FoodItem item : body) {
-            item.eatByDate = TimeProviderImpl.convertUtcToLocaltime(item.eatByDate);
-        }
-        return body;
     }
 
     public void addItem(FoodItem f) throws NetworkException {
