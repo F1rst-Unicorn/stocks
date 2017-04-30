@@ -15,8 +15,6 @@ public class Command {
     private final List<String> command;
     private Iterator<String> commandIt;
 
-    private TimeProvider timeProvider;
-
     public static Command createCommand(String input) throws ParseException {
         Command result = new Command();
         List<String> words = result.parseCommand(input);
@@ -64,12 +62,9 @@ public class Command {
         }
     }
 
-    public Date getParamDate(char c) throws ParseException {
+    public Date getParamDate(char c, TimeProvider timeProvider) throws ParseException {
         String value = arguments.get(c);
-        if (timeProvider != null)
-            return InputReader.parseDate(value, timeProvider);
-        else
-            throw new ParseException("No TimeProvider set");
+        return InputReader.parseDate(value, timeProvider);
     }
 
     public ValueRange getParamRange(char c) throws ParseException {
@@ -112,10 +107,6 @@ public class Command {
         buf.deleteCharAt(buf.length()-1);
 
         return buf.toString();
-    }
-
-    public void setTimeProvider(TimeProvider timeProvider) {
-        this.timeProvider = timeProvider;
     }
 
     protected Command() {

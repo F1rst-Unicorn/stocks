@@ -5,10 +5,11 @@ import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
-import de.njsm.stocks.client.service.Refresher;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
+import de.njsm.stocks.client.service.Refresher;
+import de.njsm.stocks.client.service.TimeProvider;
 import de.njsm.stocks.common.data.FoodItem;
 
 public class AddCommandHandler extends AbstractCommandHandler {
@@ -19,16 +20,20 @@ public class AddCommandHandler extends AbstractCommandHandler {
 
     private final Refresher refresher;
 
+    private TimeProvider timeProvider;
+
     public AddCommandHandler(InputCollector inputCollector,
                              ServerManager serverManager,
                              Refresher refresher,
-                             ScreenWriter writer) {
+                             ScreenWriter writer,
+                             TimeProvider timeProvider) {
         super(writer);
         command = "add";
         description = "Add a food item";
         this.inputCollector = inputCollector;
         this.refresher = refresher;
         this.serverManager = serverManager;
+        this.timeProvider = timeProvider;
     }
 
     @Override

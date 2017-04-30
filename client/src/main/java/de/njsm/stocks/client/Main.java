@@ -35,6 +35,8 @@ public class Main {
             runner.run(args);
         } catch (PrintableException e) {
             exitCode = handleError(e);
+        } catch (Exception e) {
+            exitCode = handleUnexpectedError(e);
         } finally {
             LOG.info("Shutting down");
             threadPool.shutdown();
@@ -42,10 +44,17 @@ public class Main {
         System.exit(exitCode);
     }
 
+    private static int handleUnexpectedError(Exception e) {
+        System.out.println("An unexpected error has occured!");
+        System.out.println("Please consider sending the log file at ");
+        System.out.println("~/.stocks/stocks.log to the developers");
+        return 2;
+    }
+
     private static int handleError(PrintableException e) {
         LOG.error("", e);
-        System.err.println(e.getMessage());
-        System.err.println("For details consider the log file at " +
+        System.out.println(e.getMessage());
+        System.out.println("For details consider the log file at " +
                 "~/.stocks/stocks.log");
         return 1;
     }
