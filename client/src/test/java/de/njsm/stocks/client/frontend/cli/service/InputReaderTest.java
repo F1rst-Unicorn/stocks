@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.service;
 
 import de.njsm.stocks.client.exceptions.ParseException;
+import de.njsm.stocks.client.service.TimeProvider;
 import jline.console.ConsoleReader;
 import org.junit.After;
 import org.junit.Before;
@@ -25,13 +26,17 @@ public class InputReaderTest {
 
     private PrintStream outMock;
 
+    private TimeProvider timeMock;
+
     private ArgumentCaptor<String> captor;
 
     @Before
     public void setup() throws Exception {
         inMock = mock(ConsoleReader.class);
         outMock = mock(PrintStream.class);
-        uut = new InputReader(inMock, outMock);
+        timeMock = mock(TimeProvider.class);
+        when(timeMock.getTime()).thenReturn(0L);
+        uut = new InputReader(inMock, outMock, timeMock);
         captor = ArgumentCaptor.forClass(String.class);
     }
 
@@ -245,7 +250,7 @@ public class InputReaderTest {
         String date = "11.09.1991";
         Date expectedOutput = format.parse(date);
 
-        Date output = InputReader.parseDate(date);
+        Date output = uut.parseDate(date);
 
         assertEquals(expectedOutput, output);
     }
@@ -254,28 +259,28 @@ public class InputReaderTest {
     public void parsingRelativeDayWorks() throws Exception {
         int dayOffset = 5;
         String date = "+" + dayOffset + "d";
-        Date expectedOutput = new Date(new Date().getTime() + dayOffset * 1000L * 60L * 60L * 24L);
+        Date expectedOutput = new Date(dayOffset * 1000L * 60L * 60L * 24L);
 
-        Date output = InputReader.parseDate(date);
+        Date output = uut.parseDate(date);
 
-        assertEquals(format.format(expectedOutput), format.format(output));
+        assertEquals(expectedOutput, output);
     }
 
     @Test
     public void parsingRelativeMonthWorks() throws Exception {
         int monthOffset = 5;
         String date = "+" + monthOffset + "m";
-        Date expectedOutput = new Date(new Date().getTime() + monthOffset * 1000L * 60L * 60L * 24L * 30L);
+        Date expectedOutput = new Date(monthOffset * 1000L * 60L * 60L * 24L * 30L);
 
-        Date output = InputReader.parseDate(date);
+        Date output = uut.parseDate(date);
 
-        assertEquals(format.format(expectedOutput), format.format(output));
+        assertEquals(expectedOutput, output);
     }
 
     @Test
     public void parsingRelativeWithoutNumberGivesException() throws Exception {
         try {
-            InputReader.parseDate("+m");
+            uut.parseDate("+m");
             fail();
         } catch (ParseException e) {
 
@@ -285,7 +290,7 @@ public class InputReaderTest {
     @Test
     public void parsingRelativeWithUnknownUnitGivesException() throws Exception {
         try {
-            InputReader.parseDate("+4x");
+            uut.parseDate("+4x");
             fail();
         } catch (ParseException e) {
 
@@ -295,7 +300,7 @@ public class InputReaderTest {
     @Test
     public void parsingGarbageGivesException() throws Exception {
         try {
-            InputReader.parseDate("ihfospajf");
+            uut.parseDate("ihfospajf");
             fail();
         } catch (ParseException e) {
 

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 public class DatabaseManager {
 
@@ -310,7 +311,7 @@ public class DatabaseManager {
             }
             Timestamp date = rs.getTimestamp("date");
             if (date != null && f != null) {
-                f.add(date);
+                f.add(new Date(date.getTime()));
             }
             lastId = id;
         }

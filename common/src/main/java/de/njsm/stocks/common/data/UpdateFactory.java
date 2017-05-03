@@ -3,6 +3,7 @@ package de.njsm.stocks.common.data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class UpdateFactory extends DataFactory {
@@ -30,7 +31,7 @@ public class UpdateFactory extends DataFactory {
     private Update createUpdateTyped(ResultSet rs) throws SQLException {
         Update u = new Update();
         u.table = rs.getString("table_name");
-        u.lastUpdate = rs.getTimestamp("last_update");
+        u.lastUpdate = new Date(rs.getTimestamp("last_update").getTime());
         return u;
     }
 }

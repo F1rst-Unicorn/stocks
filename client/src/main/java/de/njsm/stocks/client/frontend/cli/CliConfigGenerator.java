@@ -2,6 +2,7 @@ package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.frontend.ConfigGenerator;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
+import de.njsm.stocks.client.service.TimeProviderImpl;
 
 public class CliConfigGenerator implements ConfigGenerator {
 

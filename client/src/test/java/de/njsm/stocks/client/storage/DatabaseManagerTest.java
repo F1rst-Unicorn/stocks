@@ -1,5 +1,6 @@
 package de.njsm.stocks.client.storage;
 
+import de.njsm.stocks.client.Utils;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.common.data.*;
@@ -10,7 +11,7 @@ import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,13 +42,13 @@ public class DatabaseManagerTest {
     }
 
     @Test
-    public void gettingUpdatesWorks() throws DatabaseException {
+    public void gettingUpdatesWorks() throws Exception {
 
         List<Update> updates = uut.getUpdates();
 
         Assert.assertEquals(5, updates.size());
         for (Update u : updates) {
-            Assert.assertEquals("Wrong for " + u.table, new Date(0L), u.lastUpdate);
+            Assert.assertEquals("Wrong for " + u.table, Utils.getDate("01.01.1970 00:00:00"), u.lastUpdate);
         }
         assertTrue(updates.stream().anyMatch(u -> u.table.equals("Location")));
         assertTrue(updates.stream().anyMatch(u -> u.table.equals("User")));
@@ -251,8 +252,8 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingFoodItems() throws Exception {
         List<FoodItem> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new FoodItem(8, new Timestamp(0L), 7, 3, 3, 3));
-        expectedOutput.add(new FoodItem(9, new Timestamp(0L), 7, 4, 3, 3));
+        expectedOutput.add(new FoodItem(8, Utils.getDate("08.01.1970 00:00:00"), 7, 3, 3, 3));
+        expectedOutput.add(new FoodItem(9, Utils.getDate("09.01.1970 00:00:00"), 7, 4, 3, 3));
 
         List<FoodItem> output = uut.getItems(7);
 
@@ -262,8 +263,8 @@ public class DatabaseManagerTest {
     @Test
     public void testWritingFoodItems() throws Exception {
         List<FoodItem> input = new LinkedList<>();
-        input.add(new FoodItem(8, new Timestamp(0L), 7, 3, 3, 3));
-        input.add(new FoodItem(9, new Timestamp(0L), 7, 4, 3, 3));
+        input.add(new FoodItem(8, new Date(0L), 7, 3, 3, 3));
+        input.add(new FoodItem(9, new Date(0L), 7, 4, 3, 3));
 
         uut.writeFoodItems(input);
 
@@ -273,8 +274,8 @@ public class DatabaseManagerTest {
 
     @Test
     public void testGettingNextItem() throws Exception {
-        FoodItem item1 = new FoodItem(3, new Timestamp(0L), 3, 2, 1, 1);
-        FoodItem item2 = new FoodItem(2, new Timestamp(1000L), 1, 1, 2, 2);
+        FoodItem item1 = new FoodItem(3, Utils.getDate("03.01.1970 00:00:00"), 3, 2, 1, 1);
+        FoodItem item2 = new FoodItem(1, Utils.getDate("01.01.1970 00:00:00"), 1, 1, 2, 2);
         assertEquals(item1, uut.getNextItem(3));
         assertEquals(item2, uut.getNextItem(1));
     }
@@ -290,7 +291,7 @@ public class DatabaseManagerTest {
     }
 
     @Test
-    public void testGettingFoodOfUser() throws DatabaseException {
+    public void testGettingFoodOfUser() throws Exception {
         List<FoodView> entireFood = getEntireFood();
         FoodView item = entireFood.get(6);
         List<FoodView> expectedOutput = new LinkedList<>();
@@ -302,7 +303,7 @@ public class DatabaseManagerTest {
     }
 
     @Test
-    public void testGettingAllFoodItems() throws DatabaseException {
+    public void testGettingAllFoodItems() throws Exception {
 
         List<FoodView> output = uut.getItems("", "");
 
@@ -310,10 +311,10 @@ public class DatabaseManagerTest {
     }
 
     @Test
-    public void testGettingFoodOfLocation() throws DatabaseException {
+    public void testGettingFoodOfLocation() throws Exception {
         List<FoodView> expectedOutput = new LinkedList<>();
         FoodView item = new FoodView(new Food(7, "Apple juice"));
-        item.add(new Timestamp(0L));
+        item.add(Utils.getDate("09.01.1970 00:00:00"));
         expectedOutput.add(item);
 
         List<FoodView> output = uut.getItems("", "Basement");
@@ -322,10 +323,10 @@ public class DatabaseManagerTest {
     }
 
     @Test
-    public void testGettingFoodOfLocationAndUser() throws DatabaseException {
+    public void testGettingFoodOfLocationAndUser() throws Exception {
         List<FoodView> expectedOutput = new LinkedList<>();
         FoodView item = new FoodView(new Food(7, "Apple juice"));
-        item.add(new Timestamp(0L));
+        item.add(Utils.getDate("09.01.1970 00:00:00"));
         expectedOutput.add(item);
 
         List<FoodView> output = uut.getItems("Juliette", "Basement");
@@ -372,38 +373,38 @@ public class DatabaseManagerTest {
         Mockito.verifyNoMoreInteractions(c);
     }
 
-    private List<FoodView> getEntireFood() {
+    private List<FoodView> getEntireFood() throws ParseException {
         List<FoodView> expectedOutput = new LinkedList<>();
         FoodView item;
 
         item = new FoodView(new Food(1, "Beer"));
-        item.add(new Timestamp(1000L));
-        item.add(new Timestamp(2000L));
-        item.add(new Timestamp(3000L));
-        item.add(new Timestamp(4000L));
+        item.add(Utils.getDate("01.01.1970 00:00:00"));
+        item.add(Utils.getDate("02.01.1970 00:00:00"));
+        item.add(Utils.getDate("05.01.1970 00:00:00"));
+        item.add(Utils.getDate("06.01.1970 00:00:00"));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(2, "Carrot"));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(3, "Bread"));
-        item.add(new Timestamp(0L));
+        item.add(Utils.getDate("03.01.1970 00:00:00"));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(4, "Milk"));
-        item.add(new Timestamp(0L));
+        item.add(Utils.getDate("04.01.1970 00:00:00"));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(5, "Yoghurt"));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(6, "Raspberry jam"));
-        item.add(new Timestamp(0L));
+        item.add(Utils.getDate("07.01.1970 00:00:00"));
         expectedOutput.add(item);
 
         item = new FoodView(new Food(7, "Apple juice"));
-        item.add(new Timestamp(0L));
-        item.add(new Timestamp(0L));
+        item.add(Utils.getDate("08.01.1970 00:00:00"));
+        item.add(Utils.getDate("09.01.1970 00:00:00"));
         expectedOutput.add(item);
 
         return expectedOutput;

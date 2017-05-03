@@ -7,6 +7,7 @@ import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.frontend.cli.service.Selector;
+import de.njsm.stocks.client.service.TimeProvider;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.UserDeviceView;
@@ -18,11 +19,15 @@ public class InputCollector extends Selector {
 
     private DatabaseManager dbManager;
 
+    private TimeProvider timeProvider;
+
     public InputCollector(ScreenWriter writer,
                           InputReader reader,
-                          DatabaseManager dbManager) {
+                          DatabaseManager dbManager,
+                          TimeProvider timeProvider) {
         super(writer, reader);
         this.dbManager = dbManager;
+        this.timeProvider = timeProvider;
     }
 
     public FoodItem createFoodItem(Command c) throws DatabaseException, InputException {
@@ -153,7 +158,7 @@ public class InputCollector extends Selector {
 
     private Date resolveDateInternally(Command command) throws ParseException {
         if (command.hasArg('d')) {
-            return command.getParamDate('d');
+            return command.getParamDate('d', timeProvider);
         } else {
             return askForDate();
         }

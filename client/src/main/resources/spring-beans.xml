@@ -11,6 +11,8 @@
 
     <bean id="propertiesFileHandler" class="de.njsm.stocks.client.config.PropertiesFileHandlerImpl" />
 
+    <bean id="timeProvider" class="de.njsm.stocks.client.service.TimeProviderImpl" />
+
     <bean id="consoleReader" class="jline.console.ConsoleReader">
         <constructor-arg index="0" ref="stdin" />
         <constructor-arg index="1" ref="stdout" />
@@ -19,6 +21,7 @@
     <bean id="inputReader" class="de.njsm.stocks.client.frontend.cli.service.InputReader">
         <constructor-arg index="0" ref="consoleReader"/>
         <constructor-arg index="1" ref="stdout" />
+        <constructor-arg index="2" ref="timeProvider" />
     </bean>
 
     <bean id="configGenerator" class="de.njsm.stocks.client.frontend.cli.CliConfigGenerator">
@@ -55,9 +58,21 @@
 
     <bean id="dbManager" class="de.njsm.stocks.client.storage.DatabaseManager" />
 
-    <bean id="serverManager" factory-bean="configuration" factory-method="getServerManager" />
+    <bean id="dateConverter" class="de.njsm.stocks.common.data.visitor.DateToLocaltimeConverter" />
 
-    <bean id="refresher" class="de.njsm.stocks.client.frontend.cli.service.Refresher" >
+    <bean id="serverDataConverter" class="de.njsm.stocks.client.network.server.DataConverter" >
+        <constructor-arg>
+            <list>
+                <ref bean="dateConverter" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="serverManager" factory-bean="configuration" factory-method="getServerManager" >
+        <property name="converter" ref="serverDataConverter" />
+    </bean>
+
+    <bean id="refresher" class="de.njsm.stocks.client.service.Refresher" >
         <constructor-arg index="0" ref="serverManager" />
         <constructor-arg index="1" ref="dbManager" />
     </bean>
@@ -66,6 +81,7 @@
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="inputReader" />
         <constructor-arg index="2" ref="dbManager" />
+        <constructor-arg index="3" ref="timeProvider" />
     </bean>
 
     <bean id="deviceList" class="de.njsm.stocks.client.frontend.cli.commands.dev.DeviceListCommandHandler">
@@ -180,6 +196,7 @@
     <bean id="foodList" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodListCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="dbManager" />
+        <constructor-arg index="2" ref="timeProvider" />
     </bean>
 
     <bean id="foodAdd" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodAddCommandHandler">
@@ -231,6 +248,7 @@
         <constructor-arg index="1" ref="serverManager" />
         <constructor-arg index="2" ref="refresher" />
         <constructor-arg index="3" ref="screenWriter" />
+        <constructor-arg index="4" ref="timeProvider" />
     </bean>
 
     <bean id="move" class="de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler">

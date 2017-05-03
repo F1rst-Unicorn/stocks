@@ -2,6 +2,7 @@ package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
+import de.njsm.stocks.client.service.TimeProvider;
 
 import java.time.temporal.ValueRange;
 import java.util.*;
@@ -61,9 +62,9 @@ public class Command {
         }
     }
 
-    public Date getParamDate(char c) throws ParseException {
+    public Date getParamDate(char c, TimeProvider timeProvider) throws ParseException {
         String value = arguments.get(c);
-        return InputReader.parseDate(value);
+        return InputReader.parseDate(value, timeProvider);
     }
 
     public ValueRange getParamRange(char c) throws ParseException {
@@ -161,6 +162,5 @@ public class Command {
         String parameter = it.next();
         arguments.put(word.charAt(2), parameter);
     }
-
 
 }

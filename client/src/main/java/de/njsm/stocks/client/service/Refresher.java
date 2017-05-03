@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.frontend.cli.service;
+package de.njsm.stocks.client.service;
 
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
