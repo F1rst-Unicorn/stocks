@@ -17,7 +17,7 @@ import java.sql.SQLException;
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @XmlRootElement
 public class User extends Data implements SqlRemovable {
-    public int id;
+
     public String name;
 
     public User(int id, String name) {

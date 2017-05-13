@@ -12,12 +12,14 @@ import org.junit.Test;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class SelectorTest {
 
@@ -47,7 +49,7 @@ public class SelectorTest {
             uut.selectUser(Collections.emptyList(), name);
             fail();
         } catch (InputException e) {
-            assertEquals("No such user found: " + name, e.getMessage());
+            assertEquals("No users found", e.getMessage());
         }
     }
 
@@ -58,7 +60,7 @@ public class SelectorTest {
             uut.selectFood(Collections.emptyList(), name);
             fail();
         } catch (InputException e) {
-            assertEquals("No such food found: " + name, e.getMessage());
+            assertEquals("No food found", e.getMessage());
         }
     }
 
@@ -68,7 +70,7 @@ public class SelectorTest {
             uut.selectItem(Collections.emptyList());
             fail();
         } catch (InputException e) {
-            assertEquals("No items found", e.getMessage());
+            assertEquals("No food items found", e.getMessage());
         }
     }
 
@@ -79,7 +81,7 @@ public class SelectorTest {
             uut.selectLocation(Collections.emptyList(), name);
             fail();
         } catch (InputException e) {
-            assertEquals("No such location found: " + name, e.getMessage());
+            assertEquals("No locations found", e.getMessage());
         }
     }
 
@@ -90,7 +92,7 @@ public class SelectorTest {
             uut.selectDevice(Collections.emptyList(), name);
             fail();
         } catch (InputException e) {
-            assertEquals("No such device found: " + name, e.getMessage());
+            assertEquals("No devices found", e.getMessage());
         }
     }
     @Test
@@ -144,4 +146,26 @@ public class SelectorTest {
         assertEquals(expectedOutput, output);
     }
 
+
+    @Test
+    public void selectingBetweenSeveralGivesListToChoose() throws Exception {
+        User user1 = new User(1, "Jack");
+        User user2 = new User(2, "Jack");
+        User user3 = new User(3, "Jack");
+        User user4 = new User(5, "Jack");
+        List<User> list = new LinkedList<>();
+        list.add(user1);
+        list.add(user2);
+        list.add(user3);
+        list.add(user4);
+        when(inMock.nextInt(anyString(), anyInt())).thenReturn(3);
+
+        User output = uut.selectUser(list, user3.name);
+
+        assertEquals(user3, output);
+        verify(outMock).printDataList("Found more than one possibility: ",
+                "users",
+                list);
+        verify(inMock).nextInt("Choose one ", 1);
+    }
 }

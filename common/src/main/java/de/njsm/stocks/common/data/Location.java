@@ -16,7 +16,7 @@ import java.sql.SQLException;
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @XmlRootElement
 public class Location extends Data implements SqlRenamable, SqlRemovable {
-    public int id;
+
     public String name;
 
     public Location(int id, String name) {
