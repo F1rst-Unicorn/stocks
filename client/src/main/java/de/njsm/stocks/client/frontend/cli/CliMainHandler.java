@@ -4,12 +4,6 @@ import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.frontend.MainHandler;
 import de.njsm.stocks.client.frontend.cli.commands.AggregatedCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
-import de.njsm.stocks.client.service.Refresher;
-import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
-import de.njsm.stocks.client.service.TimeProvider;
-import de.njsm.stocks.client.service.TimeProviderImpl;
-import de.njsm.stocks.client.storage.DatabaseManager;
-import jline.console.ConsoleReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

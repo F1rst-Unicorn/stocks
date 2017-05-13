@@ -1,7 +1,6 @@
-package de.njsm.stocks.client.frontend.cli.service;
+package de.njsm.stocks.client.service;
 
 import de.njsm.stocks.client.network.server.ServerManager;
-import de.njsm.stocks.client.service.Refresher;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.*;
 import org.junit.Before;
