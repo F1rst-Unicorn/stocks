@@ -146,7 +146,6 @@ public class SelectorTest {
         assertEquals(expectedOutput, output);
     }
 
-
     @Test
     public void selectingBetweenSeveralGivesListToChoose() throws Exception {
         User user1 = new User(1, "Jack");
@@ -167,5 +166,34 @@ public class SelectorTest {
                 "users",
                 list);
         verify(inMock).nextInt("Choose one ", 1);
+    }
+
+    @Test
+    public void invalidSelectionThrowsException() throws Exception {
+        String name = "Jack";
+        User user1 = new User(1, name);
+        User user2 = new User(2, name);
+        User user3 = new User(3, name);
+        User user4 = new User(5, name);
+        List<User> list = new LinkedList<>();
+        list.add(user1);
+        list.add(user2);
+        list.add(user3);
+        list.add(user4);
+        int invalidSelection = 4;
+        when(inMock.nextInt(anyString(), anyInt())).thenReturn(invalidSelection);
+
+        try {
+            uut.selectUser(list, name);
+            fail();
+        } catch (InputException e) {
+            assertEquals("You did an invalid selection", e.getMessage());
+        }
+
+        verify(outMock).printDataList("Found more than one possibility: ",
+                "users",
+                list);
+        verify(inMock).nextInt("Choose one ", 1);
+
     }
 }
