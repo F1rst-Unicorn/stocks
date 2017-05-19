@@ -37,36 +37,22 @@ public class HttpsUserContextFactoryTest {
         }
     }
 
-    @Test
-    public void testParsing() {
-        String input = "/O=stocks/OU=User/CN=Jack$1$laptop$2";
-
-        HttpsUserContextFactory uut = new HttpsUserContextFactory();
-
-        Principals p = uut.parseSubjectName(input);
-        Assert.assertEquals("Jack", p.getUsername());
-        Assert.assertEquals("laptop", p.getDeviceName());
-        Assert.assertEquals(1, p.getUid());
-        Assert.assertEquals(2, p.getDid());
-    }
-
-    @Test
-    public void testBasicParsing() {
-        String input = "/CN=Jack$1$Handy$2";
-
-        HttpsUserContextFactory uut = new HttpsUserContextFactory();
-
-        Principals p = uut.parseSubjectName(input);
-
-        Assert.assertEquals("Jack", p.getUsername());
-        Assert.assertEquals("Handy", p.getDeviceName());
-        Assert.assertEquals(1, p.getUid());
-        Assert.assertEquals(2, p.getDid());
-    }
-
-    @Test
     public void testEmptyName() {
         String input = "/CN=$1$$1";
+
+        HttpsUserContextFactory uut = new HttpsUserContextFactory();
+
+        Principals p = uut.parseSubjectName(input);
+
+        Assert.assertEquals("", p.getUsername());
+        Assert.assertEquals("", p.getDeviceName());
+        Assert.assertEquals(1, p.getUid());
+        Assert.assertEquals(1, p.getDid());
+    }
+
+    @Test
+    public void testEmptyNameNoSlashes() {
+        String input = "CN=$1$$1";
 
         HttpsUserContextFactory uut = new HttpsUserContextFactory();
 

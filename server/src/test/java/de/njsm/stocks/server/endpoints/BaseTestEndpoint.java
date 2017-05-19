@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class BaseTestEndpoint {
 
-    protected String userString = "John$5$Mobile$1";
+    protected String userString = "/CN=John$5$Mobile$1";
 
     protected HttpServletRequest createMockRequest() {
         HttpServletRequest result = Mockito.mock(HttpServletRequest.class);
