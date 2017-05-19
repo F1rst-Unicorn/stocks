@@ -28,4 +28,3 @@ mv $STOCKS_ROOT/deploy-server/*.xz $STOCKS_ROOT/deploy-server/target
 rm -rf $STOCKS_ROOT/deploy-server/src \
         $STOCKS_ROOT/deploy-server/pkg \
         $STOCKS_ROOT/deploy-server/*.tar
-
