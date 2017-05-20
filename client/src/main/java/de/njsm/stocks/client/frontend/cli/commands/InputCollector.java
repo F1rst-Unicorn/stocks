@@ -244,7 +244,7 @@ public class InputCollector extends Selector {
     private UserDevice resolveDevice(String name) throws DatabaseException, InputException {
         List<UserDeviceView> devices = dbManager.getDevices(name);
         UserDeviceView view = selectDevice(devices, name);
-        return new UserDevice(view.id, view.name, 0);
+        return new UserDevice(view.id, view.name, view.userId);
     }
 
     private Food resolveFood(String food) throws DatabaseException, InputException {
