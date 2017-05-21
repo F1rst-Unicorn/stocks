@@ -257,7 +257,6 @@
         <constructor-arg index="1" ref="serverManager" />
         <constructor-arg index="2" ref="refresher" />
         <constructor-arg index="3" ref="screenWriter" />
-        <constructor-arg index="4" ref="timeProvider" />
     </bean>
 
     <bean id="move" class="de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler">

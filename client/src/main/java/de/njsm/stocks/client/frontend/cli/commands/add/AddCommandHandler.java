@@ -4,15 +4,14 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.FaultyCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
-import de.njsm.stocks.client.service.TimeProvider;
 import de.njsm.stocks.common.data.FoodItem;
 
-public class AddCommandHandler extends AbstractCommandHandler {
+public class AddCommandHandler extends FaultyCommandHandler {
 
     private final InputCollector inputCollector;
 
@@ -20,20 +19,16 @@ public class AddCommandHandler extends AbstractCommandHandler {
 
     private final Refresher refresher;
 
-    private TimeProvider timeProvider;
-
     public AddCommandHandler(InputCollector inputCollector,
                              ServerManager serverManager,
                              Refresher refresher,
-                             ScreenWriter writer,
-                             TimeProvider timeProvider) {
+                             ScreenWriter writer) {
         super(writer);
         command = "add";
         description = "Add a food item";
         this.inputCollector = inputCollector;
         this.refresher = refresher;
         this.serverManager = serverManager;
-        this.timeProvider = timeProvider;
     }
 
     @Override
@@ -41,7 +36,7 @@ public class AddCommandHandler extends AbstractCommandHandler {
         if (command.hasNext()) {
             printHelp();
         } else {
-            handleAddCommand(command);
+            handleWithFaultLogger(command);
         }
     }
 
@@ -55,17 +50,10 @@ public class AddCommandHandler extends AbstractCommandHandler {
         writer.println(text);
     }
 
-    private void handleAddCommand(Command command) {
-        try {
-            FoodItem item = inputCollector.createFoodItem(command);
-            serverManager.addItem(item);
-            refresher.refresh();
-        } catch (NetworkException e) {
-            logNetworkError(e);
-        } catch (DatabaseException e) {
-            logDatabaseError(e);
-        } catch (InputException e) {
-            logInputError(e);
-        }
+    @Override
+    protected void handleInternally(Command command) throws DatabaseException, InputException, NetworkException {
+        FoodItem item = inputCollector.createFoodItem(command);
+        serverManager.addItem(item);
+        refresher.refresh();
     }
 }
