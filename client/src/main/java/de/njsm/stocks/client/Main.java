@@ -45,6 +45,7 @@ public class Main {
     }
 
     private static int handleUnexpectedError(Exception e) {
+        LOG.error("", e);
         System.out.println("An unexpected error has occured!");
         System.out.println("Please consider sending the log file at ");
         System.out.println("~/.stocks/stocks.log to the developers");

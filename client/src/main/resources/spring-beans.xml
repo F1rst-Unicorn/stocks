@@ -245,11 +245,10 @@
     </bean>
 
     <bean id="eat" class="de.njsm.stocks.client.frontend.cli.commands.eat.EatCommandHandler">
-        <constructor-arg index="0" ref="configuration" />
-        <constructor-arg index="1" ref="serverManager" />
-        <constructor-arg index="2" ref="screenWriter" />
-        <constructor-arg index="3" ref="inputCollector" />
-        <constructor-arg index="4" ref="refresher" />
+        <constructor-arg index="0" ref="serverManager" />
+        <constructor-arg index="1" ref="screenWriter" />
+        <constructor-arg index="2" ref="inputCollector" />
+        <constructor-arg index="3" ref="refresher" />
     </bean>
 
     <bean id="add" class="de.njsm.stocks.client.frontend.cli.commands.add.AddCommandHandler">
