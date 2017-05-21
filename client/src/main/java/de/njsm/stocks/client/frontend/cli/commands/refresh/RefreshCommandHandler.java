@@ -3,20 +3,11 @@ package de.njsm.stocks.client.frontend.cli.commands.refresh;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
-import de.njsm.stocks.client.service.Refresher;
+import de.njsm.stocks.client.frontend.cli.commands.FaultyCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
+import de.njsm.stocks.client.service.Refresher;
 
-public class RefreshCommandHandler extends AbstractCommandHandler {
-
-    @Override
-    public void handle(Command command) {
-        if (command.hasNext()) {
-            printHelp();
-        } else {
-            handleInternally(command.hasArg('f'));
-        }
-    }
+public class RefreshCommandHandler extends FaultyCommandHandler {
 
     private Refresher refresher;
 
@@ -27,17 +18,22 @@ public class RefreshCommandHandler extends AbstractCommandHandler {
         this.refresher = refresher;
     }
 
-    private void handleInternally(boolean fullRefresh) {
-        try {
-            if (fullRefresh) {
-                refresher.refreshFull();
-            } else {
-                refreshSparse();
-            }
-        } catch (DatabaseException e) {
-            logDatabaseError(e);
-        } catch (NetworkException e) {
-            logNetworkError(e);
+    @Override
+    public void handle(Command command) {
+        if (command.hasNext()) {
+            printHelp();
+        } else {
+            handleWithFaultLogger(command);
+        }
+    }
+
+    @Override
+    protected void handleInternally(Command command) throws DatabaseException, NetworkException {
+        boolean fullRefresh = command.hasArg('f');
+        if (fullRefresh) {
+            refresher.refreshFull();
+        } else {
+            refreshSparse();
         }
     }
 
