@@ -20,7 +20,7 @@ import java.util.regex.PatternSyntaxException;
 
 public class FoodListCommandHandler extends AbstractCommandHandler {
 
-    private static final Logger LOG = LogManager.getLogger(AbstractCommandHandler.class);
+    private static final Logger LOG = LogManager.getLogger(FoodListCommandHandler.class);
 
     private boolean existing;
     private int limit;
