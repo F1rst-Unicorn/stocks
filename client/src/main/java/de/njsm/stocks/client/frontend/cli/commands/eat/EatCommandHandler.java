@@ -29,11 +29,6 @@ public class EatCommandHandler extends FaultyCommandHandler {
     }
 
     @Override
-    public void handle(Command command) {
-        handleWithFaultLogger(command);
-    }
-
-    @Override
     protected void handleInternally(Command c) throws NetworkException, DatabaseException, InputException {
         FoodItem item = inputCollector.determineNextItem(c);
         serverManager.removeItem(item);

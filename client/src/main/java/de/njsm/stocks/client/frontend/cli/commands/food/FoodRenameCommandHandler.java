@@ -29,11 +29,6 @@ public class FoodRenameCommandHandler extends FaultyCommandHandler {
     }
 
     @Override
-    public void handle(Command command) {
-        handleWithFaultLogger(command);
-    }
-
-    @Override
     protected void handleInternally(Command command) throws DatabaseException, InputException, NetworkException {
         Food food = inputCollector.determineFood(command);
         String newName = inputCollector.determineNameFromCommandOrAsk("New name: ", command);

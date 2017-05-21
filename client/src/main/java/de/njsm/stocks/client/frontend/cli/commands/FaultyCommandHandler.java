@@ -12,6 +12,11 @@ public abstract class FaultyCommandHandler extends AbstractCommandHandler {
         super(writer);
     }
 
+    @Override
+    public void handle(Command command) {
+        handleWithFaultLogger(command);
+    }
+
     protected void handleWithFaultLogger(Command command) {
         try {
             handleInternally(command);

@@ -32,11 +32,6 @@ public class DeviceRemoveCommandHandler extends FaultyCommandHandler {
     }
 
     @Override
-    public void handle(Command command) {
-        handleWithFaultLogger(command);
-    }
-
-    @Override
     protected void handleInternally(Command command) throws DatabaseException, InputException, NetworkException {
         UserDevice deviceToRemove = inputCollector.determineDevice(command);
         serverManager.removeDevice(deviceToRemove);

@@ -1,15 +1,17 @@
 package de.njsm.stocks.client.frontend.cli.commands.loc;
 
 import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.exceptions.InputException;
+import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.FaultyCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.Location;
 
 import java.util.List;
 
-public class LocationListCommandHandler extends AbstractCommandHandler {
+public class LocationListCommandHandler extends FaultyCommandHandler {
 
     private DatabaseManager dbManager;
 
@@ -21,12 +23,8 @@ public class LocationListCommandHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public void handle(Command command) {
-        try {
-            List<Location> l = dbManager.getLocations();
-            writer.printLocations("Current locations: ", l);
-        } catch (DatabaseException e) {
-            logDatabaseError(e);
-        }
+    protected void handleInternally(Command command) throws NetworkException, DatabaseException, InputException {
+        List<Location> l = dbManager.getLocations();
+        writer.printLocations("Current locations: ", l);
     }
 }

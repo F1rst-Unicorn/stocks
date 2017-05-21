@@ -24,11 +24,6 @@ public class DeviceListCommandHandler extends FaultyCommandHandler {
     }
 
     @Override
-    public void handle(Command command) {
-       handleWithFaultLogger(command);
-    }
-
-    @Override
     protected void handleInternally(Command command) throws DatabaseException, NetworkException, InputException{
         List<UserDeviceView> devices = dbManager.getDevices();
         writer.printUserDeviceViews("Current devices: ", devices);

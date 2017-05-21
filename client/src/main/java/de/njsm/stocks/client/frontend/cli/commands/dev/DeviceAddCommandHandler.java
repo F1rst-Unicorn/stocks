@@ -47,11 +47,6 @@ public class DeviceAddCommandHandler extends FaultyCommandHandler {
     }
 
     @Override
-    public void handle(Command command) {
-        handleWithFaultLogger(command);
-    }
-
-    @Override
     protected void handleInternally(Command command) throws DatabaseException, InputException, NetworkException {
         User owner = inputCollector.determineUser(command);
         UserDevice deviceToAdd = inputCollector.createDevice(command, owner);
