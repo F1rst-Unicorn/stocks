@@ -5,11 +5,11 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
-import de.njsm.stocks.client.service.Refresher;
+import de.njsm.stocks.client.frontend.cli.commands.FaultyCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
+import de.njsm.stocks.client.service.Refresher;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.User;
@@ -18,7 +18,7 @@ import de.njsm.stocks.common.data.view.UserDeviceView;
 
 import java.util.List;
 
-public class DeviceAddCommandHandler extends AbstractCommandHandler {
+public class DeviceAddCommandHandler extends FaultyCommandHandler {
 
     private Refresher refresher;
 
@@ -48,18 +48,11 @@ public class DeviceAddCommandHandler extends AbstractCommandHandler {
 
     @Override
     public void handle(Command command) {
-        try {
-            handleInternally(command);
-        } catch (NetworkException e) {
-            logNetworkError(e);
-        } catch (DatabaseException e) {
-            logDatabaseError(e);
-        } catch (InputException e) {
-            logInputError(e);
-        }
+        handleWithFaultLogger(command);
     }
 
-    private void handleInternally(Command command) throws DatabaseException, InputException, NetworkException {
+    @Override
+    protected void handleInternally(Command command) throws DatabaseException, InputException, NetworkException {
         User owner = inputCollector.determineUser(command);
         UserDevice deviceToAdd = inputCollector.createDevice(command, owner);
         if (inputCollector.confirm()) {

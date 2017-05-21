@@ -1,15 +1,17 @@
 package de.njsm.stocks.client.frontend.cli.commands.dev;
 
 import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.exceptions.InputException;
+import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
+import de.njsm.stocks.client.frontend.cli.commands.FaultyCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 
 import java.util.List;
 
-public class DeviceListCommandHandler extends AbstractCommandHandler {
+public class DeviceListCommandHandler extends FaultyCommandHandler {
 
     private DatabaseManager dbManager;
 
@@ -23,11 +25,12 @@ public class DeviceListCommandHandler extends AbstractCommandHandler {
 
     @Override
     public void handle(Command command) {
-        try {
-            List<UserDeviceView> devices = dbManager.getDevices();
-            writer.printUserDeviceViews("Current devices: ", devices);
-        } catch (DatabaseException e) {
-            logDatabaseError(e);
-        }
+       handleWithFaultLogger(command);
+    }
+
+    @Override
+    protected void handleInternally(Command command) throws DatabaseException, NetworkException, InputException{
+        List<UserDeviceView> devices = dbManager.getDevices();
+        writer.printUserDeviceViews("Current devices: ", devices);
     }
 }
