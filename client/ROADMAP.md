@@ -16,6 +16,10 @@
 * 00015 : DONE : Fix broken system tests
 * 00016 : DONE : Prevent sending SQL statements in JSON
 * 00017 : DONE : Add visitors for common data
+* 00019 : NEW  : Test client on dedicated server
+* 00020 : NEW  : Update client maven dependencies
+* 00021 : NEW  : Add mechanism to upgrade DB on software update
+* 00022 : NEW  : Add system tests for jline
 
 ## Version 0.6
 * 00001 : NEW  : Add emitting QR codes for new users
