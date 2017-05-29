@@ -1,7 +1,7 @@
 package de.njsm.stocks.client.network.sentry;
 
 import com.squareup.okhttp.OkHttpClient;
-import de.njsm.stocks.client.data.Ticket;
+import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.network.TcpHost;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +15,7 @@ public class SentryManager {
     private static final Logger LOG = LogManager.getLogger(SentryManager.class);
 
 
-    protected SentryClient backend;
+    private SentryClient backend;
 
     public SentryManager(OkHttpClient httpClient, TcpHost sentryHost) {
         String url = String.format("https://%s/", sentryHost.toString());

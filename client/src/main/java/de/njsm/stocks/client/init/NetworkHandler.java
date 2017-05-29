@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.init;
 
-import de.njsm.stocks.client.data.Ticket;
+import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.network.TcpHost;

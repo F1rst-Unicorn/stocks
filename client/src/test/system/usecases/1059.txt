@@ -1,0 +1,3 @@
+Title: Move non-interactively
+Input: move --f Bread --l Fridge
+Output: ^$

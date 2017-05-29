@@ -1,0 +1,3 @@
+Title: Rename with invalid selection
+Input: food rename Carrot\n1
+Output: ^Found more than one possibility: \n\t2: Carrot\n\t3: Carrot\nChoose one  \(2\): 1\nYou did an invalid selection$

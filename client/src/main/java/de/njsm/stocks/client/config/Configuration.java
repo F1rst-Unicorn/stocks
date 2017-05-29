@@ -1,16 +1,21 @@
 package de.njsm.stocks.client.config;
 
+import com.squareup.okhttp.OkHttpClient;
+import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.exceptions.InvalidConfigException;
-import de.njsm.stocks.client.frontend.cli.EnhancedInputReader;
-import de.njsm.stocks.client.frontend.cli.InputReader;
+import de.njsm.stocks.client.network.HttpClientFactory;
 import de.njsm.stocks.client.network.TcpHost;
+import de.njsm.stocks.client.network.server.ServerClient;
 import de.njsm.stocks.client.network.server.ServerManager;
+import de.njsm.stocks.client.service.TimeProviderImpl;
 import de.njsm.stocks.client.storage.DatabaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import retrofit.JacksonConverterFactory;
+import retrofit.Retrofit;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Properties;
 
 public class Configuration {
@@ -47,13 +52,15 @@ public class Configuration {
     private String fingerprint;
 
     private ServerManager serverInterface;
-    private DatabaseManager databaseInterface;
-    private final InputReader userInputReader;
     private final PropertiesFileHandler fileHandler;
 
     public Configuration (PropertiesFileHandler fileHandler) {
         this.fileHandler = fileHandler;
-        userInputReader = new EnhancedInputReader(System.in);
+    }
+
+    public void initialise() throws InitialisationException {
+        loadConfig();
+        setupServerManager();
     }
 
     public void loadConfig() throws InitialisationException {
@@ -81,21 +88,7 @@ public class Configuration {
     }
 
     public ServerManager getServerManager() {
-        if (serverInterface == null) {
-            serverInterface = new ServerManager(this);
-        }
         return serverInterface;
-    }
-
-    public DatabaseManager getDatabaseManager() {
-        if (databaseInterface == null) {
-            databaseInterface = new DatabaseManager();
-        }
-        return databaseInterface;
-    }
-
-    public InputReader getReader() {
-        return userInputReader;
     }
 
     public void setServerName(String serverName) {
@@ -246,4 +239,22 @@ public class Configuration {
         }
     }
 
+    private void setupServerManager() throws InitialisationException {
+        try {
+            OkHttpClient httpClient = HttpClientFactory.getClient();
+            String url = String.format("https://%s:%d/",
+                    serverName,
+                    serverPort);
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(url)
+                    .client(httpClient)
+                    .addConverterFactory(JacksonConverterFactory.create())
+                    .build();
+            serverInterface = new ServerManager(retrofit.create(ServerClient.class));
+        } catch (CryptoException e) {
+            LOG.error("While creating HTTP client", e);
+            throw new InitialisationException("Keystore could not be read");
+        }
+    }
 }
