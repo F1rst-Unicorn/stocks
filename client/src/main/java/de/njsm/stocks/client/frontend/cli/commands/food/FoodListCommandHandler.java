@@ -164,8 +164,8 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
 
     private StringBuilder renderFoodList(List<FoodView> food) {
         StringBuilder outBuf = new StringBuilder();
+        Date listUntil = new Date(timeProvider.getTime() + daysLeft * 1000L * 60L * 60L * 24L);
         for (FoodView f : food) {
-            Date listUntil = new Date(timeProvider.getTime() + daysLeft * 1000L * 60L * 60L * 24L);
             f.getItems().removeIf((item) -> item.after(listUntil));
 
             if ((!existing || (existing && !f.getItems().isEmpty())) &&
@@ -204,7 +204,7 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
 
     private void printRenderedList(StringBuilder outBuf) {
         if (outBuf.length() != 0) {
-            writer.println("Current food: ");
+            writer.println("Current food:");
             writer.println(outBuf.toString());
         } else {
             writer.println("No food to show...");

@@ -1,5 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands.food;
 
+import de.njsm.stocks.client.TestData;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.service.TimeProvider;
@@ -56,6 +57,7 @@ public class FoodListCommandHandlerTest {
 
         verify(writer).println("No food to show...");
         verify(dbManager).getItems("", "");
+        verify(timeProvider, atLeastOnce()).getTime();
     }
 
     @Test
@@ -66,5 +68,45 @@ public class FoodListCommandHandlerTest {
         uut.handle(input);
 
         verify(writer).println("Could not parse input: regex is not valid");
+    }
+
+    @Test
+    public void listingFoodWithoutItems() throws Exception {
+        Command input = Command.createCommand("-q --a 2");
+        when(dbManager.getItems(any(), any())).thenReturn(TestData.getFoodViews());
+
+        uut.handle(input);
+
+        verify(dbManager).getItems("", "");
+        verify(writer).println("Current food:");
+        verify(writer).println("\t2x Apple juice\n");
+        verify(timeProvider, atLeastOnce()).getTime();
+    }
+
+    @Test
+    public void listingFoodWithItems() throws Exception {
+        Command input = Command.createCommand("--a 2");
+        when(dbManager.getItems(any(), any())).thenReturn(TestData.getFoodViews());
+
+        uut.handle(input);
+
+        verify(dbManager).getItems("", "");
+        verify(writer).println("Current food:");
+        verify(writer).println("\t2x Apple juice\n\t\t08.01.1970\n\t\t09.01.1970\n");
+        verify(timeProvider, atLeastOnce()).getTime();
+    }
+
+    @Test
+    public void listingUntilWorks() throws Exception {
+        Command input = Command.createCommand("--r juice --d 7");
+        when(dbManager.getItems(any(), any())).thenReturn(TestData.getFoodViews());
+        when(timeProvider.getTime()).thenReturn(0L);
+
+        uut.handle(input);
+
+        verify(dbManager).getItems("", "");
+        verify(writer).println("Current food:");
+        verify(writer).println("\t1x Apple juice\n\t\t08.01.1970\n");
+        verify(timeProvider, atLeastOnce()).getTime();
     }
 }
