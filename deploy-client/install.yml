@@ -32,5 +32,5 @@
         src=/usr/share/stocks/proto.db
         dest=/home/{{ test_user }}/.stocks/stocks.db
         remote_src=True
-        user={{ test_user }}
+        owner={{ test_user }}
         group=users
