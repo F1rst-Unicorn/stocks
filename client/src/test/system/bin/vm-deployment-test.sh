@@ -12,14 +12,11 @@ fi
 
 # virsh reset
 sudo virsh snapshot-revert $SERVER initialised-running
+sudo virsh snapshot-revert dp-client clean-running
 sleep 1
 
-rm -rf $STOCKS_ROOT/client/src/test/system/tmp
-mkdir -p $STOCKS_ROOT/client/src/test/system/tmp/.stocks
-echo ".read $STOCKS_ROOT/deploy-client/config/schema.sql" | \
-        sqlite3 $STOCKS_ROOT/client/src/test/system/tmp/.stocks/stocks.db
+ansible-playbook $STOCKS_ROOT/deploy-client/install.yml
 
-echo
 echo "##teamcity[testSuiteStarted name='Client System Test']"
 
 echo "##teamcity[testStarted name='Initialisation']"
@@ -30,8 +27,7 @@ FINGERPRINT=$(curl -s http://$SERVER:10910/ca | \
 echo -e "$SERVER\n\n\n\nJack\nDevice\n1\n1\n\
 $FINGERPRINT\n\
 0000\nquit\n" | \
-        java -jar -Duser.stocks.dir=$STOCKS_ROOT/client/src/test/system/tmp \
-        $STOCKS_ROOT/client/target/client-*.jar
+        ssh -t dp-client stocks
 echo "##teamcity[testFinished name='Initialisation']"
 
 python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
@@ -41,3 +37,4 @@ echo "##teamcity[testSuiteFinished name='Client System Test']"
 echo
 
 sudo virsh snapshot-revert $SERVER clean
+sudo virsh snapshot-revert dp-client clean

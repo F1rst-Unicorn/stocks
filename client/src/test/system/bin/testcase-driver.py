@@ -13,9 +13,7 @@ class TestCase:
 
     def run(self):
         process = subprocess.Popen(
-                        ["java -jar "
-                       + "-Duser.stocks.dir=client/src/test/system/tmp "
-                       + "client/target/client-*.jar"],
+                        ["ssh -t dp-client stocks"],
                        stdin=subprocess.PIPE,
                        stdout=subprocess.PIPE,
                        shell=True)
