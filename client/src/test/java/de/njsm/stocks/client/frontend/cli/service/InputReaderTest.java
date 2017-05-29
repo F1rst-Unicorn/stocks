@@ -63,6 +63,17 @@ public class InputReaderTest {
     }
 
     @Test
+    public void readingNullGivesLineBreak() throws Exception {
+        when(inMock.readLine()).thenReturn(null);
+
+        String output = uut.next("");
+
+        assertEquals("\n", output);
+        verify(inMock).readLine();
+        verify(inMock).setPrompt("");
+    }
+
+    @Test
     public void returnInputOnValidName() throws Exception {
         String expectedOutput = "user input";
         when(inMock.readLine()).thenReturn(expectedOutput);

@@ -1,16 +1,17 @@
 package de.njsm.stocks.client.frontend.cli.commands.user;
 
 import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
-import de.njsm.stocks.client.service.Refresher;
+import de.njsm.stocks.client.frontend.cli.commands.FaultyCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
+import de.njsm.stocks.client.service.Refresher;
 import de.njsm.stocks.common.data.User;
 
-public class UserAddCommandHandler extends AbstractCommandHandler {
+public class UserAddCommandHandler extends FaultyCommandHandler {
 
     private Refresher refresher;
 
@@ -28,15 +29,9 @@ public class UserAddCommandHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public void handle(Command command) {
-        try {
-            User userToAdd = inputCollector.createUser(command);
-            serverManager.addUser(userToAdd);
-            refresher.refresh();
-        } catch (DatabaseException e) {
-            logDatabaseError(e);
-        } catch (NetworkException e) {
-            logNetworkError(e);
-        }
+    protected void handleInternally(Command command) throws NetworkException, DatabaseException, InputException {
+        User userToAdd = inputCollector.createUser(command);
+        serverManager.addUser(userToAdd);
+        refresher.refresh();
     }
 }

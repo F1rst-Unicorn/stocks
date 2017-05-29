@@ -4,14 +4,14 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
-import de.njsm.stocks.client.service.Refresher;
+import de.njsm.stocks.client.frontend.cli.commands.FaultyCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
+import de.njsm.stocks.client.service.Refresher;
 import de.njsm.stocks.common.data.Location;
 
-public class LocationRenameCommandHandler extends AbstractCommandHandler {
+public class LocationRenameCommandHandler extends FaultyCommandHandler {
 
     private InputCollector inputCollector;
 
@@ -29,19 +29,7 @@ public class LocationRenameCommandHandler extends AbstractCommandHandler {
     }
 
     @Override
-    public void handle(Command command) {
-        try {
-            handleInternally(command);
-        } catch (NetworkException e) {
-            logNetworkError(e);
-        } catch (DatabaseException e) {
-            logDatabaseError(e);
-        } catch (InputException e) {
-            logInputError(e);
-        }
-    }
-
-    private void handleInternally(Command command) throws DatabaseException, InputException, NetworkException {
+    protected void handleInternally(Command command) throws DatabaseException, InputException, NetworkException {
         Location location = inputCollector.determineLocation(command);
         String newName = inputCollector.determineNameFromCommandOrAsk("New name: ", command);
         serverManager.renameLocation(location, newName);

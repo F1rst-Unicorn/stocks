@@ -18,8 +18,6 @@ import java.util.Date;
 @XmlRootElement
 public class FoodItem extends Data implements SqlRemovable {
 
-    public int id;
-
     public Date eatByDate;
 
     public int ofType;

@@ -1,11 +1,13 @@
 package de.njsm.stocks.common.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+@JsonIgnoreProperties({ "id" })
 @XmlRootElement
 public class Ticket extends Data {
     public int deviceId;

@@ -41,10 +41,4 @@ public class DefaultCommandHandler extends AggregatedCommandHandler {
             defaultHandler.handle(command);
         }
     }
-
-    @Override
-    public void printHelp() {
-        super.printHelp();
-    }
-
 }

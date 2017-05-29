@@ -2,19 +2,21 @@ package de.njsm.stocks.client.frontend.cli.service;
 
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.UserDeviceView;
+import de.njsm.stocks.common.data.visitor.ToStringVisitor;
 
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ScreenWriter {
 
-    private static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-
     private PrintStream outputStream;
 
-    public ScreenWriter(PrintStream outputStream) {
+    private ToStringVisitor stringBuilder;
+
+    public ScreenWriter(PrintStream outputStream,
+                        ToStringVisitor stringBuilder) {
         this.outputStream = outputStream;
+        this.stringBuilder = stringBuilder;
     }
 
     public void println(String text) {
@@ -22,79 +24,56 @@ public class ScreenWriter {
     }
 
     public void printFood(String headline, List<Food> foodList) {
-        if (foodList.isEmpty()) {
-            println("No food there...");
-        } else {
-            println(headline);
-
-            for (Food f : foodList) {
-                printFood(f);
-            }
-        }
+        printDataList(headline, "food", foodList);
     }
 
-    public void printFood(Food f) {
-        println("\t" + f.id + ": " + f.name);
+    public void printFood(Food input) {
+        printData(input);
     }
 
     public void printLocations(String headline, List<Location> locations) {
-        if (locations.isEmpty()) {
-            println("No locations there...");
-        } else {
-            println(headline);
-
-            for (Location loc : locations) {
-                printLocation(loc);
-            }
-        }
+        printDataList(headline, "locations", locations);
     }
 
-    public void printLocation(Location loc) {
-        println("\t" + loc.id + ": " + loc.name);
+    public void printLocation(Location input) {
+        printData(input);
     }
 
     public void printItems(String headline, List<FoodItem> items) {
-        if (items.isEmpty()) {
-            println("No items there...");
-        } else {
-            println(headline);
-
-            for (FoodItem i : items) {
-                printItem(i);
-            }
-        }
+        printDataList(headline, "items", items);
     }
 
-    public void printItem(FoodItem i) {
-        println("\t\t" + i.id + ": " + format.format(i.eatByDate));
+    public void printItem(FoodItem input) {
+        printData(input);
     }
 
     public void printUser(User input) {
-        println("\t" + input.id + ": " + input.name);
+        printData(input);
     }
 
     public void printUsers(String headline, List<User> users) {
-        if (users.isEmpty()) {
-            println("No users there...");
-        } else {
-            println(headline);
-            for (User u : users) {
-                printUser(u);
-            }
-        }
+        printDataList(headline, "users", users);
     }
 
-    public void printUserDeviceView(UserDeviceView device) {
-        println("\t" + device.id + ": " + device.user + "'s " + device.name);
+    public void printUserDeviceView(UserDeviceView input) {
+        printData(input);
     }
 
     public void printUserDeviceViews(String headline, List<UserDeviceView> devices) {
-        if (devices.isEmpty()) {
-            println("No devices there...");
+        printDataList(headline, "devices", devices);
+    }
+    
+    public void printData(Data input) {
+        println(stringBuilder.visit(input, null));
+    }
+
+    public <T extends Data> void printDataList(String headline, String dataName, List<T> dataList) {
+        if (dataList.isEmpty()) {
+            println("No " + dataName + " there...");
         } else {
             println(headline);
-            for (UserDeviceView d : devices) {
-                printUserDeviceView(d);
+            for (T item : dataList) {
+                printData(item);
             }
         }
     }

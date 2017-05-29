@@ -13,12 +13,6 @@ public class CliConfigGenerator implements ConfigGenerator {
     }
 
     @Override
-    public void startUp() {
-        System.out.println("Welcome to stocks.\nThis is the first time you use the app, please follow\n" +
-                "this setup guide first. ");
-    }
-
-    @Override
     public String getServerName() {
         String serverName = reader.next("Please give the URL of the server (localhost): ");
         return serverName.equals("") ? "localhost" : serverName;
@@ -36,10 +30,4 @@ public class CliConfigGenerator implements ConfigGenerator {
         }
         return result;
     }
-
-    @Override
-    public void shutDown() {
-        System.out.println("Configuration successful");
-    }
-
 }

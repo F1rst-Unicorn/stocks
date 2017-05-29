@@ -5,8 +5,6 @@ import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 
 public class UserDeviceView extends Data {
 
-    public int id;
-
     public String name;
 
     public String user;

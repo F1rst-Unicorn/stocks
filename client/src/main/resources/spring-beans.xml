@@ -13,6 +13,14 @@
 
     <bean id="timeProvider" class="de.njsm.stocks.client.service.TimeProviderImpl" />
 
+    <bean id="dayDateFormat" class="java.text.SimpleDateFormat">
+        <constructor-arg index="0" type="java.lang.String" value="dd.MM.yyyy" />
+    </bean>
+
+    <bean id="stringBuilder" class="de.njsm.stocks.common.data.visitor.ToStringVisitor" >
+        <constructor-arg index="0" ref="dayDateFormat" />
+    </bean>
+
     <bean id="consoleReader" class="jline.console.ConsoleReader">
         <constructor-arg index="0" ref="stdin" />
         <constructor-arg index="1" ref="stdout" />
@@ -54,6 +62,7 @@
 
     <bean id="screenWriter" class="de.njsm.stocks.client.frontend.cli.service.ScreenWriter">
         <constructor-arg index="0" ref="stdout" />
+        <constructor-arg index="1" ref="stringBuilder" />
     </bean>
 
     <bean id="dbManager" class="de.njsm.stocks.client.storage.DatabaseManager" />
@@ -236,11 +245,10 @@
     </bean>
 
     <bean id="eat" class="de.njsm.stocks.client.frontend.cli.commands.eat.EatCommandHandler">
-        <constructor-arg index="0" ref="configuration" />
-        <constructor-arg index="1" ref="serverManager" />
-        <constructor-arg index="2" ref="screenWriter" />
-        <constructor-arg index="3" ref="inputCollector" />
-        <constructor-arg index="4" ref="refresher" />
+        <constructor-arg index="0" ref="serverManager" />
+        <constructor-arg index="1" ref="screenWriter" />
+        <constructor-arg index="2" ref="inputCollector" />
+        <constructor-arg index="3" ref="refresher" />
     </bean>
 
     <bean id="add" class="de.njsm.stocks.client.frontend.cli.commands.add.AddCommandHandler">
@@ -248,7 +256,6 @@
         <constructor-arg index="1" ref="serverManager" />
         <constructor-arg index="2" ref="refresher" />
         <constructor-arg index="3" ref="screenWriter" />
-        <constructor-arg index="4" ref="timeProvider" />
     </bean>
 
     <bean id="move" class="de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler">

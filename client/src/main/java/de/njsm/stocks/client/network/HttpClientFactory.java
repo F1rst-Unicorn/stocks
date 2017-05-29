@@ -61,7 +61,6 @@ public class HttpClientFactory {
     }
 
     private static CryptoException error(Exception e) throws CryptoException {
-        LOG.error("Failed to create new http client", e);
         throw new CryptoException("There is a problem with the key store", e);
     }
 }

@@ -77,22 +77,6 @@ public class InputCollector extends Selector {
         return resolveDevice(name);
     }
 
-    public boolean confirm() {
-        return reader.getYesNo();
-    }
-
-    private String resolveName(Command c, String prompt) {
-        if (c.hasNext()) {
-            String inputName = c.next();
-            if (InputReader.isNameValid(inputName)) {
-                return inputName;
-            } else {
-                writer.println("Name may not contain '=' or '$'");
-            }
-        }
-        return reader.nextName(prompt);
-    }
-
     public Food createFood(Command c) {
         Food result = new Food();
         result.name = determineNameFromCommandOrAsk("New food's name: ", c);
@@ -126,6 +110,22 @@ public class InputCollector extends Selector {
     public Location determineDestinationLocation(Command command) throws DatabaseException, InputException {
         String locationFromUser = getLocationFromParameter(command);
         return resolveLocation(locationFromUser);
+    }
+
+    public boolean confirm() {
+        return reader.getYesNo();
+    }
+
+    private String resolveName(Command c, String prompt) {
+        if (c.hasNext()) {
+            String inputName = c.next();
+            if (InputReader.isNameValid(inputName)) {
+                return inputName;
+            } else {
+                writer.println("Name may not contain '=' or '$'");
+            }
+        }
+        return reader.nextName(prompt);
     }
 
     private String getFoodFromArgument(Command c) {
@@ -244,7 +244,7 @@ public class InputCollector extends Selector {
     private UserDevice resolveDevice(String name) throws DatabaseException, InputException {
         List<UserDeviceView> devices = dbManager.getDevices(name);
         UserDeviceView view = selectDevice(devices, name);
-        return new UserDevice(view.id, view.name, 0);
+        return new UserDevice(view.id, view.name, view.userId);
     }
 
     private Food resolveFood(String food) throws DatabaseException, InputException {

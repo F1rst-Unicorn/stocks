@@ -38,7 +38,7 @@ public class DatabaseManager {
 
     public List<Update> getUpdates() throws DatabaseException {
         LOG.info("Getting updates");
-        return (List<Update>) getData(UpdateFactory.f);
+        return getData(UpdateFactory.f);
     }
 
     public void writeUpdates(List<Update> u) throws DatabaseException {
@@ -63,7 +63,7 @@ public class DatabaseManager {
 
     public List<User> getUsers() throws DatabaseException {
         LOG.info("Getting all users");
-        return (List<User>) getData(UserFactory.f);
+        return getData(UserFactory.f);
     }
 
     public List<User> getUsers(String name) throws DatabaseException {
@@ -76,7 +76,7 @@ public class DatabaseManager {
             PreparedStatement p = c.prepareStatement(queryUsers);
             p.setString(1, name);
             ResultSet rs = p.executeQuery();
-            return UserFactory.f.createUserList(rs);
+            return UserFactory.f.createDataList(rs);
         } catch (SQLException e) {
             throw new DatabaseException("Could not get filtered users", e);
         } finally {
@@ -94,7 +94,7 @@ public class DatabaseManager {
 
     public List<UserDeviceView> getDevices() throws DatabaseException {
         LOG.info("Getting all devices");
-        return (List<UserDeviceView>) getData(UserDeviceViewFactory.f);
+        return getData(UserDeviceViewFactory.f);
     }
 
     public List<UserDeviceView> getDevices(String name) throws DatabaseException {
@@ -109,7 +109,7 @@ public class DatabaseManager {
             PreparedStatement p = c.prepareStatement(queryDevices);
             p.setString(1, name);
             ResultSet rs = p.executeQuery();
-            return UserDeviceViewFactory.f.getViewList(rs);
+            return UserDeviceViewFactory.f.createDataList(rs);
         } catch (SQLException e) {
             throw new DatabaseException("Could not get devices", e);
         } finally {
@@ -119,7 +119,7 @@ public class DatabaseManager {
 
     public List<Location> getLocations() throws DatabaseException {
         LOG.info("Getting all locations");
-        return (List<Location>) getData(LocationFactory.f);
+        return getData(LocationFactory.f);
     }
 
     public List<Location> getLocations(String name) throws DatabaseException {
@@ -132,7 +132,7 @@ public class DatabaseManager {
             PreparedStatement selectStmt = c.prepareStatement(getLocations);
             selectStmt.setString(1, name);
             ResultSet rs = selectStmt.executeQuery();
-            return LocationFactory.f.createLocationList(rs);
+            return LocationFactory.f.createDataList(rs);
         } catch (SQLException e) {
             throw new DatabaseException("Could not get locations", e);
         } finally {
@@ -152,7 +152,7 @@ public class DatabaseManager {
             PreparedStatement stmt = c.prepareStatement(getLocations);
             stmt.setInt(1, foodId);
             ResultSet rs = stmt.executeQuery();
-            return LocationFactory.f.createLocationList(rs);
+            return LocationFactory.f.createDataList(rs);
         } catch (SQLException e) {
             throw new DatabaseException("Could not get locations", e);
         } finally {
@@ -178,7 +178,7 @@ public class DatabaseManager {
             PreparedStatement selectStmt = c.prepareStatement(getFood);
             selectStmt.setString(1, name);
             ResultSet rs = selectStmt.executeQuery();
-            return FoodFactory.f.createFoodList(rs);
+            return FoodFactory.f.createDataList(rs);
         } catch (SQLException e) {
             throw new DatabaseException("Could not get food", e);
         } finally {
@@ -188,7 +188,7 @@ public class DatabaseManager {
 
     public List<Food> getFood() throws DatabaseException {
         LOG.info("Getting all food");
-        return (List<Food>) getData(FoodFactory.f);
+        return getData(FoodFactory.f);
     }
 
     public List<FoodItem> getItems(int foodId) throws DatabaseException {
@@ -203,7 +203,7 @@ public class DatabaseManager {
             PreparedStatement sqlQuery = c.prepareStatement(queryString);
             sqlQuery.setInt(1, foodId);
             ResultSet rs = sqlQuery.executeQuery();
-            return FoodItemFactory.f.createFoodItemList(rs);
+            return FoodItemFactory.f.createDataList(rs);
         } catch (SQLException e) {
             throw new DatabaseException("Could not get food items", e);
         } finally {
@@ -282,7 +282,7 @@ public class DatabaseManager {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return FoodItemFactory.f.createDataTyped(rs);
+                return FoodItemFactory.f.createData(rs);
             } else {
                 throw new InputException("You don't have any...");
             }
@@ -328,6 +328,7 @@ public class DatabaseManager {
         try {
             c = getConnectionWithoutAutoCommit();
             backend.writeData(c, table, list);
+            c.commit();
         } catch (SQLException | VisitorException e) {
             rollback(c);
             throw new DatabaseException("Could not write " + table, e);
@@ -336,7 +337,7 @@ public class DatabaseManager {
         }
     }
 
-    private List<? extends Data> getData(DataFactory factory) throws DatabaseException {
+    private <T extends Data> List<T> getData(DataFactory<T> factory) throws DatabaseException {
         String query = factory.getQuery();
         Connection c = null;
 

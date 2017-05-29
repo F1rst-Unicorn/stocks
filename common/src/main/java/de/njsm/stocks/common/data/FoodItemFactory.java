@@ -2,11 +2,9 @@ package de.njsm.stocks.common.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-public class FoodItemFactory extends DataFactory {
+public class FoodItemFactory extends DataFactory<FoodItem> {
 
     public static final FoodItemFactory f = new FoodItemFactory();
 
@@ -16,19 +14,7 @@ public class FoodItemFactory extends DataFactory {
     }
 
     @Override
-    public Data createData(ResultSet rs) throws SQLException {
-        return createDataTyped(rs);
-    }
-
-    public List<FoodItem> createFoodItemList(ResultSet rs) throws SQLException {
-        List<FoodItem> result = new ArrayList<>();
-        while (rs.next()) {
-            result.add(createDataTyped(rs));
-        }
-        return result;
-    }
-
-    public FoodItem createDataTyped(ResultSet rs) throws SQLException {
+    public FoodItem createData(ResultSet rs) throws SQLException {
         FoodItem i = new FoodItem();
         i.id = rs.getInt("ID");
         i.eatByDate = new Date(rs.getTimestamp("eat_by").getTime());

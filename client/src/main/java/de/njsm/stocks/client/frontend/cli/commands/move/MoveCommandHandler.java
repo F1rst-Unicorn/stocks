@@ -4,15 +4,15 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
-import de.njsm.stocks.client.service.Refresher;
+import de.njsm.stocks.client.frontend.cli.commands.FaultyCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
+import de.njsm.stocks.client.service.Refresher;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.Location;
 
-public class MoveCommandHandler extends AbstractCommandHandler {
+public class MoveCommandHandler extends FaultyCommandHandler {
 
     private final InputCollector inputCollector;
 
@@ -37,7 +37,7 @@ public class MoveCommandHandler extends AbstractCommandHandler {
         if (command.hasNext()) {
             printHelp();
         } else {
-            handleMoveCommand(command);
+            handleWithFaultLogger(command);
         }
     }
 
@@ -50,18 +50,11 @@ public class MoveCommandHandler extends AbstractCommandHandler {
         writer.println(text);
     }
 
-    private void handleMoveCommand(Command command) {
-        try {
-            FoodItem item = inputCollector.determineItem(command);
-            Location location = inputCollector.determineDestinationLocation(command);
-            serverManager.move(item, location.id);
-            refresher.refresh();
-        } catch (NetworkException e) {
-            logNetworkError(e);
-        } catch (InputException e) {
-            logInputError(e);
-        } catch (DatabaseException e) {
-            logDatabaseError(e);
-        }
+    @Override
+    protected void handleInternally(Command command) throws NetworkException, DatabaseException, InputException {
+        FoodItem item = inputCollector.determineItem(command);
+        Location location = inputCollector.determineDestinationLocation(command);
+        serverManager.move(item, location.id);
+        refresher.refresh();
     }
 }

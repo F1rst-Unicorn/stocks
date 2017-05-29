@@ -5,6 +5,7 @@ import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.User;
 import de.njsm.stocks.common.data.view.UserDeviceView;
+import de.njsm.stocks.common.data.visitor.ToStringVisitor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,8 @@ public class ScreenWriterTest {
     @Before
     public void setup() throws Exception {
         mockStream = mock(PrintStream.class);
-        uut = new ScreenWriter(mockStream);
+        ToStringVisitor stringBuilder = new ToStringVisitor(format);
+        uut = new ScreenWriter(mockStream, stringBuilder);
         captor = ArgumentCaptor.forClass(String.class);
     }
 

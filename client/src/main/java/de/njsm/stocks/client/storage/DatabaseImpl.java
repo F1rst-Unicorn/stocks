@@ -31,7 +31,6 @@ public class DatabaseImpl {
             stmtFiller.visit(dataItem, insertStmt);
             insertStmt.execute();
         }
-        c.commit();
     }
 
     private static void clearTable(Connection c, String name) throws SQLException {

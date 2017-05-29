@@ -20,14 +20,14 @@ import java.util.regex.PatternSyntaxException;
 
 public class FoodListCommandHandler extends AbstractCommandHandler {
 
-    private static final Logger LOG = LogManager.getLogger(AbstractCommandHandler.class);
+    private static final Logger LOG = LogManager.getLogger(FoodListCommandHandler.class);
 
     private boolean existing;
     private int limit;
+    private int daysLeft;
     private String location;
-    private long daysLeft;
-    private ValueRange range;
     private String user;
+    private ValueRange range;
     private Pattern regex;
 
     private DatabaseManager dbManager;
@@ -62,7 +62,6 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
         } catch (ParseException e) {
             writer.println("Could not parse input: " + e.getMessage());
             LOG.error("Could not parse input", e);
-            printHelp();
         }
     }
 
@@ -165,8 +164,8 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
 
     private StringBuilder renderFoodList(List<FoodView> food) {
         StringBuilder outBuf = new StringBuilder();
+        Date listUntil = new Date(timeProvider.getTime() + daysLeft * 1000L * 60L * 60L * 24L);
         for (FoodView f : food) {
-            Date listUntil = new Date(timeProvider.getTime() + daysLeft * 1000L * 60L * 60L * 24L);
             f.getItems().removeIf((item) -> item.after(listUntil));
 
             if ((!existing || (existing && !f.getItems().isEmpty())) &&
@@ -192,7 +191,9 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
         int printedItems = 0;
         if (limit > 0) {
             for (Date date : f.getItems()) {
-                outBuf.append("\t\t" + FORMAT.format(date) + "\n");
+                outBuf.append("\t\t");
+                outBuf.append(FORMAT.format(date));
+                outBuf.append("\n");
                 printedItems++;
                 if (printedItems >= limit) {
                     break;
@@ -203,7 +204,7 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
 
     private void printRenderedList(StringBuilder outBuf) {
         if (outBuf.length() != 0) {
-            writer.println("Current food: ");
+            writer.println("Current food:");
             writer.println(outBuf.toString());
         } else {
             writer.println("No food to show...");
