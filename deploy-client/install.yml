@@ -6,7 +6,7 @@
       test_user: jan
       
       stocks_pkg_dir: "{{ playbook_dir }}/target"
-      stocks_version: 0.5.0-0
+      stocks_version: 0.5.0-1
       stocks_pkg: stocks-{{ stocks_version }}-any.pkg.tar.xz
 
 
