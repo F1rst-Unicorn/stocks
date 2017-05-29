@@ -1,0 +1,3 @@
+Title: List food
+Input: food
+Output: ^Current food:\n\t0x Beer\n\t0x Bread$

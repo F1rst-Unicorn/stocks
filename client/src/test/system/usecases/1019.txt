@@ -1,0 +1,3 @@
+Title: Add food with name conflict
+Input: food add Carrot
+Output: ^$

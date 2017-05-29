@@ -1,0 +1,3 @@
+Title: Rename interactively
+Input: food rename Carrot\n3\nBread
+Output: ^Found more than one possibility: \n\t2: Carrot\n\t3: Carrot\nChoose one  \(2\): 3\nNew name: Bread$

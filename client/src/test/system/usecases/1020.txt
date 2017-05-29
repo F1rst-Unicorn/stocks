@@ -1,0 +1,3 @@
+Title: List food with name conflict
+Input: food list
+Output: ^Current food:\n\t0x Beer\n\t0x Carrot\n\t0x Carrot$

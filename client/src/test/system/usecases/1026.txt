@@ -1,0 +1,3 @@
+Title: Add a new user
+Input: user add Juliette
+Output: ^$

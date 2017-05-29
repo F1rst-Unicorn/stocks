@@ -1,7 +1,7 @@
 package de.njsm.stocks.client.network.sentry;
 
 
-import de.njsm.stocks.client.data.Ticket;
+import de.njsm.stocks.common.data.Ticket;
 import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.POST;

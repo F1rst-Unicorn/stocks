@@ -1,534 +1,299 @@
 package de.njsm.stocks.client.storage;
 
-import de.njsm.stocks.client.data.*;
-import de.njsm.stocks.client.data.view.FoodView;
 import de.njsm.stocks.client.config.Configuration;
-import de.njsm.stocks.client.data.view.UserDeviceView;
-import de.njsm.stocks.client.exceptions.SelectException;
+import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.exceptions.InputException;
+import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.common.data.view.FoodView;
+import de.njsm.stocks.common.data.view.UserDeviceView;
+import de.njsm.stocks.common.data.view.UserDeviceViewFactory;
+import de.njsm.stocks.common.data.visitor.VisitorException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Date;
 
 public class DatabaseManager {
 
-    public DatabaseManager() {
+    private static final Logger LOG = LogManager.getLogger(DatabaseManager.class);
 
+    private DatabaseImpl backend;
+
+    public DatabaseManager() {
+        backend = new DatabaseImpl();
     }
 
-    protected Connection getConnection() throws SQLException {
+    private Connection getConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
     }
 
-    public Update[] getUpdates() {
-        try {
-            Connection c = getConnection();
-            String sql = "SELECT * FROM Updates";
-            PreparedStatement s = c.prepareStatement(sql);
-
-            ArrayList<Update> result = new ArrayList<>(5);
-            ResultSet rs = s.executeQuery();
-            while (rs.next()) {
-                Update u = new Update();
-                u.table = rs.getString("table_name");
-                u.lastUpdate = rs.getTimestamp("last_update");
-                result.add(u);
-            }
-
-            return result.toArray(new Update[result.size()]);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private Connection getConnectionWithoutAutoCommit() throws SQLException {
+        Connection result = getConnection();
+        result.setAutoCommit(false);
+        return result;
     }
 
-
-    public void writeUpdates(Update[] u) {
-        try {
-            Connection c = getConnection();
-            String sql = "UPDATE Updates SET last_update=? WHERE table_name=?";
-            PreparedStatement s = c.prepareStatement(sql);
-
-            for (Update item : u) {
-                Timestamp t = new Timestamp(item.lastUpdate.getTime());
-                s.setTimestamp(1, t);
-                s.setString(2, item.table);
-                s.execute();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public List<Update> getUpdates() throws DatabaseException {
+        LOG.info("Getting updates");
+        return getData(UpdateFactory.f);
     }
 
-    public void resetUpdates() {
+    public void writeUpdates(List<Update> u) throws DatabaseException {
+        writeData("Updates", u);
+    }
+
+    public void resetUpdates() throws DatabaseException {
+        LOG.info("Resetting updates");
+        String sql = "UPDATE Updates SET last_update=0";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            String sql = "UPDATE Updates SET last_update=0";
+            c = getConnection();
             PreparedStatement s = c.prepareStatement(sql);
             s.execute();
-
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not reset updates", e);
+        } finally {
+            close(c);
         }
     }
 
-    public User[] getUsers() {
-        try {
-            Connection c = getConnection();
-            String queryUsers = "SELECT * FROM User";
-
-            PreparedStatement p = c.prepareStatement(queryUsers);
-
-            ResultSet rs = p.executeQuery();
-            ArrayList<User> result = getUserResult(rs);
-            return result.toArray(new User[result.size()]);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public List<User> getUsers() throws DatabaseException {
+        LOG.info("Getting all users");
+        return getData(UserFactory.f);
     }
 
-    public User[] getUsers(String name) {
-        try {
-            Connection c = getConnection();
-            String queryUsers = "SELECT * FROM User WHERE name=?";
+    public List<User> getUsers(String name) throws DatabaseException {
+        LOG.info("Getting users matching name '" + name + "'");
+        String queryUsers = "SELECT * FROM User WHERE name=?";
+        Connection c = null;
 
+        try {
+            c = getConnection();
             PreparedStatement p = c.prepareStatement(queryUsers);
             p.setString(1, name);
-
             ResultSet rs = p.executeQuery();
-            ArrayList<User> result = getUserResult(rs);
-            return result.toArray(new User[result.size()]);
-
+            return UserFactory.f.createDataList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void writeUsers(User[] u) {
-        try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-
-            (new DatabaseOperator(c)).clearTable("User");
-            String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
-            PreparedStatement insertStmt = c.prepareStatement(insertUser);
-
-            for (User user : u) {
-                insertStmt.setInt(1, user.id);
-                insertStmt.setString(2, user.name);
-                insertStmt.execute();
-            }
-
-            c.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get filtered users", e);
+        } finally {
+            close(c);
         }
     }
 
-    public void writeDevices(UserDevice[] u) {
-        try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-
-            (new DatabaseOperator(c)).clearTable("User_device");
-            String insertDevices = "INSERT INTO User_device (`ID`, name, belongs_to) VALUES (?,?,?)";
-
-            PreparedStatement insertStmt = c.prepareStatement(insertDevices);
-
-            for (UserDevice dev : u) {
-                insertStmt.setInt(1, dev.id);
-                insertStmt.setString(2, dev.name);
-                insertStmt.setInt(3, dev.userId);
-                insertStmt.execute();
-            }
-
-            c.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void writeUsers(List<User> u) throws DatabaseException {
+        writeData("User", u);
     }
 
-    public UserDeviceView[] getDevices() {
-        try {
-            Connection c = getConnection();
-            String queryDevices = "SELECT d.id, d.name, u.name as belongs_to " +
-                    "FROM User_device d, User u " +
-                    "WHERE d.belongs_to=u.ID";
-
-            PreparedStatement p = c.prepareStatement(queryDevices);
-
-            ResultSet rs = p.executeQuery();
-            ArrayList<UserDeviceView> result = getDeviceResults(rs);
-            return result.toArray(new UserDeviceView[result.size()]);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public void writeDevices(List<UserDevice> u) throws DatabaseException {
+        writeData("User_device", u);
     }
 
-    public UserDeviceView[] getDevices(String name) {
-        try {
-            Connection c = getConnection();
-            String queryDevices = "SELECT * FROM User_device WHERE name=?";
+    public List<UserDeviceView> getDevices() throws DatabaseException {
+        LOG.info("Getting all devices");
+        return getData(UserDeviceViewFactory.f);
+    }
 
+    public List<UserDeviceView> getDevices(String name) throws DatabaseException {
+        LOG.info("Getting devices for " + name);
+        String queryDevices = "SELECT d.id, d.name, u.name as belongs_to, u.ID as belongs_id " +
+                "FROM User_device d, User u " +
+                "WHERE d.belongs_to=u.ID AND d.name=?";
+        Connection c = null;
+
+        try {
+            c = getConnection();
             PreparedStatement p = c.prepareStatement(queryDevices);
             p.setString(1, name);
-
             ResultSet rs = p.executeQuery();
-            ArrayList<UserDeviceView> result = getDeviceResults(rs);
-            return result.toArray(new UserDeviceView[result.size()]);
-
+            return UserDeviceViewFactory.f.createDataList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get devices", e);
+        } finally {
+            close(c);
         }
-        return null;
     }
 
-    public Location[] getLocations() {
-        try {
-            Connection c = getConnection();
-            String getLocations = "SELECT * FROM Location";
-            PreparedStatement selectStmt = c.prepareStatement(getLocations);
-            ResultSet rs = selectStmt.executeQuery();
-            ArrayList<Location> result = getLocationResults(rs);
-            return result.toArray(new Location[result.size()]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public List<Location> getLocations() throws DatabaseException {
+        LOG.info("Getting all locations");
+        return getData(LocationFactory.f);
     }
 
-    public Location[] getLocations(String name) {
+    public List<Location> getLocations(String name) throws DatabaseException {
+        LOG.info("Getting locations matching name '" + name + "'");
+        String getLocations = "SELECT * FROM Location WHERE name=?";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            String getLocations = "SELECT * FROM Location WHERE name=?";
+            c = getConnection();
             PreparedStatement selectStmt = c.prepareStatement(getLocations);
             selectStmt.setString(1, name);
             ResultSet rs = selectStmt.executeQuery();
-            ArrayList<Location> result = getLocationResults(rs);
-            return result.toArray(new Location[result.size()]);
+            return LocationFactory.f.createDataList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get locations", e);
+        } finally {
+            close(c);
         }
-        return null;
     }
 
-    public Location[] getLocationsForFoodType(int foodId) {
+    public List<Location> getLocationsForFoodType(int foodId) throws DatabaseException {
+        LOG.info("Getting locations for food type " + foodId);
+        String getLocations = "SELECT DISTINCT l.ID, l.name " +
+                "FROM Location l, Food_item i " +
+                "WHERE i.of_type=? AND i.stored_in=l.ID";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            String getLocations = "SELECT DISTINCT l.ID, l.name " +
-                    "FROM Location l, Food_item i " +
-                    "WHERE i.of_type=? AND i.stored_in=l.ID";
+            c = getConnection();
             PreparedStatement stmt = c.prepareStatement(getLocations);
             stmt.setInt(1, foodId);
-            ArrayList<Location> result = getLocationResults(stmt.executeQuery());
-            return result.toArray(new Location[result.size()]);
+            ResultSet rs = stmt.executeQuery();
+            return LocationFactory.f.createDataList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void writeLocations(Location[] l) {
-        try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-            (new DatabaseOperator(c)).clearTable("Location");
-            String insertLocations = "INSERT INTO Location (`ID`, name) VALUES (?,?)";
-
-            PreparedStatement insertStmt = c.prepareStatement(insertLocations);
-
-            for (Location loc : l) {
-                insertStmt.setInt(1, loc.id);
-                insertStmt.setString(2, loc.name);
-                insertStmt.execute();
-            }
-
-            c.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get locations", e);
+        } finally {
+            close(c);
         }
     }
 
-    public void writeFood(Food[] f) {
-        try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-            (new DatabaseOperator(c)).clearTable("Food");
-            String insertFood = "INSERT INTO Food (`ID`, name) VALUES (?,?)";
-
-            PreparedStatement insertStmt = c.prepareStatement(insertFood);
-
-            for (Food food : f) {
-                insertStmt.setInt(1, food.id);
-                insertStmt.setString(2, food.name);
-                insertStmt.execute();
-            }
-
-            c.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void writeLocations(List<Location> l) throws DatabaseException {
+        writeData("Location", l);
     }
 
-    public Food[] getFood(String name) {
+    public void writeFood(List<Food> f) throws DatabaseException {
+        writeData("Food", f);
+    }
+
+    public List<Food> getFood(String name) throws DatabaseException {
+        LOG.info("Getting food matching name '" + name + "'");
+        String getFood = "SELECT * FROM Food WHERE name=?";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            String getFood = "SELECT * FROM Food WHERE name=?";
+            c = getConnection();
             PreparedStatement selectStmt = c.prepareStatement(getFood);
             selectStmt.setString(1, name);
             ResultSet rs = selectStmt.executeQuery();
-            ArrayList<Food> result = getFoodResults(rs);
-            return result.toArray(new Food[result.size()]);
+            return FoodFactory.f.createDataList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public Food[] getFood() {
-        try {
-            Connection c = getConnection();
-            String getFood = "SELECT * FROM Food";
-            PreparedStatement selectStmt = c.prepareStatement(getFood);
-            ResultSet rs = selectStmt.executeQuery();
-            ArrayList<Food> result = getFoodResults(rs);
-            return result.toArray(new Food[result.size()]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public FoodView[] getItems() {
-        try {
-            Connection c = getConnection();
-
-            String queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                    "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                    "ORDER BY f.ID ASC, i.eat_by ASC";
-
-            PreparedStatement sqlQuery = c.prepareStatement(queryString);
-            ResultSet rs = sqlQuery.executeQuery();
-            ArrayList<FoodView> result = getFoodView(rs);
-
-            return result.toArray(new FoodView[result.size()]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new FoodView[0];
+            throw new DatabaseException("Could not get food", e);
+        } finally {
+            close(c);
         }
     }
 
-    public FoodItem[] getItems(int foodId) {
+    public List<Food> getFood() throws DatabaseException {
+        LOG.info("Getting all food");
+        return getData(FoodFactory.f);
+    }
+
+    public List<FoodItem> getItems(int foodId) throws DatabaseException {
+        LOG.info("Getting food items of type " + foodId);
+        String queryString = "SELECT * " +
+                "FROM Food_item " +
+                "WHERE of_type=?";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-            FoodItemFactory factory = new FoodItemFactory();
-
-            String queryString = "SELECT * " +
-                    "FROM Food_item " +
-                    "WHERE of_type=?";
-
+            c = getConnection();
             PreparedStatement sqlQuery = c.prepareStatement(queryString);
             sqlQuery.setInt(1, foodId);
             ResultSet rs = sqlQuery.executeQuery();
-            ArrayList<FoodItem> result = new ArrayList<>();
-            while (rs.next()) {
-                FoodItem i = (FoodItem) factory.createData(rs);
-                result.add(i);
-            }
-
-            return result.toArray(new FoodItem[result.size()]);
+            return FoodItemFactory.f.createDataList(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return new FoodItem[0];
+            throw new DatabaseException("Could not get food items", e);
+        } finally {
+            close(c);
         }
     }
 
-    public FoodView[] getItems(String user, String location) {
+    public List<FoodView> getItems(String user, String location) throws DatabaseException {
+        LOG.info("Getting items matching user '" + user + "' and location '" + location + "'");
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-
-            String queryString;
-            PreparedStatement sqlQuery;
-
-            if (user.equals("")) {
-                if (location.equals("")) {
-                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                            "ORDER BY f.ID ASC, i.eat_by ASC";
-                    sqlQuery = c.prepareStatement(queryString);
-                } else {
-                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                            "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
-                            "ORDER BY f.ID ASC, i.eat_by ASC";
-                    sqlQuery = c.prepareStatement(queryString);
-                    sqlQuery.setString(1, location);
-                }
-            } else {
-                if (location.equals("")) {
-                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                            "WHERE i.buys in (SELECT ID FROM User WHERE name=?) " +
-                            "ORDER BY f.ID ASC, i.eat_by ASC";
-                    sqlQuery = c.prepareStatement(queryString);
-                    sqlQuery.setString(1, user);
-                } else {
-                    queryString = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                            "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type " +
-                            "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
-                            "AND i.buys in (SELECT ID FROM User WHERE name=?) " +
-                            "ORDER BY f.ID ASC, i.eat_by ASC";
-                    sqlQuery = c.prepareStatement(queryString);
-                    sqlQuery.setString(1, location);
-                    sqlQuery.setString(2, user);
-                }
-            }
-
+            c = getConnection();
+            PreparedStatement sqlQuery = getStatementFilteringBy(user, location, c);
             ResultSet rs = sqlQuery.executeQuery();
-            ArrayList<FoodView> result = getFoodView(rs);
-
-            return result.toArray(new FoodView[result.size()]);
+            return getFoodView(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return new FoodView[0];
+            throw new DatabaseException("Could not get items", e);
+        } finally {
+            close(c);
         }
     }
 
-    public void writeFoodItems(FoodItem[] f) {
-        try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-            (new DatabaseOperator(c)).clearTable("Food_item");
-            String insertFood = "INSERT INTO Food_item " +
-                    "(`ID`, of_type, stored_in, registers, buys, eat_by) VALUES (?,?,?,?,?,?)";
-
-            PreparedStatement insertStmt = c.prepareStatement(insertFood);
-
-            for (FoodItem food : f) {
-                java.sql.Timestamp sqlDate = new java.sql.Timestamp(food.eatByDate.getTime());
-                insertStmt.setInt(1, food.id);
-                insertStmt.setInt(2, food.ofType);
-                insertStmt.setInt(3, food.storedIn);
-                insertStmt.setInt(4, food.registers);
-                insertStmt.setInt(5, food.buys);
-                insertStmt.setTimestamp(6, sqlDate);
-                insertStmt.execute();
+    private PreparedStatement getStatementFilteringBy(String user, String location, Connection c) throws SQLException {
+        String queryStringTemplate = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
+                "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type %s" +
+                "ORDER BY f.ID ASC, i.eat_by ASC";
+        String queryString;
+        PreparedStatement sqlQuery;
+        if (user.equals("")) {
+            if (location.equals("")) {
+                String filterClause = "";
+                queryString = String.format(queryStringTemplate, filterClause);
+                sqlQuery = c.prepareStatement(queryString);
+            } else {
+                String filterClause = "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?)";
+                queryString = String.format(queryStringTemplate, filterClause);
+                sqlQuery = c.prepareStatement(queryString);
+                sqlQuery.setString(1, location);
             }
-
-            c.commit();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else {
+            if (location.equals("")) {
+                String filterClause = "WHERE i.buys in (SELECT ID FROM User WHERE name=?)";
+                queryString = String.format(queryStringTemplate, filterClause);
+                sqlQuery = c.prepareStatement(queryString);
+                sqlQuery.setString(1, user);
+            } else {
+                String filterClause = "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
+                        "AND i.buys in (SELECT ID FROM User WHERE name=?)";
+                queryString = String.format(queryStringTemplate, filterClause);
+                sqlQuery = c.prepareStatement(queryString);
+                sqlQuery.setString(1, location);
+                sqlQuery.setString(2, user);
+            }
         }
+        return sqlQuery;
     }
 
-    public int getNextItem(int foodId) throws SelectException {
+    public void writeFoodItems(List<FoodItem> list) throws DatabaseException {
+        writeData("Food_item", list);
+    }
+
+    public FoodItem getNextItem(int foodId) throws InputException, DatabaseException {
+        LOG.info("Getting next item for food id " + foodId);
+        String query = "SELECT * " +
+                "FROM Food_item " +
+                "WHERE of_type=? " +
+                "ORDER BY eat_by ASC " +
+                "LIMIT 1";
+        Connection c = null;
+
         try {
-            Connection c = getConnection();
-
-            String query = "SELECT * " +
-                    "FROM Food_item " +
-                    "WHERE of_type=? " +
-                    "ORDER BY eat_by ASC " +
-                    "LIMIT 1";
-
+            c = getConnection();
             PreparedStatement stmt = c.prepareStatement(query);
             stmt.setInt(1, foodId);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                int result = rs.getInt("ID");
-                rs.close();
-                return result;
+                return FoodItemFactory.f.createData(rs);
             } else {
-                rs.close();
-                throw new SelectException("You don't have any...");
+                throw new InputException("You don't have any...");
             }
-
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
-    public void writeAll(User[] users,
-                         UserDevice[] devices,
-                         Location[] locations,
-                         Food[] foods,
-                         FoodItem[] items) {
-        try {
-            Connection c = getConnection();
-            c.setAutoCommit(false);
-            DatabaseOperator op = new DatabaseOperator(c);
-
-            String insertUser = "INSERT INTO User (`ID`, name) VALUES (?,?)";
-            String insertDevice = "INSERT INTO User_device (`ID`, name, belongs_to) VALUES (?,?,?)";
-            String insertLocation = "INSERT INTO Location (`ID`, name) VALUES (?,?)";
-            String insertFood = "INSERT INTO User (`ID`, name) VALUES (?,?)";
-            String insertItem = "INSERT INTO Food_item " +
-                    "(`ID`, of_type, stored_in, registers, buys, eat_by) VALUES (?,?,?,?,?,?)";
-
-            PreparedStatement insertStmt = c.prepareStatement(insertUser);
-
-            op.clearTable("User");
-            op.clearTable("User_device");
-            op.clearTable("Location");
-            op.clearTable("Food");
-            op.clearTable("FoodItem");
-
-            for (User user : users) {
-                insertStmt.setInt(1, user.id);
-                insertStmt.setString(2, user.name);
-                insertStmt.execute();
-            }
-
-            insertStmt = c.prepareStatement(insertDevice);
-            for (UserDevice dev : devices) {
-                insertStmt.setInt(1, dev.id);
-                insertStmt.setString(2, dev.name);
-                insertStmt.setInt(3, dev.userId);
-                insertStmt.execute();
-            }
-
-            insertStmt = c.prepareStatement(insertLocation);
-            for (Location loc : locations) {
-                insertStmt.setInt(1, loc.id);
-                insertStmt.setString(2, loc.name);
-                insertStmt.execute();
-            }
-
-            insertStmt = c.prepareStatement(insertFood);
-            for (Food food : foods) {
-                insertStmt.setInt(1, food.id);
-                insertStmt.setString(2, food.name);
-                insertStmt.execute();
-            }
-
-            insertStmt = c.prepareStatement(insertItem);
-            for (FoodItem food : items) {
-                java.sql.Timestamp sqlDate = new java.sql.Timestamp(food.eatByDate.getTime());
-                insertStmt.setInt(1, food.id);
-                insertStmt.setInt(2, food.ofType);
-                insertStmt.setInt(3, food.storedIn);
-                insertStmt.setInt(4, food.registers);
-                insertStmt.setInt(5, food.buys);
-                insertStmt.setTimestamp(6, sqlDate);
-                insertStmt.execute();
-            }
-
-            c.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Could not get next food item", e);
+        } finally {
+            close(c);
         }
     }
 
-    protected ArrayList<FoodView> getFoodView(ResultSet rs) throws SQLException {
+    private ArrayList<FoodView> getFoodView(ResultSet rs) throws SQLException {
         ArrayList<FoodView> result = new ArrayList<>();
         int lastId = -1;
         FoodView f = null;
@@ -544,11 +309,9 @@ public class DatabaseManager {
                 newFood.name = rs.getString("name");
                 f = new FoodView(newFood);
             }
-            FoodItem i = new FoodItem();
-            i.ofType = id;
-            i.eatByDate = rs.getDate("date");
-            if (i.eatByDate != null) {
-                f.add(i);
+            Timestamp date = rs.getTimestamp("date");
+            if (date != null && f != null) {
+                f.add(new Date(date.getTime()));
             }
             lastId = id;
         }
@@ -558,50 +321,57 @@ public class DatabaseManager {
         return result;
     }
 
-    protected ArrayList<User> getUserResult(ResultSet rs) throws SQLException {
-        ArrayList<User> result = new ArrayList<>();
-        while (rs.next()) {
-            User u = new User();
-            u.name = rs.getString("name");
-            u.id = rs.getInt("ID");
-            result.add(u);
+    private void writeData(String table, List<? extends Data> list) throws DatabaseException {
+        LOG.info("Writing " + table);
+        Connection c = null;
+
+        try {
+            c = getConnectionWithoutAutoCommit();
+            backend.writeData(c, table, list);
+            c.commit();
+        } catch (SQLException | VisitorException e) {
+            rollback(c);
+            throw new DatabaseException("Could not write " + table, e);
+        } finally {
+            close(c);
         }
-        return result;
     }
 
-    protected ArrayList<Location> getLocationResults(ResultSet rs) throws SQLException {
-        ArrayList<Location> result = new ArrayList<>();
-        while (rs.next()) {
-            Location l = new Location();
-            l.name = rs.getString("name");
-            l.id = rs.getInt("ID");
-            result.add(l);
+    private <T extends Data> List<T> getData(DataFactory<T> factory) throws DatabaseException {
+        String query = factory.getQuery();
+        Connection c = null;
+
+        try {
+            c = getConnection();
+            PreparedStatement p = c.prepareStatement(query);
+            ResultSet rs = p.executeQuery();
+            return factory.createDataList(rs);
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not get all data", e);
+        } finally {
+            close(c);
         }
-        return result;
     }
 
-    protected ArrayList<Food> getFoodResults(ResultSet rs) throws SQLException {
-        ArrayList<Food> result = new ArrayList<>();
-        while (rs.next()) {
-            Food f = new Food();
-            f.name = rs.getString("name");
-            f.id = rs.getInt("ID");
-            result.add(f);
+    static void rollback(Connection c) {
+        if (c != null) {
+            try {
+                LOG.warn("Rolling back transaction");
+                c.rollback();
+                LOG.info("Successful rollback");
+            } catch (SQLException e) {
+                LOG.error("Rollback failed", e);
+            }
         }
-        return result;
     }
 
-    protected ArrayList<UserDeviceView> getDeviceResults(ResultSet rs) throws SQLException {
-        ArrayList<UserDeviceView> result = new ArrayList<>();
-        while (rs.next()) {
-            UserDeviceView d = new UserDeviceView();
-            d.name = rs.getString("name");
-            d.id = rs.getInt("ID");
-            d.user = rs.getString("belongs_to");
-            result.add(d);
+    static void close(Connection con) {
+        if (con != null) {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                LOG.error("Error closing connection", e);
+            }
         }
-        return result;
     }
-
-
 }

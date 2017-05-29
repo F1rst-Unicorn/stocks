@@ -4,7 +4,7 @@
 
 ### dp-server
 
-        Testing the deployment of a fresh server instance
+Testing the deployment of a fresh server instance
         
 #### Snapshots
 
@@ -15,7 +15,7 @@
 
 ### int-server
 
-        Testing the upgrade procedure and regular operation
+Testing the upgrade procedure and regular operation
 
 #### Snapshots
 
@@ -31,7 +31,7 @@
 
 ### dp-client-server
 
-        Testing the registration of a new client. stocks-server
+Testing the registration of a new client. stocks-server
 
 #### Snapshots
 

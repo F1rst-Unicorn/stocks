@@ -1,0 +1,3 @@
+Title: Add a new user interactively
+Input: user add\nJeremy
+Output: ^User name: Jeremy$

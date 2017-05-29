@@ -1,0 +1,3 @@
+Title: Remove user
+Input: user remove Jeremy
+Output: ^$

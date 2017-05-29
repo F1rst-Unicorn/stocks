@@ -1,0 +1,4 @@
+Title: List users after refresh
+Input: user list
+Output: ^Current users:
+    1: Jack$

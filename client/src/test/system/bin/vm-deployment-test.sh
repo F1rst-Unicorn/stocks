@@ -19,16 +19,25 @@ mkdir -p $STOCKS_ROOT/client/src/test/system/tmp/.stocks
 echo ".read $STOCKS_ROOT/deploy-client/config/schema.sql" | \
         sqlite3 $STOCKS_ROOT/client/src/test/system/tmp/.stocks/stocks.db
 
+echo
+echo "##teamcity[testSuiteStarted name='Client System Test']"
+
+echo "##teamcity[testStarted name='Initialisation']"
 FINGERPRINT=$(curl -s http://$SERVER:10910/ca | \
         openssl x509 -noout -sha256 -fingerprint | \
         head -n 1 | sed 's/.*=//')
 
 echo -e "$SERVER\n\n\n\nJack\nDevice\n1\n1\n\
 $FINGERPRINT\n\
-0000\nrefresh\nuser\ndev\nfood\nloc\nquit\n" \
-        | java -jar -Duser.stocks.dir=$STOCKS_ROOT/client/src/test/system/tmp \
+0000\nquit\n" | \
+        java -jar -Duser.stocks.dir=$STOCKS_ROOT/client/src/test/system/tmp \
         $STOCKS_ROOT/client/target/client-*.jar
+echo "##teamcity[testFinished name='Initialisation']"
 
-rm -rf $STOCKS_ROOT/client/src/test/system/tmp
+python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
+        `find $STOCKS_ROOT/client/src/test/system/usecases -type f | sort`
+
+echo "##teamcity[testSuiteFinished name='Client System Test']"
+echo
+
 sudo virsh snapshot-revert $SERVER clean
-
