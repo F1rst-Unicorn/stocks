@@ -24,10 +24,10 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
 
     private boolean existing;
     private int limit;
+    private int daysLeft;
     private String location;
-    private long daysLeft;
-    private ValueRange range;
     private String user;
+    private ValueRange range;
     private Pattern regex;
 
     private DatabaseManager dbManager;
@@ -62,7 +62,6 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
         } catch (ParseException e) {
             writer.println("Could not parse input: " + e.getMessage());
             LOG.error("Could not parse input", e);
-            printHelp();
         }
     }
 
@@ -192,7 +191,9 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
         int printedItems = 0;
         if (limit > 0) {
             for (Date date : f.getItems()) {
-                outBuf.append("\t\t" + FORMAT.format(date) + "\n");
+                outBuf.append("\t\t");
+                outBuf.append(FORMAT.format(date));
+                outBuf.append("\n");
                 printedItems++;
                 if (printedItems >= limit) {
                     break;
