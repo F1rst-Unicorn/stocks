@@ -1,9 +1,9 @@
 # Roadmap for subcomponent client
 
-## Version 0.4 (current)
+## Version 0.4
 * 00000 : DONE : Basic functionality
 
-## Version 0.5
+## Version 0.5 (current)
 * 00002 : DONE : Add Unit testing
 * 00003 : NEW  : Include database setup into program on first startup
 * 00005 : DONE : Rework logging, use log4j
