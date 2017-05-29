@@ -4,7 +4,7 @@
 * 00000 : DONE : Basic functionality
 
 ## Version 0.5
-* 00002 : NEW  : Add Unit testing
+* 00002 : DONE : Add Unit testing
 * 00003 : NEW  : Include database setup into program on first startup
 * 00005 : DONE : Rework logging, use log4j
 * 00008 : DONE : Add release build management
