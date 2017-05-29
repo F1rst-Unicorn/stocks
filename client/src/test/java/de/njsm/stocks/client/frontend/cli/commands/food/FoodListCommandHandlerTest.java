@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands.food;
 
-import de.njsm.stocks.client.TestData;
+import de.njsm.stocks.client.MockData;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.service.TimeProvider;
@@ -73,7 +73,7 @@ public class FoodListCommandHandlerTest {
     @Test
     public void listingFoodWithoutItems() throws Exception {
         Command input = Command.createCommand("-q --a 2");
-        when(dbManager.getItems(any(), any())).thenReturn(TestData.getFoodViews());
+        when(dbManager.getItems(any(), any())).thenReturn(MockData.getFoodViews());
 
         uut.handle(input);
 
@@ -86,7 +86,7 @@ public class FoodListCommandHandlerTest {
     @Test
     public void listingFoodWithItems() throws Exception {
         Command input = Command.createCommand("--a 2");
-        when(dbManager.getItems(any(), any())).thenReturn(TestData.getFoodViews());
+        when(dbManager.getItems(any(), any())).thenReturn(MockData.getFoodViews());
 
         uut.handle(input);
 
@@ -99,7 +99,7 @@ public class FoodListCommandHandlerTest {
     @Test
     public void listingUntilWorks() throws Exception {
         Command input = Command.createCommand("--r juice --d 7");
-        when(dbManager.getItems(any(), any())).thenReturn(TestData.getFoodViews());
+        when(dbManager.getItems(any(), any())).thenReturn(MockData.getFoodViews());
         when(timeProvider.getTime()).thenReturn(0L);
 
         uut.handle(input);

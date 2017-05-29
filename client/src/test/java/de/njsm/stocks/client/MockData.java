@@ -7,7 +7,7 @@ import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TestData {
+public class MockData {
 
     public static List<FoodView> getFoodViews() throws ParseException {
         return getTestFoodInDatabase();

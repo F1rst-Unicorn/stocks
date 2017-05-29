@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.storage;
 
-import de.njsm.stocks.client.TestData;
+import de.njsm.stocks.client.MockData;
 import de.njsm.stocks.client.Utils;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
@@ -292,7 +292,7 @@ public class DatabaseManagerTest {
 
     @Test
     public void testGettingFoodOfUser() throws Exception {
-        List<FoodView> entireFood = TestData.getTestFoodInDatabase();
+        List<FoodView> entireFood = MockData.getTestFoodInDatabase();
         FoodView item = entireFood.get(6);
         List<FoodView> expectedOutput = new LinkedList<>();
         expectedOutput.add(item);
@@ -307,7 +307,7 @@ public class DatabaseManagerTest {
 
         List<FoodView> output = uut.getItems("", "");
 
-        assertEquals(TestData.getTestFoodInDatabase(), output);
+        assertEquals(MockData.getTestFoodInDatabase(), output);
     }
 
     @Test
