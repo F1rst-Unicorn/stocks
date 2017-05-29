@@ -22,10 +22,10 @@
 
   - name: Create test user stocks directory
     file: >
-          path=/home/{{ test_user }}/.stocks
-          state=directory
-          user={{ test_user }}
-          group=users
+        path=/home/{{ test_user }}/.stocks
+        state=directory
+        owner={{ test_user }}
+        group=users
 
   - name: Copy prototype database
     copy: >
