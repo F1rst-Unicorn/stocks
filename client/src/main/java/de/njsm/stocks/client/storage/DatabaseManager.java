@@ -3,6 +3,7 @@ package de.njsm.stocks.client.storage;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
+import de.njsm.stocks.client.init.upgrade.Version;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.FoodView;
 import de.njsm.stocks.common.data.view.UserDeviceView;
@@ -288,6 +289,49 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             throw new DatabaseException("Could not get next food item", e);
+        } finally {
+            close(c);
+        }
+    }
+
+    public Version getDbVersion() throws DatabaseException {
+        LOG.info("Getting version");
+        String tableQuery = "SELECT name FROM sqlite_master WHERE type='table' " +
+                "AND name='Config' ";
+        String query = "SELECT value FROM Config WHERE key='db.version'";
+        Connection c = null;
+
+        try {
+            c = getConnection();
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery(tableQuery);
+            if (rs.next()) {
+                ResultSet configResult = stmt.executeQuery(query);
+                return Version.create(configResult.getString("value"));
+            } else {
+                return Version.PRE_VERSIONED;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not get DB version", e);
+        } finally {
+            close(c);
+        }
+    }
+
+    public void runSqlScript(List<String> script) throws DatabaseException {
+        LOG.info("Running script");
+        Connection c = null;
+
+        try {
+            c = getConnectionWithoutAutoCommit();
+            Statement stmt = c.createStatement();
+            for (String command : script) {
+                stmt.execute(command);
+            }
+            stmt.close();
+            c.commit();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could complete SQL script", e);
         } finally {
             close(c);
         }

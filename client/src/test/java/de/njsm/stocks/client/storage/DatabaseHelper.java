@@ -76,25 +76,36 @@ public class DatabaseHelper {
                     "(9, '1970-01-09 00:00:00.000', 7, 4, 3, 3)"
     };
 
-    void setupDatabase() throws SQLException, IOException {
+    public void setupDatabase() throws SQLException, IOException {
         createFile();
         sourceSchema();
     }
 
-    void fillData() throws SQLException {
-        dbConnection = DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
+    public void fillData() throws SQLException {
+        dbConnection = openConnection();
         runSqlScript(Arrays.asList(resetCommands));
         dbConnection.close();
     }
 
-    void removeDatabase() throws SQLException {
+    private Connection openConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
+    }
+
+    public void removeDatabase() throws SQLException {
         (new File(Configuration.DB_PATH)).delete();
+    }
+
+    public void runSqlCommand(String command) throws Exception {
+        dbConnection = openConnection();
+        Statement statement = dbConnection.createStatement();
+        statement.execute(command);
+        dbConnection.close();
     }
 
     private void createFile() throws SQLException, IOException {
         File dbFile = new File(Configuration.DB_PATH);
         dbFile.getParentFile().mkdirs();
-        dbConnection = DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
+        dbConnection = openConnection();
     }
 
     private void sourceSchema() throws IOException, SQLException {

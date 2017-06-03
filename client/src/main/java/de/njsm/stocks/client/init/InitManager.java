@@ -6,14 +6,17 @@ import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.frontend.CertificateGenerator;
 import de.njsm.stocks.client.frontend.ConfigGenerator;
+import de.njsm.stocks.client.init.upgrade.UpgradeManager;
 import de.njsm.stocks.client.network.TcpHost;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import static de.njsm.stocks.client.config.Configuration.CONFIG_PATH;
+import static de.njsm.stocks.client.config.Configuration.DB_PATH;
+import static de.njsm.stocks.client.config.Configuration.SYSTEM_DB_PATH;
 
 public class InitManager {
 
@@ -25,18 +28,23 @@ public class InitManager {
 
     private final CertificateGenerator certificateGenerator;
 
-    private TcpHost caHost;
-    private TcpHost ticketHost;
+    private final TicketHandler ticketHandler;
 
-    private TicketHandler ticketHandler;
+    private final UpgradeManager upgradeManager;
+
+    private TcpHost caHost;
+
+    private TcpHost ticketHost;
 
     public InitManager(ConfigGenerator configGenerator,
                        CertificateGenerator certificateGenerator,
                        TicketHandler ticketHandler,
-                       PropertiesFileHandler fileHandler) {
+                       PropertiesFileHandler fileHandler,
+                       UpgradeManager upgradeManager) {
         this.configGenerator = configGenerator;
         this.certificateGenerator = certificateGenerator;
         this.ticketHandler = ticketHandler;
+        this.upgradeManager = upgradeManager;
         newConfiguration = new Configuration(fileHandler);
     }
 
@@ -44,6 +52,9 @@ public class InitManager {
         if (isFirstStartup()) {
             LOG.info("Starting initialisation process");
             runFirstInitialisation();
+        } else if (upgradeManager.needsUpgrade()) {
+            LOG.info("Upgrading to new version");
+            upgradeManager.upgrade();
         } else {
             LOG.info("Client is already initialised");
         }
@@ -57,6 +68,7 @@ public class InitManager {
         try {
             ticketHandler.startBackgroundWork();
             initialiseConfigFile();
+            setupDatabase();
             getServerProperties(configGenerator);
             createHosts();
             initCertificates(certificateGenerator);
@@ -67,6 +79,15 @@ public class InitManager {
             destroyKeystore();
             throw new InitialisationException("Initialisation failed");
         }
+    }
+
+    private void setupDatabase() throws IOException {
+        LOG.info("Copying " + SYSTEM_DB_PATH + " to " + DB_PATH);
+        BufferedInputStream inFile = new BufferedInputStream(new FileInputStream(SYSTEM_DB_PATH));
+        BufferedOutputStream outFile = new BufferedOutputStream(new FileOutputStream(DB_PATH));
+        IOUtils.copyLarge(inFile, outFile);
+        inFile.close();
+        outFile.close();
     }
 
     private void getServerProperties(ConfigGenerator source) {
