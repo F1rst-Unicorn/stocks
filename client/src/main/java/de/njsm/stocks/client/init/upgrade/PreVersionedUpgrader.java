@@ -22,7 +22,7 @@ public class PreVersionedUpgrader extends Upgrader {
                 "PRIMARY KEY (`key`) " +
                 ")");
         commands.add("INSERT INTO Config (key, value) VALUES " +
-                "('db.version', '" + Version.V_0_5_0 + "'");
+                "('db.version', '" + Version.V_0_5_0 + "')");
         try {
             dbManager.runSqlScript(commands);
         } catch (DatabaseException e) {
