@@ -19,18 +19,3 @@
 
   - name: Install stocks package
     command: pacman -U {{ remote_pkg_dir }}/{{ stocks_pkg }} --noconfirm
-
-  - name: Create test user stocks directory
-    file: >
-        path=/home/{{ test_user }}/.stocks
-        state=directory
-        owner={{ test_user }}
-        group=users
-
-  - name: Copy prototype database
-    copy: >
-        src=/usr/share/stocks/proto.db
-        dest=/home/{{ test_user }}/.stocks/stocks.db
-        remote_src=True
-        owner={{ test_user }}
-        group=users

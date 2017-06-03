@@ -8,8 +8,6 @@ import de.njsm.stocks.client.network.HttpClientFactory;
 import de.njsm.stocks.client.network.TcpHost;
 import de.njsm.stocks.client.network.server.ServerClient;
 import de.njsm.stocks.client.network.server.ServerManager;
-import de.njsm.stocks.client.service.TimeProviderImpl;
-import de.njsm.stocks.client.storage.DatabaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import retrofit.JacksonConverterFactory;
@@ -24,6 +22,8 @@ public class Configuration {
 
 
     public static final String STOCKS_HOME = System.getProperty("user.stocks.dir") + "/.stocks";
+    public static final String SYSTEM_STOCKS_HOME = System.getProperty("system.stocks.dir");
+    public static final String SYSTEM_DB_PATH = SYSTEM_STOCKS_HOME + "/proto.db";
     public static final String CONFIG_PATH = STOCKS_HOME + "/config";
     public static final String KEYSTORE_PATH = STOCKS_HOME + "/keystore";
     public static final String DB_PATH = STOCKS_HOME + "/stocks.db";

@@ -7,13 +7,15 @@ import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.frontend.CertificateGenerator;
 import de.njsm.stocks.client.frontend.ConfigGenerator;
 import de.njsm.stocks.client.network.TcpHost;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import static de.njsm.stocks.client.config.Configuration.CONFIG_PATH;
+import static de.njsm.stocks.client.config.Configuration.DB_PATH;
+import static de.njsm.stocks.client.config.Configuration.SYSTEM_DB_PATH;
 
 public class InitManager {
 
@@ -57,6 +59,7 @@ public class InitManager {
         try {
             ticketHandler.startBackgroundWork();
             initialiseConfigFile();
+            setupDatabase();
             getServerProperties(configGenerator);
             createHosts();
             initCertificates(certificateGenerator);
@@ -67,6 +70,15 @@ public class InitManager {
             destroyKeystore();
             throw new InitialisationException("Initialisation failed");
         }
+    }
+
+    private void setupDatabase() throws IOException {
+        LOG.info("Copying " + SYSTEM_DB_PATH + " to " + DB_PATH);
+        BufferedInputStream inFile = new BufferedInputStream(new FileInputStream(SYSTEM_DB_PATH));
+        BufferedOutputStream outFile = new BufferedOutputStream(new FileOutputStream(DB_PATH));
+        IOUtils.copyLarge(inFile, outFile);
+        inFile.close();
+        outFile.close();
     }
 
     private void getServerProperties(ConfigGenerator source) {

@@ -179,6 +179,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <user.stocks.dir>${user.stocks.dir}</user.stocks.dir>
+                        <system.stocks.dir>${system.stocks.dir}</system.stocks.dir>
                         <sql.schema.path>${sql.schema.path}</sql.schema.path>
                     </systemPropertyVariables>
                 </configuration>
@@ -194,6 +195,7 @@
             </activation>
             <properties>
                 <user.stocks.dir>${basedir}/src/test/system/resources</user.stocks.dir>
+                <system.stocks.dir>${basedir}/src/test/system/resources</system.stocks.dir>
                 <sql.schema.path>${basedir}/../deploy-client/config/schema.sql</sql.schema.path>
             </properties>
         </profile>
