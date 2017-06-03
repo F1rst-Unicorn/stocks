@@ -33,7 +33,7 @@ class TestCase:
         if matcher is None:
             print(index + " failed!\n\n")
             print("Expected: " + self.referenceOutput + "\n\n")
-            print("Actual:   " + self.actualOutput + "\n=====================\n\n\n")
+            print("Actual:   " + self.actualOutput + "\n\n")
             print("##teamcity[testFailed name='" + self.title + "' message='"
                     + "Comparison failed' expected='"
                     + escapeForTeamcity(self.referenceOutput)
