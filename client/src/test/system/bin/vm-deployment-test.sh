@@ -27,7 +27,7 @@ FINGERPRINT=$(curl -s http://$SERVER:10910/ca | \
 echo -e "$SERVER\n\n\n\nJack\nDevice\n1\n1\n\
 $FINGERPRINT\n\
 0000\nquit\n" | \
-        ssh -t dp-client stocks
+        ssh dp-client stocks
 echo "##teamcity[testFinished name='Initialisation']"
 
 python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
