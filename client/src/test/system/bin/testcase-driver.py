@@ -13,17 +13,16 @@ class TestCase:
 
     def run(self):
         process = subprocess.Popen(
-                        ["java -jar "
-                       + "-Duser.stocks.dir=client/src/test/system/tmp "
-                       + "client/target/client-*.jar"],
+                        ["ssh dp-client stocks"],
                        stdin=subprocess.PIPE,
                        stdout=subprocess.PIPE,
                        shell=True)
         self.actualOutput,dummy = process.communicate(
                 str.encode(self.input + "\nquit\n"))
         self.actualOutput = self.actualOutput.decode("utf-8")
+        self.actualOutput = self.actualOutput.replace("\r", "")
         self.actualOutput = self.actualOutput.split("\n")
-        self.actualOutput = self.actualOutput[1:len(self.actualOutput)-2]
+        self.actualOutput = [line for line in self.actualOutput if not line.startswith("stocks $")]
         self.actualOutput = "\n".join(self.actualOutput)
         print(self.actualOutput)
 
@@ -32,9 +31,9 @@ class TestCase:
         matcher = re.match(self.referenceOutput,
                 self.actualOutput, re.MULTILINE)
         if matcher is None:
-            sys.stderr.write(index + " failed!\n\n")
-            sys.stderr.write("Expected: " + self.referenceOutput + "\n\n")
-            sys.stderr.write("Actual:   " + self.actualOutput + "\n")
+            print(index + " failed!\n\n")
+            print("Expected: " + self.referenceOutput + "\n\n")
+            print("Actual:   " + self.actualOutput + "\n\n")
             print("##teamcity[testFailed name='" + self.title + "' message='"
                     + "Comparison failed' expected='"
                     + escapeForTeamcity(self.referenceOutput)
