@@ -23,7 +23,7 @@
 
 ## Version 0.6
 * 00001 : NEW  : Add emitting QR codes for new users
-* 00004 : NEW  : Add methods to get and clear pending tickets
+* 00004 : CANC : Add methods to get and clear pending tickets
 * 00006 : NEW  : Improve displaying food lists
 * 00007 : NEW  : Enable entering names with spaces
 * 00018 : NEW  : Optimise system tests to only use one JVM process
