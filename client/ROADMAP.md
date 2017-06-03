@@ -18,7 +18,7 @@
 * 00017 : DONE : Add visitors for common data
 * 00019 : DONE : Test client on dedicated server
 * 00020 : DONE : Update client maven dependencies
-* 00021 : NEW  : Add mechanism to upgrade DB on software update
+* 00021 : DONE : Add mechanism to upgrade DB on software update
 * 00022 : NEW  : Add system tests for jline
 
 ## Version 0.6
