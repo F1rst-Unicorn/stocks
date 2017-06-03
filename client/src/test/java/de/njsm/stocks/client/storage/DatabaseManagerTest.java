@@ -4,6 +4,7 @@ import de.njsm.stocks.client.MockData;
 import de.njsm.stocks.client.Utils;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
+import de.njsm.stocks.client.init.upgrade.Version;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.FoodView;
 import de.njsm.stocks.common.data.view.UserDeviceView;
@@ -341,6 +342,29 @@ public class DatabaseManagerTest {
         List<FoodView> output = uut.getItems("John", "Basement");
 
         assertEquals(expectedOutput, output);
+    }
+
+    @Test
+    public void testGettingVersionWithoutVersionTable() throws Exception {
+        helper.runSqlCommand("DROP TABLE Config");
+
+        Version output = uut.getDbVersion();
+
+        assertEquals(Version.PRE_VERSIONED, output);
+        helper.runSqlCommand("CREATE TABLE Config ( " +
+                "`key` varchar(100) NOT NULL UNIQUE, " +
+                "`value` varchar(100) NOT NULL, " +
+                "PRIMARY KEY (`key`) " +
+                ")");
+        helper.runSqlCommand("INSERT INTO Config (key,value) VALUES ('db.version', '0.5.0')");
+    }
+
+    @Test
+    public void testGettingVersionWithVersionTable() throws Exception {
+
+        Version output = uut.getDbVersion();
+
+        assertEquals(Version.V_0_5_0, output);
     }
 
     @Test
