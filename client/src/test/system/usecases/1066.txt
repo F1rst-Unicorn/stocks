@@ -1,0 +1,3 @@
+Title: Rerun last command
+Input: user\nOA
+Output: ^Current users: \n\t1: Jack\nCurrent users: \n\t1: Jack$
