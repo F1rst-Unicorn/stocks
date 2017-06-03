@@ -18,14 +18,14 @@ public class UpgradeRegistryTest {
 
     @Before
     public void setup() throws Exception {
-        List<Upgrader> upgraders = new LinkedList<>();
-        upgraders.add(new MockUpgrader(Version.create("0.0.1"), Version.create("0.0.2")));
-        upgraders.add(new MockUpgrader(Version.create("0.0.2"), Version.create("0.0.3")));
-        upgraders.add(new MockUpgrader(Version.create("0.0.3"), Version.create("0.0.4")));
-        upgraders.add(new MockUpgrader(Version.create("0.0.4"), Version.create("0.0.5")));
-        upgraders.add(new MockUpgrader(Version.create("0.0.5"), Version.create("0.0.6")));
-        upgraders.add(new MockUpgrader(Version.create("0.0.6"), Version.create("0.0.7")));
-        uut = new UpgradeRegistry(upgraders);
+        List<UpgradeProcedure> upgradeProcedures = new LinkedList<>();
+        upgradeProcedures.add(new MockUpgradeProcedure(Version.create("0.0.1"), Version.create("0.0.2")));
+        upgradeProcedures.add(new MockUpgradeProcedure(Version.create("0.0.2"), Version.create("0.0.3")));
+        upgradeProcedures.add(new MockUpgradeProcedure(Version.create("0.0.3"), Version.create("0.0.4")));
+        upgradeProcedures.add(new MockUpgradeProcedure(Version.create("0.0.4"), Version.create("0.0.5")));
+        upgradeProcedures.add(new MockUpgradeProcedure(Version.create("0.0.5"), Version.create("0.0.6")));
+        upgradeProcedures.add(new MockUpgradeProcedure(Version.create("0.0.6"), Version.create("0.0.7")));
+        uut = new UpgradeRegistry(upgradeProcedures);
     }
 
     @Parameterized.Parameter(0)
@@ -53,7 +53,7 @@ public class UpgradeRegistryTest {
     @Test
     public void testRangeQueries() throws Exception {
 
-        List<Upgrader> output = uut.getUpgraders(from, to);
+        List<UpgradeProcedure> output = uut.getUpgradeProcedures(from, to);
 
         assertEquals(result, output.size());
     }

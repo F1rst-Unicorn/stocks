@@ -9,11 +9,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class PreVersionedUpgraderTest {
+public class PreVersionedUpgradeProcedureTest {
 
     private static DatabaseHelper helper;
 
-    private PreVersionedUpgrader uut;
+    private PreVersionedUpgradeProcedure uut;
 
     private DatabaseManager dbManager;
 
@@ -26,7 +26,7 @@ public class PreVersionedUpgraderTest {
     @Before
     public void setup() throws Exception {
         dbManager = new DatabaseManager();
-        uut = new PreVersionedUpgrader(dbManager);
+        uut = new PreVersionedUpgradeProcedure(dbManager);
         helper.fillData();
         helper.runSqlCommand("DROP TABLE Config");
     }

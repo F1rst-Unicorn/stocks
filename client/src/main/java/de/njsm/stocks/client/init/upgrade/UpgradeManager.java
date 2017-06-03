@@ -25,20 +25,21 @@ public class UpgradeManager {
 
     public boolean needsUpgrade() throws InitialisationException {
         try {
-            Version dbVersion = dbManager.getDbVersion();
-            dbVersionAtStartup = dbVersion;
-            LOG.info("DB version is " + dbVersion);
+            dbVersionAtStartup = dbManager.getDbVersion();
+
+            LOG.info("DB version is " + dbVersionAtStartup);
             LOG.info("Software version is " + Version.CURRENT);
-            return dbVersion.compareTo(Version.CURRENT) == -1;
+
+            return dbVersionAtStartup.compareTo(Version.CURRENT) == -1;
         } catch (DatabaseException e) {
             throw new InitialisationException("Could not read current version from DB", e);
         }
     }
 
     public void upgrade() throws InitialisationException {
-        List<Upgrader> upgraders = registry.getUpgraders(dbVersionAtStartup, Version.CURRENT);
-        for (Upgrader upgrader : upgraders) {
-            upgrader.upgrade();
+        List<UpgradeProcedure> upgradeProcedures = registry.getUpgradeProcedures(dbVersionAtStartup, Version.CURRENT);
+        for (UpgradeProcedure upgradeProcedure : upgradeProcedures) {
+            upgradeProcedure.upgrade();
         }
     }
 }

@@ -2,10 +2,10 @@ package de.njsm.stocks.client.init.upgrade;
 
 import de.njsm.stocks.client.exceptions.InitialisationException;
 
-public class MockUpgrader extends Upgrader {
+public class MockUpgradeProcedure extends UpgradeProcedure {
 
 
-    public MockUpgrader(Version from, Version to) {
+    public MockUpgradeProcedure(Version from, Version to) {
         super(null, from, to);
     }
 

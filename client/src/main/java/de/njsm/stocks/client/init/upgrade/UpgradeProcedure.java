@@ -3,7 +3,7 @@ package de.njsm.stocks.client.init.upgrade;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.storage.DatabaseManager;
 
-public abstract class Upgrader {
+public abstract class UpgradeProcedure {
 
     protected final DatabaseManager dbManager;
 
@@ -11,9 +11,9 @@ public abstract class Upgrader {
 
     private Version targetVersion;
 
-    public Upgrader(DatabaseManager dbManager,
-                    Version from,
-                    Version to) {
+    public UpgradeProcedure(DatabaseManager dbManager,
+                            Version from,
+                            Version to) {
         this.dbManager = dbManager;
         this.baseVersion = from;
         this.targetVersion = to;

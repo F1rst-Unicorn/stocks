@@ -54,7 +54,7 @@
     <bean id="upgradeRegistry" class="de.njsm.stocks.client.init.upgrade.UpgradeRegistry" >
         <constructor-arg index="0">
             <list>
-                <bean class="de.njsm.stocks.client.init.upgrade.PreVersionedUpgrader" >
+                <bean class="de.njsm.stocks.client.init.upgrade.PreVersionedUpgradeProcedure" >
                     <constructor-arg index="0" ref="dbManager" />
                 </bean>
             </list>
