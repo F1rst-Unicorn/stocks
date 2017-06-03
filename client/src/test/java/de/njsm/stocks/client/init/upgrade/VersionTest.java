@@ -26,4 +26,15 @@ public class VersionTest {
         assertEquals(-1, PRE_VERSIONED.compareTo(V_0_5_0));
         assertEquals(1, V_0_5_0.compareTo(PRE_VERSIONED));
     }
+
+    @Test
+    public void testValidParsing() throws Exception {
+        assertEquals(V_0_5_0, Version.create("0.5.0"));
+        assertEquals(new Version(1,2,4), Version.create("1.2.4"));
+    }
+
+    @Test
+    public void invalidParsingGivesDefault() throws Exception {
+        assertEquals(PRE_VERSIONED, Version.create("0.5-1"));
+    }
 }

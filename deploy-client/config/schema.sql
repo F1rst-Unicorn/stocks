@@ -73,4 +73,15 @@ VALUES
     (3, 'User_device'),
     (4, 'Food'),
     (5, 'Food_item');
-    
+
+DROP TABLE IF EXISTS Config;
+
+CREATE TABLE Config (
+    `key` varchar(100) NOT NULL UNIQUE,
+    `value` varchar(100) NOT NULL,
+    PRIMARY KEY (`key`)
+);
+
+INSERT INTO Config (`key`, `value`)
+VALUES
+    ('db.version', '0.5.0')

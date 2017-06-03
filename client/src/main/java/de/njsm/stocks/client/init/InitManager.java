@@ -6,6 +6,7 @@ import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.frontend.CertificateGenerator;
 import de.njsm.stocks.client.frontend.ConfigGenerator;
+import de.njsm.stocks.client.init.upgrade.UpgradeManager;
 import de.njsm.stocks.client.network.TcpHost;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -27,18 +28,23 @@ public class InitManager {
 
     private final CertificateGenerator certificateGenerator;
 
-    private TcpHost caHost;
-    private TcpHost ticketHost;
+    private final TicketHandler ticketHandler;
 
-    private TicketHandler ticketHandler;
+    private final UpgradeManager upgradeManager;
+
+    private TcpHost caHost;
+
+    private TcpHost ticketHost;
 
     public InitManager(ConfigGenerator configGenerator,
                        CertificateGenerator certificateGenerator,
                        TicketHandler ticketHandler,
-                       PropertiesFileHandler fileHandler) {
+                       PropertiesFileHandler fileHandler,
+                       UpgradeManager upgradeManager) {
         this.configGenerator = configGenerator;
         this.certificateGenerator = certificateGenerator;
         this.ticketHandler = ticketHandler;
+        this.upgradeManager = upgradeManager;
         newConfiguration = new Configuration(fileHandler);
     }
 
@@ -46,6 +52,9 @@ public class InitManager {
         if (isFirstStartup()) {
             LOG.info("Starting initialisation process");
             runFirstInitialisation();
+        } else if (upgradeManager.needsUpgrade()) {
+            LOG.info("Upgrading to new version");
+            upgradeManager.upgrade();
         } else {
             LOG.info("Client is already initialised");
         }

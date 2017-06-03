@@ -44,9 +44,26 @@
 
     <bean id="keystoreHandler" class="de.njsm.stocks.client.init.KeyStoreHandlerImpl" />
 
+    <bean id="dbManager" class="de.njsm.stocks.client.storage.DatabaseManager" />
+
     <bean id="ticketHandler" class="de.njsm.stocks.client.init.TicketHandler" >
         <constructor-arg index="0" ref="keystoreHandler" />
         <constructor-arg index="1" ref="networkHandler" />
+    </bean>
+
+    <bean id="upgradeRegistry" class="de.njsm.stocks.client.init.upgrade.UpgradeRegistry" >
+        <constructor-arg index="0">
+            <list>
+                <bean class="de.njsm.stocks.client.init.upgrade.PreVersionedUpgrader" >
+                    <constructor-arg index="0" ref="dbManager" />
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="upgradeManager" class="de.njsm.stocks.client.init.upgrade.UpgradeManager">
+        <constructor-arg index="0" ref="dbManager" />
+        <constructor-arg index="1" ref="upgradeRegistry" />
     </bean>
 
     <bean id="initManager" class="de.njsm.stocks.client.init.InitManager">
@@ -54,6 +71,7 @@
         <constructor-arg index="1" ref="certificateGenerator" />
         <constructor-arg index="2" ref="ticketHandler" />
         <constructor-arg index="3" ref="propertiesFileHandler" />
+        <constructor-arg index="4" ref="upgradeManager" />
     </bean>
 
     <bean id="configuration" class="de.njsm.stocks.client.config.Configuration" >
@@ -64,8 +82,6 @@
         <constructor-arg index="0" ref="stdout" />
         <constructor-arg index="1" ref="stringBuilder" />
     </bean>
-
-    <bean id="dbManager" class="de.njsm.stocks.client.storage.DatabaseManager" />
 
     <bean id="dateConverter" class="de.njsm.stocks.common.data.visitor.DateToLocaltimeConverter" />
 

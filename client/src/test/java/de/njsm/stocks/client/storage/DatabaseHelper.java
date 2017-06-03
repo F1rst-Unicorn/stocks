@@ -82,19 +82,30 @@ public class DatabaseHelper {
     }
 
     void fillData() throws SQLException {
-        dbConnection = DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
+        dbConnection = openConnection();
         runSqlScript(Arrays.asList(resetCommands));
         dbConnection.close();
+    }
+
+    private Connection openConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
     }
 
     void removeDatabase() throws SQLException {
         (new File(Configuration.DB_PATH)).delete();
     }
 
+    public void runSqlCommand(String command) throws Exception {
+        dbConnection = openConnection();
+        Statement statement = dbConnection.createStatement();
+        statement.execute(command);
+        dbConnection.close();
+    }
+
     private void createFile() throws SQLException, IOException {
         File dbFile = new File(Configuration.DB_PATH);
         dbFile.getParentFile().mkdirs();
-        dbConnection = DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
+        dbConnection = openConnection();
     }
 
     private void sourceSchema() throws IOException, SQLException {

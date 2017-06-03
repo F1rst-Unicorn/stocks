@@ -4,6 +4,9 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Version implements Comparable<Version> {
 
     public static final Version PRE_VERSIONED = new Version(0, 0, 0);
@@ -57,5 +60,25 @@ public class Version implements Comparable<Version> {
                 .append(this.minor, o.minor)
                 .append(this.patch, o.patch)
                 .toComparison();
+    }
+
+    public static Version create(String value) {
+        try {
+            Pattern pattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
+            Matcher matcher = pattern.matcher(value);
+
+            if (matcher.matches()) {
+                int major = Integer.parseInt(matcher.group(1));
+                int minor = Integer.parseInt(matcher.group(2));
+                int patch = Integer.parseInt(matcher.group(3));
+                return new Version(major, minor, patch);
+            } else {
+                throw new IllegalStateException("No match found");
+            }
+        } catch (NumberFormatException |
+                IllegalStateException |
+                IndexOutOfBoundsException e) {
+            return PRE_VERSIONED;
+        }
     }
 }
