@@ -32,7 +32,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:design:25.3.1'
@@ -47,4 +46,7 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:2.0.1@aar'
     compile 'com.journeyapps:zxing-android-legacy:2.0.1@aar'
     compile 'com.journeyapps:zxing-android-integration:2.0.1@aar'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:2.0.2-beta'
 }
