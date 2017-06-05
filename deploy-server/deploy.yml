@@ -1,4 +1,5 @@
 - hosts: "{{ target_host | default('deployment-test')}}"
+  remote_user: root
 
   vars:
       remote_mysql_password: ''
@@ -6,12 +7,11 @@
       stocks_base: /usr/share/stocks-server
       stocks_lib:  /usr/lib/stocks-server
 
-      stocks_user: 'Jan'
-      stocks_device: 'Laptop'
+      stocks_user: 'Jack'
+      stocks_device: 'Device'
 
       sudoers_line: 'tomcat8 ALL=NOPASSWD: /usr/lib/stocks-server/nginx-reload'
 
-  remote_user: root
   tasks:
   - name: Start MariaDB
     service: >
@@ -32,12 +32,15 @@
         priv=stocks.*:ALL 
         state=present 
         login_user=root
+        login_password={{ remote_mysql_password }}
 
   - name: Import database schema
     mysql_db: >
         name=stocks 
         state=import
         target={{ stocks_base }}/schema.sql
+        login_user=root
+        login_password={{ remote_mysql_password }}
 
   - name: Create CA
     command: /usr/lib/stocks-server/setup-ca {{ stocks_base }}/root/CA {{ stocks_base }}
@@ -144,6 +147,12 @@
         state=started
 
   - name: Create first user ticket
-    shell: /usr/bin/mysql -u root -e "INSERT INTO User (name) VALUES ('{{ stocks_user }}');
+    shell: /usr/bin/mysql -u root --password='{{ remote_mysql_password }}' -e "INSERT INTO User (name) VALUES ('{{ stocks_user }}');
                 INSERT INTO User_device (name, belongs_to) VALUES ('{{ stocks_device }}', LAST_INSERT_ID());
                 INSERT INTO Ticket (ticket, belongs_device) VALUES ('0000', LAST_INSERT_ID())" stocks
+
+  - name: Wait for Tomcat startup
+    wait_for: 
+        host: 127.0.0.1
+        port: 10915
+        state: started

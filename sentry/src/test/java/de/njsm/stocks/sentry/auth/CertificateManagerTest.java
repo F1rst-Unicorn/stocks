@@ -64,9 +64,9 @@ public class CertificateManagerTest {
     public void testParseCsr() throws IOException {
         CertificateManager uut = new CertificateManager();
         Principals p = uut.getPrincipals("src/test/res/user_1.csr.pem");
-        Assert.assertEquals("jan", p.getUsername());
+        Assert.assertEquals("Jack", p.getUsername());
         Assert.assertEquals(1, p.getUid());
-        Assert.assertEquals("laptop", p.getDeviceName());
+        Assert.assertEquals("Device", p.getDeviceName());
         Assert.assertEquals(1, p.getDid());
 
     }

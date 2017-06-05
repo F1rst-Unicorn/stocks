@@ -9,19 +9,23 @@ android {
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0"
+        versionName "0.4.1"
     }
     buildTypes {
-        release {
+        debug {
+            debuggable true
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            jniDebuggable true
+        }
+        release {
+            debuggable false
+            minifyEnabled false
         }
     }
     lintOptions {
         warning 'InvalidPackage'
     }
     dexOptions {
-        incremental true
         javaMaxHeapSize "4g"
     }
 }
@@ -34,25 +38,13 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.github.fcannizzaro:material-stepper:1.1.8'
-    compile 'com.google.zxing:zxingorg:3.2.1'
     compile 'com.google.zxing:core:3.2.0'
     compile 'commons-io:commons-io:2.0.1'
     compile 'org.bouncycastle:bcprov-jdk16:1.45'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.android.support:multidex:1.0.1'
-
-    // Supports Android 4.0.3 and later (API level 15)
     compile 'com.journeyapps:zxing-android-embedded:2.0.1@aar'
-
-    // Supports Android 2.1 and later (API level 7), but not optimal for later Android versions.
-    // If you only plan on supporting Android 4.0.3 and up, you don't need to include this.
     compile 'com.journeyapps:zxing-android-legacy:2.0.1@aar'
-
-    // Convenience library to launch the scanning and encoding Activities.
-    // It automatically picks the best scanning library from the above two, depending on the
-    // Android version and what is available.
     compile 'com.journeyapps:zxing-android-integration:2.0.1@aar'
-
-
 }

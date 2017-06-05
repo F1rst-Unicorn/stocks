@@ -1,13 +1,15 @@
 package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.frontend.CertificateGenerator;
+import de.njsm.stocks.client.frontend.cli.service.InputReader;
+import de.njsm.stocks.client.service.TimeProviderImpl;
 
 public class CliCertificateGenerator implements CertificateGenerator {
 
-    protected final InputReader reader;
+    private final InputReader reader;
 
-    public CliCertificateGenerator() {
-        reader = new EnhancedInputReader(System.in);
+    CliCertificateGenerator(InputReader reader) {
+        this.reader = reader;
     }
 
     @Override
@@ -41,16 +43,17 @@ public class CliCertificateGenerator implements CertificateGenerator {
     }
 
     @Override
-    public int[] getUserIds() {
-        String format = "Please give the Id for the %s: ";
-        String[] args = {"user", "user's device"};
-        int[] result = new int[2];
-
-        for (int i = 0; i < result.length; i++) {
-            result[i] = reader.nextInt(String.format(format, args[i]));
-        }
-
-        return result;
+    public int getUserId() {
+        return getId("User");
     }
 
+    @Override
+    public int getDeviceId() {
+        return getId("device");
+    }
+
+    private int getId(String key) {
+        String prompt = String.format("Please give the Id for the %s: ", key);
+        return reader.nextInt(prompt);
+    }
 }

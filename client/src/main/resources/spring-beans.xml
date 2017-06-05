@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+       default-lazy-init="true">
+
+    <util:constant id="stdin" static-field="java.lang.System.in" />
+
+    <util:constant id="stdout" static-field="java.lang.System.out" />
+
+    <bean id="propertiesFileHandler" class="de.njsm.stocks.client.config.PropertiesFileHandlerImpl" />
+
+    <bean id="timeProvider" class="de.njsm.stocks.client.service.TimeProviderImpl" />
+
+    <bean id="dayDateFormat" class="java.text.SimpleDateFormat">
+        <constructor-arg index="0" type="java.lang.String" value="dd.MM.yyyy" />
+    </bean>
+
+    <bean id="stringBuilder" class="de.njsm.stocks.common.data.visitor.ToStringVisitor" >
+        <constructor-arg index="0" ref="dayDateFormat" />
+    </bean>
+
+    <bean id="consoleReader" class="jline.console.ConsoleReader">
+        <constructor-arg index="0" ref="stdin" />
+        <constructor-arg index="1" ref="stdout" />
+    </bean>
+
+    <bean id="inputReader" class="de.njsm.stocks.client.frontend.cli.service.InputReader">
+        <constructor-arg index="0" ref="consoleReader"/>
+        <constructor-arg index="1" ref="stdout" />
+        <constructor-arg index="2" ref="timeProvider" />
+    </bean>
+
+    <bean id="configGenerator" class="de.njsm.stocks.client.frontend.cli.CliConfigGenerator">
+        <constructor-arg index="0" ref="inputReader" />
+    </bean>
+
+    <bean id="certificateGenerator" class="de.njsm.stocks.client.frontend.cli.CliCertificateGenerator">
+        <constructor-arg index="0" ref="inputReader" />
+    </bean>
+
+    <bean id="networkHandler" class="de.njsm.stocks.client.init.NetworkHandlerImpl" />
+
+    <bean id="keystoreHandler" class="de.njsm.stocks.client.init.KeyStoreHandlerImpl" />
+
+    <bean id="dbManager" class="de.njsm.stocks.client.storage.DatabaseManager" />
+
+    <bean id="ticketHandler" class="de.njsm.stocks.client.init.TicketHandler" >
+        <constructor-arg index="0" ref="keystoreHandler" />
+        <constructor-arg index="1" ref="networkHandler" />
+    </bean>
+
+    <bean id="upgradeRegistry" class="de.njsm.stocks.client.init.upgrade.UpgradeRegistry" >
+        <constructor-arg index="0">
+            <list>
+                <bean class="de.njsm.stocks.client.init.upgrade.PreVersionedUpgradeProcedure" >
+                    <constructor-arg index="0" ref="dbManager" />
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="upgradeManager" class="de.njsm.stocks.client.init.upgrade.UpgradeManager">
+        <constructor-arg index="0" ref="dbManager" />
+        <constructor-arg index="1" ref="upgradeRegistry" />
+    </bean>
+
+    <bean id="initManager" class="de.njsm.stocks.client.init.InitManager">
+        <constructor-arg index="0" ref="configGenerator" />
+        <constructor-arg index="1" ref="certificateGenerator" />
+        <constructor-arg index="2" ref="ticketHandler" />
+        <constructor-arg index="3" ref="propertiesFileHandler" />
+        <constructor-arg index="4" ref="upgradeManager" />
+    </bean>
+
+    <bean id="configuration" class="de.njsm.stocks.client.config.Configuration" >
+        <constructor-arg index="0" ref="propertiesFileHandler" />
+    </bean>
+
+    <bean id="screenWriter" class="de.njsm.stocks.client.frontend.cli.service.ScreenWriter">
+        <constructor-arg index="0" ref="stdout" />
+        <constructor-arg index="1" ref="stringBuilder" />
+    </bean>
+
+    <bean id="dateConverter" class="de.njsm.stocks.common.data.visitor.DateToLocaltimeConverter" />
+
+    <bean id="serverDataConverter" class="de.njsm.stocks.client.network.server.DataConverter" >
+        <constructor-arg>
+            <list>
+                <ref bean="dateConverter" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="serverManager" factory-bean="configuration" factory-method="getServerManager" >
+        <property name="converter" ref="serverDataConverter" />
+    </bean>
+
+    <bean id="refresher" class="de.njsm.stocks.client.service.Refresher" >
+        <constructor-arg index="0" ref="serverManager" />
+        <constructor-arg index="1" ref="dbManager" />
+    </bean>
+
+    <bean id="inputCollector" class="de.njsm.stocks.client.frontend.cli.commands.InputCollector">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="inputReader" />
+        <constructor-arg index="2" ref="dbManager" />
+        <constructor-arg index="3" ref="timeProvider" />
+    </bean>
+
+    <bean id="deviceList" class="de.njsm.stocks.client.frontend.cli.commands.dev.DeviceListCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="dbManager" />
+    </bean>
+
+    <bean id="deviceAdd" class="de.njsm.stocks.client.frontend.cli.commands.dev.DeviceAddCommandHandler">
+        <constructor-arg index="0" ref="configuration" />
+        <constructor-arg index="1" ref="screenWriter" />
+        <constructor-arg index="2" ref="refresher" />
+        <constructor-arg index="3" ref="inputCollector" />
+        <constructor-arg index="4" ref="dbManager" />
+        <constructor-arg index="5" ref="serverManager" />
+    </bean>
+
+    <bean id="deviceRemove" class="de.njsm.stocks.client.frontend.cli.commands.dev.DeviceRemoveCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="refresher" />
+        <constructor-arg index="2" ref="inputCollector" />
+        <constructor-arg index="3" ref="serverManager" />
+    </bean>
+
+    <bean id="deviceHandler" class="de.njsm.stocks.client.frontend.cli.commands.DefaultCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" type="java.lang.String" value="dev" />
+        <constructor-arg index="2" type="java.lang.String" value="Manage the devices accessing the stocks system" />
+        <constructor-arg index="3" ref="deviceList" />
+        <constructor-arg index="4">
+            <list>
+                <ref bean="deviceAdd" />
+                <ref bean="deviceRemove" />
+                <ref bean="deviceList" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="userList" class="de.njsm.stocks.client.frontend.cli.commands.user.UserListCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="dbManager" />
+    </bean>
+
+    <bean id="userAdd" class="de.njsm.stocks.client.frontend.cli.commands.user.UserAddCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="serverManager" />
+        <constructor-arg index="2" ref="inputCollector" />
+        <constructor-arg index="3" ref="refresher" />
+    </bean>
+
+    <bean id="userRemove" class="de.njsm.stocks.client.frontend.cli.commands.user.UserRemoveCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="serverManager" />
+        <constructor-arg index="2" ref="inputCollector" />
+        <constructor-arg index="3" ref="refresher" />
+    </bean>
+
+    <bean id="userHandler" class="de.njsm.stocks.client.frontend.cli.commands.DefaultCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" type="java.lang.String" value="user" />
+        <constructor-arg index="2" type="java.lang.String" value="Manage the users of the stocks system" />
+        <constructor-arg index="3" ref="userList" />
+        <constructor-arg index="4">
+            <list>
+                <ref bean="userAdd" />
+                <ref bean="userRemove" />
+                <ref bean="userList" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="locList" class="de.njsm.stocks.client.frontend.cli.commands.loc.LocationListCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="dbManager" />
+    </bean>
+
+    <bean id="locAdd" class="de.njsm.stocks.client.frontend.cli.commands.loc.LocationAddCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="refresher" />
+        <constructor-arg index="2" ref="inputCollector" />
+        <constructor-arg index="3" ref="serverManager" />
+    </bean>
+
+    <bean id="locRename" class="de.njsm.stocks.client.frontend.cli.commands.loc.LocationRenameCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="inputCollector" />
+        <constructor-arg index="2" ref="refresher" />
+        <constructor-arg index="3" ref="serverManager" />
+    </bean>
+
+    <bean id="locRemove" class="de.njsm.stocks.client.frontend.cli.commands.loc.LocationRemoveCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="inputCollector" />
+        <constructor-arg index="2" ref="refresher" />
+        <constructor-arg index="3" ref="serverManager" />
+    </bean>
+
+    <bean id="locHandler" class="de.njsm.stocks.client.frontend.cli.commands.DefaultCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" type="java.lang.String" value="loc" />
+        <constructor-arg index="2" type="java.lang.String" value="Manage the locations to store food" />
+        <constructor-arg index="3" ref="locList" />
+        <constructor-arg index="4">
+            <list>
+                <ref bean="locAdd" />
+                <ref bean="locRemove" />
+                <ref bean="locRename" />
+                <ref bean="locList" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="foodList" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodListCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="dbManager" />
+        <constructor-arg index="2" ref="timeProvider" />
+    </bean>
+
+    <bean id="foodAdd" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodAddCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="refresher" />
+        <constructor-arg index="2" ref="inputCollector" />
+        <constructor-arg index="3" ref="serverManager" />
+    </bean>
+
+    <bean id="foodRename" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodRenameCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="inputCollector" />
+        <constructor-arg index="2" ref="refresher" />
+        <constructor-arg index="3" ref="serverManager" />
+    </bean>
+
+    <bean id="foodRemove" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodRemoveCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="inputCollector" />
+        <constructor-arg index="2" ref="refresher" />
+        <constructor-arg index="3" ref="serverManager" />
+    </bean>
+
+    <bean id="foodHandler" class="de.njsm.stocks.client.frontend.cli.commands.DefaultCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" type="java.lang.String" value="food" />
+        <constructor-arg index="2" type="java.lang.String" value="Manage the food types" />
+        <constructor-arg index="3" ref="foodList" />
+        <constructor-arg index="4">
+            <list>
+                <ref bean="foodList" />
+                <ref bean="foodAdd" />
+                <ref bean="foodRename" />
+                <ref bean="foodRemove" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="eat" class="de.njsm.stocks.client.frontend.cli.commands.eat.EatCommandHandler">
+        <constructor-arg index="0" ref="serverManager" />
+        <constructor-arg index="1" ref="screenWriter" />
+        <constructor-arg index="2" ref="inputCollector" />
+        <constructor-arg index="3" ref="refresher" />
+    </bean>
+
+    <bean id="add" class="de.njsm.stocks.client.frontend.cli.commands.add.AddCommandHandler">
+        <constructor-arg index="0" ref="inputCollector" />
+        <constructor-arg index="1" ref="serverManager" />
+        <constructor-arg index="2" ref="refresher" />
+        <constructor-arg index="3" ref="screenWriter" />
+    </bean>
+
+    <bean id="move" class="de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler">
+        <constructor-arg index="0" ref="serverManager" />
+        <constructor-arg index="1" ref="inputCollector" />
+        <constructor-arg index="2" ref="screenWriter" />
+        <constructor-arg index="3" ref="refresher" />
+    </bean>
+
+    <bean id="refresh" class="de.njsm.stocks.client.frontend.cli.commands.refresh.RefreshCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1" ref="refresher" />
+    </bean>
+
+    <bean id="rootCommandHandler" class="de.njsm.stocks.client.frontend.cli.commands.AggregatedCommandHandler">
+        <constructor-arg index="0" ref="screenWriter" />
+        <constructor-arg index="1">
+            <list>
+                <ref bean="refresh" />
+                <ref bean="eat" />
+                <ref bean="add" />
+                <ref bean="move" />
+                <ref bean="deviceHandler" />
+                <ref bean="userHandler" />
+                <ref bean="locHandler" />
+                <ref bean="foodHandler" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="mainHandler" class="de.njsm.stocks.client.frontend.cli.CliMainHandler">
+        <constructor-arg index="0" ref="rootCommandHandler" />
+        <constructor-arg index="1" ref="inputReader" />
+    </bean>
+
+</beans>
