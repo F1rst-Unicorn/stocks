@@ -4,6 +4,18 @@ It is only possible to upgrade the server version to the next each. For a
 successful upgrade just follow the instructions listed here in the order they
 are listed, from your current version, to the version you want to upgrade to.
 
+If the instruction is to simply perform an upgrade via the distribution's 
+package manager this means that the tomcat container has to be restarted after
+installation. 
+
+## 1.0.2
+
+Just perform the distribution's upgrade procedure. 
+
+## 1.0.1
+
+Just perform the distribution's upgrade procedure. 
+
 ## 1.0.0
 
 Just perform the distribution's upgrade procedure. 
