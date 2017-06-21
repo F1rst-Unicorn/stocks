@@ -1,0 +1,3 @@
+Title: Add first location
+Input: loc add Fridge
+Output: ^$

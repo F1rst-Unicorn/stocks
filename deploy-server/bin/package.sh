@@ -12,7 +12,7 @@ tar -cvf $STOCKS_ROOT/deploy-server/stocks.tar \
         --exclude=android-client \
         --exclude=client \
         --exclude=deploy-client \
-        --exclude=target \
+        --exclude=.idea \
         $STOCKS_ROOT
 
 cd $STOCKS_ROOT/deploy-server
@@ -28,4 +28,3 @@ mv $STOCKS_ROOT/deploy-server/*.xz $STOCKS_ROOT/deploy-server/target
 rm -rf $STOCKS_ROOT/deploy-server/src \
         $STOCKS_ROOT/deploy-server/pkg \
         $STOCKS_ROOT/deploy-server/*.tar
-

@@ -1,12 +1,16 @@
 package de.njsm.stocks.backend.network;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 import android.util.Log;
+import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.data.*;
+import de.njsm.stocks.backend.db.StocksContentProvider;
+import de.njsm.stocks.backend.db.data.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,36 +19,31 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.njsm.stocks.Config;
-import de.njsm.stocks.backend.data.Food;
-import de.njsm.stocks.backend.data.FoodItem;
-import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.data.Update;
-import de.njsm.stocks.backend.data.User;
-import de.njsm.stocks.backend.data.UserDevice;
-import de.njsm.stocks.backend.db.StocksContentProvider;
-import de.njsm.stocks.backend.db.data.SqlDeviceTable;
-import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
-import de.njsm.stocks.backend.db.data.SqlFoodTable;
-import de.njsm.stocks.backend.db.data.SqlLocationTable;
-import de.njsm.stocks.backend.db.data.SqlUpdateTable;
-import de.njsm.stocks.backend.db.data.SqlUserTable;
-
 public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
-    protected Context c;
-    protected AsyncTaskCallback mListener;
+    private static AtomicBoolean sRunning = new AtomicBoolean(false);
 
-    protected static AtomicBoolean sRunning = new AtomicBoolean(false);
+    private ContentResolver resolver;
 
+    private AsyncTaskCallback mListener;
+
+    @Deprecated
     public SyncTask(Context c) {
-        this.c = c;
+        this(c.getContentResolver());
     }
 
-    public SyncTask(Context c,
-                    AsyncTaskCallback listener) {
-        this.c = c;
-        this.mListener = listener;
+    @Deprecated
+    public SyncTask(Context c, AsyncTaskCallback listener) {
+        this(c.getContentResolver(), listener);
+    }
+
+    public SyncTask(ContentResolver resolver) {
+        this.resolver = resolver;
+    }
+
+    public SyncTask(ContentResolver resolver, AsyncTaskCallback mListener) {
+        this.resolver = resolver;
+        this.mListener = mListener;
     }
 
     @Override
@@ -55,36 +54,43 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
         }
 
         if (!sRunning.compareAndSet(false, true)){
+            Log.i(Config.log, "Another sync task is already running");
             return 0;
         }
 
         Update[] serverUpdates = ServerManager.m.getUpdates();
         Update[] localUpdates = getUpdates();
 
-        if (serverUpdates.length == 0) {
-            Log.e(Config.log, "Array is empty " + serverUpdates.length + ", " +
-                localUpdates.length);
-            return 0;
-        }
-        if (localUpdates.length == 0) {
-            refreshAll();
-        } else {
-            for (int i = 0; i < serverUpdates.length; i++) {
-                Update localUpdate = getLocalUpdate(localUpdates, serverUpdates[i].table);
-                if (localUpdate != null
-                        && serverUpdates[i].lastUpdate.after(localUpdates[i].lastUpdate)) {
-                    refresh(serverUpdates[i].table);
-                }
-            }
-        }
+        if (updateOutdatedTables(serverUpdates, localUpdates)) return 0;
 
         writeUpdates(serverUpdates);
+
         Log.i(Config.log, "Sync successful");
+
         sRunning.set(false);
         return 0;
     }
 
-    private Update getLocalUpdate(Update[] localUpdates, String table) {
+    protected boolean updateOutdatedTables(Update[] serverUpdates, Update[] localUpdates) {
+        if (serverUpdates.length == 0) {
+            Log.e(Config.log, "Array is empty " + serverUpdates.length + ", " +
+                localUpdates.length);
+            return true;
+        }
+        if (localUpdates.length == 0) {
+            refreshAll();
+        } else {
+            for (Update update : serverUpdates) {
+                Update localUpdate = getLocalUpdate(localUpdates, update.table);
+                if (localUpdate != null && update.lastUpdate.after(localUpdate.lastUpdate)) {
+                    refresh(update.table);
+                }
+            }
+        }
+        return false;
+    }
+
+    protected Update getLocalUpdate(Update[] localUpdates, String table) {
         for (Update u : localUpdates) {
             if (u.table.equals(table)) {
                 return u;
@@ -125,8 +131,7 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
             values[i].put(SqlFoodTable.COL_NAME, u[i].name);
         }
 
-        c.getContentResolver().bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodTable.NAME),
+        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodTable.NAME),
                 values);
     }
 
@@ -146,8 +151,7 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
         }
 
-        c.getContentResolver().bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodItemTable.NAME),
+        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodItemTable.NAME),
                 values);
     }
 
@@ -161,8 +165,7 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
             values[i].put(SqlLocationTable.COL_NAME, u[i].name);
         }
 
-        c.getContentResolver().bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME),
+        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME),
                 values);
     }
 
@@ -176,8 +179,7 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
             values[i].put(SqlUserTable.COL_NAME, u[i].name);
         }
 
-        c.getContentResolver().bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUserTable.NAME),
+        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUserTable.NAME),
                 values);
 
     }
@@ -193,13 +195,12 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
             values[i].put(SqlDeviceTable.COL_USER, u[i].userId);
         }
 
-        c.getContentResolver().bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlDeviceTable.NAME),
+        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlDeviceTable.NAME),
                 values);
     }
 
     public Update[] getUpdates() {
-        Cursor cursor = c.getContentResolver().query(
+        Cursor cursor = resolver.query(
                 Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
                 null,
                 null,
@@ -244,18 +245,12 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
             i++;
         }
 
-        c.getContentResolver().bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
+        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
                 values);
-    }
-
-    public void registerListener(@Nullable AsyncTaskCallback l) {
-        mListener = l;
     }
 
     @Override
     protected void onPreExecute() {
-
         if (mListener != null) {
             mListener.onAsyncTaskStart();
         }

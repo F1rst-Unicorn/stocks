@@ -1,0 +1,21 @@
+- hosts: "{{ target_host | default('deployment-test-client')}}"
+
+  vars:
+      remote_pkg_dir: /tmp
+
+      test_user: jan
+      
+      stocks_pkg_dir: "{{ playbook_dir }}/target"
+      stocks_version: 0.5.1-1
+      stocks_pkg: stocks-{{ stocks_version }}-any.pkg.tar.xz
+
+
+  remote_user: root
+  tasks:
+  - name: Copy package
+    copy: >
+        src={{ stocks_pkg_dir }}/{{ stocks_pkg }}
+        dest={{ remote_pkg_dir }}
+
+  - name: Install stocks package
+    command: pacman -U {{ remote_pkg_dir }}/{{ stocks_pkg }} --noconfirm

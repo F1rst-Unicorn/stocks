@@ -6,28 +6,45 @@ import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.frontend.CertificateGenerator;
 import de.njsm.stocks.client.frontend.ConfigGenerator;
-import de.njsm.stocks.client.frontend.UIFactory;
+import de.njsm.stocks.client.init.upgrade.UpgradeManager;
 import de.njsm.stocks.client.network.TcpHost;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import static de.njsm.stocks.client.config.Configuration.CONFIG_PATH;
+import static de.njsm.stocks.client.config.Configuration.DB_PATH;
+import static de.njsm.stocks.client.config.Configuration.SYSTEM_DB_PATH;
 
 public class InitManager {
 
     private static final Logger LOG = LogManager.getLogger(InitManager.class);
 
     private final Configuration newConfiguration;
-    private final UIFactory f;
+
+    private final ConfigGenerator configGenerator;
+
+    private final CertificateGenerator certificateGenerator;
+
+    private final TicketHandler ticketHandler;
+
+    private final UpgradeManager upgradeManager;
 
     private TcpHost caHost;
+
     private TcpHost ticketHost;
 
-    public InitManager(UIFactory f, PropertiesFileHandler fileHandler) {
-        this.f = f;
+    public InitManager(ConfigGenerator configGenerator,
+                       CertificateGenerator certificateGenerator,
+                       TicketHandler ticketHandler,
+                       PropertiesFileHandler fileHandler,
+                       UpgradeManager upgradeManager) {
+        this.configGenerator = configGenerator;
+        this.certificateGenerator = certificateGenerator;
+        this.ticketHandler = ticketHandler;
+        this.upgradeManager = upgradeManager;
         newConfiguration = new Configuration(fileHandler);
     }
 
@@ -35,6 +52,9 @@ public class InitManager {
         if (isFirstStartup()) {
             LOG.info("Starting initialisation process");
             runFirstInitialisation();
+        } else if (upgradeManager.needsUpgrade()) {
+            LOG.info("Upgrading to new version");
+            upgradeManager.upgrade();
         } else {
             LOG.info("Client is already initialised");
         }
@@ -46,10 +66,12 @@ public class InitManager {
 
     private void runFirstInitialisation() throws InitialisationException {
         try {
+            ticketHandler.startBackgroundWork();
             initialiseConfigFile();
-            getServerProperties(f.getConfigActor());
+            setupDatabase();
+            getServerProperties(configGenerator);
             createHosts();
-            initCertificates(f.getCertGenerator());
+            initCertificates(certificateGenerator);
             newConfiguration.saveConfig();
         } catch (IOException e) {
             LOG.error("Error during initialisation", e);
@@ -57,6 +79,15 @@ public class InitManager {
             destroyKeystore();
             throw new InitialisationException("Initialisation failed");
         }
+    }
+
+    private void setupDatabase() throws IOException {
+        LOG.info("Copying " + SYSTEM_DB_PATH + " to " + DB_PATH);
+        BufferedInputStream inFile = new BufferedInputStream(new FileInputStream(SYSTEM_DB_PATH));
+        BufferedOutputStream outFile = new BufferedOutputStream(new FileOutputStream(DB_PATH));
+        IOUtils.copyLarge(inFile, outFile);
+        inFile.close();
+        outFile.close();
     }
 
     private void getServerProperties(ConfigGenerator source) {
@@ -83,9 +114,7 @@ public class InitManager {
 
     private void initCertificates(CertificateGenerator source) throws InitialisationException {
         try {
-            TicketHandler handler = new TicketHandler(
-                    new KeyStoreHandlerImpl(),
-                    new NetworkHandlerImpl());
+
             String username = source.getUsername();
             String deviceName = source.getDeviceName();
             int uid = source.getUserId();
@@ -93,10 +122,10 @@ public class InitManager {
             String fingerprint = source.getCaFingerprint();
             String ticket = source.getTicket();
 
-            handler.generateKey();
-            handler.verifyServerCa(caHost, fingerprint);
-            handler.generateCsr(username, deviceName, uid, did);
-            handler.handleTicket(ticketHost, ticket, did);
+            ticketHandler.generateKey();
+            ticketHandler.verifyServerCa(caHost, fingerprint);
+            ticketHandler.generateCsr(username, deviceName, uid, did);
+            ticketHandler.handleTicket(ticketHost, ticket, did);
 
             newConfiguration.setUsername(username);
             newConfiguration.setDeviceName(deviceName);

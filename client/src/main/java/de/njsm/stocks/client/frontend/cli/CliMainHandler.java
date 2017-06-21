@@ -1,32 +1,24 @@
 package de.njsm.stocks.client.frontend.cli;
 
+import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.frontend.MainHandler;
-import de.njsm.stocks.client.frontend.cli.commands.*;
-import de.njsm.stocks.client.config.Configuration;
-
-import java.text.ParseException;
-import java.util.ArrayList;
+import de.njsm.stocks.client.frontend.cli.commands.AggregatedCommandHandler;
+import de.njsm.stocks.client.frontend.cli.service.InputReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class CliMainHandler implements MainHandler {
 
-    protected final CommandManager m;
-    protected final Configuration c;
+    private static final Logger LOG = LogManager.getLogger(CliMainHandler.class);
 
-    public CliMainHandler(Configuration c) {
-        this.c = c;
+    private final AggregatedCommandHandler m;
 
-        ArrayList<CommandHandler> commandHandler = new ArrayList<>();
-        commandHandler.add(new AddCommandHandler(c));
-        commandHandler.add(new MoveCommandHandler(c));
-        commandHandler.add(new EatCommandHandler(c));
-        commandHandler.add(new FoodCommandHandler(c));
-        commandHandler.add(new LocationCommandHandler(c));
-        commandHandler.add(new RefreshCommandHandler(c));
-        commandHandler.add(new UserCommandHandler(c));
-        commandHandler.add(new DeviceCommandHandler(c));
+    private InputReader reader;
 
-        m = new CommandManager(commandHandler);
+    CliMainHandler(AggregatedCommandHandler m, InputReader reader) {
+        this.m = m;
+        this.reader = reader;
     }
 
     @Override
@@ -37,31 +29,31 @@ public class CliMainHandler implements MainHandler {
         if (args.length > 0) {
             try {
                 command = Command.createCommand(args);
-                m.handleCommand(command);
+                m.handle(command);
             } catch (ParseException e) {
-                // TODO Log
+                LOG.error("Could not parse command", e);
             }
         } else {
             while (!endRequested) {
-                String input = c.getReader().next("stocks $ ");
+                String input = reader.next("stocks $ ");
 
                 switch (input) {
                     case "quit":
                         endRequested = true;
                         break;
                     case "":
+                    case "\n":
                         break;
                     default:
                         try {
                             command = Command.createCommand(input);
-                            m.handleCommand(command);
+                            m.handle(command);
                         } catch (ParseException e) {
-                            // TODO Log
+                            LOG.error("Could not parse command", e);
                         }
                 }
             }
         }
-        c.getReader().shutdown();
+        reader.shutdown();
     }
-
 }

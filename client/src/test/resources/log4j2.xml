@@ -6,7 +6,7 @@
         <Console
                 name="console"
                 target="SYSTEM_OUT">
-            <PatternLayout pattern="log4j: %p %C:%L %m%n" />
+            <PatternLayout pattern="%p %c{1}:%L %m%n" />
         </Console>
         
     </Appenders>

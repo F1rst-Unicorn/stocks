@@ -1,19 +1,15 @@
 package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.frontend.ConfigGenerator;
+import de.njsm.stocks.client.frontend.cli.service.InputReader;
+import de.njsm.stocks.client.service.TimeProviderImpl;
 
 public class CliConfigGenerator implements ConfigGenerator {
 
-    protected final InputReader reader;
+    private final InputReader reader;
 
-    public CliConfigGenerator() {
-        reader = new EnhancedInputReader(System.in);
-    }
-
-    @Override
-    public void startUp() {
-        System.out.println("Welcome to stocks.\nThis is the first time you use the app, please follow\n" +
-                "this setup guide first. ");
+    CliConfigGenerator(InputReader reader) {
+        this.reader = reader;
     }
 
     @Override
@@ -34,10 +30,4 @@ public class CliConfigGenerator implements ConfigGenerator {
         }
         return result;
     }
-
-    @Override
-    public void shutDown() {
-        System.out.println("Configuration successful");
-    }
-
 }

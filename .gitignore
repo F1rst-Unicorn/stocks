@@ -10,14 +10,9 @@ target
 .idea
 *.iml
 
-*.war
-*.pkg.tar.xz
-deploy*/stocks/
-keystore
-
 spec/ER-diagram.png
 
 # test files
 server/src/test/system/resources
 client/src/test/system/resources
-stocks.db
+tmp

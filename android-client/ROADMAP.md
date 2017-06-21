@@ -1,15 +1,17 @@
 # Roadmap for subcomponent android-client
 
-## Version 0.4 (current)
+## Version 0.4
 * 00000 : DONE : Basic functionality
 
-## Version 0.5
-* 00017 : NEW  : Update Android SDK and gradle
+## Version 0.5 (current)
+* 00017 : DONE : Update Android SDK and gradle
 * 00011 : NEW  : Add simple user manual
 * 00001 : DONE : Save crash logs
 * 00002 : NEW  : Edit eat-by date
 * 00003 : NEW  : Add searching food
 * 00016 : DONE : Fix update table array index error
+* 00018 : NEW  : Add system tests
+* 00019 : NEW  : Fix crash after long idle time
 
 ## Version 0.6
 * 00005 : NEW  : Prevent usage of spaces in names

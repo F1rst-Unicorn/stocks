@@ -1,6 +1,6 @@
 # Maintainer: aliena <dairyman@njsm.de>
 pkgname=stocks-server
-pkgver=1.0.1
+pkgver=1.0.2
 pkgrel=1
 pkgdesc="Manages a household's stocks"
 arch=('any')
@@ -24,11 +24,11 @@ build() {
     cd "$srcdir"
     
     cd server
-    mvn -Dmaven.test.skip=true clean package
+    mvn -Dmaven.test.skip=true package
     cd ..
 
     cd sentry
-    mvn -Dmaven.test.skip=true clean package
+    mvn -Dmaven.test.skip=true package
     cd ..
 }
 

@@ -1,0 +1,3 @@
+Title: Fill items 2
+Input: add --f Ham --l Fridge --d +4m
+Output: ^$
