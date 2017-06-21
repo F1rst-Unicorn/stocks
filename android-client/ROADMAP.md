@@ -1,9 +1,9 @@
 # Roadmap for subcomponent android-client
 
-## Version 0.4 (current)
+## Version 0.4
 * 00000 : DONE : Basic functionality
 
-## Version 0.5
+## Version 0.5 (current)
 * 00017 : DONE : Update Android SDK and gradle
 * 00011 : NEW  : Add simple user manual
 * 00001 : NEW  : Save crash logs
