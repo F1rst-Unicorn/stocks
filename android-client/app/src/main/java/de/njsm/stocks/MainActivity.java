@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,27 +14,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import de.njsm.stocks.backend.data.Food;
 import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.network.NewFoodTask;
-import de.njsm.stocks.backend.network.NewLocationTask;
-import de.njsm.stocks.backend.network.NewUserTask;
-import de.njsm.stocks.backend.network.ServerManager;
-import de.njsm.stocks.backend.network.SwipeSyncCallback;
-import de.njsm.stocks.backend.network.SyncTask;
+import de.njsm.stocks.backend.network.*;
+import de.njsm.stocks.backend.util.ExceptionHandler;
 import de.njsm.stocks.setup.SetupActivity;
 import de.njsm.stocks.setup.SetupFinishedListener;
 import de.njsm.stocks.setup.SetupTask;
@@ -59,34 +46,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final Thread.UncaughtExceptionHandler androidHandler = Thread.getDefaultUncaughtExceptionHandler();
-
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                try {
-                    File dir = Environment.getExternalStorageDirectory();
-
-                    if (dir == null) {
-                        dir = Environment.getDataDirectory();
-                    }
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
-                    final File logfile = new File(dir, "stocks_crashlog_" + sdf.format(new Date()) + ".txt");
-                    final FileOutputStream os = new FileOutputStream(logfile);
-                    final PrintWriter pw = new PrintWriter(os);
-                    e.printStackTrace(pw);
-                    Log.d("UncaughtEHandler", logfile.getAbsolutePath());
-                    pw.flush();
-                    pw.close();
-
-                } catch(Exception e1) {
-                    Log.e("UncaughtEHandler", "Exception during crash logging");
-                    e1.printStackTrace();
-                }
-                androidHandler.uncaughtException(t, e);
-            }
-        });
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.getFilesDir()));
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_food_toolbar);

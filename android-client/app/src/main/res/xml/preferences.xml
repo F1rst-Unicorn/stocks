@@ -6,5 +6,9 @@
         android:title="@string/title_new_sync"
         android:summary="@string/dialog_new_sync"/>
 
+    <Preference
+        android:key="pref_crash_logs"
+        android:title="@string/title_crash_logs"/>
+
 
 </PreferenceScreen>
