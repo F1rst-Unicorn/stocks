@@ -10,22 +10,21 @@
     android:paddingBottom="@dimen/list_item_padding">
 
     <TextView
-        android:id="@+id/item_crash_log_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-
-    <TextView
         android:id="@+id/item_crash_log_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_gravity="end"
-        android:layout_alignParentEnd="true"
-        android:paddingTop="4dp"
-        android:paddingEnd="4dp" />
+        android:paddingTop="4dp" />
+
+    <TextView
+            android:id="@+id/item_crash_log_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_crash_log_date"
+
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:paddingTop="4dp"
+    />
 
 </RelativeLayout>

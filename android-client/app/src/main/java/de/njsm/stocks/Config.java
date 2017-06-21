@@ -26,7 +26,7 @@ public class Config {
 
     public static final String password = "passwordfooyouneverguessme$32XD";
 
-    public static final SimpleDateFormat TECHNICAL_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+    public static final SimpleDateFormat TECHNICAL_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss.S");
 
     public static OkHttpClient getClient(Context c) throws Exception {
 

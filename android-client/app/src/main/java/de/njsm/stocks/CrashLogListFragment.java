@@ -5,6 +5,7 @@ import android.app.ListFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +27,6 @@ public class CrashLogListFragment extends ListFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         setListContent();
     }
 
@@ -39,12 +39,7 @@ public class CrashLogListFragment extends ListFragment
             }
         });
 
-        List<Map<String, String>> entries = new LinkedList<>();
-
-        for (File report : crashlogs) {
-            entries.add(getMetaInformation(report));
-        }
-
+        List<Map<String, String>> entries = computeView();
         SimpleAdapter adapter = new SimpleAdapter(getActivity(), entries,
                 R.layout.item_crash_log,
                 new String[] {"name", "date"},
@@ -53,7 +48,16 @@ public class CrashLogListFragment extends ListFragment
         setListShown(true);
     }
 
-    private Map<String, String> getMetaInformation(File report) {
+    @NonNull
+    private List<Map<String, String>> computeView() {
+        List<Map<String, String>> entries = new LinkedList<>();
+        for (File report : crashlogs) {
+            entries.add(getMetaInformationOfReport(report));
+        }
+        return entries;
+    }
+
+    private Map<String, String> getMetaInformationOfReport(File report) {
 
         HashMap<String, String> result = new HashMap<>();
         result.put("name", "<?>");
