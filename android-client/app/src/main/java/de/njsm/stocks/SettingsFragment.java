@@ -6,6 +6,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 import de.njsm.stocks.backend.db.DatabaseHandler;
+import de.njsm.stocks.frontend.crashlog.CrashLogActivity;
 
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 

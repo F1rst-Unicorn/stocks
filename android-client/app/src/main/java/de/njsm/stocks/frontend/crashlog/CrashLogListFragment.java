@@ -1,21 +1,22 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend.crashlog;
 
 
 import android.app.ListFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import de.njsm.stocks.Config;
+import de.njsm.stocks.R;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class CrashLogListFragment extends ListFragment
         implements AdapterView.OnItemLongClickListener {
@@ -27,58 +28,9 @@ public class CrashLogListFragment extends ListFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setListContent();
-    }
 
-    private void setListContent() {
-        setListShown(false);
-        crashlogs = getActivity().getFilesDir().listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.startsWith("crashlog_");
-            }
-        });
-
-        List<Map<String, String>> entries = computeView();
-        SimpleAdapter adapter = new SimpleAdapter(getActivity(), entries,
-                R.layout.item_crash_log,
-                new String[] {"name", "date"},
-                new int[] {R.id.item_crash_log_name, R.id.item_crash_log_date});
-        getListView().setAdapter(adapter);
-        setListShown(true);
-    }
-
-    @NonNull
-    private List<Map<String, String>> computeView() {
-        List<Map<String, String>> entries = new LinkedList<>();
-        for (File report : crashlogs) {
-            entries.add(getMetaInformationOfReport(report));
-        }
-        return entries;
-    }
-
-    private Map<String, String> getMetaInformationOfReport(File report) {
-
-        HashMap<String, String> result = new HashMap<>();
-        result.put("name", "<?>");
-        result.put("date", Config.TECHNICAL_DATE_FORMAT.format(new Date(0L)));
-
-        InputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(report);
-            String reportContent = IOUtils.toString(inputStream);
-            String[] lines = reportContent.split("\n");
-
-            if (lines.length >= 2) {
-                result.put("name", lines[0]);
-                result.put("date", lines[1]);
-            }
-        } catch (IOException e) {
-            Log.w(Config.log, "Crash report has been removed", e);
-        } finally {
-            IOUtils.closeQuietly(inputStream);
-        }
-        return result;
+        ListCrashLogsTask asyncTask = new ListCrashLogsTask(getActivity().getFilesDir(), this);
+        asyncTask.execute();
     }
 
     @Override
@@ -122,7 +74,8 @@ public class CrashLogListFragment extends ListFragment
                 .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     crashlogs[i].delete();
-                    CrashLogListFragment.this.setListContent();
+                    ListCrashLogsTask asyncTask = new ListCrashLogsTask(getActivity().getFilesDir(), CrashLogListFragment.this);
+                    asyncTask.execute();
                     }
                 })
                 .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
@@ -130,5 +83,9 @@ public class CrashLogListFragment extends ListFragment
                 })
                 .show();
         return true;
+    }
+
+    public void setCrashlogs(File[] crashlogs) {
+        this.crashlogs = crashlogs;
     }
 }

@@ -1,8 +1,9 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend.crashlog;
 
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import de.njsm.stocks.R;
 
 public class CrashLogActivity extends AppCompatActivity {
 

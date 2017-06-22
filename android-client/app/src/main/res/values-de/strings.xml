@@ -85,5 +85,7 @@
     <string name="text_amount">Menge</string>
     <string name="text_buyer">Käufer</string>
     <string name="text_eat_by_date">Haltbarkeitsdatum:</string>
+    <string name="text_no_crash_logs">Die App läuft stabil.</string>
+
 
 </resources>
