@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.util.Date;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 public class SyncTaskTest {
@@ -32,6 +33,7 @@ public class SyncTaskTest {
 
         uut.updateOutdatedTables(serverUpdates, localUpdates);
 
+        verify(context).getContentResolver();
         verifyNoMoreInteractions(context);
     }
 
@@ -45,6 +47,7 @@ public class SyncTaskTest {
 
         uut.updateOutdatedTables(serverUpdates, localUpdates);
 
+        verify(context).getContentResolver();
         verifyNoMoreInteractions(context);
     }
 }
