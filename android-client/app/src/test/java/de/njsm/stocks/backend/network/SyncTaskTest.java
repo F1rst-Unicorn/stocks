@@ -1,6 +1,6 @@
 package de.njsm.stocks.backend.network;
 
-import android.content.ContentResolver;
+import android.content.ContextWrapper;
 import de.njsm.stocks.backend.data.Update;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,12 +14,12 @@ public class SyncTaskTest {
 
     private SyncTask uut;
 
-    private ContentResolver resolver;
+    private ContextWrapper context;
 
     @Before
     public void setup() throws Exception {
-        resolver = mock(ContentResolver.class);
-        uut = new SyncTask(resolver);
+        context = mock(ContextWrapper.class);
+        uut = new SyncTask(context);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class SyncTaskTest {
 
         uut.updateOutdatedTables(serverUpdates, localUpdates);
 
-        verifyNoMoreInteractions(resolver);
+        verifyNoMoreInteractions(context);
     }
 
     @Test
@@ -45,6 +45,6 @@ public class SyncTaskTest {
 
         uut.updateOutdatedTables(serverUpdates, localUpdates);
 
-        verifyNoMoreInteractions(resolver);
+        verifyNoMoreInteractions(context);
     }
 }
