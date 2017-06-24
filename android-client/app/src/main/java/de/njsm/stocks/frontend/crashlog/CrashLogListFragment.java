@@ -29,7 +29,7 @@ public class CrashLogListFragment extends ListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListCrashLogsTask asyncTask = new ListCrashLogsTask(getActivity().getFilesDir(), this);
+        ListCrashLogsTask asyncTask = new ListCrashLogsTask(getActivity(), getActivity().getFilesDir(), this);
         asyncTask.execute();
     }
 
@@ -74,7 +74,8 @@ public class CrashLogListFragment extends ListFragment
                 .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     crashlogs[i].delete();
-                    ListCrashLogsTask asyncTask = new ListCrashLogsTask(getActivity().getFilesDir(), CrashLogListFragment.this);
+                    ListCrashLogsTask asyncTask = new ListCrashLogsTask(getActivity(),
+                            getActivity().getFilesDir(), CrashLogListFragment.this);
                     asyncTask.execute();
                     }
                 })

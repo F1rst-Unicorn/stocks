@@ -1,40 +1,24 @@
 package de.njsm.stocks.backend.network;
 
-import android.content.Context;
-import android.os.AsyncTask;
-
-import de.njsm.stocks.backend.data.Food;
+import android.content.ContextWrapper;
 import de.njsm.stocks.backend.data.FoodItem;
+import de.njsm.stocks.backend.util.AbstractAsyncTask;
 
-public class NewFoodItemTask extends AsyncTask<FoodItem, Void, Integer> {
+public class NewFoodItemTask extends AbstractAsyncTask<FoodItem, Void, Integer> {
 
-    public Context c;
-
-    public NewFoodItemTask(Context c) {
-
-        this.c = c;
-
+    public NewFoodItemTask(ContextWrapper context) {
+        super(context);
     }
 
     @Override
-    protected Integer doInBackground(FoodItem... params) {
-
-        if (android.os.Debug.isDebuggerConnected()) {
-            android.os.Debug.waitForDebugger();
-        }
-
+    protected Integer doInBackgroundInternally(FoodItem... params) {
         ServerManager.m.addItem(params[0]);
-
         return 0;
     }
 
     @Override
-    protected void onPreExecute() {
-    }
-
-    @Override
     protected void onPostExecute(Integer integer) {
-        SyncTask task = new SyncTask(c);
+        SyncTask task = new SyncTask(context);
         task.execute();
     }
 }

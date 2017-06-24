@@ -1,19 +1,13 @@
 package de.njsm.stocks.backend.db;
 
 import android.content.ContentValues;
-import android.content.Context;
+import android.content.ContextWrapper;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import de.njsm.stocks.Config;
-import de.njsm.stocks.backend.db.data.SqlDeviceTable;
-import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
-import de.njsm.stocks.backend.db.data.SqlFoodTable;
-import de.njsm.stocks.backend.db.data.SqlLocationTable;
-import de.njsm.stocks.backend.db.data.SqlUpdateTable;
-import de.njsm.stocks.backend.db.data.SqlUserTable;
+import de.njsm.stocks.backend.db.data.*;
 import de.njsm.stocks.backend.network.SyncTask;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
@@ -21,9 +15,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public static final int DATABASE_VERSION = 16;
     public static final String DATABASE_NAME = "stocks.db";
 
-    protected Context mContext;
+    protected ContextWrapper mContext;
 
-    public DatabaseHandler(Context context) {
+    public DatabaseHandler(ContextWrapper context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;
     }

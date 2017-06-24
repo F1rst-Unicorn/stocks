@@ -13,8 +13,11 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     private File directory;
 
-    public ExceptionHandler(File directory) {
+    private Thread.UncaughtExceptionHandler androidHandler;
+
+    public ExceptionHandler(File directory, Thread.UncaughtExceptionHandler androidHandler) {
         this.directory = directory;
+        this.androidHandler = androidHandler;
     }
 
     @Override
@@ -35,6 +38,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
             Log.e(Config.log, "Exception during crash logging", e);
         } finally {
             IOUtils.closeQuietly(pw);
+            androidHandler.uncaughtException(faultyThread, occuredException);
         }
     }
 }

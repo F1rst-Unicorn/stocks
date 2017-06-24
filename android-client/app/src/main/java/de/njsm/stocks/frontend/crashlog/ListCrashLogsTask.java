@@ -1,18 +1,19 @@
 package de.njsm.stocks.frontend.crashlog;
 
-import android.os.AsyncTask;
+import android.content.ContextWrapper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import de.njsm.stocks.Config;
 import de.njsm.stocks.R;
+import de.njsm.stocks.backend.util.AbstractAsyncTask;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.util.*;
 
-public class ListCrashLogsTask extends AsyncTask<Void, Void, Integer> {
+public class ListCrashLogsTask extends AbstractAsyncTask<Void, Void, Integer> {
 
     private File crashLogDirectory;
 
@@ -20,17 +21,16 @@ public class ListCrashLogsTask extends AsyncTask<Void, Void, Integer> {
 
     private ListAdapter adapter;
 
-    public ListCrashLogsTask(File crashLogDirectory, CrashLogListFragment fragment) {
+    public ListCrashLogsTask(ContextWrapper context,
+                             File crashLogDirectory,
+                             CrashLogListFragment fragment) {
+        super(context);
         this.crashLogDirectory = crashLogDirectory;
         this.fragment = fragment;
     }
 
     @Override
-    protected Integer doInBackground(Void... params) {
-
-        if (android.os.Debug.isDebuggerConnected()) {
-            android.os.Debug.waitForDebugger();
-        }
+    protected Integer doInBackgroundInternally(Void[] params) {
 
         File[] crashlogs = crashLogDirectory.listFiles(new FilenameFilter() {
             @Override
