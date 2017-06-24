@@ -1,40 +1,24 @@
 package de.njsm.stocks.backend.network;
 
-import android.content.Context;
-import android.os.AsyncTask;
-
+import android.content.ContextWrapper;
 import de.njsm.stocks.backend.data.FoodItem;
-import de.njsm.stocks.backend.data.User;
+import de.njsm.stocks.backend.util.AbstractAsyncTask;
 
-public class DeleteItemTask extends AsyncTask<FoodItem, Void, Integer> {
+public class DeleteItemTask extends AbstractAsyncTask<FoodItem, Void, Integer> {
 
-    public Context c;
-
-    public DeleteItemTask(Context c) {
-
-        this.c = c;
-
+    public DeleteItemTask(ContextWrapper c) {
+        super(c);
     }
 
     @Override
-    protected Integer doInBackground(FoodItem... params) {
-
-        if (android.os.Debug.isDebuggerConnected()) {
-            android.os.Debug.waitForDebugger();
-        }
-
+    protected Integer doInBackgroundInternally(FoodItem... params) {
         ServerManager.m.removeItem(params[0]);
-
         return 0;
     }
 
     @Override
-    protected void onPreExecute() {
-    }
-
-    @Override
     protected void onPostExecute(Integer integer) {
-        SyncTask task = new SyncTask(c);
+        SyncTask task = new SyncTask(context);
         task.execute();
     }
 }

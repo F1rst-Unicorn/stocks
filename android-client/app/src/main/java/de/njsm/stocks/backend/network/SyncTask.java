@@ -2,15 +2,15 @@ package de.njsm.stocks.backend.network;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
+import android.content.ContextWrapper;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 import de.njsm.stocks.Config;
 import de.njsm.stocks.backend.data.*;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.*;
+import de.njsm.stocks.backend.util.AbstractAsyncTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SyncTask extends AsyncTask<Void, Void, Integer> {
+public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
 
     private static AtomicBoolean sRunning = new AtomicBoolean(false);
 
@@ -27,31 +27,18 @@ public class SyncTask extends AsyncTask<Void, Void, Integer> {
 
     private AsyncTaskCallback mListener;
 
-    @Deprecated
-    public SyncTask(Context c) {
-        this(c.getContentResolver());
+    public SyncTask(ContextWrapper c) {
+        this(c, null);
     }
 
-    @Deprecated
-    public SyncTask(Context c, AsyncTaskCallback listener) {
-        this(c.getContentResolver(), listener);
-    }
-
-    public SyncTask(ContentResolver resolver) {
-        this.resolver = resolver;
-    }
-
-    public SyncTask(ContentResolver resolver, AsyncTaskCallback mListener) {
-        this.resolver = resolver;
-        this.mListener = mListener;
+    public SyncTask(ContextWrapper c, AsyncTaskCallback listener) {
+        super(c);
+        this.resolver = c.getContentResolver();
+        mListener = listener;
     }
 
     @Override
-    protected Integer doInBackground(Void... params) {
-
-        if (android.os.Debug.isDebuggerConnected()) {
-            android.os.Debug.waitForDebugger();
-        }
+    protected Integer doInBackgroundInternally(Void... params) {
 
         if (!sRunning.compareAndSet(false, true)){
             Log.i(Config.log, "Another sync task is already running");

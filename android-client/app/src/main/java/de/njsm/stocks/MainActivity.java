@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.getFilesDir()));
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.getFilesDir(),
+                Thread.getDefaultUncaughtExceptionHandler()));
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_food_toolbar);
