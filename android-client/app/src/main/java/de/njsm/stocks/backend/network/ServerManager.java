@@ -3,22 +3,12 @@ package de.njsm.stocks.backend.network;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import de.njsm.stocks.Config;
-import de.njsm.stocks.backend.data.Food;
-import de.njsm.stocks.backend.data.FoodItem;
-import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.data.Ticket;
-import de.njsm.stocks.backend.data.Update;
-import de.njsm.stocks.backend.data.User;
-import de.njsm.stocks.backend.data.UserDevice;
+import de.njsm.stocks.common.data.*;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -42,14 +32,10 @@ public class ServerManager {
                     prefs.getString(Config.serverNameConfig, ""),
                     prefs.getInt(Config.serverPortConfig, 0));
 
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd hh:mm:ss")
-                    .create();
-
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(url)
                     .client(Config.getClient(ctx))
-                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addConverterFactory(JacksonConverterFactory.create())
                     .build();
 
             backend = retrofit.create(ServerClient.class);

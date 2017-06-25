@@ -1,7 +1,7 @@
 package de.njsm.stocks.setup;
 
 
-import de.njsm.stocks.backend.data.Ticket;
+import de.njsm.stocks.common.data.Ticket;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;

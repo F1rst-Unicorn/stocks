@@ -19,14 +19,10 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-
-import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.data.User;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
-import de.njsm.stocks.backend.db.data.SqlUserTable;
 import de.njsm.stocks.backend.network.DeleteLocationTask;
-import de.njsm.stocks.backend.network.DeleteUserTask;
+import de.njsm.stocks.common.data.Location;
 
 public class LocationListFragment extends ListFragment
         implements AbsListView.OnScrollListener,

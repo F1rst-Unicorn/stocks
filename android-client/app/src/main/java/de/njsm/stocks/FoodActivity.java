@@ -11,12 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import de.njsm.stocks.backend.data.Food;
-import de.njsm.stocks.backend.data.FoodItem;
 import de.njsm.stocks.backend.network.DeleteFoodTask;
-import de.njsm.stocks.backend.network.DeleteItemTask;
 import de.njsm.stocks.backend.network.SwipeSyncCallback;
+import de.njsm.stocks.common.data.Food;
 
 public class FoodActivity extends AppCompatActivity {
 

@@ -3,27 +3,26 @@ package de.njsm.stocks;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.content.CursorLoader;
-import android.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.SimpleCursorAdapter;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
-
-import de.njsm.stocks.backend.data.User;
+import android.widget.SimpleCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
 import de.njsm.stocks.backend.network.DeleteUserTask;
+import de.njsm.stocks.common.data.User;
 
 public class UserListFragment extends ListFragment
         implements AbsListView.OnScrollListener,

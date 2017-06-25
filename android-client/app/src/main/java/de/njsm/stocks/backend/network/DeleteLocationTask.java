@@ -1,8 +1,8 @@
 package de.njsm.stocks.backend.network;
 
 import android.content.ContextWrapper;
-import de.njsm.stocks.backend.data.Location;
 import de.njsm.stocks.backend.util.AbstractAsyncTask;
+import de.njsm.stocks.common.data.Location;
 
 public class DeleteLocationTask extends AbstractAsyncTask<Location, Void, Integer> {
 

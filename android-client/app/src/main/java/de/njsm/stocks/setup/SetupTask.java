@@ -9,16 +9,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import de.njsm.stocks.Config;
+import de.njsm.stocks.R;
+import de.njsm.stocks.common.data.Ticket;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.security.auth.x500.X500Principal;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -29,15 +32,6 @@ import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Locale;
-
-import javax.security.auth.x500.X500Principal;
-
-import de.njsm.stocks.Config;
-import de.njsm.stocks.R;
-import de.njsm.stocks.backend.data.Ticket;
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SetupTask extends AsyncTask<Void, String, Result> {
 
@@ -184,12 +178,10 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
                 extras.getString(Config.serverNameConfig),
                 extras.getInt(Config.sentryPortConfig));
 
-        Gson gson = new GsonBuilder().create();
-
         SentryClient backend = new Retrofit.Builder()
                 .baseUrl(url)
                 .client(Config.getClient(c))
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(JacksonConverterFactory.create())
                 .build()
                 .create(SentryClient.class);
 

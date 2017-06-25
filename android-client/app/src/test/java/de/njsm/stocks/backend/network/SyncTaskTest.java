@@ -1,15 +1,13 @@
 package de.njsm.stocks.backend.network;
 
 import android.content.ContextWrapper;
-import de.njsm.stocks.backend.data.Update;
+import de.njsm.stocks.common.data.Update;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 public class SyncTaskTest {
 

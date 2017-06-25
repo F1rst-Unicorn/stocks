@@ -13,27 +13,19 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.*;
+import de.njsm.stocks.adapters.FoodItemCursorAdapter;
+import de.njsm.stocks.backend.db.StocksContentProvider;
+import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
+import de.njsm.stocks.backend.db.data.SqlLocationTable;
+import de.njsm.stocks.backend.network.DeleteItemTask;
+import de.njsm.stocks.backend.network.MoveItemTask;
+import de.njsm.stocks.common.data.FoodItem;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import de.njsm.stocks.adapters.FoodItemCursorAdapter;
-import de.njsm.stocks.backend.data.FoodItem;
-import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.db.StocksContentProvider;
-import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
-import de.njsm.stocks.backend.db.data.SqlLocationTable;
-import de.njsm.stocks.backend.network.DeleteItemTask;
-import de.njsm.stocks.backend.network.DeleteLocationTask;
-import de.njsm.stocks.backend.network.MoveItemTask;
 
 public class FoodFragment extends ListFragment implements
         AbsListView.OnScrollListener,

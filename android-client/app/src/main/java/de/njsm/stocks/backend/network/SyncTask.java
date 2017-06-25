@@ -7,10 +7,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 import de.njsm.stocks.Config;
-import de.njsm.stocks.backend.data.*;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.*;
 import de.njsm.stocks.backend.util.AbstractAsyncTask;
+import de.njsm.stocks.common.data.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

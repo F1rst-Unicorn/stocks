@@ -5,23 +5,21 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Adapter;
 import android.widget.DatePicker;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import java.util.Calendar;
-import java.util.Date;
-
-import de.njsm.stocks.backend.data.FoodItem;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.network.NewFoodItemTask;
+import de.njsm.stocks.common.data.FoodItem;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class AddFoodItemActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>{

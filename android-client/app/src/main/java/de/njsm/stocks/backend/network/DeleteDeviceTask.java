@@ -1,8 +1,8 @@
 package de.njsm.stocks.backend.network;
 
 import android.content.ContextWrapper;
-import de.njsm.stocks.backend.data.UserDevice;
 import de.njsm.stocks.backend.util.AbstractAsyncTask;
+import de.njsm.stocks.common.data.UserDevice;
 
 public class DeleteDeviceTask extends AbstractAsyncTask<UserDevice, Void, Integer> {
 

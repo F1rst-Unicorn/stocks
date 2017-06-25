@@ -1,8 +1,8 @@
 package de.njsm.stocks.backend.network;
 
 import android.content.ContextWrapper;
-import de.njsm.stocks.backend.data.FoodItem;
 import de.njsm.stocks.backend.util.AbstractAsyncTask;
+import de.njsm.stocks.common.data.FoodItem;
 
 public class DeleteItemTask extends AbstractAsyncTask<FoodItem, Void, Integer> {
 

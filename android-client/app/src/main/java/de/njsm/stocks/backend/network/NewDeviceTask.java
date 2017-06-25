@@ -3,9 +3,9 @@ package de.njsm.stocks.backend.network;
 import android.content.Context;
 import android.content.ContextWrapper;
 import de.njsm.stocks.Config;
-import de.njsm.stocks.backend.data.Ticket;
-import de.njsm.stocks.backend.data.UserDevice;
 import de.njsm.stocks.backend.util.AbstractAsyncTask;
+import de.njsm.stocks.common.data.Ticket;
+import de.njsm.stocks.common.data.UserDevice;
 
 import java.util.Locale;
 

@@ -7,23 +7,17 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-
-import de.njsm.stocks.backend.data.UserDevice;
+import android.widget.*;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlDeviceTable;
 import de.njsm.stocks.backend.network.DeleteDeviceTask;
 import de.njsm.stocks.backend.network.NewDeviceTask;
+import de.njsm.stocks.common.data.UserDevice;
 
 public class UserActivity extends AppCompatActivity
         implements NewDeviceTask.TicketCallback,
