@@ -35,6 +35,9 @@
 * 00030 : NEW  : Database versioning and concurrency
 * 00031 : NEW  : Add TeamCity service messages for system tests
 * 00032 : NEW  : Fix time shift when reading dates from database
+* 00033 : NEW  : Clean up log files
+* 00034 : NEW  : Refine nginx config: dhparam, timeouts, error pages, exceptions
+* 00035 : NEW  : Match threads running in different server components
 
 ## Version 1.2
 * 00009 : NEW  : Add favourite food markers
