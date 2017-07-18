@@ -1,0 +1,77 @@
+\documentclass[12pt]{report}
+\usepackage{geometry} \geometry{a4paper, top=20mm, left=20mm, right=20mm, bottom=20mm, headsep=10mm, footskip=12mm} 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage[bookmarks=true]{hyperref}
+\usepackage{bookmark}
+\usepackage{graphicx}
+\usepackage{csvsimple}
+\usepackage {multicol}
+
+
+\usepackage{color}
+\definecolor{keyword}{rgb}{0.5,0,0.35}		% keywords
+\definecolor{comments}{rgb}{0.2,0.5,0.25}	% comments
+\definecolor{identifier}{rgb}{0.2,0.2,0.2}	% identifiers
+
+\usepackage{listings}
+\lstset{numbers = left, 		% Position of line numbers
+	basicstyle = \ttfamily ,% Font type
+	keywordstyle = \color{keyword},	% style for keywords
+	commentstyle = \color{comments}, % style for comments
+	stringstyle = \color{identifier}, 
+	numberstyle = \small, 	% Font style of numbers
+	numbersep = 7pt, 		% Space between line number and code
+	breaklines = true,		% Automatic line breaking
+	tabsize = 4,				% number of spaces for TAB
+	language = Java,		% Used language
+	frame = single
+}
+
+
+\begin{document}
+\title{Stocks Specification}			% put title in brackets
+\author{Jan Veen}
+\maketitle				% create headings
+\cleardoublepage
+\pdfbookmark{\contentsname}{Contents}
+\tableofcontents
+
+\chapter{Data Model}
+
+\includegraphics[width=\linewidth]{diagrams/ER-diagram.png}
+
+\chapter{Architecture}
+
+\section{Used Software}
+
+\section{Server}
+
+\section{Client}
+
+\subsection{Register New Data}
+
+\includegraphics[width=\linewidth]{diagrams/put-data.png}
+
+\subsection{Refresh client database}
+
+\includegraphics[width=\linewidth]{diagrams/Refreshment.png}
+
+\subsection{New user registration}
+
+\includegraphics[width=\linewidth]{diagrams/new-user-registration.png}
+
+\section{Security}
+
+
+
+
+
+
+
+\end{document}

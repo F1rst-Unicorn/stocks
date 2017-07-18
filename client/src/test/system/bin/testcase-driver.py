@@ -13,7 +13,7 @@ class TestCase:
 
     def run(self):
         process = subprocess.Popen(
-                        ["ssh dp-client stocks"],
+                        ["ssh dp-client \"TERM=xterm-256color stocks\""],
                        stdin=subprocess.PIPE,
                        stdout=subprocess.PIPE,
                        shell=True)

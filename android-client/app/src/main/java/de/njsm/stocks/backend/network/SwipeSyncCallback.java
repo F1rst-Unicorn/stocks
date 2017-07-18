@@ -1,15 +1,15 @@
 package de.njsm.stocks.backend.network;
 
-import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 public class SwipeSyncCallback implements SwipeRefreshLayout.OnRefreshListener,
         AsyncTaskCallback {
 
     protected SwipeRefreshLayout mSwiper;
-    protected Context c;
+    protected ContextWrapper c;
 
-    public SwipeSyncCallback(SwipeRefreshLayout mSwiper, Context c) {
+    public SwipeSyncCallback(SwipeRefreshLayout mSwiper, ContextWrapper c) {
         this.mSwiper = mSwiper;
         this.c = c;
     }

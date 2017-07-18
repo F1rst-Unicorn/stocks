@@ -1,17 +1,12 @@
 package de.njsm.stocks;
 
 import android.content.Context;
+import okhttp3.OkHttpClient;
 
+import javax.net.ssl.*;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManagerFactory;
-
-import okhttp3.OkHttpClient;
+import java.text.SimpleDateFormat;
 
 public class Config {
 
@@ -30,6 +25,8 @@ public class Config {
     public static final String ticketConfig = "stocks.ticket";
 
     public static final String password = "passwordfooyouneverguessme$32XD";
+
+    public static final SimpleDateFormat TECHNICAL_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss.S");
 
     public static OkHttpClient getClient(Context c) throws Exception {
 

@@ -1,51 +1,33 @@
 package de.njsm.stocks.backend.network;
 
-import android.content.Context;
-import android.os.AsyncTask;
-
-import java.util.Locale;
-
-import de.njsm.stocks.Config;
+import android.content.ContextWrapper;
 import de.njsm.stocks.backend.data.FoodItem;
-import de.njsm.stocks.backend.data.Ticket;
-import de.njsm.stocks.backend.data.UserDevice;
+import de.njsm.stocks.backend.util.AbstractAsyncTask;
 
-public class MoveItemTask extends AsyncTask<Void, Void, Void> {
+public class MoveItemTask extends AbstractAsyncTask<Void, Void, Void> {
 
-    public Context c;
+    private FoodItem item;
 
-    FoodItem item;
-    int locId;
+    private int locId;
 
-    public MoveItemTask(Context c,
+    public MoveItemTask(ContextWrapper c,
                         FoodItem i,
                         int locId) {
-
-        this.c = c;
+        super(c);
         this.item = i;
         this.locId = locId;
 
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-
-        if (android.os.Debug.isDebuggerConnected()) {
-            android.os.Debug.waitForDebugger();
-        }
-
+    protected Void doInBackgroundInternally(Void... params) {
         ServerManager.m.move(item, locId);
-
         return null;
     }
 
     @Override
-    protected void onPreExecute() {
-    }
-
-    @Override
     protected void onPostExecute(Void dummy) {
-        SyncTask task = new SyncTask(c);
+        SyncTask task = new SyncTask(context);
         task.execute();
     }
 

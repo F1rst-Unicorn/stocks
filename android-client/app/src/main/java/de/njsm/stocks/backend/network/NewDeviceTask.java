@@ -1,33 +1,26 @@
 package de.njsm.stocks.backend.network;
 
 import android.content.Context;
-import android.os.AsyncTask;
-
-import java.util.Locale;
-
+import android.content.ContextWrapper;
 import de.njsm.stocks.Config;
 import de.njsm.stocks.backend.data.Ticket;
 import de.njsm.stocks.backend.data.UserDevice;
+import de.njsm.stocks.backend.util.AbstractAsyncTask;
 
-public class NewDeviceTask extends AsyncTask<String, Void, String> {
+import java.util.Locale;
 
-    public Context c;
-    protected TicketCallback mListener;
+public class NewDeviceTask extends AbstractAsyncTask<String, Void, String> {
 
-    public NewDeviceTask(Context c, TicketCallback listener) {
+    private TicketCallback mListener;
 
-        this.c = c;
+    public NewDeviceTask(ContextWrapper c, TicketCallback listener) {
+        super(c);
         this.mListener = listener;
 
     }
 
     @Override
-    protected String doInBackground(String... params) {
-
-        if (android.os.Debug.isDebuggerConnected()) {
-            android.os.Debug.waitForDebugger();
-        }
-
+    protected String doInBackgroundInternally(String... params) {
         int uid = Integer.parseInt(params[1]);
         UserDevice dev = new UserDevice(0, params[0], Integer.parseInt(params[1]));
         Ticket t = ServerManager.m.addDevice(dev);
@@ -39,17 +32,13 @@ public class NewDeviceTask extends AsyncTask<String, Void, String> {
                 params[0],
                 uid,
                 t.deviceId,
-                c.getSharedPreferences(Config.preferences, Context.MODE_PRIVATE).getString(Config.fprConfig, ""),
+                context.getSharedPreferences(Config.preferences, Context.MODE_PRIVATE).getString(Config.fprConfig, ""),
                 t.ticket);
     }
 
     @Override
-    protected void onPreExecute() {
-    }
-
-    @Override
     protected void onPostExecute(String ticket) {
-        SyncTask task = new SyncTask(c);
+        SyncTask task = new SyncTask(context);
         task.execute();
         mListener.applyToTicket(ticket);
     }

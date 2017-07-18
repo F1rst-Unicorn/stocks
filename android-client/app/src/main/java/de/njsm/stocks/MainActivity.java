@@ -19,15 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import de.njsm.stocks.backend.data.Food;
 import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.network.NewFoodTask;
-import de.njsm.stocks.backend.network.NewLocationTask;
-import de.njsm.stocks.backend.network.NewUserTask;
-import de.njsm.stocks.backend.network.ServerManager;
-import de.njsm.stocks.backend.network.SwipeSyncCallback;
-import de.njsm.stocks.backend.network.SyncTask;
+import de.njsm.stocks.backend.network.*;
+import de.njsm.stocks.backend.util.ExceptionHandler;
 import de.njsm.stocks.setup.SetupActivity;
 import de.njsm.stocks.setup.SetupFinishedListener;
 import de.njsm.stocks.setup.SetupTask;
@@ -50,6 +45,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this.getFilesDir(),
+                Thread.getDefaultUncaughtExceptionHandler()));
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_food_toolbar);
         setSupportActionBar(toolbar);

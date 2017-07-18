@@ -1,9 +1,6 @@
 package de.njsm.stocks.backend.db;
 
-import android.content.ContentProvider;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.UriMatcher;
+import android.content.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -34,7 +31,7 @@ public class StocksContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mHandler = new DatabaseHandler(getContext());
+        mHandler = new DatabaseHandler(new ContextWrapper(getContext()));
         return true;
     }
 
