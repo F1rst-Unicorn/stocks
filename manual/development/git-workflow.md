@@ -7,23 +7,14 @@ the branches follow.
 ## Branch master
 This branch is the production branch. Any code on this branch has to be 
 deployable as is on a new system. It contains the latest stable version of every
-of the four subcomponents (defined below). 
+of the three subcomponents (defined below). 
 
-## Branches dev-server, dev-sentry, dev-client, dev-android
+## Branches dev-server, dev-client, dev-android
 These branches contain all completed features for the specific subcomponent. 
-Once all features of the roadmap of the specific project are implemented and 
+Once all features of the roadmap of the specific component are implemented and 
 verified to work in integration, the version number is increased to the new 
 version and merged into the master branch. This way the master branch contains
 the latest version of each subcomponent. 
-If a branch does not exist, this means that it is at the same commit as the 
-master branch, so to start new features, first the corresponding dev branch
-has to be created. 
-
-### Special branch dev-sentry
-Since the sentry does not have an own package it has to be evaluated for each
-version whether it can be merged into master directly or whether it depends
-on new server features. In this case it is delivered with the new version of 
-the server instead. 
 
 ## Feature branches
 Each feature needed for a new version is implemented in a separate feature 
@@ -34,10 +25,9 @@ Inside a feature branch, everything that is needed for the feature to function
 is written. This includes in particular
 
 * Implementation
-* Unit tests
-* Code documentation
 * Model documentation (changes in the DB in ER, etc.)
 * User documentation
+* Unit tests
 * Integration tests (if possible)
 * System tests
 

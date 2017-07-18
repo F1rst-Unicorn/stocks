@@ -10,7 +10,12 @@ target
 .idea
 *.iml
 
-spec/ER-diagram.png
+# Latex files
+*.aux
+*.toc
+*.log
+*.synctex.gz
+*.png
 
 # test files
 server/src/test/system/resources
