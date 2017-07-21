@@ -64,7 +64,27 @@
 
 \subsection{New user registration}
 
+New users are always added by giving a ticket from an existing user. The details are outlined in the diagram. 
+
 \includegraphics[width=\linewidth]{diagrams/new-user-registration.png}
+
+\paragraph{Principal Names}
+In the CSR the user stores the principals of his device. The values are formatted inside the Common Name attribute of the CSR. The pattern is \texttt{username\$user\_id\$ devicename\$device\_id}. So for the default test user this resolves to \texttt{John\$1\$Device\$1}. 
+The principals are checked in the sentry part of the server before the certificate is signed. 
+
+\paragraph{Client Verification}
+Upon receiving a new device registration request, the sentry performs the following checks in order:
+\begin{itemize}
+\item Check if the ticket value presented by the client is found in the database
+\item Check the device id associated with the ticket from the database with the device id from the CSR
+\item Check if the remaining principals of the device match the CSR
+\item Check if the ticket has expired
+\end{itemize}
+If all the checks succeed the sentry has the CSR signed by the CA and returns it to the client. 
+
+\paragraph{QR Code Tickets}
+For mobile clients it is more convenient to pass the ticket as QR code. To generate this QR code the content of the ticket has to be
+entered text into the QR code. The order of the values is the same as in the diagram description. 
 
 \subsection{Device removal}
 
