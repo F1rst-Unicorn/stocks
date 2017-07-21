@@ -16,6 +16,8 @@ target
 *.log
 *.synctex.gz
 *.png
+*.dvi
+*.ps
 
 # test files
 server/src/test/system/resources
