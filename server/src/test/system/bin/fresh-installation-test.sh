@@ -17,6 +17,7 @@ mkdir -p $RESOURCES
 
 createFirstUser $RESOURCES
 checkInitialServer
+checkUpdates
 checkLocations
 checkUsers
 checkFood

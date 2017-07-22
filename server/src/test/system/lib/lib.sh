@@ -12,13 +12,22 @@ CURL_FILE=$RESOURCES/curl
 # Exit with an error message if the regex does not match
 #
 # arg 1: Regex to match
+# arg 2: Optional: Set to "1" to invert the match
 #
 check() {
+        GREPARGS=""
+        MESSAGE=""
+        if [[ "$2" == "1" ]] ; then
+            GREPARGS="$GREPARGS -v"
+            MESSAGE="Match is inverted"
+        fi
+
         set +e
-        egrep "$1" $CURL_FILE > /dev/null
+        egrep $GREPARGS "$1" $CURL_FILE > /dev/null
         if [[ $? -ne 0 ]] ; then
                 echo "ERROR: Expected $1"
                 echo -n "       Actual "
+                echo "$MESSAGE"
                 cat $CURL_FILE
                 echo
                 exit 1
@@ -77,6 +86,26 @@ checkInitialServer() {
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > $CURL_FILE
     check '^\[\]$'
     echo Test initial database: OK
+}
+
+checkUpdates() {
+    DATE='[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}'
+    curl -sS $CURLARGS -XGET https://$SERVER:10912/update > $CURL_FILE
+    check "^\[(\{\"table\":\"[^\"]+\",\"lastUpdate\":\"$DATE\"\},?)+\]$"
+    BEFORE=$(cat $CURL_FILE | sed -r \
+            's/.*"table":"Food","lastUpdate":"([^"]*)".*/\1/g')
+    curl -sS $CURLARGS -XPUT https://$SERVER:10912/food \
+            --header 'content-type: application/json' \
+            --data '{"id":0,"name":"Sausage"}'
+    curl -sS $CURLARGS -XGET https://$SERVER:10912/food > $CURL_FILE
+    ID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+    curl -sS $CURLARGS -XGET https://$SERVER:10912/update > $CURL_FILE
+    check "^\[(\{\"table\":\"[^\"]+\",\"lastUpdate\":\"$DATE\"\},?)+\]$"
+    check "^\[(.*\{\"table\":\"Food\",\"lastUpdate\":\"$BEFORE\"\},?)+\]$" 1
+    curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/remove \
+            --header 'content-type: application/json' \
+            --data "{\"id\":$ID,\"name\":\"Sausage\"}"
+    echo Test updates: OK
 }
 
 checkLocations() {
