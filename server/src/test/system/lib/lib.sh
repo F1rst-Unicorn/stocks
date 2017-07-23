@@ -12,12 +12,13 @@ CURL_FILE=$RESOURCES/curl
 # Exit with an error message if the regex does not match
 #
 # arg 1: Regex to match
-# arg 2: Optional: Set to "1" to invert the match
+# arg 2: Name of the test
+# arg 3: Optional: Set to "1" to invert the match
 #
 check() {
         GREPARGS=""
         MESSAGE=""
-        if [[ "$2" == "1" ]] ; then
+        if [[ "$3" == "1" ]] ; then
             GREPARGS="$GREPARGS -v"
             MESSAGE="Match is inverted"
         fi
@@ -28,6 +29,8 @@ check() {
                 echo "ERROR: Expected $1"
                 echo -n "       Actual "
                 echo "$MESSAGE"
+                echo "##teamcity[testFailed name='$2' message='Comparison \
+failed' expected='$1' actual='$MESSAGE']"
                 cat $CURL_FILE
                 echo
                 exit 1
@@ -56,6 +59,7 @@ createFirstUser() {
             -subj '/CN=Jack$1$Device$1' -batch
     CSR=$(cat $RESOURCES/client.csr.pem | tr \\n \& | sed 's/&/\\n/g')
 
+    echo "##teamcity[testStarted name='Initialisation']"
     curl -sS -XPOST --data "{\"deviceId\": 1, \"ticket\": \"0000\", \"pemFile\": \
             \"$CSR\"}" \
             --cacert $RESOURCES/ca-chain.crt \
@@ -70,13 +74,17 @@ createFirstUser() {
             fail "client.crt.pem received from sentry is no valid certificate"
     rm $RESOURCES/response.json
     echo Test first user: OK
+    echo "##teamcity[testFinished name='Initialisation']"
 
 }
 
 
 checkInitialServer() {
+    echo "##teamcity[testStarted name='Users are initially empty']"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/user > $CURL_FILE
-    check '"id":1.*"name":"Jack"'
+    check '"id":1.*"name":"Jack"' "Users are initially empty"
+    echo "##teamcity[testFinished name='Users are initially empty']"
+
     curl -sS $CURLARGS -XGET https://$SERVER:10912/device > $CURL_FILE
     check '"id":1.*"name":"Device"'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/location > $CURL_FILE
@@ -101,7 +109,7 @@ checkUpdates() {
     ID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
     curl -sS $CURLARGS -XGET https://$SERVER:10912/update > $CURL_FILE
     check "^\[(\{\"table\":\"[^\"]+\",\"lastUpdate\":\"$DATE\"\},?)+\]$"
-    check "^\[(.*\{\"table\":\"Food\",\"lastUpdate\":\"$BEFORE\"\},?)+\]$" 1
+    check "^\[(.*\{\"table\":\"Food\",\"lastUpdate\":\"$BEFORE\"\},?)+\]$" "" 1
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/remove \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Sausage\"}"
