@@ -15,8 +15,6 @@ SERVER=$1
 set -e
 mkdir -p $RESOURCES
 
-echo "##teamcity[testSuiteStarted name='Server System Test']"
-
 createFirstUser $RESOURCES
 checkInitialServer
 checkUpdates
@@ -26,8 +24,6 @@ checkFood
 checkEanNumbers
 checkFoodItems
 checkDevicesAndRevocation
-
-echo "##teamcity[testSuiteFinished name='Server System Test']"
 
 rm -rf $RESOURCES
 
