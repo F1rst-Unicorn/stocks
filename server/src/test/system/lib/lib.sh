@@ -30,7 +30,7 @@ check() {
                 echo -n "       Actual "
                 echo "$MESSAGE"
                 echo "##teamcity[testFailed name='$2' message='Comparison \
-failed' expected='$1' actual='$MESSAGE']"
+failed' expected='$1' actual='$MESSAGE' type='comparisonFailure']"
                 cat $CURL_FILE
                 echo
                 exit 1
@@ -80,23 +80,41 @@ createFirstUser() {
 
 
 checkInitialServer() {
-    echo "##teamcity[testStarted name='Users are initially empty']"
+    NAME="Users are initially empty"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/user > $CURL_FILE
-    check '"id":1.*"name":"Jack"' "Users are initially empty"
-    echo "##teamcity[testFinished name='Users are initially empty']"
+    check '"id":1.*"name":"Jack"' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
 
+    NAME="Devices are initially empty"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/device > $CURL_FILE
-    check '"id":1.*"name":"Device"'
+    check '"id":1.*"name":"Device"' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+    
+    NAME="Locations are initially empty"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/location > $CURL_FILE
-    check '^\[\]$'
+    check '^\[\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+   
+    NAME="Food is initially empty"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food > $CURL_FILE
-    check '^\[\]$'
+    check '^\[\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+  
+    NAME="Food items are initially empty"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > $CURL_FILE
-    check '^\[\]$'
+    check '^\[\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     echo Test initial database: OK
 }
 
 checkUpdates() {
+    NAME="Updates change on table change"
+    echo "##teamcity[testStarted name='$NAME']"
     DATE='[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/update > $CURL_FILE
     check "^\[(\{\"table\":\"[^\"]+\",\"lastUpdate\":\"$DATE\"\},?)+\]$"
@@ -113,6 +131,7 @@ checkUpdates() {
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/remove \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Sausage\"}"
+    echo "##teamcity[testFinished name='$NAME']"
     echo Test updates: OK
 }
 

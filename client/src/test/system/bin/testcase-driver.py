@@ -39,7 +39,7 @@ class TestCase:
                     + escapeForTeamcity(self.referenceOutput)
                     + "' actual='"
                     + escapeForTeamcity(self.actualOutput)
-                    + "']")
+                    + "' type='comparisonFailure']")
 
 def main(arguments):
     for testcase in arguments[1:len(arguments)]:
