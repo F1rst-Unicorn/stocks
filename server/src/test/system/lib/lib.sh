@@ -117,7 +117,7 @@ checkUpdates() {
     echo "##teamcity[testStarted name='$NAME']"
     DATE='[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/update > $CURL_FILE
-    check "^\[(\{\"table\":\"[^\"]+\",\"lastUpdate\":\"$DATE\"\},?)+\]$"
+    check "^\[(\{\"table\":\"[^\"]+\",\"lastUpdate\":\"$DATE\"\},?)+\]$" "$NAME"
     BEFORE=$(cat $CURL_FILE | sed -r \
             's/.*"table":"Food","lastUpdate":"([^"]*)".*/\1/g')
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food \
@@ -126,8 +126,9 @@ checkUpdates() {
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food > $CURL_FILE
     ID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
     curl -sS $CURLARGS -XGET https://$SERVER:10912/update > $CURL_FILE
-    check "^\[(\{\"table\":\"[^\"]+\",\"lastUpdate\":\"$DATE\"\},?)+\]$"
-    check "^\[(.*\{\"table\":\"Food\",\"lastUpdate\":\"$BEFORE\"\},?)+\]$" "" 1
+    check "^\[(\{\"table\":\"[^\"]+\",\"lastUpdate\":\"$DATE\"\},?)+\]$" "$NAME"
+    check "^\[(.*\{\"table\":\"Food\",\"lastUpdate\":\"$BEFORE\"\},?)+\]$" \
+            "$NAME" 1
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/remove \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Sausage\"}"
@@ -136,79 +137,126 @@ checkUpdates() {
 }
 
 checkLocations() {
+    NAME="Add a location"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/location \
             --header 'content-type: application/json' \
             --data '{"id":0,"name":"Fridge"}'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/location > $CURL_FILE
-    check '^\[\{"id":[0-9]+,"name":"Fridge"\}\]$'
+    check '^\[\{"id":[0-9]+,"name":"Fridge"\}\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     ID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+
+    NAME="Rename a location"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/location/Cupboard \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Fridge\"}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/location > $CURL_FILE
-    check "^\[\{\"id\":$ID,\"name\":\"Cupboard\"\}\]$"
+    check "^\[\{\"id\":$ID,\"name\":\"Cupboard\"\}\]$" "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Remove a location"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/location/remove \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Cupboard\"}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/location > $CURL_FILE
-    check '^\[\]$'
+    check '^\[\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Add a location again"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/location \
             --header 'content-type: application/json' \
             --data '{"id":0,"name":"Fridge"}'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/location > $CURL_FILE
-    check '^\[\{"id":[0-9]+,"name":"Fridge"\}\]$'
+    check '^\[\{"id":[0-9]+,"name":"Fridge"\}\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     LOCID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+
     echo Test locations: OK
 }
 
 checkUsers() {
+
+    NAME="Add a user"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/user \
             --header 'content-type: application/json' \
             --data '{"id":0,"name":"Second user"}'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/user > $CURL_FILE
-    check '^\[.*\{"id":[0-9]+,"name":"Second user"\}.*\]$'
+    check '^\[.*\{"id":[0-9]+,"name":"Second user"\}.*\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     ID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),"name":"Second.*/\1/g')
+
+    NAME="Remove a user"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/user/remove \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Second user\"}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/user > $CURL_FILE
-    check '^\[\{"id":[0-9]+,"name":"Jack"\}\]$'
+    check '^\[\{"id":[0-9]+,"name":"Jack"\}\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Add a user again"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/user \
             --header 'content-type: application/json' \
             --data '{"id":0,"name":"John"}'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/user > $CURL_FILE
-    check '^\[.*\{"id":[0-9]+,"name":"John"\}.*\]$'
+    check '^\[.*\{"id":[0-9]+,"name":"John"\}.*\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     USERID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),"name":"John.*/\1/g')
+
     echo Test users: OK
 }
 
 checkFood() {
+    NAME="Add a food type"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food \
             --header 'content-type: application/json' \
             --data '{"id":0,"name":"Sausage"}'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food > $CURL_FILE
-    check '^\[\{"id":[0-9]+,"name":"Sausage"\}\]$'
+    check '^\[\{"id":[0-9]+,"name":"Sausage"\}\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     ID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+
+    NAME="Rename a food type"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/Bread \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Sausage\"}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food > $CURL_FILE
-    check "^\[\{\"id\":$ID,\"name\":\"Bread\"\}\]$"
+    check "^\[\{\"id\":$ID,\"name\":\"Bread\"\}\]$" "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Remove a food type"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/remove \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Bread\"}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food > $CURL_FILE
-    check '^\[\]$'
+    check '^\[\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Add a food type again"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food \
             --header 'content-type: application/json' \
             --data '{"id":0,"name":"Bread"}'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food > $CURL_FILE
-    check '^\[\{"id":[0-9]+,"name":"Bread"\}\]$'
+    check '^\[\{"id":[0-9]+,"name":"Bread"\}\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     FOODID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+
     echo Test food: OK
 }
 
 checkEanNumbers() {
+    NAME="Add an EAN number"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/ean \
             --header 'content-type: application/json' \
             --data "{\"id\":0,
@@ -216,15 +264,23 @@ checkEanNumbers() {
                      \"identifiesFood\":$FOODID}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/ean > $CURL_FILE
     check "^\[\{\"id\":[0-9]+,\"eanCode\":\"123-123-12345\",\
-\"identifiesFood\":$FOODID\}\]$"
+\"identifiesFood\":$FOODID\}\]$" "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     ID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+
+    NAME="Remove an EAN number"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/ean/remove \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\
                     \"eanCode\":\"123-123-12345\",\
                     \"identifiesFood\":$FOODID}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/ean > $CURL_FILE
-    check '^\[\]$'
+    check '^\[\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Add an EAN number again"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/ean \
             --header 'content-type: application/json' \
             --data "{\"id\":0,
@@ -232,12 +288,16 @@ checkEanNumbers() {
                      \"identifiesFood\":$FOODID}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/ean > $CURL_FILE
     check "^\[\{\"id\":[0-9]+,\"eanCode\":\"123-123-12345\",\
-\"identifiesFood\":$FOODID\}\]$"
+\"identifiesFood\":$FOODID\}\]$" "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     EANID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+
     echo Test EAN numbers: OK
 }
 
 checkFoodItems() {
+    NAME="Add a food item"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/fooditem \
         --header 'content-type: application/json' \
         --data "{\"id\":0,
@@ -248,8 +308,12 @@ checkFoodItems() {
                  \"buys\":1}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > $CURL_FILE
     check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017-01-01\",\"ofType\":$FOODID,\
-\"storedIn\":$LOCID,\"registers\":1,\"buys\":1\}\]"
+\"storedIn\":$LOCID,\"registers\":1,\"buys\":1\}\]" "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     ID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
+
+    NAME="Move a food item"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/location \
             --header 'content-type: application/json' \
             --data '{"id":0,"name":"Cupboard"}'
@@ -260,66 +324,96 @@ checkFoodItems() {
             --data "{\"id\":$ID}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > $CURL_FILE
     check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017-01-01\",\"ofType\":$FOODID,\
-\"storedIn\":$LOCTWOID,\"registers\":1,\"buys\":1\}\]"
+\"storedIn\":$LOCTWOID,\"registers\":1,\"buys\":1\}\]" "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Remove a food item"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/fooditem/remove \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > $CURL_FILE
-    check '^\[\]$'
+    check '^\[\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
     echo Test food items: OK
 }
 
 checkDevicesAndRevocation() {
+
+    NAME="Add a device"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/device \
             --header 'content-type: application/json' \
             --data "{\"id\":0,\"name\":\"Mobile\",\"userId\":$USERID}" \
             > $RESOURCES/newTicket.json
     curl -sS $CURLARGS -XGET https://$SERVER:10912/device > $CURL_FILE
-    check "^\[.*\{\"id\":[0-9]+,\"name\":\"Mobile\",\"userId\":$USERID\}.*\]$"
+    check "^\[.*\{\"id\":[0-9]+,\"name\":\"Mobile\",\"userId\":$USERID\}.*\]$" \
+            "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
     ID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),"name":"Mobile.*/\1/g')
+
+    NAME="Remove a device"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/device/remove \
             --header 'content-type: application/json' \
             --data "{\"id\":$ID,\"name\":\"Mobile\"}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/device > $CURL_FILE
-    check '^\[\{"id":1,"name":"Device","userId":1\}\]$'
+    check '^\[\{"id":1,"name":"Device","userId":1\}\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Add a device again"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/device \
             --header 'content-type: application/json' \
             --data "{\"id\":0,\"name\":\"Mobile\",\"userId\":$USERID}" \
             > $RESOURCES/newTicket.json
     curl -sS $CURLARGS -XGET https://$SERVER:10912/device > $CURL_FILE
-    check "^\[.*\{\"id\":[0-9]+,\"name\":\"Mobile\",\"userId\":$USERID\}.*\]$"
+    echo "##teamcity[testFinished name='$NAME']"
+    check "^\[.*\{\"id\":[0-9]+,\"name\":\"Mobile\",\"userId\":$USERID\}.*\]$" \
+            "$NAME"
     DEVID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),"name":"Mobile.*/\1/g')
     TICKET=$(cat $RESOURCES/newTicket.json | sed -r 's/.*"ticket":"(.*)".*/\1/g')
+
     echo Test devices: OK
 
-    # check ticket system
     openssl genrsa -out $RESOURCES/newClient.key.pem 4096 2>/dev/null
 
-    ## test no ticket
+    NAME="Try registration with no ticket"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS -XPOST --data "{\"deviceId\": $DEVID, \"ticket\": \"\", \"pemFile\": \
     \"$CSR\"}" \
             --cacert $RESOURCES/ca-chain.crt \
             --insecure \
             --header 'content-type: application/json' \
             https://$SERVER:10911/uac/newuser > $CURL_FILE
-    check "^\{\"deviceId\":$DEVID,\"ticket\":\"\"\}$"
-    ## test wrong ticket
+    check "^\{\"deviceId\":$DEVID,\"ticket\":\"\"\}$" "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Try registration with wrong ticket"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS -XPOST --data "{\"deviceId\": $DEVID, \"ticket\": \"f\", \"pemFile\": \
     \"$CSR\"}" \
             --cacert $RESOURCES/ca-chain.crt \
             --insecure \
             --header 'content-type: application/json' \
             https://$SERVER:10911/uac/newuser > $CURL_FILE
-    check "^\{\"deviceId\":$DEVID,\"ticket\":\"f\"\}$"
-    ## test wrong device id
+    check "^\{\"deviceId\":$DEVID,\"ticket\":\"f\"\}$" "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Try registration with wrong device ID"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS -XPOST --data "{\"deviceId\":0,\"ticket\": \"$TICKET\", \"pemFile\": \
     \"$CSR\"}" \
             --cacert $RESOURCES/ca-chain.crt \
             --insecure \
             --header 'content-type: application/json' \
             https://$SERVER:10911/uac/newuser > $CURL_FILE
-    check "^\{\"deviceId\":0,\"ticket\":\"$TICKET\"\}$"
-    ## test wrong CSR
+    check "^\{\"deviceId\":0,\"ticket\":\"$TICKET\"\}$" "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Try registration with wrong CSR common name"
+    echo "##teamcity[testStarted name='$NAME']"
     openssl req -new -sha256 -key $RESOURCES/newClient.key.pem \
             -out $RESOURCES/wrong.csr.pem \
             -subj "/CN=John\$$USERID\$Mobile\$0" -batch
@@ -330,7 +424,8 @@ checkDevicesAndRevocation() {
             --insecure \
             --header 'content-type: application/json' \
             https://$SERVER:10911/uac/newuser > $CURL_FILE
-    check "^\{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\"\}$"
+    check "^\{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\"\}$" "$NAME"
+
     openssl req -new -sha256 -key $RESOURCES/newClient.key.pem \
             -out $RESOURCES/wrong.csr.pem \
             -subj "/CN=John\$$USERID\$Mobil\$$DEVID" -batch
@@ -341,7 +436,7 @@ checkDevicesAndRevocation() {
             --insecure \
             --header 'content-type: application/json' \
             https://$SERVER:10911/uac/newuser > $CURL_FILE
-    check "^\{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\"\}$"
+    check "^\{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\"\}$" "$NAME"
     openssl req -new -sha256 -key $RESOURCES/newClient.key.pem \
             -out $RESOURCES/wrong.csr.pem \
             -subj "/CN=Jack\$$USERID\$Mobile\$$DEVID" -batch
@@ -352,9 +447,11 @@ checkDevicesAndRevocation() {
             --insecure \
             --header 'content-type: application/json' \
             https://$SERVER:10911/uac/newuser > $CURL_FILE
-    check "^\{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\"\}$"
+    check "^\{\"deviceId\":$DEVID,\"ticket\":\"$TICKET\"\}$" "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
 
-    ## test correct ticket
+    NAME="Correct registration"
+    echo "##teamcity[testStarted name='$NAME']"
     openssl req -new -sha256 -key $RESOURCES/newClient.key.pem \
             -out $RESOURCES/newClient.csr.pem \
             -subj "/CN=John\$$USERID\$Mobile\$$DEVID" -batch
@@ -369,21 +466,25 @@ checkDevicesAndRevocation() {
     cat $RESOURCES/response.json | \
             sed -r 's/.*pemFile":.*"(.*)".*/\1/g' | \
             sed 's/\\n/%/g' | tr \% \\n > $RESOURCES/newClient.crt.pem
-
     openssl x509 -in $RESOURCES/newClient.crt.pem -text >/dev/null
     rm $RESOURCES/response.json
+    echo "##teamcity[testFinished name='$NAME']"
+
     echo Test sentry: OK
 
-    # test new client
+    NAME="New client is able to retrieve data"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS -XGET --cacert $RESOURCES/ca-chain.crt \
             --cacert $RESOURCES/ca-chain.crt \
             --insecure --key $RESOURCES/newClient.key.pem \
             --cert $RESOURCES/newClient.crt.pem \
             https://$SERVER:10912/location \
             > $CURL_FILE
-    check '^\[.*\]$'
+    check '^\[.*\]$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
 
-    ## test revoke access
+    NAME="Revoked users don't have access any more"
+    echo "##teamcity[testStarted name='$NAME']"
     curl -sS -XPUT $CURLARGS --data "{\"id\":$DEVID}" \
             --header 'content-type: application/json' \
             https://$SERVER:10912/device/remove
@@ -394,7 +495,9 @@ checkDevicesAndRevocation() {
             --cert $RESOURCES/newClient.crt.pem \
             https://$SERVER:10912/location \
             > $CURL_FILE
-    check '400 The SSL certificate error'
+    check '400 The SSL certificate error' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
     echo Test revocation: OK
 }
 
