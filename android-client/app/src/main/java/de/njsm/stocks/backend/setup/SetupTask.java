@@ -6,66 +6,63 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import de.njsm.stocks.Config;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.network.sentry.SentryClient;
-import de.njsm.stocks.backend.util.AbstractAsyncTask;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.error.TextResourceException;
 import de.njsm.stocks.frontend.setup.Result;
 import de.njsm.stocks.frontend.setup.SetupActivity;
 import de.njsm.stocks.frontend.setup.SetupFinishedListener;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.StringBuilderWriter;
+import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PEMWriter;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.security.auth.x500.X500Principal;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Locale;
 
 import static de.njsm.stocks.Config.KEYSTORE_FILE;
 
-public class SetupTask extends AbstractAsyncTask<Void, String, Result> {
+public class SetupTask extends AsyncTask<Void, String, Result> {
 
-    private Activity c;
-    
-    private Bundle extras;
-    
-    private SetupFinishedListener mListener;
+    protected Activity c;
+    protected Bundle extras;
+    protected SetupFinishedListener mListener;
 
-    private ProgressDialog dialog;
+    protected ProgressDialog dialog;
 
-    private KeyPair clientKeys;
-
-    private String csr;
-
-    private String caCert;
-
-    private String intermediateCert;
-
-    private KeystoreHandler keystoreHandler;
+    protected KeyPair clientKeys;
+    protected String csr;
+    protected String caCert;
+    protected String intermediateCert;
 
     public SetupTask(Activity c) {
-        super(c);
+        super();
         dialog = new ProgressDialog(c);
         this.c = c;
         extras = c.getIntent().getExtras();
-        keystoreHandler = new KeystoreHandler();
     }
 
     @Override
     protected void onPreExecute() {
-        Log.i(Config.LOG_TAG, "Starting registration");
         dialog.setTitle(c.getResources().getString(R.string.dialog_registering));
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
@@ -73,23 +70,20 @@ public class SetupTask extends AbstractAsyncTask<Void, String, Result> {
     }
 
     @Override
-    protected Result doInBackgroundInternally(Void... params) {
+    protected Result doInBackground(Void... params) {
 
         Result result;
 
         File keystore = new File(c.getFilesDir().getAbsolutePath()+"/keystore");
         if (keystore.exists()){
-            Log.w(Config.LOG_TAG, "Keystore found, app is already initialised");
             result = Result.getSuccess();
 
         } else try {
-            Log.i(Config.LOG_TAG, "Starting initialisation");
-
             publishProgress(c.getResources().getString(R.string.dialog_get_cert));
             downloadCa();
 
             publishProgress(c.getResources().getString(R.string.dialog_verify_cert));
-            keystoreHandler.verifyCaCertificate(caCert, extras.getString(Config.FPR_CONFIG, ""));
+            verifyCa();
 
             publishProgress(c.getResources().getString(R.string.dialog_create_key));
             generateKey();
@@ -108,7 +102,6 @@ public class SetupTask extends AbstractAsyncTask<Void, String, Result> {
                     false);
             keystore.delete();
         } catch (Exception e) {
-            Log.e(Config.LOG_TAG, "Caught exception during initialisation", e);
             result = new Result(R.string.dialog_error,
                     R.string.dialog_invalid_answer,
                     false);
@@ -122,18 +115,66 @@ public class SetupTask extends AbstractAsyncTask<Void, String, Result> {
         String baseUrl = String.format(Locale.US, "http://%s:%d/",
                 extras.getString(Config.SERVER_NAME_CONFIG),
                 extras.getInt(Config.CA_PORT_CONFIG));
-
-        Log.i(Config.LOG_TAG, "Downloading CA certificate");
-
         URL website = new URL(baseUrl + "ca");
         caCert = IOUtils.toString(website.openStream());
 
-        Log.i(Config.LOG_TAG, "Downloading certificate chain");
-
         website = new URL(baseUrl + "chain");
         intermediateCert = IOUtils.toString(website.openStream());
+    }
+
+    private void verifyCa() throws Exception {
+        Certificate cert = getCertificate(caCert);
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(cert.getEncoded());
+        byte[] digest = md.digest();
+
+        char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7',
+                '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        StringBuilder buf = new StringBuilder(digest.length * 2);
+        for (byte aDigest : digest) {
+            buf.append(hexDigits[(aDigest & 0xf0) >> 4]);
+            buf.append(hexDigits[aDigest & 0x0f]);
+            buf.append(":");
+        }
+        buf.delete(buf.length()-1, buf.length());
+
+        String actualFpr = buf.toString();
+        String expectedFpr = extras.getString(Config.FPR_CONFIG, "");
+
+        if (! expectedFpr.equals(actualFpr)) {
+            throw new SecurityException(c.getResources().getString(R.string.dialog_wrong_fpr));
+        }
+    }
+
+    private void generateKey() throws Exception {
+        int keysize = 4096;
+        String keyAlgName = "RSA";
+        String sigAlgName = "SHA256WithRSA";
+
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         keystore.load(null);
+
+        KeyPairGenerator gen = KeyPairGenerator.getInstance(keyAlgName);
+        gen.initialize(keysize);
+        clientKeys = gen.generateKeyPair();
+
+        X500Principal principals = new X500Principal("CN=" +
+                extras.getString(Config.USERNAME_CONFIG) + "$" +
+                extras.getInt(Config.UID_CONFIG) + "$" +
+                extras.getString(Config.DEVICE_NAME_CONFIG) + "$" +
+                extras.getInt(Config.DID_CONFIG));
+        PKCS10CertificationRequest request =
+                new PKCS10CertificationRequest(sigAlgName,
+                        principals,
+                        clientKeys.getPublic(),
+                        null,
+                        clientKeys.getPrivate());
+        StringBuilder buf = new StringBuilder();
+        PEMWriter writer = new PEMWriter(new StringBuilderWriter(buf));
+        writer.writeObject(request);
+        writer.flush();
+        writer.close();
+        csr = buf.toString();
 
         keystore.setCertificateEntry("ca", getCertificate(caCert));
         keystore.setCertificateEntry("intermediate", getCertificate(intermediateCert));
@@ -141,19 +182,6 @@ public class SetupTask extends AbstractAsyncTask<Void, String, Result> {
         keystore.store(out, Config.PASSWORD.toCharArray());
         out.flush();
         out.close();
-    }
-
-    private void generateKey() throws Exception {
-        int keySize = 4096;
-        String keyAlgName = "RSA";
-        String sigAlgName = "SHA256WithRSA";
-        keystoreHandler.generateKeys(keyAlgName, keySize);
-        keystoreHandler.generateCsr(extras.getString(Config.USERNAME_CONFIG),
-                extras.getInt(Config.UID_CONFIG),
-                extras.getString(Config.DEVICE_NAME_CONFIG),
-                extras.getInt(Config.DID_CONFIG),
-                sigAlgName);
-
     }
 
     private void registerKey() throws Exception {
@@ -195,8 +223,7 @@ public class SetupTask extends AbstractAsyncTask<Void, String, Result> {
             out.flush();
             out.close();
         } else {
-            Log.e(Config.LOG_TAG, "Invalid answer: " + response.raw().toString());
-            throw new TextResourceException(R.string.dialog_invalid_answer);
+            throw new Exception(c.getResources().getString(R.string.dialog_invalid_answer) + response.raw().toString());
         }
     }
 
@@ -262,7 +289,6 @@ public class SetupTask extends AbstractAsyncTask<Void, String, Result> {
         }
 
         AlertDialog messageDialog = builder.create();
-        dialog.cancel();
         messageDialog.show();
     }
 }
