@@ -63,10 +63,5 @@
                 android:authorities="de.njsm.stocks.providers.StocksContentProvider"
                 android:exported="false"/>
 
-        <service
-                android:name=".backend.setup.KeyGenerationService"
-                android:exported="false">
-        </service>
     </application>
-
 </manifest>
