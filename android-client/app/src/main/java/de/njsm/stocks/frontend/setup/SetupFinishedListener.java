@@ -1,4 +1,4 @@
-package de.njsm.stocks.setup;
+package de.njsm.stocks.frontend.setup;
 
 public interface SetupFinishedListener {
 

@@ -23,9 +23,9 @@ import de.njsm.stocks.backend.network.*;
 import de.njsm.stocks.backend.util.ExceptionHandler;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.Location;
-import de.njsm.stocks.setup.SetupActivity;
-import de.njsm.stocks.setup.SetupFinishedListener;
-import de.njsm.stocks.setup.SetupTask;
+import de.njsm.stocks.frontend.setup.SetupActivity;
+import de.njsm.stocks.frontend.setup.SetupFinishedListener;
+import de.njsm.stocks.backend.setup.SetupTask;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -72,18 +72,18 @@ public class MainActivity extends AppCompatActivity
         locationsFragment = new LocationListFragment();
         outlineFragment = new OutlineFragment();
         currentFragment = outlineFragment;
-        prefs = getSharedPreferences(Config.preferences, Context.MODE_PRIVATE);
+        prefs = getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_content, outlineFragment)
                 .commit();
 
-        if (getIntent().hasExtra(SetupActivity.setupFinished)) {
-            getIntent().getExtras().remove(SetupActivity.setupFinished);
+        if (getIntent().hasExtra(SetupActivity.SETUP_FINISHED)) {
+            getIntent().getExtras().remove(SetupActivity.SETUP_FINISHED);
             SetupTask s = new SetupTask(this);
             s.registerListener(this);
             s.execute();
-        } else if (! prefs.contains(Config.usernameConfig)) {
+        } else if (! prefs.contains(Config.USERNAME_CONFIG)) {
             Intent i = new Intent(this, SetupActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        prefs = prefs == null ? getSharedPreferences(Config.preferences, Context.MODE_PRIVATE) : prefs;
+        prefs = prefs == null ? getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE) : prefs;
     }
 
     @Override
@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -179,15 +178,15 @@ public class MainActivity extends AppCompatActivity
         task.execute();
         TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_username));
         if (view != null) {
-            view.setText(prefs.getString(Config.usernameConfig, ""));
+            view.setText(prefs.getString(Config.USERNAME_CONFIG, ""));
         }
         view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_server);
         if (view != null) {
-            view.setText(prefs.getString(Config.serverNameConfig, ""));
+            view.setText(prefs.getString(Config.SERVER_NAME_CONFIG, ""));
         }
         view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_dev);
         if (view != null) {
-            view.setText(prefs.getString(Config.deviceNameConfig, ""));
+            view.setText(prefs.getString(Config.DEVICE_NAME_CONFIG, ""));
         }
     }
 

@@ -76,7 +76,7 @@ public class ListCrashLogsTask extends AbstractAsyncTask<Void, Void, Integer> {
                 result.put("date", lines[1]);
             }
         } catch (IOException e) {
-            Log.w(Config.log, "Crash report has been removed", e);
+            Log.w(Config.LOG_TAG, "Crash report has been removed", e);
         } finally {
             IOUtils.closeQuietly(inputStream);
         }

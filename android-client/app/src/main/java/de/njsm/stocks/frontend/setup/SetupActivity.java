@@ -1,13 +1,13 @@
-package de.njsm.stocks.setup;
+package de.njsm.stocks.frontend.setup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Switch;
-
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
-
+import de.njsm.stocks.Config;
 import de.njsm.stocks.MainActivity;
 import de.njsm.stocks.R;
 import de.njsm.stocks.zxing.IntentIntegrator;
@@ -15,26 +15,21 @@ import de.njsm.stocks.zxing.IntentResult;
 
 public class SetupActivity extends DotStepper {
 
-    public static final String setupFinished = "setup-finished";
+    public static final String SETUP_FINISHED = "setup-finished";
 
-    protected ServerFragment serverFragment;
     protected QrFragment qrFragment;
-    protected PrincipalsFragment principalsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         setTitle(getResources().getString(R.string.title_connection_setup));
 
-        serverFragment = new ServerFragment();
         qrFragment = new QrFragment();
-        principalsFragment = new PrincipalsFragment();
 
-        addStep(serverFragment);
+        addStep(new ServerFragment());
         addStep(qrFragment);
-        addStep(principalsFragment);
-        super.onCreate(savedInstanceState);
+        addStep(new PrincipalsFragment());
 
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -43,7 +38,7 @@ public class SetupActivity extends DotStepper {
         Intent i = new Intent(this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        i.putExtra(setupFinished, setupFinished);
+        i.putExtra(SETUP_FINISHED, SETUP_FINISHED);
         i.putExtras(getExtras());
         startActivity(i);
     }
@@ -52,9 +47,11 @@ public class SetupActivity extends DotStepper {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanResult != null) {
+            Log.d(Config.LOG_TAG, "Got QR code from intent");
             qrFragment.getQrResult(scanResult);
             onNext();
-
+        } else {
+            Log.d(Config.LOG_TAG, "Got invalid result from activity");
         }
     }
 

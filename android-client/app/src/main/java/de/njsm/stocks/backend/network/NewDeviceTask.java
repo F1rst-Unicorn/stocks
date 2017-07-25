@@ -32,7 +32,7 @@ public class NewDeviceTask extends AbstractAsyncTask<String, Void, String> {
                 params[0],
                 uid,
                 t.deviceId,
-                context.getSharedPreferences(Config.preferences, Context.MODE_PRIVATE).getString(Config.fprConfig, ""),
+                context.getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE).getString(Config.FPR_CONFIG, ""),
                 t.ticket);
     }
 

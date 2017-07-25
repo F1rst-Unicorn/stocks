@@ -41,7 +41,7 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
     protected Integer doInBackgroundInternally(Void... params) {
 
         if (!sRunning.compareAndSet(false, true)){
-            Log.i(Config.log, "Another sync task is already running");
+            Log.i(Config.LOG_TAG, "Another sync task is already running");
             return 0;
         }
 
@@ -52,7 +52,7 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
 
         writeUpdates(serverUpdates);
 
-        Log.i(Config.log, "Sync successful");
+        Log.i(Config.LOG_TAG, "Sync successful");
 
         sRunning.set(false);
         return 0;
@@ -60,7 +60,7 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
 
     protected boolean updateOutdatedTables(Update[] serverUpdates, Update[] localUpdates) {
         if (serverUpdates.length == 0) {
-            Log.e(Config.log, "Array is empty " + serverUpdates.length + ", " +
+            Log.e(Config.LOG_TAG, "Array is empty " + serverUpdates.length + ", " +
                 localUpdates.length);
             return true;
         }

@@ -59,7 +59,7 @@ public class CrashLogListFragment extends ListFragment
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         } catch (IOException e) {
-            Log.e(Config.log, "", e);
+            Log.e(Config.LOG_TAG, "", e);
         } finally {
             IOUtils.closeQuietly(stream);
         }

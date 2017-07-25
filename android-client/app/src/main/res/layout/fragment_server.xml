@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/StocksTheme.Activity"
-    tools:context="de.njsm.stocks.setup.ServerFragment">
+    tools:context="de.njsm.stocks.frontend.setup.ServerFragment">
 
     <EditText
         style="@style/StocksTheme.EditText"

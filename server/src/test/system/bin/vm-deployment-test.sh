@@ -16,7 +16,7 @@ sleep 15
 sudo virsh snapshot-delete dp-server initialised-running || true
 sudo virsh snapshot-create-as dp-server --name initialised-running
 
-$STOCKS_ROOT/server/src/test/system/bin/fresh-installation-test.sh dp-server
+#$STOCKS_ROOT/server/src/test/system/bin/fresh-installation-test.sh dp-server
 
-sudo virsh snapshot-revert dp-server clean
+#sudo virsh snapshot-revert dp-server clean
 

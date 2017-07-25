@@ -35,7 +35,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             SyncTask task = new SyncTask(mContext);
             task.execute();
         } catch (SQLException e) {
-            Log.e(Config.log, "could not create table", e);
+            Log.e(Config.LOG_TAG, "could not create table", e);
         }
     }
 
@@ -50,7 +50,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             db.execSQL(SqlFoodTable.DROP);
             db.execSQL(SqlFoodItemTable.DROP);
         } catch (SQLException e) {
-            Log.e(Config.log, "could not drop tables", e);
+            Log.e(Config.LOG_TAG, "could not drop tables", e);
         }
 
         onCreate(db);
@@ -68,7 +68,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-            Log.e(Config.log, "could not write updates", e);
+            Log.e(Config.LOG_TAG, "could not write updates", e);
         } finally {
             db.endTransaction();
         }
@@ -87,7 +87,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-            Log.e(Config.log, "could not write users", e);
+            Log.e(Config.LOG_TAG, "could not write users", e);
         } finally {
             db.endTransaction();
         }
@@ -106,7 +106,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-            Log.e(Config.log, "could not write devices", e);
+            Log.e(Config.LOG_TAG, "could not write devices", e);
         } finally {
             db.endTransaction();
         }
@@ -125,7 +125,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-            Log.e(Config.log, "could not write locations", e);
+            Log.e(Config.LOG_TAG, "could not write locations", e);
         } finally {
             db.endTransaction();
         }
@@ -144,7 +144,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-            Log.e(Config.log, "could not write food", e);
+            Log.e(Config.LOG_TAG, "could not write food", e);
         } finally {
             db.endTransaction();
         }
@@ -163,7 +163,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-            Log.e(Config.log, "could not write items", e);
+            Log.e(Config.LOG_TAG, "could not write items", e);
         } finally {
             db.endTransaction();
         }
