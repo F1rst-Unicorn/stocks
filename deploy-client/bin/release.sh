@@ -34,6 +34,7 @@ export NO_SIGNATURE=""
 "$STOCKS_ROOT"/deploy-client/bin/package.sh
 
 echo Tagging release
+git add -A
 git commit -m "Increment client version to $VERSION-$RELEASE"
 git tag -a "client-$VERSION-$RELEASE" -m \
         "Tagging client version $VERSION-$RELEASE"        
