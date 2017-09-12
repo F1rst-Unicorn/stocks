@@ -39,7 +39,7 @@ public class SetupTest {
 
     private String fingerprint;
 
-    private String hostname = "dp-server.vm-tp.j.njsm.de"; // FIXME: Adapt for nightly build
+    private String hostname = "192.168.100.5"; // FIXME: Adapt for nightly build
 
     @Before
     public void setup() throws Exception {
