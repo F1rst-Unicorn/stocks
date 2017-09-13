@@ -8,8 +8,6 @@ import org.junit.runners.Suite;
         InitialDataSetupTest.class,
         FoodAddingTest.class,
         UserAdministrationTest.class,
-        RenameEntitiesTest.class,
-        FullSyncTest.class,
         FoodConsumptionTest.class
         })
 public class SystemTestSuite {
