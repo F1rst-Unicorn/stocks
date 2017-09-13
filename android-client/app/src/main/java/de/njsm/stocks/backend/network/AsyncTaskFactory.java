@@ -31,47 +31,47 @@ public class AsyncTaskFactory {
     }
     
     public DeleteDeviceTask getDeleteDeviceTask() {
-        return new DeleteDeviceTask(contextWrapper.getFilesDir(), networkManager);
+        return new DeleteDeviceTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
     
     public DeleteFoodTask getDeleteFoodTask() {
-        return new DeleteFoodTask(contextWrapper.getFilesDir(), networkManager);
+        return new DeleteFoodTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
     
     public DeleteItemTask getDeleteItemTask() {
-        return new DeleteItemTask(contextWrapper.getFilesDir(), networkManager);
+        return new DeleteItemTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
     
     public DeleteLocationTask getDeleteLocationTask() {
-        return new DeleteLocationTask(contextWrapper.getFilesDir(), networkManager);
+        return new DeleteLocationTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
     
     public DeleteUserTask getDeleteUserTask() {
-        return new DeleteUserTask(contextWrapper.getFilesDir(), networkManager);
+        return new DeleteUserTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
     
     public MoveItemTask getMoveItemTask() {
-        return new MoveItemTask(contextWrapper.getFilesDir(), networkManager);
+        return new MoveItemTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
     
     public NewDeviceTask getNewDeviceTask(NewDeviceTask.TicketCallback callback) {
-        return new NewDeviceTask(contextWrapper.getFilesDir(), networkManager, callback);
+        return new NewDeviceTask(contextWrapper.getFilesDir(), serverManager, networkManager, callback);
     }
     
     public NewFoodItemTask getNewItemTask() {
-        return new NewFoodItemTask(contextWrapper.getFilesDir(), networkManager);
+        return new NewFoodItemTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
     
     public NewFoodTask getNewFoodTask() {
-        return new NewFoodTask(contextWrapper.getFilesDir(), networkManager);
+        return new NewFoodTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
     
     public NewLocationTask getNewLocationTask() {
-        return new NewLocationTask(contextWrapper.getFilesDir(), networkManager);
+        return new NewLocationTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
     
     public NewUserTask getNewUserTask() {
-        return new NewUserTask(contextWrapper.getFilesDir(), networkManager);
+        return new NewUserTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
 
     public void setNetworkManager(NetworkManager networkManager) {
