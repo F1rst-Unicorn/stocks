@@ -26,15 +26,15 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
 
     private ContentResolver resolver;
 
-    private AsyncTaskCallback mListener;
+    private AsyncTaskCallback listener;
 
     public SyncTask(File exceptionFileDirectory,
                     ServerManager serverManager,
                     ContentResolver resolver,
-                    AsyncTaskCallback mListener) {
+                    AsyncTaskCallback listener) {
         super(exceptionFileDirectory, serverManager);
         this.resolver = resolver;
-        this.mListener = mListener;
+        this.listener = listener;
     }
 
     @Override
@@ -46,9 +46,11 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         }
 
         Update[] serverUpdates = serverManager.getUpdates();
-        Update[] localUpdates = getUpdates();
+        Update[] localUpdates = getLocalUpdates();
 
-        if (updateOutdatedTables(serverUpdates, localUpdates)) return 0;
+        if (updateOutdatedTables(serverUpdates, localUpdates)) {
+            return 0;
+        }
 
         writeUpdates(serverUpdates);
 
@@ -186,7 +188,7 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
                 values);
     }
 
-    public Update[] getUpdates() {
+    public Update[] getLocalUpdates() {
         Cursor cursor = resolver.query(
                 Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
                 null,
@@ -238,15 +240,15 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
 
     @Override
     protected void onPreExecute() {
-        if (mListener != null) {
-            mListener.onAsyncTaskStart();
+        if (listener != null) {
+            listener.onAsyncTaskStart();
         }
     }
 
     @Override
     protected void onPostExecute(Integer integer) {
-        if (mListener != null) {
-            mListener.onAsyncTaskComplete();
+        if (listener != null) {
+            listener.onAsyncTaskComplete();
         }
     }
 }
