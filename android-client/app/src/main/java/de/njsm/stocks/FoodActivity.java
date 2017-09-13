@@ -11,7 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import de.njsm.stocks.backend.network.DeleteFoodTask;
+import de.njsm.stocks.backend.network.AsyncTaskFactory;
+import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.network.SwipeSyncCallback;
 import de.njsm.stocks.common.data.Food;
 
@@ -25,6 +26,7 @@ public class FoodActivity extends AppCompatActivity {
 
     SwipeRefreshLayout mSwiper;
     Fragment mFragment;
+    private NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +37,17 @@ public class FoodActivity extends AppCompatActivity {
         mName = extras.getString(KEY_NAME);
         mId = extras.getInt(KEY_ID);
 
-        mSwiper = (SwipeRefreshLayout) findViewById(R.id.food_swipe);
-        mSwiper.setOnRefreshListener(new SwipeSyncCallback(mSwiper, this));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_food_toolbar);
         setSupportActionBar(toolbar);
         setTitle(mName);
+
+        AsyncTaskFactory factory = new AsyncTaskFactory(this);
+        networkManager = new NetworkManager(factory);
+        factory.setNetworkManager(networkManager);
+
+        mSwiper = (SwipeRefreshLayout) findViewById(R.id.food_swipe);
+        mSwiper.setOnRefreshListener(new SwipeSyncCallback(mSwiper, networkManager));
 
     }
 
@@ -70,7 +77,7 @@ public class FoodActivity extends AppCompatActivity {
                         .setMessage(message)
                         .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                (new DeleteFoodTask(FoodActivity.this)).execute(new Food(mId, mName));
+                                networkManager.deleteFood(new Food(mId, mName));
                                 onBackPressed();
                             }
                         })

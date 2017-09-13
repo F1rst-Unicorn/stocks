@@ -24,7 +24,7 @@ public class ListCrashLogsTask extends AbstractAsyncTask<Void, Void, Integer> {
     public ListCrashLogsTask(ContextWrapper context,
                              File crashLogDirectory,
                              CrashLogListFragment fragment) {
-        super(context);
+        super(context.getFilesDir());
         this.crashLogDirectory = crashLogDirectory;
         this.fragment = fragment;
     }

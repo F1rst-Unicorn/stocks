@@ -19,13 +19,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import de.njsm.stocks.backend.network.*;
+import de.njsm.stocks.backend.network.AsyncTaskFactory;
+import de.njsm.stocks.backend.network.NetworkManager;
+import de.njsm.stocks.backend.network.ServerManager;
+import de.njsm.stocks.backend.network.SwipeSyncCallback;
+import de.njsm.stocks.backend.setup.SetupTask;
 import de.njsm.stocks.backend.util.ExceptionHandler;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.Location;
+import de.njsm.stocks.common.data.User;
 import de.njsm.stocks.frontend.setup.SetupActivity;
 import de.njsm.stocks.frontend.setup.SetupFinishedListener;
-import de.njsm.stocks.backend.setup.SetupTask;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -41,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     protected Fragment currentFragment;
 
     protected SharedPreferences prefs;
+    private NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +69,13 @@ public class MainActivity extends AppCompatActivity
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
 
+        AsyncTaskFactory factory = new AsyncTaskFactory(this);
+        networkManager = new NetworkManager(factory);
+        factory.setNetworkManager(networkManager);
+
         swiper = (SwipeRefreshLayout) findViewById(R.id.swipe_overlay);
         assert swiper != null;
-        swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, this));
+        swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));
 
         usersFragment = new UserListFragment();
         locationsFragment = new LocationListFragment();
@@ -174,8 +183,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void finished() {
         ServerManager.init(this);
-        SyncTask task = new SyncTask(this);
-        task.execute();
+        networkManager.synchroniseData();
         TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_username));
         if (view != null) {
             view.setText(prefs.getString(Config.USERNAME_CONFIG, ""));
@@ -200,8 +208,7 @@ public class MainActivity extends AppCompatActivity
                     .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             String name = textField.getText().toString().trim();
-                            NewUserTask task = new NewUserTask(MainActivity.this);
-                            task.execute(name);
+                            networkManager.addUser(new User(0, name));
                         }
                     })
                     .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
@@ -218,8 +225,7 @@ public class MainActivity extends AppCompatActivity
                     .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             String name = textField.getText().toString().trim();
-                            NewLocationTask task = new NewLocationTask(MainActivity.this);
-                            task.execute(new Location(0, name));
+                            networkManager.addLocation(new Location(0, name));
                         }
                     })
                     .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
@@ -236,8 +242,7 @@ public class MainActivity extends AppCompatActivity
                     .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             String name = textField.getText().toString().trim();
-                            NewFoodTask task = new NewFoodTask(MainActivity.this);
-                            task.execute(new Food(0, name));
+                            networkManager.addFood(new Food(0, name));
                         }
                     })
                     .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {

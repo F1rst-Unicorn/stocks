@@ -21,7 +21,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
-import de.njsm.stocks.backend.network.DeleteLocationTask;
+import de.njsm.stocks.backend.network.AsyncTaskFactory;
+import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.common.data.Location;
 
 public class LocationListFragment extends ListFragment
@@ -34,6 +35,7 @@ public class LocationListFragment extends ListFragment
 
     protected Cursor mCursor;
     protected SimpleCursorAdapter mAdapter;
+    private NetworkManager networkManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,6 +65,11 @@ public class LocationListFragment extends ListFragment
 
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
+
+        AsyncTaskFactory factory = new AsyncTaskFactory(getActivity());
+        networkManager = new NetworkManager(factory);
+        factory.setNetworkManager(networkManager);
+
     }
 
     @Override
@@ -157,8 +164,7 @@ public class LocationListFragment extends ListFragment
                 .setMessage(message)
                 .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        DeleteLocationTask task = new DeleteLocationTask(getActivity());
-                        task.execute(new Location(locId, locName));
+                        networkManager.deleteLocation(new Location(locId, locName));
                     }
                 })
                 .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {

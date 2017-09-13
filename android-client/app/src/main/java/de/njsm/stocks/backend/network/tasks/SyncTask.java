@@ -1,17 +1,19 @@
-package de.njsm.stocks.backend.network;
+package de.njsm.stocks.backend.network.tasks;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.ContextWrapper;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 import de.njsm.stocks.Config;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.*;
+import de.njsm.stocks.backend.network.AsyncTaskCallback;
+import de.njsm.stocks.backend.network.ServerManager;
 import de.njsm.stocks.backend.util.AbstractAsyncTask;
 import de.njsm.stocks.common.data.*;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,13 +29,9 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
 
     private AsyncTaskCallback mListener;
 
-    public SyncTask(ContextWrapper c) {
-        this(c, null);
-    }
-
-    public SyncTask(ContextWrapper c, AsyncTaskCallback listener) {
-        super(c);
-        this.resolver = c.getContentResolver();
+    public SyncTask(File exceptionDirectory, ContentResolver resolver, AsyncTaskCallback listener) {
+        super(exceptionDirectory);
+        this.resolver = resolver;
         mListener = listener;
     }
 

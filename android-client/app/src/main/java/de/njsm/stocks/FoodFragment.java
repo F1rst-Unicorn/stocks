@@ -18,8 +18,8 @@ import de.njsm.stocks.adapters.FoodItemCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
-import de.njsm.stocks.backend.network.DeleteItemTask;
-import de.njsm.stocks.backend.network.MoveItemTask;
+import de.njsm.stocks.backend.network.AsyncTaskFactory;
+import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.common.data.FoodItem;
 
 import java.text.ParseException;
@@ -41,6 +41,7 @@ public class FoodFragment extends ListFragment implements
 
     protected Cursor mCursor;
     protected SimpleCursorAdapter mAdapter;
+    private NetworkManager networkManager;
 
     public static FoodFragment newInstance(int aFoodId) {
         FoodFragment fragment = new FoodFragment();
@@ -86,6 +87,11 @@ public class FoodFragment extends ListFragment implements
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
         getListView().setOnItemLongClickListener(this);
+
+        AsyncTaskFactory factory = new AsyncTaskFactory(getActivity());
+        networkManager = new NetworkManager(factory);
+        factory.setNetworkManager(networkManager);
+
     }
 
     @Override
@@ -119,8 +125,7 @@ public class FoodFragment extends ListFragment implements
                 .setMessage(message)
                 .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        DeleteItemTask task = new DeleteItemTask(getActivity());
-                        task.execute(new FoodItem(itemId, null, 0,0,0,0));
+                        networkManager.deleteFoodItem(new FoodItem(itemId, null, 0,0,0,0));
                     }
                 })
                 .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
@@ -223,8 +228,7 @@ public class FoodFragment extends ListFragment implements
                 .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         FoodItem i = new FoodItem(itemId, null, 0,0,0,0);
-                        MoveItemTask task = new MoveItemTask(getActivity(), i, (int) spinner.getSelectedItemId());
-                        task.execute();
+                        networkManager.moveItem(i, (int) spinner.getSelectedItemId());
                     }
                 })
                 .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {

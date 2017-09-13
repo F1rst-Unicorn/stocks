@@ -1,13 +1,19 @@
-package de.njsm.stocks.backend.network;
+package de.njsm.stocks.backend.network.tasks;
 
-import android.content.ContextWrapper;
+import de.njsm.stocks.backend.network.NetworkManager;
+import de.njsm.stocks.backend.network.ServerManager;
 import de.njsm.stocks.backend.util.AbstractAsyncTask;
 import de.njsm.stocks.common.data.UserDevice;
 
+import java.io.File;
+
 public class DeleteDeviceTask extends AbstractAsyncTask<UserDevice, Void, Integer> {
 
-    public DeleteDeviceTask(ContextWrapper c) {
+    private NetworkManager networkManager;
+
+    public DeleteDeviceTask(File c, NetworkManager networkManager) {
         super(c);
+        this.networkManager = networkManager;
     }
 
     @Override
@@ -18,8 +24,7 @@ public class DeleteDeviceTask extends AbstractAsyncTask<UserDevice, Void, Intege
 
     @Override
     protected void onPostExecute(Integer integer) {
-        SyncTask task = new SyncTask(context);
-        task.execute();
+        networkManager.synchroniseData();
     }
 }
 

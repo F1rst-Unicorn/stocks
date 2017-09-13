@@ -1,24 +1,22 @@
-package de.njsm.stocks.backend.network;
+package de.njsm.stocks.backend.network.tasks;
 
-import android.content.ContextWrapper;
+import android.content.ContentResolver;
 import de.njsm.stocks.common.data.Update;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Date;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class SyncTaskTest {
 
     private SyncTask uut;
 
-    private ContextWrapper context;
-
     @Before
     public void setup() throws Exception {
-        context = mock(ContextWrapper.class);
-        uut = new SyncTask(context);
+        uut = new SyncTask(new File(""), mock(ContentResolver.class), null);
     }
 
     @Test
@@ -31,8 +29,6 @@ public class SyncTaskTest {
 
         uut.updateOutdatedTables(serverUpdates, localUpdates);
 
-        verify(context).getContentResolver();
-        verifyNoMoreInteractions(context);
     }
 
     @Test
@@ -45,7 +41,5 @@ public class SyncTaskTest {
 
         uut.updateOutdatedTables(serverUpdates, localUpdates);
 
-        verify(context).getContentResolver();
-        verifyNoMoreInteractions(context);
     }
 }

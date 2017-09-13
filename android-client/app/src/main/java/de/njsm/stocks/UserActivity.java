@@ -1,10 +1,7 @@
 package de.njsm.stocks;
 
 import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.Loader;
+import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,9 +12,13 @@ import android.view.View;
 import android.widget.*;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlDeviceTable;
-import de.njsm.stocks.backend.network.DeleteDeviceTask;
-import de.njsm.stocks.backend.network.NewDeviceTask;
+import de.njsm.stocks.backend.network.AsyncTaskFactory;
+import de.njsm.stocks.backend.network.NetworkManager;
+import de.njsm.stocks.backend.network.tasks.NewDeviceTask;
+import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
+
+import java.util.Locale;
 
 public class UserActivity extends AppCompatActivity
         implements NewDeviceTask.TicketCallback,
@@ -30,9 +31,13 @@ public class UserActivity extends AppCompatActivity
     protected int mUserId;
     protected String mUsername;
 
+    private String newDeviceName;
+
     protected ListView mList;
     protected SimpleCursorAdapter mAdapter;
     protected Cursor mCursor;
+
+    private NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,10 @@ public class UserActivity extends AppCompatActivity
         );
         mList.setAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
+
+        AsyncTaskFactory factory = new AsyncTaskFactory(this);
+        networkManager = new NetworkManager(factory);
+        factory.setNetworkManager(networkManager);
     }
 
     @Override
@@ -102,9 +111,8 @@ public class UserActivity extends AppCompatActivity
                 .setView(layout)
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        String name = textField.getText().toString().trim();
-                        NewDeviceTask task = new NewDeviceTask(UserActivity.this, UserActivity.this);
-                        task.execute(name, String.valueOf(UserActivity.this.mUserId), UserActivity.this.mUsername);
+                        newDeviceName = textField.getText().toString().trim();
+                        networkManager.addDevice(newDeviceName, mUserId, UserActivity.this);
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
@@ -115,9 +123,19 @@ public class UserActivity extends AppCompatActivity
     }
 
     @Override
-    public void applyToTicket(String ticket) {
+    public void applyToTicket(Ticket ticket) {
         Intent i = new Intent(this, QrCodeDisplayActivity.class);
-        i.putExtra(QrCodeDisplayActivity.KEY_TICKET, ticket);
+        String qrContent = String.format(
+                Locale.US,
+                "%s\n%s\n%d\n%d\n%s\n%s\n",
+                mUsername,
+                newDeviceName,
+                mUserId,
+                ticket.deviceId,
+                this.getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE).getString(Config.FPR_CONFIG, ""),
+                ticket.ticket);
+
+        i.putExtra(QrCodeDisplayActivity.KEY_TICKET, qrContent);
         startActivity(i);
     }
 
@@ -162,8 +180,7 @@ public class UserActivity extends AppCompatActivity
                 .setMessage(message)
                 .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        DeleteDeviceTask task = new DeleteDeviceTask(UserActivity.this);
-                        task.execute(new UserDevice(deviceId, username, userId));
+                        networkManager.deleteDevice(new UserDevice(deviceId, username, userId));
                     }
                 })
                 .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {

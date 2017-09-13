@@ -21,7 +21,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
-import de.njsm.stocks.backend.network.DeleteUserTask;
+import de.njsm.stocks.backend.network.AsyncTaskFactory;
+import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.common.data.User;
 
 public class UserListFragment extends ListFragment
@@ -34,6 +35,7 @@ public class UserListFragment extends ListFragment
 
     protected SwipeRefreshLayout mSwiper;
     protected ListView mList;
+    private NetworkManager networkManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +64,11 @@ public class UserListFragment extends ListFragment
 
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
+
+        AsyncTaskFactory factory = new AsyncTaskFactory(getActivity());
+        networkManager = new NetworkManager(factory);
+        factory.setNetworkManager(networkManager);
+
     }
 
     @Override
@@ -156,8 +163,7 @@ public class UserListFragment extends ListFragment
                 .setMessage(message)
                 .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        DeleteUserTask task = new DeleteUserTask(getActivity());
-                        task.execute(new User(userId, username));
+                        networkManager.deleteUser(new User(userId, username));
                     }
                 })
                 .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {

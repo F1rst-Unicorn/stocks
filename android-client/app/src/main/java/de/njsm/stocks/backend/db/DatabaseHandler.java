@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import de.njsm.stocks.Config;
 import de.njsm.stocks.backend.db.data.*;
-import de.njsm.stocks.backend.network.SyncTask;
+import de.njsm.stocks.backend.network.NetworkManager;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
@@ -17,9 +17,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     protected ContextWrapper mContext;
 
-    public DatabaseHandler(ContextWrapper context) {
+    private NetworkManager networkManager;
+
+    public DatabaseHandler(ContextWrapper context, NetworkManager networkManager) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;
+        this.networkManager = networkManager;
     }
 
     @Override
@@ -32,8 +35,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             db.execSQL(SqlLocationTable.CREATE);
             db.execSQL(SqlFoodTable.CREATE);
             db.execSQL(SqlFoodItemTable.CREATE);
-            SyncTask task = new SyncTask(mContext);
-            task.execute();
+            networkManager.synchroniseData();
         } catch (SQLException e) {
             Log.e(Config.LOG_TAG, "could not create table", e);
         }

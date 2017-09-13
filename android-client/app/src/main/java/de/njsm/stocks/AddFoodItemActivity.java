@@ -15,7 +15,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
-import de.njsm.stocks.backend.network.NewFoodItemTask;
+import de.njsm.stocks.backend.network.AsyncTaskFactory;
+import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.common.data.FoodItem;
 
 import java.util.Calendar;
@@ -34,6 +35,7 @@ public class AddFoodItemActivity extends AppCompatActivity implements
     protected Cursor mCursor;
 
     protected Spinner mSpinner;
+    private NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,10 @@ public class AddFoodItemActivity extends AppCompatActivity implements
         picker.setMinDate((new Date()).getTime());
 
         getLoaderManager().initLoader(1, null, this);
+        AsyncTaskFactory factory = new AsyncTaskFactory(this);
+        networkManager = new NetworkManager(factory);
+        factory.setNetworkManager(networkManager);
+
     }
 
     @Override
@@ -109,7 +115,7 @@ public class AddFoodItemActivity extends AppCompatActivity implements
                 locId,
                 0,
                 0);
-        (new NewFoodItemTask(this)).execute(item);
+        networkManager.addFoodItem(item);
         Toast.makeText(
                 this,
                 mFood + " " + getResources().getString(R.string.dialog_added),

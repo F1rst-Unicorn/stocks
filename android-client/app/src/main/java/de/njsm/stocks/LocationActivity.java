@@ -4,10 +4,9 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-
-import de.njsm.stocks.backend.network.AsyncTaskCallback;
+import de.njsm.stocks.backend.network.AsyncTaskFactory;
+import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.network.SwipeSyncCallback;
-import de.njsm.stocks.backend.network.SyncTask;
 
 public class LocationActivity extends AppCompatActivity {
 
@@ -18,6 +17,7 @@ public class LocationActivity extends AppCompatActivity {
     protected int mId;
 
     protected SwipeRefreshLayout mSwiper;
+    private NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +27,13 @@ public class LocationActivity extends AppCompatActivity {
         mLocation = getIntent().getExtras().getString(KEY_LOCATION_NAME);
         mId = getIntent().getExtras().getInt(KEY_LOCATION_ID);
 
+        AsyncTaskFactory factory = new AsyncTaskFactory(this);
+        networkManager = new NetworkManager(factory);
+        factory.setNetworkManager(networkManager);
+
+
         mSwiper = (SwipeRefreshLayout) findViewById(R.id.location_swipe);
-        mSwiper.setOnRefreshListener(new SwipeSyncCallback(mSwiper, this));
+        mSwiper.setOnRefreshListener(new SwipeSyncCallback(mSwiper, networkManager));
 
         setTitle(mLocation);
 
