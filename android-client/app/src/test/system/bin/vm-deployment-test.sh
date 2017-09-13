@@ -16,7 +16,12 @@ SSH_2_PID=$!
 ssh -L 10912:dp-server:10912 -N -o GatewayPorts=yes localhost &
 SSH_3_PID=$!
 
-sleep 25
+adb wait-for-device
+BOOTED=$(adb shell getprop sys.boot_completed | tr -d '\r')
+while [ "$BOOTED" != "1" ]; do
+        sleep 1
+        BOOTED=$(adb shell getprop sys.boot_completed | tr -d '\r')
+done
 
 adb reverse tcp:10910 tcp:10910
 adb reverse tcp:10911 tcp:10911
