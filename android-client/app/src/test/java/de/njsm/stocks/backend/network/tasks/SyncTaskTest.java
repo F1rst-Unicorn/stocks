@@ -1,6 +1,7 @@
 package de.njsm.stocks.backend.network.tasks;
 
 import android.content.ContentResolver;
+import de.njsm.stocks.backend.network.ServerManager;
 import de.njsm.stocks.common.data.Update;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,9 @@ public class SyncTaskTest {
 
     @Before
     public void setup() throws Exception {
-        uut = new SyncTask(new File(""), mock(ContentResolver.class), null);
+        uut = new SyncTask(new File(""),
+                mock(ServerManager.class),
+                mock(ContentResolver.class), null);
     }
 
     @Test
