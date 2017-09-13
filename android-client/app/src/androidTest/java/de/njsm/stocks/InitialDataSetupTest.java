@@ -42,7 +42,7 @@ public class InitialDataSetupTest {
         String locationName = "Fridge";
 
         onView(withId(R.id.drawer_layout))
-                .check(matches(isClosed(Gravity.START))) // Left Drawer should be closed.
+                .check(matches(isClosed(Gravity.START)))
                 .perform(open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.locations));
 

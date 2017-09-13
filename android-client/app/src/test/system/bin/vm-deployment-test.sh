@@ -6,8 +6,7 @@ sudo virsh snapshot-revert dp-server initialised-running || exit 1
 sleep 1
 
 cd $ANDROID_SDK
-emulator -use-system-libs -no-window -avd Nexus_5X_API_24 &
-EMULATOR_PID=$!
+emulator -use-system-libs -avd TC &
 cd -
 
 ssh -L 10910:dp-server:10910 -N -o GatewayPorts=yes localhost &
