@@ -2,23 +2,24 @@ package de.njsm.stocks.backend.network.tasks;
 
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.network.ServerManager;
-import de.njsm.stocks.backend.util.AbstractAsyncTask;
 import de.njsm.stocks.common.data.FoodItem;
 
 import java.io.File;
 
-public class DeleteItemTask extends AbstractAsyncTask<FoodItem, Void, Integer> {
+public class DeleteItemTask extends AbstractNetworkTask<FoodItem, Void, Integer> {
 
     private NetworkManager networkManager;
 
-    public DeleteItemTask(File exceptionFileDirectory, NetworkManager networkManager) {
-        super(exceptionFileDirectory);
+    public DeleteItemTask(File exceptionFileDirectory,
+                          ServerManager serverManager,
+                          NetworkManager networkManager) {
+        super(exceptionFileDirectory, serverManager);
         this.networkManager = networkManager;
     }
 
     @Override
     protected Integer doInBackgroundInternally(FoodItem... params) {
-        ServerManager.m.removeItem(params[0]);
+        serverManager.removeItem(params[0]);
         return 0;
     }
 

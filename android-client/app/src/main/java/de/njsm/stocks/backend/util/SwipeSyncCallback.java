@@ -1,6 +1,8 @@
-package de.njsm.stocks.backend.network;
+package de.njsm.stocks.backend.util;
 
 import android.support.v4.widget.SwipeRefreshLayout;
+import de.njsm.stocks.backend.network.AsyncTaskCallback;
+import de.njsm.stocks.backend.network.NetworkManager;
 
 public class SwipeSyncCallback implements SwipeRefreshLayout.OnRefreshListener,
         AsyncTaskCallback {

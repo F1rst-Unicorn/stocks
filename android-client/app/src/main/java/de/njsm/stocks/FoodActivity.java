@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
-import de.njsm.stocks.backend.network.SwipeSyncCallback;
+import de.njsm.stocks.backend.util.SwipeSyncCallback;
 import de.njsm.stocks.common.data.Food;
 
 public class FoodActivity extends AppCompatActivity {

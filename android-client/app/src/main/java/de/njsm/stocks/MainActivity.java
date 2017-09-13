@@ -21,10 +21,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
-import de.njsm.stocks.backend.network.ServerManager;
-import de.njsm.stocks.backend.network.SwipeSyncCallback;
 import de.njsm.stocks.backend.setup.SetupTask;
 import de.njsm.stocks.backend.util.ExceptionHandler;
+import de.njsm.stocks.backend.util.SwipeSyncCallback;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.User;
@@ -182,7 +181,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void finished() {
-        ServerManager.init(this);
         networkManager.synchroniseData();
         TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_username));
         if (view != null) {

@@ -2,23 +2,24 @@ package de.njsm.stocks.backend.network.tasks;
 
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.network.ServerManager;
-import de.njsm.stocks.backend.util.AbstractAsyncTask;
 import de.njsm.stocks.common.data.User;
 
 import java.io.File;
 
-public class NewUserTask extends AbstractAsyncTask<User, Void, Integer> {
+public class NewUserTask extends AbstractNetworkTask<User, Void, Integer> {
 
     private NetworkManager networkManager;
 
-    public NewUserTask(File exceptionFileDirectory, NetworkManager networkManager) {
-        super(exceptionFileDirectory);
+    public NewUserTask(File exceptionFileDirectory,
+                       ServerManager serverManager,
+                       NetworkManager networkManager) {
+        super(exceptionFileDirectory, serverManager);
         this.networkManager = networkManager;
     }
 
     @Override
     protected Integer doInBackgroundInternally(User... params) {
-        ServerManager.m.addUser(params[0]);
+        serverManager.addUser(params[0]);
         return 0;
     }
 

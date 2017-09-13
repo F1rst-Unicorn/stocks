@@ -19,14 +19,6 @@ public class ServerManager {
 
     protected ServerClient backend;
 
-    public static ServerManager m;
-
-    public static void init(Context ctx) {
-        if (m == null) {
-            m = new ServerManager(ctx);
-        }
-    }
-
     public ServerManager(Context ctx) {
         try {
             SharedPreferences prefs = ctx.getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);

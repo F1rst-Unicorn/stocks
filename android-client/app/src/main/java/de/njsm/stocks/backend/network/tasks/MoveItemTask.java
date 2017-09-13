@@ -2,17 +2,18 @@ package de.njsm.stocks.backend.network.tasks;
 
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.network.ServerManager;
-import de.njsm.stocks.backend.util.AbstractAsyncTask;
 import de.njsm.stocks.common.data.FoodItem;
 
 import java.io.File;
 
-public class MoveItemTask extends AbstractAsyncTask<Object, Void, Void> {
+public class MoveItemTask extends AbstractNetworkTask<Object, Void, Void> {
 
     private NetworkManager networkManager;
 
-    public MoveItemTask(File exceptionFileDirectory, NetworkManager networkManager) {
-        super(exceptionFileDirectory);
+    public MoveItemTask(File exceptionFileDirectory,
+                        ServerManager serverManager,
+                        NetworkManager networkManager) {
+        super(exceptionFileDirectory, serverManager);
         this.networkManager = networkManager;
     }
 
@@ -21,7 +22,7 @@ public class MoveItemTask extends AbstractAsyncTask<Object, Void, Void> {
         FoodItem item = (FoodItem) params[0];
         int locationId = (int) params[1];
 
-        ServerManager.m.move(item, locationId);
+        serverManager.move(item, locationId);
         return null;
     }
 

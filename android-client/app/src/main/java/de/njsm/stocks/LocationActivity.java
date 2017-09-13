@@ -6,7 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
-import de.njsm.stocks.backend.network.SwipeSyncCallback;
+import de.njsm.stocks.backend.util.SwipeSyncCallback;
 
 public class LocationActivity extends AppCompatActivity {
 

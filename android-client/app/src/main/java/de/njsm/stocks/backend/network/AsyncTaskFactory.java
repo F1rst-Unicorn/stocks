@@ -9,18 +9,23 @@ public class AsyncTaskFactory {
 
     private NetworkManager networkManager;
 
+    private ServerManager serverManager;
+
     public AsyncTaskFactory(ContextWrapper contextWrapper) {
         this.contextWrapper = contextWrapper;
+        this.serverManager = new ServerManager(contextWrapper);
     }
 
     public SyncTask getSyncTask() {
         return new SyncTask(contextWrapper.getFilesDir(),
+                serverManager,
                 contextWrapper.getContentResolver(),
                 null);
     }
 
     public SyncTask getSyncTask(AsyncTaskCallback callback) {
         return new SyncTask(contextWrapper.getFilesDir(),
+                serverManager,
                 contextWrapper.getContentResolver(),
                 callback);
     }

@@ -10,7 +10,6 @@ import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.*;
 import de.njsm.stocks.backend.network.AsyncTaskCallback;
 import de.njsm.stocks.backend.network.ServerManager;
-import de.njsm.stocks.backend.util.AbstractAsyncTask;
 import de.njsm.stocks.common.data.*;
 
 import java.io.File;
@@ -21,7 +20,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
+public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
 
     private static AtomicBoolean sRunning = new AtomicBoolean(false);
 
@@ -29,10 +28,13 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
 
     private AsyncTaskCallback mListener;
 
-    public SyncTask(File exceptionDirectory, ContentResolver resolver, AsyncTaskCallback listener) {
-        super(exceptionDirectory);
+    public SyncTask(File exceptionFileDirectory,
+                    ServerManager serverManager,
+                    ContentResolver resolver,
+                    AsyncTaskCallback mListener) {
+        super(exceptionFileDirectory, serverManager);
         this.resolver = resolver;
-        mListener = listener;
+        this.mListener = mListener;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
             return 0;
         }
 
-        Update[] serverUpdates = ServerManager.m.getUpdates();
+        Update[] serverUpdates = serverManager.getUpdates();
         Update[] localUpdates = getUpdates();
 
         if (updateOutdatedTables(serverUpdates, localUpdates)) return 0;
@@ -107,7 +109,7 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
     }
 
     protected void refreshFood() {
-        Food[] u = ServerManager.m.getFood();
+        Food[] u = serverManager.getFood();
 
         ContentValues[] values = new ContentValues[u.length];
         for (int i = 0; i < u.length; i++) {
@@ -121,7 +123,7 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
     }
 
     protected void refreshItems() {
-        FoodItem[] u = ServerManager.m.getFoodItems();
+        FoodItem[] u = serverManager.getFoodItems();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
 
         ContentValues[] values = new ContentValues[u.length];
@@ -141,7 +143,7 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
     }
 
     protected void refreshLocations() {
-        Location[] u = ServerManager.m.getLocations();
+        Location[] u = serverManager.getLocations();
 
         ContentValues[] values = new ContentValues[u.length];
         for (int i = 0; i < u.length; i++) {
@@ -155,7 +157,7 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
     }
 
     protected void refreshUsers() {
-        User[] u = ServerManager.m.getUsers();
+        User[] u = serverManager.getUsers();
 
         ContentValues[] values = new ContentValues[u.length];
         for (int i = 0; i < u.length; i++) {
@@ -170,7 +172,7 @@ public class SyncTask extends AbstractAsyncTask<Void, Void, Integer> {
     }
 
     protected void refreshDevices() {
-        UserDevice[] u = ServerManager.m.getDevices();
+        UserDevice[] u = serverManager.getDevices();
 
         ContentValues[] values = new ContentValues[u.length];
         for (int i = 0; i < u.length; i++) {
