@@ -39,7 +39,7 @@ public class SetupTest {
 
     private String fingerprint;
 
-    private String hostname = "192.168.100.5"; // FIXME: Adapt for nightly build
+    private String hostname = "10.0.2.2";
 
     @Before
     public void setup() throws Exception {
