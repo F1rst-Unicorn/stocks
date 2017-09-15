@@ -6,7 +6,7 @@ sudo virsh snapshot-revert dp-server initialised-running || exit 1
 sleep 1
 
 cd $ANDROID_SDK
-emulator -use-system-libs -avd TC &
+emulator -no-window -use-system-libs -avd dp-android &
 cd -
 
 ssh -L 10910:dp-server:10910 -N -o GatewayPorts=yes localhost &
