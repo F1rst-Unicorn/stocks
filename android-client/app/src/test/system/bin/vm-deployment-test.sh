@@ -11,7 +11,7 @@ fi
 sudo virsh snapshot-revert dp-server initialised-running || exit 1
 sleep 1
 
-cd $ANDROID_HOME
+cd $ANDROID_HOME/tools
 emulator $EMULATOR_ARGS -use-system-libs -avd dp-android &
 cd -
 
