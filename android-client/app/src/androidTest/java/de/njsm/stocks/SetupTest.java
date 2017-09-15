@@ -105,8 +105,7 @@ public class SetupTest {
                 allOf(withId(R.id.fingerprint), isDisplayed()));
         appCompatEditText9.check(matches(ViewMatchers.withText(fingerprint)));
 
-        ViewInteraction appCompatEditText10 = onView(
-                allOf(withId(R.id.ticket), isDisplayed()));
+        ViewInteraction appCompatEditText10 = onView(withId(R.id.ticket));
         appCompatEditText10.check(matches(ViewMatchers.withText("0000")));
 
         ViewInteraction appCompatTextView3 = onView(
