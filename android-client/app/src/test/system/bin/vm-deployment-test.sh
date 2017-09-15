@@ -37,9 +37,11 @@ adb -s $DEVICE reverse tcp:10912 tcp:10912
 $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
         connectedDebugAndroidTest \
         -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.SystemTestSuite
+RC=$?
 
 kill $SSH_1_PID
 kill $SSH_2_PID
 kill $SSH_3_PID
 echo -e "auth $(cat ~/.emulator_console_auth_token)\nkill\n" | nc localhost 5554
 
+exit $RC
