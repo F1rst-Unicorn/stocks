@@ -7,8 +7,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import de.njsm.stocks.backend.db.data.*;
-import de.njsm.stocks.backend.network.AsyncTaskFactory;
-import de.njsm.stocks.backend.network.NetworkManager;
 
 public class StocksContentProvider extends ContentProvider {
 
@@ -24,15 +22,10 @@ public class StocksContentProvider extends ContentProvider {
     private static final UriMatcher sMatcher;
 
     protected DatabaseHandler mHandler;
-    private NetworkManager networkManager;
 
     @Override
     public boolean onCreate() {
-        AsyncTaskFactory factory = new AsyncTaskFactory(new ContextWrapper(getContext()));
-        networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
-
-        mHandler = new DatabaseHandler(new ContextWrapper(getContext()), networkManager);
+        mHandler = new DatabaseHandler(new ContextWrapper(getContext()));
         return true;
     }
 

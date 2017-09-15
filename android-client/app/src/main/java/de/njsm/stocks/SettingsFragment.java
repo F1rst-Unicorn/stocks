@@ -36,7 +36,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public boolean onPreferenceClick(Preference preference) {
         switch(preference.getKey()) {
             case "pref_full_sync":
-                DatabaseHandler handler = new DatabaseHandler(getActivity(), networkManager);
+                DatabaseHandler handler = new DatabaseHandler(getActivity());
                 handler.onUpgrade(handler.getWritableDatabase(), -1, -1);
                 Toast.makeText(
                         getActivity(),

@@ -273,9 +273,10 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         if (result.isSuccess()) {
             mListener.finished();
             builder.setIcon(R.drawable.ic_check_black_24dp)
-                    .setPositiveButton(c.getResources().getString(R.string.dialog_ok), (dialog, which) ->
-                    dialog.dismiss()
-            );
+                    .setPositiveButton(c.getResources().getString(R.string.dialog_ok), (dialog, which) -> {
+                        SetupTask.this.dialog.dismiss();
+                        dialog.dismiss();
+                    });
         } else {
             builder.setPositiveButton(c.getResources().getString(R.string.dialog_retry), (dialog, which) -> {
                     dialog.dismiss();

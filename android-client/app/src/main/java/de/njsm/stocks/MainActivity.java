@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity
 
         swiper = (SwipeRefreshLayout) findViewById(R.id.swipe_overlay);
         assert swiper != null;
-        swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));
 
         usersFragment = new UserListFragment();
         locationsFragment = new LocationListFragment();
@@ -180,6 +179,8 @@ public class MainActivity extends AppCompatActivity
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         networkManager = new NetworkManager(factory);
         factory.setNetworkManager(networkManager);
+        swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));
+
         networkManager.synchroniseData();
         TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_username));
         if (view != null) {
