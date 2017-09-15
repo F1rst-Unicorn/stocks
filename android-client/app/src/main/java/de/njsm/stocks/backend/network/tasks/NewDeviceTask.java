@@ -2,6 +2,7 @@ package de.njsm.stocks.backend.network.tasks;
 
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.network.ServerManager;
+import de.njsm.stocks.backend.network.TicketCallback;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
 
@@ -34,11 +35,6 @@ public class NewDeviceTask extends AbstractNetworkTask<Object, Void, Ticket> {
     protected void onPostExecute(Ticket ticket) {
         networkManager.synchroniseData();
         mListener.applyToTicket(ticket);
-    }
-
-    public interface TicketCallback {
-
-        void applyToTicket(Ticket ticket);
     }
 }
 

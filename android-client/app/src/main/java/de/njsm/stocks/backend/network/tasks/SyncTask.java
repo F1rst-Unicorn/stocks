@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.data.SerialisationVisitor;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.*;
 import de.njsm.stocks.backend.network.AsyncTaskCallback;
@@ -14,10 +15,8 @@ import de.njsm.stocks.common.data.*;
 
 import java.io.File;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
@@ -28,6 +27,8 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
 
     private AsyncTaskCallback listener;
 
+    private SerialisationVisitor serialiser;
+
     public SyncTask(File exceptionFileDirectory,
                     ServerManager serverManager,
                     ContentResolver resolver,
@@ -35,6 +36,7 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         super(exceptionFileDirectory, serverManager);
         this.resolver = resolver;
         this.listener = listener;
+        this.serialiser = new SerialisationVisitor();
     }
 
     @Override
@@ -46,40 +48,38 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         }
 
         Update[] serverUpdates = serverManager.getUpdates();
-        Update[] localUpdates = getLocalUpdates();
-
-        if (updateOutdatedTables(serverUpdates, localUpdates)) {
-            return 0;
-        }
-
-        writeUpdates(serverUpdates);
-
-        Log.i(Config.LOG_TAG, "Sync successful");
+        Update[] localUpdates = readLocalUpdates();
+        updateOutdatedTables(serverUpdates, localUpdates);
 
         sRunning.set(false);
         return 0;
     }
 
-    protected boolean updateOutdatedTables(Update[] serverUpdates, Update[] localUpdates) {
+    private void updateOutdatedTables(Update[] serverUpdates, Update[] localUpdates) {
         if (serverUpdates.length == 0) {
-            Log.e(Config.LOG_TAG, "Array is empty " + serverUpdates.length + ", " +
-                localUpdates.length);
-            return true;
-        }
-        if (localUpdates.length == 0) {
+            Log.e(Config.LOG_TAG, "Server updates are empty");
+        } else if (localUpdates.length == 0) {
             refreshAll();
         } else {
-            for (Update update : serverUpdates) {
-                Update localUpdate = getLocalUpdate(localUpdates, update.table);
-                if (localUpdate != null && update.lastUpdate.after(localUpdate.lastUpdate)) {
-                    refresh(update.table);
-                }
-            }
+            refreshOutdatedTables(serverUpdates, localUpdates);
         }
-        return false;
+        writeUpdates(serverUpdates);
     }
 
-    protected Update getLocalUpdate(Update[] localUpdates, String table) {
+    private void refreshOutdatedTables(Update[] serverUpdates, Update[] localUpdates) {
+        for (Update update : serverUpdates) {
+            if (isTableOutdated(localUpdates, update)) {
+                refresh(update.table);
+            }
+        }
+    }
+
+    private boolean isTableOutdated(Update[] localUpdates, Update update) {
+        Update localUpdate = getLocalUpdate(localUpdates, update.table);
+        return localUpdate != null && update.lastUpdate.after(localUpdate.lastUpdate);
+    }
+
+    private Update getLocalUpdate(Update[] localUpdates, String table) {
         for (Update u : localUpdates) {
             if (u.table.equals(table)) {
                 return u;
@@ -96,7 +96,7 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         refreshItems();
     }
 
-    protected void refresh(String table) {
+    private void refresh(String table) {
         if (table.equals(SqlUserTable.NAME)) {
             refreshUsers();
         } else if (table.equals(SqlDeviceTable.NAME)) {
@@ -110,85 +110,87 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         }
     }
 
-    protected void refreshFood() {
+    private void refreshFood() {
         Food[] u = serverManager.getFood();
+        writeFood(u);
+    }
 
+    private void writeFood(Food[] u) {
         ContentValues[] values = new ContentValues[u.length];
         for (int i = 0; i < u.length; i++) {
-            values[i] = new ContentValues();
-            values[i].put(SqlFoodTable.COL_ID, u[i].id);
-            values[i].put(SqlFoodTable.COL_NAME, u[i].name);
+            values[i] = serialiser.visit(u[i], 0);
         }
 
-        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodTable.NAME),
+        resolver.bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodTable.NAME),
                 values);
     }
 
-    protected void refreshItems() {
-        FoodItem[] u = serverManager.getFoodItems();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
+    private void refreshItems() {
+        FoodItem[] items = serverManager.getFoodItems();
+        writeItems(items);
+    }
 
-        ContentValues[] values = new ContentValues[u.length];
-        for (int i = 0; i < u.length; i++) {
-            values[i] = new ContentValues();
-            values[i].put(SqlFoodItemTable.COL_ID, u[i].id);
-            values[i].put(SqlFoodItemTable.COL_REGISTERS, u[i].registers);
-            values[i].put(SqlFoodItemTable.COL_BUYS, u[i].buys);
-            values[i].put(SqlFoodItemTable.COL_OF_TYPE, u[i].ofType);
-            values[i].put(SqlFoodItemTable.COL_STORED_IN, u[i].storedIn);
-            values[i].put(SqlFoodItemTable.COL_EAT_BY, format.format(u[i].eatByDate));
-
+    private void writeItems(FoodItem[] items) {
+        ContentValues[] values = new ContentValues[items.length];
+        for (int i = 0; i < items.length; i++) {
+            values[i] = serialiser.visit(items[i], 0);
         }
 
-        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodItemTable.NAME),
+        resolver.bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodItemTable.NAME),
                 values);
     }
 
-    protected void refreshLocations() {
-        Location[] u = serverManager.getLocations();
+    private void refreshLocations() {
+        Location[] locations = serverManager.getLocations();
+        writeLocations(locations);
+    }
 
+    private void writeLocations(Location[] u) {
         ContentValues[] values = new ContentValues[u.length];
         for (int i = 0; i < u.length; i++) {
-            values[i] = new ContentValues();
-            values[i].put(SqlLocationTable.COL_ID, u[i].id);
-            values[i].put(SqlLocationTable.COL_NAME, u[i].name);
+            values[i] = serialiser.visit(u[i], null);
         }
 
-        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME),
+        resolver.bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME),
                 values);
     }
 
-    protected void refreshUsers() {
+    private void refreshUsers() {
         User[] u = serverManager.getUsers();
-
-        ContentValues[] values = new ContentValues[u.length];
-        for (int i = 0; i < u.length; i++) {
-            values[i] = new ContentValues();
-            values[i].put(SqlUserTable.COL_ID, u[i].id);
-            values[i].put(SqlUserTable.COL_NAME, u[i].name);
-        }
-
-        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUserTable.NAME),
-                values);
-
+        writeUsers(u);
     }
 
-    protected void refreshDevices() {
+    private void writeUsers(User[] u) {
+        ContentValues[] values = new ContentValues[u.length];
+        for (int i = 0; i < u.length; i++) {
+            values[i] = serialiser.visit(u[i], null);
+        }
+
+        resolver.bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUserTable.NAME),
+                values);
+    }
+
+    private void refreshDevices() {
         UserDevice[] u = serverManager.getDevices();
+        writeDevices(u);
+    }
 
-        ContentValues[] values = new ContentValues[u.length];
-        for (int i = 0; i < u.length; i++) {
-            values[i] = new ContentValues();
-            values[i].put(SqlDeviceTable.COL_ID, u[i].id);
-            values[i].put(SqlDeviceTable.COL_NAME, u[i].name);
-            values[i].put(SqlDeviceTable.COL_USER, u[i].userId);
+    private void writeDevices(UserDevice[] devices) {
+        ContentValues[] values = new ContentValues[devices.length];
+        for (int i = 0; i < devices.length; i++) {
+            values[i] = serialiser.visit(devices[i], null);
         }
 
-        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlDeviceTable.NAME),
+        resolver.bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlDeviceTable.NAME),
                 values);
     }
 
-    public Update[] getLocalUpdates() {
+    private Update[] readLocalUpdates() {
         Cursor cursor = resolver.query(
                 Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
                 null,
@@ -199,21 +201,20 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         );
         assert cursor != null;
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
-
         ArrayList<Update> result = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            Date date = null;
+        for (cursor.moveToFirst();
+             !cursor.isAfterLast();
+             cursor.moveToNext()) {
+
+            String rawDate = cursor.getString(cursor.getColumnIndex(SqlUpdateTable.COL_DATE));
+            String tableName = cursor.getString(cursor.getColumnIndex(SqlUpdateTable.COL_NAME));
             try {
-                date = format.parse(cursor.getString(cursor.getColumnIndex(SqlUpdateTable.COL_DATE)));
+                Date date = Config.DATABASE_DATE_FORMAT.parse(rawDate);
+                Update u = new Update(tableName, date);
+                result.add(u);
             } catch (ParseException e) {
-                e.printStackTrace();
+                Log.e(Config.LOG_TAG, "Could not parse date", e);
             }
-            Update u = new Update(cursor.getString(cursor.getColumnIndex(SqlUpdateTable.COL_NAME)),
-                    date);
-            result.add(u);
-            cursor.moveToNext();
         }
         cursor.close();
         return result.toArray(new Update[result.size()]);
@@ -222,19 +223,15 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
 
     private void writeUpdates(Update[] serverUpdates) {
         ContentValues[] values = new ContentValues[serverUpdates.length];
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
 
-        int i = 0;
-        for (Update u : serverUpdates) {
-            ContentValues v = new ContentValues();
-            v.put(SqlUpdateTable.COL_ID, i);
-            v.put(SqlUpdateTable.COL_NAME, u.table);
-            v.put(SqlUpdateTable.COL_DATE, format.format(u.lastUpdate));
-            values[i] = v;
-            i++;
+        int index = 0;
+        for (Update update : serverUpdates) {
+            values[index] = serialiser.visit(update, index);
+            index++;
         }
 
-        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
+        resolver.bulkInsert(
+                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
                 values);
     }
 

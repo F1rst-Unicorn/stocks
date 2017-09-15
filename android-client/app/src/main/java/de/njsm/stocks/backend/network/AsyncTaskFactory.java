@@ -54,7 +54,7 @@ public class AsyncTaskFactory {
         return new MoveItemTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
     
-    public NewDeviceTask getNewDeviceTask(NewDeviceTask.TicketCallback callback) {
+    public NewDeviceTask getNewDeviceTask(TicketCallback callback) {
         return new NewDeviceTask(contextWrapper.getFilesDir(), serverManager, networkManager, callback);
     }
     

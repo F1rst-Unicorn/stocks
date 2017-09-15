@@ -14,14 +14,14 @@ import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlDeviceTable;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
-import de.njsm.stocks.backend.network.tasks.NewDeviceTask;
+import de.njsm.stocks.backend.network.TicketCallback;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
 
 import java.util.Locale;
 
 public class UserActivity extends AppCompatActivity
-        implements NewDeviceTask.TicketCallback,
+        implements TicketCallback,
                    AdapterView.OnItemLongClickListener,
                    LoaderManager.LoaderCallbacks<Cursor> {
 
