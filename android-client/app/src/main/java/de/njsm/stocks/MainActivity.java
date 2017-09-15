@@ -68,10 +68,6 @@ public class MainActivity extends AppCompatActivity
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
 
-        AsyncTaskFactory factory = new AsyncTaskFactory(this);
-        networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
-
         swiper = (SwipeRefreshLayout) findViewById(R.id.swipe_overlay);
         assert swiper != null;
         swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));
@@ -181,6 +177,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void finished() {
+        AsyncTaskFactory factory = new AsyncTaskFactory(this);
+        networkManager = new NetworkManager(factory);
+        factory.setNetworkManager(networkManager);
         networkManager.synchroniseData();
         TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_username));
         if (view != null) {

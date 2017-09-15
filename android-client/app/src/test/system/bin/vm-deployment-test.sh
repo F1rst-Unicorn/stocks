@@ -2,11 +2,17 @@
 
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 
+if [[ -z $CI_SERVER ]] ; then
+        EMULATOR_ARGS=
+else
+        EMULATOR_ARGS="-no-window"
+fi
+
 sudo virsh snapshot-revert dp-server initialised-running || exit 1
 sleep 1
 
-cd $ANDROID_SDK
-emulator -no-window -use-system-libs -avd dp-android &
+cd $ANDROID_HOME
+emulator $EMULATOR_ARGS -use-system-libs -avd dp-android &
 cd -
 
 ssh -L 10910:dp-server:10910 -N -o GatewayPorts=yes localhost &
