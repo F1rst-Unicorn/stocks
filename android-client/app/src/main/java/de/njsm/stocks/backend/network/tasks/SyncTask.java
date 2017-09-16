@@ -55,7 +55,7 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         return 0;
     }
 
-    private void updateOutdatedTables(Update[] serverUpdates, Update[] localUpdates) {
+    void updateOutdatedTables(Update[] serverUpdates, Update[] localUpdates) {
         if (serverUpdates.length == 0) {
             Log.e(Config.LOG_TAG, "Server updates are empty");
         } else if (localUpdates.length == 0) {
