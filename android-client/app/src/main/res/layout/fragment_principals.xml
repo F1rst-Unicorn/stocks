@@ -9,7 +9,7 @@
         style="@style/StocksTheme.EditText"
         android:id="@+id/user_name"
         android:hint="@string/hint_username"
-        android:inputType="text"
+        android:inputType="textPersonName"
         android:layout_alignParentTop="true"/>
 
     <EditText
@@ -17,6 +17,7 @@
         android:id="@+id/device_name"
         android:hint="@string/hint_device_name"
         android:layout_below="@+id/user_name"
+        android:inputType="textPersonName"
         android:layout_alignParentStart="true" />
 
     <EditText
@@ -39,6 +40,7 @@
 
     <EditText
         style="@style/StocksTheme.EditText"
+        android:inputType="text"
         android:id="@+id/fingerprint"
         android:layout_below="@+id/device_id"
         android:hint="@string/hint_fingerprint"
@@ -46,6 +48,7 @@
 
     <EditText
         style="@style/StocksTheme.EditText"
+        android:inputType="text"
         android:id="@+id/ticket"
         android:layout_below="@+id/fingerprint"
         android:hint="@string/hint_ticket"
