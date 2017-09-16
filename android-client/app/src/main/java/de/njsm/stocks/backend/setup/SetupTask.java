@@ -43,16 +43,16 @@ import static de.njsm.stocks.Config.KEYSTORE_FILE;
 
 public class SetupTask extends AsyncTask<Void, String, Result> {
 
-    protected Activity c;
-    protected Bundle extras;
-    protected SetupFinishedListener mListener;
+    private Activity c;
+    private Bundle extras;
+    private SetupFinishedListener mListener;
 
-    protected ProgressDialog dialog;
+    private ProgressDialog dialog;
 
-    protected KeyPair clientKeys;
-    protected String csr;
-    protected String caCert;
-    protected String intermediateCert;
+    private KeyPair clientKeys;
+    private String csr;
+    private String caCert;
+    private String intermediateCert;
 
     public SetupTask(Activity c) {
         super();
@@ -271,11 +271,10 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
                 .setCancelable(false);
 
         if (result.isSuccess()) {
-            mListener.finished();
             builder.setIcon(R.drawable.ic_check_black_24dp)
                     .setPositiveButton(c.getResources().getString(R.string.dialog_ok), (dialog, which) -> {
-                        SetupTask.this.dialog.dismiss();
                         dialog.dismiss();
+                        mListener.onSetupFinished();
                     });
         } else {
             builder.setPositiveButton(c.getResources().getString(R.string.dialog_retry), (dialog, which) -> {
@@ -290,6 +289,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         }
 
         AlertDialog messageDialog = builder.create();
+        dialog.dismiss();
         messageDialog.show();
     }
 }

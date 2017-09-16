@@ -19,7 +19,7 @@ import static org.hamcrest.CoreMatchers.*;
 public class InitialDataSetupTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
 
     @Test
     public void addInitialFood() throws Exception {

@@ -18,7 +18,7 @@ import static org.hamcrest.CoreMatchers.*;
 
 public class UserAdministrationTest {
     @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
 
     private String username = "Juliette";
 

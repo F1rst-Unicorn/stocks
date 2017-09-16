@@ -35,7 +35,7 @@ import static org.hamcrest.Matchers.allOf;
 public class SetupTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
 
     private String fingerprint;
 

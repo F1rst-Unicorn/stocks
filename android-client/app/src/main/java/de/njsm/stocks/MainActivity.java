@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,18 +22,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
-import de.njsm.stocks.backend.setup.SetupTask;
 import de.njsm.stocks.backend.util.ExceptionHandler;
 import de.njsm.stocks.backend.util.SwipeSyncCallback;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.frontend.setup.SetupActivity;
-import de.njsm.stocks.frontend.setup.SetupFinishedListener;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-                   SetupFinishedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     protected DrawerLayout drawer;
     protected SwipeRefreshLayout swiper;
@@ -81,18 +78,23 @@ public class MainActivity extends AppCompatActivity
                 .replace(R.id.main_content, outlineFragment)
                 .commit();
 
-        if (getIntent().hasExtra(SetupActivity.SETUP_FINISHED)) {
-            getIntent().getExtras().remove(SetupActivity.SETUP_FINISHED);
-            SetupTask s = new SetupTask(this);
-            s.registerListener(this);
-            s.execute();
-        } else if (! prefs.contains(Config.USERNAME_CONFIG)) {
-            Intent i = new Intent(this, SetupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-        } else {
-            finished();
+        AsyncTaskFactory factory = new AsyncTaskFactory(this);
+        networkManager = new NetworkManager(factory);
+        factory.setNetworkManager(networkManager);
+        swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));
+
+        networkManager.synchroniseData();
+        TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_username));
+        if (view != null) {
+            view.setText(prefs.getString(Config.USERNAME_CONFIG, ""));
+        }
+        view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_server);
+        if (view != null) {
+            view.setText(prefs.getString(Config.SERVER_NAME_CONFIG, ""));
+        }
+        view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_dev);
+        if (view != null) {
+            view.setText(prefs.getString(Config.DEVICE_NAME_CONFIG, ""));
         }
     }
 
@@ -147,7 +149,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         Fragment f;
 
@@ -174,28 +176,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void finished() {
-        AsyncTaskFactory factory = new AsyncTaskFactory(this);
-        networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
-        swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));
-
-        networkManager.synchroniseData();
-        TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_username));
-        if (view != null) {
-            view.setText(prefs.getString(Config.USERNAME_CONFIG, ""));
-        }
-        view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_server);
-        if (view != null) {
-            view.setText(prefs.getString(Config.SERVER_NAME_CONFIG, ""));
-        }
-        view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_user_dev);
-        if (view != null) {
-            view.setText(prefs.getString(Config.DEVICE_NAME_CONFIG, ""));
-        }
-    }
-
     public void addEntity(View view) {
         if (currentFragment == usersFragment) {
             final EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
@@ -203,16 +183,11 @@ public class MainActivity extends AppCompatActivity
             new AlertDialog.Builder(this)
                     .setTitle(getResources().getString(R.string.dialog_new_user))
                     .setView(textField)
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
+                    .setPositiveButton(getResources().getString(R.string.dialog_ok), (DialogInterface dialog, int whichButton) -> {
                             String name = textField.getText().toString().trim();
                             networkManager.addUser(new User(0, name));
-                        }
                     })
-                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                        }
-                    })
+                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), (DialogInterface dialog, int whichButton) -> {})
                     .show();
         } else if (currentFragment == locationsFragment) {
             final EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
@@ -220,16 +195,11 @@ public class MainActivity extends AppCompatActivity
             new AlertDialog.Builder(this)
                     .setTitle(getResources().getString(R.string.dialog_new_location))
                     .setView(textField)
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
+                    .setPositiveButton(getResources().getString(R.string.dialog_ok), (DialogInterface dialog, int whichButton) -> {
                             String name = textField.getText().toString().trim();
                             networkManager.addLocation(new Location(0, name));
-                        }
                     })
-                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                        }
-                    })
+                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), (DialogInterface dialog, int whichButton) -> {})
                     .show();
         } else {
             final EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
@@ -237,16 +207,11 @@ public class MainActivity extends AppCompatActivity
             new AlertDialog.Builder(this)
                     .setTitle(getResources().getString(R.string.dialog_new_food))
                     .setView(textField)
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
+                    .setPositiveButton(getResources().getString(R.string.dialog_ok), (DialogInterface dialog, int whichButton) -> {
                             String name = textField.getText().toString().trim();
                             networkManager.addFood(new Food(0, name));
-                        }
                     })
-                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                        }
-                    })
+                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), (DialogInterface dialog, int whichButton) -> {})
                     .show();
         }
     }

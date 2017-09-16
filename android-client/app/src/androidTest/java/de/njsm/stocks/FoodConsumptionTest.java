@@ -17,7 +17,7 @@ import static org.hamcrest.CoreMatchers.*;
 public class FoodConsumptionTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
 
     @Test
     public void drinkTwoBeer() throws Exception {

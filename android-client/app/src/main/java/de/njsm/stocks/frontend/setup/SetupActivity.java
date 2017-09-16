@@ -8,8 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
 import de.njsm.stocks.Config;
-import de.njsm.stocks.MainActivity;
 import de.njsm.stocks.R;
+import de.njsm.stocks.StartupActivity;
 import de.njsm.stocks.zxing.IntentIntegrator;
 import de.njsm.stocks.zxing.IntentResult;
 
@@ -34,8 +34,7 @@ public class SetupActivity extends DotStepper {
 
     @Override
     public void onComplete(Bundle data) {
-
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, StartupActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra(SETUP_FINISHED, SETUP_FINISHED);
