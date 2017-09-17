@@ -73,7 +73,7 @@ public class UserListFragment extends ListFragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUserTable.NAME);
+        Uri uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlUserTable.NAME);
 
         return new CursorLoader(getActivity(), uri,
                 null, null, null,

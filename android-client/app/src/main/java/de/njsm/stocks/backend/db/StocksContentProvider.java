@@ -11,21 +11,27 @@ import de.njsm.stocks.backend.db.data.*;
 public class StocksContentProvider extends ContentProvider {
 
     public static final String AUTHORITY = "de.njsm.stocks.providers.StocksContentProvider";
-    public static final Uri baseUri = Uri.parse("content://de.njsm.stocks.providers.StocksContentProvider");
 
-    public static final String foodItemLocation = "Food_item/by_location";
-    public static final String foodItemType = "Food_item/by_food_type";
-    public static final String emptyFood = "Food/empty";
-    public static final String eatSoon = "Food/eat_soon";
-    public static final String maxLocation = "Location/eat_soon";
+    public static final Uri BASE_URI = Uri.parse("content://de.njsm.stocks.providers.StocksContentProvider");
 
-    private static final UriMatcher sMatcher;
+    public static final String FOOD_ITEM_LOCATION = "Food_item/by_location";
 
-    protected DatabaseHandler mHandler;
+    public static final String FOOD_ITEM_TYPE = "Food_item/by_food_type";
+
+    public static final String EMPTY_FOOD = "Food/empty";
+
+    public static final String EAT_SOON = "Food/eat_soon";
+
+    public static final String MAX_LOCATION = "Location/eat_soon";
+
+    private UriMatcher sMatcher;
+
+    private DatabaseHandler mHandler;
 
     @Override
     public boolean onCreate() {
         mHandler = new DatabaseHandler(new ContextWrapper(getContext()));
+        initialiseUriMatcher();
         return true;
     }
 
@@ -44,8 +50,7 @@ public class StocksContentProvider extends ContentProvider {
                 result = db.rawQuery(SqlUserTable.SELECT_ALL, null);
                 break;
             case 1:
-                if (selectionArgs != null &&
-                        selectionArgs.length == 1) {
+                if (selectionArgs != null && selectionArgs.length == 1) {
                     result = db.rawQuery(SqlDeviceTable.SELECT_USER, selectionArgs);
                 } else {
                     result = db.rawQuery(SqlDeviceTable.SELECT_ALL, null);
@@ -83,42 +88,42 @@ public class StocksContentProvider extends ContentProvider {
     @Override
     public int bulkInsert(@NonNull Uri uri,
                           @NonNull ContentValues[] values) {
-        final int match = sMatcher.match(uri);
-        final ContentResolver resolver = getContext().getContentResolver();
-        Uri uri6 = Uri.withAppendedPath(baseUri, foodItemLocation);
-        Uri uri7 = Uri.withAppendedPath(baseUri, foodItemType);
-        Uri uri8 = Uri.withAppendedPath(baseUri, emptyFood);
-        Uri uri9 = Uri.withAppendedPath(baseUri, eatSoon);
+        int match = sMatcher.match(uri);
+        ContentResolver resolver = getContext().getContentResolver();
+        Uri uri6 = Uri.withAppendedPath(BASE_URI, FOOD_ITEM_LOCATION);
+        Uri uri7 = Uri.withAppendedPath(BASE_URI, FOOD_ITEM_TYPE);
+        Uri uri8 = Uri.withAppendedPath(BASE_URI, EMPTY_FOOD);
+        Uri uri9 = Uri.withAppendedPath(BASE_URI, EAT_SOON);
 
 
         switch (match) {
             case 0:
-                mHandler.writeUsers(values);
+                mHandler.writeData(SqlUserTable.NAME, values);
                 resolver.notifyChange(uri7, null);
                 break;
             case 1:
-                mHandler.writeDevices(values);
+                mHandler.writeData(SqlDeviceTable.NAME, values);
                 resolver.notifyChange(uri7, null);
                 break;
             case 2:
-                mHandler.writeLocations(values);
+                mHandler.writeData(SqlLocationTable.NAME, values);
                 resolver.notifyChange(uri7, null);
                 break;
             case 3:
-                mHandler.writeFood(values);
+                mHandler.writeData(SqlFoodTable.NAME, values);
                 resolver.notifyChange(uri6, null);
                 resolver.notifyChange(uri7, null);
                 resolver.notifyChange(uri8, null);
                 resolver.notifyChange(uri9, null);
                 break;
             case 4:
-                mHandler.writeItems(values);
+                mHandler.writeData(SqlFoodItemTable.NAME, values);
                 resolver.notifyChange(uri6, null);
                 resolver.notifyChange(uri8, null);
                 resolver.notifyChange(uri9, null);
                 break;
             case 5:
-                mHandler.writeUpdates(values);
+                mHandler.writeData(SqlUpdateTable.NAME, values);
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
@@ -149,8 +154,9 @@ public class StocksContentProvider extends ContentProvider {
         return 0;
     }
 
-    static {
+    private void initialiseUriMatcher() {
         sMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
         sMatcher.addURI(AUTHORITY, SqlUserTable.NAME, 0);
         sMatcher.addURI(AUTHORITY, SqlDeviceTable.NAME, 1);
         sMatcher.addURI(AUTHORITY, SqlLocationTable.NAME, 2);
@@ -158,10 +164,10 @@ public class StocksContentProvider extends ContentProvider {
         sMatcher.addURI(AUTHORITY, SqlFoodItemTable.NAME, 4);
         sMatcher.addURI(AUTHORITY, SqlUpdateTable.NAME, 5);
 
-        sMatcher.addURI(AUTHORITY, foodItemLocation, 6);
-        sMatcher.addURI(AUTHORITY, foodItemType, 7);
-        sMatcher.addURI(AUTHORITY, emptyFood, 8);
-        sMatcher.addURI(AUTHORITY, eatSoon, 9);
-        sMatcher.addURI(AUTHORITY, maxLocation, 10);
+        sMatcher.addURI(AUTHORITY, FOOD_ITEM_LOCATION, 6);
+        sMatcher.addURI(AUTHORITY, FOOD_ITEM_TYPE, 7);
+        sMatcher.addURI(AUTHORITY, EMPTY_FOOD, 8);
+        sMatcher.addURI(AUTHORITY, EAT_SOON, 9);
+        sMatcher.addURI(AUTHORITY, MAX_LOCATION, 10);
     }
 }

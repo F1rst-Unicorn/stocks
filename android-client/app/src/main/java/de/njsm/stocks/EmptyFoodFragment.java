@@ -9,10 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -82,8 +79,8 @@ public class EmptyFoodFragment extends ListFragment
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = Uri.withAppendedPath(
-                StocksContentProvider.baseUri,
-                StocksContentProvider.emptyFood);
+                StocksContentProvider.BASE_URI,
+                StocksContentProvider.EMPTY_FOOD);
 
         return new CursorLoader(
                 getActivity(),

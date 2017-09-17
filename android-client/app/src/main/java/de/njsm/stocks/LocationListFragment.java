@@ -126,7 +126,7 @@ public class LocationListFragment extends ListFragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME);
+        Uri uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlLocationTable.NAME);
 
         return new CursorLoader(getActivity(), uri,
                 null, null, null,

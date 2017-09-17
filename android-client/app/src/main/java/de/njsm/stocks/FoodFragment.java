@@ -157,8 +157,8 @@ public class FoodFragment extends ListFragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = Uri.withAppendedPath(
-                StocksContentProvider.baseUri,
-                StocksContentProvider.foodItemType);
+                StocksContentProvider.BASE_URI,
+                StocksContentProvider.FOOD_ITEM_TYPE);
 
         return new CursorLoader(
                 getActivity(),
@@ -259,7 +259,7 @@ public class FoodFragment extends ListFragment implements
         getLoaderManager().initLoader(1, null, new LoaderManager.LoaderCallbacks<Cursor>() {
             @Override
             public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-                Uri uri = Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME);
+                Uri uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlLocationTable.NAME);
                 return new CursorLoader(FoodFragment.this.getActivity(), uri,
                         null, null, null,
                         null);

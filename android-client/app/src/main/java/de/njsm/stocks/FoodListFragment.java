@@ -136,8 +136,8 @@ public class FoodListFragment extends ListFragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = Uri.withAppendedPath(
-                StocksContentProvider.baseUri,
-                StocksContentProvider.foodItemLocation);
+                StocksContentProvider.BASE_URI,
+                StocksContentProvider.FOOD_ITEM_LOCATION);
 
         return new CursorLoader(
                 getActivity(),

@@ -93,8 +93,8 @@ public class EatSoonFragment extends ListFragment
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = Uri.withAppendedPath(
-                StocksContentProvider.baseUri,
-                StocksContentProvider.eatSoon);
+                StocksContentProvider.BASE_URI,
+                StocksContentProvider.EAT_SOON);
 
         return new CursorLoader(
                 getActivity(),

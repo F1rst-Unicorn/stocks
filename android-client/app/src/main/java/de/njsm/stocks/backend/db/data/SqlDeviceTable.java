@@ -10,7 +10,6 @@ public class SqlDeviceTable {
 
     public static final String CREATE;
     public static final String DROP;
-    public static final String CLEAR;
     public static final String SELECT_ALL;
     public static final String SELECT_USER;
 
@@ -29,7 +28,6 @@ public class SqlDeviceTable {
                 ") ON DELETE RESTRICT ON UPDATE CASCADE\n" +
                 ")";
         DROP = "DROP TABLE IF EXISTS " + NAME;
-        CLEAR = "DELETE FROM " + NAME;
         SELECT_ALL = "SELECT * FROM " + NAME;
         SELECT_USER = "SELECT * FROM " + NAME + " WHERE " + COL_USER + "=?";
     }

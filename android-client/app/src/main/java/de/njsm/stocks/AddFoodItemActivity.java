@@ -129,12 +129,12 @@ public class AddFoodItemActivity extends AppCompatActivity implements
         Uri uri;
         switch(id) {
             case 1:
-                uri = Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME);
+                uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlLocationTable.NAME);
                 return new CursorLoader(this, uri,
                         null, null, null,
                         null);
             case 2:
-                uri = Uri.withAppendedPath(StocksContentProvider.baseUri, StocksContentProvider.maxLocation);
+                uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, StocksContentProvider.MAX_LOCATION);
                 return new CursorLoader(this, uri,
                         null, null, new String[] {String.valueOf(mId)},
                         null);

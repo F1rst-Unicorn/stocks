@@ -122,7 +122,7 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         }
 
         resolver.bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodTable.NAME),
+                Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlFoodTable.NAME),
                 values);
     }
 
@@ -138,7 +138,7 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         }
 
         resolver.bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlFoodItemTable.NAME),
+                Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlFoodItemTable.NAME),
                 values);
     }
 
@@ -154,7 +154,7 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         }
 
         resolver.bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlLocationTable.NAME),
+                Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlLocationTable.NAME),
                 values);
     }
 
@@ -170,7 +170,7 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         }
 
         resolver.bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUserTable.NAME),
+                Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlUserTable.NAME),
                 values);
     }
 
@@ -186,13 +186,13 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         }
 
         resolver.bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlDeviceTable.NAME),
+                Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlDeviceTable.NAME),
                 values);
     }
 
     private Update[] readLocalUpdates() {
         Cursor cursor = resolver.query(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
+                Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlUpdateTable.NAME),
                 null,
                 null,
                 null,
@@ -231,7 +231,7 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
         }
 
         resolver.bulkInsert(
-                Uri.withAppendedPath(StocksContentProvider.baseUri, SqlUpdateTable.NAME),
+                Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlUpdateTable.NAME),
                 values);
     }
 

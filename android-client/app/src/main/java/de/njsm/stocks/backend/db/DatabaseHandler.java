@@ -11,14 +11,12 @@ import de.njsm.stocks.backend.db.data.*;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
-    public static final int DATABASE_VERSION = 16;
-    public static final String DATABASE_NAME = "stocks.db";
+    private static final int DATABASE_VERSION = 16;
 
-    protected ContextWrapper mContext;
+    private static final String DATABASE_NAME = "stocks.db";
 
     public DatabaseHandler(ContextWrapper context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        mContext = context;
     }
 
     @Override
@@ -53,117 +51,22 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    public void writeUpdates(ContentValues[] updates) {
+    void writeData(String tableName, ContentValues[] values) {
         SQLiteDatabase db = getWritableDatabase();
 
         try {
             db.beginTransaction();
-            db.execSQL(SqlUpdateTable.CLEAR);
-            for (ContentValues u : updates) {
-                db.insertOrThrow(SqlUpdateTable.NAME, null, u);
-            }
 
-            db.setTransactionSuccessful();
-        } catch (SQLException e) {
-            Log.e(Config.LOG_TAG, "could not write updates", e);
-        } finally {
-            db.endTransaction();
-        }
-    }
-
-    public void writeUsers(ContentValues[] users) {
-        SQLiteDatabase db = getWritableDatabase();
-
-        try {
-            db.beginTransaction();
-            db.execSQL(SqlUserTable.CLEAR);
-
-            for (ContentValues u : users) {
-                db.insertOrThrow(SqlUserTable.NAME, null, u);
-            }
-
-            db.setTransactionSuccessful();
-        } catch (SQLException e) {
-            Log.e(Config.LOG_TAG, "could not write users", e);
-        } finally {
-            db.endTransaction();
-        }
-    }
-
-    public void writeDevices(ContentValues[] devs) {
-        SQLiteDatabase db = getWritableDatabase();
-
-        try {
-            db.beginTransaction();
-            db.execSQL(SqlDeviceTable.CLEAR);
-
-            for (ContentValues u : devs) {
-                db.insertOrThrow(SqlDeviceTable.NAME, null, u);
-            }
-
-            db.setTransactionSuccessful();
-        } catch (SQLException e) {
-            Log.e(Config.LOG_TAG, "could not write devices", e);
-        } finally {
-            db.endTransaction();
-        }
-    }
-
-    public void writeLocations(ContentValues[] values) {
-        SQLiteDatabase db = getWritableDatabase();
-
-        try {
-            db.beginTransaction();
-            db.execSQL(SqlLocationTable.CLEAR);
-
+            db.execSQL("DELETE FROM " + tableName);
             for (ContentValues u : values) {
-                db.insertOrThrow(SqlLocationTable.NAME, null, u);
+                db.insertOrThrow(tableName, null, u);
             }
 
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-            Log.e(Config.LOG_TAG, "could not write locations", e);
+            Log.e(Config.LOG_TAG, "could not write table" + tableName, e);
         } finally {
             db.endTransaction();
         }
     }
-
-    public void writeFood(ContentValues[] food) {
-        SQLiteDatabase db = getWritableDatabase();
-
-        try {
-            db.beginTransaction();
-            db.execSQL(SqlFoodTable.CLEAR);
-
-            for (ContentValues u : food) {
-                db.insertOrThrow(SqlFoodTable.NAME, null, u);
-            }
-
-            db.setTransactionSuccessful();
-        } catch (SQLException e) {
-            Log.e(Config.LOG_TAG, "could not write food", e);
-        } finally {
-            db.endTransaction();
-        }
-    }
-
-    public void writeItems(ContentValues[] items) {
-        SQLiteDatabase db = getWritableDatabase();
-
-        try {
-            db.beginTransaction();
-            db.execSQL(SqlFoodItemTable.CLEAR);
-
-            for (ContentValues u : items) {
-                db.insertOrThrow(SqlFoodItemTable.NAME, null, u);
-            }
-
-            db.setTransactionSuccessful();
-        } catch (SQLException e) {
-            Log.e(Config.LOG_TAG, "could not write items", e);
-        } finally {
-            db.endTransaction();
-        }
-    }
-
 }
