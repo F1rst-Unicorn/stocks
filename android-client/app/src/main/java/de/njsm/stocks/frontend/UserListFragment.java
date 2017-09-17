@@ -1,8 +1,6 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend;
 
 
-import android.app.ListFragment;
-import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,38 +10,26 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import de.njsm.stocks.R;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlUserTable;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.common.data.User;
 
-public class UserListFragment extends ListFragment
-        implements AbsListView.OnScrollListener,
-                   AdapterView.OnItemLongClickListener,
-                   LoaderManager.LoaderCallbacks<Cursor> {
+public class UserListFragment extends AbstractDataFragment
+        implements AdapterView.OnItemLongClickListener {
 
-    protected SimpleCursorAdapter mAdapter;
-    protected Cursor mCursor;
-
-    protected SwipeRefreshLayout mSwiper;
-    protected ListView mList;
     private NetworkManager networkManager;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View result = super.onCreateView(inflater, container, savedInstanceState);
-
-        mSwiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_overlay);
-
-        return result;
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        swiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_overlay);
     }
 
     @Override
@@ -53,7 +39,7 @@ public class UserListFragment extends ListFragment
         String[] sourceName = {SqlUserTable.COL_NAME};
         int[] destIds = {R.id.item_user_name};
 
-        mAdapter = new SimpleCursorAdapter(
+        adapter = new SimpleCursorAdapter(
                 getActivity(),
                 R.layout.item_user,
                 null,
@@ -62,7 +48,7 @@ public class UserListFragment extends ListFragment
                 0
         );
 
-        setListAdapter(mAdapter);
+        setListAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
 
         AsyncTaskFactory factory = new AsyncTaskFactory(getActivity());
@@ -82,43 +68,27 @@ public class UserListFragment extends ListFragment
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter.swapCursor(data);
-        mCursor = data;
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-        mCursor = null;
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
-        mList = getListView();
-        mList.setOnScrollListener(this);
-        mList.setOnItemLongClickListener(this);
+        list.setOnItemLongClickListener(this);
     }
 
     @Override
     public void onStop() {
+        list.setOnItemLongClickListener(null);
         super.onStop();
-        mList.setOnScrollListener(null);
-        mList.setOnItemLongClickListener(null);
-        mList = null;
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        if (mCursor == null) {
+        if (cursor == null) {
             return;
         }
-        int lastPos = mCursor.getPosition();
-        mCursor.moveToPosition(position);
-        int userId = mCursor.getInt(mCursor.getColumnIndex(SqlUserTable.COL_ID));
-        String username = mCursor.getString(mCursor.getColumnIndex(SqlUserTable.COL_NAME));
-        mCursor.moveToPosition(lastPos);
+        int lastPos = cursor.getPosition();
+        cursor.moveToPosition(position);
+        int userId = cursor.getInt(cursor.getColumnIndex(SqlUserTable.COL_ID));
+        String username = cursor.getString(cursor.getColumnIndex(SqlUserTable.COL_NAME));
+        cursor.moveToPosition(lastPos);
 
         Intent i = new Intent(getActivity(), UserActivity.class);
         i.putExtra(UserActivity.KEY_USER_ID, userId);
@@ -127,34 +97,15 @@ public class UserListFragment extends ListFragment
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem,
-                         int visibleItemCount, int totalItemCount) {
-        boolean enable = false;
-        if(mList != null && mList.getChildCount() > 0){
-            // check if the first item of the mList is visible
-            boolean firstItemVisible = mList.getFirstVisiblePosition() == 0;
-            // check if the top of the first item is visible
-            boolean topOfFirstItemVisible = mList.getChildAt(0).getTop() == 0;
-            // enabling or disabling the refresh layout
-            enable = firstItemVisible && topOfFirstItemVisible;
-        }
-        mSwiper.setEnabled(enable);
-    }
-
-    @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-        if (mCursor == null) {
+        if (cursor == null) {
             return true;
         }
-        int lastPos = mCursor.getPosition();
-        mCursor.moveToPosition(position);
-        final int userId = mCursor.getInt(mCursor.getColumnIndex(SqlUserTable.COL_ID));
-        final String username = mCursor.getString(mCursor.getColumnIndex(SqlUserTable.COL_NAME));
-        mCursor.moveToPosition(lastPos);
+        int lastPos = cursor.getPosition();
+        cursor.moveToPosition(position);
+        final int userId = cursor.getInt(cursor.getColumnIndex(SqlUserTable.COL_ID));
+        final String username = cursor.getString(cursor.getColumnIndex(SqlUserTable.COL_NAME));
+        cursor.moveToPosition(lastPos);
 
         String message = String.format(getResources().getString(R.string.dialog_delete_format),
                 username);

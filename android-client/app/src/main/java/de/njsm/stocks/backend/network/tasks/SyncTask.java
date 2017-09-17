@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.backend.data.SerialisationVisitor;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.*;

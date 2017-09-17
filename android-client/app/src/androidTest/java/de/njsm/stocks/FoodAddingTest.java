@@ -6,6 +6,7 @@ import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import de.njsm.stocks.frontend.StartupActivity;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;

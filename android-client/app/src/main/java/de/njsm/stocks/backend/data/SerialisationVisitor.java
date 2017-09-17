@@ -1,7 +1,7 @@
 package de.njsm.stocks.backend.data;
 
 import android.content.ContentValues;
-import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.backend.db.data.*;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitorImpl;

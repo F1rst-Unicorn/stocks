@@ -3,7 +3,7 @@ package de.njsm.stocks.backend.network;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.*;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -13,7 +13,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.io.IOException;
 import java.util.Locale;
 
-import static de.njsm.stocks.Config.KEYSTORE_FILE;
+import static de.njsm.stocks.backend.util.Config.KEYSTORE_FILE;
 
 public class ServerManager {
 

@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.network.sentry.SentryClient;
 import de.njsm.stocks.common.data.Ticket;
@@ -39,7 +39,7 @@ import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.util.Locale;
 
-import static de.njsm.stocks.Config.KEYSTORE_FILE;
+import static de.njsm.stocks.backend.util.Config.KEYSTORE_FILE;
 
 public class SetupTask extends AsyncTask<Void, String, Result> {
 

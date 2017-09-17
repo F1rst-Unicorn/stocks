@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="de.njsm.stocks.EatSoonActivity">
+    tools:context="de.njsm.stocks.frontend.EatSoonActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/eat_soon_swipe"

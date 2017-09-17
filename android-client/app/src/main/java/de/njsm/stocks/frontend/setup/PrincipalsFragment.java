@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import com.github.fcannizzaro.materialstepper.AbstractStep;
-import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.R;
 
 public class PrincipalsFragment extends AbstractStep {

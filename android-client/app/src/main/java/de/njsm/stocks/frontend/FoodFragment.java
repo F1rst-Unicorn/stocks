@@ -1,6 +1,5 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend;
 
-import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -10,16 +9,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
+import de.njsm.stocks.R;
 import de.njsm.stocks.adapters.FoodItemCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.FoodItem;
 
 import java.text.ParseException;
@@ -27,20 +26,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class FoodFragment extends ListFragment implements
-        AbsListView.OnScrollListener,
-        LoaderManager.LoaderCallbacks<Cursor>,
+public class FoodFragment extends AbstractDataFragment implements
         SimpleCursorAdapter.ViewBinder,
         AdapterView.OnItemLongClickListener{
 
-    public static final String KEY_ID = "de.njsm.stocks.FoodFragment.id";
+    public static final String KEY_ID = "de.njsm.stocks.frontend.FoodFragment.id";
 
-    protected int mFoodId;
+    private int foodId;
 
-    protected SwipeRefreshLayout mSwiper;
-
-    protected Cursor mCursor;
-    protected SimpleCursorAdapter mAdapter;
     private NetworkManager networkManager;
 
     public static FoodFragment newInstance(int aFoodId) {
@@ -52,14 +45,10 @@ public class FoodFragment extends ListFragment implements
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-        View result = super.onCreateView(inflater, container, savedInstanceState);
-
-        mFoodId = getArguments().getInt(KEY_ID, 0);
-
-        return result;
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        swiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.food_swipe);
+        foodId = getArguments().getInt(KEY_ID, 0);
     }
 
     @Override
@@ -73,7 +62,7 @@ public class FoodFragment extends ListFragment implements
                 R.id.item_food_item_user,
                 R.id.item_food_item_device};
 
-        mAdapter = new FoodItemCursorAdapter(
+        adapter = new FoodItemCursorAdapter(
                 getActivity(),
                 R.layout.item_food_item,
                 null,
@@ -82,9 +71,9 @@ public class FoodFragment extends ListFragment implements
                 0,
                 R.id.item_food_item_icon
         );
-        mAdapter.setViewBinder(this);
+        adapter.setViewBinder(this);
 
-        setListAdapter(mAdapter);
+        setListAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
         getListView().setOnItemLongClickListener(this);
 
@@ -95,63 +84,25 @@ public class FoodFragment extends ListFragment implements
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mSwiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.food_swipe);
-        getListView().setOnScrollListener(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        getListView().setOnScrollListener(null);
-        mSwiper = null;
-    }
-
-    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        if (mCursor == null) {
+        if (cursor == null) {
             return;
         }
-        int lastPos = mCursor.getPosition();
-        mCursor.moveToPosition(position);
-        final int itemId = mCursor.getInt(mCursor.getColumnIndex(SqlFoodItemTable.COL_ID));
-        mCursor.moveToPosition(lastPos);
+        int lastPos = cursor.getPosition();
+        cursor.moveToPosition(position);
+        final int itemId = cursor.getInt(cursor.getColumnIndex(SqlFoodItemTable.COL_ID));
+        cursor.moveToPosition(lastPos);
 
         String message = String.format(getResources().getString(R.string.dialog_eat_format),
                 getActivity().getTitle());
         new AlertDialog.Builder(getActivity())
                 .setTitle(getResources().getString(R.string.title_consume))
                 .setMessage(message)
-                .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                .setPositiveButton(getResources().getString(android.R.string.yes), (DialogInterface dialog, int whichButton) -> {
                         networkManager.deleteFoodItem(new FoodItem(itemId, null, 0,0,0,0));
-                    }
                 })
-                .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {}
-                })
+                .setNegativeButton(getResources().getString(android.R.string.no), (DialogInterface dialog, int whichButton) -> {})
                 .show();
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem,
-                         int visibleItemCount, int totalItemCount) {
-        boolean enable = false;
-        ListView list = getListView();
-        if(list != null && list.getChildCount() > 0){
-            // check if the first item of the mList is visible
-            boolean firstItemVisible = list.getFirstVisiblePosition() == 0;
-            // check if the top of the first item is visible
-            boolean topOfFirstItemVisible = list.getChildAt(0).getTop() == 0;
-            // enabling or disabling the refresh layout
-            enable = firstItemVisible && topOfFirstItemVisible;
-        }
-        mSwiper.setEnabled(enable);
     }
 
     @Override
@@ -164,21 +115,9 @@ public class FoodFragment extends ListFragment implements
                 getActivity(),
                 uri,
                 null, null,
-                new String[] {String.valueOf(mFoodId)},
+                new String[] {String.valueOf(foodId)},
                 null);
 
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter.swapCursor(data);
-        mCursor = data;
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-        mCursor = null;
     }
 
     @Override
@@ -186,11 +125,10 @@ public class FoodFragment extends ListFragment implements
         if (columnIndex == cursor.getColumnIndex("date")) {
             TextView text = (TextView) view;
             String dateString = cursor.getString(columnIndex);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
 
             Date date;
             try {
-                date = format.parse(dateString);
+                date = Config.DATABASE_DATE_FORMAT.parse(dateString);
             } catch (ParseException e) {
                 date = null;
             }
@@ -210,13 +148,13 @@ public class FoodFragment extends ListFragment implements
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if (mCursor == null) {
+        if (cursor == null) {
             return true;
         }
-        int lastPos = mCursor.getPosition();
-        mCursor.moveToPosition(i);
-        final int itemId = mCursor.getInt(mCursor.getColumnIndex(SqlFoodItemTable.COL_ID));
-        mCursor.moveToPosition(lastPos);
+        int lastPos = cursor.getPosition();
+        cursor.moveToPosition(i);
+        final int itemId = cursor.getInt(cursor.getColumnIndex(SqlFoodItemTable.COL_ID));
+        cursor.moveToPosition(lastPos);
 
         final Spinner spinner = getLocationSpinner();
 
@@ -225,15 +163,11 @@ public class FoodFragment extends ListFragment implements
                 .setTitle(getResources().getString(R.string.title_move))
                 .setMessage(message)
                 .setView(spinner)
-                .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        FoodItem i = new FoodItem(itemId, null, 0,0,0,0);
-                        networkManager.moveItem(i, (int) spinner.getSelectedItemId());
-                    }
+                .setPositiveButton(getResources().getString(android.R.string.yes), (DialogInterface dialog, int whichButton) -> {
+                        FoodItem item = new FoodItem(itemId, null, 0,0,0,0);
+                        networkManager.moveItem(item, (int) spinner.getSelectedItemId());
                 })
-                .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {}
-                })
+                .setNegativeButton(getResources().getString(android.R.string.no), (DialogInterface dialog, int whichButton) -> {})
                 .show();
         return true;
     }

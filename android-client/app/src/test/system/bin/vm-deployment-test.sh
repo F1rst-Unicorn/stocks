@@ -8,6 +8,11 @@ else
         EMULATOR_ARGS="-no-window"
 fi
 
+if [[ -z $ANDROID_HOME ]] ; then
+        echo "ANDROID_HOME is not set!"
+        exit 1
+fi
+
 sudo virsh snapshot-revert dp-server initialised-running || exit 1
 sleep 1
 

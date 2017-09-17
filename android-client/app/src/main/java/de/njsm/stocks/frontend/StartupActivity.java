@@ -1,4 +1,4 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import de.njsm.stocks.backend.setup.SetupTask;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.frontend.setup.SetupActivity;
 import de.njsm.stocks.frontend.setup.SetupFinishedListener;
 

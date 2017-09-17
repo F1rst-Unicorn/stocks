@@ -2,7 +2,7 @@ package de.njsm.stocks.backend.network;
 
 
 import android.util.Log;
-import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.backend.network.tasks.*;
 import de.njsm.stocks.common.data.*;
 

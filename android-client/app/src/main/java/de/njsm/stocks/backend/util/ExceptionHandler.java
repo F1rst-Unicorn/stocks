@@ -1,7 +1,6 @@
 package de.njsm.stocks.backend.util;
 
 import android.util.Log;
-import de.njsm.stocks.Config;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -13,12 +13,13 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import de.njsm.stocks.R;
 
 import java.util.Hashtable;
 
 public class QrCodeDisplayActivity extends AppCompatActivity {
 
-    public static final String KEY_TICKET = "de.njsm.stocks.QrCodeDisplayActivity.ticket";
+    public static final String KEY_TICKET = "de.njsm.stocks.frontend.QrCodeDisplayActivity.ticket";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

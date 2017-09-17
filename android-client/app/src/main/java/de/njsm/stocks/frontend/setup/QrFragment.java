@@ -3,7 +3,7 @@ package de.njsm.stocks.frontend.setup;
 import android.os.Bundle;
 import android.util.Log;
 import com.github.fcannizzaro.materialstepper.AbstractStep;
-import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.zxing.IntentIntegrator;
 import de.njsm.stocks.zxing.IntentResult;
 

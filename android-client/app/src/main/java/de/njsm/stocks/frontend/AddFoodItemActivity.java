@@ -1,4 +1,4 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend;
 
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -13,6 +13,7 @@ import android.widget.DatePicker;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+import de.njsm.stocks.R;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
@@ -23,18 +24,21 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class AddFoodItemActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String KEY_FOOD = "de.njsm.stocks.AddFoodItemActivity.name";
-    public static final String KEY_ID = "de.njsm.stocks.AddFoodItemActivity.id";
+    public static final String KEY_FOOD = "de.njsm.stocks.frontend.AddFoodItemActivity.name";
 
-    protected String mFood;
-    protected int mId;
+    public static final String KEY_ID = "de.njsm.stocks.frontend.AddFoodItemActivity.id";
 
-    protected SimpleCursorAdapter mAdapter;
-    protected Cursor mCursor;
+    private String food;
+    private int id;
 
-    protected Spinner mSpinner;
+    private DatePicker picker;
+    private Spinner spinner;
+
+    private SimpleCursorAdapter adapter;
+    private Cursor cursor;
+
     private NetworkManager networkManager;
 
     @Override
@@ -43,31 +47,17 @@ public class AddFoodItemActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_add_food_item);
 
         Bundle extras = getIntent().getExtras();
-        mFood = extras.getString(KEY_FOOD);
-        mId = extras.getInt(KEY_ID);
+        food = extras.getString(KEY_FOOD);
+        id = extras.getInt(KEY_ID);
 
-        setTitle(String.format(
-                getResources().getString(R.string.title_add_item),
-                mFood));
+        setTitle(String.format(getResources().getString(R.string.title_add_item), food));
 
-        String[] from = {SqlLocationTable.COL_NAME};
-        int[] to = {R.id.item_location_name};
+        setupLocationDataAdapter();
 
-        mAdapter = new SimpleCursorAdapter(
-                this,
-                R.layout.item_location,
-                null,
-                from,
-                to,
-                0
-        );
+        spinner = (Spinner) findViewById(R.id.activity_add_food_item_spinner);
+        spinner.setAdapter(adapter);
 
-        mAdapter.setDropDownViewResource(R.layout.item_location);
-
-        mSpinner = (Spinner) findViewById(R.id.activity_add_food_item_spinner);
-        mSpinner.setAdapter(mAdapter);
-
-        DatePicker picker = (DatePicker) findViewById(R.id.activity_add_food_item_date);
+        picker = (DatePicker) findViewById(R.id.activity_add_food_item_date);
         picker.setMinDate((new Date()).getTime());
 
         getLoaderManager().initLoader(1, null, this);
@@ -79,7 +69,6 @@ public class AddFoodItemActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_add_food_item_menu, menu);
         return true;
     }
@@ -99,26 +88,41 @@ public class AddFoodItemActivity extends AppCompatActivity implements
         return true;
     }
 
+    private void setupLocationDataAdapter() {
+        String[] from = {SqlLocationTable.COL_NAME};
+        int[] to = {R.id.item_location_name};
+
+        adapter = new SimpleCursorAdapter(
+                this,
+                R.layout.item_location,
+                null,
+                from,
+                to,
+                0
+        );
+
+        adapter.setDropDownViewResource(R.layout.item_location);
+    }
+
     private void addItem() {
-        DatePicker picker = (DatePicker) findViewById(R.id.activity_add_food_item_date);
         Calendar calendar = Calendar.getInstance();
         calendar.set(
                 picker.getYear(),
                 picker.getMonth(),
                 picker.getDayOfMonth());
-        int locId = (int) mSpinner.getSelectedItemId();
+        int locId = (int) spinner.getSelectedItemId();
 
         FoodItem item = new FoodItem(
                 0,
                 calendar.getTime(),
-                mId,
+                id,
                 locId,
                 0,
                 0);
         networkManager.addFoodItem(item);
         Toast.makeText(
                 this,
-                mFood + " " + getResources().getString(R.string.dialog_added),
+                food + " " + getResources().getString(R.string.dialog_added),
                 Toast.LENGTH_SHORT
         ).show();
 
@@ -136,53 +140,49 @@ public class AddFoodItemActivity extends AppCompatActivity implements
             case 2:
                 uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, StocksContentProvider.MAX_LOCATION);
                 return new CursorLoader(this, uri,
-                        null, null, new String[] {String.valueOf(mId)},
+                        null, null, new String[] {String.valueOf(this.id)},
                         null);
             default:
                 return null;
         }
-
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch(loader.getId()) {
             case 1:
-                mAdapter.swapCursor(data);
-                mCursor = data;
+                adapter.swapCursor(data);
+                cursor = data;
                 getLoaderManager().initLoader(2, null, this);
                 break;
             case 2:
                 if (data.getCount() > 0) {
-                    Spinner s = (Spinner) findViewById(R.id.activity_add_food_item_spinner);
                     data.moveToFirst();
                     int idToFind = data.getInt(data.getColumnIndex("_id"));
-                    int colId = mCursor.getColumnIndex("_id");
+                    int colId = cursor.getColumnIndex("_id");
                     int position = 0;
-                    mCursor.moveToFirst();
+                    cursor.moveToFirst();
                     do {
-                        if (idToFind == mCursor.getInt(colId)) {
+                        if (idToFind == cursor.getInt(colId)) {
                             break;
                         }
                         position++;
-                    } while (mCursor.moveToNext());
-                    s.setSelection(position);
+                    } while (cursor.moveToNext());
+                    spinner.setSelection(position);
                 }
                 break;
         }
-
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {        switch(loader.getId()) {
-        case 1:
-            mAdapter.swapCursor(null);
-            mCursor = null;
-            break;
-        case 2:
-            break;
-    }
-
-
+    public void onLoaderReset(Loader<Cursor> loader) {
+        switch(loader.getId()) {
+            case 1:
+                adapter.swapCursor(null);
+                cursor = null;
+                break;
+            case 2:
+                break;
+        }
     }
 }

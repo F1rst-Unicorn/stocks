@@ -9,6 +9,7 @@ import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import de.njsm.stocks.frontend.StartupActivity;
 import org.apache.commons.io.IOUtils;
 import org.bouncycastle.openssl.PEMReader;
 import org.junit.After;

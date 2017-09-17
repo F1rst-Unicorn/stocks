@@ -1,4 +1,4 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -20,8 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import de.njsm.stocks.R;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.backend.util.ExceptionHandler;
 import de.njsm.stocks.backend.util.SwipeSyncCallback;
 import de.njsm.stocks.common.data.Food;
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     protected DrawerLayout drawer;
-    protected SwipeRefreshLayout swiper;
+
     protected NavigationView navigationView;
 
     protected Fragment outlineFragment;
@@ -40,7 +42,6 @@ public class MainActivity extends AppCompatActivity
     protected Fragment locationsFragment;
     protected Fragment currentFragment;
 
-    protected SharedPreferences prefs;
     private NetworkManager networkManager;
 
     @Override
@@ -62,28 +63,21 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
-
-        swiper = (SwipeRefreshLayout) findViewById(R.id.swipe_overlay);
-        assert swiper != null;
 
         usersFragment = new UserListFragment();
         locationsFragment = new LocationListFragment();
         outlineFragment = new OutlineFragment();
-        currentFragment = outlineFragment;
-        prefs = getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.main_content, outlineFragment)
-                .commit();
+        setActiveFragment(outlineFragment);
 
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         networkManager = new NetworkManager(factory);
         factory.setNetworkManager(networkManager);
+        SwipeRefreshLayout swiper = (SwipeRefreshLayout) findViewById(R.id.swipe_overlay);
         swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));
-
         networkManager.synchroniseData();
+
+        SharedPreferences prefs = getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);
         TextView view = ((TextView) navigationView.getHeaderView(0).findViewById(R.id.drawer_username));
         if (view != null) {
             view.setText(prefs.getString(Config.USERNAME_CONFIG, ""));
@@ -99,18 +93,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        prefs = null;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        prefs = prefs == null ? getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE) : prefs;
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if (currentFragment == outlineFragment) {
@@ -120,21 +102,15 @@ public class MainActivity extends AppCompatActivity
         } else if (currentFragment == usersFragment) {
             navigationView.setCheckedItem(R.id.users);
         }
-
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             if (currentFragment != outlineFragment) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_content, outlineFragment)
-                        .commit();
-                currentFragment = outlineFragment;
+                setActiveFragment(outlineFragment);
                 navigationView.setCheckedItem(R.id.outline);
             } else {
                 super.onBackPressed();
@@ -150,7 +126,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         Fragment f;
 
         switch (item.getItemId()) {
@@ -167,11 +142,7 @@ public class MainActivity extends AppCompatActivity
                 f = outlineFragment;
         }
 
-        getFragmentManager().beginTransaction()
-                .replace(R.id.main_content, f)
-                .commit();
-        currentFragment = f;
-
+        setActiveFragment(f);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -224,5 +195,12 @@ public class MainActivity extends AppCompatActivity
     public void showMissingFood(View view) {
         Intent i = new Intent(this, EmptyFoodActivity.class);
         startActivity(i);
+    }
+
+    private void setActiveFragment(Fragment fragment) {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.main_content, fragment)
+                .commit();
+        currentFragment = fragment;
     }
 }

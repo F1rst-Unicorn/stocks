@@ -1,4 +1,4 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend;
 
 import android.app.LoaderManager;
 import android.content.*;
@@ -10,11 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
+import de.njsm.stocks.R;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlDeviceTable;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.network.TicketCallback;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
 
@@ -25,8 +27,8 @@ public class UserActivity extends AppCompatActivity
                    AdapterView.OnItemLongClickListener,
                    LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String KEY_USER_ID = "de.njsm.stocks.UserActivity.id";
-    public static final String KEY_USER_NAME = "de.njsm.stocks.UserActivity.name";
+    public static final String KEY_USER_ID = "de.njsm.stocks.frontend.UserActivity.id";
+    public static final String KEY_USER_NAME = "de.njsm.stocks.frontend.UserActivity.name";
 
     protected int mUserId;
     protected String mUsername;

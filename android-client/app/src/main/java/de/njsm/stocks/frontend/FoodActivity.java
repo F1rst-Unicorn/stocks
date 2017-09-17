@@ -1,4 +1,4 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend;
 
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import de.njsm.stocks.R;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.util.SwipeSyncCallback;
@@ -18,14 +19,13 @@ import de.njsm.stocks.common.data.Food;
 
 public class FoodActivity extends AppCompatActivity {
 
-    public static final String KEY_ID = "de.njsm.stocks.FoodActivity.id";
-    public static final String KEY_NAME = "de.njsm.stocks.FoodActivity.name";
+    public static final String KEY_ID = "de.njsm.stocks.frontend.FoodActivity.id";
+    public static final String KEY_NAME = "de.njsm.stocks.frontend.FoodActivity.name";
 
-    protected String mName;
-    protected int mId;
+    private String name;
+    private int id;
 
-    SwipeRefreshLayout mSwiper;
-    Fragment mFragment;
+    private Fragment mFragment;
     private NetworkManager networkManager;
 
     @Override
@@ -34,30 +34,35 @@ public class FoodActivity extends AppCompatActivity {
         setContentView(R.layout.activity_food);
 
         Bundle extras = getIntent().getExtras();
-        mName = extras.getString(KEY_NAME);
-        mId = extras.getInt(KEY_ID);
-
+        name = extras.getString(KEY_NAME);
+        id = extras.getInt(KEY_ID);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_food_toolbar);
         setSupportActionBar(toolbar);
-        setTitle(mName);
+        setTitle(name);
 
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         networkManager = new NetworkManager(factory);
         factory.setNetworkManager(networkManager);
 
-        mSwiper = (SwipeRefreshLayout) findViewById(R.id.food_swipe);
-        mSwiper.setOnRefreshListener(new SwipeSyncCallback(mSwiper, networkManager));
+        SwipeRefreshLayout swiper = (SwipeRefreshLayout) findViewById(R.id.food_swipe);
+        swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mFragment = FoodFragment.newInstance(mId);
+        mFragment = FoodFragment.newInstance(id);
         getFragmentManager().beginTransaction()
                 .replace(R.id.food_content, mFragment)
                 .commit();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mFragment = null;
     }
 
     @Override
@@ -75,16 +80,12 @@ public class FoodActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.title_delete_food))
                         .setMessage(message)
-                        .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                networkManager.deleteFood(new Food(mId, mName));
+                        .setPositiveButton(getResources().getString(android.R.string.yes), (DialogInterface dialog, int whichButton) -> {
+                                networkManager.deleteFood(new Food(id, name));
                                 onBackPressed();
-                            }
                         })
-                        .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
+                        .setNegativeButton(getResources().getString(android.R.string.no), (DialogInterface dialog, int whichButton) -> {
                                 dialog.dismiss();
-                            }
                         })
                         .show();
 
@@ -94,19 +95,11 @@ public class FoodActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mFragment = null;
-    }
-
-
     public void addItem(View view) {
-
         Intent i = new Intent(this, AddFoodItemActivity.class);
         Bundle extras = new Bundle();
-        extras.putInt(AddFoodItemActivity.KEY_ID, mId);
-        extras.putString(AddFoodItemActivity.KEY_FOOD, mName);
+        extras.putInt(AddFoodItemActivity.KEY_ID, id);
+        extras.putString(AddFoodItemActivity.KEY_FOOD, name);
         i.putExtras(extras);
         startActivity(i);
     }

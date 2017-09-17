@@ -1,4 +1,4 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

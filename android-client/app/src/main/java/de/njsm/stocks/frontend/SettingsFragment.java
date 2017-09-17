@@ -1,10 +1,11 @@
-package de.njsm.stocks;
+package de.njsm.stocks.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
+import de.njsm.stocks.R;
 import de.njsm.stocks.backend.db.DatabaseHandler;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;

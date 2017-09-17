@@ -1,4 +1,4 @@
-package de.njsm.stocks;
+package de.njsm.stocks.backend.util;
 
 import okhttp3.OkHttpClient;
 

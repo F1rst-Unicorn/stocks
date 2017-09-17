@@ -4,6 +4,7 @@ import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.view.Gravity;
 import android.widget.ListView;
+import de.njsm.stocks.frontend.StartupActivity;
 import org.junit.Rule;
 import org.junit.Test;
 

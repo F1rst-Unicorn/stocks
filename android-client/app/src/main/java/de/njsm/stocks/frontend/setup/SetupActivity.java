@@ -7,9 +7,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
-import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.R;
-import de.njsm.stocks.StartupActivity;
+import de.njsm.stocks.frontend.StartupActivity;
 import de.njsm.stocks.zxing.IntentIntegrator;
 import de.njsm.stocks.zxing.IntentResult;
 
