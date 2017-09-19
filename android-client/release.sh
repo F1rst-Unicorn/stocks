@@ -1,6 +1,6 @@
 #!/bin/bash
 
-STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
 
 if ! echo "$1" | egrep '([0-9]+\.){3}[0-9]+' > /dev/null ; then
         echo Version number has wrong format!
@@ -19,6 +19,8 @@ if git tag | grep "android-client-$VERSION" >/dev/null ; then
         exit 3
 fi
 
+set -e
+
 echo Patching version number
 sed -i "s/versionName .*/versionName \"$VERSION\"/g" \
         "$STOCKS_ROOT"/android-client/app/build.gradle
@@ -26,10 +28,11 @@ sed -i "s/versionName .*/versionName \"$VERSION\"/g" \
 echo Building release
 STORE_FILE="$STOCKS_ROOT"/../keystore
 echo -n "Password for keystore $STORE_FILE : "
-read -n STOCKS_PASSWORD
+read -s STORE_PASSWORD
 KEY_ALIAS=stocks
 KEY_PASSWORD="$STORE_PASSWORD"
 "$STOCKS_ROOT"/android-client/gradlew assembleRelease \
+        -p $STOCKS_ROOT/android-client \
         -Pandroid.injected.signing.store.file=$STORE_FILE \
         -Pandroid.injected.signing.store.password=$STORE_PASSWORD \
         -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
