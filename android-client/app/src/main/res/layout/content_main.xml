@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="de.njsm.stocks.MainActivity"
+    tools:context="de.njsm.stocks.frontend.MainActivity"
     tools:showIn="@layout/app_bar_main"
     android:orientation="horizontal">
 

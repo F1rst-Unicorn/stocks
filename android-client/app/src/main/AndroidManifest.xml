@@ -1,68 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.njsm.stocks">
+          package="de.njsm.stocks">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/StocksTheme">
-        <activity
-            android:name=".MainActivity"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
+            android:supportsRtl="true"
+            android:theme="@style/StocksTheme">
+        <activity android:name=".frontend.StartupActivity">
             android:launchMode="singleTop"
-            android:theme="@style/StocksTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".setup.SetupActivity" />
         <activity
-            android:name=".UserActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/StocksTheme.NoActionBar" />
+                android:name=".frontend.MainActivity"
+                android:label="@string/app_name"
+                android:launchMode="singleTop"
+                android:theme="@style/StocksTheme.NoActionBar">
+        </activity>
+        <activity android:name=".frontend.setup.SetupActivity"/>
         <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_settings">
+                android:name=".frontend.UserActivity"
+                android:launchMode="singleTop"
+                android:theme="@style/StocksTheme.NoActionBar"/>
+        <activity
+                android:name=".frontend.SettingsActivity"
+                android:label="@string/title_settings">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.njsm.stocks.MainActivity" />
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="de.njsm.stocks.frontend.MainActivity"/>
         </activity>
         <activity
-            android:name=".LocationActivity"
-            android:label="@string/title_activity_location">
+                android:name=".frontend.LocationActivity"
+                android:label="@string/title_activity_location">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.njsm.stocks.MainActivity" />
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="de.njsm.stocks.frontend.MainActivity"/>
         </activity>
         <activity
-            android:name=".QrCodeDisplayActivity"
-            android:label="@string/title_ticket_activity">
+                android:name=".frontend.QrCodeDisplayActivity"
+                android:label="@string/title_ticket_activity">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.njsm.stocks.UserActivity" />
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="de.njsm.stocks.frontend.UserActivity"/>
         </activity>
-
+        <activity
+                android:name=".frontend.FoodActivity"
+                android:theme="@style/StocksTheme.NoActionBar"/>
+        <activity android:name=".frontend.AddFoodItemActivity"/>
+        <activity android:name=".frontend.crashlog.CrashLogActivity"/>
+        <activity android:name=".frontend.EmptyFoodActivity"/>
+        <activity android:name=".frontend.EatSoonActivity"/>
         <provider
-            android:name=".backend.db.StocksContentProvider"
-            android:authorities="de.njsm.stocks.providers.StocksContentProvider"
-            android:exported="false" />
-
-        <activity
-            android:name=".FoodActivity"
-            android:theme="@style/StocksTheme.NoActionBar" />
-        <activity android:name=".AddFoodItemActivity" />
-        <activity android:name=".frontend.crashlog.CrashLogActivity" />
-        <activity
-            android:name=".TestActivity"
-            android:theme="@style/StocksTheme.NoActionBar" />
-        <activity android:name=".EmptyFoodActivity" />
-        <activity android:name=".EatSoonActivity" />
+                android:name=".backend.db.StocksContentProvider"
+                android:authorities="de.njsm.stocks.providers.StocksContentProvider"
+                android:exported="false"/>
     </application>
-
 </manifest>

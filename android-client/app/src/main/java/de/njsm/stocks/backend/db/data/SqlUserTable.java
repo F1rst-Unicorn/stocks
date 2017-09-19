@@ -9,7 +9,6 @@ public class SqlUserTable {
 
     public static final String CREATE;
     public static final String DROP;
-    public static final String CLEAR;
     public static final String SELECT_ALL;
     public static final String SELECT_NAME;
 
@@ -23,7 +22,6 @@ public class SqlUserTable {
                 "    PRIMARY KEY (" + COL_ID + ")\n" +
                 ")";
         DROP = "DROP TABLE IF EXISTS " + NAME;
-        CLEAR = "DELETE FROM " + NAME;
         SELECT_ALL = "SELECT * FROM " + NAME;
         SELECT_NAME = "SELECT * FROM " + NAME + " WHERE " + COL_NAME + "=?";
     }

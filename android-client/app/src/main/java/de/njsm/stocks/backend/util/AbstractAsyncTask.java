@@ -1,15 +1,16 @@
 package de.njsm.stocks.backend.util;
 
-import android.content.ContextWrapper;
 import android.os.AsyncTask;
+
+import java.io.File;
 
 
 public abstract class AbstractAsyncTask<S, T, U> extends AsyncTask<S, T, U> {
 
-    protected ContextWrapper context;
+    protected final File exceptionFileDirectory;
 
-    public AbstractAsyncTask(ContextWrapper context) {
-        this.context = context;
+    public AbstractAsyncTask(File exceptionFileDirectory) {
+        this.exceptionFileDirectory = exceptionFileDirectory;
     }
 
     @Override
@@ -21,7 +22,7 @@ public abstract class AbstractAsyncTask<S, T, U> extends AsyncTask<S, T, U> {
 
         Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
         if (! (handler instanceof ExceptionHandler)) {
-            Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(context.getFilesDir(),
+            Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(exceptionFileDirectory,
                     Thread.getDefaultUncaughtExceptionHandler()));
         }
 

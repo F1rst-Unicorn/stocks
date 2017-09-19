@@ -3,58 +3,38 @@ package de.njsm.stocks.backend.network;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import de.njsm.stocks.Config;
-import de.njsm.stocks.backend.data.Food;
-import de.njsm.stocks.backend.data.FoodItem;
-import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.data.Ticket;
-import de.njsm.stocks.backend.data.Update;
-import de.njsm.stocks.backend.data.User;
-import de.njsm.stocks.backend.data.UserDevice;
+import de.njsm.stocks.backend.util.Config;
+import de.njsm.stocks.common.data.*;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
 import java.util.Locale;
+
+import static de.njsm.stocks.backend.util.Config.KEYSTORE_FILE;
 
 public class ServerManager {
 
     protected ServerClient backend;
 
-    public static ServerManager m;
-
-    public static void init(Context ctx) {
-        if (m == null) {
-            m = new ServerManager(ctx);
-        }
-    }
-
     public ServerManager(Context ctx) {
         try {
-            SharedPreferences prefs = ctx.getSharedPreferences(Config.preferences, Context.MODE_PRIVATE);
+            SharedPreferences prefs = ctx.getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);
             String url = String.format(Locale.US, "https://%s:%d/",
-                    prefs.getString(Config.serverNameConfig, ""),
-                    prefs.getInt(Config.serverPortConfig, 0));
-
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd hh:mm:ss")
-                    .create();
+                    prefs.getString(Config.SERVER_NAME_CONFIG, ""),
+                    prefs.getInt(Config.SERVER_PORT_CONFIG, 0));
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(url)
-                    .client(Config.getClient(ctx))
-                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .client(Config.getClient(ctx.openFileInput(KEYSTORE_FILE)))
+                    .addConverterFactory(JacksonConverterFactory.create())
                     .build();
 
             backend = retrofit.create(ServerClient.class);
         } catch (Exception e) {
-            Log.e(Config.log, "Failed to set up ServerManager: " + e.getMessage());
+            Log.e(Config.LOG_TAG, "Failed to set up ServerManager: " + e.getMessage());
         }
     }
 
@@ -67,7 +47,7 @@ public class ServerManager {
             if (r.isSuccessful()) {
                 return r.body();
             } else {
-                Log.e(Config.log, "failed to retrieve updates: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to retrieve updates: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -84,7 +64,7 @@ public class ServerManager {
             if (r.isSuccessful()) {
                 return r.body();
             } else {
-                Log.e(Config.log, "failed to retrieve users: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to retrieve users: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -99,7 +79,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccessful()) {
-                Log.e(Config.log, "failed to create user: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to create user: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -113,7 +93,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccessful()) {
-                Log.e(Config.log, "failed to remove user: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to remove user: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -129,7 +109,7 @@ public class ServerManager {
             if (r.isSuccessful()) {
                 return r.body();
             } else {
-                Log.e(Config.log, "failed to retrieve devices: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to retrieve devices: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -144,7 +124,7 @@ public class ServerManager {
             Response<Ticket> r = call.execute();
 
             if (!r.isSuccessful()) {
-                Log.e(Config.log, "failed to create device: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to create device: " + r.message());
             } else {
                 return r.body();
             }
@@ -161,7 +141,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccessful()) {
-                Log.e(Config.log, "failed to remove device: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to remove device: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -177,7 +157,7 @@ public class ServerManager {
             if (r.isSuccessful()) {
                 return r.body();
             } else {
-                Log.e(Config.log, "failed to retrieve locations: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to retrieve locations: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -192,7 +172,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (! r.isSuccessful()) {
-                Log.e(Config.log, "failed to add location: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to add location: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -206,7 +186,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (! r.isSuccessful()) {
-                Log.e(Config.log, "failed to remove location: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to remove location: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -220,7 +200,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccessful()) {
-                Log.e(Config.log, "failed to rename location: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to rename location: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -236,7 +216,7 @@ public class ServerManager {
             if (r.isSuccessful()) {
                 return r.body();
             } else {
-                Log.e(Config.log, "failed to retrieve food: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to retrieve food: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -251,7 +231,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (! r.isSuccessful()) {
-                Log.e(Config.log, "failed to add food: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to add food: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -265,7 +245,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (! r.isSuccessful()) {
-                Log.e(Config.log, "failed to remove food: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to remove food: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -279,7 +259,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccessful()) {
-                Log.e(Config.log, "failed to rename food: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to rename food: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -295,7 +275,7 @@ public class ServerManager {
             if (r.isSuccessful()) {
                 return r.body();
             } else {
-                Log.e(Config.log, "failed to retrieve food items: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to retrieve food items: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -310,7 +290,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (! r.isSuccessful()) {
-                Log.e(Config.log, "failed to add food item: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to add food item: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -324,7 +304,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccessful()) {
-                Log.e(Config.log, "failed to remove item: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to remove item: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -338,7 +318,7 @@ public class ServerManager {
             Response<Void> r = call.execute();
 
             if (!r.isSuccessful()) {
-                Log.e(Config.log, "failed to move item: " + r.message());
+                Log.e(Config.LOG_TAG, "failed to move item: " + r.message());
             }
         } catch (IOException e) {
             error(e);
@@ -346,7 +326,7 @@ public class ServerManager {
     }
 
     protected void error(IOException e) {
-        Log.e(Config.log, "No connection to server: " + e.getMessage());
+        Log.e(Config.LOG_TAG, "No connection to server: " + e.getMessage());
     }
 
 }

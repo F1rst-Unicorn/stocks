@@ -10,6 +10,12 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "0.5.1.1"
+        multiDexEnabled true
+        jackOptions {
+            enabled true
+        }
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
@@ -22,16 +28,37 @@ android {
             minifyEnabled false
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
     lintOptions {
         warning 'InvalidPackage'
     }
     dexOptions {
         javaMaxHeapSize "4g"
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:design:25.3.1'
@@ -41,12 +68,23 @@ dependencies {
     compile 'commons-io:commons-io:2.0.1'
     compile 'org.bouncycastle:bcprov-jdk16:1.45'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+    compile 'com.squareup.retrofit2:converter-jackson:2.0.2'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.journeyapps:zxing-android-embedded:2.0.1@aar'
     compile 'com.journeyapps:zxing-android-legacy:2.0.1@aar'
     compile 'com.journeyapps:zxing-android-integration:2.0.1@aar'
+    compile 'de.njsm.stocks:common:1.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:2.0.2-beta'
+
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
+    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2'
+    androidTestCompile 'com.android.support:support-annotations:25.3.1'
+    androidTestCompile 'com.android.support:support-v4:25.3.1'
+    androidTestCompile 'com.android.support:design:25.3.1'
+    androidTestCompile 'com.android.support:recyclerview-v7:25.3.1'
 }

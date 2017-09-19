@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:paddingTop="@dimen/list_item_padding"
     android:orientation="vertical"
-    tools:context="de.njsm.stocks.OutlineFragment">
+    tools:context="de.njsm.stocks.frontend.OutlineFragment">
 
     <android.support.v7.widget.CardView
         android:id="@+id/fragment_outline_cardview"

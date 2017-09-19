@@ -1,12 +1,6 @@
 package de.njsm.stocks.backend.network;
 
-import de.njsm.stocks.backend.data.Food;
-import de.njsm.stocks.backend.data.FoodItem;
-import de.njsm.stocks.backend.data.Location;
-import de.njsm.stocks.backend.data.Ticket;
-import de.njsm.stocks.backend.data.Update;
-import de.njsm.stocks.backend.data.User;
-import de.njsm.stocks.backend.data.UserDevice;
+import de.njsm.stocks.common.data.*;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;

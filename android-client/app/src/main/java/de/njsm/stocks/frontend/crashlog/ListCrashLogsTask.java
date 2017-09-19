@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
-import de.njsm.stocks.Config;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.util.AbstractAsyncTask;
 import org.apache.commons.io.IOUtils;
@@ -24,7 +24,7 @@ public class ListCrashLogsTask extends AbstractAsyncTask<Void, Void, Integer> {
     public ListCrashLogsTask(ContextWrapper context,
                              File crashLogDirectory,
                              CrashLogListFragment fragment) {
-        super(context);
+        super(context.getFilesDir());
         this.crashLogDirectory = crashLogDirectory;
         this.fragment = fragment;
     }
@@ -76,7 +76,7 @@ public class ListCrashLogsTask extends AbstractAsyncTask<Void, Void, Integer> {
                 result.put("date", lines[1]);
             }
         } catch (IOException e) {
-            Log.w(Config.log, "Crash report has been removed", e);
+            Log.w(Config.LOG_TAG, "Crash report has been removed", e);
         } finally {
             IOUtils.closeQuietly(inputStream);
         }

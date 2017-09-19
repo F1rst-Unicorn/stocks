@@ -13,7 +13,6 @@ public class SqlFoodItemTable {
 
     public static final String CREATE;
     public static final String DROP;
-    public static final String CLEAR;
     public static final String SELECT_ALL;
     public static final String SELECT_AGGREGATED_MIN_DATE_LOC;
     public static final String SELECT_FOOD_TYPE_ALL;
@@ -43,7 +42,6 @@ public class SqlFoodItemTable {
                 "    PRIMARY KEY (" + COL_ID + ")\n" +
                 ");";
         DROP = "DROP TABLE IF EXISTS " + NAME;
-        CLEAR = "DELETE FROM " + NAME;
         SELECT_ALL = "SELECT * FROM " + NAME;
         SELECT_AGGREGATED_MIN_DATE_LOC =
                 "SELECT i._id, f._id as food_id, f.name as name ,count(*) as amount ,i." + COL_EAT_BY + " as date " +

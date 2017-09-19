@@ -1,7 +1,6 @@
 package de.njsm.stocks.backend.util;
 
 import android.util.Log;
-import de.njsm.stocks.Config;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -22,7 +21,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread faultyThread, Throwable occuredException) {
-        Log.i(Config.log, "Caught runtime exception", occuredException);
+        Log.i(Config.LOG_TAG, "Caught runtime exception", occuredException);
 
         PrintWriter pw = null;
         try {
@@ -35,7 +34,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
             occuredException.printStackTrace(pw);
 
         } catch(Exception e) {
-            Log.e(Config.log, "Exception during crash logging", e);
+            Log.e(Config.LOG_TAG, "Exception during crash logging", e);
         } finally {
             IOUtils.closeQuietly(pw);
             androidHandler.uncaughtException(faultyThread, occuredException);

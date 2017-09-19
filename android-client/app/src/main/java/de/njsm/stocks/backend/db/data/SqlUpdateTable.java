@@ -11,7 +11,6 @@ public class SqlUpdateTable {
     public static final String CREATE;
     public static final String INIT;
     public static final String DROP;
-    public static final String CLEAR;
     public static final String SELECT_ALL;
 
     static {
@@ -33,7 +32,6 @@ public class SqlUpdateTable {
                 "(4, 'Food'),\n" +
                 "(5, 'Food_item')";
         DROP = "DROP TABLE IF EXISTS " + NAME;
-        CLEAR = "DELETE FROM " + NAME;
         SELECT_ALL = "SELECT * FROM " + NAME;
     }
 }
