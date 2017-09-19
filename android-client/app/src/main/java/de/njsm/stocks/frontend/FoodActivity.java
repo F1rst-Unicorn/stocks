@@ -43,7 +43,6 @@ public class FoodActivity extends AppCompatActivity {
 
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
 
         SwipeRefreshLayout swiper = (SwipeRefreshLayout) findViewById(R.id.food_swipe);
         swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));

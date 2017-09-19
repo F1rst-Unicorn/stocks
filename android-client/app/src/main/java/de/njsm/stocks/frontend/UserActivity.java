@@ -81,7 +81,6 @@ public class UserActivity extends AppCompatActivity
 
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
     }
 
     @Override

@@ -53,7 +53,6 @@ public class UserListFragment extends AbstractDataFragment
 
         AsyncTaskFactory factory = new AsyncTaskFactory(getActivity());
         networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
 
     }
 

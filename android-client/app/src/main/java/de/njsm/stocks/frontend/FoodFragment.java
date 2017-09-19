@@ -79,7 +79,6 @@ public class FoodFragment extends AbstractDataFragment implements
 
         AsyncTaskFactory factory = new AsyncTaskFactory(getActivity());
         networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
 
     }
 

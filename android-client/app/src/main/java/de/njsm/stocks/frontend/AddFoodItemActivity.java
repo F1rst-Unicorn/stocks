@@ -63,8 +63,6 @@ public class AddFoodItemActivity extends AppCompatActivity implements
         getLoaderManager().initLoader(1, null, this);
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
-
     }
 
     @Override

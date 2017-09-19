@@ -29,7 +29,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 .setOnPreferenceClickListener(this);
         AsyncTaskFactory factory = new AsyncTaskFactory(getActivity());
         networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
 
     }
 

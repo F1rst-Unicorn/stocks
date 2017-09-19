@@ -24,7 +24,6 @@ public class LocationActivity extends AppCompatActivity {
 
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         NetworkManager networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
 
 
         SwipeRefreshLayout swiper = (SwipeRefreshLayout) findViewById(R.id.location_swipe);

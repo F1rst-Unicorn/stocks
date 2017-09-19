@@ -53,7 +53,6 @@ public class LocationListFragment extends AbstractDataFragment
 
         AsyncTaskFactory factory = new AsyncTaskFactory(getActivity());
         networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
 
     }
 

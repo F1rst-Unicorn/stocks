@@ -18,7 +18,6 @@ public class EatSoonActivity extends AppCompatActivity {
 
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         NetworkManager networkManager = new NetworkManager(factory);
-        factory.setNetworkManager(networkManager);
 
         SwipeRefreshLayout swiper = (SwipeRefreshLayout) findViewById(R.id.eat_soon_swipe);
         swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));

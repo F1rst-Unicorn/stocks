@@ -12,6 +12,7 @@ public class NetworkManager {
 
     public NetworkManager(AsyncTaskFactory taskFactory) {
         this.taskFactory = taskFactory;
+        taskFactory.setNetworkManager(this);
     }
 
     public void synchroniseData() {
