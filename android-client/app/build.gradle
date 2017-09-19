@@ -38,6 +38,7 @@ android {
     }
     lintOptions {
         warning 'InvalidPackage'
+        abortOnError false
     }
     dexOptions {
         javaMaxHeapSize "4g"
