@@ -5,20 +5,18 @@ import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import android.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SimpleCursorAdapter;
+import de.njsm.stocks.R;
+import de.njsm.stocks.backend.util.Config;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
-
-import de.njsm.stocks.R;
 
 public class FoodItemCursorAdapter extends SimpleCursorAdapter {
 
-    protected int iconId;
+    private int iconId;
 
     public FoodItemCursorAdapter(Context context,
                                  int layout,
@@ -37,13 +35,12 @@ public class FoodItemCursorAdapter extends SimpleCursorAdapter {
         super.bindView(view, context, cursor);
 
         String dateString = cursor.getString(cursor.getColumnIndex("date"));
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
 
         Date date;
         Date now = new Date();
         Date inFiveDays = new Date(now.getTime() + 1000*60*60*24*5);
         try {
-            date = format.parse(dateString);
+            date = Config.DATABASE_DATE_FORMAT.parse(dateString);
         } catch (ParseException e) {
             date = null;
         }
@@ -74,7 +71,6 @@ public class FoodItemCursorAdapter extends SimpleCursorAdapter {
                     red,
                     PorterDuff.Mode.SRC_ATOP));
             icon.setImageDrawable(d);
-
         }
 
         icon.setImageDrawable(d);

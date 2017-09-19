@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.user;
 
 import android.app.LoaderManager;
 import android.content.*;
@@ -27,8 +27,8 @@ public class UserActivity extends AppCompatActivity
                    AdapterView.OnItemLongClickListener,
                    LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String KEY_USER_ID = "de.njsm.stocks.frontend.UserActivity.id";
-    public static final String KEY_USER_NAME = "de.njsm.stocks.frontend.UserActivity.name";
+    public static final String KEY_USER_ID = "de.njsm.stocks.frontend.user.UserActivity.id";
+    public static final String KEY_USER_NAME = "de.njsm.stocks.frontend.user.UserActivity.name";
 
     protected int mUserId;
     protected String mUsername;
@@ -66,6 +66,14 @@ public class UserActivity extends AppCompatActivity
         assert mList != null;
         mList.setOnItemLongClickListener(this);
 
+        setupDataAdapter();
+        getLoaderManager().initLoader(0, null, this);
+
+        AsyncTaskFactory factory = new AsyncTaskFactory(this);
+        networkManager = new NetworkManager(factory);
+    }
+
+    private void setupDataAdapter() {
         String[] sourceName = {SqlDeviceTable.COL_NAME};
         int[] destIds = {android.R.id.text1};
         mAdapter = new SimpleCursorAdapter(
@@ -77,10 +85,6 @@ public class UserActivity extends AppCompatActivity
                 0
         );
         mList.setAdapter(mAdapter);
-        getLoaderManager().initLoader(0, null, this);
-
-        AsyncTaskFactory factory = new AsyncTaskFactory(this);
-        networkManager = new NetworkManager(factory);
     }
 
     @Override
@@ -110,16 +114,11 @@ public class UserActivity extends AppCompatActivity
         new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.dialog_new_device))
                 .setView(layout)
-                .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                .setPositiveButton(getResources().getString(R.string.dialog_ok), (DialogInterface dialog, int whichButton) -> {
                         newDeviceName = textField.getText().toString().trim();
                         networkManager.addDevice(newDeviceName, mUserId, UserActivity.this);
-                    }
                 })
-                .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                })
+                .setNegativeButton(getResources().getString(R.string.dialog_cancel), (DialogInterface dialog, int whichButton) -> {})
                 .show();
     }
 
@@ -179,15 +178,10 @@ public class UserActivity extends AppCompatActivity
         new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.title_delete_device))
                 .setMessage(message)
-                .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        networkManager.deleteDevice(new UserDevice(deviceId, username, userId));
-                    }
-                })
-                .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                })
+                .setPositiveButton(getResources().getString(android.R.string.yes), (DialogInterface dialog, int whichButton) ->
+                        networkManager.deleteDevice(new UserDevice(deviceId, username, userId))
+                )
+                .setNegativeButton(getResources().getString(android.R.string.no), (DialogInterface dialog, int whichButton) -> {})
                 .show();
         return true;
     }

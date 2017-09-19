@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.location;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -7,12 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
-import de.njsm.stocks.backend.util.SwipeSyncCallback;
+import de.njsm.stocks.frontend.util.SwipeSyncCallback;
 
 public class LocationActivity extends AppCompatActivity {
 
-    public static final String KEY_LOCATION_ID = "de.njsm.stocks.frontend.LocationActivity.id";
-    public static final String KEY_LOCATION_NAME = "de.njsm.stocks.frontend.LocationActivity.name";
+    public static final String KEY_LOCATION_ID = "de.njsm.stocks.frontend.location.LocationActivity.id";
+    public static final String KEY_LOCATION_NAME = "de.njsm.stocks.frontend.location.LocationActivity.name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

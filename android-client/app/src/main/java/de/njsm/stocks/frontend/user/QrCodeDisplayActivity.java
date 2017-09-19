@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.user;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -19,7 +19,7 @@ import java.util.Hashtable;
 
 public class QrCodeDisplayActivity extends AppCompatActivity {
 
-    public static final String KEY_TICKET = "de.njsm.stocks.frontend.QrCodeDisplayActivity.ticket";
+    public static final String KEY_TICKET = "de.njsm.stocks.frontend.user.QrCodeDisplayActivity.ticket";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -21,7 +21,7 @@ import java.io.IOException;
 public class CrashLogListFragment extends ListFragment
         implements AdapterView.OnItemLongClickListener {
 
-    protected ListView mList;
+    private ListView mList;
 
     private File[] crashlogs;
 
@@ -71,17 +71,13 @@ public class CrashLogListFragment extends ListFragment
         new AlertDialog.Builder(getActivity())
                 .setTitle(getResources().getString(R.string.title_remove))
                 .setMessage(message)
-                .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                .setPositiveButton(getResources().getString(android.R.string.yes), (DialogInterface dialog, int whichButton) -> {
                     crashlogs[i].delete();
                     ListCrashLogsTask asyncTask = new ListCrashLogsTask(getActivity(),
                             getActivity().getFilesDir(), CrashLogListFragment.this);
                     asyncTask.execute();
-                    }
                 })
-                .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {}
-                })
+                .setNegativeButton(getResources().getString(android.R.string.no), (DialogInterface dialog, int whichButton) -> {})
                 .show();
         return true;
     }

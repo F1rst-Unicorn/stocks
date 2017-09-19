@@ -18,44 +18,44 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".frontend.MainActivity"
+                android:name=".frontend.main.MainActivity"
                 android:label="@string/app_name"
                 android:launchMode="singleTop"
                 android:theme="@style/StocksTheme.NoActionBar">
         </activity>
         <activity android:name=".frontend.setup.SetupActivity"/>
         <activity
-                android:name=".frontend.UserActivity"
+                android:name=".frontend.user.UserActivity"
                 android:launchMode="singleTop"
                 android:theme="@style/StocksTheme.NoActionBar"/>
         <activity
-                android:name=".frontend.SettingsActivity"
+                android:name=".frontend.settings.SettingsActivity"
                 android:label="@string/title_settings">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="de.njsm.stocks.frontend.MainActivity"/>
+                    android:value="de.njsm.stocks.frontend.main.MainActivity"/>
         </activity>
         <activity
-                android:name=".frontend.LocationActivity"
+                android:name=".frontend.location.LocationActivity"
                 android:label="@string/title_activity_location">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="de.njsm.stocks.frontend.MainActivity"/>
+                    android:value="de.njsm.stocks.frontend.main.MainActivity"/>
         </activity>
         <activity
-                android:name=".frontend.QrCodeDisplayActivity"
+                android:name=".frontend.user.QrCodeDisplayActivity"
                 android:label="@string/title_ticket_activity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="de.njsm.stocks.frontend.UserActivity"/>
+                    android:value="de.njsm.stocks.frontend.user.UserActivity"/>
         </activity>
         <activity
-                android:name=".frontend.FoodActivity"
+                android:name=".frontend.food.FoodActivity"
                 android:theme="@style/StocksTheme.NoActionBar"/>
-        <activity android:name=".frontend.AddFoodItemActivity"/>
+        <activity android:name=".frontend.addfood.AddFoodItemActivity"/>
         <activity android:name=".frontend.crashlog.CrashLogActivity"/>
-        <activity android:name=".frontend.EmptyFoodActivity"/>
-        <activity android:name=".frontend.EatSoonActivity"/>
+        <activity android:name=".frontend.emptyfood.EmptyFoodActivity"/>
+        <activity android:name=".frontend.eatsoon.EatSoonActivity"/>
         <provider
                 android:name=".backend.db.StocksContentProvider"
                 android:authorities="de.njsm.stocks.providers.StocksContentProvider"

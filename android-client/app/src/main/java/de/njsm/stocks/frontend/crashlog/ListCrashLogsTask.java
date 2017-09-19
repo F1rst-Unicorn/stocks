@@ -5,12 +5,15 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
-import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.util.AbstractAsyncTask;
+import de.njsm.stocks.backend.util.Config;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public class ListCrashLogsTask extends AbstractAsyncTask<Void, Void, Integer> {
@@ -32,12 +35,7 @@ public class ListCrashLogsTask extends AbstractAsyncTask<Void, Void, Integer> {
     @Override
     protected Integer doInBackgroundInternally(Void[] params) {
 
-        File[] crashlogs = crashLogDirectory.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.startsWith("crashlog_");
-            }
-        });
+        File[] crashlogs = crashLogDirectory.listFiles((File dir, String name) -> name.startsWith("crashlog_"));
 
         List<Map<String, String>> entries = computeView(crashlogs);
         adapter = new SimpleAdapter(fragment.getActivity(), entries,

@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.main;
 
 
 import android.app.Fragment;

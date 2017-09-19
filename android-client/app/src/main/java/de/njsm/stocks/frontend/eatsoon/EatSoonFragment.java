@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.eatsoon;
 
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -9,38 +9,44 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import de.njsm.stocks.R;
+import de.njsm.stocks.adapters.FoodItemCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
+import de.njsm.stocks.frontend.AbstractDataFragment;
+import de.njsm.stocks.frontend.food.FoodActivity;
+import de.njsm.stocks.frontend.util.DateViewBinder;
 
-public class EmptyFoodFragment extends AbstractDataFragment {
+public class EatSoonFragment extends AbstractDataFragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         setupDataAdapter();
+
         getLoaderManager().initLoader(0, null, this);
     }
 
     private void setupDataAdapter() {
-        String[] from = {"name"};
-        int[] to = {R.id.item_empty_food_outline_name};
-
-        adapter = new SimpleCursorAdapter(
+        String[] sourceName = {"name", "amount", "date"};
+        int[] destIds = {R.id.item_food_outline_name, R.id.item_food_outline_count, R.id.item_food_outline_date};
+        adapter = new FoodItemCursorAdapter(
                 getActivity(),
-                R.layout.item_empty_food_outline,
+                R.layout.item_food_outline,
                 null,
-                from,
-                to,
-                0
+                sourceName,
+                destIds,
+                0,
+                R.id.item_food_outline_icon
         );
+        adapter.setViewBinder(new DateViewBinder());
         setListAdapter(adapter);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        swiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.empty_food_swipe);
+        swiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.eat_soon_swipe);
     }
 
     @Override
@@ -50,7 +56,7 @@ public class EmptyFoodFragment extends AbstractDataFragment {
         }
         int lastPos = cursor.getPosition();
         cursor.moveToPosition(position);
-        int foodId = cursor.getInt(cursor.getColumnIndex("_id"));
+        int foodId = cursor.getInt(cursor.getColumnIndex("food_id"));
         String name = cursor.getString(cursor.getColumnIndex("name"));
         cursor.moveToPosition(lastPos);
 
@@ -64,7 +70,7 @@ public class EmptyFoodFragment extends AbstractDataFragment {
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = Uri.withAppendedPath(
                 StocksContentProvider.BASE_URI,
-                StocksContentProvider.EMPTY_FOOD);
+                StocksContentProvider.EAT_SOON);
 
         return new CursorLoader(
                 getActivity(),

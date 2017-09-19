@@ -116,7 +116,7 @@ public class SetupTest {
                         isDisplayed()));
         appCompatTextView3.perform(closeSoftKeyboard(), click());
 
-        onView(allOf(withId(android.R.id.message)))
+        onView(withId(android.R.id.message))
                 .check(matches(withText(R.string.dialog_finished)));
 
         ViewInteraction appCompatButton = onView(
@@ -130,6 +130,7 @@ public class SetupTest {
 
         PEMReader reader = new PEMReader(new InputStreamReader(IOUtils.toInputStream(caCert)));
         Object rawCert = reader.readObject();
+        reader.close();
         Certificate cert;
         if (rawCert instanceof Certificate) {
             cert = (Certificate) rawCert;

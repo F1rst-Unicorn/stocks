@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.food;
 
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -14,13 +14,14 @@ import android.view.View;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
-import de.njsm.stocks.backend.util.SwipeSyncCallback;
+import de.njsm.stocks.frontend.util.SwipeSyncCallback;
 import de.njsm.stocks.common.data.Food;
+import de.njsm.stocks.frontend.addfood.AddFoodItemActivity;
 
 public class FoodActivity extends AppCompatActivity {
 
-    public static final String KEY_ID = "de.njsm.stocks.frontend.FoodActivity.id";
-    public static final String KEY_NAME = "de.njsm.stocks.frontend.FoodActivity.name";
+    public static final String KEY_ID = "de.njsm.stocks.frontend.food.FoodActivity.id";
+    public static final String KEY_NAME = "de.njsm.stocks.frontend.food.FoodActivity.name";
 
     private String name;
     private int id;

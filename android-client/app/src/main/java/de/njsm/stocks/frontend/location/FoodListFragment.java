@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.location;
 
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -7,25 +7,20 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 import de.njsm.stocks.R;
 import de.njsm.stocks.adapters.FoodItemCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
-import de.njsm.stocks.backend.util.Config;
+import de.njsm.stocks.frontend.AbstractDataFragment;
+import de.njsm.stocks.frontend.food.FoodActivity;
+import de.njsm.stocks.frontend.util.DateViewBinder;
 
-import java.text.ParseException;
-import java.util.Date;
+public class FoodListFragment extends AbstractDataFragment {
 
-public class FoodListFragment extends AbstractDataFragment implements
-        SimpleCursorAdapter.ViewBinder {
-
-    public static final String KEY_ID = "de.njsm.stocks.frontend.FoodListFragment.id";
+    public static final String KEY_ID = "de.njsm.stocks.frontend.location.FoodListFragment.id";
 
     private int mLocationId;
 
@@ -65,7 +60,7 @@ public class FoodListFragment extends AbstractDataFragment implements
                 0,
                 R.id.item_food_outline_icon
         );
-        adapter.setViewBinder(this);
+        adapter.setViewBinder(new DateViewBinder());
         getLoaderManager().initLoader(0, null, this);
         setListAdapter(adapter);
     }
@@ -106,31 +101,5 @@ public class FoodListFragment extends AbstractDataFragment implements
                 new String[] {String.valueOf(mLocationId)},
                 null);
 
-    }
-
-    @Override
-    public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-        if (columnIndex == cursor.getColumnIndex("date")) {
-            TextView text = (TextView) view;
-            String dateString = cursor.getString(columnIndex);
-
-            Date date;
-            try {
-                date = Config.DATABASE_DATE_FORMAT.parse(dateString);
-            } catch (ParseException e) {
-                date = null;
-            }
-            assert date != null;
-
-            text.setText(prettyPrint(date));
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private CharSequence prettyPrint(Date date) {
-        Date now = new Date();
-        return DateUtils.getRelativeTimeSpanString(date.getTime(), now.getTime(), 0L, DateUtils.FORMAT_ABBREV_ALL);
     }
 }

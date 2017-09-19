@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.main;
 
 
 import android.content.CursorLoader;
@@ -16,13 +16,15 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.db.StocksContentProvider;
-import de.njsm.stocks.backend.db.data.SqlUserTable;
+import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
-import de.njsm.stocks.common.data.User;
+import de.njsm.stocks.common.data.Location;
+import de.njsm.stocks.frontend.AbstractDataFragment;
+import de.njsm.stocks.frontend.location.LocationActivity;
 
-public class UserListFragment extends AbstractDataFragment
-        implements AdapterView.OnItemLongClickListener {
+public class LocationListFragment extends AbstractDataFragment
+        implements AdapterView.OnItemLongClickListener{
 
     private NetworkManager networkManager;
 
@@ -36,12 +38,12 @@ public class UserListFragment extends AbstractDataFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        String[] sourceName = {SqlUserTable.COL_NAME};
-        int[] destIds = {R.id.item_user_name};
+        String[] sourceName = {SqlLocationTable.COL_NAME};
+        int[] destIds = {R.id.item_location_name};
 
         adapter = new SimpleCursorAdapter(
                 getActivity(),
-                R.layout.item_user,
+                R.layout.item_location,
                 null,
                 sourceName,
                 destIds,
@@ -53,16 +55,6 @@ public class UserListFragment extends AbstractDataFragment
 
         AsyncTaskFactory factory = new AsyncTaskFactory(getActivity());
         networkManager = new NetworkManager(factory);
-
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlUserTable.NAME);
-
-        return new CursorLoader(getActivity(), uri,
-                null, null, null,
-                null);
 
     }
 
@@ -85,40 +77,46 @@ public class UserListFragment extends AbstractDataFragment
         }
         int lastPos = cursor.getPosition();
         cursor.moveToPosition(position);
-        int userId = cursor.getInt(cursor.getColumnIndex(SqlUserTable.COL_ID));
-        String username = cursor.getString(cursor.getColumnIndex(SqlUserTable.COL_NAME));
+        int locId = cursor.getInt(cursor.getColumnIndex(SqlLocationTable.COL_ID));
+        String locName = cursor.getString(cursor.getColumnIndex(SqlLocationTable.COL_NAME));
         cursor.moveToPosition(lastPos);
 
-        Intent i = new Intent(getActivity(), UserActivity.class);
-        i.putExtra(UserActivity.KEY_USER_ID, userId);
-        i.putExtra(UserActivity.KEY_USER_NAME, username);
+        Intent i = new Intent(getActivity(), LocationActivity.class);
+        i.putExtra(LocationActivity.KEY_LOCATION_ID, locId);
+        i.putExtra(LocationActivity.KEY_LOCATION_NAME, locName);
         startActivity(i);
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlLocationTable.NAME);
+
+        return new CursorLoader(getActivity(), uri,
+                null, null, null,
+                null);
+
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (cursor == null) {
             return true;
         }
         int lastPos = cursor.getPosition();
-        cursor.moveToPosition(position);
-        final int userId = cursor.getInt(cursor.getColumnIndex(SqlUserTable.COL_ID));
-        final String username = cursor.getString(cursor.getColumnIndex(SqlUserTable.COL_NAME));
+        cursor.moveToPosition(i);
+        final int locId = cursor.getInt(cursor.getColumnIndex(SqlLocationTable.COL_ID));
+        final String locName = cursor.getString(cursor.getColumnIndex(SqlLocationTable.COL_NAME));
         cursor.moveToPosition(lastPos);
 
         String message = String.format(getResources().getString(R.string.dialog_delete_format),
-                username);
+                locName);
         new AlertDialog.Builder(getActivity())
-                .setTitle(getResources().getString(R.string.title_delete_user))
+                .setTitle(getResources().getString(R.string.title_delete_location))
                 .setMessage(message)
-                .setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        networkManager.deleteUser(new User(userId, username));
-                    }
+                .setPositiveButton(getResources().getString(android.R.string.yes), (DialogInterface dialog, int whichButton) -> {
+                        networkManager.deleteLocation(new Location(locId, locName));
                 })
-                .setNegativeButton(getResources().getString(android.R.string.no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {}
-                })
+                .setNegativeButton(getResources().getString(android.R.string.no), (DialogInterface dialog, int whichButton) -> {})
                 .show();
         return true;
     }

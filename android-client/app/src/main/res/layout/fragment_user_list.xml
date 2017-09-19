@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".frontend.UserListFragment">
+    tools:context=".frontend.main.UserListFragment">
 
     <ListView
         android:layout_width="match_parent"

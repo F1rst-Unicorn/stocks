@@ -1,4 +1,4 @@
-package de.njsm.stocks.backend.util;
+package de.njsm.stocks.frontend.util;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import de.njsm.stocks.backend.network.AsyncTaskCallback;

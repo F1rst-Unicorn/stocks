@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.eatsoon;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
-import de.njsm.stocks.backend.util.SwipeSyncCallback;
+import de.njsm.stocks.frontend.util.SwipeSyncCallback;
 
 public class EatSoonActivity extends AppCompatActivity {
 

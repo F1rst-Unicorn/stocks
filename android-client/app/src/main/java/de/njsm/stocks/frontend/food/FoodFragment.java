@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.food;
 
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -20,6 +20,7 @@ import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.FoodItem;
+import de.njsm.stocks.frontend.AbstractDataFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,7 +31,7 @@ public class FoodFragment extends AbstractDataFragment implements
         SimpleCursorAdapter.ViewBinder,
         AdapterView.OnItemLongClickListener{
 
-    public static final String KEY_ID = "de.njsm.stocks.frontend.FoodFragment.id";
+    public static final String KEY_ID = "de.njsm.stocks.frontend.food.FoodFragment.id";
 
     private int foodId;
 

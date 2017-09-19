@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.main;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -25,10 +25,13 @@ import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.backend.util.ExceptionHandler;
-import de.njsm.stocks.backend.util.SwipeSyncCallback;
+import de.njsm.stocks.frontend.util.SwipeSyncCallback;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.User;
+import de.njsm.stocks.frontend.settings.SettingsActivity;
+import de.njsm.stocks.frontend.eatsoon.EatSoonActivity;
+import de.njsm.stocks.frontend.emptyfood.EmptyFoodActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{

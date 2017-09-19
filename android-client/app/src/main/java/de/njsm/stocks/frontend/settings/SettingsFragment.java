@@ -1,4 +1,4 @@
-package de.njsm.stocks.frontend;
+package de.njsm.stocks.frontend.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,7 +29,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 .setOnPreferenceClickListener(this);
         AsyncTaskFactory factory = new AsyncTaskFactory(getActivity());
         networkManager = new NetworkManager(factory);
-
     }
 
     @Override
@@ -38,6 +37,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             case "pref_full_sync":
                 DatabaseHandler handler = new DatabaseHandler(getActivity());
                 handler.onUpgrade(handler.getWritableDatabase(), -1, -1);
+                networkManager.synchroniseData();
                 Toast.makeText(
                         getActivity(),
                         getResources().getString(R.string.dialog_new_sync_done),
