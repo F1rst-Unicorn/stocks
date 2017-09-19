@@ -14,6 +14,8 @@ import de.njsm.stocks.R;
 
 public class PrincipalsFragment extends AbstractStep {
 
+    private String errorText;
+
     private EditText userName;
 
     private EditText userId;
@@ -49,7 +51,12 @@ public class PrincipalsFragment extends AbstractStep {
     }
 
     @Override
-    public void onNext() {
+    public boolean nextIf() {
+        if (userId.getText().length() == 0 ||
+                deviceId.getText().length() == 0) {
+            errorText = getResources().getString(R.string.error_no_id);
+            return false;
+        }
         Bundle data = mStepper.getExtras();
         data.putString(Config.USERNAME_CONFIG, userName.getText().toString());
         data.putString(Config.DEVICE_NAME_CONFIG, deviceName.getText().toString());
@@ -57,6 +64,12 @@ public class PrincipalsFragment extends AbstractStep {
         data.putInt(Config.DID_CONFIG, Integer.parseInt(deviceId.getText().toString()));
         data.putString(Config.FPR_CONFIG, fingerprint.getText().toString());
         data.putString(Config.TICKET_CONFIG, ticket.getText().toString());
+        return true;
+    }
+
+    @Override
+    public String error() {
+        return errorText;
     }
 
     @Override

@@ -80,6 +80,7 @@
     <string name="dialog_remove_crash_log">Remove this crash log?</string>
 
     <string name="error_no_server_name">No server name set</string>
+    <string name="error_no_id">ID has to be filled in</string>
 
     <string name="text_show_qr_code_friend">Let your new device read this code:</string>
     <string name="text_amount">Amount</string>
