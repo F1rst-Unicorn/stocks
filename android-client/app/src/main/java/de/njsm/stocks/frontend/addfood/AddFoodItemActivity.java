@@ -1,5 +1,6 @@
 package de.njsm.stocks.frontend.addfood;
 
+import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -70,21 +71,6 @@ public class AddFoodItemActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.activity_add_food_item_done:
-                addItem();
-                onBackPressed();
-                break;
-            case R.id.activity_add_food_item_add_more:
-                addItem();
-                break;
-            default:
-        }
-        return true;
-    }
-
     private void setupLocationDataAdapter() {
         String[] from = {SqlLocationTable.COL_NAME};
         int[] to = {R.id.item_location_name};
@@ -95,10 +81,42 @@ public class AddFoodItemActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.item_location);
     }
 
-    private void addItem() {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.activity_add_food_item_done:
+                if (addItem()) {
+                    onBackPressed();
+                }
+                break;
+            case R.id.activity_add_food_item_add_more:
+                addItem();
+                break;
+            default:
+        }
+        return true;
+    }
+
+    private boolean addItem() {
         Date finalDate = readDateFromPicker();
         int locId = (int) spinner.getSelectedItemId();
 
+        if (locId == 0) {
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.dialog_error))
+                    .setMessage(getResources().getString(R.string.error_no_location_present))
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.dialog_ok, (dialog, which) -> {})
+                    .create()
+                    .show();
+            return false;
+        }
+
+        sendItem(finalDate, locId);
+        return true;
+    }
+
+    private void sendItem(Date finalDate, int locId) {
         FoodItem item = new FoodItem(0,
                 finalDate,
                 id, locId, 0, 0);
@@ -108,7 +126,6 @@ public class AddFoodItemActivity extends AppCompatActivity {
                 food + " " + getResources().getString(R.string.dialog_added),
                 Toast.LENGTH_SHORT
         ).show();
-
     }
 
     private Date readDateFromPicker() {
