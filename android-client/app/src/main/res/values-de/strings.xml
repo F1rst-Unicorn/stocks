@@ -58,7 +58,7 @@
     <string name="dialog_error">Fehler</string>
     <string name="dialog_wrong_fpr">Falscher fingerprint</string>
     <string name="dialog_ticket_reject">Server weist Ticket ab</string>
-    <string name="dialog_invalid_answer">Ungültige Antwort: </string>
+    <string name="dialog_invalid_answer">Ungültige Antwort vom Server!</string>
     <string name="dialog_cert_unreadable">Zertifikat ist unlesbar</string>
     <string name="dialog_retry">WIEDERHOLEN</string>
     <string name="dialog_abort">ABBRECHEN</string>

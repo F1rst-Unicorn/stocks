@@ -58,7 +58,7 @@
     <string name="dialog_error">Error</string>
     <string name="dialog_wrong_fpr">Wrong fingerprint</string>
     <string name="dialog_ticket_reject">Server rejected ticket</string>
-    <string name="dialog_invalid_answer">Got invalid answer: </string>
+    <string name="dialog_invalid_answer">Got invalid answer from server</string>
     <string name="dialog_cert_unreadable">Certificate is unreadable</string>
     <string name="dialog_retry">RETRY</string>
     <string name="dialog_abort">ABORT</string>
