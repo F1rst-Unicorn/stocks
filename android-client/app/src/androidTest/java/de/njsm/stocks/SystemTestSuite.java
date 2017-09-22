@@ -5,8 +5,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({SetupTest.class,
-        InitialDataSetupTest.class,
-        FoodAddingTest.class,
+        FoodAddTest.class,
+        LocationAddTest.class,
+        FoodItemAddTest.class,
         UserAdministrationTest.class,
         SearchTest.class,
         FoodConsumptionTest.class

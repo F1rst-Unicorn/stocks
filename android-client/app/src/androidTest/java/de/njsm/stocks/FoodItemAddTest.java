@@ -10,8 +10,11 @@ import de.njsm.stocks.frontend.StartupActivity;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -22,10 +25,26 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static org.hamcrest.CoreMatchers.*;
 
-public class FoodAddingTest {
+@RunWith(Parameterized.class)
+public class FoodItemAddTest {
 
     @Rule
     public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
+
+    @Parameterized.Parameter
+    public int targetFoodAmount;
+
+    @Parameterized.Parameters(name = "Food at position {0}")
+    public static Iterable<Object[]> getFoodNames() {
+        return Arrays.asList(
+                new Object[][] {
+                        {0},
+                        {1},
+                        {2},
+                        {3},
+                        {4}
+                });
+    }
 
     @Test
     public void addFoodItems() throws Exception {
@@ -35,8 +54,9 @@ public class FoodAddingTest {
                 .perform(click());
         onView(withId(R.id.fab)).perform(click());
 
-        onView(withId(R.id.activity_add_food_item_add_more)).perform(click());
-        onView(withId(R.id.activity_add_food_item_add_more)).perform(click());
+        for (int i = 0; i < targetFoodAmount; i++) {
+            onView(withId(R.id.activity_add_food_item_add_more)).perform(click());
+        }
 
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(2100, 31, 12));
@@ -44,30 +64,21 @@ public class FoodAddingTest {
         Thread.sleep(2000);
         onView(withId(R.id.activity_add_food_item_done)).perform(click());
 
-        DataInteraction firstItem = onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(0);
-        firstItem.onChildView(withId(R.id.item_food_item_date))
-                .check(matches(withText(new SimpleDateFormat("dd.MM.yy", Locale.US).format(new Date()))));
-        firstItem.onChildView(withId(R.id.item_food_item_user))
-                .check(matches(withText("Jack")));
-        firstItem.onChildView(withId(R.id.item_food_item_device))
-                .check(matches(withText("Device")));
-        firstItem.onChildView(withId(R.id.item_food_item_location))
-                .check(matches(withText("Fridge")));
-
-        DataInteraction middleItem = onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(0);
-        middleItem.onChildView(withId(R.id.item_food_item_date))
-                .check(matches(withText(new SimpleDateFormat("dd.MM.yy", Locale.US).format(new Date()))));
-        middleItem.onChildView(withId(R.id.item_food_item_user))
-                .check(matches(withText("Jack")));
-        middleItem.onChildView(withId(R.id.item_food_item_device))
-                .check(matches(withText("Device")));
-        middleItem.onChildView(withId(R.id.item_food_item_location))
-                .check(matches(withText("Fridge")));
+        for (int i = 0; i < targetFoodAmount; i++) {
+            DataInteraction item = onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
+                    .atPosition(i);
+            item.onChildView(withId(R.id.item_food_item_date))
+                    .check(matches(withText(new SimpleDateFormat("dd.MM.yy", Locale.US).format(new Date()))));
+            item.onChildView(withId(R.id.item_food_item_user))
+                    .check(matches(withText("Jack")));
+            item.onChildView(withId(R.id.item_food_item_device))
+                    .check(matches(withText("Device")));
+            item.onChildView(withId(R.id.item_food_item_location))
+                    .check(matches(withText("Fridge")));
+        }
 
         DataInteraction lastItem = onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(2);
+                .atPosition(targetFoodAmount);
         lastItem.onChildView(withId(R.id.item_food_item_date))
                 .check(matches(withText("31.12.00")));
         lastItem.onChildView(withId(R.id.item_food_item_user))
