@@ -5,6 +5,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.view.Gravity;
 import android.widget.ListView;
 import de.njsm.stocks.frontend.StartupActivity;
+import de.njsm.stocks.util.StealCountAction;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -31,8 +32,30 @@ public class InitialDataSetupTest {
         onView(withText("OK")).perform(click());
 
         onView(withId(R.id.fragment_outline_cardview2)).perform(click());
+        StealCountAction stealCountAction = new StealCountAction();
+        onView(withId(android.R.id.list)).perform(stealCountAction);
+        int position = stealCountAction.getCount() - 1;
         onData(anything()).inAdapterView(allOf(withEffectiveVisibility(Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(0)
+                .atPosition(position)
+                .onChildView(withId(R.id.item_empty_food_outline_name))
+                .check(matches(withText(foodName)));
+        pressBack();
+    }
+
+    @Test
+    public void addMoreFood() throws Exception {
+        String foodName = "Carrot";
+
+        onView(withId(R.id.fab)).perform(click());
+        onView(withHint(R.string.hint_food)).perform(replaceText(foodName));
+        onView(withText("OK")).perform(click());
+
+        onView(withId(R.id.fragment_outline_cardview2)).perform(click());
+        StealCountAction stealCountAction = new StealCountAction();
+        onView(withId(android.R.id.list)).perform(stealCountAction);
+        int position = stealCountAction.getCount() - 1;
+        onData(anything()).inAdapterView(allOf(withEffectiveVisibility(Visibility.VISIBLE), instanceOf(ListView.class)))
+                .atPosition(position)
                 .onChildView(withId(R.id.item_empty_food_outline_name))
                 .check(matches(withText(foodName)));
         pressBack();
