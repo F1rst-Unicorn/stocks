@@ -47,6 +47,7 @@
     <string name="hint_ticket">Ticket</string>
     <string name="hint_location">Ort</string>
     <string name="hint_food">Lebensmittel</string>
+    <string name="search_hint">Suche Essen</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>

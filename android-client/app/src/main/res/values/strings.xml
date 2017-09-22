@@ -47,6 +47,7 @@
     <string name="hint_ticket">Ticket</string>
     <string name="hint_location">Location</string>
     <string name="hint_food">Food name</string>
+    <string name="search_hint">Search Food</string>
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>
@@ -88,9 +89,5 @@
     <string name="text_buyer">Buyer</string>
     <string name="text_eat_by_date">Date of expiry:</string>
     <string name="text_no_crash_logs">App is running stable.</string>
-
-
-
-
 
 </resources>
