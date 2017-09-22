@@ -10,8 +10,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.SimpleCursorAdapter;
 import de.njsm.stocks.R;
-import de.njsm.stocks.adapters.FoodItemCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.frontend.util.DateViewBinder;
 
@@ -22,7 +22,7 @@ public class SearchActivity extends ListActivity implements LoaderManager.Loader
 
     private Cursor cursor;
 
-    private FoodItemCursorAdapter adapter;
+    private SimpleCursorAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,16 +44,15 @@ public class SearchActivity extends ListActivity implements LoaderManager.Loader
     }
 
     private void setupDataAdapter() {
-        String[] sourceName = {"name", "amount", "date"};
-        int[] destIds = {R.id.item_food_outline_name, R.id.item_food_outline_count, R.id.item_food_outline_date};
-        adapter = new FoodItemCursorAdapter(
+        String[] sourceName = {"name", "amount"};
+        int[] destIds = {R.id.item_food_amount_name, R.id.item_food_amount_amount};
+        adapter = new SimpleCursorAdapter(
                 this,
-                R.layout.item_food_outline,
+                R.layout.item_food_amount,
                 null,
                 sourceName,
                 destIds,
-                0,
-                R.id.item_food_outline_icon
+                0
         );
         adapter.setViewBinder(new DateViewBinder());
         setListAdapter(adapter);

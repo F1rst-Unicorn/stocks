@@ -74,13 +74,12 @@ public class SqlFoodItemTable {
                         "HAVING i." + COL_EAT_BY + " = MIN(i." + COL_EAT_BY + ")" +
                         "ORDER BY date ASC;";
         SEARCH_FOOD =
-                "SELECT f._id as _id, f.name as name ,count(*) as amount ,i." + COL_EAT_BY + " as date " +
+                "SELECT f._id as _id, f.name as name ,count(*) as amount " +
                         "FROM Food f, " + NAME + " i " +
                         "WHERE f._id=i." + COL_OF_TYPE + " and f.name like ? " +
                         "GROUP BY name " +
-                        "HAVING i." + COL_EAT_BY + " = MIN(i." + COL_EAT_BY + ") " +
                 "UNION " +
-                "SELECT f._id as _id, f.name as name, 0 as amount, '0000-00-00 00:00:00' as date " +
+                "SELECT f._id as _id, f.name as name, 0 as amount " +
                         "FROM Food f " +
                         "WHERE f.name like ? and f._id NOT IN (SELECT DISTINCT i.of_type " +
                                                               "FROM Food_item i);";
