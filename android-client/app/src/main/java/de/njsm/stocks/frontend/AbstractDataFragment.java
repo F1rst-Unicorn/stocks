@@ -61,6 +61,8 @@ public abstract class AbstractDataFragment extends ListFragment
             // enabling or disabling the refresh layout
             enable = firstItemVisible && topOfFirstItemVisible;
         }
-        swiper.setEnabled(enable);
+        if (swiper != null) {
+            swiper.setEnabled(enable);
+        }
     }
 }
