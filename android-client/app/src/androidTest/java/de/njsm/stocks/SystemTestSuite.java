@@ -9,7 +9,6 @@ import org.junit.runners.Suite;
         LocationAddTest.class,
         FoodItemAddTest.class,
         UserAdministrationTest.class,
-        SearchTest.class,
         FoodConsumptionTest.class
         })
 public class SystemTestSuite {
