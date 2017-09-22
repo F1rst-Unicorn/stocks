@@ -1,6 +1,7 @@
 package de.njsm.stocks.frontend.search;
 
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,7 +14,9 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.db.StocksContentProvider;
+import de.njsm.stocks.backend.db.data.SqlFoodTable;
 import de.njsm.stocks.frontend.AbstractDataFragment;
+import de.njsm.stocks.frontend.food.FoodActivity;
 import de.njsm.stocks.frontend.util.DateViewBinder;
 
 public class SearchFragment extends AbstractDataFragment {
@@ -70,7 +73,19 @@ public class SearchFragment extends AbstractDataFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        if (cursor == null) {
+            return;
+        }
+        int lastPos = cursor.getPosition();
+        cursor.moveToPosition(position);
+        int foodId = cursor.getInt(cursor.getColumnIndex("_id"));
+        String foodName = cursor.getString(cursor.getColumnIndex(SqlFoodTable.COL_NAME));
+        cursor.moveToPosition(lastPos);
 
+        Intent i = new Intent(getActivity(), FoodActivity.class);
+        i.putExtra(FoodActivity.KEY_ID, foodId);
+        i.putExtra(FoodActivity.KEY_NAME, foodName);
+        startActivity(i);
     }
 
     @Override
