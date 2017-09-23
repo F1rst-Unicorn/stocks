@@ -38,6 +38,8 @@ done
 adb -s $DEVICE reverse tcp:10910 tcp:10910
 adb -s $DEVICE reverse tcp:10911 tcp:10911
 adb -s $DEVICE reverse tcp:10912 tcp:10912
+adb uninstall de.njsm.stocks
+adb uninstall de.njsm.stocks.test
 
 $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
         connectedDebugAndroidTest \
