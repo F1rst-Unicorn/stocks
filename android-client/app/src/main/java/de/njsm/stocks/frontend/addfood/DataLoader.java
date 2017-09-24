@@ -16,6 +16,8 @@ class DataLoader implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private Activity context;
 
+    private Cursor locationCursor;
+
     private Consumer<Cursor> listener;
 
     private Consumer<Integer> selector;
@@ -49,25 +51,26 @@ class DataLoader implements LoaderManager.LoaderCallbacks<Cursor> {
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch(loader.getId()) {
             case 1:
-                listener.accept(cursor);
+                locationCursor = data;
+                listener.accept(data);
                 context.getLoaderManager().initLoader(2, null, this);
                 break;
             case 2:
-                if (cursor.getCount() > 0) {
-                    cursor.moveToFirst();
-                    int idToFind = cursor.getInt(cursor.getColumnIndex("_id"));
-                    int colId = cursor.getColumnIndex("_id");
+                if (data.getCount() > 0) {
+                    data.moveToFirst();
+                    int idToFind = data.getInt(data.getColumnIndex("_id"));
+                    int colId = locationCursor.getColumnIndex("_id");
                     int position = 0;
-                    cursor.moveToFirst();
+                    locationCursor.moveToFirst();
                     do {
-                        if (idToFind == cursor.getInt(colId)) {
+                        if (idToFind == locationCursor.getInt(colId)) {
                             break;
                         }
                         position++;
-                    } while (cursor.moveToNext());
+                    } while (locationCursor.moveToNext());
                     selector.accept(position);
                 }
                 break;
