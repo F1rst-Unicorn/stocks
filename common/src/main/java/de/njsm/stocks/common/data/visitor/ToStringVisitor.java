@@ -52,4 +52,9 @@ public class ToStringVisitor extends StocksDataVisitorImpl<Void, String> {
     public String userDeviceView(UserDeviceView device, Void input) {
         return "\t" + device.id + ": " + device.user + "'s " + device.name;
     }
+
+    @Override
+    public String eanNumber(EanNumber number, Void input) {
+        return "\t" + number.id + ": " + number.eanCode;
+    }
 }

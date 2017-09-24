@@ -74,6 +74,14 @@ public class AsyncTaskFactory {
         return new NewUserTask(contextWrapper.getFilesDir(), serverManager, networkManager);
     }
 
+    public NewEanNumberTask getNewEanNumberTask() {
+        return new NewEanNumberTask(contextWrapper.getFilesDir(), serverManager, networkManager);
+    }
+
+    public DeleteEanNumberTask getDeleteEanNumberTask() {
+        return new DeleteEanNumberTask(contextWrapper.getFilesDir(), serverManager, networkManager);
+    }
+
     public void setNetworkManager(NetworkManager networkManager) {
         this.networkManager = networkManager;
     }

@@ -67,4 +67,12 @@ public interface ServerClient {
     @PUT("/food/fooditem/move/{newId}")
     Call<Void> moveFoodItem(@Body FoodItem f, @Path("newId") int newLoc);
 
+    @GET("/ean")
+    Call<EanNumber[]> getEanNumbers();
+
+    @PUT("/ean")
+    Call<Void> addEanNumber(@Body EanNumber n);
+
+    @PUT("/ean/remove")
+    Call<Void> removeEanNumber(@Body EanNumber n);
 }

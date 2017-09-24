@@ -311,6 +311,34 @@ public class ServerManager {
         }
     }
 
+    public void addEanNumber(EanNumber n) {
+        Call<Void> call = backend.addEanNumber(n);
+
+        try {
+            Response<Void> r = call.execute();
+
+            if (! r.isSuccessful()) {
+                Log.e(Config.LOG_TAG, "failed to add EAN number: " + r.message());
+            }
+        } catch (IOException e) {
+            error(e);
+        }
+    }
+
+    public void removeEanNumber(EanNumber n) {
+        Call<Void> call = backend.removeEanNumber(n);
+
+        try {
+            Response<Void> r = call.execute();
+
+            if (!r.isSuccessful()) {
+                Log.e(Config.LOG_TAG, "failed to remove EAN number: " + r.message());
+            }
+        } catch (IOException e) {
+            error(e);
+        }
+    }
+
     public void move(FoodItem f, int newLoc) {
         Call<Void> call = backend.moveFoodItem(f, newLoc);
 
