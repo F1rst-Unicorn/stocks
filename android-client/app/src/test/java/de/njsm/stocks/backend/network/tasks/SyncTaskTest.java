@@ -28,7 +28,7 @@ public class SyncTaskTest {
         Update[] localUpdates = new Update[1];
         serverUpdates[0] = new Update("User", new Date());
         serverUpdates[1] = new Update("Food", new Date());
-        localUpdates[0] = new Update("Food", serverUpdates[0].lastUpdate);
+        localUpdates[0] = new Update("Food", serverUpdates[1].lastUpdate);
 
         uut.updateOutdatedTables(serverUpdates, localUpdates);
 
