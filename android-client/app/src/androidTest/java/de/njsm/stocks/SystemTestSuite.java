@@ -8,6 +8,7 @@ import org.junit.runners.Suite;
         FoodAddTest.class,
         LocationAddTest.class,
         FoodItemAddTest.class,
+        SearchTest.class,
         UserAdministrationTest.class,
         FoodConsumptionTest.class
         })
