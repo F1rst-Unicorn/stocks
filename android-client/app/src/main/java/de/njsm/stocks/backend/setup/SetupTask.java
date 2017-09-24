@@ -6,12 +6,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.network.sentry.SentryClient;
+import de.njsm.stocks.backend.util.AbstractAsyncTask;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.error.TextResourceException;
 import de.njsm.stocks.frontend.setup.Result;
@@ -41,7 +41,7 @@ import java.util.Locale;
 
 import static de.njsm.stocks.backend.util.Config.KEYSTORE_FILE;
 
-public class SetupTask extends AsyncTask<Void, String, Result> {
+public class SetupTask extends AbstractAsyncTask<Void, String, Result> {
 
     private Activity c;
     private Bundle extras;
@@ -55,7 +55,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
     private String intermediateCert;
 
     public SetupTask(Activity c) {
-        super();
+        super(c.getFilesDir());
         dialog = new ProgressDialog(c);
         this.c = c;
         extras = c.getIntent().getExtras();
@@ -70,7 +70,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
     }
 
     @Override
-    protected Result doInBackground(Void... params) {
+    protected Result doInBackgroundInternally(Void... params) {
 
         Result result;
 
@@ -102,6 +102,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
                     false);
             keystore.delete();
         } catch (Exception e) {
+            Log.e(Config.LOG_TAG, "Caught exception during initialisation", e);
             result = new Result(R.string.dialog_error,
                     R.string.dialog_invalid_answer,
                     false);
@@ -142,7 +143,7 @@ public class SetupTask extends AsyncTask<Void, String, Result> {
         String expectedFpr = extras.getString(Config.FPR_CONFIG, "");
 
         if (! expectedFpr.equals(actualFpr)) {
-            throw new SecurityException(c.getResources().getString(R.string.dialog_wrong_fpr));
+            throw new TextResourceException(R.string.dialog_wrong_fpr);
         }
     }
 

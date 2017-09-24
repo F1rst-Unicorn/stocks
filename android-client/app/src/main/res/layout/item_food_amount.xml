@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/list_item_padding"
+    android:paddingRight="@dimen/list_item_padding"
+    android:paddingTop="@dimen/list_item_padding"
+    android:paddingBottom="@dimen/list_item_padding">
+
+    <TextView
+        android:id="@+id/item_food_amount_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+            android:id="@+id/item_food_amount_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            style="@style/StocksTheme.TextSmall"
+            android:gravity="end"
+            android:layout_alignParentEnd="true"
+            android:paddingTop="4dp"
+            android:paddingEnd="@dimen/list_item_padding" />
+
+    <TextView
+        android:id="@+id/item_food_amount_colon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        style="@style/StocksTheme.TextSmall"
+        android:text=":"
+        android:layout_toStartOf="@id/item_food_amount_amount"
+        android:paddingTop="4dp"
+        android:paddingEnd="@dimen/list_item_padding" />
+
+    <TextView
+            android:id="@+id/item_food_amount_amount_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            style="@style/StocksTheme.TextSmall"
+            android:layout_toStartOf="@id/item_food_amount_colon"
+            android:paddingTop="4dp"
+            android:text="@string/text_amount" />
+
+
+
+
+</RelativeLayout>

@@ -47,6 +47,7 @@
     <string name="hint_ticket">Ticket</string>
     <string name="hint_location">Ort</string>
     <string name="hint_food">Lebensmittel</string>
+    <string name="search_hint">Suche Essen</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>
@@ -58,7 +59,7 @@
     <string name="dialog_error">Fehler</string>
     <string name="dialog_wrong_fpr">Falscher fingerprint</string>
     <string name="dialog_ticket_reject">Server weist Ticket ab</string>
-    <string name="dialog_invalid_answer">Ungültige Antwort: </string>
+    <string name="dialog_invalid_answer">Ungültige Antwort vom Server!</string>
     <string name="dialog_cert_unreadable">Zertifikat ist unlesbar</string>
     <string name="dialog_retry">WIEDERHOLEN</string>
     <string name="dialog_abort">ABBRECHEN</string>
@@ -80,6 +81,8 @@
     <string name="dialog_remove_crash_log">Diesen Absturzbericht entfernen?</string>
 
     <string name="error_no_server_name">Kein Server gesetzt</string>
+    <string name="error_no_id">ID darf nicht leer sein</string>
+    <string name="error_no_location_present">Erstelle zuerst einen Ort</string>
 
     <string name="text_show_qr_code_friend">Lass Dein neues Gerät diesen Code lesen:</string>
     <string name="text_amount">Menge</string>

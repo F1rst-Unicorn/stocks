@@ -19,6 +19,7 @@ public class SqlFoodItemTable {
     public static final String SELECT_FOOD_EMPTY;
     public static final String SELECT_FOOD_EAT_SOON;
     public static final String SELECT_MAX_LOCATION;
+    public static final String SEARCH_FOOD;
 
     static {
         NAME = "Food_item";
@@ -72,6 +73,16 @@ public class SqlFoodItemTable {
                         "GROUP BY name " +
                         "HAVING i." + COL_EAT_BY + " = MIN(i." + COL_EAT_BY + ")" +
                         "ORDER BY date ASC;";
+        SEARCH_FOOD =
+                "SELECT f._id as _id, f.name as name ,count(*) as amount " +
+                        "FROM Food f, " + NAME + " i " +
+                        "WHERE f._id=i." + COL_OF_TYPE + " and f.name like ? " +
+                        "GROUP BY name " +
+                "UNION " +
+                "SELECT f._id as _id, f.name as name, 0 as amount " +
+                        "FROM Food f " +
+                        "WHERE f.name like ? and f._id NOT IN (SELECT DISTINCT i.of_type " +
+                                                              "FROM Food_item i);";
         SELECT_MAX_LOCATION =
                 "SELECT l._id, l.name, count(*) as c " +
                 "FROM Food_item i, Location l " +

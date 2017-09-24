@@ -24,6 +24,8 @@ public class StocksContentProvider extends ContentProvider {
 
     public static final String MAX_LOCATION = "Location/eat_soon";
 
+    public static final String SEARCH_FOOD = "Search/food";
+
     private UriMatcher sMatcher;
 
     private DatabaseHandler mHandler;
@@ -77,6 +79,9 @@ public class StocksContentProvider extends ContentProvider {
             case 10:
                 result = db.rawQuery(SqlFoodItemTable.SELECT_MAX_LOCATION, selectionArgs);
                 break;
+            case 11:
+                result = db.rawQuery(SqlFoodItemTable.SEARCH_FOOD, selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
         }
@@ -94,6 +99,7 @@ public class StocksContentProvider extends ContentProvider {
         Uri uri7 = Uri.withAppendedPath(BASE_URI, FOOD_ITEM_TYPE);
         Uri uri8 = Uri.withAppendedPath(BASE_URI, EMPTY_FOOD);
         Uri uri9 = Uri.withAppendedPath(BASE_URI, EAT_SOON);
+        Uri uri11 = Uri.withAppendedPath(BASE_URI, SEARCH_FOOD);
 
 
         switch (match) {
@@ -115,12 +121,14 @@ public class StocksContentProvider extends ContentProvider {
                 resolver.notifyChange(uri7, null);
                 resolver.notifyChange(uri8, null);
                 resolver.notifyChange(uri9, null);
+                resolver.notifyChange(uri11, null);
                 break;
             case 4:
                 mHandler.writeData(SqlFoodItemTable.NAME, values);
                 resolver.notifyChange(uri6, null);
                 resolver.notifyChange(uri8, null);
                 resolver.notifyChange(uri9, null);
+                resolver.notifyChange(uri11, null);
                 break;
             case 5:
                 mHandler.writeData(SqlUpdateTable.NAME, values);
@@ -169,5 +177,6 @@ public class StocksContentProvider extends ContentProvider {
         sMatcher.addURI(AUTHORITY, EMPTY_FOOD, 8);
         sMatcher.addURI(AUTHORITY, EAT_SOON, 9);
         sMatcher.addURI(AUTHORITY, MAX_LOCATION, 10);
+        sMatcher.addURI(AUTHORITY, SEARCH_FOOD, 11);
     }
 }

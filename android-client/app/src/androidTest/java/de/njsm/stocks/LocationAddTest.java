@@ -5,8 +5,13 @@ import android.support.test.rule.ActivityTestRule;
 import android.view.Gravity;
 import android.widget.ListView;
 import de.njsm.stocks.frontend.StartupActivity;
+import de.njsm.stocks.util.StealCountAction;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.util.Arrays;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -17,31 +22,28 @@ import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static org.hamcrest.CoreMatchers.*;
 
-public class InitialDataSetupTest {
+@RunWith(Parameterized.class)
+public class LocationAddTest {
 
     @Rule
     public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
 
-    @Test
-    public void addInitialFood() throws Exception {
-        String foodName = "Beer";
+    @Parameterized.Parameter
+    public String locationName;
 
-        onView(withId(R.id.fab)).perform(click());
-        onView(withHint(R.string.hint_food)).perform(replaceText(foodName));
-        onView(withText("OK")).perform(click());
-
-        onView(withId(R.id.fragment_outline_cardview2)).perform(click());
-        onData(anything()).inAdapterView(allOf(withEffectiveVisibility(Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(0)
-                .onChildView(withId(R.id.item_empty_food_outline_name))
-                .check(matches(withText(foodName)));
-        pressBack();
+    @Parameterized.Parameters(name = "Location {0}")
+    public static Iterable<Object[]> getFoodNames() {
+        return Arrays.asList(
+                new Object[][] {
+                        {"Fridge"},
+                        {"Ground"},
+                        {"Cupboard"},
+                        {"Basement"}
+                });
     }
 
     @Test
-    public void addInitialLocation() throws Exception {
-        String locationName = "Fridge";
-
+    public void addLocation() throws Exception {
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.START)))
                 .perform(open());
@@ -51,13 +53,13 @@ public class InitialDataSetupTest {
         onView(withHint(R.string.hint_location)).perform(replaceText(locationName));
         onView(withText("OK")).perform(click());
 
+        StealCountAction stealCountAction = new StealCountAction();
+        onView(withId(android.R.id.list)).perform(stealCountAction);
+        int position = stealCountAction.getCount() - 1;
         onData(anything()).inAdapterView(allOf(withEffectiveVisibility(Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(0)
+                .atPosition(position)
                 .onChildView(withId(R.id.item_location_name))
                 .check(matches(withText(locationName)));
         pressBack();
     }
-
-
-
 }

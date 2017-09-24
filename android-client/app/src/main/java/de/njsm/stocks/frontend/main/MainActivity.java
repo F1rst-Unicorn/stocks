@@ -1,10 +1,8 @@
 package de.njsm.stocks.frontend.main;
 
 import android.app.Fragment;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.app.SearchManager;
+import android.content.*;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -14,8 +12,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -25,13 +25,14 @@ import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.backend.util.ExceptionHandler;
-import de.njsm.stocks.frontend.util.SwipeSyncCallback;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.frontend.settings.SettingsActivity;
 import de.njsm.stocks.frontend.eatsoon.EatSoonActivity;
 import de.njsm.stocks.frontend.emptyfood.EmptyFoodActivity;
+import de.njsm.stocks.frontend.search.SearchActivity;
+import de.njsm.stocks.frontend.settings.SettingsActivity;
+import de.njsm.stocks.frontend.util.SwipeSyncCallback;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -122,7 +123,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchActivity.class)));
+        searchView.setIconifiedByDefault(true);
+        searchView.setSubmitButtonEnabled(true);
         return true;
     }
 
