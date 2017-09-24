@@ -26,6 +26,8 @@ public class StocksContentProvider extends ContentProvider {
 
     public static final String SEARCH_FOOD = "Search/food";
 
+    public static final String EAN_NUMBER_TYPE = "EAN_number/by_food_type";
+
     private UriMatcher sMatcher;
 
     private DatabaseHandler mHandler;
@@ -82,6 +84,9 @@ public class StocksContentProvider extends ContentProvider {
             case 11:
                 result = db.rawQuery(SqlFoodItemTable.SEARCH_FOOD, selectionArgs);
                 break;
+            case 12:
+                result = db.rawQuery(SqlEanNumberTable.SELECT_NUMBER, selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
         }
@@ -100,6 +105,7 @@ public class StocksContentProvider extends ContentProvider {
         Uri uri8 = Uri.withAppendedPath(BASE_URI, EMPTY_FOOD);
         Uri uri9 = Uri.withAppendedPath(BASE_URI, EAT_SOON);
         Uri uri11 = Uri.withAppendedPath(BASE_URI, SEARCH_FOOD);
+        Uri uri12 = Uri.withAppendedPath(BASE_URI, EAN_NUMBER_TYPE);
 
 
         switch (match) {
@@ -132,6 +138,10 @@ public class StocksContentProvider extends ContentProvider {
                 break;
             case 5:
                 mHandler.writeData(SqlUpdateTable.NAME, values);
+                break;
+            case 13:
+                mHandler.writeData(SqlEanNumberTable.NAME, values);
+                resolver.notifyChange(uri12, null);
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
@@ -178,5 +188,8 @@ public class StocksContentProvider extends ContentProvider {
         sMatcher.addURI(AUTHORITY, EAT_SOON, 9);
         sMatcher.addURI(AUTHORITY, MAX_LOCATION, 10);
         sMatcher.addURI(AUTHORITY, SEARCH_FOOD, 11);
+        sMatcher.addURI(AUTHORITY, EAN_NUMBER_TYPE, 12);
+
+        sMatcher.addURI(AUTHORITY, SqlEanNumberTable.NAME, 13);
     }
 }
