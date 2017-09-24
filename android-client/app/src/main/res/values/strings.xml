@@ -89,5 +89,6 @@
     <string name="text_buyer">Buyer</string>
     <string name="text_eat_by_date">Date of expiry:</string>
     <string name="text_no_crash_logs">App is running stable.</string>
+    <string name="text_no_search_result">No food found</string>
 
 </resources>

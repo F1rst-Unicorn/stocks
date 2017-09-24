@@ -7,9 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import de.njsm.stocks.R;
@@ -34,15 +32,11 @@ public class SearchFragment extends AbstractDataFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-        View result = super.onCreateView(inflater, container, savedInstanceState);
-
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         query = getArguments().getString(KEY_QUERY, "");
         swiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.location_swipe);
-
-        return result;
+        setEmptyText(getResources().getText(R.string.text_no_search_result));
     }
 
     @Override
