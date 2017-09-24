@@ -68,7 +68,7 @@ public class FoodConsumptionTest {
         lastItem.onChildView(withId(R.id.item_food_item_device))
                 .check(matches(withText("Device")));
         lastItem.onChildView(withId(R.id.item_food_item_location))
-                .check(matches(withText("Fridge")));
+                .check(matches(withText("Cupboard")));
 
     }
 }

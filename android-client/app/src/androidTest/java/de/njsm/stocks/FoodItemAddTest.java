@@ -53,6 +53,8 @@ public class FoodItemAddTest {
                 .atPosition(0)
                 .perform(click());
         onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.activity_add_food_item_spinner)).perform(click());
+        onData(anything()).atPosition(2).perform(click());
 
         for (int i = 0; i < targetFoodAmount; i++) {
             onView(withId(R.id.activity_add_food_item_add_more)).perform(click());
@@ -74,7 +76,7 @@ public class FoodItemAddTest {
             item.onChildView(withId(R.id.item_food_item_device))
                     .check(matches(withText("Device")));
             item.onChildView(withId(R.id.item_food_item_location))
-                    .check(matches(withText("Fridge")));
+                    .check(matches(withText("Cupboard")));
         }
 
         DataInteraction lastItem = onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
@@ -86,6 +88,6 @@ public class FoodItemAddTest {
         lastItem.onChildView(withId(R.id.item_food_item_device))
                 .check(matches(withText("Device")));
         lastItem.onChildView(withId(R.id.item_food_item_location))
-                .check(matches(withText("Fridge")));
+                .check(matches(withText("Cupboard")));
     }
 }
