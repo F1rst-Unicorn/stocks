@@ -1,10 +1,18 @@
 package de.njsm.stocks.frontend.barcodes;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import de.njsm.stocks.R;
+import de.njsm.stocks.backend.network.AsyncTaskFactory;
+import de.njsm.stocks.backend.network.NetworkManager;
+import de.njsm.stocks.backend.util.Config;
+import de.njsm.stocks.common.data.EanNumber;
+import de.njsm.stocks.zxing.IntentIntegrator;
+import de.njsm.stocks.zxing.IntentResult;
 
 public class BarcodeActivity extends AppCompatActivity {
 
@@ -15,6 +23,8 @@ public class BarcodeActivity extends AppCompatActivity {
     private int foodId;
 
     private String foodName;
+
+    private NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +40,23 @@ public class BarcodeActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction()
                 .replace(R.id.barcode_content, listFragment)
                 .commit();
+
+        AsyncTaskFactory factory = new AsyncTaskFactory(this);
+        networkManager = new NetworkManager(factory);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null) {
+            networkManager.addEanNumber(new EanNumber(0, scanResult.getContents(), foodId));
+        } else {
+            Log.d(Config.LOG_TAG, "Got invalid result from activity");
+        }
     }
 
     public void addBarcode(View view) {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.initiateScan();
     }
 }

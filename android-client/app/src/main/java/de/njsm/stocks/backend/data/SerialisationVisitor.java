@@ -62,4 +62,13 @@ public class SerialisationVisitor extends StocksDataVisitorImpl<Integer, Content
         result.put(SqlFoodTable.COL_NAME, food.name);
         return result;
     }
+
+    @Override
+    public ContentValues eanNumber(EanNumber number, Integer input) {
+        ContentValues result = new ContentValues();
+        result.put(SqlEanNumberTable.COL_ID, number.id);
+        result.put(SqlEanNumberTable.COL_NUMBER, number.eanCode);
+        result.put(SqlEanNumberTable.COL_FOOD, number.identifiesFood);
+        return result;
+    }
 }
