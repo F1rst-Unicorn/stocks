@@ -56,6 +56,7 @@
         <activity android:name=".frontend.crashlog.CrashLogActivity"/>
         <activity android:name=".frontend.emptyfood.EmptyFoodActivity"/>
         <activity android:name=".frontend.eatsoon.EatSoonActivity"/>
+        <activity android:name=".frontend.barcodes.BarcodeActivity"/>
         <activity android:name=".frontend.search.SearchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
