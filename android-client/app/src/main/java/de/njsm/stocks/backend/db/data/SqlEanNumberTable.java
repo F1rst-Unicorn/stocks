@@ -12,6 +12,7 @@ public class SqlEanNumberTable {
     public static final String CREATE;
     public static final String DROP;
     public static final String SELECT_NUMBER;
+    public static final String SELECT_FOOD_BY_NUMBER;
 
     static {
         NAME = "EAN_number";
@@ -28,6 +29,9 @@ public class SqlEanNumberTable {
                 ") ON DELETE RESTRICT ON UPDATE CASCADE\n" +
                 ")";
         DROP = "DROP TABLE IF EXISTS " + NAME;
-        SELECT_NUMBER = "SELECT * FROM " + NAME + " WHERE " + COL_FOOD + "=?";
+        SELECT_NUMBER = "SELECT * FROM " + NAME + " WHERE " + COL_FOOD + "= ?";
+        SELECT_FOOD_BY_NUMBER = "SELECT f._id as _id, f.name as name " +
+                "FROM Food f, " + NAME + " as n " +
+                "WHERE n." + COL_FOOD + " = f._id AND n." + COL_NUMBER + " = ?";
     }
 }

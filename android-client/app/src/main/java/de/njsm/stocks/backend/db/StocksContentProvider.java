@@ -28,6 +28,8 @@ public class StocksContentProvider extends ContentProvider {
 
     public static final String EAN_NUMBER_TYPE = "EAN_number/by_food_type";
 
+    public static final String EAN_NUMBER_TO_FOOD = "EAN_number/to_food";
+
     private UriMatcher sMatcher;
 
     private DatabaseHandler mHandler;
@@ -87,6 +89,9 @@ public class StocksContentProvider extends ContentProvider {
             case 12:
                 result = db.rawQuery(SqlEanNumberTable.SELECT_NUMBER, selectionArgs);
                 break;
+            case 14:
+                result = db.rawQuery(SqlEanNumberTable.SELECT_FOOD_BY_NUMBER, selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
         }
@@ -106,6 +111,7 @@ public class StocksContentProvider extends ContentProvider {
         Uri uri9 = Uri.withAppendedPath(BASE_URI, EAT_SOON);
         Uri uri11 = Uri.withAppendedPath(BASE_URI, SEARCH_FOOD);
         Uri uri12 = Uri.withAppendedPath(BASE_URI, EAN_NUMBER_TYPE);
+        Uri uri14 = Uri.withAppendedPath(BASE_URI, EAN_NUMBER_TO_FOOD);
 
 
         switch (match) {
@@ -128,6 +134,7 @@ public class StocksContentProvider extends ContentProvider {
                 resolver.notifyChange(uri8, null);
                 resolver.notifyChange(uri9, null);
                 resolver.notifyChange(uri11, null);
+                resolver.notifyChange(uri14, null);
                 break;
             case 4:
                 mHandler.writeData(SqlFoodItemTable.NAME, values);
@@ -142,6 +149,7 @@ public class StocksContentProvider extends ContentProvider {
             case 13:
                 mHandler.writeData(SqlEanNumberTable.NAME, values);
                 resolver.notifyChange(uri12, null);
+                resolver.notifyChange(uri14, null);
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
@@ -191,5 +199,7 @@ public class StocksContentProvider extends ContentProvider {
         sMatcher.addURI(AUTHORITY, EAN_NUMBER_TYPE, 12);
 
         sMatcher.addURI(AUTHORITY, SqlEanNumberTable.NAME, 13);
+
+        sMatcher.addURI(AUTHORITY, EAN_NUMBER_TO_FOOD, 14);
     }
 }
