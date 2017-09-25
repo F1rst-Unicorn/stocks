@@ -56,7 +56,7 @@ public class FoodConsumptionTest {
             onView(withText("OK")).perform(click());
 
             onView(withId(android.R.id.list)).perform(stealCountAction);
-            Thread.sleep(2000);
+            Thread.sleep(2000); // STOCKS-17
         }
 
         DataInteraction lastItem = onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
