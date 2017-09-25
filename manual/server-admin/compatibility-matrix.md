@@ -20,7 +20,7 @@ version.
 |  0.5.0  |   Y   |   Y   |   Y   |   Y   |
 |  0.5.1  |   Y   |   Y   |   Y   |   Y   |
 |  0.6.0  |   Y   |   Y   |   Y   |   Y   |
-|  1.0.0  |   Y   |   Y   |   Y   |   Y   |
+|  1.0.x  |   Y   |   Y   |   Y   |   Y   |
 
 ## Index
 
