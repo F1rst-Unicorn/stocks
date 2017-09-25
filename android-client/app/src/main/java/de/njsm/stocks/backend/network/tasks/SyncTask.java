@@ -107,7 +107,24 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
             refreshFood();
         } else if (table.equals(SqlFoodItemTable.NAME)) {
             refreshItems();
+        } else if (table.equals(SqlEanNumberTable.NAME)) {
+            refreshEanNumbers();
         }
+    }
+
+    private void refreshEanNumbers() {
+        EanNumber[] n = serverManager.getEanNumbers();
+        writeEanNumbers(n);
+    }
+
+    private void writeEanNumbers(EanNumber[] numbers) {
+        ContentValues[] values = new ContentValues[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            values[i] = serialiser.visit(numbers[i], 0);
+        }
+
+        resolver.bulkInsert(Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlEanNumberTable.NAME),
+                values);
     }
 
     private void refreshFood() {

@@ -63,7 +63,7 @@ public class FoodItemAddTest {
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(2100, 31, 12));
 
-        Thread.sleep(2000);
+        Thread.sleep(2000); // STOCKS-17
         onView(withId(R.id.activity_add_food_item_done)).perform(click());
 
         for (int i = 0; i < targetFoodAmount; i++) {

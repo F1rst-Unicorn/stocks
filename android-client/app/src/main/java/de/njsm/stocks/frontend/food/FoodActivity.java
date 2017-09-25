@@ -14,6 +14,7 @@ import android.view.View;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
+import de.njsm.stocks.frontend.barcodes.BarcodeActivity;
 import de.njsm.stocks.frontend.util.SwipeSyncCallback;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.frontend.addfood.AddFoodItemActivity;
@@ -88,7 +89,12 @@ public class FoodActivity extends AppCompatActivity {
                                 dialog.dismiss();
                         })
                         .show();
-
+                break;
+            case R.id.activity_food_menu_ean:
+                Intent i = new Intent(this, BarcodeActivity.class);
+                i.putExtra(BarcodeActivity.KEY_ID, id);
+                i.putExtra(BarcodeActivity.KEY_NAME, name);
+                startActivity(i);
                 break;
             default:
         }

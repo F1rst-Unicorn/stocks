@@ -18,6 +18,9 @@
     <string name="title_move">Move</string>
     <string name="title_crash_logs">Crash Reports</string>
     <string name="title_remove">Remove</string>
+    <string name="title_barcode">Barcodes</string>
+    <string name="title_barcode_activity">Barcodes for %s</string>
+    <string name="title_delete_barcode">Remove barcode</string>
 
     <string name="action_outline">Outline</string>
     <string name="action_users">Users</string>
@@ -33,6 +36,7 @@
     <string name="action_remove">Remove</string>
     <string name="action_missing_food">Missing food</string>
     <string name="action_eat_next">What to eat next</string>
+    <string name="action_scan">Scan barcode</string>
 
     <string name="hint_servername">Server host name</string>
     <string name="hint_expert">Expert options</string>
@@ -79,6 +83,7 @@
     <string name="dialog_new_sync_done">Sync successful</string>
     <string name="dialog_move_item">Move to a different location</string>
     <string name="dialog_remove_crash_log">Remove this crash log?</string>
+    <string name="dialog_no_barcode_result">Unknown barcode</string>
 
     <string name="error_no_server_name">No server name set</string>
     <string name="error_no_id">ID has to be filled in</string>

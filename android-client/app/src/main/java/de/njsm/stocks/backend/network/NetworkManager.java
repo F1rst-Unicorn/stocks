@@ -93,4 +93,15 @@ public class NetworkManager {
         task.execute(user);
     }
 
+    public void addEanNumber(EanNumber number) {
+        Log.i(Config.LOG_TAG, "adding EAN number " + number);
+        NewEanNumberTask task = taskFactory.getNewEanNumberTask();
+        task.execute(number);
+    }
+
+    public void deleteEanNumber(EanNumber number) {
+        Log.i(Config.LOG_TAG, "removing EAN number " + number);
+        DeleteEanNumberTask task = taskFactory.getDeleteEanNumberTask();
+        task.execute(number);
+    }
 }

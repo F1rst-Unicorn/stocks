@@ -49,4 +49,9 @@ public class StocksDataVisitorImpl<I, O> implements StocksDataVisitor<I, O> {
     public O userDeviceView(UserDeviceView userDeviceView, I input) {
         return null;
     }
+
+    @Override
+    public O eanNumber(EanNumber number, I input) {
+        return null;
+    }
 }

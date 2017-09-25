@@ -23,5 +23,7 @@ public interface StocksDataVisitor<I, O> {
 
     O userDeviceView(UserDeviceView userDeviceView, I input);
 
+    O eanNumber(EanNumber number, I input);
+
 
 }

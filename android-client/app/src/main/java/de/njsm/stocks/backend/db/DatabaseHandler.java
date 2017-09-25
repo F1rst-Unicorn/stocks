@@ -11,7 +11,7 @@ import de.njsm.stocks.backend.db.data.*;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
 
     private static final String DATABASE_NAME = "stocks.db";
 
@@ -29,6 +29,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             db.execSQL(SqlLocationTable.CREATE);
             db.execSQL(SqlFoodTable.CREATE);
             db.execSQL(SqlFoodItemTable.CREATE);
+            db.execSQL(SqlEanNumberTable.CREATE);
         } catch (SQLException e) {
             Log.e(Config.LOG_TAG, "could not create table", e);
         }
@@ -44,6 +45,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             db.execSQL(SqlLocationTable.DROP);
             db.execSQL(SqlFoodTable.DROP);
             db.execSQL(SqlFoodItemTable.DROP);
+            db.execSQL(SqlEanNumberTable.DROP);
         } catch (SQLException e) {
             Log.e(Config.LOG_TAG, "could not drop tables", e);
         }

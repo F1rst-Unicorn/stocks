@@ -30,7 +30,8 @@ public class SqlUpdateTable {
                 "(2, 'User'),\n" +
                 "(3, 'User_device'),\n" +
                 "(4, 'Food'),\n" +
-                "(5, 'Food_item')";
+                "(5, 'Food_item'),\n" +
+                "(6, 'EAN_number')";
         DROP = "DROP TABLE IF EXISTS " + NAME;
         SELECT_ALL = "SELECT * FROM " + NAME;
     }
