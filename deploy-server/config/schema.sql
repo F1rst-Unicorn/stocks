@@ -81,12 +81,12 @@ CREATE TABLE Updates (
 
 INSERT INTO Updates (`table_name`, `last_update`)
 VALUES 
-    ('Location', NOW()),
-    ('User', NOW()),
-    ('User_device', NOW()),
-    ('Food', NOW()),
-    ('Food_item', NOW()),
-    ('EAN_number', NOW());
+    ('Location', NOW(3)),
+    ('User', NOW(3)),
+    ('User_device', NOW(3)),
+    ('Food', NOW(3)),
+    ('Food_item', NOW(3)),
+    ('EAN_number', NOW(3));
     
 DROP TABLE IF EXISTS EAN_number;
 
@@ -104,20 +104,20 @@ delimiter |
 CREATE TRIGGER Location_insert AFTER INSERT ON `Location` FOR EACH ROW
 BEGIN
     UPDATE Updates 
-    SET last_update=NOW() 
+    SET last_update=NOW(3) 
     WHERE `table_name`='Location';
 END;
 
 CREATE TRIGGER Location_update
 AFTER UPDATE ON Location FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Location';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Location';
 END;
 
 CREATE TRIGGER Location_delete
 AFTER DELETE ON Location FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Location';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Location';
 END;
 
 
@@ -125,19 +125,19 @@ END;
 CREATE TRIGGER Food_insert
 AFTER INSERT ON Food FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food';
 END;
 
 CREATE TRIGGER Food_update
 AFTER UPDATE ON Food FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food';
 END;
 
 CREATE TRIGGER Food_delete
 AFTER DELETE ON Food FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food';
 END;
 
 
@@ -145,19 +145,19 @@ END;
 CREATE TRIGGER User_insert
 AFTER INSERT ON `User` FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User';
 END;
 
 CREATE TRIGGER User_update
 AFTER UPDATE ON `User` FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User';
 END;
 
 CREATE TRIGGER User_delete
 AFTER DELETE ON `User` FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User';
 END;
 
 
@@ -165,19 +165,19 @@ END;
 CREATE TRIGGER User_device_insert
 AFTER INSERT ON User_device FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User_device';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User_device';
 END;
 
 CREATE TRIGGER User_device_update
 AFTER UPDATE ON User_device FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User_device';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User_device';
 END;
 
 CREATE TRIGGER User_device_delete
 AFTER DELETE ON User_device FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='User_device';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User_device';
 END;
 
 
@@ -185,19 +185,19 @@ END;
 CREATE TRIGGER Food_item_insert
 AFTER INSERT ON Food_item FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food_item';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food_item';
 END;
 
 CREATE TRIGGER Food_item_update
 AFTER UPDATE ON Food_item FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food_item';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food_item';
 END;
 
 CREATE TRIGGER Food_item_delete
 AFTER DELETE ON Food_item FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='Food_item';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food_item';
 END;
 
 
@@ -205,19 +205,19 @@ END;
 CREATE TRIGGER EAN_number_insert
 AFTER INSERT ON EAN_number FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='EAN_number';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='EAN_number';
 END;
 
 CREATE TRIGGER EAN_number_update
 AFTER UPDATE ON EAN_number FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='EAN_number';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='EAN_number';
 END;
 
 CREATE TRIGGER EAN_number_delete
 AFTER DELETE ON EAN_number FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW() WHERE `table_name`='EAN_number';
+    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='EAN_number';
 END;
 
 |
