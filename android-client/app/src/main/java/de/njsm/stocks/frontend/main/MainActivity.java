@@ -2,7 +2,10 @@ package de.njsm.stocks.frontend.main;
 
 import android.app.Fragment;
 import android.app.SearchManager;
-import android.content.*;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -10,29 +13,30 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.backend.util.ExceptionHandler;
 import de.njsm.stocks.common.data.Food;
-import de.njsm.stocks.common.data.Location;
-import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.frontend.eatsoon.EatSoonActivity;
-import de.njsm.stocks.frontend.emptyfood.EmptyFoodActivity;
+import de.njsm.stocks.frontend.ActivitySwitcher;
+import de.njsm.stocks.frontend.DialogFactory;
 import de.njsm.stocks.frontend.search.SearchActivity;
-import de.njsm.stocks.frontend.settings.SettingsActivity;
 import de.njsm.stocks.frontend.util.SwipeSyncCallback;
+import de.njsm.stocks.zxing.IntentIntegrator;
+import de.njsm.stocks.zxing.IntentResult;
+
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -146,8 +150,7 @@ public class MainActivity extends AppCompatActivity
                 f = locationsFragment;
                 break;
             case R.id.settings:
-                Intent i = new Intent(this, SettingsActivity.class);
-                startActivity(i);
+                ActivitySwitcher.switchToSettings(this);
             default:
                 f = outlineFragment;
         }
@@ -157,54 +160,61 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null) {
+            String eanNumber = scanResult.getContents();
+            if (eanNumber.length() != 13) {
+                Log.w(Config.LOG_TAG, "Scanned invalid code");
+                Toast.makeText(this,
+                        getResources().getString(R.string.dialog_no_barcode_result),
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Log.i(Config.LOG_TAG, "Starting loading for EAN code " + eanNumber);
+            ScanResultCallback loader = new ScanResultCallback(this,
+                    (Food food) -> ActivitySwitcher.switchToFoodActivity(this, food),
+                    (Void dummy) ->             Toast.makeText(this,
+                            getResources().getString(R.string.dialog_no_barcode_result),
+                            Toast.LENGTH_SHORT).show());
+            Bundle args = new Bundle();
+            args.putString(ScanResultCallback.KEY_EAN_NUMBER, eanNumber);
+            getLoaderManager().restartLoader(0, args, loader);
+        } else {
+            Log.d(Config.LOG_TAG, "Got invalid result from activity");
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_scan:
+                IntentIntegrator intent = new IntentIntegrator(this);
+                intent.initiateScan(Collections.singletonList("EAN_13"));
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
     public void addEntity(View view) {
         if (currentFragment == usersFragment) {
-            final EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
-            textField.setHint(getResources().getString(R.string.hint_username));
-            new AlertDialog.Builder(this)
-                    .setTitle(getResources().getString(R.string.dialog_new_user))
-                    .setView(textField)
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), (DialogInterface dialog, int whichButton) -> {
-                            String name = textField.getText().toString().trim();
-                            networkManager.addUser(new User(0, name));
-                    })
-                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), (DialogInterface dialog, int whichButton) -> {})
-                    .show();
+            DialogFactory.showUserAddingDialog(this, networkManager);
         } else if (currentFragment == locationsFragment) {
-            final EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
-            textField.setHint(getResources().getString(R.string.hint_location));
-            new AlertDialog.Builder(this)
-                    .setTitle(getResources().getString(R.string.dialog_new_location))
-                    .setView(textField)
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), (DialogInterface dialog, int whichButton) -> {
-                            String name = textField.getText().toString().trim();
-                            networkManager.addLocation(new Location(0, name));
-                    })
-                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), (DialogInterface dialog, int whichButton) -> {})
-                    .show();
+            DialogFactory.showLocationAddingDialog(this, networkManager);
         } else {
-            final EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
-            textField.setHint(getResources().getString(R.string.hint_food));
-            new AlertDialog.Builder(this)
-                    .setTitle(getResources().getString(R.string.dialog_new_food))
-                    .setView(textField)
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), (DialogInterface dialog, int whichButton) -> {
-                            String name = textField.getText().toString().trim();
-                            networkManager.addFood(new Food(0, name));
-                    })
-                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), (DialogInterface dialog, int whichButton) -> {})
-                    .show();
+            DialogFactory.showFoddAddingDialog(this, networkManager);
         }
     }
 
     public void showAllFood(View view) {
-        Intent i = new Intent(this, EatSoonActivity.class);
-        startActivity(i);
+        ActivitySwitcher.switchToEatSoonActivity(this);
     }
 
     public void showMissingFood(View view) {
-        Intent i = new Intent(this, EmptyFoodActivity.class);
-        startActivity(i);
+        ActivitySwitcher.switchToEmptyFoodActivity(this);
     }
 
     private void setActiveFragment(Fragment fragment) {

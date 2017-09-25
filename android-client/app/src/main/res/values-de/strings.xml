@@ -83,6 +83,7 @@
     <string name="dialog_new_sync_done">Transfer erfolgreich</string>
     <string name="dialog_move_item">An einen anderen Ort verschieben</string>
     <string name="dialog_remove_crash_log">Diesen Absturzbericht entfernen?</string>
+    <string name="dialog_no_barcode_result">Unbekannter Barcode</string>
 
     <string name="error_no_server_name">Kein Server gesetzt</string>
     <string name="error_no_id">ID darf nicht leer sein</string>

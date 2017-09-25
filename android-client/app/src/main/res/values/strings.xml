@@ -83,6 +83,7 @@
     <string name="dialog_new_sync_done">Sync successful</string>
     <string name="dialog_move_item">Move to a different location</string>
     <string name="dialog_remove_crash_log">Remove this crash log?</string>
+    <string name="dialog_no_barcode_result">Unknown barcode</string>
 
     <string name="error_no_server_name">No server name set</string>
     <string name="error_no_id">ID has to be filled in</string>
