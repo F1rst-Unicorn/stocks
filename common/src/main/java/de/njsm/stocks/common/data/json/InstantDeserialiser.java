@@ -25,9 +25,13 @@ public class InstantDeserialiser extends StdDeserializer<Instant> {
         JsonNode node = p.getCodec().readTree(p);
         String rawTimestamp = node.asText();
         try {
-            return InstantSerialiser.FORMAT.parse(rawTimestamp, Instant::from);
+            return parseString(rawTimestamp);
         } catch (DateTimeParseException e) {
             throw new IOException("Cannot parse date value " + rawTimestamp, e);
         }
+    }
+
+    Instant parseString(String rawTimestamp) {
+        return InstantSerialiser.FORMAT.parse(rawTimestamp, Instant::from);
     }
 }
