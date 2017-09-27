@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.time.Instant;
+import org.threeten.bp.Instant;
 
 public class FoodItemEndpointTest extends BaseTestEndpoint {
 
