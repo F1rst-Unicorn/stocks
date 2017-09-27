@@ -31,7 +31,7 @@ public class SqlFoodItemTable {
         COL_BUYS = "buys";
         CREATE = "CREATE TABLE " + NAME + " (\n" +
                 "    " + COL_ID + " int UNSIGNED NOT NULL UNIQUE,\n" +
-                "    " + COL_EAT_BY + " varchar(19) NOT NULL,\n" +
+                "    " + COL_EAT_BY + " varchar(24) NOT NULL,\n" +
                 "    " + COL_OF_TYPE + " int UNSIGNED NOT NULL,\n" +
                 "    " + COL_REGISTERS + " int UNSIGNED NOT NULL,\n" +
                 "    " + COL_BUYS + " int UNSIGNED NOT NULL,\n" +

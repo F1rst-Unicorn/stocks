@@ -11,7 +11,7 @@ import de.njsm.stocks.backend.db.data.*;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 18;
 
     private static final String DATABASE_NAME = "stocks.db";
 

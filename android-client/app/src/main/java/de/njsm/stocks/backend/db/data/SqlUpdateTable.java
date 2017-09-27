@@ -21,7 +21,7 @@ public class SqlUpdateTable {
         CREATE = "CREATE TABLE " + NAME + " (\n" +
                 "    " + COL_ID + " int UNSIGNED NOT NULL UNIQUE,\n" +
                 "    " + COL_NAME + " varchar(200) NOT NULL,\n" +
-                "    " + COL_DATE + " varchar(19) NOT NULL DEFAULT '1000-01-01 00:00:00',\n" +
+                "    " + COL_DATE + " varchar(24) NOT NULL DEFAULT '1000-01-01 00:00:00.000',\n" +
                 "    PRIMARY KEY (" + COL_ID + ")\n" +
                 ")";
         INIT = "INSERT INTO Updates (" + COL_ID + ", " + COL_NAME + ")\n" +
