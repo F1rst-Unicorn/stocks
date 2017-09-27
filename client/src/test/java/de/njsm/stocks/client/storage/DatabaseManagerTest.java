@@ -12,7 +12,7 @@ import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.Instant;
+import org.threeten.bp.Instant;
 import java.util.LinkedList;
 import java.util.List;
 

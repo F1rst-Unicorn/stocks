@@ -4,7 +4,7 @@ import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.view.FoodView;
 
 import java.text.ParseException;
-import java.time.Instant;
+import org.threeten.bp.Instant;
 import java.util.LinkedList;
 import java.util.List;
 

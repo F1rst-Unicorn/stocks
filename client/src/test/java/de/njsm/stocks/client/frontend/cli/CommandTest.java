@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.njsm.stocks.client.exceptions.ParseException;
-import java.time.temporal.ValueRange;
+import org.threeten.bp.temporal.ValueRange;
 
 public class CommandTest {
 

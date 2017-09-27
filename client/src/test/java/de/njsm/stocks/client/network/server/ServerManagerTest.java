@@ -9,7 +9,7 @@ import retrofit.Callback;
 import retrofit.Response;
 
 import java.io.IOException;
-import java.time.Instant;
+import org.threeten.bp.Instant;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;

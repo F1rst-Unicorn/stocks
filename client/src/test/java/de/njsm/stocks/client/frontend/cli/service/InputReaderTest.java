@@ -10,8 +10,8 @@ import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.time.LocalDate;
-import java.time.Period;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.Period;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

@@ -12,9 +12,9 @@ import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
 import java.util.List;
 
 public class InputCollector extends Selector {

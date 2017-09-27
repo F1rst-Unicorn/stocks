@@ -4,8 +4,8 @@ import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import de.njsm.stocks.client.service.TimeProvider;
 
-import java.time.LocalDate;
-import java.time.temporal.ValueRange;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.temporal.ValueRange;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
