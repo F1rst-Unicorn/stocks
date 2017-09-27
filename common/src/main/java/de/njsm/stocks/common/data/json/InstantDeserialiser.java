@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.time.format.DateTimeParseException;
+import org.threeten.bp.Instant;
+import org.threeten.bp.format.DateTimeParseException;
 
 public class InstantDeserialiser extends StdDeserializer<Instant> {
 

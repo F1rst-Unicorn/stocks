@@ -5,9 +5,9 @@ import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import static org.junit.Assert.assertEquals;
 

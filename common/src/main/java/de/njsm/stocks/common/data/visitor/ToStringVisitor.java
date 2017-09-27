@@ -3,7 +3,7 @@ package de.njsm.stocks.common.data.visitor;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 
-import java.time.format.DateTimeFormatter;
+import org.threeten.bp.format.DateTimeFormatter;
 
 public class ToStringVisitor extends StocksDataVisitorImpl<Void, String> {
 

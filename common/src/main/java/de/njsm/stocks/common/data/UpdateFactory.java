@@ -2,7 +2,7 @@ package de.njsm.stocks.common.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
+import org.threeten.bp.Instant;
 
 public class UpdateFactory extends DataFactory<Update> {
 

@@ -2,7 +2,7 @@ package de.njsm.stocks.common.data.view;
 
 import de.njsm.stocks.common.data.Food;
 
-import java.time.Instant;
+import org.threeten.bp.Instant;
 import java.util.LinkedList;
 import java.util.List;
 

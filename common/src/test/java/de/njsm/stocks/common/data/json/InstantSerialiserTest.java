@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.Instant;
+import org.threeten.bp.Instant;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;

@@ -10,7 +10,7 @@ import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.Instant;
+import org.threeten.bp.Instant;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.DEFAULT,

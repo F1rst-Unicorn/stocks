@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.Instant;
+import org.threeten.bp.Instant;
 
 public class FoodItemTest {
 

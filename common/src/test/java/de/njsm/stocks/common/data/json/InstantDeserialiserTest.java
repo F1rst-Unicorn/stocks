@@ -3,8 +3,8 @@ package de.njsm.stocks.common.data.json;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.Instant;
-import java.time.format.DateTimeParseException;
+import org.threeten.bp.Instant;
+import org.threeten.bp.format.DateTimeParseException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

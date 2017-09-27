@@ -9,7 +9,7 @@ import de.njsm.stocks.common.data.json.InstantSerialiser;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.time.Instant;
+import org.threeten.bp.Instant;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.DEFAULT,
