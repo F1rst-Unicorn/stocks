@@ -4,6 +4,7 @@ import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import de.njsm.stocks.client.service.TimeProvider;
 
+import java.time.LocalDate;
 import java.time.temporal.ValueRange;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -62,7 +63,7 @@ public class Command {
         }
     }
 
-    public Date getParamDate(char c, TimeProvider timeProvider) throws ParseException {
+    public LocalDate getParamDate(char c, TimeProvider timeProvider) throws ParseException {
         String value = arguments.get(c);
         return InputReader.parseDate(value, timeProvider);
     }

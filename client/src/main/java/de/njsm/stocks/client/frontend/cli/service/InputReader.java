@@ -10,8 +10,12 @@ import jline.console.history.History;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class InputReader {
 
@@ -106,9 +110,9 @@ public class InputReader {
         return result;
     }
 
-    public Date nextDate(String prompt) {
+    public LocalDate nextDate(String prompt) {
         String input = next(prompt);
-        Date result;
+        LocalDate result;
 
         do {
             try {
@@ -132,26 +136,26 @@ public class InputReader {
         return noDollar == -1 && noEqual == -1;
     }
 
-    public Date parseDate(String input) throws ParseException {
+    public LocalDate parseDate(String input) throws ParseException {
         return parseDate(input, timeProvider);
     }
 
-    public static Date parseDate(String input, TimeProvider timeProvider) throws ParseException {
-        Date result;
-        SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yyyy");
+    public static LocalDate parseDate(String input, TimeProvider timeProvider) throws ParseException {
+        LocalDate result;
+        DateTimeFormatter parser = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         if (input.length() > 0 && input.charAt(0) == '+') {
             result = parseRelative(input, timeProvider);
         } else {
             try {
-                result = parser.parse(input);
-            } catch (java.text.ParseException e) {
+                result = LocalDate.from(parser.parse(input));
+            } catch (DateTimeParseException e) {
                 throw new ParseException("Could not parse date", e);
             }
         }
         return result;
     }
 
-    protected static Date parseRelative(String input, TimeProvider timeProvider) throws ParseException {
+    protected static LocalDate parseRelative(String input, TimeProvider timeProvider) throws ParseException {
         char unit = input.charAt(input.length()-1);
         int amount;
         try {
@@ -161,17 +165,18 @@ public class InputReader {
 
         }
 
-        Date result;
+        LocalDate today = Instant.ofEpochMilli(timeProvider.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        Period periodFromNow;
         switch (unit) {
             case 'd':
-                result = new Date(timeProvider.getTime() + amount * 1000L * 60L * 60L * 24L);
+                periodFromNow = Period.ofDays(amount);
                 break;
             case 'm':
-                result = new Date(timeProvider.getTime() + amount * 1000L * 60L * 60L * 24L * 30L);
+                periodFromNow = Period.ofDays(amount * 30);
                 break;
             default:
                 throw new ParseException(input);
         }
-        return result;
+        return today.plus(periodFromNow);
     }
 }

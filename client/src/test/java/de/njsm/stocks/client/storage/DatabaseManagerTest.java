@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,7 +63,7 @@ public class DatabaseManagerTest {
     public void writingUpdatesWorks() throws DatabaseException {
         Update inputItem = new Update();
         inputItem.table = "Location";
-        inputItem.lastUpdate = new Date();
+        inputItem.lastUpdate = Instant.now();
         List<Update> input = new LinkedList<>();
         input.add(inputItem);
 
@@ -253,8 +254,8 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingFoodItems() throws Exception {
         List<FoodItem> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new FoodItem(8, Utils.getDate("08.01.1970 00:00:00"), 7, 3, 3, 3));
-        expectedOutput.add(new FoodItem(9, Utils.getDate("09.01.1970 00:00:00"), 7, 4, 3, 3));
+        expectedOutput.add(new FoodItem(8, Instant.parse("1970-01-08T00:00:00.00Z"), 7, 3, 3, 3));
+        expectedOutput.add(new FoodItem(9, Instant.parse("1970-01-09T00:00:00.00Z"), 7, 4, 3, 3));
 
         List<FoodItem> output = uut.getItems(7);
 
@@ -264,8 +265,8 @@ public class DatabaseManagerTest {
     @Test
     public void testWritingFoodItems() throws Exception {
         List<FoodItem> input = new LinkedList<>();
-        input.add(new FoodItem(8, new Date(0L), 7, 3, 3, 3));
-        input.add(new FoodItem(9, new Date(0L), 7, 4, 3, 3));
+        input.add(new FoodItem(8, Instant.ofEpochMilli(0), 7, 3, 3, 3));
+        input.add(new FoodItem(9, Instant.ofEpochMilli(0), 7, 4, 3, 3));
 
         uut.writeFoodItems(input);
 
@@ -275,8 +276,8 @@ public class DatabaseManagerTest {
 
     @Test
     public void testGettingNextItem() throws Exception {
-        FoodItem item1 = new FoodItem(3, Utils.getDate("03.01.1970 00:00:00"), 3, 2, 1, 1);
-        FoodItem item2 = new FoodItem(1, Utils.getDate("01.01.1970 00:00:00"), 1, 1, 2, 2);
+        FoodItem item1 = new FoodItem(3, Instant.parse("1970-01-03T00:00:00.00Z"), 3, 2, 1, 1);
+        FoodItem item2 = new FoodItem(1, Instant.parse("1970-01-01T00:00:00.00Z"), 1, 1, 2, 2);
         assertEquals(item1, uut.getNextItem(3));
         assertEquals(item2, uut.getNextItem(1));
     }
@@ -315,7 +316,7 @@ public class DatabaseManagerTest {
     public void testGettingFoodOfLocation() throws Exception {
         List<FoodView> expectedOutput = new LinkedList<>();
         FoodView item = new FoodView(new Food(7, "Apple juice"));
-        item.add(Utils.getDate("09.01.1970 00:00:00"));
+        item.add(Instant.parse("1970-01-09T00:00:00.00Z"));
         expectedOutput.add(item);
 
         List<FoodView> output = uut.getItems("", "Basement");
@@ -327,7 +328,7 @@ public class DatabaseManagerTest {
     public void testGettingFoodOfLocationAndUser() throws Exception {
         List<FoodView> expectedOutput = new LinkedList<>();
         FoodView item = new FoodView(new Food(7, "Apple juice"));
-        item.add(Utils.getDate("09.01.1970 00:00:00"));
+        item.add(Instant.parse("1970-01-09T00:00:00.00Z"));
         expectedOutput.add(item);
 
         List<FoodView> output = uut.getItems("Juliette", "Basement");

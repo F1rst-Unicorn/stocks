@@ -6,8 +6,8 @@ import de.njsm.stocks.common.data.Update;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -39,7 +39,7 @@ public class RefresherTest {
 
     @Test
     public void noUpdateOnEqualDate() throws Exception {
-        Update u = new Update("foo", new Date());
+        Update u = new Update("foo", Instant.now());
         List<Update> updateList = Collections.singletonList(u);
         when(serverManager.getUpdates()).thenReturn(new Update[] {u});
         when(dbManager.getUpdates()).thenReturn(updateList);
@@ -55,7 +55,7 @@ public class RefresherTest {
 
     @Test
     public void ignoreUnknownTables() throws Exception {
-        Update u = new Update("foo", new Date());
+        Update u = new Update("foo", Instant.now());
         when(serverManager.getUpdates()).thenReturn(new Update[] {u});
         when(dbManager.getUpdates()).thenReturn(Collections.emptyList());
 

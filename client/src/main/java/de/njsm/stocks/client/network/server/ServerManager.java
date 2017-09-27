@@ -15,14 +15,8 @@ public class ServerManager {
 
     private ServerClient backend;
 
-    private DataConverter converter;
-
     public ServerManager(ServerClient backend) {
         this.backend = backend;
-    }
-
-    public void setConverter(DataConverter converter) {
-        this.converter = converter;
     }
 
     public Update[] getUpdates() throws NetworkException {
@@ -32,9 +26,7 @@ public class ServerManager {
             Response<Update[]> r = call.execute();
 
             if (r.isSuccess()) {
-                Update[] result = r.body();
-                converter.convert(result);
-                return result;
+                return r.body();
             } else {
                 throw error(r, "Error getting updates");
             }
@@ -50,9 +42,7 @@ public class ServerManager {
             Response<User[]> r = call.execute();
 
             if (r.isSuccess()) {
-                User[] result = r.body();
-                converter.convert(result);
-                return result;
+                return r.body();
             } else {
                 throw error(r, "Error getting users");
             }
@@ -96,9 +86,7 @@ public class ServerManager {
             Response<UserDevice[]> r = u.execute();
 
             if (r.isSuccess()) {
-                UserDevice[] result = r.body();
-                converter.convert(result);
-                return result;
+                return r.body();
             } else {
                 throw error(r, "Error getting devices");
             }
@@ -116,9 +104,7 @@ public class ServerManager {
             if (!r.isSuccess()) {
                 throw error(r, "Error adding device");
             } else {
-                Ticket result = r.body();
-                converter.convert(result);
-                return result;
+                return r.body();
             }
         } catch (IOException e) {
             throw new NetworkException("Error connecting to the server", e);
@@ -146,9 +132,7 @@ public class ServerManager {
             Response<Location[]> r = u.execute();
 
             if (r.isSuccess()) {
-                Location[] result = r.body();
-                converter.convert(result);
-                return result;
+                return r.body();
             } else {
                 throw error(r, "Error getting locations");
             }
@@ -206,9 +190,7 @@ public class ServerManager {
             Response<Food[]> r = u.execute();
 
             if (r.isSuccess()) {
-                Food[] result = r.body();
-                converter.convert(result);
-                return result;
+                return r.body();
             } else {
                 throw error(r, "Error getting food");
             }
@@ -266,9 +248,7 @@ public class ServerManager {
             Response<FoodItem[]> r = u.execute();
 
             if (r.isSuccess()) {
-                FoodItem[] result = r.body();
-                converter.convert(result);
-                return result;
+                return r.body();
             } else {
                 throw error(r, "Error getting food items");
             }

@@ -45,7 +45,7 @@ public class Refresher {
         for (Update u : serverUpdates) {
             Update localUpdate = getLocalUpdate(localUpdates, u.table);
             if (localUpdate != null &&
-                    u.lastUpdate.after(localUpdate.lastUpdate)) {
+                    u.lastUpdate.isAfter(localUpdate.lastUpdate)) {
                 refreshTable(u.table);
                 upToDate = false;
             }

@@ -12,9 +12,10 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 public class ScreenWriterTest {
 
-    private static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.systemDefault());
 
     private ScreenWriter uut;
 
@@ -134,7 +135,7 @@ public class ScreenWriterTest {
     public void printingItemWorks() throws Exception {
         FoodItem item = new FoodItem();
         item.id = 4;
-        item.eatByDate = new Date(0L);
+        item.eatByDate = Instant.EPOCH;
         String expectedResult = "\t\t" + item.id + ": " + format.format(item.eatByDate);
 
         uut.printItem(item);
@@ -158,10 +159,10 @@ public class ScreenWriterTest {
         List<FoodItem> list = new LinkedList<>();
         FoodItem item1 = new FoodItem();
         item1.id = 3;
-        item1.eatByDate = new Date();
+        item1.eatByDate = Instant.now();
         FoodItem item2 = new FoodItem();
         item2.id = 3;
-        item2.eatByDate = new Date();
+        item2.eatByDate = Instant.now();
         list.add(item1);
         list.add(item2);
         String headline = "Some headline";

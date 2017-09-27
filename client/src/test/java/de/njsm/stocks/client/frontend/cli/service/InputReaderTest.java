@@ -10,15 +10,13 @@ import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.Period;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class InputReaderTest {
-
-    private static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     private InputReader uut;
 
@@ -190,11 +188,11 @@ public class InputReaderTest {
         String dateInput = "11.09.1991";
         when(inMock.readLine()).thenReturn(dateInput);
 
-        Date output = uut.nextDate(prompt);
+        LocalDate output = uut.nextDate(prompt);
 
         verify(inMock).setPrompt(prompt);
         verify(inMock).readLine();
-        assertEquals(dateInput, format.format(output));
+        assertEquals(LocalDate.parse("1991-09-11"), output);
     }
 
     @Test
@@ -205,11 +203,11 @@ public class InputReaderTest {
         String errorMessage = "Invalid date. Try again: ";
         when(inMock.readLine()).thenReturn(invalidDate, invalidDate, dateInput);
 
-        Date output = uut.nextDate(prompt);
+        LocalDate output = uut.nextDate(prompt);
 
         verify(inMock, times(3)).setPrompt(captor.capture());
         verify(inMock, times(3)).readLine();
-        assertEquals(dateInput, format.format(output));
+        assertEquals(LocalDate.parse("1991-09-11"), output);
         assertEquals(prompt, captor.getAllValues().get(0));
         assertEquals(errorMessage, captor.getAllValues().get(1));
         assertEquals(errorMessage, captor.getAllValues().get(2));
@@ -248,33 +246,30 @@ public class InputReaderTest {
     @Test
     public void parsingValidDateWorks() throws Exception {
         String date = "11.09.1991";
-        Date expectedOutput = format.parse(date);
 
-        Date output = uut.parseDate(date);
+        LocalDate output = uut.parseDate(date);
 
-        assertEquals(expectedOutput, output);
+        assertEquals(LocalDate.parse("1991-09-11"), output);
     }
 
     @Test
     public void parsingRelativeDayWorks() throws Exception {
         int dayOffset = 5;
         String date = "+" + dayOffset + "d";
-        Date expectedOutput = new Date(dayOffset * 1000L * 60L * 60L * 24L);
 
-        Date output = uut.parseDate(date);
+        LocalDate output = uut.parseDate(date);
 
-        assertEquals(expectedOutput, output);
+        assertEquals(LocalDate.ofEpochDay(0).plus(Period.ofDays(5)), output);
     }
 
     @Test
     public void parsingRelativeMonthWorks() throws Exception {
         int monthOffset = 5;
         String date = "+" + monthOffset + "m";
-        Date expectedOutput = new Date(monthOffset * 1000L * 60L * 60L * 24L * 30L);
 
-        Date output = uut.parseDate(date);
+        LocalDate output = uut.parseDate(date);
 
-        assertEquals(expectedOutput, output);
+        assertEquals(LocalDate.ofEpochDay(0).plus(Period.ofDays(5 * 30)), output);
     }
 
     @Test

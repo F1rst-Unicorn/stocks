@@ -12,9 +12,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collections;
-import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,8 +32,6 @@ public class InputCollectorTest {
     private DatabaseManager dbManager;
 
     private TimeProvider timeProvider;
-
-    private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     @Before
     public void setup() throws Exception {
@@ -206,7 +205,7 @@ public class InputCollectorTest {
         Location location = new Location(5, "Fridge");
         setupMockDatabase(food, location);
         String inputDate = "01.01.2015";
-        Date date = format.parse(inputDate);
+        LocalDate date = LocalDate.parse("2015-01-01");
         Command c = Command.createCommand(new String[] {
                 "--f",
                 food.name,
@@ -220,7 +219,7 @@ public class InputCollectorTest {
 
         assertEquals(food.id, output.ofType);
         assertEquals(location.id, output.storedIn);
-        assertEquals(date, output.eatByDate);
+        assertEquals(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), output.eatByDate);
         assertEquals(0, output.buys);
         assertEquals(0, output.registers);
         verify(dbManager).getFood(food.name);
@@ -233,7 +232,7 @@ public class InputCollectorTest {
         Location location = new Location(5, "Fridge");
         setupMockDatabase(food, location);
         String invalidDate = "fdsa";
-        Date date = format.parse("01.01.2015");
+        LocalDate date = LocalDate.parse("2015-01-01");
         String datePrompt = "Eat before:  ";
         Command c = Command.createCommand(new String[] {
                 "--f",
@@ -249,7 +248,7 @@ public class InputCollectorTest {
 
         assertEquals(food.id, output.ofType);
         assertEquals(location.id, output.storedIn);
-        assertEquals(date, output.eatByDate);
+        assertEquals(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), output.eatByDate);
         assertEquals(0, output.buys);
         assertEquals(0, output.registers);
         verify(dbManager).getFood(food.name);
@@ -261,7 +260,7 @@ public class InputCollectorTest {
     public void createItemInteractively() throws Exception {
         Food food = new Food(4, "Beer");
         Location location = new Location(5, "Fridge");
-        Date date = format.parse("01.01.2015");
+        LocalDate date = LocalDate.parse("2015-01-01");
         setupMockDatabase(food, location);
         String foodPrompt = "What to add?  ";
         String locationPrompt = "Choose one or type -1 for new location";
@@ -275,7 +274,7 @@ public class InputCollectorTest {
 
         assertEquals(food.id, output.ofType);
         assertEquals(location.id, output.storedIn);
-        assertEquals(date, output.eatByDate);
+        assertEquals(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), output.eatByDate);
         assertEquals(0, output.buys);
         assertEquals(0, output.registers);
         verify(dbManager).getFood(food.name);
@@ -291,7 +290,7 @@ public class InputCollectorTest {
     public void createItemInvalidLocationSelection() throws Exception {
         Food food = new Food(4, "Beer");
         Location location = new Location(5, "Fridge");
-        Date date = format.parse("01.01.2015");
+        LocalDate date = LocalDate.parse("2015-01-01");
         setupMockDatabase(food, location);
         String foodPrompt = "What to add?  ";
         String locationPrompt = "Choose one or type -1 for new location";
@@ -307,7 +306,7 @@ public class InputCollectorTest {
 
         assertEquals(food.id, output.ofType);
         assertEquals(location.id, output.storedIn);
-        assertEquals(date, output.eatByDate);
+        assertEquals(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), output.eatByDate);
         assertEquals(0, output.buys);
         assertEquals(0, output.registers);
         verify(dbManager).getFood(food.name);
@@ -325,7 +324,7 @@ public class InputCollectorTest {
     public void createInteractivelyWithoutSuggestion() throws Exception {
         Food food = new Food(4, "Beer");
         Location location = new Location(5, "Fridge");
-        Date date = format.parse("01.01.2015");
+        LocalDate date = LocalDate.parse("2015-01-01");
         setupMockDatabase(food, location);
         String foodPrompt = "What to add?  ";
         String locationPrompt = "Where is it stored?  ";
@@ -340,7 +339,7 @@ public class InputCollectorTest {
 
         assertEquals(food.id, output.ofType);
         assertEquals(location.id, output.storedIn);
-        assertEquals(date, output.eatByDate);
+        assertEquals(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), output.eatByDate);
         assertEquals(0, output.buys);
         assertEquals(0, output.registers);
         verify(dbManager).getFood(food.name);
@@ -354,7 +353,7 @@ public class InputCollectorTest {
     @Test
     public void getNextItemNonInteractively() throws Exception {
         Food input = new Food(2, "Beer");
-        FoodItem expected = new FoodItem(2, new Date(), input.id, 0, 0, 0);
+        FoodItem expected = new FoodItem(2, Instant.now(), input.id, 0, 0, 0);
         Command command = Command.createCommand(input.name);
         setupMockDatabase(input, new Location());
         when(dbManager.getNextItem(input.id)).thenReturn(expected);
@@ -369,7 +368,7 @@ public class InputCollectorTest {
     @Test
     public void getNextItemInteractively() throws Exception {
         Food input = new Food(2, "Beer");
-        FoodItem expected = new FoodItem(2, new Date(), input.id, 0, 0, 0);
+        FoodItem expected = new FoodItem(2, Instant.now(), input.id, 0, 0, 0);
         Command command = Command.createCommand(new String[0]);
         String prompt = "What to eat?  ";
         setupMockDatabase(input, new Location());
@@ -578,7 +577,7 @@ public class InputCollectorTest {
     @Test
     public void determineItemNonInteractively() throws Exception {
         Food expectedType = new Food(2, "Beer");
-        FoodItem expected = new FoodItem(2, new Date(), expectedType.id, 2, 3, 4);
+        FoodItem expected = new FoodItem(2, Instant.now(), expectedType.id, 2, 3, 4);
         Command command = Command.createCommand("--f " + expectedType.name);
         setupMockDatabase(expectedType, new Location());
         when(dbManager.getItems(expectedType.id)).thenReturn(Collections.singletonList(expected));
@@ -593,7 +592,7 @@ public class InputCollectorTest {
     @Test
     public void determineItemInteractively() throws Exception {
         Food expectedType = new Food(2, "Beer");
-        FoodItem expected = new FoodItem(2, new Date(), expectedType.id, 2, 3, 4);
+        FoodItem expected = new FoodItem(2, Instant.now(), expectedType.id, 2, 3, 4);
         Command command = Command.createCommand(new String[0]);
         String prompt = "What to move? ";
         setupMockDatabase(expectedType, new Location());

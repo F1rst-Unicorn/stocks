@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -48,8 +48,8 @@ public class RefresherParameterisedTest {
 
     @Test
     public void refreshingTableWorks() throws Exception {
-        Update localUpdate = new Update(tableName, new Date(0L));
-        Update serverUpdate = new Update(tableName, new Date(1L));
+        Update localUpdate = new Update(tableName, Instant.ofEpochMilli(0L));
+        Update serverUpdate = new Update(tableName, Instant.ofEpochMilli(1L));
         List<Update> list = Collections.singletonList(localUpdate);
         Update[] array = new Update[] {serverUpdate};
         when(serverManager.getUpdates()).thenReturn(array);
@@ -91,8 +91,8 @@ public class RefresherParameterisedTest {
 
     @Test
     public void noRefreshOnSameDate() throws Exception {
-        Update localUpdate = new Update(tableName, new Date(1L));
-        Update serverUpdate = new Update(tableName, new Date(1L));
+        Update localUpdate = new Update(tableName, Instant.ofEpochMilli(1L));
+        Update serverUpdate = new Update(tableName, Instant.ofEpochMilli(1L));
         List<Update> list = Collections.singletonList(localUpdate);
         Update[] array = new Update[] {serverUpdate};
         when(serverManager.getUpdates()).thenReturn(array);

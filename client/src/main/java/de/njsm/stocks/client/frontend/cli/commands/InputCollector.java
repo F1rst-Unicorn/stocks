@@ -12,7 +12,9 @@ import de.njsm.stocks.client.storage.DatabaseManager;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 public class InputCollector extends Selector {
@@ -34,7 +36,7 @@ public class InputCollector extends Selector {
         FoodItem result = new FoodItem();
         result.ofType = determineFoodFromParameter(c).id;
         result.storedIn = determineLocationFromParameter(c, result.ofType).id;
-        result.eatByDate = resolveDate(c);
+        result.eatByDate = Instant.from(resolveDate(c).atStartOfDay(ZoneId.systemDefault()));
         return result;
     }
 
@@ -148,7 +150,7 @@ public class InputCollector extends Selector {
         return result;
     }
 
-    private Date resolveDate(Command command) {
+    private LocalDate resolveDate(Command command) {
         try {
             return resolveDateInternally(command);
         } catch (ParseException e) {
@@ -156,7 +158,7 @@ public class InputCollector extends Selector {
         }
     }
 
-    private Date resolveDateInternally(Command command) throws ParseException {
+    private LocalDate resolveDateInternally(Command command) throws ParseException {
         if (command.hasArg('d')) {
             return command.getParamDate('d', timeProvider);
         } else {
@@ -164,7 +166,7 @@ public class InputCollector extends Selector {
         }
     }
 
-    private Date askForDate() {
+    private LocalDate askForDate() {
         return reader.nextDate("Eat before:  ");
     }
 

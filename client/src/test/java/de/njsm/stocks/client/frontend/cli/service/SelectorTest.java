@@ -10,8 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -118,7 +118,7 @@ public class SelectorTest {
 
     @Test
     public void selectingSingleFoodItemListGivesItem() throws Exception {
-        FoodItem expectedOutput = new FoodItem(3, new Date(), 1, 2, 3, 4);
+        FoodItem expectedOutput = new FoodItem(3, Instant.now(), 1, 2, 3, 4);
         List<FoodItem> list = Collections.singletonList(expectedOutput);
 
         FoodItem output = uut.selectItem(list);

@@ -11,9 +11,12 @@ import de.njsm.stocks.common.data.view.FoodView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ValueRange;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -34,7 +37,7 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
 
     private TimeProvider timeProvider;
 
-    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.systemDefault());
 
     public FoodListCommandHandler(ScreenWriter writer,
                                   DatabaseManager dbManager,
@@ -164,9 +167,10 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
 
     private StringBuilder renderFoodList(List<FoodView> food) {
         StringBuilder outBuf = new StringBuilder();
-        Date listUntil = new Date(timeProvider.getTime() + daysLeft * 1000L * 60L * 60L * 24L);
+        LocalDate today = Instant.ofEpochMilli(timeProvider.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate listUntil = today.plus(Period.ofDays(daysLeft));
         for (FoodView f : food) {
-            f.getItems().removeIf((item) -> item.after(listUntil));
+            f.getItems().removeIf((item) -> item.atZone(ZoneId.systemDefault()).toLocalDate().isAfter(listUntil));
 
             if ((!existing || (existing && !f.getItems().isEmpty())) &&
                     range.isValidValue(f.getItems().size()) &&
@@ -190,7 +194,7 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
     private void renderItems(StringBuilder outBuf, FoodView f) {
         int printedItems = 0;
         if (limit > 0) {
-            for (Date date : f.getItems()) {
+            for (Instant date : f.getItems()) {
                 outBuf.append("\t\t");
                 outBuf.append(FORMAT.format(date));
                 outBuf.append("\n");
