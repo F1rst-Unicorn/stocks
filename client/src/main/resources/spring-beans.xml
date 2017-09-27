@@ -13,8 +13,16 @@
 
     <bean id="timeProvider" class="de.njsm.stocks.client.service.TimeProviderImpl" />
 
-    <bean id="dayDateFormat" class="java.text.SimpleDateFormat">
+    <bean id="dayDateFactory" class="java.time.format.DateTimeFormatter" factory-method="ofPattern">
         <constructor-arg index="0" type="java.lang.String" value="dd.MM.yyyy" />
+    </bean>
+
+    <bean name="utcTimezone" class="java.time.ZoneId" factory-method="of" >
+        <constructor-arg index="0" type="java.lang.String" value="UTC" />
+    </bean>
+
+    <bean id="dayDateFormat" factory-bean="dayDateFactory" factory-method="withZone">
+        <constructor-arg index="0" ref="utcTimezone" />
     </bean>
 
     <bean id="stringBuilder" class="de.njsm.stocks.common.data.visitor.ToStringVisitor" >
@@ -83,19 +91,14 @@
         <constructor-arg index="1" ref="stringBuilder" />
     </bean>
 
-    <bean id="dateConverter" class="de.njsm.stocks.common.data.visitor.DateToLocaltimeConverter" />
-
     <bean id="serverDataConverter" class="de.njsm.stocks.client.network.server.DataConverter" >
         <constructor-arg>
             <list>
-                <ref bean="dateConverter" />
             </list>
         </constructor-arg>
     </bean>
 
-    <bean id="serverManager" factory-bean="configuration" factory-method="getServerManager" >
-        <property name="converter" ref="serverDataConverter" />
-    </bean>
+    <bean id="serverManager" factory-bean="configuration" factory-method="getServerManager" />
 
     <bean id="refresher" class="de.njsm.stocks.client.service.Refresher" >
         <constructor-arg index="0" ref="serverManager" />

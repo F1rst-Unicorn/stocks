@@ -62,7 +62,7 @@ DROP TABLE IF EXISTS Updates;
 CREATE TABLE Updates (
     `ID` int UNSIGNED NOT NULL,
     `table_name` varchar(200) NOT NULL,
-    `last_update` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00.000',
+    `last_update` DATETIME NOT NULL DEFAULT 0,
     PRIMARY KEY (`ID`)
 );
 

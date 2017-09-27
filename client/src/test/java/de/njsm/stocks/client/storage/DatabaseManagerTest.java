@@ -1,7 +1,6 @@
 package de.njsm.stocks.client.storage;
 
 import de.njsm.stocks.client.MockData;
-import de.njsm.stocks.client.Utils;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.init.upgrade.Version;
@@ -14,7 +13,6 @@ import org.mockito.Mockito;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,7 +48,7 @@ public class DatabaseManagerTest {
 
         Assert.assertEquals(5, updates.size());
         for (Update u : updates) {
-            Assert.assertEquals("Wrong for " + u.table, Utils.getDate("01.01.1970 00:00:00"), u.lastUpdate);
+            Assert.assertEquals("Wrong for " + u.table, Instant.ofEpochMilli(0), u.lastUpdate);
         }
         assertTrue(updates.stream().anyMatch(u -> u.table.equals("Location")));
         assertTrue(updates.stream().anyMatch(u -> u.table.equals("User")));
@@ -84,7 +82,7 @@ public class DatabaseManagerTest {
 
         List<Update> updates = uut.getUpdates();
         for (Update u : updates) {
-            assertEquals(new Date(0L), u.lastUpdate);
+            assertEquals(Instant.ofEpochMilli(0), u.lastUpdate);
         }
     }
 
