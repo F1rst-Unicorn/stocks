@@ -44,7 +44,7 @@ DROP TABLE IF EXISTS Food_item;
 
 CREATE TABLE Food_item (
     `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-    `eat_by` DATETIME NOT NULL,
+    `eat_by` DATETIME(3) NOT NULL,
     `of_type` int UNSIGNED NOT NULL,
     `stored_in` int UNSIGNED NOT NULL,
     `registers` int UNSIGNED NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE Ticket (
     `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     `ticket` varchar(64) NOT NULL,
     `belongs_device` int UNSIGNED NOT NULL,
-    `created_on` DATETIME NOT NULL DEFAULT '2100-01-01 00:00:00',
+    `created_on` DATETIME(3) NOT NULL DEFAULT '2100-01-01 00:00:00.000',
     PRIMARY KEY (`ID`),
     FOREIGN KEY (belongs_device) REFERENCES User_device(`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
@@ -75,18 +75,18 @@ DROP TABLE IF EXISTS Updates;
 CREATE TABLE Updates (
     `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
     `table_name` varchar(200) NOT NULL,
-    `last_update` DATETIME NOT NULL,
+    `last_update` DATETIME(3) NOT NULL,
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO Updates (`table_name`, `last_update`)
 VALUES 
-    ('Location', NOW(3)),
-    ('User', NOW(3)),
-    ('User_device', NOW(3)),
-    ('Food', NOW(3)),
-    ('Food_item', NOW(3)),
-    ('EAN_number', NOW(3));
+    ('Location', UTC_TIMESTAMP(3)),
+    ('User', UTC_TIMESTAMP(3)),
+    ('User_device', UTC_TIMESTAMP(3)),
+    ('Food', UTC_TIMESTAMP(3)),
+    ('Food_item', UTC_TIMESTAMP(3)),
+    ('EAN_number', UTC_TIMESTAMP(3));
     
 DROP TABLE IF EXISTS EAN_number;
 
@@ -104,20 +104,20 @@ delimiter |
 CREATE TRIGGER Location_insert AFTER INSERT ON `Location` FOR EACH ROW
 BEGIN
     UPDATE Updates 
-    SET last_update=NOW(3) 
+    SET last_update=UTC_TIMESTAMP(3) 
     WHERE `table_name`='Location';
 END;
 
 CREATE TRIGGER Location_update
 AFTER UPDATE ON Location FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Location';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Location';
 END;
 
 CREATE TRIGGER Location_delete
 AFTER DELETE ON Location FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Location';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Location';
 END;
 
 
@@ -125,19 +125,19 @@ END;
 CREATE TRIGGER Food_insert
 AFTER INSERT ON Food FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food';
 END;
 
 CREATE TRIGGER Food_update
 AFTER UPDATE ON Food FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food';
 END;
 
 CREATE TRIGGER Food_delete
 AFTER DELETE ON Food FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food';
 END;
 
 
@@ -145,19 +145,19 @@ END;
 CREATE TRIGGER User_insert
 AFTER INSERT ON `User` FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User';
 END;
 
 CREATE TRIGGER User_update
 AFTER UPDATE ON `User` FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User';
 END;
 
 CREATE TRIGGER User_delete
 AFTER DELETE ON `User` FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User';
 END;
 
 
@@ -165,19 +165,19 @@ END;
 CREATE TRIGGER User_device_insert
 AFTER INSERT ON User_device FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User_device';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User_device';
 END;
 
 CREATE TRIGGER User_device_update
 AFTER UPDATE ON User_device FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User_device';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User_device';
 END;
 
 CREATE TRIGGER User_device_delete
 AFTER DELETE ON User_device FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='User_device';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User_device';
 END;
 
 
@@ -185,19 +185,19 @@ END;
 CREATE TRIGGER Food_item_insert
 AFTER INSERT ON Food_item FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food_item';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food_item';
 END;
 
 CREATE TRIGGER Food_item_update
 AFTER UPDATE ON Food_item FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food_item';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food_item';
 END;
 
 CREATE TRIGGER Food_item_delete
 AFTER DELETE ON Food_item FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='Food_item';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food_item';
 END;
 
 
@@ -205,19 +205,19 @@ END;
 CREATE TRIGGER EAN_number_insert
 AFTER INSERT ON EAN_number FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='EAN_number';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='EAN_number';
 END;
 
 CREATE TRIGGER EAN_number_update
 AFTER UPDATE ON EAN_number FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='EAN_number';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='EAN_number';
 END;
 
 CREATE TRIGGER EAN_number_delete
 AFTER DELETE ON EAN_number FOR EACH ROW
 BEGIN
-    UPDATE Updates SET last_update=NOW(3) WHERE `table_name`='EAN_number';
+    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='EAN_number';
 END;
 
 |
