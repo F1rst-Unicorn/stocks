@@ -5,30 +5,32 @@ import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.assertEquals;
 
 public class ToStringVisitorTest {
 
-    private SimpleDateFormat format;
+    private DateTimeFormatter format;
 
     private ToStringVisitor uut;
 
     @Before
     public void setup() throws Exception {
-        format = new SimpleDateFormat("dd.MM.yyyy");
+        format = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+                .withZone(ZoneId.of("UTC"));
         uut = new ToStringVisitor(format);
     }
 
     @Test
     public void getFoodItemString() throws Exception {
-        String date = "01.01.2015";
-        FoodItem item = new FoodItem(1, format.parse(date), 2, 3, 4, 5);
+        FoodItem item = new FoodItem(1, Instant.parse("2015-01-01T00:00:00Z"), 2, 3, 4, 5);
 
         String output = uut.visit(item, null);
 
-        assertEquals("\t\t" + item.id + ": " + date, output);
+        assertEquals("\t\t" + item.id + ": 01.01.2015", output);
     }
 
     @Test
@@ -69,12 +71,11 @@ public class ToStringVisitorTest {
 
     @Test
     public void getUpdateString() throws Exception {
-        String date = "01.01.2015";
-        Update input = new Update("Food", format.parse(date));
+        Update input = new Update("Food", Instant.parse("2015-01-01T00:00:00Z"));
 
         String output = uut.visit(input, null);
 
-        assertEquals("\t" + input.table + ": " + date, output);
+        assertEquals("\t" + input.table + ": 01.01.2015", output);
     }
 
     @Test

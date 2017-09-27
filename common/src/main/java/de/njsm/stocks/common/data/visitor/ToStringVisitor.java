@@ -3,13 +3,13 @@ package de.njsm.stocks.common.data.visitor;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 
 public class ToStringVisitor extends StocksDataVisitorImpl<Void, String> {
 
-    private final SimpleDateFormat format;
+    private final DateTimeFormatter format;
 
-    public ToStringVisitor(SimpleDateFormat format) {
+    public ToStringVisitor(DateTimeFormatter format) {
         this.format = format;
     }
 

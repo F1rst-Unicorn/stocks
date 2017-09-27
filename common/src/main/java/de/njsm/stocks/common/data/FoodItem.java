@@ -1,13 +1,16 @@
 package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.common.data.json.InstantDeserialiser;
+import de.njsm.stocks.common.data.json.InstantSerialiser;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.Instant;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.DEFAULT,
@@ -18,7 +21,9 @@ import java.util.Date;
 @XmlRootElement
 public class FoodItem extends Data implements SqlRemovable {
 
-    public Date eatByDate;
+    @JsonSerialize(using = InstantSerialiser.class)
+    @JsonDeserialize(using = InstantDeserialiser.class)
+    public Instant eatByDate;
 
     public int ofType;
 
@@ -28,7 +33,7 @@ public class FoodItem extends Data implements SqlRemovable {
 
     public int buys;
 
-    public FoodItem(int id, Date eatByDate, int ofType, int storedIn, int registers, int buys) {
+    public FoodItem(int id, Instant eatByDate, int ofType, int storedIn, int registers, int buys) {
         this.id = id;
         this.eatByDate = eatByDate;
         this.ofType = ofType;

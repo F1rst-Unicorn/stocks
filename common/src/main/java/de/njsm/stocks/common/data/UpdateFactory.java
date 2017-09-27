@@ -2,7 +2,7 @@ package de.njsm.stocks.common.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.Instant;
 
 public class UpdateFactory extends DataFactory<Update> {
 
@@ -17,7 +17,7 @@ public class UpdateFactory extends DataFactory<Update> {
     public Update createData(ResultSet rs) throws SQLException {
         Update u = new Update();
         u.table = rs.getString("table_name");
-        u.lastUpdate = new Date(rs.getTimestamp("last_update").getTime());
+        u.lastUpdate = Instant.ofEpochMilli(rs.getTimestamp("last_update").getTime());
         return u;
     }
 }

@@ -23,7 +23,7 @@ public class SqlStatementFillerVisitor extends StocksDataVisitorImpl<PreparedSta
     public Void foodItem(FoodItem item, PreparedStatement input) {
         try {
             input.setInt(1, item.id);
-            input.setDate(2, new java.sql.Date(item.eatByDate.getTime()));
+            input.setDate(2, new java.sql.Date(item.eatByDate.toEpochMilli()));
             input.setInt(3, item.ofType);
             input.setInt(4, item.storedIn);
             input.setInt(5, item.registers);
@@ -71,9 +71,21 @@ public class SqlStatementFillerVisitor extends StocksDataVisitorImpl<PreparedSta
     @Override
     public Void update(Update update, PreparedStatement input) {
         try {
-            Timestamp t = new Timestamp(update.lastUpdate.getTime());
+            Timestamp t = new Timestamp(update.lastUpdate.toEpochMilli());
             input.setTimestamp(1, t);
             input.setString(2, update.table);
+        } catch (SQLException e) {
+            throw new VisitorException(e);
+        }
+        return null;
+    }
+
+    @Override
+    public Void eanNumber(EanNumber number, PreparedStatement input) {
+        try {
+            input.setInt(1, number.id);
+            input.setString(2, number.eanCode);
+            input.setInt(3, number.identifiesFood);
         } catch (SQLException e) {
             throw new VisitorException(e);
         }

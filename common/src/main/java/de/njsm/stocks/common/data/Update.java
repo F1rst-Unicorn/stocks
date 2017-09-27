@@ -1,13 +1,15 @@
 package de.njsm.stocks.common.data;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.common.data.json.InstantDeserialiser;
+import de.njsm.stocks.common.data.json.InstantSerialiser;
 import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
+import java.time.Instant;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.DEFAULT,
@@ -20,10 +22,12 @@ import java.util.Date;
 public class Update extends Data {
 
     public String table;
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss")
-    public Date lastUpdate;
 
-    public Update(String table, Date lastUpdate) {
+    @JsonSerialize(using = InstantSerialiser.class)
+    @JsonDeserialize(using = InstantDeserialiser.class)
+    public Instant lastUpdate;
+
+    public Update(String table, Instant lastUpdate) {
         this.table = table;
         this.lastUpdate = lastUpdate;
     }

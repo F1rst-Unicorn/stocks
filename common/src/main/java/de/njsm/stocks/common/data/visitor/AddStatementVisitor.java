@@ -38,4 +38,9 @@ public class AddStatementVisitor extends StocksDataVisitorImpl<Void, String> {
     public String update(Update update, Void input) {
         return "UPDATE Updates SET last_update=? WHERE table_name=?";
     }
+
+    @Override
+    public String eanNumber(EanNumber number, Void input) {
+        return "INSERT INTO EAN_number (`ID`, number, identifies) VALUES (?,?,?)";
+    }
 }
