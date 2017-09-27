@@ -1,10 +1,10 @@
 package de.njsm.stocks.server.internal.db;
 
-import de.njsm.stocks.server.data.*;
+import de.njsm.stocks.common.data.*;
 
 public interface DatabaseHandler {
 
-    void add(SqlAddable d);
+    void add(Data d);
     void rename(SqlRenamable d, String newName);
     void remove(SqlRemovable d);
     Data[] get(DataFactory f);

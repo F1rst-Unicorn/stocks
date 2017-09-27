@@ -1,15 +1,16 @@
 package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.server.data.*;
+import de.njsm.stocks.common.data.Data;
+import de.njsm.stocks.common.data.FoodItem;
+import de.njsm.stocks.common.data.FoodItemFactory;
 import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.MockConfig;
-import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Date;
+import java.time.Instant;
 
 public class FoodItemEndpointTest extends BaseTestEndpoint {
 
@@ -24,7 +25,7 @@ public class FoodItemEndpointTest extends BaseTestEndpoint {
         Mockito.when(c.getDbHandler().get(FoodItemFactory.f))
                 .thenReturn(new Data[0]);
         testItem = new FoodItem(1,
-                new Date(),
+                Instant.now(),
                 2, 3, 4, 5);
 
         uut = new FoodEndpoint(c);

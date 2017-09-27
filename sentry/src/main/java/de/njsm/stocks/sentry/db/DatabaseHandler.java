@@ -1,7 +1,7 @@
 package de.njsm.stocks.sentry.db;
 
+import de.njsm.stocks.common.data.Principals;
 import de.njsm.stocks.sentry.auth.CertificateManager;
-import de.njsm.stocks.sentry.data.Principals;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,8 +1,8 @@
 package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.server.data.Data;
-import de.njsm.stocks.server.data.EanNumber;
-import de.njsm.stocks.server.data.EanNumberFactory;
+import de.njsm.stocks.common.data.Data;
+import de.njsm.stocks.common.data.EanNumber;
+import de.njsm.stocks.common.data.EanNumberFactory;
 import de.njsm.stocks.server.internal.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

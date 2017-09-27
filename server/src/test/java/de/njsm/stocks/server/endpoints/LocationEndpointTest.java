@@ -1,9 +1,10 @@
 package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.server.data.*;
+import de.njsm.stocks.common.data.Data;
+import de.njsm.stocks.common.data.Location;
+import de.njsm.stocks.common.data.LocationFactory;
 import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.MockConfig;
-import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

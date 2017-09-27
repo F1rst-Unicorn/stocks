@@ -1,6 +1,9 @@
 package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.server.data.*;
+import de.njsm.stocks.common.data.Data;
+import de.njsm.stocks.common.data.Ticket;
+import de.njsm.stocks.common.data.UserDevice;
+import de.njsm.stocks.common.data.UserDeviceFactory;
 import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.MockConfig;
 import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;

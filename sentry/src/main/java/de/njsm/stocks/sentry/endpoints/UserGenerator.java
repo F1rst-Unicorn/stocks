@@ -1,15 +1,19 @@
 package de.njsm.stocks.sentry.endpoints;
 
+import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.sentry.auth.CertificateManager;
-import de.njsm.stocks.sentry.data.Ticket;
 import de.njsm.stocks.sentry.db.DatabaseHandler;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 @Path("/uac")
 public class UserGenerator {

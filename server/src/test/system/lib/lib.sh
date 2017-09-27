@@ -115,7 +115,7 @@ checkInitialServer() {
 checkUpdates() {
     NAME="Updates change on table change"
     echo "##teamcity[testStarted name='$NAME']"
-    DATE='[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}'
+    DATE='[0-9]{4}\.[0-9]{2}\.[0-9]{2}-[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}-\+0000'
     curl -sS $CURLARGS -XGET https://$SERVER:10912/update > $CURL_FILE
     check "^\[(\{\"table\":\"[^\"]+\",\"lastUpdate\":\"$DATE\"\},?)+\]$" "$NAME"
     BEFORE=$(cat $CURL_FILE | sed -r \
@@ -301,13 +301,13 @@ checkFoodItems() {
     curl -sS $CURLARGS -XPUT https://$SERVER:10912/food/fooditem \
         --header 'content-type: application/json' \
         --data "{\"id\":0,
-                 \"eatByDate\":\"2017-01-01 00:00:00\",
+                 \"eatByDate\":\"2017.01.01-00:00:00.000-+0000\",
                  \"ofType\":$FOODID,
                  \"storedIn\":$LOCID,
                  \"registers\":1,
                  \"buys\":1}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > $CURL_FILE
-    check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017-01-01\",\"ofType\":$FOODID,\
+    check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017\.01\.01-00:00:00.000-\+0000\",\"ofType\":$FOODID,\
 \"storedIn\":$LOCID,\"registers\":1,\"buys\":1\}\]" "$NAME"
     echo "##teamcity[testFinished name='$NAME']"
     ID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),.*/\1/g')
@@ -323,7 +323,7 @@ checkFoodItems() {
             --header 'content-type: application/json' \
             --data "{\"id\":$ID}"
     curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > $CURL_FILE
-    check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017-01-01\",\"ofType\":$FOODID,\
+    check "^\[\{\"id\":[0-9]+,\"eatByDate\":\"2017\.01\.01-00:00:00.000-\+0000\",\"ofType\":$FOODID,\
 \"storedIn\":$LOCTWOID,\"registers\":1,\"buys\":1\}\]" "$NAME"
     echo "##teamcity[testFinished name='$NAME']"
 

@@ -1,6 +1,6 @@
 package de.njsm.stocks.sentry.auth;
 
-import de.njsm.stocks.sentry.data.Principals;
+import de.njsm.stocks.common.data.Principals;
 import org.junit.Assert;
 import org.junit.Test;
 

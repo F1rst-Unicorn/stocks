@@ -1,19 +1,23 @@
 package de.njsm.stocks.server.internal.db;
 
-import de.njsm.stocks.server.data.*;
-import de.njsm.stocks.server.internal.Config;
+import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.server.internal.MockConfig;
 import de.njsm.stocks.server.internal.auth.MockAuthAdmin;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class SqlDatabaseHandlerTest {
 
@@ -31,6 +35,15 @@ public class SqlDatabaseHandlerTest {
     }
 
     @Test
+    public void timestampsAreReadInUtc() throws Exception {
+        Instant expected = Instant.ofEpochMilli(0);
+
+        Data[] result = uut.get(FoodItemFactory.f);
+
+        assertEquals(expected, ((FoodItem) result[0]).eatByDate);
+    }
+
+    @Test
     public void testAddingUser() throws IOException, SQLException {
         UserFactory factory = new UserFactory();
         User input = new User();
@@ -39,12 +52,10 @@ public class SqlDatabaseHandlerTest {
         boolean[] hits = new boolean[expectedUserCount];
         input.name = "Mike";
 
-
         uut.add(input);
 
-
         output = uut.get(factory);
-        Assert.assertEquals(expectedUserCount, output.length);
+        assertEquals(expectedUserCount, output.length);
         for (Data d : output) {
             if (d instanceof User) {
                 if (((User) d).name.equals("Mike")) {
@@ -78,7 +89,7 @@ public class SqlDatabaseHandlerTest {
 
 
         output = uut.get(factory);
-        Assert.assertEquals(expectedHits, output.length);
+        assertEquals(expectedHits, output.length);
         for (Data d : output) {
             if (d instanceof Food) {
                 if (((Food) d).name.equals("Pepper")) {
@@ -111,7 +122,7 @@ public class SqlDatabaseHandlerTest {
 
 
         output = uut.get(factory);
-        Assert.assertEquals(expectedCount, output.length);
+        assertEquals(expectedCount, output.length);
         for (Data d : output) {
             if (d instanceof Food) {
                 if (((Food) d).name.equals("Beer")) {
@@ -145,7 +156,7 @@ public class SqlDatabaseHandlerTest {
 
 
         output = uut.get(factory);
-        Assert.assertEquals(expectedDevices, output.length);
+        assertEquals(expectedDevices, output.length);
         for (Data d : output) {
             if (d instanceof UserDevice) {
                 if (((UserDevice) d).name.equals("mobile")) {
@@ -171,7 +182,7 @@ public class SqlDatabaseHandlerTest {
         assertArrayTrue(hits);
 
         Ticket[] tickets = getTickets();
-        Assert.assertEquals(2, tickets.length);
+        assertEquals(2, tickets.length);
 
         for (Ticket t : tickets) {
             if (t.deviceId == deviceId) {
@@ -193,7 +204,7 @@ public class SqlDatabaseHandlerTest {
         output = uut.get(factory);
 
 
-        Assert.assertEquals(expectedCount, output.length);
+        assertEquals(expectedCount, output.length);
         for (Data d : output) {
             if (d instanceof Food) {
                 Food f = (Food) d;
@@ -225,7 +236,7 @@ public class SqlDatabaseHandlerTest {
 
 
         output = uut.get(factory);
-        Assert.assertEquals(3, output.length);
+        assertEquals(3, output.length);
         for (Data d : output) {
             if (d instanceof FoodItem) {
                 FoodItem f = (FoodItem) d;
@@ -253,9 +264,9 @@ public class SqlDatabaseHandlerTest {
 
         output = uut.get(factory);
         List<Integer> revokedIds = ca.getRevokedIds();
-        Assert.assertEquals(1, revokedIds.size());
-        Assert.assertEquals(d.id, (int) revokedIds.get(0));
-        Assert.assertEquals(deviceCount, output.length);
+        assertEquals(1, revokedIds.size());
+        assertEquals(d.id, (int) revokedIds.get(0));
+        assertEquals(deviceCount, output.length);
         for (Data data : output) {
             if (data instanceof UserDevice) {
                 UserDevice dev = (UserDevice) data;
@@ -289,14 +300,14 @@ public class SqlDatabaseHandlerTest {
 
         output = uut.get(factory);
         List<Integer> revokedIds = ca.getRevokedIds();
-        Assert.assertEquals(2, revokedIds.size());
+        assertEquals(2, revokedIds.size());
         Assert.assertTrue(revokedIds.contains(1));
         Assert.assertTrue(revokedIds.contains(2));
-        Assert.assertEquals(1, output.length);
-        Assert.assertEquals(2, ((User) output[0]).id);
+        assertEquals(1, output.length);
+        assertEquals(2, ((User) output[0]).id);
 
         output = uut.get(devFactory);
-        Assert.assertEquals(deviceCount, output.length);
+        assertEquals(deviceCount, output.length);
         for (Data d : output) {
             if (d instanceof UserDevice) {
                 UserDevice dev = (UserDevice) d;

@@ -1,6 +1,8 @@
 package de.njsm.stocks.server.internal.db;
 
-import de.njsm.stocks.server.data.*;
+import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.common.data.visitor.AddStatementVisitor;
+import de.njsm.stocks.common.data.visitor.SqlStatementFillerVisitor;
 import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.AuthAdmin;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +16,10 @@ public class SqlDatabaseHandler implements DatabaseHandler{
 
     private static final Logger LOG = LogManager.getLogger(SqlDatabaseHandler.class);
 
+    private AddStatementVisitor addStatementVisitor;
+
+    private SqlStatementFillerVisitor fillerVisitor;
+
     private final String url;
     private final Config c;
     private final String username;
@@ -22,13 +28,15 @@ public class SqlDatabaseHandler implements DatabaseHandler{
     public SqlDatabaseHandler(Config c) {
 
         this.c = c;
+        this.addStatementVisitor = new AddStatementVisitor();
+        this.fillerVisitor = new SqlStatementFillerVisitor();
 
         String address = c.getDbAddress();
         String port = c.getDbPort();
         String name = c.getDbName();
         username = c.getDbUsername();
         password = c.getDbPassword();
-        url = String.format("jdbc:mariadb://%s:%s/%s",
+        url = String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
                 address,
                 port,
                 name);
@@ -41,16 +49,17 @@ public class SqlDatabaseHandler implements DatabaseHandler{
     }
 
     private Connection getConnection() throws SQLException {
-            return DriverManager.getConnection(url, username, password);
+        Connection result = DriverManager.getConnection(url, username, password);
+        return result;
     }
 
     @Override
-    public void add(SqlAddable d) {
+    public void add(Data d) {
         Connection con = null;
         try {
             con = getConnection();
-            PreparedStatement stmt = con.prepareStatement(d.getAddStmt());
-            d.fillAddStmt(stmt);
+            PreparedStatement stmt = con.prepareStatement(addStatementVisitor.visit(d, null));
+            fillerVisitor.visit(d, stmt);
             stmt.execute();
         } catch (SQLException e) {
             LOG.error("Failed to add " + d.toString(), e);
@@ -140,11 +149,11 @@ public class SqlDatabaseHandler implements DatabaseHandler{
 
         try {
             con = getConnection();
-            PreparedStatement sqlAddDevice = con.prepareStatement(d.getAddStmt(), Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement sqlAddDevice = con.prepareStatement(addStatementVisitor.visit(d), Statement.RETURN_GENERATED_KEYS);
             PreparedStatement sqlAddTicket = con.prepareStatement(addTicket);
 
             con.setAutoCommit(false);
-            d.fillAddStmt(sqlAddDevice);
+            fillerVisitor.visit(d, sqlAddDevice);
             sqlAddDevice.execute();
             ResultSet keys = sqlAddDevice.getGeneratedKeys();
             keys.next();

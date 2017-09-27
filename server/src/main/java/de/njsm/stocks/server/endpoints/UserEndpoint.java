@@ -1,8 +1,8 @@
 package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.server.data.Data;
-import de.njsm.stocks.server.data.User;
-import de.njsm.stocks.server.data.UserFactory;
+import de.njsm.stocks.common.data.Data;
+import de.njsm.stocks.common.data.User;
+import de.njsm.stocks.common.data.UserFactory;
 import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.Principals;
