@@ -76,7 +76,9 @@ dependencies {
     compile 'com.journeyapps:zxing-android-integration:2.0.1@aar'
     compile 'de.njsm.stocks:common:1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+    compile ('com.jakewharton.threetenabp:threetenabp:1.0.5') {
+        exclude group: 'org.threeten', module: 'threetenbp'
+    }
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:2.0.2-beta'

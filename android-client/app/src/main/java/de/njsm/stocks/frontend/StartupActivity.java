@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 import de.njsm.stocks.backend.setup.SetupTask;
 import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.frontend.main.MainActivity;
@@ -17,6 +18,7 @@ public class StartupActivity extends AppCompatActivity implements SetupFinishedL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidThreeTen.init(this);
 
         SharedPreferences prefs = getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);
 

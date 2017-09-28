@@ -10,9 +10,8 @@ import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import de.njsm.stocks.R;
 import de.njsm.stocks.backend.util.Config;
-
-import java.text.ParseException;
-import java.util.Date;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeParseException;
 
 public class FoodItemCursorAdapter extends SimpleCursorAdapter {
 
@@ -36,12 +35,12 @@ public class FoodItemCursorAdapter extends SimpleCursorAdapter {
 
         String dateString = cursor.getString(cursor.getColumnIndex("date"));
 
-        Date date;
-        Date now = new Date();
-        Date inFiveDays = new Date(now.getTime() + 1000*60*60*24*5);
+        LocalDate date;
+        LocalDate now = LocalDate.now();
+        LocalDate inFiveDays = now.plusDays(5);
         try {
-            date = Config.DATABASE_DATE_FORMAT.parse(dateString);
-        } catch (ParseException e) {
+            date = LocalDate.from(Config.DATABASE_DATE_FORMAT.parse(dateString));
+        } catch (DateTimeParseException e) {
             date = null;
         }
         assert date != null;
@@ -51,14 +50,14 @@ public class FoodItemCursorAdapter extends SimpleCursorAdapter {
         int red = context.getResources().getColor(android.R.color.holo_red_light);
         int green = context.getResources().getColor(R.color.colorPrimary);
 
-        if (date.before(now)) {
+        if (date.isBefore(now)) {
             d = context.getResources().getDrawable(R.drawable.ic_error_black_24dp);
             assert d != null;
             d.setColorFilter(new PorterDuffColorFilter(
                     red,
                     PorterDuff.Mode.SRC_ATOP));
 
-        } else if (date.after(inFiveDays)) {
+        } else if (date.isAfter(inFiveDays)) {
             d = context.getResources().getDrawable(R.drawable.ic_check_black_24dp);
             assert d != null;
             d.setColorFilter(new PorterDuffColorFilter(

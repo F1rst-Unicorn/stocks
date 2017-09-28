@@ -15,9 +15,8 @@ import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.common.data.FoodItem;
-
-import java.util.Calendar;
-import java.util.Date;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
 
 public class AddFoodItemActivity extends AppCompatActivity {
 
@@ -52,7 +51,7 @@ public class AddFoodItemActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         picker = (DatePicker) findViewById(R.id.activity_add_food_item_date);
-        picker.setMinDate((new Date()).getTime());
+        picker.setMinDate(Instant.now().toEpochMilli());
 
         Bundle args = new Bundle();
         args.putInt("id", id);
@@ -98,7 +97,7 @@ public class AddFoodItemActivity extends AppCompatActivity {
     }
 
     private boolean addItem() {
-        Date finalDate = readDateFromPicker();
+        LocalDate finalDate = readDateFromPicker();
         int locId = (int) spinner.getSelectedItemId();
 
         if (locId == 0) {
@@ -116,9 +115,9 @@ public class AddFoodItemActivity extends AppCompatActivity {
         return true;
     }
 
-    private void sendItem(Date finalDate, int locId) {
+    private void sendItem(LocalDate finalDate, int locId) {
         FoodItem item = new FoodItem(0,
-                finalDate,
+                Instant.from(finalDate.atStartOfDay()),
                 id, locId, 0, 0);
         networkManager.addFoodItem(item);
         Toast.makeText(
@@ -128,12 +127,10 @@ public class AddFoodItemActivity extends AppCompatActivity {
         ).show();
     }
 
-    private Date readDateFromPicker() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(
+    private LocalDate readDateFromPicker() {
+        return LocalDate.of(
                 picker.getYear(),
                 picker.getMonth(),
                 picker.getDayOfMonth());
-        return calendar.getTime();
     }
 }

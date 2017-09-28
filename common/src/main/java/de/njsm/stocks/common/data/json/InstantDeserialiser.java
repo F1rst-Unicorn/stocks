@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-
-import java.io.IOException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalQuery;
+
+import java.io.IOException;
 
 public class InstantDeserialiser extends StdDeserializer<Instant> {
 
@@ -32,6 +34,11 @@ public class InstantDeserialiser extends StdDeserializer<Instant> {
     }
 
     Instant parseString(String rawTimestamp) {
-        return InstantSerialiser.FORMAT.parse(rawTimestamp, Instant::from);
+        return InstantSerialiser.FORMAT.parse(rawTimestamp, new TemporalQuery<Instant>() {
+            @Override
+            public Instant queryFrom(TemporalAccessor temporal) {
+                return Instant.from(temporal);
+            }
+        });
     }
 }

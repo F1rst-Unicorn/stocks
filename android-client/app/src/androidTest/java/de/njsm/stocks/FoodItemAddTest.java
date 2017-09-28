@@ -12,10 +12,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeFormatter;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Locale;
 
 import static android.support.test.espresso.Espresso.onData;
@@ -70,7 +70,7 @@ public class FoodItemAddTest {
             DataInteraction item = onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
                     .atPosition(i);
             item.onChildView(withId(R.id.item_food_item_date))
-                    .check(matches(withText(new SimpleDateFormat("dd.MM.yy", Locale.US).format(new Date()))));
+                    .check(matches(withText(DateTimeFormatter.ofPattern("dd.MM.yy", Locale.US).format(LocalDate.now()))));
             item.onChildView(withId(R.id.item_food_item_user))
                     .check(matches(withText("Jack")));
             item.onChildView(withId(R.id.item_food_item_device))

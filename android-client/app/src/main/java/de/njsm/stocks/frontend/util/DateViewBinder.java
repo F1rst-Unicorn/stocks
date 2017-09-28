@@ -6,9 +6,9 @@ import android.view.View;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import de.njsm.stocks.backend.util.Config;
-
-import java.text.ParseException;
-import java.util.Date;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeParseException;
 
 public class DateViewBinder implements SimpleCursorAdapter.ViewBinder{
 
@@ -18,10 +18,10 @@ public class DateViewBinder implements SimpleCursorAdapter.ViewBinder{
             TextView text = (TextView) view;
             String dateString = cursor.getString(columnIndex);
 
-            Date date;
+            LocalDate date;
             try {
-                date = Config.DATABASE_DATE_FORMAT.parse(dateString);
-            } catch (ParseException e) {
+                date = LocalDate.from(Config.DATABASE_DATE_FORMAT.parse(dateString));
+            } catch (DateTimeParseException e) {
                 date = null;
             }
             assert date != null;
@@ -33,8 +33,10 @@ public class DateViewBinder implements SimpleCursorAdapter.ViewBinder{
         }
     }
 
-    private CharSequence prettyPrint(Date date) {
-        Date now = new Date();
-        return DateUtils.getRelativeTimeSpanString(date.getTime(), now.getTime(), 0L, DateUtils.FORMAT_ABBREV_ALL);
+    private CharSequence prettyPrint(LocalDate date) {
+        LocalDate now = LocalDate.now();
+        return DateUtils.getRelativeTimeSpanString(Instant.from(date).toEpochMilli(),
+                Instant.from(now).toEpochMilli(),
+                0L, DateUtils.FORMAT_ABBREV_ALL);
     }
 }

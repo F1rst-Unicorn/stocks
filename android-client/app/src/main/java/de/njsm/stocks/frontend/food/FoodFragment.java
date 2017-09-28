@@ -21,11 +21,9 @@ import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.frontend.AbstractDataFragment;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.DateTimeParseException;
 
 public class FoodFragment extends AbstractDataFragment implements
         SimpleCursorAdapter.ViewBinder,
@@ -126,10 +124,10 @@ public class FoodFragment extends AbstractDataFragment implements
             TextView text = (TextView) view;
             String dateString = cursor.getString(columnIndex);
 
-            Date date;
+            LocalDate date;
             try {
-                date = Config.DATABASE_DATE_FORMAT.parse(dateString);
-            } catch (ParseException e) {
+                date = LocalDate.from(Config.DATABASE_DATE_FORMAT.parse(dateString));
+            } catch (DateTimeParseException e) {
                 date = null;
             }
             assert date != null;
@@ -141,8 +139,8 @@ public class FoodFragment extends AbstractDataFragment implements
         }
     }
 
-    private CharSequence prettyPrint(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy", Locale.US);
+    private CharSequence prettyPrint(LocalDate date) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yy");
         return format.format(date);
     }
 

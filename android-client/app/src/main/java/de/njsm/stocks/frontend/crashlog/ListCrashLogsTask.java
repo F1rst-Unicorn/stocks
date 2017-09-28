@@ -9,12 +9,16 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.backend.util.AbstractAsyncTask;
 import de.njsm.stocks.backend.util.Config;
 import org.apache.commons.io.IOUtils;
+import org.threeten.bp.Instant;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class ListCrashLogsTask extends AbstractAsyncTask<Void, Void, Integer> {
 
@@ -61,7 +65,7 @@ public class ListCrashLogsTask extends AbstractAsyncTask<Void, Void, Integer> {
 
         HashMap<String, String> result = new HashMap<>();
         result.put("name", "<?>");
-        result.put("date", Config.TECHNICAL_DATE_FORMAT.format(new Date(0L)));
+        result.put("date", Config.TECHNICAL_DATE_FORMAT.format(Instant.EPOCH));
 
         InputStream inputStream = null;
         try {

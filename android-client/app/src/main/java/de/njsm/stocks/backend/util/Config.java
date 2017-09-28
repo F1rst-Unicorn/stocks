@@ -1,6 +1,8 @@
 package de.njsm.stocks.backend.util;
 
 import okhttp3.OkHttpClient;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -8,8 +10,6 @@ import javax.net.ssl.TrustManagerFactory;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 public class Config {
 
@@ -31,8 +31,8 @@ public class Config {
 
     public static final String PASSWORD = "passwordfooyouneverguessme$32XD";
 
-    public static final SimpleDateFormat TECHNICAL_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss.S", Locale.US);
-    public static final SimpleDateFormat DATABASE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
+    public static final DateTimeFormatter TECHNICAL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS").withZone(ZoneId.of("UTC"));
+    public static final DateTimeFormatter DATABASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS").withZone(ZoneId.of("UTC"));
 
 
     public static OkHttpClient getClient(InputStream keystoreStream) throws Exception {

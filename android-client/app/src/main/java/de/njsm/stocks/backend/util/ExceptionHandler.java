@@ -2,11 +2,11 @@ package de.njsm.stocks.backend.util;
 
 import android.util.Log;
 import org.apache.commons.io.IOUtils;
+import org.threeten.bp.Instant;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.util.Date;
 
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
@@ -25,7 +25,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
         PrintWriter pw = null;
         try {
-            String timestamp = Config.TECHNICAL_DATE_FORMAT.format(new Date());
+            String timestamp = Config.TECHNICAL_DATE_FORMAT.format(Instant.now());
             String fileName = "crashlog_" + timestamp + ".txt";
             FileOutputStream os = new FileOutputStream(new File(directory, fileName));
             pw = new PrintWriter(os);

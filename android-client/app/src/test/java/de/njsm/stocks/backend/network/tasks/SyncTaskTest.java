@@ -5,9 +5,9 @@ import de.njsm.stocks.backend.network.ServerManager;
 import de.njsm.stocks.common.data.Update;
 import org.junit.Before;
 import org.junit.Test;
+import org.threeten.bp.Instant;
 
 import java.io.File;
-import java.util.Date;
 
 import static org.mockito.Mockito.mock;
 
@@ -26,8 +26,8 @@ public class SyncTaskTest {
     public void unknownTableIsIgnoredMixedOrder() throws Exception {
         Update[] serverUpdates = new Update[2];
         Update[] localUpdates = new Update[1];
-        serverUpdates[0] = new Update("User", new Date());
-        serverUpdates[1] = new Update("Food", new Date());
+        serverUpdates[0] = new Update("User", Instant.EPOCH);
+        serverUpdates[1] = new Update("Food", Instant.EPOCH);
         localUpdates[0] = new Update("Food", serverUpdates[1].lastUpdate);
 
         uut.updateOutdatedTables(serverUpdates, localUpdates);
@@ -38,8 +38,8 @@ public class SyncTaskTest {
     public void unknownTableIsIgnored() throws Exception {
         Update[] serverUpdates = new Update[2];
         Update[] localUpdates = new Update[1];
-        serverUpdates[0] = new Update("User", new Date());
-        serverUpdates[1] = new Update("Food", new Date());
+        serverUpdates[0] = new Update("User", Instant.EPOCH);
+        serverUpdates[1] = new Update("Food", Instant.EPOCH);
         localUpdates[0] = new Update("User", serverUpdates[0].lastUpdate);
 
         uut.updateOutdatedTables(serverUpdates, localUpdates);

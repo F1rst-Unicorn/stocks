@@ -5,18 +5,18 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.backend.data.SerialisationVisitor;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.*;
 import de.njsm.stocks.backend.network.AsyncTaskCallback;
 import de.njsm.stocks.backend.network.ServerManager;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.*;
+import org.threeten.bp.Instant;
+import org.threeten.bp.format.DateTimeParseException;
 
 import java.io.File;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
@@ -76,7 +76,7 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
 
     private boolean isTableOutdated(Update[] localUpdates, Update update) {
         Update localUpdate = getLocalUpdate(localUpdates, update.table);
-        return localUpdate != null && update.lastUpdate.after(localUpdate.lastUpdate);
+        return localUpdate != null && update.lastUpdate.isAfter(localUpdate.lastUpdate);
     }
 
     private Update getLocalUpdate(Update[] localUpdates, String table) {
@@ -226,10 +226,10 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
             String rawDate = cursor.getString(cursor.getColumnIndex(SqlUpdateTable.COL_DATE));
             String tableName = cursor.getString(cursor.getColumnIndex(SqlUpdateTable.COL_NAME));
             try {
-                Date date = Config.DATABASE_DATE_FORMAT.parse(rawDate);
+                Instant date = Instant.from(Config.DATABASE_DATE_FORMAT.parse(rawDate));
                 Update u = new Update(tableName, date);
                 result.add(u);
-            } catch (ParseException e) {
+            } catch (DateTimeParseException e) {
                 Log.e(Config.LOG_TAG, "Could not parse date", e);
             }
         }
