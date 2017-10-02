@@ -13,11 +13,11 @@
 
     <bean id="timeProvider" class="de.njsm.stocks.client.service.TimeProviderImpl" />
 
-    <bean id="dayDateFactory" class="java.time.format.DateTimeFormatter" factory-method="ofPattern">
+    <bean id="dayDateFactory" class="org.threeten.bp.format.DateTimeFormatter" factory-method="ofPattern">
         <constructor-arg index="0" type="java.lang.String" value="dd.MM.yyyy" />
     </bean>
 
-    <bean name="utcTimezone" class="java.time.ZoneId" factory-method="of" >
+    <bean name="utcTimezone" class="org.threeten.bp.ZoneId" factory-method="of" >
         <constructor-arg index="0" type="java.lang.String" value="UTC" />
     </bean>
 
