@@ -14,6 +14,8 @@ import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.*;
 import org.threeten.bp.Instant;
 import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalQuery;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -226,7 +228,11 @@ public class SyncTask extends AbstractNetworkTask<Void, Void, Integer> {
             String rawDate = cursor.getString(cursor.getColumnIndex(SqlUpdateTable.COL_DATE));
             String tableName = cursor.getString(cursor.getColumnIndex(SqlUpdateTable.COL_NAME));
             try {
-                Instant date = Instant.from(Config.DATABASE_DATE_FORMAT.parse(rawDate));
+                Instant date = Instant.from(Config.DATABASE_DATE_FORMAT.parse(rawDate, new TemporalQuery<Instant>() {
+                            @Override
+                            public Instant queryFrom(TemporalAccessor temporal) {
+                                return Instant.from(temporal);
+                            }}));
                 Update u = new Update(tableName, date);
                 result.add(u);
             } catch (DateTimeParseException e) {
