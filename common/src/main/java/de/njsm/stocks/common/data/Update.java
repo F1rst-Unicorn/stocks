@@ -22,6 +22,8 @@ import org.threeten.bp.Instant;
 public class Update extends Data {
 
     public String table;
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss.SSS")
+    public Date lastUpdate;
 
     @JsonSerialize(using = InstantSerialiser.class)
     @JsonDeserialize(using = InstantDeserialiser.class)
