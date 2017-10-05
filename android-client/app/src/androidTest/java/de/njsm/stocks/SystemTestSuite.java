@@ -15,4 +15,6 @@ import org.junit.runners.Suite;
         FoodConsumptionTest.class
         })
 public class SystemTestSuite {
+
+    public static final int LOOP_BREAKER = 30;
 }

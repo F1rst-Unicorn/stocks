@@ -18,6 +18,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.fail;
 
 public class FoodConsumptionTest {
 
@@ -48,7 +49,7 @@ public class FoodConsumptionTest {
 
         StealCountAction stealCountAction = new StealCountAction();
         onView(withId(android.R.id.list)).perform(stealCountAction);
-
+        int counter = 0;
         while (stealCountAction.getCount() > 1) {
             onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
                     .atPosition(0)
@@ -57,6 +58,9 @@ public class FoodConsumptionTest {
 
             onView(withId(android.R.id.list)).perform(stealCountAction);
             Thread.sleep(2000); // STOCKS-17
+            if (counter++ > SystemTestSuite.LOOP_BREAKER) {
+                fail();
+            }
         }
 
         DataInteraction lastItem = onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
