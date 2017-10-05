@@ -8,6 +8,7 @@ import android.widget.TextView;
 import de.njsm.stocks.backend.util.Config;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeParseException;
 
 public class DateViewBinder implements SimpleCursorAdapter.ViewBinder{
@@ -35,8 +36,9 @@ public class DateViewBinder implements SimpleCursorAdapter.ViewBinder{
 
     private CharSequence prettyPrint(LocalDate date) {
         LocalDate now = LocalDate.now();
-        return DateUtils.getRelativeTimeSpanString(Instant.from(date).toEpochMilli(),
-                Instant.from(now).toEpochMilli(),
+        return DateUtils.getRelativeTimeSpanString(
+                Instant.from(date.atStartOfDay(ZoneId.of("UTC"))).toEpochMilli(),
+                Instant.from(now.atStartOfDay(ZoneId.of("UTC"))).toEpochMilli(),
                 0L, DateUtils.FORMAT_ABBREV_ALL);
     }
 }

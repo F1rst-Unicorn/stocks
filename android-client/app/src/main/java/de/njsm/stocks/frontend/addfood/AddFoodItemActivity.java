@@ -17,6 +17,7 @@ import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.common.data.FoodItem;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
 
 public class AddFoodItemActivity extends AppCompatActivity {
 
@@ -117,7 +118,7 @@ public class AddFoodItemActivity extends AppCompatActivity {
 
     private void sendItem(LocalDate finalDate, int locId) {
         FoodItem item = new FoodItem(0,
-                Instant.from(finalDate.atStartOfDay()),
+                Instant.from(finalDate.atStartOfDay().atZone(ZoneId.of("UTC"))),
                 id, locId, 0, 0);
         networkManager.addFoodItem(item);
         Toast.makeText(
@@ -130,7 +131,7 @@ public class AddFoodItemActivity extends AppCompatActivity {
     private LocalDate readDateFromPicker() {
         return LocalDate.of(
                 picker.getYear(),
-                picker.getMonth(),
+                picker.getMonth()+1,
                 picker.getDayOfMonth());
     }
 }
