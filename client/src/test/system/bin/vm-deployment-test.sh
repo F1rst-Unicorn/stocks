@@ -4,7 +4,7 @@ STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 
 set -e
 
-sudo virsh start dp-client
+sudo virsh start dp-client || true
 sudo virsh snapshot-revert dp-server initialised-running
 sleep 10
 

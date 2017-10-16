@@ -4,7 +4,7 @@ set -e
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 
-sudo virsh start dp-server
+sudo virsh start dp-server || true
 sleep 10
 
 echo "##teamcity[testSuiteStarted name='Server System Test']"
