@@ -4,8 +4,9 @@ STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 
 set -e
 
-sudo virsh snapshot-revert dp-client clean-running
+sudo virsh start dp-client
 sudo virsh snapshot-revert dp-server initialised-running
+sleep 10
 
 ansible-playbook $STOCKS_ROOT/deploy-client/install.yml
 
@@ -28,5 +29,3 @@ python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
 echo "##teamcity[testSuiteFinished name='Client System Test']"
 echo
 
-sudo virsh snapshot-revert dp-server clean
-sudo virsh snapshot-revert dp-client clean

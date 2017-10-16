@@ -483,7 +483,7 @@ checkDevicesAndRevocation() {
     check '^\[.*\]$' "$NAME"
     echo "##teamcity[testFinished name='$NAME']"
 
-    NAME="Revoked users don't have access any more"
+    NAME="Revoked users don|'t have access any more"
     echo "##teamcity[testStarted name='$NAME']"
     curl -sS -XPUT $CURLARGS --data "{\"id\":$DEVID}" \
             --header 'content-type: application/json' \

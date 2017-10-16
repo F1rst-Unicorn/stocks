@@ -4,9 +4,8 @@ set -e
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 
-# virsh reset
-sudo virsh snapshot-revert dp-server clean-running
-sleep 1
+sudo virsh start dp-server
+sleep 10
 
 echo "##teamcity[testSuiteStarted name='Server System Test']"
 
@@ -27,6 +26,4 @@ sudo virsh snapshot-create-as dp-server --name initialised-running
 $STOCKS_ROOT/server/src/test/system/bin/fresh-installation-test.sh dp-server
 
 echo "##teamcity[testSuiteFinished name='Server System Test']"
-
-sudo virsh snapshot-revert dp-server clean
 
