@@ -110,6 +110,11 @@
         owner=root
         group=root
         backup=True
+  
+  - name: Reload nginx
+    service:
+        name=nginx
+        state=reloaded
 
   - name: Link server.war
     file: >
