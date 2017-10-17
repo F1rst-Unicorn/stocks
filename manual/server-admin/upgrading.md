@@ -8,7 +8,7 @@ If the instruction is to simply perform an upgrade via the distribution's
 package manager this means that the tomcat container has to be restarted after
 installation. 
 
-## 2.0.0.0-1
+## 2.0.0.0-0
 
 Changes in the database model require a database migration. Shut down the
 tomcat server before upgrading. Then execute the SQL script provided in 
