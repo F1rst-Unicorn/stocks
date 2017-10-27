@@ -2,18 +2,15 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "de.njsm.stocks"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "2.0.0.0"
         multiDexEnabled true
-        jackOptions {
-            enabled true
-        }
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -58,37 +55,37 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:cardview-v7:25.3.1'
-    compile 'com.github.fcannizzaro:material-stepper:1.1.8'
-    compile 'com.google.zxing:core:3.2.0'
-    compile 'commons-io:commons-io:2.0.1'
-    compile 'org.bouncycastle:bcprov-jdk16:1.45'
-    compile 'com.squareup.retrofit2:retrofit:2.0.2'
-    compile 'com.squareup.retrofit2:converter-jackson:2.0.2'
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.journeyapps:zxing-android-embedded:2.0.1@aar'
-    compile 'com.journeyapps:zxing-android-legacy:2.0.1@aar'
-    compile 'com.journeyapps:zxing-android-integration:2.0.1@aar'
-    compile ('de.njsm.stocks:common:1.0') {
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.github.fcannizzaro:material-stepper:1.1.8'
+    implementation 'com.google.zxing:core:3.2.1'
+    implementation 'commons-io:commons-io:2.4'
+    implementation 'org.bouncycastle:bcprov-jdk16:1.45'
+    implementation 'com.squareup.retrofit2:retrofit:2.0.2'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.0.2'
+    implementation 'com.journeyapps:zxing-android-embedded:2.0.1@aar'
+    implementation 'com.journeyapps:zxing-android-legacy:2.0.1@aar'
+    implementation 'com.journeyapps:zxing-android-integration:2.0.1@aar'
+    implementation ('de.njsm.stocks:common:1.0') {
         exclude group: 'org.threeten', module: 'threetenbp'
+        exclude group: 'javax.inject', module: 'javax.inject'
     }
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-all:2.0.2-beta'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-all:2.0.2-beta'
 
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2'
-    androidTestCompile 'com.android.support:support-annotations:25.3.1'
-    androidTestCompile 'com.android.support:support-v4:25.3.1'
-    androidTestCompile 'com.android.support:design:25.3.1'
-    androidTestCompile 'com.android.support:recyclerview-v7:25.3.1'
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.1'
+    androidTestImplementation 'com.android.support:support-annotations:26.1.0'
+    androidTestImplementation 'com.android.support:support-v4:26.1.0'
+    androidTestImplementation 'com.android.support:design:26.1.0'
+    androidTestImplementation 'com.android.support:recyclerview-v7:26.1.0'
 }
