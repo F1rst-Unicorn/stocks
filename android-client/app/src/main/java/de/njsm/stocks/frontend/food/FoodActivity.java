@@ -24,7 +24,7 @@ public class FoodActivity extends AppCompatActivity {
     public static final String KEY_ID = "de.njsm.stocks.frontend.food.FoodActivity.id";
     public static final String KEY_NAME = "de.njsm.stocks.frontend.food.FoodActivity.name";
 
-    private String name;
+    String name;
     private int id;
 
     private Fragment mFragment;

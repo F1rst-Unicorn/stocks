@@ -57,7 +57,6 @@ public class FoodConsumptionTest {
             onView(withText("OK")).perform(click());
 
             onView(withId(android.R.id.list)).perform(stealCountAction);
-            Thread.sleep(2000); // STOCKS-17
             if (counter++ > SystemTestSuite.LOOP_BREAKER) {
                 fail();
             }

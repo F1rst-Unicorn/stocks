@@ -55,11 +55,8 @@ public class EanAdminTest {
                 .perform(click());
         onView(withId(R.id.activity_food_menu_ean)).perform(click());
         onView(withId(R.id.fab)).perform(click());
-        Thread.sleep(2000);     // STOCKS-17
         onView(withId(R.id.fab)).perform(click());
-        Thread.sleep(2000);     // STOCKS-17
         onView(withId(R.id.fab)).perform(click());
-        Thread.sleep(2000);     // STOCKS-17
 
         StealCountAction stealCountAction = new StealCountAction();
         onView(withId(android.R.id.list)).perform(stealCountAction);

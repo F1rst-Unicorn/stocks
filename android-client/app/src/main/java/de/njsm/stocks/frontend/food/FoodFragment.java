@@ -1,8 +1,8 @@
 package de.njsm.stocks.frontend.food;
 
-import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,17 +10,21 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import de.njsm.stocks.R;
 import de.njsm.stocks.adapters.FoodItemCursorAdapter;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlFoodItemTable;
-import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.frontend.AbstractDataFragment;
+import de.njsm.stocks.frontend.addfood.AddFoodItemActivity;
+import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
@@ -154,60 +158,20 @@ public class FoodFragment extends AbstractDataFragment implements
         final int itemId = cursor.getInt(cursor.getColumnIndex(SqlFoodItemTable.COL_ID));
         cursor.moveToPosition(lastPos);
 
-        final Spinner spinner = getLocationSpinner();
+        FoodItem selectedItem = new FoodItem();
+        selectedItem.id = itemId;
+        selectedItem.eatByDate = Instant.from(Config.DATABASE_DATE_FORMAT.parse(cursor.getString(cursor.getColumnIndex("date"))));
+        selectedItem.storedIn = cursor.getInt(cursor.getColumnIndex("location"));
 
-        String message = getResources().getString(R.string.dialog_move_item);
-        new AlertDialog.Builder(getActivity())
-                .setTitle(getResources().getString(R.string.title_move))
-                .setMessage(message)
-                .setView(spinner)
-                .setPositiveButton(getResources().getString(android.R.string.yes), (DialogInterface dialog, int whichButton) -> {
-                        FoodItem item = new FoodItem(itemId, null, 0,0,0,0);
-                        networkManager.moveItem(item, (int) spinner.getSelectedItemId());
-                })
-                .setNegativeButton(getResources().getString(android.R.string.no), (DialogInterface dialog, int whichButton) -> {})
-                .show();
+        networkManager.deleteFoodItem(selectedItem);
+        Intent intent = new Intent(getActivity(), AddFoodItemActivity.class);
+        intent.putExtra(AddFoodItemActivity.KEY_ID, foodId);
+        intent.putExtra(AddFoodItemActivity.KEY_FOOD, ((FoodActivity) getActivity()).name);
+        intent.putExtra(AddFoodItemActivity.KEY_DATE, selectedItem.eatByDate.toEpochMilli());
+        intent.putExtra(AddFoodItemActivity.KEY_LOCATION, selectedItem.storedIn);
+        startActivity(intent);
+
         return true;
     }
 
-    protected Spinner getLocationSpinner() {
-        Spinner result;
-        result = new Spinner(getActivity());
-
-        String[] from = {SqlLocationTable.COL_NAME};
-        int[] to = {android.R.id.text1};
-
-        final SimpleCursorAdapter adapter = new SimpleCursorAdapter(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                null,
-                from,
-                to,
-                0
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-        result.setAdapter(adapter);
-
-        getLoaderManager().initLoader(1, null, new LoaderManager.LoaderCallbacks<Cursor>() {
-            @Override
-            public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-                Uri uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlLocationTable.NAME);
-                return new CursorLoader(FoodFragment.this.getActivity(), uri,
-                        null, null, null,
-                        null);
-            }
-
-            @Override
-            public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-                adapter.swapCursor(cursor);
-            }
-
-            @Override
-            public void onLoaderReset(Loader<Cursor> loader) {
-                adapter.swapCursor(null);
-            }
-        });
-
-        return result;
-    }
 }
