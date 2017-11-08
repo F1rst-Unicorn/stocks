@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanResult != null) {
             String eanNumber = scanResult.getContents();
-            if (eanNumber.length() != 13) {
+            if (eanNumber == null || eanNumber.length() != 13) {
                 Log.w(Config.LOG_TAG, "Scanned invalid code");
                 Toast.makeText(this,
                         getResources().getString(R.string.dialog_no_barcode_result),
