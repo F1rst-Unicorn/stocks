@@ -48,7 +48,7 @@ git push --tags
 
 echo Archive release
 mkdir -p ~/Software/stocks/
-cp "$STOCKS_ROOT"/android-client/app/build/outputs/apk/app-release.apk  \
+cp "$STOCKS_ROOT"/android-client/app/build/outputs/apk/release/app-release.apk \
         ~/Software/stocks/stocks-android-"$VERSION".apk
 chmod a-wx ~/Software/stocks/*
 
