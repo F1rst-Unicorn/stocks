@@ -42,6 +42,8 @@ public class AddFoodItemActivity extends AppCompatActivity {
 
     private NetworkManager networkManager;
 
+    private boolean editMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +53,8 @@ public class AddFoodItemActivity extends AppCompatActivity {
         food = extras.getString(KEY_FOOD);
         id = extras.getInt(KEY_ID);
 
-        if (getIntent().getExtras().containsKey(KEY_LOCATION)) {
+        editMode = getIntent().getExtras().containsKey(KEY_LOCATION);
+        if (editMode) {
             setTitle(String.format(getResources().getString(R.string.title_edit_item), food));
         } else {
             setTitle(String.format(getResources().getString(R.string.title_add_item), food));
@@ -83,12 +86,19 @@ public class AddFoodItemActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        addItem();
+        if (editMode) {
+            spinner.setSelection(getIntent().getExtras().getInt(KEY_LOCATION)-1);
+            LocalDate preselection = getSelectedDate(getIntent());
+            picker.init(preselection.getYear(),
+                    preselection.getMonthValue()-1,
+                    preselection.getDayOfMonth(), null);
+            addItem();
+        }
         super.onBackPressed();
     }
 
     private Consumer<Integer> resolveLocation(Intent intent) {
-        if (intent.getExtras().containsKey(KEY_LOCATION)) {
+        if (editMode) {
             spinner.setSelection(intent.getExtras().getInt(KEY_LOCATION)-1);
             return (Integer value) -> {};
         } else {
@@ -102,7 +112,7 @@ public class AddFoodItemActivity extends AppCompatActivity {
     }
 
     private long lookupDate(Intent intent) {
-        if (intent.getExtras().containsKey(KEY_DATE)) {
+        if (editMode && intent.getExtras().containsKey(KEY_DATE)) {
             return intent.getExtras().getLong(KEY_DATE);
         } else {
             return Instant.now().toEpochMilli();
