@@ -81,6 +81,12 @@ public class AddFoodItemActivity extends AppCompatActivity {
         networkManager = new NetworkManager(factory);
     }
 
+    @Override
+    public void onBackPressed() {
+        addItem();
+        super.onBackPressed();
+    }
+
     private Consumer<Integer> resolveLocation(Intent intent) {
         if (intent.getExtras().containsKey(KEY_LOCATION)) {
             spinner.setSelection(intent.getExtras().getInt(KEY_LOCATION)-1);
@@ -124,7 +130,7 @@ public class AddFoodItemActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.activity_add_food_item_done:
                 if (addItem()) {
-                    onBackPressed();
+                    super.onBackPressed();
                 }
                 break;
             case R.id.activity_add_food_item_add_more:
