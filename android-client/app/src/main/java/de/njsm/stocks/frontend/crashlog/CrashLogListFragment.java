@@ -28,9 +28,6 @@ public class CrashLogListFragment extends ListFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        ListCrashLogsTask asyncTask = new ListCrashLogsTask(getActivity(), getActivity().getFilesDir(), this);
-        asyncTask.execute();
     }
 
     @Override
@@ -38,6 +35,8 @@ public class CrashLogListFragment extends ListFragment
         super.onStart();
         mList = getListView();
         mList.setOnItemLongClickListener(this);
+        ListCrashLogsTask asyncTask = new ListCrashLogsTask(getActivity(), getActivity().getFilesDir(), this);
+        asyncTask.execute();
     }
 
     @Override
