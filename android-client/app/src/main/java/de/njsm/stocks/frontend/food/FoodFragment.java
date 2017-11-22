@@ -156,12 +156,12 @@ public class FoodFragment extends AbstractDataFragment implements
         int lastPos = cursor.getPosition();
         cursor.moveToPosition(i);
         final int itemId = cursor.getInt(cursor.getColumnIndex(SqlFoodItemTable.COL_ID));
-        cursor.moveToPosition(lastPos);
 
         FoodItem selectedItem = new FoodItem();
         selectedItem.id = itemId;
         selectedItem.eatByDate = Instant.from(Config.DATABASE_DATE_FORMAT.parse(cursor.getString(cursor.getColumnIndex("date"))));
-        selectedItem.storedIn = cursor.getInt(cursor.getColumnIndex("location"));
+        selectedItem.storedIn = cursor.getInt(cursor.getColumnIndex("location_id"));
+        cursor.moveToPosition(lastPos);
 
         networkManager.deleteFoodItem(selectedItem);
         Intent intent = new Intent(getActivity(), AddFoodItemActivity.class);

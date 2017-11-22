@@ -83,7 +83,7 @@ public class AddFoodItemActivity extends AppCompatActivity {
 
     private Consumer<Integer> resolveLocation(Intent intent) {
         if (intent.getExtras().containsKey(KEY_LOCATION)) {
-            spinner.setSelection(intent.getExtras().getInt(KEY_LOCATION));
+            spinner.setSelection(intent.getExtras().getInt(KEY_LOCATION)-1);
             return (Integer value) -> {};
         } else {
             return (Integer value) -> spinner.setSelection(value);

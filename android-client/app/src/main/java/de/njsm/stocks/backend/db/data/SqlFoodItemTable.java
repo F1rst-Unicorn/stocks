@@ -53,7 +53,8 @@ public class SqlFoodItemTable {
                 "ORDER BY date ASC;";
 
         SELECT_FOOD_TYPE_ALL =
-                "SELECT i._id, f.name as food, i." + COL_EAT_BY + " as date, u.name as user, d.name as device, l.name as location " +
+                "SELECT i._id, f.name as food, i." + COL_EAT_BY + " as date, u.name as user, d.name as device, l.name as location, " +
+                        "l._id as location_id " +
                 "FROM Food f, " + NAME + " i, User u, User_device d, Location l " +
                 "WHERE f._id = ? AND " +
                         "i." + COL_OF_TYPE + " = f._id AND " +
