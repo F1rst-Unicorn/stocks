@@ -61,7 +61,7 @@ public class FoodItemAddTest {
         }
 
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(2100, 31, 12));
+                .perform(PickerActions.setDate(2100, 12, 31));
 
         onView(withId(R.id.activity_add_food_item_done)).perform(click());
 

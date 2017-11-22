@@ -12,6 +12,7 @@ import org.junit.runners.Suite;
         SearchTest.class,
         EanScanTest.class,
         UserAdministrationTest.class,
+        FoodEditTest.class,
         FoodConsumptionTest.class
         })
 public class SystemTestSuite {
