@@ -12,6 +12,7 @@
     <string name="title_delete_location">Ort entfernen</string>
     <string name="title_ticket_activity">Tickettransfer</string>
     <string name="title_add_item">%s hinzufügen</string>
+    <string name="title_edit_item">%s bearbeiten</string>
     <string name="title_consume">Konsumieren</string>
     <string name="title_delete_food">Essen entfernen?</string>
     <string name="title_new_sync">Vollständig neu synchronisieren</string>

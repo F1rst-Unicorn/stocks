@@ -12,6 +12,7 @@
     <string name="title_delete_location">Remove location</string>
     <string name="title_ticket_activity">Ticket Transfer</string>
     <string name="title_add_item">Add %s</string>
+    <string name="title_edit_item">Edit %s</string>
     <string name="title_consume">Consume</string>
     <string name="title_delete_food">Remove food?</string>
     <string name="title_new_sync">Complete Sync</string>

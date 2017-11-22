@@ -51,7 +51,11 @@ public class AddFoodItemActivity extends AppCompatActivity {
         food = extras.getString(KEY_FOOD);
         id = extras.getInt(KEY_ID);
 
-        setTitle(String.format(getResources().getString(R.string.title_add_item), food));
+        if (getIntent().getExtras().containsKey(KEY_LOCATION)) {
+            setTitle(String.format(getResources().getString(R.string.title_edit_item), food));
+        } else {
+            setTitle(String.format(getResources().getString(R.string.title_add_item), food));
+        }
 
         setupLocationDataAdapter();
 
