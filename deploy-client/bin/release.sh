@@ -2,7 +2,7 @@
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 
-if ! echo "$1" | egrep '([0-9]+\.){3}[0-9]+-[0-9]+' > /dev/null ; then
+if ! echo "$1" | egrep '^([0-9]+\.){3}[0-9]+-[0-9]+$' > /dev/null ; then
         echo Version number has wrong format!
         exit 1
 fi

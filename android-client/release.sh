@@ -19,18 +19,26 @@ if git tag | grep "android-client-$VERSION" >/dev/null ; then
         exit 3
 fi
 
-set -e
+STORE_FILE="$STOCKS_ROOT"/../keystore
+echo -n "Password for keystore $STORE_FILE : "
+read -s STORE_PASSWORD
+KEY_ALIAS=stocks
+KEY_PASSWORD="$STORE_PASSWORD"
+
+echo $STORE_PASSWORD | keytool -list -keystore $STORE_FILE
+PASSWORDVERIFICATION=$?
+if [ $PASSWORDVERIFICATION -ne 0 ]; then
+    echo Password is wrong
+    exit 4
+fi
 
 echo Patching version number
 sed -i "s/versionName .*/versionName \"$VERSION\"/g" \
         "$STOCKS_ROOT"/android-client/app/build.gradle
 
 echo Building release
-STORE_FILE="$STOCKS_ROOT"/../keystore
-echo -n "Password for keystore $STORE_FILE : "
-read -s STORE_PASSWORD
-KEY_ALIAS=stocks
-KEY_PASSWORD="$STORE_PASSWORD"
+set -e
+
 "$STOCKS_ROOT"/android-client/gradlew assembleRelease \
         -p $STOCKS_ROOT/android-client \
         -Pandroid.injected.signing.store.file=$STORE_FILE \
