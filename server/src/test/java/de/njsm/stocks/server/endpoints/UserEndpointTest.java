@@ -33,7 +33,7 @@ public class UserEndpointTest extends BaseTestEndpoint {
         Mockito.when(handler.get(UserFactory.f))
                 .thenReturn(new Data[0]);
         Mockito.when(authAdmin.getPrincipals(any()))
-                .thenReturn(testUser);
+                .thenReturn(TEST_USER);
         testItem = new User(1, "John");
         invalidTestItem = new User(1, "John$1");
     }

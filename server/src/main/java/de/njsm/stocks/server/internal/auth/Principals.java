@@ -1,6 +1,8 @@
 package de.njsm.stocks.server.internal.auth;
 
 
+import java.util.Objects;
+
 /**
  * Stores the principals of a user during ticket
  * creation
@@ -57,5 +59,22 @@ public class Principals {
 
     public String getReadableString() {
         return username + "@" + deviceName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Principals that = (Principals) o;
+        return uid == that.uid &&
+                did == that.did &&
+                Objects.equals(username, that.username) &&
+                Objects.equals(deviceName, that.deviceName);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(username, deviceName, uid, did);
     }
 }

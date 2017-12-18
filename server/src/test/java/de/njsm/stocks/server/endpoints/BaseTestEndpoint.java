@@ -8,15 +8,15 @@ import javax.servlet.http.HttpServletRequest;
 
 public class BaseTestEndpoint {
 
-    protected String userString = "/CN=John$5$Mobile$1";
+    public static final String USER_STRING = "/CN=John$5$Mobile$1";
 
-    protected Principals testUser = new Principals("John", "Mobile", 5, 1);
+    public static final Principals TEST_USER = new Principals("John", "Mobile", 5, 1);
 
-    protected HttpServletRequest createMockRequest() {
+    public static HttpServletRequest createMockRequest() {
         HttpServletRequest result = Mockito.mock(HttpServletRequest.class);
 
         Mockito.when(result.getHeader(HttpsUserContextFactory.SSL_CLIENT_KEY))
-                .thenReturn(userString);
+                .thenReturn(USER_STRING);
 
         return result;
     }

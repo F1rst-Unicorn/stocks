@@ -31,7 +31,7 @@ public class FoodEndpointTest extends BaseTestEndpoint {
         Mockito.when(handler.get(FoodFactory.f))
                 .thenReturn(new Data[0]);
         Mockito.when(authAdmin.getPrincipals(any()))
-                .thenReturn(testUser);
+                .thenReturn(TEST_USER);
         testItem = new Food(1, "Carrot");
     }
 

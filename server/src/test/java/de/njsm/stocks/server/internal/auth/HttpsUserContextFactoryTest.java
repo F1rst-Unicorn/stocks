@@ -1,12 +1,24 @@
 package de.njsm.stocks.server.internal.auth;
 
+import de.njsm.stocks.server.endpoints.BaseTestEndpoint;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class HttpsUserContextFactoryTest {
+
+    @Test
+    public void testFullCall() {
+        HttpsUserContextFactory uut = new HttpsUserContextFactory();
+
+        Principals output = uut.getPrincipals(BaseTestEndpoint.createMockRequest());
+
+        assertEquals(BaseTestEndpoint.TEST_USER, output);
+    }
 
     @Test
     public void testValidNames() {
@@ -37,6 +49,7 @@ public class HttpsUserContextFactoryTest {
         }
     }
 
+    @Test
     public void testEmptyName() {
         String input = "/CN=$1$$1";
 
@@ -44,10 +57,10 @@ public class HttpsUserContextFactoryTest {
 
         Principals p = uut.parseSubjectName(input);
 
-        Assert.assertEquals("", p.getUsername());
-        Assert.assertEquals("", p.getDeviceName());
-        Assert.assertEquals(1, p.getUid());
-        Assert.assertEquals(1, p.getDid());
+        assertEquals("", p.getUsername());
+        assertEquals("", p.getDeviceName());
+        assertEquals(1, p.getUid());
+        assertEquals(1, p.getDid());
     }
 
     @Test
@@ -58,10 +71,10 @@ public class HttpsUserContextFactoryTest {
 
         Principals p = uut.parseSubjectName(input);
 
-        Assert.assertEquals("", p.getUsername());
-        Assert.assertEquals("", p.getDeviceName());
-        Assert.assertEquals(1, p.getUid());
-        Assert.assertEquals(1, p.getDid());
+        assertEquals("", p.getUsername());
+        assertEquals("", p.getDeviceName());
+        assertEquals(1, p.getUid());
+        assertEquals(1, p.getDid());
     }
 
     @Test(expected = SecurityException.class)
@@ -82,9 +95,9 @@ public class HttpsUserContextFactoryTest {
 
         Principals p = uut.parseSubjectName(input);
 
-        Assert.assertEquals("", p.getUsername());
-        Assert.assertEquals("", p.getDeviceName());
-        Assert.assertEquals(1, p.getUid());
-        Assert.assertEquals(1, p.getDid());
+        assertEquals("", p.getUsername());
+        assertEquals("", p.getDeviceName());
+        assertEquals(1, p.getUid());
+        assertEquals(1, p.getDid());
     }
 }

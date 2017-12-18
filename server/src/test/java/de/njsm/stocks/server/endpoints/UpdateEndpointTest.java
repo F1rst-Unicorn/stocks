@@ -28,7 +28,7 @@ public class UpdateEndpointTest extends BaseTestEndpoint {
         Mockito.when(handler.get(UpdateFactory.f))
                 .thenReturn(new Data[0]);
         Mockito.when(authAdmin.getPrincipals(any()))
-                .thenReturn(testUser);
+                .thenReturn(TEST_USER);
     }
     
     @Test

@@ -32,7 +32,7 @@ public class LocationEndpointTest extends BaseTestEndpoint {
         Mockito.when(handler.get(LocationFactory.f))
                 .thenReturn(new Data[0]);
         Mockito.when(authAdmin.getPrincipals(any()))
-                .thenReturn(testUser);
+                .thenReturn(TEST_USER);
     }
 
     @Test

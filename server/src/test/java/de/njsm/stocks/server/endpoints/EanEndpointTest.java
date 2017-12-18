@@ -31,7 +31,7 @@ public class EanEndpointTest extends BaseTestEndpoint {
         Mockito.when(handler.get(EanNumberFactory.f))
                 .thenReturn(new Data[0]);
         Mockito.when(authAdmin.getPrincipals(any()))
-                .thenReturn(testUser);
+                .thenReturn(TEST_USER);
         testItem = new EanNumber(1, "123-123-123", 2);
     }
 

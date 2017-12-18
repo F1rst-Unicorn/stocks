@@ -35,7 +35,7 @@ public class FoodItemEndpointTest extends BaseTestEndpoint {
         Mockito.when(handler.get(FoodItemFactory.f))
                 .thenReturn(new Data[0]);
         Mockito.when(authAdmin.getPrincipals(any()))
-                .thenReturn(testUser);
+                .thenReturn(TEST_USER);
     }
 
     @Test
@@ -64,4 +64,11 @@ public class FoodItemEndpointTest extends BaseTestEndpoint {
         Mockito.verifyNoMoreInteractions(handler);
     }
 
+    @Test
+    public void testMovingItem() {
+        uut.moveFoodItem(createMockRequest(), testItem, 2);
+
+        Mockito.verify(handler).moveItem(testItem, 2);
+        Mockito.verifyNoMoreInteractions(handler);
+    }
 }

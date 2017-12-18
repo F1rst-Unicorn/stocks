@@ -35,7 +35,7 @@ public class DeviceEndpointTest extends BaseTestEndpoint {
         Mockito.when(handler.get(UserDeviceFactory.f))
                 .thenReturn(new Data[0]);
         Mockito.when(authAdmin.getPrincipals(any()))
-                .thenReturn(testUser);
+                .thenReturn(TEST_USER);
         ticket = Ticket.generateTicket();
         testItem = new UserDevice(1, "Mobile", 2);
         invalidTestItem = new UserDevice(1, "Mobile$1", 2);
