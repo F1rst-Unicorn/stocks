@@ -36,6 +36,6 @@ public class FoodAddTest {
         MainScreen.test()
                 .addFoodType(foodName)
                 .goToEmptyFood()
-                .assertLastItemContains(foodName);
+                .assertLastItemIsNamed(foodName);
     }
 }
