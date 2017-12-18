@@ -2,36 +2,43 @@ package de.njsm.stocks.server.endpoints;
 
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.UpdateFactory;
-import de.njsm.stocks.server.internal.Config;
-import de.njsm.stocks.server.internal.MockConfig;
+import de.njsm.stocks.server.internal.auth.UserContextFactory;
+import de.njsm.stocks.server.internal.db.DatabaseHandler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class UpdateEndpointTest extends BaseTestEndpoint {
+import static org.mockito.Matchers.any;
 
-    private Config c;
+public class UpdateEndpointTest extends BaseTestEndpoint {
 
     private UpdateEndpoint uut;
 
+    private DatabaseHandler handler;
+
+    private UserContextFactory authAdmin;
+
     @Before
     public void setup() {
-        c = new MockConfig(System.getProperties());
-        Mockito.when(c.getDbHandler().get(UpdateFactory.f))
+        handler = Mockito.mock(DatabaseHandler.class);
+        authAdmin = Mockito.mock(UserContextFactory.class);
+        uut = new UpdateEndpoint(handler, authAdmin);
+
+        Mockito.when(handler.get(UpdateFactory.f))
                 .thenReturn(new Data[0]);
-
-        uut = new UpdateEndpoint(c);
+        Mockito.when(authAdmin.getPrincipals(any()))
+                .thenReturn(testUser);
     }
-
+    
     @Test
     public void testGettingUpdates() {
         Data[] result = uut.getUpdates(createMockRequest());
 
         Assert.assertNotNull(result);
         Assert.assertEquals(0, result.length);
-        Mockito.verify(c.getDbHandler()).get(UpdateFactory.f);
-        Mockito.verifyNoMoreInteractions(c.getDbHandler());
+        Mockito.verify(handler).get(UpdateFactory.f);
+        Mockito.verifyNoMoreInteractions(handler);
     }
 
 }

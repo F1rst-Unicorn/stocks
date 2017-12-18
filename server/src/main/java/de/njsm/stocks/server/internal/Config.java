@@ -1,8 +1,5 @@
 package de.njsm.stocks.server.internal;
 
-import de.njsm.stocks.server.internal.auth.AuthAdmin;
-import de.njsm.stocks.server.internal.auth.X509CertificateAdmin;
-
 import java.util.Properties;
 
 public class Config {
@@ -29,10 +26,6 @@ public class Config {
         dbName = p.getProperty(DB_NAME_KEY);
         dbUsername = p.getProperty(DB_USERNAME_KEY);
         dbPassword = p.getProperty(DB_PASSWORD_KEY);
-    }
-
-    public AuthAdmin getCertAdmin() {
-        return new X509CertificateAdmin();
     }
 
     public String getDbAddress() {

@@ -3,28 +3,36 @@ package de.njsm.stocks.server.endpoints;
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.common.data.FoodFactory;
-import de.njsm.stocks.server.internal.Config;
-import de.njsm.stocks.server.internal.MockConfig;
+import de.njsm.stocks.server.internal.auth.UserContextFactory;
+import de.njsm.stocks.server.internal.db.DatabaseHandler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.mockito.Matchers.any;
+
 public class FoodEndpointTest extends BaseTestEndpoint {
 
-    private Config c;
     private Food testItem;
 
     private FoodEndpoint uut;
 
+    private DatabaseHandler handler;
+
+    private UserContextFactory authAdmin;
+
     @Before
     public void setup() {
-        c = new MockConfig(System.getProperties());
-        Mockito.when(c.getDbHandler().get(FoodFactory.f))
-                .thenReturn(new Data[0]);
-        testItem = new Food(1, "Carrot");
+        handler = Mockito.mock(DatabaseHandler.class);
+        authAdmin = Mockito.mock(UserContextFactory.class);
+        uut = new FoodEndpoint(handler, authAdmin);
 
-        uut = new FoodEndpoint(c);
+        Mockito.when(handler.get(FoodFactory.f))
+                .thenReturn(new Data[0]);
+        Mockito.when(authAdmin.getPrincipals(any()))
+                .thenReturn(testUser);
+        testItem = new Food(1, "Carrot");
     }
 
     @Test
@@ -33,16 +41,16 @@ public class FoodEndpointTest extends BaseTestEndpoint {
 
         Assert.assertNotNull(result);
         Assert.assertEquals(0, result.length);
-        Mockito.verify(c.getDbHandler()).get(FoodFactory.f);
-        Mockito.verifyNoMoreInteractions(c.getDbHandler());
+        Mockito.verify(handler).get(FoodFactory.f);
+        Mockito.verifyNoMoreInteractions(handler);
     }
 
     @Test
     public void testAddingFood() {
         uut.addFood(createMockRequest(), testItem);
 
-        Mockito.verify(c.getDbHandler()).add(testItem);
-        Mockito.verifyNoMoreInteractions(c.getDbHandler());
+        Mockito.verify(handler).add(testItem);
+        Mockito.verifyNoMoreInteractions(handler);
     }
 
     @Test
@@ -50,16 +58,16 @@ public class FoodEndpointTest extends BaseTestEndpoint {
         String newName = "Beer";
         uut.renameFood(createMockRequest(), testItem, newName);
 
-        Mockito.verify(c.getDbHandler()).rename(testItem, newName);
-        Mockito.verifyNoMoreInteractions(c.getDbHandler());
+        Mockito.verify(handler).rename(testItem, newName);
+        Mockito.verifyNoMoreInteractions(handler);
     }
 
     @Test
     public void testRemovingFood() {
         uut.removeFood(createMockRequest(), testItem);
 
-        Mockito.verify(c.getDbHandler()).remove(testItem);
-        Mockito.verifyNoMoreInteractions(c.getDbHandler());
+        Mockito.verify(handler).remove(testItem);
+        Mockito.verifyNoMoreInteractions(handler);
     }
 
 }

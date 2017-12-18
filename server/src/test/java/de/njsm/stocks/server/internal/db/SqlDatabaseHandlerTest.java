@@ -1,19 +1,19 @@
 package de.njsm.stocks.server.internal.db;
 
 import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.server.internal.MockConfig;
+import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.MockAuthAdmin;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.threeten.bp.Instant;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.threeten.bp.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 public class SqlDatabaseHandlerTest {
 
-    private MockConfig c;
+    private Config c;
     private MockAuthAdmin ca;
     private SqlDatabaseHandler uut;
 
@@ -29,9 +29,13 @@ public class SqlDatabaseHandlerTest {
     public void resetDatabase() throws IOException, SQLException {
         DatabaseHelper.resetSampleData();
 
-        c = new MockConfig(System.getProperties());
-        ca = (MockAuthAdmin) c.getCertAdmin();
-        uut = new SqlDatabaseHandler(c);
+        c = new Config(System.getProperties());
+        ca = new MockAuthAdmin();
+        uut = new SqlDatabaseHandler(String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
+                c.getDbAddress(), c.getDbPort(), c.getDbName()),
+                c.getDbUsername(),
+                c.getDbPassword(),
+                ca);
     }
 
     @Test
