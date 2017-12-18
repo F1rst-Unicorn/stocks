@@ -42,6 +42,11 @@ public class MainScreen extends AbstractScreen {
         return new LocationScreen();
     }
 
+    public EatSoonScreen goToEatSoon() {
+        onView(withId(R.id.fragment_outline_cardview)).perform(click());
+        return new EatSoonScreen();
+    }
+
     public static MainScreen test() {
         return new MainScreen();
     }

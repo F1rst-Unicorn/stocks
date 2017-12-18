@@ -29,6 +29,11 @@ public class FoodScreen extends AbstractListPresentingScreen {
         return new FoodAddScreen();
     }
 
+    public BarcodeScreen goToBarCodes() {
+        onView(withId(R.id.activity_food_menu_ean)).perform(click());
+        return new BarcodeScreen();
+    }
+
     public FoodScreen assertItem(int index, String user, String device, String date, String location) {
         checkIndex(index);
         DataInteraction item = onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
@@ -41,8 +46,6 @@ public class FoodScreen extends AbstractListPresentingScreen {
                 .check(matches(withText(device)));
         item.onChildView(withId(R.id.item_food_item_location))
                 .check(matches(withText(location)));
-
-
         return this;
     }
 
