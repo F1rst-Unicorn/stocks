@@ -8,8 +8,11 @@ import org.hamcrest.Matchers;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static de.njsm.stocks.util.Matchers.matchesDate;
 import static org.hamcrest.CoreMatchers.anything;
 
 public class FoodAddScreen extends AbstractScreen {
@@ -20,9 +23,21 @@ public class FoodAddScreen extends AbstractScreen {
         return this;
     }
 
+    public FoodAddScreen assertLocation(String text) {
+        onView(withId(R.id.item_location_name))
+                .check(matches(withText(text)));
+        return this;
+    }
+
     public FoodAddScreen selectDate(int year, int month, int day) {
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(year, month, day));
+        return this;
+    }
+
+    public FoodAddScreen assertDate(int year, int month, int day) {
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .check(matches(matchesDate(year, month, day)));
         return this;
     }
 
@@ -34,6 +49,12 @@ public class FoodAddScreen extends AbstractScreen {
     public FoodAddScreen addItem() {
         onView(withId(R.id.activity_add_food_item_add_more)).perform(click());
         return this;
+    }
+
+    @Override
+    public FoodScreen pressBack() {
+        super.pressBack();
+        return new FoodScreen();
     }
 
     public FoodAddScreen addManyItems(int number) {

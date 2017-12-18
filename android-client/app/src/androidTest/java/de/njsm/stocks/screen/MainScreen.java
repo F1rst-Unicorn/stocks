@@ -1,17 +1,17 @@
 package de.njsm.stocks.screen;
 
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.view.Gravity;
 import de.njsm.stocks.R;
-import de.njsm.stocks.frontend.food.FoodActivity;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.*;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerActions.open;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
+import static org.hamcrest.Matchers.allOf;
 
 public class MainScreen extends AbstractScreen {
 
@@ -43,6 +43,14 @@ public class MainScreen extends AbstractScreen {
         return new LocationScreen();
     }
 
+    public UserScreen goToUsers() {
+        onView(withId(R.id.drawer_layout))
+                .check(matches(isClosed(Gravity.START)))
+                .perform(open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.users));
+        return new UserScreen();
+    }
+
     public EatSoonScreen goToEatSoon() {
         onView(withId(R.id.fragment_outline_cardview)).perform(click());
         return new EatSoonScreen();
@@ -55,5 +63,15 @@ public class MainScreen extends AbstractScreen {
 
     public static MainScreen test() {
         return new MainScreen();
+    }
+
+    public MainScreen assertRegistrationSuccess() {
+        onView(withId(android.R.id.message))
+                .check(matches(withText(R.string.dialog_finished)));
+
+        ViewInteraction appCompatButton = onView(
+                allOf(withId(android.R.id.button1), withText("OK")));
+        appCompatButton.perform(scrollTo(), click());
+        return this;
     }
 }
