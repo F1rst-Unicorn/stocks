@@ -27,7 +27,6 @@ public class SearchTest {
                 .assertItemContent(0, searchText, 1)
                 .click(0)
                 .assertTitle(searchText);
-
     }
 
     @Test

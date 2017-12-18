@@ -7,7 +7,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-public class FoodScreen {
+public class FoodScreen extends AbstractListPresentingScreen {
 
     public FoodScreen assertTitle(String title) {
         onView(withText(title))
