@@ -1,8 +1,9 @@
 package de.njsm.stocks.server.endpoints;
 
 import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.Principals;
+import de.njsm.stocks.server.internal.auth.UserContextFactory;
+import de.njsm.stocks.server.internal.db.DatabaseHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,11 +17,9 @@ public class FoodEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(FoodEndpoint.class);
 
-    public FoodEndpoint() {
-    }
-
-    public FoodEndpoint(Config c) {
-        super(c);
+    public FoodEndpoint(DatabaseHandler handler,
+                        UserContextFactory contextFactory) {
+        super(handler, contextFactory);
     }
 
     @GET
@@ -73,7 +72,7 @@ public class FoodEndpoint extends Endpoint {
                             FoodItem itemToAdd){
         logAccess(LOG, request, "adds food item" + itemToAdd.ofType);
 
-        Principals uc = c.getContextFactory().getPrincipals(request);
+        Principals uc = contextFactory.getPrincipals(request);
         itemToAdd.buys = uc.getUid();
         itemToAdd.registers = uc.getDid();
 

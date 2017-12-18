@@ -3,7 +3,8 @@ package de.njsm.stocks.server.endpoints;
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.LocationFactory;
-import de.njsm.stocks.server.internal.Config;
+import de.njsm.stocks.server.internal.auth.UserContextFactory;
+import de.njsm.stocks.server.internal.db.DatabaseHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,11 +18,9 @@ public class LocationEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(LocationEndpoint.class);
 
-    public LocationEndpoint() {
-    }
-
-    public LocationEndpoint(Config c) {
-        super(c);
+    public LocationEndpoint(DatabaseHandler handler,
+                            UserContextFactory contextFactory) {
+        super(handler, contextFactory);
     }
 
     @GET

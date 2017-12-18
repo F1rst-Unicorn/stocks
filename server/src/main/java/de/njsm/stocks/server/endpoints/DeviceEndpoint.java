@@ -4,9 +4,10 @@ import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.common.data.UserDeviceFactory;
-import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.Principals;
+import de.njsm.stocks.server.internal.auth.UserContextFactory;
+import de.njsm.stocks.server.internal.db.DatabaseHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,11 +21,9 @@ public class DeviceEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(DeviceEndpoint.class);
 
-    public DeviceEndpoint() {
-    }
-
-    public DeviceEndpoint(Config c) {
-        super(c);
+    public DeviceEndpoint(DatabaseHandler handler,
+                          UserContextFactory contextFactory) {
+        super(handler, contextFactory);
     }
 
     @PUT
@@ -38,7 +37,7 @@ public class DeviceEndpoint extends Endpoint {
             return handler.addDevice(deviceToAdd);
 
         } else {
-            Principals client = c.getContextFactory().getPrincipals(request);
+            Principals client = contextFactory.getPrincipals(request);
             LOG.warn(client.getReadableString()
                     + "tried to add invalid device " + deviceToAdd.name);
             return new Ticket();

@@ -3,9 +3,10 @@ package de.njsm.stocks.server.endpoints;
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.User;
 import de.njsm.stocks.common.data.UserFactory;
-import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.Principals;
+import de.njsm.stocks.server.internal.auth.UserContextFactory;
+import de.njsm.stocks.server.internal.db.DatabaseHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,11 +19,9 @@ public class UserEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(UserEndpoint.class);
 
-    public UserEndpoint() {
-    }
-
-    public UserEndpoint(Config c) {
-        super(c);
+    public UserEndpoint(DatabaseHandler handler,
+                        UserContextFactory contextFactory) {
+        super(handler, contextFactory);
     }
 
     @PUT
@@ -35,7 +34,7 @@ public class UserEndpoint extends Endpoint {
             handler.add(userToAdd);
 
         } else {
-            Principals client = c.getContextFactory().getPrincipals(request);
+            Principals client = contextFactory.getPrincipals(request);
             LOG.warn(client.getReadableString()
                     + "tried to add invalid user " + userToAdd.name);
         }

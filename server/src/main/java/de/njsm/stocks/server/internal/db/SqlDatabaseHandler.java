@@ -3,7 +3,6 @@ package de.njsm.stocks.server.internal.db;
 import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.visitor.AddStatementVisitor;
 import de.njsm.stocks.common.data.visitor.SqlStatementFillerVisitor;
-import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.AuthAdmin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,25 +20,21 @@ public class SqlDatabaseHandler implements DatabaseHandler{
     private SqlStatementFillerVisitor fillerVisitor;
 
     private final String url;
-    private final Config c;
+    private final AuthAdmin authAdmin;
     private final String username;
     private final String password;
 
-    public SqlDatabaseHandler(Config c) {
+    public SqlDatabaseHandler(String url,
+                              String username,
+                              String password,
+                              AuthAdmin authAdmin) {
 
-        this.c = c;
+        this.authAdmin = authAdmin;
         this.addStatementVisitor = new AddStatementVisitor();
         this.fillerVisitor = new SqlStatementFillerVisitor();
-
-        String address = c.getDbAddress();
-        String port = c.getDbPort();
-        String name = c.getDbName();
-        username = c.getDbUsername();
-        password = c.getDbPassword();
-        url = String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
-                address,
-                port,
-                name);
+        this.username = username;
+        this.password = password;
+        this.url = url;
 
         try {
             Class.forName("org.mariadb.jdbc.Driver");
@@ -106,7 +101,6 @@ public class SqlDatabaseHandler implements DatabaseHandler{
 
         String getDevicesQuery = "SELECT * FROM User_device WHERE belongs_to=?";
         String deleteDevicesCommand = "DELETE FROM User_device WHERE belongs_to=?";
-        AuthAdmin ca = c.getCertAdmin();
         List<Integer> certificateList = new ArrayList<>();
         Connection con = null;
 
@@ -130,7 +124,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
             sqlStmt.execute();
             con.commit();
 
-            certificateList.forEach(ca::revokeCertificate);
+            certificateList.forEach(authAdmin::revokeCertificate);
         } catch (SQLException e){
             LOG.error("Error deleting devices", e);
             rollback(con);
@@ -188,7 +182,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
             sqlStmt.execute();
             con.commit();
 
-            c.getCertAdmin().revokeCertificate(u.id);
+            authAdmin.revokeCertificate(u.id);
 
         } catch (SQLException e){
             LOG.error("Error deleting devices", e);

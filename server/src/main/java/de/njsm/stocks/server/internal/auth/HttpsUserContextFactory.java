@@ -7,13 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HttpsUserContextFactory{
+public class HttpsUserContextFactory implements UserContextFactory {
 
     private static final Logger LOG = LogManager.getLogger(HttpsUserContextFactory.class);
 
     public static final String SSL_CLIENT_KEY = "X-SSL-Client-S-DN";
 
 
+    @Override
     public Principals getPrincipals(HttpServletRequest request) {
         String clientName = request.getHeader(SSL_CLIENT_KEY);
         return parseSubjectName(clientName);
