@@ -3,6 +3,7 @@ package de.njsm.stocks.screen;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.view.Gravity;
 import de.njsm.stocks.R;
+import de.njsm.stocks.frontend.food.FoodActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -45,6 +46,11 @@ public class MainScreen extends AbstractScreen {
     public EatSoonScreen goToEatSoon() {
         onView(withId(R.id.fragment_outline_cardview)).perform(click());
         return new EatSoonScreen();
+    }
+
+    public FoodScreen scanSuccessful() {
+        onView(withId(R.id.action_scan)).perform(click());
+        return new FoodScreen();
     }
 
     public static MainScreen test() {
