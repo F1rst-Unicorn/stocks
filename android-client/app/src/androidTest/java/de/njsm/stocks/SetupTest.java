@@ -3,13 +3,12 @@ package de.njsm.stocks;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.Intents;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import de.njsm.stocks.frontend.StartupActivity;
+import de.njsm.stocks.screen.ServerInputScreen;
 import org.apache.commons.io.IOUtils;
 import org.bouncycastle.openssl.PEMReader;
 import org.junit.After;
@@ -23,13 +22,8 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static org.hamcrest.Matchers.allOf;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -69,59 +63,18 @@ public class SetupTest {
 
     @Test
     public void testRegistration() {
-
-        ViewInteraction hostnameTextField = onView(
-                allOf(withId(R.id.server_url), isDisplayed()));
-        hostnameTextField.perform(replaceText(hostname), closeSoftKeyboard());
-
-        ViewInteraction nextScreenButton = onView(
-                allOf(withId(R.id.stepNext), withText("NEXT"),
-                        withParent(allOf(withId(R.id.navigation),
-                                withParent(withId(R.id.stepSwitcher)))),
-                        isDisplayed()));
-        nextScreenButton.perform(click());
-
-        ViewInteraction lockedViewPager = onView(
-                allOf(withId(R.id.stepPager), isDisplayed()));
-        lockedViewPager.perform(swipeLeft());
-        lockedViewPager.perform(swipeLeft());
-
-        ViewInteraction appCompatEditText4 = onView(
-                allOf(withId(R.id.user_name), isDisplayed()));
-        appCompatEditText4.check(matches(ViewMatchers.withText("Jack")));
-
-        ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.device_name), isDisplayed()));
-        appCompatEditText5.check(matches(ViewMatchers.withText("Device")));
-
-        ViewInteraction appCompatEditText6 = onView(
-                allOf(withId(R.id.user_id), isDisplayed()));
-        appCompatEditText6.check(matches(ViewMatchers.withText("1")));
-
-        ViewInteraction appCompatEditText7 = onView(
-                allOf(withId(R.id.device_id), isDisplayed()));
-        appCompatEditText7.check(matches(ViewMatchers.withText("1")));
-
-        ViewInteraction appCompatEditText9 = onView(
-                allOf(withId(R.id.fingerprint), isDisplayed()));
-        appCompatEditText9.check(matches(ViewMatchers.withText(fingerprint)));
-
-        ViewInteraction appCompatEditText10 = onView(withId(R.id.ticket));
-        appCompatEditText10.check(matches(ViewMatchers.withText("0000")));
-
-        ViewInteraction appCompatTextView3 = onView(
-                allOf(withId(R.id.stepEnd), withText("COMPLETE"),
-                        withParent(allOf(withId(R.id.navigation),
-                                withParent(withId(R.id.stepSwitcher)))),
-                        isDisplayed()));
-        appCompatTextView3.perform(closeSoftKeyboard(), click());
-
-        onView(withId(android.R.id.message))
-                .check(matches(withText(R.string.dialog_finished)));
-
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(android.R.id.button1), withText("OK")));
-        appCompatButton.perform(scrollTo(), click());
+        ServerInputScreen.test()
+                .enterServerName(hostname)
+                .next()
+                .next()
+                .assertUser("Jack")
+                .assertDevice("Device")
+                .assertUserId(1)
+                .assertDeviceId(1)
+                .assertFingerPrint(fingerprint)
+                .assertTicket("0000")
+                .submit()
+                .assertRegistrationSuccess();
     }
 
     private String getFingerprintFromServer() throws Exception {
