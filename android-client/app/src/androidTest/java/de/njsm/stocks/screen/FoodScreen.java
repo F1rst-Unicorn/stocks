@@ -66,7 +66,7 @@ public class FoodScreen extends AbstractListPresentingScreen {
 
     public FoodScreen assertItem(int index, String user, String device, String date, String location) {
         checkIndex(index);
-        DataInteraction item = onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
+        DataInteraction item = onData(anything()).inAdapterView(instanceOf(ListView.class))
                 .atPosition(index);
         item.onChildView(withId(R.id.item_food_item_date))
                 .check(matches(withText(date)));
