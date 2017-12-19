@@ -41,15 +41,10 @@ adb -s $DEVICE reverse tcp:10912 tcp:10912
 adb uninstall de.njsm.stocks
 adb uninstall de.njsm.stocks.test
 
-RC=0
-while [ $RC -eq 0 ] ; do 
-sudo virsh snapshot-revert dp-server initialised-running || exit 1
-sleep 1
 $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
         connectedDebugAndroidTest \
         -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.SystemTestSuite
 RC=$?
-done
 
 kill $SSH_1_PID
 kill $SSH_2_PID
