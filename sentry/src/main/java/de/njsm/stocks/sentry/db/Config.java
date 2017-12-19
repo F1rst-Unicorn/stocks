@@ -1,11 +1,8 @@
 package de.njsm.stocks.sentry.db;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 public class Config {
@@ -24,19 +21,7 @@ public class Config {
     private String dbName;
     private String dbUsername;
     private String dbPassword;
-    private String dbValidity;
-
-    public Config() {
-        try {
-            FileInputStream fis = new FileInputStream("/etc/stocks-server/stocks.properties");
-            Properties p = new Properties();
-            p.load(fis);
-            readProperties(p);
-            IOUtils.closeQuietly(fis);
-        } catch (IOException e) {
-            LOG.error("Failed to configure server!", e);
-        }
-    }
+    private int dbValidity;
 
     public Config(Properties p) {
         readProperties(p);
@@ -48,7 +33,11 @@ public class Config {
         dbName = p.getProperty(DB_NAME_KEY);
         dbUsername = p.getProperty(DB_USERNAME_KEY);
         dbPassword = p.getProperty(DB_PASSWORD_KEY);
-        dbValidity = p.getProperty(DB_VALIDITY_KEY);
+        try {
+            dbValidity = Integer.parseInt(p.getProperty(DB_VALIDITY_KEY));
+        } catch (NumberFormatException e) {
+            LOG.error("Invalid ticket validity: " + dbValidity, e);
+        }
     }
 
     public String getDbAddress() {
@@ -71,7 +60,7 @@ public class Config {
         return dbPassword;
     }
 
-    public String getDbValidity() {
+    public int getDbValidity() {
         return dbValidity;
     }
 }

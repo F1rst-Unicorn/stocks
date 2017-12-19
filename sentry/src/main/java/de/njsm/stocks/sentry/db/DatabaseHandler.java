@@ -13,32 +13,28 @@ public class DatabaseHandler {
     private static final Logger LOG = LogManager.getLogger(DatabaseHandler.class);
 
     private final String url;
+
+    private final String username;
+
+    private final String password;
+
     private final int validityTime;
 
-    public DatabaseHandler() throws ClassNotFoundException {
+    public DatabaseHandler(String url, String username, String password, int validityTime) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+        this.validityTime = validityTime;
 
-        Class.forName("org.mariadb.jdbc.Driver");
-
-        Config c = new Config();
-        validityTime = Integer.parseInt(c.getDbValidity());
-
-        String address = c.getDbAddress();
-        String port = c.getDbPort();
-        String name = c.getDbName();
-        String user = c.getDbUsername();
-        String password = c.getDbPassword();
-
-        url = String.format("jdbc:mariadb://%s:%s/%s?user=%s&password=%s",
-                address,
-                port,
-                name,
-                user,
-                password);
-
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            LOG.error(e);
+        }
     }
 
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url);
+        return DriverManager.getConnection(url, username, password);
     }
 
     /**

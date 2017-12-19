@@ -14,6 +14,7 @@ public class CertificateManager {
     private static final Logger LOG = LogManager.getLogger(CertificateManager.class);
 
     public static final String csrFormatString = "/usr/share/stocks-server/root/CA/intermediate/csr/%s.csr.pem";
+
     public static final String certFormatString = "/usr/share/stocks-server/root/CA/intermediate/certs/%s.cert.pem";
 
     /**

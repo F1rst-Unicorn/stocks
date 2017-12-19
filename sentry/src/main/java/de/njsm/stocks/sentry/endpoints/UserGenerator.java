@@ -22,8 +22,8 @@ public class UserGenerator {
 
     private final DatabaseHandler handler;
 
-    public UserGenerator() throws ClassNotFoundException {
-        handler = new DatabaseHandler();
+    public UserGenerator(DatabaseHandler handler) {
+        this.handler = handler;
     }
 
     /**
