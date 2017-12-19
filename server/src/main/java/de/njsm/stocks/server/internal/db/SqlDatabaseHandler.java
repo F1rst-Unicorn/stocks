@@ -44,8 +44,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
     }
 
     private Connection getConnection() throws SQLException {
-        Connection result = DriverManager.getConnection(url, username, password);
-        return result;
+        return DriverManager.getConnection(url, username, password);
     }
 
     @Override

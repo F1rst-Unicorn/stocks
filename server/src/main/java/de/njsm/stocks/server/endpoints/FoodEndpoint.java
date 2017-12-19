@@ -70,7 +70,7 @@ public class FoodEndpoint extends Endpoint {
     @Consumes("application/json")
     public void addFoodItem(@Context HttpServletRequest request,
                             FoodItem itemToAdd){
-        logAccess(LOG, request, "adds food item" + itemToAdd.ofType);
+        logAccess(LOG, request, "adds food item " + itemToAdd.ofType);
 
         Principals uc = contextFactory.getPrincipals(request);
         itemToAdd.buys = uc.getUid();
