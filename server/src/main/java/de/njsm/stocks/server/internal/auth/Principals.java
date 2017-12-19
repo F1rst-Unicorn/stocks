@@ -74,7 +74,6 @@ public class Principals {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(username, deviceName, uid, did);
     }
 }

@@ -20,8 +20,7 @@ public class X509CertificateAdmin implements AuthAdmin {
                 "-revoke /usr/share/stocks-server/root/CA/intermediate/certs/user_%d.cert.pem",
                 id);
         try {
-            Process p = Runtime.getRuntime().exec(command);
-            p.waitFor();
+            Runtime.getRuntime().exec(command).waitFor();
             refreshCrl();
         } catch (IOException e){
             LOG.error("Failed to revoke certificate", e);
@@ -39,16 +38,14 @@ public class X509CertificateAdmin implements AuthAdmin {
         String nginxCommand = "sudo /usr/lib/stocks-server/nginx-reload";
         
         try {
-            Process p = Runtime.getRuntime().exec(crlCommand);
-            p.waitFor();
+            Runtime.getRuntime().exec(crlCommand).waitFor();
 
             FileOutputStream out = new FileOutputStream("/usr/share/stocks-server/root/CA/intermediate/crl/whole.crl.pem");
             IOUtils.copy(new FileInputStream("/usr/share/stocks-server/root/CA/crl/ca.crl.pem"), out);
             IOUtils.copy(new FileInputStream("/usr/share/stocks-server/root/CA/intermediate/crl/intermediate.crl.pem"), out);
             out.close();
 
-            p = Runtime.getRuntime().exec(nginxCommand);
-            p.waitFor();
+            Runtime.getRuntime().exec(nginxCommand).waitFor();
         } catch (IOException e) {
             LOG.error("Failed to reload CRL", e);
         } catch (InterruptedException e) {

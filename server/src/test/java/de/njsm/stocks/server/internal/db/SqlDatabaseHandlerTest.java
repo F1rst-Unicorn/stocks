@@ -1,6 +1,7 @@
 package de.njsm.stocks.server.internal.db;
 
 import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.server.internal.Config;
 import de.njsm.stocks.server.internal.auth.MockAuthAdmin;
 import org.junit.Assert;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class SqlDatabaseHandlerTest {
 
@@ -327,6 +329,15 @@ public class SqlDatabaseHandlerTest {
     }
 
     @Test
+    public void exceptionReturnsNull() {
+        Object result = uut.runSqlOperation((FunctionWithExceptions<Connection, Object, SQLException>) con -> {
+            throw new SQLException("test");
+        });
+
+        assertNull(result);
+    }
+
+    @Test
     public void testRollbackWithNull() {
         uut.rollback(null);
     }
@@ -349,6 +360,17 @@ public class SqlDatabaseHandlerTest {
         uut.rollback(con);
 
         Mockito.verify(con).rollback();
+        Mockito.verifyNoMoreInteractions(con);
+    }
+
+    @Test
+    public void testClosingWithException() throws SQLException {
+        Connection con = Mockito.mock(Connection.class);
+        Mockito.doThrow(new SQLException("Mockito")).when(con).close();
+
+        uut.close(con);
+
+        Mockito.verify(con).close();
         Mockito.verifyNoMoreInteractions(con);
     }
 

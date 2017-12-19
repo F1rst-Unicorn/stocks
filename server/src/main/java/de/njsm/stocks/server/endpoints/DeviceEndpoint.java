@@ -34,8 +34,12 @@ public class DeviceEndpoint extends Endpoint {
 
         if (HttpsUserContextFactory.isNameValid(deviceToAdd.name)) {
             logAccess(LOG, request, "adds device " + deviceToAdd.name);
-            return handler.addDevice(deviceToAdd);
-
+            Ticket result = handler.addDevice(deviceToAdd);
+            if (result != null) {
+                return result;
+            } else {
+                return new Ticket();
+            }
         } else {
             Principals client = contextFactory.getPrincipals(request);
             LOG.warn(client.getReadableString()

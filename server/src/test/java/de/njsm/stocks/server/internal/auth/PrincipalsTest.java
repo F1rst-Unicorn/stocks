@@ -1,8 +1,8 @@
 package de.njsm.stocks.server.internal.auth;
 
-import de.njsm.stocks.server.internal.auth.Principals;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class PrincipalsTest {
 
@@ -17,10 +17,10 @@ public class PrincipalsTest {
 
         Principals uut = new Principals(input);
 
-        Assert.assertEquals("user", uut.getUsername());
-        Assert.assertEquals(4, uut.getUid());
-        Assert.assertEquals("device", uut.getDeviceName());
-        Assert.assertEquals(5, uut.getDid());
+        assertEquals("user", uut.getUsername());
+        assertEquals(4, uut.getUid());
+        assertEquals("device", uut.getDeviceName());
+        assertEquals(5, uut.getDid());
     }
 
     @Test
@@ -32,10 +32,10 @@ public class PrincipalsTest {
 
         Principals uut = new Principals(user, device, uid, did);
 
-        Assert.assertEquals(user, uut.getUsername());
-        Assert.assertEquals(uid, uut.getUid());
-        Assert.assertEquals(device, uut.getDeviceName());
-        Assert.assertEquals(did, uut.getDid());
+        assertEquals(user, uut.getUsername());
+        assertEquals(uid, uut.getUid());
+        assertEquals(device, uut.getDeviceName());
+        assertEquals(did, uut.getDid());
     }
 
     @Test(expected = SecurityException.class)
@@ -60,6 +60,13 @@ public class PrincipalsTest {
         };
 
         new Principals(input);
+    }
 
+    @Test
+    public void hashsAreEqual() {
+        Principals uut1 = new Principals("user", "device", 1, 2);
+        Principals uut2 = new Principals("user", "device", 1, 2);
+
+        assertEquals(uut1.hashCode(), uut2.hashCode());
     }
 }
