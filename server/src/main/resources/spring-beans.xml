@@ -5,10 +5,16 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
        default-lazy-init="true">
 
+    <bean name="propertiesFile" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>file:/etc/stocks-server/stocks.properties</value>
+            </list>
+        </property>
+    </bean>
+
     <bean name="config" class="de.njsm.stocks.server.internal.Config">
-        <constructor-arg index="0">
-            <util:property-path path="/etc/stocks-server/stocks.properties"/>
-        </constructor-arg>
+        <constructor-arg index="0" ref="propertiesFile"/>
     </bean>
 
     <bean name="authAdmin" class="de.njsm.stocks.server.internal.auth.X509CertificateAdmin"/>
