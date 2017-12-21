@@ -7,8 +7,10 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import de.njsm.stocks.backend.db.StocksContentProvider;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
+import de.njsm.stocks.backend.util.Config;
 
 import java.util.function.Consumer;
 
@@ -37,11 +39,13 @@ class DataLoader implements LoaderManager.LoaderCallbacks<Cursor> {
             case 1:
                 this.args = args;
                 uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, SqlLocationTable.NAME);
+                Log.d(Config.LOG_TAG, "loader for locations started");
                 return new CursorLoader(context, uri,
                         null, null, null,
                         null);
             case 2:
                 uri = Uri.withAppendedPath(StocksContentProvider.BASE_URI, StocksContentProvider.MAX_LOCATION);
+                Log.d(Config.LOG_TAG, "loader for maximum location started");
                 return new CursorLoader(context, uri,
                         null, null, new String[] {String.valueOf(this.args.getInt("id"))},
                         null);
@@ -57,6 +61,7 @@ class DataLoader implements LoaderManager.LoaderCallbacks<Cursor> {
                 locationCursor = data;
                 listener.accept(data);
                 context.getLoaderManager().initLoader(2, null, this);
+                Log.d(Config.LOG_TAG, "locations loaded");
                 break;
             case 2:
                 if (data.getCount() > 0) {
@@ -71,7 +76,10 @@ class DataLoader implements LoaderManager.LoaderCallbacks<Cursor> {
                         }
                         position++;
                     } while (locationCursor.moveToNext());
+                    Log.d(Config.LOG_TAG, "location id: " + idToFind + ", position: " + position);
                     selector.accept(position);
+                } else {
+                    Log.w(Config.LOG_TAG, "could not set maximum item location");
                 }
                 break;
         }
@@ -82,6 +90,7 @@ class DataLoader implements LoaderManager.LoaderCallbacks<Cursor> {
         switch(loader.getId()) {
             case 1:
                 listener.accept(null);
+                Log.d(Config.LOG_TAG, "resetted locations");
                 break;
             case 2:
                 break;

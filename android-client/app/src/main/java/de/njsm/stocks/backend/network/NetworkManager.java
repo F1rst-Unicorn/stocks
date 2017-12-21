@@ -70,7 +70,7 @@ public class NetworkManager {
     }
 
     public void addFoodItem(FoodItem item) {
-        Log.i(Config.LOG_TAG, "adding item of type " + item.ofType);
+        Log.i(Config.LOG_TAG, "adding item " + item);
         NewFoodItemTask task = taskFactory.getNewItemTask();
         task.execute(item);
     }
