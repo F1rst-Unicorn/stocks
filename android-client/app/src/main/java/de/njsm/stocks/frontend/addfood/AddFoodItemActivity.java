@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.DatePicker;
@@ -15,6 +16,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.backend.db.data.SqlLocationTable;
 import de.njsm.stocks.backend.network.AsyncTaskFactory;
 import de.njsm.stocks.backend.network.NetworkManager;
+import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.FoodItem;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
@@ -53,7 +55,8 @@ public class AddFoodItemActivity extends AppCompatActivity {
         food = extras.getString(KEY_FOOD);
         id = extras.getInt(KEY_ID);
 
-        editMode = getIntent().getExtras().containsKey(KEY_LOCATION);
+        editMode = extras.containsKey(KEY_LOCATION);
+        Log.d(Config.LOG_TAG, "edit mode: " + editMode);
         if (editMode) {
             setTitle(String.format(getResources().getString(R.string.title_edit_item), food));
         } else {
@@ -82,17 +85,14 @@ public class AddFoodItemActivity extends AppCompatActivity {
 
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         networkManager = new NetworkManager(factory);
+        Log.d(Config.LOG_TAG, "AddFoodItemActivity created");
     }
 
     @Override
     public void onBackPressed() {
         if (editMode) {
-            spinner.setSelection(getIntent().getExtras().getInt(KEY_LOCATION)-1);
             LocalDate preselection = getSelectedDate(getIntent());
-            picker.init(preselection.getYear(),
-                    preselection.getMonthValue()-1,
-                    preselection.getDayOfMonth(), null);
-            addItem();
+            sendItem(preselection, getIntent().getExtras().getInt(KEY_LOCATION));
         }
         super.onBackPressed();
     }
@@ -152,10 +152,12 @@ public class AddFoodItemActivity extends AppCompatActivity {
     }
 
     private boolean addItem() {
+        Log.d(Config.LOG_TAG, "adding new item");
         LocalDate finalDate = readDateFromPicker();
         int locId = (int) spinner.getSelectedItemId();
 
         if (locId == 0) {
+            Log.d(Config.LOG_TAG, "no location selected");
             new AlertDialog.Builder(this)
                     .setTitle(getResources().getString(R.string.dialog_error))
                     .setMessage(getResources().getString(R.string.error_no_location_present))
@@ -167,6 +169,7 @@ public class AddFoodItemActivity extends AppCompatActivity {
         }
 
         sendItem(finalDate, locId);
+        Log.d(Config.LOG_TAG, "item sent");
         return true;
     }
 
