@@ -88,15 +88,6 @@ public class AddFoodItemActivity extends AppCompatActivity {
         Log.d(Config.LOG_TAG, "AddFoodItemActivity created");
     }
 
-    @Override
-    public void onBackPressed() {
-        if (editMode) {
-            LocalDate preselection = getSelectedDate(getIntent());
-            sendItem(preselection, getIntent().getExtras().getInt(KEY_LOCATION));
-        }
-        super.onBackPressed();
-    }
-
     private Consumer<Integer> resolveLocation(Intent intent) {
         if (editMode) {
             return (Integer value) -> spinner.setSelection(intent.getExtras().getInt(KEY_LOCATION)-1);
@@ -132,6 +123,15 @@ public class AddFoodItemActivity extends AppCompatActivity {
                 R.layout.item_location,
                 null, from, to, 0);
         adapter.setDropDownViewResource(R.layout.item_location);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (editMode) {
+            LocalDate preselection = getSelectedDate(getIntent());
+            sendItem(preselection, getIntent().getExtras().getInt(KEY_LOCATION));
+        }
+        super.onBackPressed();
     }
 
     @Override
