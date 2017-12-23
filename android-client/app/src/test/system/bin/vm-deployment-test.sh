@@ -2,6 +2,8 @@
 
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 
+LOGCAT=$STOCKS_ROOT/android-client/logcat.log
+
 if [[ -z $CI_SERVER ]] ; then
         EMULATOR_ARGS=
 else
@@ -40,7 +42,10 @@ adb -s $DEVICE reverse tcp:10911 tcp:10911
 adb -s $DEVICE reverse tcp:10912 tcp:10912
 adb uninstall de.njsm.stocks
 adb uninstall de.njsm.stocks.test
+adb logcat | grep --line-buffered 'de.njsm.stocks' > $LOGCAT &
+LOGCAT_PID=$!
 
+RC=0
 $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
         connectedDebugAndroidTest \
         -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.SystemTestSuite
@@ -49,6 +54,7 @@ RC=$?
 kill $SSH_1_PID
 kill $SSH_2_PID
 kill $SSH_3_PID
+kill $LOGCAT_PID
 echo -e "auth $(cat ~/.emulator_console_auth_token)\nkill\n" | nc localhost 5554
 
 exit $RC

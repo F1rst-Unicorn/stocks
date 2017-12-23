@@ -9,9 +9,7 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static de.njsm.stocks.util.Matchers.matchesDate;
 import static org.hamcrest.CoreMatchers.anything;
 
@@ -59,7 +57,7 @@ public class FoodAddScreen extends AbstractScreen {
 
     public FoodAddScreen addManyItems(int number) {
         for (int i = 0; i < number; i++) {
-            onView(withId(R.id.activity_add_food_item_add_more)).perform(click());
+            addItem();
         }
         return this;
     }

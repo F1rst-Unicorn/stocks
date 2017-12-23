@@ -41,6 +41,7 @@ public class FoodItemAddTest {
                 .click(0)
                 .addItems()
                 .selectLocation(2)
+                .assertLocation("Cupboard")
                 .addManyItems(numberOfItems)
                 .selectDate(2100, 12, 31)
                 .addAndFinish();
