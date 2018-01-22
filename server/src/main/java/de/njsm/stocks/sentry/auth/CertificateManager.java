@@ -8,6 +8,7 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 
 public class CertificateManager {
 
@@ -17,6 +18,12 @@ public class CertificateManager {
 
     public static final String certFormatString = "/usr/share/stocks-server/root/CA/intermediate/certs/%s.cert.pem";
 
+    private Semaphore lock;
+
+    public CertificateManager(Semaphore lock) {
+        this.lock = lock;
+    }
+
     /**
      * Execute openssl command to generate new certificate
      *
@@ -24,6 +31,7 @@ public class CertificateManager {
      */
     public void generateCertificate(String userFile) throws IOException {
 
+        lock.acquireUninterruptibly();
         String command = String.format("openssl ca " +
                         "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
                         "-extensions usr_cert " +
@@ -40,6 +48,8 @@ public class CertificateManager {
             p.waitFor();
         } catch (InterruptedException e){
             LOG.error("Interrupted: ", e);
+        } finally {
+            lock.release();
         }
     }
 

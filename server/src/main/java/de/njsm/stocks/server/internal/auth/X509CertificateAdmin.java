@@ -7,13 +7,21 @@ import org.apache.logging.log4j.Logger;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 
 public class X509CertificateAdmin implements AuthAdmin {
 
     private static final Logger LOG = LogManager.getLogger(X509CertificateAdmin.class);
 
+    private Semaphore lock;
+
+    public X509CertificateAdmin(Semaphore lock) {
+        this.lock = lock;
+    }
+
     public void revokeCertificate(int id) {
 
+        lock.acquireUninterruptibly();
         String command = String.format("openssl ca " +
                 "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
                 "-batch " +
@@ -26,6 +34,8 @@ public class X509CertificateAdmin implements AuthAdmin {
             LOG.error("Failed to revoke certificate", e);
         } catch (InterruptedException e) {
             LOG.error("Interrupted while waiting", e);
+        } finally {
+            lock.release();
         }
 
     }

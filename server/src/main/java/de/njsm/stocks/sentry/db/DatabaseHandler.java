@@ -12,6 +12,8 @@ public class DatabaseHandler {
 
     private static final Logger LOG = LogManager.getLogger(DatabaseHandler.class);
 
+    private CertificateManager certificateManager;
+
     private final String url;
 
     private final String username;
@@ -20,7 +22,9 @@ public class DatabaseHandler {
 
     private final int validityTime;
 
-    public DatabaseHandler(String url, String username, String password, int validityTime) {
+    public DatabaseHandler(CertificateManager certificateManager,
+                           String url, String username, String password, int validityTime) {
+        this.certificateManager = certificateManager;
         this.url = url;
         this.username = username;
         this.password = password;
@@ -81,7 +85,6 @@ public class DatabaseHandler {
     public void handleTicket (String ticket, int deviceId) {
 
         Connection con = null;
-        CertificateManager cm = new CertificateManager();
         String userFile = String.format("user_%d", deviceId);
         String csrFilePath = String.format(CertificateManager.csrFormatString, userFile);
         String certFilePath = String.format(CertificateManager.certFormatString, userFile);
@@ -109,7 +112,7 @@ public class DatabaseHandler {
                 hasTicket = true;
             }
             // get csr associated data
-            Principals csrPrincipals = cm.getPrincipals(csrFilePath);
+            Principals csrPrincipals = certificateManager.getPrincipals(csrFilePath);
             Principals dbPrincipals = new Principals(dbUsername, dbDevicename, dbUid, dbDid);
 
             // check for equality, if not, exception
@@ -118,7 +121,7 @@ public class DatabaseHandler {
                         csrPrincipals.toString());
             }
 
-            cm.generateCertificate(userFile);
+            certificateManager.generateCertificate(userFile);
 
             // remove ticket
             String removeTicketCommand = "DELETE FROM Ticket WHERE belongs_device=?";
