@@ -1,22 +1,18 @@
 #!/bin/bash
 
-set -e
-
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 
-sudo virsh start dp-server || true
-sleep 10
+sudo virsh start dp-server && sleep 10
+
+set -e
 
 echo "##teamcity[testSuiteStarted name='Server System Test']"
 
 echo "##teamcity[testStarted name='Server installation']"
-ansible-playbook $STOCKS_ROOT/deploy-server/install.yml
+ansible-playbook -b -i $STOCKS_ROOT/deploy-server/inventory-testing \
+        --extra-vars "ansible_become_pass=,ansible_sudo_pass= "     \
+        $STOCKS_ROOT/deploy-server/play_install.yml
 echo "##teamcity[testFinished name='Server installation']"
-
-
-echo "##teamcity[testStarted name='Server deployment']"
-ansible-playbook $STOCKS_ROOT/deploy-server/deploy.yml
-echo "##teamcity[testFinished name='Server deployment']"
 
 sleep 15
 

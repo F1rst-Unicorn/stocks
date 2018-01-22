@@ -1,0 +1,14 @@
+---
+mysql_server_host: "localhost"
+mysql_server_port: 3306
+mysql_root_password: ""
+mysql_stocks_database: "stocks"
+mysql_stocks_username: "server"
+mysql_stocks_password: "linux"
+
+stocks_first_user: "Jack"
+stocks_first_device: "Device"
+
+stocks_ticket_timeout_minutes: 10
+
+sudoers_line: "tomcat8 ALL=NOPASSWD: {{ stocks_lib }}/nginx-reload"
