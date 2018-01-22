@@ -16,5 +16,5 @@
 
   - name: Install stocks package
     pacman:
-      name: {{ remote_pkg_dir }}/{{ stocks_pkg }}
+      name: "{{ remote_pkg_dir }}/{{ stocks_pkg }}"
       state: present
