@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `Food`;
 CREATE TABLE `Food` (
   `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
   `name` varchar(200) NOT NULL,
-  `version` int UNSIGNED NOT NULL,
+  `version` int UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS `User`;
 CREATE TABLE `User` (
     `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     `name` varchar(200) NOT NULL,
-    `version` int UNSIGNED NOT NULL,
+    `version` int UNSIGNED NOT NULL DEFAULT 0,
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS `Location`;
 CREATE TABLE `Location` (
     `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     `name` varchar(200) NOT NULL,
-    `version` int UNSIGNED NOT NULL,
+    `version` int UNSIGNED NOT NULL DEFAULT 0,
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -36,7 +36,7 @@ DROP TABLE IF EXISTS User_device;
 CREATE TABLE User_device (
     `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     `name` varchar(200) NOT NULL,
-    `version` int UNSIGNED NOT NULL,
+    `version` int UNSIGNED NOT NULL DEFAULT 0,
     belongs_to int UNSIGNED NOT NULL,
     CONSTRAINT `device_points_to_user` FOREIGN KEY (`belongs_to`) REFERENCES `User`(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (`ID`)
@@ -53,7 +53,7 @@ CREATE TABLE Food_item (
     `stored_in` int UNSIGNED NOT NULL,
     `registers` int UNSIGNED NOT NULL,
     `buys` int UNSIGNED NOT NULL,
-    `version` int UNSIGNED NOT NULL,
+    `version` int UNSIGNED NOT NULL DEFAULT 0,
     FOREIGN KEY (of_type) REFERENCES Food(`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (stored_in) REFERENCES Location(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (registers) REFERENCES User_device(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -99,7 +99,7 @@ CREATE TABLE EAN_number (
     `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
     `number` varchar(13) NOT NULL,
     `identifies` int UNSIGNED NOT NULL,
-    `version` int UNSIGNED NOT NULL,
+    `version` int UNSIGNED NOT NULL DEFAULT 0,
     PRIMARY KEY (`ID`),
     FOREIGN KEY (identifies) REFERENCES Food(`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
