@@ -9,16 +9,15 @@ Both tomcat and nginx write their own log files. All of the files are found in
 
 ## Stocks server log
 
-The log file of the stocks server is at /var/log/stocks-server/stocks.log. This
-file contains both the main server as well as the sentry log entries. 
+The log file of the stocks server is at /var/log/stocks-server/stocks.log.
 The used library is log4j2. If the default tomcat server.xml is used the 
-log config is stored in /usr/share/tomcat8/webapps/{server,sentry}/
-WEB-INF/classes/log4j2.xml. The server refreshes the config every 30 seconds 
+log config is stored in /usr/share/tomcat8/webapps/server/WEB-INF/classes/
+log4j2.xml. The server refreshes the config every 30 seconds 
 so the log level can be adjusted without restarting the server. 
 
-The config can be reset by removing the directory /usr/share/tomcat8/webapps/
-{server,sentry} (but not the symlinks) and restarting tomcat to redeploy the 
-webapps. 
+The config can be reset by removing the directory 
+/usr/share/tomcat8/webapps/server (but not the symlinks) and restarting tomcat
+to redeploy the webapp. 
 
 ## Stocks config file
 

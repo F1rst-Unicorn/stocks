@@ -17,7 +17,7 @@ parts of the system in isolation.
 To run the tests you need a mariadb stocks instance. It can be created by
 importing the deploy-server/config/schema.sql script into a newly created
 database. No data imports are needed. Then configure your profile for running
-inside the server/sentry pom.xml, or adapt your setup to match an existing
+inside the server pom.xml, or adapt your setup to match an existing
 environment. Then run the tests via 'mvn test' or from inside your IDE.
 
 ### System Tests

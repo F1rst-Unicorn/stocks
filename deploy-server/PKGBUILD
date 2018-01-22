@@ -26,10 +26,6 @@ build() {
     cd server
     mvn -Dmaven.test.skip=true package
     cd ..
-
-    cd sentry
-    mvn -Dmaven.test.skip=true package
-    cd ..
 }
 
 package() {
@@ -48,8 +44,7 @@ package() {
     install -D -m 555 deploy-server/config/setup-ca     $pkgdir/usr/lib/$pkgname/setup-ca
     install -D -m 555 deploy-server/config/nginx-reload $pkgdir/usr/lib/$pkgname/nginx-reload
     install -D -m 444 server/target/server-*.war        $pkgdir/usr/lib/$pkgname/server.war
-    install -D -m 444 sentry/target/sentry-*.war        $pkgdir/usr/lib/$pkgname/sentry.war
-    
+
     install -D -m 644 deploy-server/config/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
     
     install -D -m 444 README.md                                     $pkgdir/usr/share/doc/$pkgname/README.md

@@ -33,5 +33,5 @@ pre_remove() {
 ## arg 1:  the old package version
 post_remove() {
 	rm -rf /usr/share/stocks-server
-	rm -rf /usr/share/tomcat8/webapps/{server,sentry}.war
+	rm -rf /usr/share/tomcat8/webapps/server.war
 }

@@ -18,6 +18,4 @@ Build the app with the integrated gradle script and deploy it to your device.
 
 ## Contributing
 
-Get in touch with me, if you are interested in contributing. There are also
-detailed ROADMAP.md files in the server, sentry, client and android-client
-directories which keep track of tasks.
+Get in touch with me, if you are interested in contributing.

@@ -154,15 +154,6 @@
     group: tomcat8
     state: link
       
-- name: Link sentry.war
-  become: True
-  file:
-    src: "{{ stocks_lib }}/sentry.war"
-    dest: /usr/share/tomcat8/webapps/sentry.war
-    owner: tomcat8
-    group: tomcat8
-    state: link
-      
 - name: Install tomcat config
   become: True
   copy:
