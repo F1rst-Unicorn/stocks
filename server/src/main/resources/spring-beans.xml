@@ -13,21 +13,11 @@
         </property>
     </bean>
 
-    <bean name="certificateAuthorityMutex" class="java.util.concurrent.Semaphore" scope="singleton">
-        <constructor-arg index="0" value="1" />
-    </bean>
-
     <bean name="config" class="de.njsm.stocks.server.internal.Config">
         <constructor-arg index="0" ref="propertiesFile"/>
     </bean>
 
-    <bean name="authAdmin" class="de.njsm.stocks.server.internal.auth.X509CertificateAdmin">
-        <constructor-arg index="0" ref="certificateAuthorityMutex"/>
-    </bean>
-
-    <bean name="certificateManager" class="de.njsm.stocks.sentry.auth.CertificateManager">
-        <constructor-arg index="0" ref="certificateAuthorityMutex" />
-    </bean>
+    <bean name="authAdmin" class="de.njsm.stocks.server.internal.auth.X509CertificateAdmin"/>
 
     <bean name="contextFactory" class="de.njsm.stocks.server.internal.auth.HttpsUserContextFactory"/>
 
@@ -55,7 +45,7 @@
     </bean>
 
     <bean name="sentryDbHandler" class="de.njsm.stocks.sentry.db.DatabaseHandler">
-        <constructor-arg index="0" ref="certificateManager"/>
+        <constructor-arg index="0" ref="authAdmin"/>
         <constructor-arg index="1" ref="dbUrl"/>
         <constructor-arg index="2" ref="dbUser"/>
         <constructor-arg index="3" ref="dbPassword"/>
@@ -99,7 +89,7 @@
         <constructor-arg index="1" ref="contextFactory"/>
     </bean>
 
-    <bean name="userGeneratorEndPoint" class="de.njsm.stocks.sentry.endpoints.UserGenerator">
+    <bean name="userGeneratorEndPoint" class="de.njsm.stocks.server.endpoints.RegistrationEndpoint">
         <constructor-arg index="0" ref="sentryDbHandler"/>
     </bean>
 

@@ -1,7 +1,7 @@
 package de.njsm.stocks.sentry.db;
 
 import de.njsm.stocks.common.data.Principals;
-import de.njsm.stocks.sentry.auth.CertificateManager;
+import de.njsm.stocks.server.internal.auth.AuthAdmin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +12,7 @@ public class DatabaseHandler {
 
     private static final Logger LOG = LogManager.getLogger(DatabaseHandler.class);
 
-    private CertificateManager certificateManager;
+    private AuthAdmin certificateManager;
 
     private final String url;
 
@@ -22,7 +22,7 @@ public class DatabaseHandler {
 
     private final int validityTime;
 
-    public DatabaseHandler(CertificateManager certificateManager,
+    public DatabaseHandler(AuthAdmin certificateManager,
                            String url, String username, String password, int validityTime) {
         this.certificateManager = certificateManager;
         this.url = url;
@@ -86,8 +86,8 @@ public class DatabaseHandler {
 
         Connection con = null;
         String userFile = String.format("user_%d", deviceId);
-        String csrFilePath = String.format(CertificateManager.csrFormatString, userFile);
-        String certFilePath = String.format(CertificateManager.certFormatString, userFile);
+        String csrFilePath = String.format(AuthAdmin.CSR_FORMAT_STRING, userFile);
+        String certFilePath = String.format(AuthAdmin.CERT_FORMAT_STRING, userFile);
 
         try {
 

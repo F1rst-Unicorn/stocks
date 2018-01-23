@@ -1,27 +1,69 @@
 package de.njsm.stocks.server.internal.auth;
 
+import de.njsm.stocks.common.data.Principals;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.concurrent.Semaphore;
 
 public class X509CertificateAdmin implements AuthAdmin {
 
     private static final Logger LOG = LogManager.getLogger(X509CertificateAdmin.class);
 
-    private Semaphore lock;
+    /**
+     * Execute openssl command to generate new certificate
+     *
+     * @param userFile The userFile string, i.e. the file name without extension
+     */
+    public synchronized void generateCertificate(String userFile) throws IOException {
 
-    public X509CertificateAdmin(Semaphore lock) {
-        this.lock = lock;
+        String command = String.format("openssl ca " +
+                        "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
+                        "-extensions usr_cert " +
+                        "-notext " +
+                        "-batch " +
+                        "-md sha256 " +
+                        "-in " + CSR_FORMAT_STRING + " " +
+                        "-out " + CERT_FORMAT_STRING + " ",
+                userFile,
+                userFile);
+
+        Process p = Runtime.getRuntime().exec(command);
+        try {
+            p.waitFor();
+        } catch (InterruptedException e){
+            LOG.error("Interrupted: ", e);
+        }
     }
 
-    public void revokeCertificate(int id) {
+    /**
+     * Read the CSR and extract the parts of the Subject name
+     *
+     * @param csrFile the relative filepath of the CSR to read
+     * @return The parsed principals
+     * @throws IOException if IO goes wrong
+     */
+    public synchronized Principals getPrincipals(String csrFile) throws IOException {
+        PEMParser parser = new PEMParser(new FileReader(csrFile));
+        Object csrRaw = parser.readObject();
+        if (csrRaw instanceof PKCS10CertificationRequest) {
+            PKCS10CertificationRequest csr = (PKCS10CertificationRequest) csrRaw;
+            return HttpsUserContextFactory.parseSubjectName(csr.getSubject().toString());
+        } else {
+            throw new SecurityException("failed to cast CSR");
+        }
 
-        lock.acquireUninterruptibly();
+    }
+
+
+    public synchronized void revokeCertificate(int id) {
+
         String command = String.format("openssl ca " +
                 "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
                 "-batch " +
@@ -34,10 +76,7 @@ public class X509CertificateAdmin implements AuthAdmin {
             LOG.error("Failed to revoke certificate", e);
         } catch (InterruptedException e) {
             LOG.error("Interrupted while waiting", e);
-        } finally {
-            lock.release();
         }
-
     }
 
     private void refreshCrl() {

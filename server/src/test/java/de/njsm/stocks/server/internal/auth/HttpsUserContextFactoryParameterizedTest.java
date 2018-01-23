@@ -1,7 +1,7 @@
 package de.njsm.stocks.server.internal.auth;
 
+import de.njsm.stocks.common.data.Principals;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -13,13 +13,6 @@ public class HttpsUserContextFactoryParameterizedTest {
 
     @Parameterized.Parameter
     public String subject;
-
-    private HttpsUserContextFactory uut;
-
-    @Before
-    public void setup() throws Exception {
-        uut = new HttpsUserContextFactory();
-    }
 
     @Parameterized.Parameters(name = "{0}")
     public static Iterable<Object[]> getTables() {
@@ -43,7 +36,7 @@ public class HttpsUserContextFactoryParameterizedTest {
     @Test
     public void testParsing() {
 
-        Principals p = uut.parseSubjectName(subject);
+        Principals p = HttpsUserContextFactory.parseSubjectName(subject);
 
         Assert.assertEquals("Jack", p.getUsername());
         Assert.assertEquals("Laptop", p.getDeviceName());

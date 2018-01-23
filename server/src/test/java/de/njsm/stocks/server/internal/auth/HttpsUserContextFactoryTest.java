@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.internal.auth;
 
+import de.njsm.stocks.common.data.Principals;
 import de.njsm.stocks.server.endpoints.BaseTestEndpoint;
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,12 +51,36 @@ public class HttpsUserContextFactoryTest {
     }
 
     @Test
+    public void testParseCorrectName() {
+
+        int uid = 3;
+        int did = 6;
+        String[] testInput = new String[] {
+                "my_username",
+                String.valueOf(uid),
+                "my_device_name",
+                String.valueOf(did)};
+        String input = "CN=";
+        for (int i = 0; i < testInput.length-1; i++){
+            input = input.concat(testInput[i] + "$");
+        }
+        input = input.concat(testInput[testInput.length-1]);
+
+        Principals p = HttpsUserContextFactory.parseSubjectName(input);
+
+        assertEquals(testInput[0], p.getUsername());
+        assertEquals(uid, p.getUid());
+        assertEquals(testInput[2], p.getDeviceName());
+        assertEquals(did, p.getDid());
+
+    }
+
+
+    @Test
     public void testEmptyName() {
         String input = "/CN=$1$$1";
 
-        HttpsUserContextFactory uut = new HttpsUserContextFactory();
-
-        Principals p = uut.parseSubjectName(input);
+        Principals p = HttpsUserContextFactory.parseSubjectName(input);
 
         assertEquals("", p.getUsername());
         assertEquals("", p.getDeviceName());
@@ -67,12 +92,22 @@ public class HttpsUserContextFactoryTest {
     public void testEmptyNameNoSlashes() {
         String input = "CN=$1$$1";
 
-        HttpsUserContextFactory uut = new HttpsUserContextFactory();
-
-        Principals p = uut.parseSubjectName(input);
+        Principals p = HttpsUserContextFactory.parseSubjectName(input);
 
         assertEquals("", p.getUsername());
         assertEquals("", p.getDeviceName());
+        assertEquals(1, p.getUid());
+        assertEquals(1, p.getDid());
+    }
+
+    @Test
+    public void testNameWithSpacesAndSpecialCharacters() {
+        String input = "CN=John Doe$1$my-test_device$1";
+
+        Principals p = HttpsUserContextFactory.parseSubjectName(input);
+
+        assertEquals("John Doe", p.getUsername());
+        assertEquals("my-test_device", p.getDeviceName());
         assertEquals(1, p.getUid());
         assertEquals(1, p.getDid());
     }
@@ -81,9 +116,7 @@ public class HttpsUserContextFactoryTest {
     public void testMalformed() {
         String input = "/CN=$1$1";
 
-        HttpsUserContextFactory uut = new HttpsUserContextFactory();
-
-        uut.parseSubjectName(input);
+        HttpsUserContextFactory.parseSubjectName(input);
 
     }
 
@@ -91,13 +124,29 @@ public class HttpsUserContextFactoryTest {
     public void tooManyDollars() {
         String input = "/CN=omg$4$device$5$tooMuch";
 
-        HttpsUserContextFactory uut = new HttpsUserContextFactory();
-
-        Principals p = uut.parseSubjectName(input);
+        Principals p = HttpsUserContextFactory.parseSubjectName(input);
 
         assertEquals("", p.getUsername());
         assertEquals("", p.getDeviceName());
         assertEquals(1, p.getUid());
         assertEquals(1, p.getDid());
+    }
+
+    @Test(expected = SecurityException.class)
+    public void testParseNameWithDollar() {
+        String[] testInput = new String[] {"my_user$name", "3",
+                "my_device_name", "6"};
+        String input = "CN=";
+        for (int i = 0; i < testInput.length-1; i++){
+            input = input.concat(testInput[i] + "$");
+        }
+        input = input.concat(testInput[testInput.length-1]);
+
+        HttpsUserContextFactory.parseSubjectName(input);
+    }
+
+    @Test(expected = SecurityException.class)
+    public void testTooFewDollars() {
+        HttpsUserContextFactory.parseSubjectName("CN=username$devicename$4");
     }
 }

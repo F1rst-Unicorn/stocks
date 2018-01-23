@@ -1,7 +1,7 @@
 package de.njsm.stocks.server.endpoints;
 
+import de.njsm.stocks.common.data.Principals;
 import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
-import de.njsm.stocks.server.internal.auth.Principals;
 import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletRequest;

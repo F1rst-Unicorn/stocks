@@ -1,11 +1,7 @@
 package de.njsm.stocks.server.endpoints;
 
-import de.njsm.stocks.common.data.Data;
-import de.njsm.stocks.common.data.Ticket;
-import de.njsm.stocks.common.data.UserDevice;
-import de.njsm.stocks.common.data.UserDeviceFactory;
+import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
-import de.njsm.stocks.server.internal.auth.Principals;
 import de.njsm.stocks.server.internal.auth.UserContextFactory;
 import de.njsm.stocks.server.internal.db.DatabaseHandler;
 import org.apache.logging.log4j.LogManager;

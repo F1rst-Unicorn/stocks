@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.internal.auth;
 
+import de.njsm.stocks.common.data.Principals;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,7 +14,6 @@ public class HttpsUserContextFactory implements UserContextFactory {
 
     public static final String SSL_CLIENT_KEY = "X-SSL-Client-S-DN";
 
-
     @Override
     public Principals getPrincipals(HttpServletRequest request) {
         String clientName = request.getHeader(SSL_CLIENT_KEY);
@@ -26,8 +26,9 @@ public class HttpsUserContextFactory implements UserContextFactory {
         return noDollar == -1 && noEqual == -1;
     }
 
-    Principals parseSubjectName(String subject){
+    static Principals parseSubjectName(String subject){
         LOG.debug("Parsing " + subject);
+        subject = subject.trim();
         String commonName = extractCommonName(subject);
 
         int[] indices = new int[3];
@@ -48,8 +49,8 @@ public class HttpsUserContextFactory implements UserContextFactory {
 
     }
 
-    private String extractCommonName(String subject) {
-        Pattern pattern = Pattern.compile(".*CN=([a-zA-Z0-9\\$]*).*");
+    private static String extractCommonName(String subject) {
+        Pattern pattern = Pattern.compile(".*CN=([-_ a-zA-Z0-9\\$]*).*");
         Matcher matcher = pattern.matcher(subject);
         if (matcher.matches()) {
             return matcher.group(1);

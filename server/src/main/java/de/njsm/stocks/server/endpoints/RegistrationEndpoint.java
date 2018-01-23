@@ -1,8 +1,8 @@
-package de.njsm.stocks.sentry.endpoints;
+package de.njsm.stocks.server.endpoints;
 
 import de.njsm.stocks.common.data.Ticket;
-import de.njsm.stocks.sentry.auth.CertificateManager;
 import de.njsm.stocks.sentry.db.DatabaseHandler;
+import de.njsm.stocks.server.internal.auth.AuthAdmin;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,13 +16,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 @Path("/uac")
-public class UserGenerator {
+public class RegistrationEndpoint {
 
-    private static final Logger LOG = LogManager.getLogger(UserGenerator.class);
+    private static final Logger LOG = LogManager.getLogger(RegistrationEndpoint.class);
 
     private final DatabaseHandler handler;
 
-    public UserGenerator(DatabaseHandler handler) {
+    public RegistrationEndpoint(DatabaseHandler handler) {
         this.handler = handler;
     }
 
@@ -45,7 +45,7 @@ public class UserGenerator {
 
             // save signing request
             String userFileName = String.format("user_%d", ticket.deviceId);
-            String csrFileName = String.format(CertificateManager.csrFormatString, userFileName);
+            String csrFileName = String.format(AuthAdmin.CSR_FORMAT_STRING, userFileName);
             FileOutputStream csrFile = new FileOutputStream(csrFileName);
             IOUtils.write(ticket.pemFile.getBytes(), csrFile);
             csrFile.close();
@@ -54,7 +54,7 @@ public class UserGenerator {
             handler.handleTicket(ticket.ticket, ticket.deviceId);
 
             // Send answer to client
-            String certFileName = String.format(CertificateManager.certFormatString, userFileName);
+            String certFileName = String.format(AuthAdmin.CERT_FORMAT_STRING, userFileName);
             FileInputStream input = new FileInputStream(certFileName);
             ticket.pemFile = IOUtils.toString(input);
             input.close();

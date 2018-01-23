@@ -8,32 +8,35 @@ import static org.junit.Assert.assertEquals;
 public class PrincipalsTest {
 
     @Test
-    public void validCreation() {
-        String uname = "username";
-        String dname = "device";
-        int uid = 4;
-        int did = 6;
-
-        String[] rawInput = new String[] {
-                uname,
-                String.valueOf(uid),
-                dname,
-                String.valueOf(did)
+    public void testSuccessful() {
+        String[] input = {
+                "user",
+                "4",
+                "device",
+                "5"
         };
 
-        Principals uut = new Principals(uname, dname, uid, did);
+        Principals uut = new Principals(input);
 
-        Principals uut2 = new Principals(rawInput);
+        assertEquals("user", uut.getUsername());
+        assertEquals(4, uut.getUid());
+        assertEquals("device", uut.getDeviceName());
+        assertEquals(5, uut.getDid());
+    }
 
-        assertEquals(uname, uut.getUsername());
-        assertEquals(dname, uut.getDeviceName());
+    @Test
+    public void typeSafeConstructor() {
+        int uid = 1;
+        int did = 4;
+        String user = "user";
+        String device = "device";
+
+        Principals uut = new Principals(user, device, uid, did);
+
+        assertEquals(user, uut.getUsername());
         assertEquals(uid, uut.getUid());
+        assertEquals(device, uut.getDeviceName());
         assertEquals(did, uut.getDid());
-
-        assertEquals(uname, uut2.getUsername());
-        assertEquals(dname, uut2.getDeviceName());
-        assertEquals(uid, uut2.getUid());
-        assertEquals(did, uut2.getDid());
     }
 
     @Test(expected = SecurityException.class)
@@ -49,7 +52,7 @@ public class PrincipalsTest {
                 String.valueOf(did)
         };
 
-        Principals uut = new Principals(rawInput);
+        new Principals(rawInput);
     }
 
     @Test(expected = SecurityException.class)
@@ -67,8 +70,20 @@ public class PrincipalsTest {
                 "I'm evil :)"
         };
 
-        Principals uut = new Principals(rawInput);
+        new Principals(rawInput);
     }
+
+    @Test(expected = SecurityException.class)
+    public void testWrongLength() {
+        String[] input = {
+                "user",
+                "4",
+                "device",
+        };
+
+        new Principals(input);
+    }
+
 
     @Test
     public void testEquality() {
@@ -79,5 +94,13 @@ public class PrincipalsTest {
         Assert.assertTrue(uut2.equals(uut2));
         Assert.assertFalse(uut1.equals(new Object()));
         Assert.assertFalse(uut1.equals(uut2));
+    }
+
+    @Test
+    public void hashsAreEqual() {
+        Principals uut1 = new Principals("user", "device", 1, 2);
+        Principals uut2 = new Principals("user", "device", 1, 2);
+
+        assertEquals(uut1.hashCode(), uut2.hashCode());
     }
 }

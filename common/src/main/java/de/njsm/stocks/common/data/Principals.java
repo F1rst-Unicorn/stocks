@@ -1,6 +1,8 @@
 package de.njsm.stocks.common.data;
 
 
+import java.util.Objects;
+
 /**
  * Stores the principals of a user during ticket
  * creation
@@ -55,22 +57,28 @@ public class Principals {
         return did;
     }
 
+    public String getReadableString() {
+        return username + "@" + deviceName;
+    }
+
     @Override
     public String toString() {
         return username + "$" + uid + "$" + deviceName + "$" + did;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (! (obj instanceof Principals)) {
-            return false;
-        } else {
-            Principals other = (Principals) obj;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Principals that = (Principals) o;
+        return uid == that.uid &&
+                did == that.did &&
+                Objects.equals(username, that.username) &&
+                Objects.equals(deviceName, that.deviceName);
+    }
 
-            return uid == other.uid &&
-                    did == other.did &&
-                    username.equals(other.username) &&
-                    deviceName.equals(other.deviceName);
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, deviceName, uid, did);
     }
 }
