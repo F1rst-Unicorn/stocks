@@ -33,12 +33,12 @@ public class TicketAuthoriser {
             return handleTicketInternally(ticket);
         } catch (SecurityException |
                 IOException e) {
-            LOG.error("Could not handle ticket", e);
+            LOG.warn("Could not handle ticket", e);
             authAdmin.wipeDeviceCredentials(ticket.deviceId);
             return getErrorTicket(ticket);
         } catch (InvalidRequestException e) {
             // don't erase any certificates in this case!
-            LOG.error("Could not handle ticket", e);
+            LOG.warn("Could not handle ticket", e);
             return getErrorTicket(ticket);
         }
     }
@@ -76,7 +76,7 @@ public class TicketAuthoriser {
             return now.before(valid_till_date) &&
                     dbTicket.deviceId == deviceId;
         } else {
-            LOG.debug("No ticket found for deviceId " + deviceId);
+            LOG.warn("No ticket found for deviceId " + deviceId);
             return false;
         }
 
@@ -87,7 +87,7 @@ public class TicketAuthoriser {
         Principals dbPrincipals = handler.getPrincipalsForTicket(ticket);
 
         if (! csrPrincipals.equals(dbPrincipals)) {
-            LOG.error("CSR Subject name differs from database! DB:" + dbPrincipals.toString() + " CSR:" +
+            LOG.warn("CSR Subject name differs from database! DB:" + dbPrincipals.toString() + " CSR:" +
                     csrPrincipals.toString());
             return false;
         }
@@ -99,6 +99,6 @@ public class TicketAuthoriser {
     }
 
     private Ticket getErrorTicket(Ticket request) {
-        return new Ticket(request.deviceId, request.ticket, "");
+        return new Ticket(request.deviceId, request.ticket, null);
     }
 }

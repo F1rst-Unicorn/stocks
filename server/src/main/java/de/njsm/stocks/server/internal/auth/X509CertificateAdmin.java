@@ -13,6 +13,17 @@ public class X509CertificateAdmin implements AuthAdmin {
 
     private static final Logger LOG = LogManager.getLogger(X509CertificateAdmin.class);
 
+    private String csrFormatString;
+
+    private String certFormatString;
+
+    private String caRootDirectory;
+
+    public X509CertificateAdmin(String caRootDirectory) {
+        this.caRootDirectory = caRootDirectory;
+        this.csrFormatString = caRootDirectory + "/intermediate/csr/%s.csr.pem";
+        this.certFormatString = caRootDirectory + "/intermediate/certs/%s.csr.pem";
+    }
 
     @Override
     public synchronized void saveCsr(int deviceId, String content) throws IOException {
@@ -30,7 +41,7 @@ public class X509CertificateAdmin implements AuthAdmin {
     }
 
     @Override
-    public void wipeDeviceCredentials(int deviceId) {
+    public synchronized void wipeDeviceCredentials(int deviceId) {
         (new File(getCsrFileName(deviceId))).delete();
         (new File(getCertificateFileName(deviceId))).delete();
     }
@@ -38,13 +49,14 @@ public class X509CertificateAdmin implements AuthAdmin {
     public synchronized void generateCertificate(int deviceId) throws IOException {
 
         String command = String.format("openssl ca " +
-                        "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
+                        "-config %s/intermediate/openssl.cnf " +
                         "-extensions usr_cert " +
                         "-notext " +
                         "-batch " +
                         "-md sha256 " +
                         "-in %s " +
                         "-out %s ",
+                caRootDirectory,
                 getCsrFileName(deviceId),
                 getCertificateFileName(deviceId));
 
@@ -78,10 +90,11 @@ public class X509CertificateAdmin implements AuthAdmin {
     public synchronized void revokeCertificate(int id) {
 
         String command = String.format("openssl ca " +
-                "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
+                "-config %s/intermediate/openssl.cnf " +
                 "-batch " +
-                "-revoke /usr/share/stocks-server/root/CA/intermediate/certs/user_%d.cert.pem",
-                id);
+                "-revoke %s",
+                caRootDirectory,
+                getCertificateFileName(id));
         try {
             Runtime.getRuntime().exec(command).waitFor();
             refreshCrl();
@@ -93,18 +106,20 @@ public class X509CertificateAdmin implements AuthAdmin {
     }
 
     private void refreshCrl() {
-        String crlCommand = "openssl ca " +
-                "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
+        String crlCommand = String.format("openssl ca " +
+                "-config %s/intermediate/openssl.cnf " +
                 "-gencrl " +
-                "-out /usr/share/stocks-server/root/CA/intermediate/crl/intermediate.crl.pem";
+                "-out %s/intermediate/crl/intermediate.crl.pem",
+                caRootDirectory,
+                caRootDirectory);
         String nginxCommand = "sudo /usr/lib/stocks-server/nginx-reload";
         
         try {
             Runtime.getRuntime().exec(crlCommand).waitFor();
 
-            FileOutputStream out = new FileOutputStream("/usr/share/stocks-server/root/CA/intermediate/crl/whole.crl.pem");
-            IOUtils.copy(new FileInputStream("/usr/share/stocks-server/root/CA/crl/ca.crl.pem"), out);
-            IOUtils.copy(new FileInputStream("/usr/share/stocks-server/root/CA/intermediate/crl/intermediate.crl.pem"), out);
+            FileOutputStream out = new FileOutputStream(caRootDirectory + "/intermediate/crl/whole.crl.pem");
+            IOUtils.copy(new FileInputStream(caRootDirectory + "/crl/ca.crl.pem"), out);
+            IOUtils.copy(new FileInputStream(caRootDirectory + "/intermediate/crl/intermediate.crl.pem"), out);
             out.close();
 
             Runtime.getRuntime().exec(nginxCommand).waitFor();
@@ -117,12 +132,12 @@ public class X509CertificateAdmin implements AuthAdmin {
 
     private String getCsrFileName(int deviceId) {
         String userFileName = getFileBaseName(deviceId);
-        return String.format(AuthAdmin.CSR_FORMAT_STRING, userFileName);
+        return String.format(csrFormatString, userFileName);
     }
 
     private String getCertificateFileName(int deviceId) {
         String userFileName = getFileBaseName(deviceId);
-        return String.format(AuthAdmin.CERT_FORMAT_STRING, userFileName);
+        return String.format(certFormatString, userFileName);
     }
 
     private String getFileBaseName(int deviceId) {

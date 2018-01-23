@@ -20,8 +20,7 @@ public class RegistrationEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(RegistrationEndpoint.class);
 
-    private final TicketAuthoriser authoriser;
-
+    private TicketAuthoriser authoriser;
 
     public RegistrationEndpoint(DatabaseHandler handler,
                                 UserContextFactory contextFactory,

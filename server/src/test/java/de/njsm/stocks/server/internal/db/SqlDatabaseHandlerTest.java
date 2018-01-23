@@ -329,6 +329,16 @@ public class SqlDatabaseHandlerTest {
     }
 
     @Test
+    public void testGettingTicket() {
+        String ticketValue = "AAAA";
+        int expectedDeviceId = 3;
+
+        ServerTicket output = uut.getTicket(ticketValue);
+
+        assertEquals(output.deviceId, expectedDeviceId);
+    }
+
+    @Test
     public void exceptionReturnsNull() {
         Object result = uut.runSqlOperation((FunctionWithExceptions<Connection, Object, SQLException>) con -> {
             throw new SQLException("test");
