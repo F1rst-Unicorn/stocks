@@ -13,9 +13,11 @@ fi
 SERVER=$1
 
 set -e
+rm -rf $RESOURCES
 mkdir -p $RESOURCES
 
 createFirstUser $RESOURCES
+checkInvalidAccess
 checkInitialServer
 checkUpdates
 checkLocations
@@ -25,6 +27,5 @@ checkEanNumbers
 checkFoodItems
 checkDevicesAndRevocation
 
-rm -rf $RESOURCES
 
 echo SUCCESS

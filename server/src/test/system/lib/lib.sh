@@ -75,9 +75,21 @@ createFirstUser() {
     rm $RESOURCES/response.json
     echo Test first user: OK
     echo "##teamcity[testFinished name='Initialisation']"
-
 }
 
+checkInvalidAccess() {
+    NAME="Cannot access server via sentry port"
+    echo "##teamcity[testStarted name='$NAME']"
+    curl -sS $CURLARGS -XGET https://$SERVER:10911/location > $CURL_FILE
+    check '^.*404 Not Found.*$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+
+    NAME="Cannot access sentry via server port"
+    echo "##teamcity[testStarted name='$NAME']"
+    curl -sS $CURLARGS -XPOST https://$SERVER:10912/uac/newuser > $CURL_FILE
+    check '^.*404 Not Found.*$' "$NAME"
+    echo "##teamcity[testFinished name='$NAME']"
+}
 
 checkInitialServer() {
     NAME="Users are initially empty"
