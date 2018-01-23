@@ -26,4 +26,5 @@ public interface StocksDataVisitor<I, O> {
     O eanNumber(EanNumber number, I input);
 
 
+    O serverTicket(ServerTicket serverTicket, I input);
 }

@@ -14,4 +14,10 @@ public interface DatabaseHandler {
     void removeUser(User u);
     Ticket addDevice(UserDevice d);
     void removeDevice(UserDevice d);
+
+    ServerTicket getTicket(String ticket);
+
+    Principals getPrincipalsForTicket(String ticket);
+
+    void removeTicket(int deviceId);
 }

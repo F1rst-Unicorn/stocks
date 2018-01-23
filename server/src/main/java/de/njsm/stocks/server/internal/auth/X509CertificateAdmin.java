@@ -7,21 +7,35 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class X509CertificateAdmin implements AuthAdmin {
 
     private static final Logger LOG = LogManager.getLogger(X509CertificateAdmin.class);
 
-    /**
-     * Execute openssl command to generate new certificate
-     *
-     * @param userFile The userFile string, i.e. the file name without extension
-     */
-    public synchronized void generateCertificate(String userFile) throws IOException {
+
+    @Override
+    public synchronized void saveCsr(int deviceId, String content) throws IOException {
+        FileOutputStream csrFile = new FileOutputStream(getCsrFileName(deviceId));
+        IOUtils.write(content, csrFile);
+        csrFile.close();
+    }
+
+    @Override
+    public synchronized String getCertificate(int deviceId) throws IOException {
+        FileInputStream input = new FileInputStream(getCertificateFileName(deviceId));
+        String result = IOUtils.toString(input);
+        input.close();
+        return result;
+    }
+
+    @Override
+    public void wipeDeviceCredentials(int deviceId) {
+        (new File(getCsrFileName(deviceId))).delete();
+        (new File(getCertificateFileName(deviceId))).delete();
+    }
+
+    public synchronized void generateCertificate(int deviceId) throws IOException {
 
         String command = String.format("openssl ca " +
                         "-config /usr/share/stocks-server/root/CA/intermediate/openssl.cnf " +
@@ -29,10 +43,10 @@ public class X509CertificateAdmin implements AuthAdmin {
                         "-notext " +
                         "-batch " +
                         "-md sha256 " +
-                        "-in " + CSR_FORMAT_STRING + " " +
-                        "-out " + CERT_FORMAT_STRING + " ",
-                userFile,
-                userFile);
+                        "-in %s " +
+                        "-out %s ",
+                getCsrFileName(deviceId),
+                getCertificateFileName(deviceId));
 
         Process p = Runtime.getRuntime().exec(command);
         try {
@@ -45,12 +59,11 @@ public class X509CertificateAdmin implements AuthAdmin {
     /**
      * Read the CSR and extract the parts of the Subject name
      *
-     * @param csrFile the relative filepath of the CSR to read
      * @return The parsed principals
      * @throws IOException if IO goes wrong
      */
-    public synchronized Principals getPrincipals(String csrFile) throws IOException {
-        PEMParser parser = new PEMParser(new FileReader(csrFile));
+    public synchronized Principals getPrincipals(int deviceId) throws IOException {
+        PEMParser parser = new PEMParser(new FileReader(getCsrFileName(deviceId)));
         Object csrRaw = parser.readObject();
         if (csrRaw instanceof PKCS10CertificationRequest) {
             PKCS10CertificationRequest csr = (PKCS10CertificationRequest) csrRaw;
@@ -100,5 +113,19 @@ public class X509CertificateAdmin implements AuthAdmin {
         } catch (InterruptedException e) {
             LOG.error("Interrupted while waiting", e);
         }
+    }
+
+    private String getCsrFileName(int deviceId) {
+        String userFileName = getFileBaseName(deviceId);
+        return String.format(AuthAdmin.CSR_FORMAT_STRING, userFileName);
+    }
+
+    private String getCertificateFileName(int deviceId) {
+        String userFileName = getFileBaseName(deviceId);
+        return String.format(AuthAdmin.CERT_FORMAT_STRING, userFileName);
+    }
+
+    private String getFileBaseName(int deviceId) {
+        return String.format("user_%d", deviceId);
     }
 }

@@ -166,6 +166,57 @@ public class SqlDatabaseHandler implements DatabaseHandler{
         });
     }
 
+    @Override
+    public ServerTicket getTicket(String ticket) {
+        return runSqlOperation(con -> {
+            String query = "SELECT * FROM Ticket WHERE ticket=?";
+            PreparedStatement sqlQuery = con.prepareStatement(query);
+            sqlQuery.setString(1, ticket);
+
+            ServerTicket result = null;
+            ResultSet rs = sqlQuery.executeQuery();
+            while (rs.next()) {
+                result = new ServerTicket(0,
+                        rs.getTimestamp("created_on"),
+                        rs.getInt("belongs_device"));
+            }
+
+            return result;
+        });
+    }
+
+    @Override
+    public Principals getPrincipalsForTicket(String ticket) {
+        return runSqlOperation(con -> {
+            String getTicketQuery = "SELECT d.`ID` as did, d.name as dname, u.`ID` as uid, u.name as uname " +
+                    "FROM Ticket t, User u, User_device d " +
+                    "WHERE ticket=? AND t.belongs_device=d.`ID` AND d.belongs_to=u.`ID`";
+            PreparedStatement sqlQuery = con.prepareStatement(getTicketQuery);
+            sqlQuery.setString(1, ticket);
+
+            Principals result = null;
+            ResultSet rs = sqlQuery.executeQuery();
+            while (rs.next()){
+                result = new Principals(rs.getString("uname"),
+                        rs.getString("dname"),
+                        rs.getInt("uid"),
+                        rs.getInt("did"));
+            }
+
+            return result;
+        });
+    }
+
+    @Override
+    public void removeTicket(int deviceId) {
+        runSqlOperation(con -> {
+            String removeTicketCommand = "DELETE FROM Ticket WHERE belongs_device=?";
+            PreparedStatement sqlRemoveTicketCommand = con.prepareStatement(removeTicketCommand);
+            sqlRemoveTicketCommand.setInt(1, deviceId);
+            sqlRemoveTicketCommand.execute();
+        });
+    }
+
     <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client) {
         Connection con = null;
         try {
@@ -180,7 +231,7 @@ public class SqlDatabaseHandler implements DatabaseHandler{
         }
     }
 
-    void runSqlOperation(ConsumerWithExceptions<Connection, SQLException> client) {
+    private void runSqlOperation(ConsumerWithExceptions<Connection, SQLException> client) {
         runSqlOperation(con -> {
             client.accept(con);
             return null;

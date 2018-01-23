@@ -15,13 +15,28 @@ public class MockAuthAdmin implements AuthAdmin {
     }
 
     @Override
-    public void generateCertificate(String userFile) throws IOException {
+    public void saveCsr(int deviceId, String content) throws IOException {
 
     }
 
     @Override
-    public Principals getPrincipals(String csrFile) throws IOException {
-        return new Principals("Jack", "Device", 1, 1);
+    public String getCertificate(int deviceId) throws IOException {
+        return null;
+    }
+
+    @Override
+    public void wipeDeviceCredentials(int deviceId) {
+
+    }
+
+    @Override
+    public void generateCertificate(int deviceId) throws IOException {
+
+    }
+
+    @Override
+    public Principals getPrincipals(int deviceId) throws IOException {
+        return null;
     }
 
     @Override
