@@ -149,4 +149,9 @@ public class HttpsUserContextFactoryTest {
     public void testTooFewDollars() {
         HttpsUserContextFactory.parseSubjectName("CN=username$devicename$4");
     }
+
+    @Test(expected = SecurityException.class)
+    public void testCompleteGarbage() {
+        HttpsUserContextFactory.parseSubjectName("29A");
+    }
 }

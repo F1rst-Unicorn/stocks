@@ -28,7 +28,7 @@ public class SqlDatabaseHandlerTest {
     private SqlDatabaseHandler uut;
 
     @Before
-    public void resetDatabase() throws IOException, SQLException {
+    public void resetDatabase() throws SQLException {
         DatabaseHelper.resetSampleData();
 
         c = new Config(System.getProperties());
@@ -336,6 +336,31 @@ public class SqlDatabaseHandlerTest {
         ServerTicket output = uut.getTicket(ticketValue);
 
         assertEquals(output.deviceId, expectedDeviceId);
+    }
+
+    @Test
+    public void gettingInvalidTicketReturnsNull() {
+        String ticketValue = "not in the db";
+
+        ServerTicket output = uut.getTicket(ticketValue);
+
+        assertNull(output);
+    }
+
+    @Test
+    public void testGettingPrincipalsForTicket() {
+        Principals expected = new Principals("Alice", "laptop", 2, 3);
+
+        Principals actual = uut.getPrincipalsForTicket("AAAA");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void principalsInvalidTicketReturnsNull() {
+        Principals actual = uut.getPrincipalsForTicket("not in the db");
+
+        assertNull(actual);
     }
 
     @Test

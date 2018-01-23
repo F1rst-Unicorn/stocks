@@ -4,7 +4,6 @@ import de.njsm.stocks.common.data.Principals;
 import de.njsm.stocks.common.data.ServerTicket;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.server.internal.auth.AuthAdmin;
-import de.njsm.stocks.server.internal.auth.InvalidRequestException;
 import de.njsm.stocks.server.internal.db.DatabaseHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

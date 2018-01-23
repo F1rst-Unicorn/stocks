@@ -9,12 +9,12 @@ public class Config {
 
     private static final Logger LOG = LogManager.getLogger(Config.class);
 
-    private static final String DB_ADDRESS_KEY = "de.njsm.stocks.internal.db.databaseAddress";
-    private static final String DB_PORT_KEY = "de.njsm.stocks.internal.db.databasePort";
-    private static final String DB_NAME_KEY = "de.njsm.stocks.internal.db.databaseName";
-    private static final String DB_USERNAME_KEY = "de.njsm.stocks.internal.db.databaseUsername";
-    private static final String DB_PASSWORD_KEY = "de.njsm.stocks.internal.db.databasePassword";
-    private static final String DB_VALIDITY_KEY = "de.njsm.stocks.internal.ticketValidityTimeInMinutes";
+    static final String DB_ADDRESS_KEY = "de.njsm.stocks.internal.db.databaseAddress";
+    static final String DB_PORT_KEY = "de.njsm.stocks.internal.db.databasePort";
+    static final String DB_NAME_KEY = "de.njsm.stocks.internal.db.databaseName";
+    static final String DB_USERNAME_KEY = "de.njsm.stocks.internal.db.databaseUsername";
+    static final String DB_PASSWORD_KEY = "de.njsm.stocks.internal.db.databasePassword";
+    static final String DB_VALIDITY_KEY = "de.njsm.stocks.internal.ticketValidityTimeInMinutes";
 
     private String dbAddress;
     private String dbPort;
@@ -38,6 +38,7 @@ public class Config {
             ticketValidity = Integer.parseInt(rawTicketValidity);
         } catch (NumberFormatException e) {
             LOG.error("ticket validity is not an integer", e);
+            throw e;
         }
     }
 
