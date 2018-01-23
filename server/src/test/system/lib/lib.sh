@@ -30,7 +30,7 @@ check() {
                 echo -n "       Actual "
                 echo "$MESSAGE"
                 echo "##teamcity[testFailed name='$2' message='Comparison \
-failed' expected='$1' actual='$MESSAGE' type='comparisonFailure']"
+failed' expected='$1' actual='$(cat $CURL_FILE)' type='comparisonFailure']"
                 cat $CURL_FILE
                 echo
                 exit 1
