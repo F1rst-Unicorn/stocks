@@ -44,19 +44,17 @@
         </constructor-arg>
     </bean>
 
-    <bean name="sentryDbHandler" class="de.njsm.stocks.sentry.db.DatabaseHandler">
-        <constructor-arg index="0" ref="authAdmin"/>
-        <constructor-arg index="1" ref="dbUrl"/>
-        <constructor-arg index="2" ref="dbUser"/>
-        <constructor-arg index="3" ref="dbPassword"/>
-        <constructor-arg index="4" ref="ticketValidity"/>
-    </bean>
-
     <bean name="dbHandler" class="de.njsm.stocks.server.internal.db.SqlDatabaseHandler">
         <constructor-arg index="0" ref="dbUrl"/>
         <constructor-arg index="1" ref="dbUser"/>
         <constructor-arg index="2" ref="dbPassword"/>
         <constructor-arg index="3" ref="authAdmin"/>
+    </bean>
+
+    <bean name="ticketAuthoriser" class="de.njsm.stocks.server.internal.business.TicketAuthoriser" >
+        <constructor-arg index="0" ref="authAdmin"/>
+        <constructor-arg index="1" ref="dbHandler"/>
+        <constructor-arg index="2" ref="ticketValidity"/>
     </bean>
 
     <bean name="deviceEndPoint" class="de.njsm.stocks.server.endpoints.DeviceEndpoint">
@@ -90,7 +88,9 @@
     </bean>
 
     <bean name="userGeneratorEndPoint" class="de.njsm.stocks.server.endpoints.RegistrationEndpoint">
-        <constructor-arg index="0" ref="sentryDbHandler"/>
+        <constructor-arg index="0" ref="dbHandler"/>
+        <constructor-arg index="1" ref="contextFactory"/>
+        <constructor-arg index="2" ref="ticketAuthoriser"/>
     </bean>
 
 
