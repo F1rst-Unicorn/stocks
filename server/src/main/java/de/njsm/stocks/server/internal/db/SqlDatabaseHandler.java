@@ -178,7 +178,8 @@ public class SqlDatabaseHandler implements DatabaseHandler{
             while (rs.next()) {
                 result = new ServerTicket(0,
                         rs.getTimestamp("created_on"),
-                        rs.getInt("belongs_device"));
+                        rs.getInt("belongs_device"),
+                        rs.getString("ticket"));
             }
 
             return result;
@@ -204,16 +205,6 @@ public class SqlDatabaseHandler implements DatabaseHandler{
             }
 
             return result;
-        });
-    }
-
-    @Override
-    public void removeTicket(int deviceId) {
-        runSqlOperation(con -> {
-            String removeTicketCommand = "DELETE FROM Ticket WHERE belongs_device=?";
-            PreparedStatement sqlRemoveTicketCommand = con.prepareStatement(removeTicketCommand);
-            sqlRemoveTicketCommand.setInt(1, deviceId);
-            sqlRemoveTicketCommand.execute();
         });
     }
 

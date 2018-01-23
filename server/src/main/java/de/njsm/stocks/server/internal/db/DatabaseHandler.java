@@ -18,6 +18,4 @@ public interface DatabaseHandler {
     ServerTicket getTicket(String ticket);
 
     Principals getPrincipalsForTicket(String ticket);
-
-    void removeTicket(int deviceId);
 }

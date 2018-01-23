@@ -1,12 +1,15 @@
 package de.njsm.stocks.common.data;
 
-import org.junit.Assert;
+import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 public class EanNumberTest {
 
@@ -29,9 +32,9 @@ public class EanNumberTest {
 
     @Test
     public void testConstructor() {
-        Assert.assertEquals(idReference, uut.id);
-        Assert.assertEquals(codeReference, uut.eanCode);
-        Assert.assertEquals(identifiesReference, uut.identifiesFood);
+        assertEquals(idReference, uut.id);
+        assertEquals(codeReference, uut.eanCode);
+        assertEquals(identifiesReference, uut.identifiesFood);
     }
 
     @Test
@@ -40,7 +43,7 @@ public class EanNumberTest {
 
         uut.fillRemoveStmt(stmt);
 
-        Mockito.verify(stmt).setInt(1, idReference);
+        verify(stmt).setInt(1, idReference);
         Mockito.verifyNoMoreInteractions(stmt);
     }
 
@@ -50,7 +53,17 @@ public class EanNumberTest {
 
         String actualStmt = uut.getRemoveStmt();
 
-        Assert.assertEquals(expectedStmt, actualStmt);
+        assertEquals(expectedStmt, actualStmt);
     }
 
+    @Test
+    public void testVisitorCall() {
+        StocksDataVisitor<Integer,Integer> input = Utils.getMockVisitor();
+        Integer stub = 1;
+
+        int result = uut.accept(input, stub);
+
+        verify(input).eanNumber(uut, stub);
+        assertEquals(2, result);
+    }
 }

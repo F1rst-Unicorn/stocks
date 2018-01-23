@@ -1,5 +1,6 @@
 package de.njsm.stocks.common.data;
 
+import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,6 +8,9 @@ import org.mockito.Mockito;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 public class FoodTest {
 
@@ -79,5 +83,17 @@ public class FoodTest {
 
         Assert.assertEquals(expectedString, actualString);
     }
+
+    @Test
+    public void testVisitorCall() {
+        StocksDataVisitor<Integer,Integer> input = Utils.getMockVisitor();
+        Integer stub = 1;
+
+        int result = uut.accept(input, stub);
+
+        verify(input).food(uut, stub);
+        assertEquals(2, result);
+    }
+
 
 }

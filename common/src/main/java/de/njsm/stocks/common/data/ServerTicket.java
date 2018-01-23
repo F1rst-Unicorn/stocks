@@ -25,10 +25,13 @@ public class ServerTicket extends Data implements SqlRemovable {
 
     public int deviceId;
 
-    public ServerTicket(int id, Date creationDate, int deviceId) {
+    public String ticket;
+
+    public ServerTicket(int id, Date creationDate, int deviceId, String ticket) {
         this.id = id;
         this.creationDate = creationDate;
         this.deviceId = deviceId;
+        this.ticket = ticket;
     }
 
     public ServerTicket() {
@@ -41,12 +44,12 @@ public class ServerTicket extends Data implements SqlRemovable {
 
     @Override
     public void fillRemoveStmt(PreparedStatement stmt) throws SQLException {
-        stmt.setInt(1, id);
+        stmt.setInt(1, deviceId);
     }
 
     @Override
     public String getRemoveStmt() {
-        return "DELETE FROM Ticket WHERE ID=?";
+        return "DELETE FROM Ticket WHERE belongs_device=?";
     }
 
     @Override

@@ -86,4 +86,15 @@ public class DeviceEndpointTest extends BaseTestEndpoint {
         Mockito.verifyNoMoreInteractions(handler);
     }
 
+    @Test
+    public void returnEmptyTicketIfNotGotFromDatabase() {
+        Mockito.when(handler.addDevice(any())).thenReturn(null);
+
+        Ticket result = uut.addDevice(createMockRequest(), testItem);
+
+        Mockito.verify(handler).addDevice(any());
+        Mockito.verifyNoMoreInteractions(handler);
+        Assert.assertNull(result.pemFile);
+        Assert.assertNull(result.ticket);
+    }
 }

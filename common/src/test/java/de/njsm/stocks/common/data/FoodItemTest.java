@@ -1,13 +1,17 @@
 package de.njsm.stocks.common.data;
 
+import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.threeten.bp.Instant;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import org.threeten.bp.Instant;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 public class FoodItemTest {
 
@@ -65,4 +69,16 @@ public class FoodItemTest {
 
         Assert.assertEquals(expectedStmt, actualStmt);
     }
+
+    @Test
+    public void testVisitorCall() {
+        StocksDataVisitor<Integer,Integer> input = Utils.getMockVisitor();
+        Integer stub = 1;
+
+        int result = uut.accept(input, stub);
+
+        verify(input).foodItem(uut, stub);
+        assertEquals(2, result);
+    }
+
 }

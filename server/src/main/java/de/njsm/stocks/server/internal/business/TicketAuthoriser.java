@@ -31,6 +31,7 @@ public class TicketAuthoriser {
     public Ticket handleTicket(Ticket ticket) {
         try {
             return handleTicketInternally(ticket);
+
         } catch (SecurityException |
                 IOException e) {
             LOG.warn("Could not handle ticket", e);
@@ -44,15 +45,21 @@ public class TicketAuthoriser {
     }
 
     private Ticket handleTicketInternally(Ticket ticket) throws IOException, SecurityException, InvalidRequestException {
-        if (! isTicketValid(ticket.ticket, ticket.deviceId)) {
+        ServerTicket dbTicket = handler.getTicket(ticket.ticket);
+
+        if (! isTicketValid(ticket, dbTicket)) {
             throw new InvalidRequestException("ticket is not valid");
         }
 
         authAdmin.saveCsr(ticket.deviceId, ticket.pemFile);
 
-        if (! handleTicket(ticket.ticket, ticket.deviceId)) {
+        if (! arePrincipalsValid(ticket)) {
             throw new SecurityException("Could not match user for ticket");
         }
+
+        authAdmin.generateCertificate(ticket.deviceId);
+
+        handler.remove(dbTicket);
 
         ticket.pemFile = authAdmin.getCertificate(ticket.deviceId);
         LOG.info("Authorised new device with ID " + ticket.deviceId);
@@ -63,39 +70,35 @@ public class TicketAuthoriser {
      * Determine whether the ticket has been created
      * by an existing user
      *
-     * @param ticket The ticket to check for
+     * @param dbTicket The ticket to check for
      * @return true iff the ticket is valid
      */
-    private boolean isTicketValid(String ticket, int deviceId) {
-        ServerTicket dbTicket = handler.getTicket(ticket);
+    private boolean isTicketValid(Ticket ticket, ServerTicket dbTicket) {
 
         if (dbTicket != null) {
             Date valid_till_date = new Date(dbTicket.creationDate.getTime() + validityTime * 60000);
             Date now = new java.util.Date();
 
             return now.before(valid_till_date) &&
-                    dbTicket.deviceId == deviceId;
+                    dbTicket.deviceId == ticket.deviceId;
         } else {
-            LOG.warn("No ticket found for deviceId " + deviceId);
+            LOG.warn("No ticket found for deviceId " + ticket.deviceId);
             return false;
         }
 
     }
 
-    private boolean handleTicket(String ticket, int deviceId) throws IOException {
-        Principals csrPrincipals = authAdmin.getPrincipals(deviceId);
-        Principals dbPrincipals = handler.getPrincipalsForTicket(ticket);
+    private boolean arePrincipalsValid(Ticket ticket) throws IOException {
+        Principals csrPrincipals = authAdmin.getPrincipals(ticket.deviceId);
+        Principals dbPrincipals = handler.getPrincipalsForTicket(ticket.ticket);
 
         if (! csrPrincipals.equals(dbPrincipals)) {
             LOG.warn("CSR Subject name differs from database! DB:" + dbPrincipals.toString() + " CSR:" +
                     csrPrincipals.toString());
             return false;
+        } else {
+            return true;
         }
-
-        authAdmin.generateCertificate(deviceId);
-        handler.removeTicket(deviceId);
-
-        return true;
     }
 
     private Ticket getErrorTicket(Ticket request) {
