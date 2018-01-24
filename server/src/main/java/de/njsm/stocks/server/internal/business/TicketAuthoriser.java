@@ -76,7 +76,7 @@ public class TicketAuthoriser {
 
         if (dbTicket != null) {
             Date valid_till_date = new Date(dbTicket.creationDate.getTime() + validityTime * 60000);
-            Date now = new java.util.Date();
+            Date now = new Date();
 
             return now.before(valid_till_date) &&
                     dbTicket.deviceId == ticket.deviceId;
@@ -91,7 +91,10 @@ public class TicketAuthoriser {
         Principals csrPrincipals = authAdmin.getPrincipals(ticket.deviceId);
         Principals dbPrincipals = handler.getPrincipalsForTicket(ticket.ticket);
 
-        if (! csrPrincipals.equals(dbPrincipals)) {
+        if (dbPrincipals == null) {
+            LOG.warn("No principals in DB found");
+            return false;
+        } else if (! csrPrincipals.equals(dbPrincipals)) {
             LOG.warn("CSR Subject name differs from database! DB:" + dbPrincipals.toString() + " CSR:" +
                     csrPrincipals.toString());
             return false;
