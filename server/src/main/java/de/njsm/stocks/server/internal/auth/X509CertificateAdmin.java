@@ -1,6 +1,7 @@
 package de.njsm.stocks.server.internal.auth;
 
 import de.njsm.stocks.common.data.Principals;
+import de.njsm.stocks.common.util.ConsumerWithExceptions;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,10 +20,14 @@ public class X509CertificateAdmin implements AuthAdmin {
 
     private String caRootDirectory;
 
-    public X509CertificateAdmin(String caRootDirectory) {
+    private String reloadCommand;
+
+    public X509CertificateAdmin(String caRootDirectory,
+                                String reloadCommand) {
         this.caRootDirectory = caRootDirectory;
         this.csrFormatString = caRootDirectory + "/intermediate/csr/%s.csr.pem";
-        this.certFormatString = caRootDirectory + "/intermediate/certs/%s.csr.pem";
+        this.certFormatString = caRootDirectory + "/intermediate/certs/%s.cert.pem";
+        this.reloadCommand = reloadCommand;
     }
 
     @Override
@@ -30,14 +35,6 @@ public class X509CertificateAdmin implements AuthAdmin {
         FileOutputStream csrFile = new FileOutputStream(getCsrFileName(deviceId));
         IOUtils.write(content, csrFile);
         csrFile.close();
-    }
-
-    @Override
-    public synchronized String getCertificate(int deviceId) throws IOException {
-        FileInputStream input = new FileInputStream(getCertificateFileName(deviceId));
-        String result = IOUtils.toString(input);
-        input.close();
-        return result;
     }
 
     @Override
@@ -61,11 +58,15 @@ public class X509CertificateAdmin implements AuthAdmin {
                 getCertificateFileName(deviceId));
 
         Process p = Runtime.getRuntime().exec(command);
-        try {
-            p.waitFor();
-        } catch (InterruptedException e){
-            LOG.error("Interrupted: ", e);
-        }
+        runInterruptableAction((Void dummy) -> p.waitFor());
+    }
+
+    @Override
+    public synchronized String getCertificate(int deviceId) throws IOException {
+        FileInputStream input = new FileInputStream(getCertificateFileName(deviceId));
+        String result = IOUtils.toString(input);
+        input.close();
+        return result;
     }
 
     /**
@@ -88,43 +89,50 @@ public class X509CertificateAdmin implements AuthAdmin {
 
 
     public synchronized void revokeCertificate(int id) {
+        runInterruptableAction((Void dummy) -> {
 
-        String command = String.format("openssl ca " +
-                "-config %s/intermediate/openssl.cnf " +
-                "-batch " +
-                "-revoke %s",
-                caRootDirectory,
-                getCertificateFileName(id));
-        try {
-            Runtime.getRuntime().exec(command).waitFor();
-            refreshCrl();
-        } catch (IOException e){
-            LOG.error("Failed to revoke certificate", e);
-        } catch (InterruptedException e) {
-            LOG.error("Interrupted while waiting", e);
-        }
+            String command = String.format("openssl ca " +
+                            "-config %s/intermediate/openssl.cnf " +
+                            "-batch " +
+                            "-revoke %s",
+                    caRootDirectory,
+                    getCertificateFileName(id));
+            try {
+                Runtime.getRuntime().exec(command).waitFor();
+                refreshCrl();
+            } catch (IOException e) {
+                LOG.error("Failed to revoke certificate", e);
+            }
+        });
     }
 
     private void refreshCrl() {
-        String crlCommand = String.format("openssl ca " +
-                "-config %s/intermediate/openssl.cnf " +
-                "-gencrl " +
-                "-out %s/intermediate/crl/intermediate.crl.pem",
-                caRootDirectory,
-                caRootDirectory);
-        String nginxCommand = "sudo /usr/lib/stocks-server/nginx-reload";
-        
+        runInterruptableAction((Void dummy) -> {
+            String crlCommand = String.format("openssl ca " +
+                            "-config %s/intermediate/openssl.cnf " +
+                            "-gencrl " +
+                            "-out %s/intermediate/crl/intermediate.crl.pem",
+                    caRootDirectory,
+                    caRootDirectory);
+
+            try {
+                Runtime.getRuntime().exec(crlCommand).waitFor();
+
+                FileOutputStream out = new FileOutputStream(caRootDirectory + "/intermediate/crl/whole.crl.pem");
+                IOUtils.copy(new FileInputStream(caRootDirectory + "/crl/ca.crl.pem"), out);
+                IOUtils.copy(new FileInputStream(caRootDirectory + "/intermediate/crl/intermediate.crl.pem"), out);
+                out.close();
+
+                Runtime.getRuntime().exec(reloadCommand).waitFor();
+            } catch (IOException e) {
+                LOG.error("Failed to reload CRL", e);
+            }
+        });
+    }
+
+    private void runInterruptableAction(ConsumerWithExceptions<Void, InterruptedException> client) {
         try {
-            Runtime.getRuntime().exec(crlCommand).waitFor();
-
-            FileOutputStream out = new FileOutputStream(caRootDirectory + "/intermediate/crl/whole.crl.pem");
-            IOUtils.copy(new FileInputStream(caRootDirectory + "/crl/ca.crl.pem"), out);
-            IOUtils.copy(new FileInputStream(caRootDirectory + "/intermediate/crl/intermediate.crl.pem"), out);
-            out.close();
-
-            Runtime.getRuntime().exec(nginxCommand).waitFor();
-        } catch (IOException e) {
-            LOG.error("Failed to reload CRL", e);
+            client.accept(null);
         } catch (InterruptedException e) {
             LOG.error("Interrupted while waiting", e);
         }

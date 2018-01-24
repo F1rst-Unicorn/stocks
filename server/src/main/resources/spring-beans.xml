@@ -17,12 +17,18 @@
         <constructor-arg index="0" value="/usr/share/stocks-server/root/CA" type="java.lang.String"/>
     </bean>
 
+    <bean name="nginxReloadCommand" class="java.lang.String">
+        <constructor-arg index="0" value="sudo /usr/lib/stocks-server/nginx-reload" type="java.lang.String"/>
+    </bean>
+
+
     <bean name="config" class="de.njsm.stocks.server.internal.Config">
         <constructor-arg index="0" ref="propertiesFile"/>
     </bean>
 
     <bean name="authAdmin" class="de.njsm.stocks.server.internal.auth.X509CertificateAdmin">
         <constructor-arg index="0" ref="certificateAuthorityPath"/>
+        <constructor-arg index="1" ref="nginxReloadCommand"/>
     </bean>
 
     <bean name="contextFactory" class="de.njsm.stocks.server.internal.auth.HttpsUserContextFactory"/>
