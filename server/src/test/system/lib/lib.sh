@@ -385,7 +385,7 @@ checkDevicesAndRevocation() {
     check "^\[.*\{\"id\":[0-9]+,\"name\":\"Mobile\",\"userId\":$USERID\}.*\]$" \
             "$NAME"
     DEVID=$(cat $CURL_FILE | sed -r 's/.*"id":([0-9]+),"name":"Mobile.*/\1/g')
-    TICKET=$(cat $RESOURCES/newTicket.json | sed -r 's/.*"ticket":"(.*)".*/\1/g')
+    TICKET=$(cat $RESOURCES/newTicket.json | sed -r 's/.*"ticket":"([^"]*)".*/\1/g')
 
     echo Test devices: OK
 

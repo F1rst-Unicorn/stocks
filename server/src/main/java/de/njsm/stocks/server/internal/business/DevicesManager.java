@@ -49,6 +49,6 @@ public class DevicesManager {
         return new Ticket(
                 deviceId,
                 Ticket.generateTicket(),
-                "");
+                null);
     }
 }
