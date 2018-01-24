@@ -1,19 +1,12 @@
 package de.njsm.stocks.server.internal.db;
 
 import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.server.internal.Config;
-import de.njsm.stocks.server.internal.auth.MockAuthAdmin;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.threeten.bp.Instant;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,25 +16,21 @@ import static org.junit.Assert.assertNull;
 
 public class SqlDatabaseHandlerTest {
 
-    private Config c;
-    private MockAuthAdmin ca;
     private SqlDatabaseHandler uut;
 
     @Before
     public void resetDatabase() throws SQLException {
         DatabaseHelper.resetSampleData();
 
-        c = new Config(System.getProperties());
-        ca = new MockAuthAdmin();
+        Config c = new Config(System.getProperties());
         uut = new SqlDatabaseHandler(String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
                 c.getDbAddress(), c.getDbPort(), c.getDbName()),
                 c.getDbUsername(),
-                c.getDbPassword(),
-                ca);
+                c.getDbPassword());
     }
 
     @Test
-    public void timestampsAreReadInUtc() throws Exception {
+    public void timestampsAreReadInUtc() {
         Instant expected = Instant.ofEpochMilli(0);
 
         Data[] result = uut.get(FoodItemFactory.f);
@@ -50,11 +39,11 @@ public class SqlDatabaseHandlerTest {
     }
 
     @Test
-    public void testAddingUser() throws IOException, SQLException {
+    public void testAddingUser() {
         UserFactory factory = new UserFactory();
         User input = new User();
         Data[] output;
-        int expectedUserCount = 3;
+        int expectedUserCount = 4;
         boolean[] hits = new boolean[expectedUserCount];
         input.name = "Mike";
 
@@ -73,6 +62,9 @@ public class SqlDatabaseHandlerTest {
                 if (((User) d).name.equals("Alice")) {
                     hits[2] = true;
                 }
+                if (((User) d).name.equals("Jack")) {
+                    hits[3] = true;
+                }
             } else {
                 throw new IllegalArgumentException("Got non-user data entry");
             }
@@ -81,7 +73,7 @@ public class SqlDatabaseHandlerTest {
     }
 
     @Test
-    public void testRenamingFood() throws IOException, SQLException {
+    public void testRenamingFood() {
         FoodFactory factory = new FoodFactory();
         Food input = new Food();
         Data[] output;
@@ -115,7 +107,7 @@ public class SqlDatabaseHandlerTest {
     }
 
     @Test
-    public void testRemovingFood() throws IOException, SQLException {
+    public void testRemovingFood() {
         FoodFactory factory = new FoodFactory();
         Food input = new Food();
         Data[] output;
@@ -146,19 +138,17 @@ public class SqlDatabaseHandlerTest {
     }
 
     @Test
-    public void testAddingDevice() throws IOException, SQLException {
+    public void testAddingDevice() {
         UserDevice input = new UserDevice();
         UserDeviceFactory factory = new UserDeviceFactory();
         int expectedDevices = 5;
         boolean[] hits = new boolean[expectedDevices];
-        int deviceId = -1;
-        boolean ticketPresent = false;
         Data[] output;
         input.name = "new device";
         input.userId = 1;
 
 
-        uut.addDevice(input);
+        uut.add(input);
 
 
         output = uut.get(factory);
@@ -179,28 +169,16 @@ public class SqlDatabaseHandlerTest {
                 }
                 if (((UserDevice) d).name.equals("new device")) {
                     hits[4] = true;
-                    deviceId = ((UserDevice) d).id;
                 }
             } else {
                 throw new IllegalArgumentException("Got non-device data entry");
             }
         }
         assertArrayTrue(hits);
-
-        Ticket[] tickets = getTickets();
-        assertEquals(2, tickets.length);
-
-        for (Ticket t : tickets) {
-            if (t.deviceId == deviceId) {
-                ticketPresent = true;
-            }
-        }
-
-        Assert.assertTrue(ticketPresent);
     }
 
     @Test
-    public void testGettingData() throws IOException, SQLException {
+    public void testGettingData() {
         FoodFactory factory = new FoodFactory();
         Data[] output;
         int expectedCount = 3;
@@ -229,7 +207,7 @@ public class SqlDatabaseHandlerTest {
     }
 
     @Test
-    public void testMovingItems() throws IOException, SQLException {
+    public void testMovingItems() {
         Data[] output;
         FoodItemFactory factory = new FoodItemFactory();
         FoodItem i = new FoodItem();
@@ -256,7 +234,7 @@ public class SqlDatabaseHandlerTest {
     }
 
     @Test
-    public void testRemoveDevice() throws IOException, SQLException {
+    public void testRemoveDevice() {
         UserDevice d = new UserDevice();
         UserDeviceFactory factory = new UserDeviceFactory();
         Data[] output;
@@ -265,13 +243,10 @@ public class SqlDatabaseHandlerTest {
         d.id = 2;
 
 
-        uut.removeDevice(d);
+        uut.remove(d);
 
 
         output = uut.get(factory);
-        List<Integer> revokedIds = ca.getRevokedIds();
-        assertEquals(1, revokedIds.size());
-        assertEquals(d.id, (int) revokedIds.get(0));
         assertEquals(deviceCount, output.length);
         for (Data data : output) {
             if (data instanceof UserDevice) {
@@ -291,41 +266,17 @@ public class SqlDatabaseHandlerTest {
     }
 
     @Test
-    public void testRemoveUser() throws IOException, SQLException {
-        User u = new User();
+    public void testRemoveUser() {
+        User u = new User(3, "Bob");
         UserFactory factory = new UserFactory();
-        UserDeviceFactory devFactory = new UserDeviceFactory();
         Data[] output;
-        int deviceCount = 2;
-        boolean[] hits = new boolean[deviceCount];
-        u.id = 1;
 
-
-        uut.removeUser(u);
-
+        uut.remove(u);
 
         output = uut.get(factory);
-        List<Integer> revokedIds = ca.getRevokedIds();
-        assertEquals(2, revokedIds.size());
-        Assert.assertTrue(revokedIds.contains(1));
-        Assert.assertTrue(revokedIds.contains(2));
-        assertEquals(1, output.length);
-        assertEquals(2, ((User) output[0]).id);
-
-        output = uut.get(devFactory);
-        assertEquals(deviceCount, output.length);
-        for (Data d : output) {
-            if (d instanceof UserDevice) {
-                UserDevice dev = (UserDevice) d;
-                if (dev.name.equals("laptop")) {
-                    hits[0] = true;
-                }
-                if (dev.name.equals("pending_device")) {
-                    hits[1] = true;
-                }
-            }
-        }
-        assertArrayTrue(hits);
+        assertEquals(2, output.length);
+        assertEquals(1, ((User) output[0]).id);
+        assertEquals(2, ((User) output[1]).id);
     }
 
     @Test
@@ -363,71 +314,20 @@ public class SqlDatabaseHandlerTest {
         assertNull(actual);
     }
 
-    @Test
-    public void exceptionReturnsNull() {
-        Object result = uut.runSqlOperation((FunctionWithExceptions<Connection, Object, SQLException>) con -> {
-            throw new SQLException("test");
-        });
-
-        assertNull(result);
-    }
-
-    @Test
-    public void testRollbackWithNull() {
-        uut.rollback(null);
-    }
-
-    @Test
-    public void testRollbackWithConnection() throws SQLException {
-        Connection con = Mockito.mock(Connection.class);
-
-        uut.rollback(con);
-
-        Mockito.verify(con).rollback();
-        Mockito.verifyNoMoreInteractions(con);
-    }
-
-    @Test
-    public void testRollbackWithException() throws SQLException {
-        Connection con = Mockito.mock(Connection.class);
-        Mockito.doThrow(new SQLException("Mockito")).when(con).rollback();
-
-        uut.rollback(con);
-
-        Mockito.verify(con).rollback();
-        Mockito.verifyNoMoreInteractions(con);
-    }
-
-    @Test
-    public void testClosingWithException() throws SQLException {
-        Connection con = Mockito.mock(Connection.class);
-        Mockito.doThrow(new SQLException("Mockito")).when(con).close();
-
-        uut.close(con);
-
-        Mockito.verify(con).close();
-        Mockito.verifyNoMoreInteractions(con);
-    }
-
-    private Ticket[] getTickets() throws SQLException {
-        String sqlString = "SELECT * FROM Ticket";
-        Connection c = DatabaseHelper.getConnection();
-        PreparedStatement s = c.prepareStatement(sqlString);
-        ResultSet res = s.executeQuery();
-        ArrayList<Ticket> list = new ArrayList<>();
-
-        while (res.next()) {
-            Ticket t = new Ticket();
-            t.ticket = res.getString("ticket");
-            t.deviceId = res.getInt("belongs_device");
-            list.add(t);
-        }
-        return list.toArray(new Ticket[list.size()]);
-    }
-
     private void assertArrayTrue(boolean[] array) {
         for (boolean b : array) {
             Assert.assertTrue(b);
         }
+    }
+
+    @Test
+    public void testGettingDeviceIdsOfUser() {
+        List<Integer> expected = new ArrayList<>();
+        expected.add(3);
+        expected.add(4);
+
+        List<Integer> actual = uut.getDeviceIdsOfUser(new User(2, "Alice"));
+
+        assertEquals(expected, actual);
     }
 }

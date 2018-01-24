@@ -6,6 +6,7 @@ import org.junit.*;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -49,6 +50,14 @@ public class X509CertificateAdminTest {
         Principals p = uut.getPrincipals(deviceCounter);
 
         Assert.assertEquals(input, p);
+    }
+
+    @Test(expected=SecurityException.class)
+    public void testParsingInvalidCsr() throws Exception {
+        File invalidCsr = new File(caDirectory.getPath() + "/intermediate/csr/user_-1.csr.pem");
+        IOUtils.write("invalid csr", new FileOutputStream(invalidCsr));
+
+        uut.getPrincipals(-1);
     }
 
     @Test

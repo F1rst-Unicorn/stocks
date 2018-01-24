@@ -15,7 +15,7 @@ public class DatabaseHelper {
             "DELETE FROM EAN_number",
             "INSERT INTO Food (ID, name) VALUES (1, 'Carrot'), (2, 'Beer'), (3, 'Cheese')",
             "INSERT INTO Location (ID, name) VALUES (1, 'Fridge') , (2, 'Cupboard')",
-            "INSERT INTO User (ID, name) VALUES (1, 'Bob'), (2, 'Alice')",
+            "INSERT INTO User (ID, name) VALUES (1, 'Bob'), (2, 'Alice'), (3, 'Jack')",
             "INSERT INTO User_device (ID, name, belongs_to) VALUES (1, 'mobile', 1), (2, 'mobile2', 1), (3, 'laptop', 2), (4, 'pending_device', 2)",
             "INSERT INTO Food_item (ID, eat_by, registers, buys, stored_in, of_type) VALUES" +
                     "(1, '1970-01-01 00:00:00', 3, 2, 1, 2)," +

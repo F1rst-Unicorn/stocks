@@ -91,4 +91,15 @@ public class SqlStatementFillerVisitor extends StocksDataVisitorImpl<PreparedSta
         }
         return null;
     }
+
+    @Override
+    public Void ticket(Ticket t, PreparedStatement input) {
+        try {
+            input.setString(1, t.ticket);
+            input.setInt(2, t.deviceId);
+        } catch (SQLException e) {
+            throw new VisitorException(e);
+        }
+        return null;
+    }
 }

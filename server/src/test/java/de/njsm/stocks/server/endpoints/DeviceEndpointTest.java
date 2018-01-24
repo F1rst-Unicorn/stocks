@@ -3,98 +3,73 @@ package de.njsm.stocks.server.endpoints;
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
-import de.njsm.stocks.common.data.UserDeviceFactory;
-import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.UserContextFactory;
+import de.njsm.stocks.server.internal.business.DevicesManager;
 import de.njsm.stocks.server.internal.db.DatabaseHandler;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 
 public class DeviceEndpointTest extends BaseTestEndpoint {
 
-    private String ticket;
-    private UserDevice testItem;
-    private UserDevice invalidTestItem;
+    private Ticket ticket;
 
     private DeviceEndpoint uut;
 
     private DatabaseHandler handler;
 
-    private UserContextFactory authAdmin;
+    private DevicesManager devicesManager;
 
     @Before
     public void setup() {
+        devicesManager = Mockito.mock(DevicesManager.class);
         handler = Mockito.mock(DatabaseHandler.class);
-        authAdmin = Mockito.mock(UserContextFactory.class);
-        uut = new DeviceEndpoint(handler, authAdmin);
+        UserContextFactory contextFactory = Mockito.mock(UserContextFactory.class);
+        uut = new DeviceEndpoint(devicesManager, handler, contextFactory);
 
-        Mockito.when(handler.get(UserDeviceFactory.f))
+        Mockito.when(devicesManager.getDevices())
                 .thenReturn(new Data[0]);
-        Mockito.when(authAdmin.getPrincipals(any()))
+        Mockito.when(contextFactory.getPrincipals(any()))
                 .thenReturn(TEST_USER);
-        ticket = Ticket.generateTicket();
-        testItem = new UserDevice(1, "Mobile", 2);
-        invalidTestItem = new UserDevice(1, "Mobile$1", 2);
+        ticket = new Ticket(3, Ticket.generateTicket(), "");
     }
 
     @Test
-    public void testGettingDevice() {
-        Data[] result = uut.getDevices(createMockRequest());
+    public void testAddingDevice() {
+        UserDevice userDevice = new UserDevice(0, "Mobile", 3);
+        Mockito.when(devicesManager.addDevice(userDevice)).thenReturn(ticket);
 
-        Assert.assertNotNull(result);
-        Assert.assertEquals(0, result.length);
-        Mockito.verify(handler).get(UserDeviceFactory.f);
+        Ticket actual = uut.addDevice(BaseTestEndpoint.createMockRequest(), userDevice);
+
+        assertEquals(ticket, actual);
+        Mockito.verify(devicesManager).addDevice(userDevice);
         Mockito.verifyNoMoreInteractions(handler);
+        Mockito.verifyNoMoreInteractions(devicesManager);
     }
 
     @Test
-    public void testAddingValidItem() {
-        Assert.assertTrue(HttpsUserContextFactory.isNameValid(testItem.name));
-        Mockito.when(handler.addDevice(testItem))
-                .thenReturn(new Ticket(0, ticket, null));
+    public void testGettingDevices() {
 
-        Ticket result = uut.addDevice(createMockRequest(), testItem);
+        Data[] output = uut.getDevices(BaseTestEndpoint.createMockRequest());
 
-        Assert.assertNotNull(result.ticket);
-        Assert.assertEquals(Ticket.TICKET_LENGTH, result.ticket.length());
-        Mockito.verify(handler).addDevice(testItem);
+        assertEquals(0, output.length);
+        Mockito.verify(devicesManager).getDevices();
         Mockito.verifyNoMoreInteractions(handler);
-    }
+        Mockito.verifyNoMoreInteractions(devicesManager);
 
-    @Test
-    public void testAddingInvalidItem() {
-        Assert.assertFalse(HttpsUserContextFactory.isNameValid(invalidTestItem.name));
-        Mockito.when(handler.addDevice(invalidTestItem))
-                .thenReturn(new Ticket(0, null, null));
-
-        Ticket result = uut.addDevice(createMockRequest(), invalidTestItem);
-
-        Assert.assertEquals(0, result.deviceId);
-        Assert.assertNull(result.ticket);
-        Mockito.verifyNoMoreInteractions(handler);
     }
 
     @Test
     public void testRemovingDevice() {
-        uut.removeDevice(createMockRequest(), testItem);
+        UserDevice userDevice = new UserDevice(0, "Mobile", 3);
 
-        Mockito.verify(handler).removeDevice(testItem);
+        uut.removeDevice(BaseTestEndpoint.createMockRequest(), userDevice);
+
+        Mockito.verify(devicesManager).removeDevice(userDevice);
         Mockito.verifyNoMoreInteractions(handler);
-    }
-
-    @Test
-    public void returnEmptyTicketIfNotGotFromDatabase() {
-        Mockito.when(handler.addDevice(any())).thenReturn(null);
-
-        Ticket result = uut.addDevice(createMockRequest(), testItem);
-
-        Mockito.verify(handler).addDevice(any());
-        Mockito.verifyNoMoreInteractions(handler);
-        Assert.assertNull(result.pemFile);
-        Assert.assertNull(result.ticket);
+        Mockito.verifyNoMoreInteractions(devicesManager);
     }
 }

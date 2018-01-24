@@ -2,77 +2,70 @@ package de.njsm.stocks.server.endpoints;
 
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.common.data.UserFactory;
-import de.njsm.stocks.server.internal.auth.HttpsUserContextFactory;
 import de.njsm.stocks.server.internal.auth.UserContextFactory;
+import de.njsm.stocks.server.internal.business.UserManager;
 import de.njsm.stocks.server.internal.db.DatabaseHandler;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 
 public class UserEndpointTest extends BaseTestEndpoint {
 
-    private User testItem;
-    private User invalidTestItem;
-
     private DatabaseHandler handler;
 
-    private UserContextFactory authAdmin;
+    private UserManager userManager;
 
     private UserEndpoint uut;
 
     @Before
     public void setup() {
+        userManager = Mockito.mock(UserManager.class);
         handler = Mockito.mock(DatabaseHandler.class);
-        authAdmin = Mockito.mock(UserContextFactory.class);
-        uut = new UserEndpoint(handler, authAdmin);
+        UserContextFactory contextFactory = Mockito.mock(UserContextFactory.class);
+        uut = new UserEndpoint(userManager, handler, contextFactory);
 
-        Mockito.when(handler.get(UserFactory.f))
+        Mockito.when(userManager.getUsers())
                 .thenReturn(new Data[0]);
-        Mockito.when(authAdmin.getPrincipals(any()))
+        Mockito.when(contextFactory.getPrincipals(any()))
                 .thenReturn(TEST_USER);
-        testItem = new User(1, "John");
-        invalidTestItem = new User(1, "John$1");
+    }
+
+
+    @Test
+    public void testAddingDevice() {
+        User user = new User(0, "Jack");
+
+        uut.addUser(BaseTestEndpoint.createMockRequest(), user);
+
+        Mockito.verify(userManager).addUser(user);
+        Mockito.verifyNoMoreInteractions(handler);
+        Mockito.verifyNoMoreInteractions(userManager);
     }
 
     @Test
-    public void testGettingUsers() {
-        Data[] result = uut.getUsers(createMockRequest());
+    public void testGettingDevices() {
 
-        Assert.assertNotNull(result);
-        Assert.assertEquals(0, result.length);
-        Mockito.verify(handler).get(UserFactory.f);
+        Data[] output = uut.getUsers(BaseTestEndpoint.createMockRequest());
+
+        assertEquals(0, output.length);
+        Mockito.verify(userManager).getUsers();
         Mockito.verifyNoMoreInteractions(handler);
+        Mockito.verifyNoMoreInteractions(userManager);
+
     }
 
     @Test
-    public void testAddingValidItem() {
-        Assert.assertTrue(HttpsUserContextFactory.isNameValid(testItem.name));
+    public void testRemovingDevice() {
+        User user = new User(0, "Jack");
 
-        uut.addUser(createMockRequest(), testItem);
+        uut.removeUser(BaseTestEndpoint.createMockRequest(), user);
 
-        Mockito.verify(handler).add(testItem);
+        Mockito.verify(userManager).removeUser(user);
         Mockito.verifyNoMoreInteractions(handler);
-    }
-
-    @Test
-    public void testAddingInvalidItem() {
-        Assert.assertFalse(HttpsUserContextFactory.isNameValid(invalidTestItem.name));
-
-        uut.addUser(createMockRequest(), invalidTestItem);
-
-        Mockito.verifyNoMoreInteractions(handler);
-    }
-
-    @Test
-    public void testRemovingUsers() {
-        uut.removeUser(createMockRequest(), testItem);
-
-        Mockito.verify(handler).removeUser(testItem);
-        Mockito.verifyNoMoreInteractions(handler);
+        Mockito.verifyNoMoreInteractions(userManager);
     }
 
 }

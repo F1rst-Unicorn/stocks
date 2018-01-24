@@ -43,4 +43,9 @@ public class AddStatementVisitor extends StocksDataVisitorImpl<Void, String> {
     public String eanNumber(EanNumber number, Void input) {
         return "INSERT INTO EAN_number (`ID`, number, identifies) VALUES (?,?,?)";
     }
+
+    @Override
+    public String ticket(Ticket t, Void input) {
+        return "INSERT INTO Ticket (ticket, belongs_device, created_on) VALUES (?, ?, NOW())";
+    }
 }
