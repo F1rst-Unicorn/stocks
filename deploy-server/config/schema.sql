@@ -38,7 +38,7 @@ CREATE TABLE User_device (
     `name` varchar(200) NOT NULL,
     `version` int UNSIGNED NOT NULL DEFAULT 0,
     belongs_to int UNSIGNED NOT NULL,
-    CONSTRAINT `device_points_to_user` FOREIGN KEY (`belongs_to`) REFERENCES `User`(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `device_points_to_user` FOREIGN KEY (`belongs_to`) REFERENCES `User`(`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

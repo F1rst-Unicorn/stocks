@@ -7,4 +7,7 @@ ALTER TABLE User ADD COLUMN `version` int UNSIGNED NOT NULL DEFAULT 0;
 ALTER TABLE User_device ADD COLUMN `version` int UNSIGNED NOT NULL DEFAULT 0;
 ALTER TABLE EAN_number ADD COLUMN `version` int UNSIGNED NOT NULL DEFAULT 0;
 
+ALTER TABLE User_device DROP FOREIGN KEY device_points_to_user;
+ALTER TABLE User_device ADD CONSTRAINT `device_points_to_user` FOREIGN KEY (`belongs_to`) REFERENCES `User`(`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 SET foreign_key_checks = 1;
