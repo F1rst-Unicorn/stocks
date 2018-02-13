@@ -22,7 +22,8 @@ public class BaseSqlDatabaseHandlerTest {
         uut = new SqlDatabaseHandler(String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
                 c.getDbAddress(), c.getDbPort(), c.getDbName()),
                 c.getDbUsername(),
-                c.getDbPassword());
+                c.getDbPassword(),
+                "base");
     }
 
 

@@ -23,6 +23,12 @@ public class SqlDatabaseHandler extends FailSafeDatabaseHandler implements Datab
         this.fillerVisitor = new SqlStatementFillerVisitor();
     }
 
+    public SqlDatabaseHandler(String url, String username, String password, String resourceIdentifier) {
+        super(url, username, password, resourceIdentifier);
+        this.addStatementVisitor = new AddStatementVisitor();
+        this.fillerVisitor = new SqlStatementFillerVisitor();
+    }
+
     @Override
     public int add(Data d) {
         return runSqlOperation(con -> {

@@ -18,6 +18,8 @@ public class SqlDatabaseHandlerTest {
 
     private SqlDatabaseHandler uut;
 
+    private static int resourceCounter = 0;
+
     @Before
     public void resetDatabase() throws SQLException {
         DatabaseHelper.resetSampleData();
@@ -26,7 +28,9 @@ public class SqlDatabaseHandlerTest {
         uut = new SqlDatabaseHandler(String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
                 c.getDbAddress(), c.getDbPort(), c.getDbName()),
                 c.getDbUsername(),
-                c.getDbPassword());
+                c.getDbPassword(),
+                "hystrix group " + String.valueOf(resourceCounter));
+        resourceCounter++;
     }
 
     @Test
