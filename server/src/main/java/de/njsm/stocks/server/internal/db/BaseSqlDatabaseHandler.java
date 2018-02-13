@@ -34,7 +34,7 @@ public class BaseSqlDatabaseHandler {
         }
     }
 
-    private Connection getConnection() throws SQLException {
+    protected Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
     }
 

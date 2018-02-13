@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SqlDatabaseHandler extends BaseSqlDatabaseHandler implements DatabaseHandler {
+public class SqlDatabaseHandler extends FailSafeDatabaseHandler implements DatabaseHandler {
 
     private AddStatementVisitor addStatementVisitor;
 

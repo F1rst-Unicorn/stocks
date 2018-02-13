@@ -40,9 +40,14 @@ public class DevicesManager {
 
     private Ticket setupNewDevice(UserDevice d) {
         int deviceId = databaseHandler.add(d);
-        Ticket newTicket = generateNewTicket(deviceId);
-        databaseHandler.add(newTicket);
-        return newTicket;
+
+        if (deviceId != 0) {
+            Ticket newTicket = generateNewTicket(deviceId);
+            databaseHandler.add(newTicket);
+            return newTicket;
+        } else {
+            return new Ticket();
+        }
     }
 
     private Ticket generateNewTicket(int deviceId) {
