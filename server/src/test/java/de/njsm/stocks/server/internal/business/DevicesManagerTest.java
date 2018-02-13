@@ -42,10 +42,12 @@ public class DevicesManagerTest {
     @Test
     public void testAddingDevice() {
         UserDevice userDevice = new UserDevice(3, "Mobile", 1);
+        Mockito.when(databaseHandler.add(userDevice)).thenReturn(userDevice.id);
 
         Ticket actual = uut.addDevice(userDevice);
 
         assertFalse(actual.ticket.isEmpty());
+        assertEquals(userDevice.id, actual.deviceId);
         Mockito.verify(databaseHandler).add(userDevice);
         Mockito.verify(databaseHandler).add(actual);
         Mockito.verifyNoMoreInteractions(databaseHandler);
