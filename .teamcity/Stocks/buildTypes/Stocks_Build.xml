@@ -135,7 +135,7 @@
       </build-trigger>
       <build-trigger id="TRIGGER_1" type="schedulingTrigger">
         <parameters>
-          <param name="branchFilter" value="+:STOCKS-54" />
+          <param name="branchFilter" value="+:sos-android" />
           <param name="cronExpression_dm" value="*" />
           <param name="cronExpression_dw" value="*" />
           <param name="cronExpression_hour" value="*" />
