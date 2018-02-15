@@ -11,13 +11,13 @@ import java.io.FileOutputStream;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class X509CertificateAdminTest {
+public class X509AuthAdminTest {
 
     private static File caDirectory;
 
     private static int deviceCounter;
 
-    private X509CertificateAdmin uut;
+    private X509AuthAdmin uut;
 
     @BeforeClass
     public static void setupCa() throws Exception {
@@ -33,7 +33,7 @@ public class X509CertificateAdminTest {
 
     @Before
     public void setup() throws Exception {
-        uut = new X509CertificateAdmin(caDirectory.getAbsolutePath(),
+        uut = new X509AuthAdmin(caDirectory.getAbsolutePath(),
                 "touch " + caDirectory + "/reload-nginx");
     }
 

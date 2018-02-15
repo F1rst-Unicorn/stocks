@@ -2,19 +2,17 @@ package de.njsm.stocks.server.internal.auth;
 
 import de.njsm.stocks.common.data.Principals;
 
-import java.io.IOException;
-
 public interface AuthAdmin {
 
-    void saveCsr(int deviceId, String content) throws IOException;
+    void saveCsr(int deviceId, String content);
 
-    String getCertificate(int deviceId) throws IOException;
+    String getCertificate(int deviceId);
 
     void wipeDeviceCredentials(int deviceId);
 
-    void generateCertificate(int deviceId) throws IOException;
+    void generateCertificate(int deviceId);
 
-    Principals getPrincipals(int deviceId) throws IOException;
+    Principals getPrincipals(int deviceId);
 
     void revokeCertificate(int id);
 

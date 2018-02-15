@@ -2,6 +2,7 @@ package de.njsm.stocks.server.internal.db;
 
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
+import de.njsm.stocks.server.internal.util.HystrixFunction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,12 +30,11 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
 
     @Override
     protected <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client) {
-        HystrixFunction<R> producer = new HystrixFunction<>(resourceIdentifier,
-                () -> runSafeSqlOperation(client));
+        HystrixFunction<R, SQLException> producer = new HystrixFunction<>(resourceIdentifier,
+                () -> runAndCloseSqlCommand(client));
 
         try {
             return producer.execute();
-
         } catch (HystrixRuntimeException e) {
             if (e.getCause() instanceof RuntimeException) {
                 LOG.error("circuit breaker still open");
@@ -45,7 +45,7 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
         }
     }
 
-    private <R> R runSafeSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client) throws SQLException {
+    private <R> R runAndCloseSqlCommand(FunctionWithExceptions<Connection, R, SQLException> client) throws SQLException {
         Connection con = null;
         try {
             con = getConnection();

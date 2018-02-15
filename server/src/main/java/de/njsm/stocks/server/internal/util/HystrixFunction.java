@@ -1,4 +1,4 @@
-package de.njsm.stocks.server.internal.db;
+package de.njsm.stocks.server.internal.util;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
@@ -8,16 +8,14 @@ import de.njsm.stocks.common.util.ProducerWithExceptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.SQLException;
-
-public class HystrixFunction<O> extends HystrixCommand<O> {
+public class HystrixFunction<O, E extends Exception> extends HystrixCommand<O> {
 
     private static final Logger LOG = LogManager.getLogger(HystrixFunction.class);
 
-    private ProducerWithExceptions<O, SQLException> producer;
+    private ProducerWithExceptions<O, E> producer;
 
-    HystrixFunction(String resourceIdentifier,
-                    ProducerWithExceptions<O, SQLException> producer) {
+    public HystrixFunction(String resourceIdentifier,
+                    ProducerWithExceptions<O, E> producer) {
         super(getHystrixConfig(resourceIdentifier));
         this.producer = producer;
 
@@ -34,7 +32,7 @@ public class HystrixFunction<O> extends HystrixCommand<O> {
     }
 
     @Override
-    protected O run() throws SQLException {
+    protected O run() throws E {
         return producer.accept();
     }
 

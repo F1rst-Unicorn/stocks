@@ -8,7 +8,6 @@ import de.njsm.stocks.server.internal.db.DatabaseHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.util.Date;
 
 public class TicketAuthoriser {
@@ -31,8 +30,7 @@ public class TicketAuthoriser {
         try {
             return handleTicketInternally(ticket);
 
-        } catch (SecurityException |
-                IOException e) {
+        } catch (SecurityException e) {
             LOG.warn("Could not handle ticket", e);
             authAdmin.wipeDeviceCredentials(ticket.deviceId);
             return getErrorTicket(ticket);
@@ -43,7 +41,7 @@ public class TicketAuthoriser {
         }
     }
 
-    private Ticket handleTicketInternally(Ticket ticket) throws IOException, SecurityException, InvalidRequestException {
+    private Ticket handleTicketInternally(Ticket ticket) throws SecurityException, InvalidRequestException {
         ServerTicket dbTicket = handler.getTicket(ticket.ticket);
 
         if (! isTicketValid(ticket, dbTicket)) {
@@ -87,12 +85,15 @@ public class TicketAuthoriser {
 
     }
 
-    private boolean arePrincipalsValid(Ticket ticket) throws IOException {
+    private boolean arePrincipalsValid(Ticket ticket) {
         Principals csrPrincipals = authAdmin.getPrincipals(ticket.deviceId);
         Principals dbPrincipals = handler.getPrincipalsForTicket(ticket.ticket);
 
         if (dbPrincipals == null) {
             LOG.warn("No principals in DB found");
+            return false;
+        } else if (csrPrincipals == null) {
+            LOG.warn("No principals in CSR found");
             return false;
         } else if (! csrPrincipals.equals(dbPrincipals)) {
             LOG.warn("CSR Subject name differs from database! DB:" + dbPrincipals.toString() + " CSR:" +

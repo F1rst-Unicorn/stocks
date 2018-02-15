@@ -9,6 +9,10 @@
         <constructor-arg index="0" value="database"/>
     </bean>
 
+    <bean name="circuitBreakerCertificateAuthority" class="java.lang.String">
+        <constructor-arg index="0" value="certificateAuthority"/>
+    </bean>
+
     <bean name="propertiesFile" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations">
             <list>
@@ -29,9 +33,10 @@
         <constructor-arg index="0" ref="propertiesFile"/>
     </bean>
 
-    <bean name="authAdmin" class="de.njsm.stocks.server.internal.auth.X509CertificateAdmin">
+    <bean name="authAdmin" class="de.njsm.stocks.server.internal.auth.X509AuthAdmin">
         <constructor-arg index="0" ref="certificateAuthorityPath"/>
         <constructor-arg index="1" ref="nginxReloadCommand"/>
+        <constructor-arg index="2" ref="circuitBreakerCertificateAuthority"/>
     </bean>
 
     <bean name="contextFactory" class="de.njsm.stocks.server.internal.auth.HttpsUserContextFactory"/>
