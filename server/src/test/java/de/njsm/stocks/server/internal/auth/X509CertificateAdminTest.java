@@ -37,6 +37,11 @@ public class X509CertificateAdminTest {
                 "touch " + caDirectory + "/reload-nginx");
     }
 
+    @After
+    public void tearDown() throws Exception {
+        deviceCounter++;
+    }
+
     @AfterClass
     public static void removeCa() throws Exception {
         Runtime.getRuntime().exec("rm -rf " + caDirectory.getAbsolutePath()).waitFor();

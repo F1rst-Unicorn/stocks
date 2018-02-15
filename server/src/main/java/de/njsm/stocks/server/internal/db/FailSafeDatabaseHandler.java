@@ -4,7 +4,6 @@ import com.netflix.hystrix.exception.HystrixRuntimeException;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.glassfish.jersey.internal.util.Producer;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -13,16 +12,7 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
 
     private static final Logger LOG = LogManager.getLogger(FailSafeDatabaseHandler.class);
 
-    private static final String RESOURCE_IDENTIFIER = "database";
-
     private String resourceIdentifier;
-
-    FailSafeDatabaseHandler(String url,
-                                   String username,
-                                   String password) {
-        super(url, username, password);
-        resourceIdentifier = RESOURCE_IDENTIFIER;
-    }
 
     FailSafeDatabaseHandler(String url,
                                    String username,
@@ -33,8 +23,7 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
     }
 
     public boolean isCircuitBreakerOpen() {
-        Producer<Void> dummy = () -> null;
-        return new HystrixFunction<>(resourceIdentifier, dummy)
+        return new HystrixFunction<>(resourceIdentifier, null)
                 .isCircuitBreakerOpen();
     }
 

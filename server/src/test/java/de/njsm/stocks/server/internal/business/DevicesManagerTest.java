@@ -55,6 +55,19 @@ public class DevicesManagerTest {
     }
 
     @Test
+    public void unknownDeviceGivesEmptyTicket() {
+        UserDevice userDevice = new UserDevice(3, "Mobile", 1);
+
+        Ticket actual = uut.addDevice(userDevice);
+
+        assertNull(actual.ticket);
+        assertEquals(0, actual.deviceId);
+        Mockito.verify(databaseHandler).add(userDevice);
+        Mockito.verifyNoMoreInteractions(databaseHandler);
+        Mockito.verifyNoMoreInteractions(authAdmin);
+    }
+
+    @Test
     public void invalidNamesAreNotAdded() {
         UserDevice userDevice = new UserDevice(3, "Mobile$1", 1);
 
