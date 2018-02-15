@@ -34,7 +34,8 @@ public class X509AuthAdminTest {
     @Before
     public void setup() throws Exception {
         uut = new X509AuthAdmin(caDirectory.getAbsolutePath(),
-                "touch " + caDirectory + "/reload-nginx");
+                "touch " + caDirectory + "/reload-nginx",
+                "ca");
     }
 
     @After
