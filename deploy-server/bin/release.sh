@@ -27,7 +27,7 @@ sed "0,/version/{s$<version>.*</version>$<version>$MAVEN_VERSION</version>$}" \
 sed -i "s/pkgver=.*/pkgver=$VERSION/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
 sed -i "s/pkgrel=.*/pkgrel=$RELEASE/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
 sed -i "s/stocks_version: .*/stocks_version: $VERSION-$RELEASE/" \
-        "$STOCKS_ROOT"/deploy-server/install.yml
+        "$STOCKS_ROOT"/deploy-server/roles/stocks-server/vars/main.yml
 
 echo Building release
 export NO_SIGNATURE=""

@@ -24,7 +24,7 @@ build() {
     cd "$srcdir"
     
     cd server
-    mvn -Dmaven.test.skip=true package
+    mvn -Dmaven.test.skip=true clean package
     cd ..
 }
 

@@ -7,6 +7,8 @@ CWD=$(pwd)
 
 mkdir -p $STOCKS_ROOT/deploy-server/target
 
+rm -rf $STOCKS_ROOT/deploy-server/{pkg,src,stocks.tar}
+
 tar -cvf $STOCKS_ROOT/deploy-server/stocks.tar \
         --exclude-vcs \
         --exclude=android-client \
