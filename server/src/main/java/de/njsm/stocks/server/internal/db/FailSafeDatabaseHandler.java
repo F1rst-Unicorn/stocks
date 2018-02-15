@@ -48,9 +48,6 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
 
         } catch (HystrixRuntimeException e) {
             LOG.error("circuit breaker error", e);
-            if (producer.isCircuitBreakerOpen()) {
-                LOG.error("circuit breaker is open!");
-            }
             return null;
         }
     }

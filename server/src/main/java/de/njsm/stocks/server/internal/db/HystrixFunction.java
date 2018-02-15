@@ -25,7 +25,7 @@ public class HystrixFunction<O> extends HystrixCommand<O> {
     private void logState() {
         LOG.debug("health counts: " + getMetrics().getHealthCounts().toString());
         if (isCircuitBreakerOpen()) {
-            LOG.warn("Circuit breaker still open, returning immediately");
+            LOG.warn("Circuit breaker open, returning immediately");
         } else {
             LOG.debug("Circuit breaker closed");
         }

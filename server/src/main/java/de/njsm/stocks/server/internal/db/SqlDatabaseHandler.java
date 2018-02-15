@@ -15,14 +15,6 @@ public class SqlDatabaseHandler extends FailSafeDatabaseHandler implements Datab
 
     private SqlStatementFillerVisitor fillerVisitor;
 
-    public SqlDatabaseHandler(String url,
-                              String username,
-                              String password) {
-        super(url, username, password);
-        this.addStatementVisitor = new AddStatementVisitor();
-        this.fillerVisitor = new SqlStatementFillerVisitor();
-    }
-
     public SqlDatabaseHandler(String url, String username, String password, String resourceIdentifier) {
         super(url, username, password, resourceIdentifier);
         this.addStatementVisitor = new AddStatementVisitor();

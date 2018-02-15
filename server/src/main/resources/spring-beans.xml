@@ -5,6 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
        default-lazy-init="true">
 
+    <bean name="circuitBreakerDatabase" class="java.lang.String">
+        <constructor-arg index="0" value="database"/>
+    </bean>
+
     <bean name="propertiesFile" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations">
             <list>
@@ -20,7 +24,6 @@
     <bean name="nginxReloadCommand" class="java.lang.String">
         <constructor-arg index="0" value="sudo /usr/lib/stocks-server/nginx-reload" type="java.lang.String"/>
     </bean>
-
 
     <bean name="config" class="de.njsm.stocks.server.internal.Config">
         <constructor-arg index="0" ref="propertiesFile"/>
