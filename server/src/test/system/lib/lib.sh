@@ -532,3 +532,49 @@ cleanUpServer() {
                     \"eanCode\":\"123-123-12345\",\
                     \"identifiesFood\":$FOODID}"
 }
+
+addFood() {
+    curl -sS $CURLARGS -XPUT https://$SERVER:10912/food \
+            --header 'content-type: application/json' \
+            --data '{"id":0,"name":"Sausage"}' >/dev/null
+}
+addLocation() {
+    curl -sS $CURLARGS -XPUT https://$SERVER:10912/location \
+            --header 'content-type: application/json' \
+            --data '{"id":0,"name":"Fridge"}' >/dev/null
+}
+addUser() {
+    curl -sS $CURLARGS -XPUT https://$SERVER:10912/user \
+            --header 'content-type: application/json' \
+            --data '{"id":0,"name":"John"}' >/dev/null
+}
+addDevice() {
+    curl -sS $CURLARGS -XPUT https://$SERVER:10912/device \
+            --header 'content-type: application/json' \
+            --data '{"id":0,"name":"Mobile","userId":1}' >/dev/null
+}
+addEan() {
+    curl -sS $CURLARGS -XPUT https://$SERVER:10912/ean \
+            --header 'content-type: application/json' \
+            --data '{"id":0,
+                     "eanCode":"123-123-12345",
+                     "identifiesFood":1}' >/dev/null
+}
+getFood() {
+    curl -sS $CURLARGS -XGET https://$SERVER:10912/food > /dev/null
+}
+getFoodItems() {
+    curl -sS $CURLARGS -XGET https://$SERVER:10912/food/fooditem > /dev/null
+}
+getLocations() {
+    curl -sS $CURLARGS -XGET https://$SERVER:10912/location > /dev/null
+}
+getUsers() {
+    curl -sS $CURLARGS -XGET https://$SERVER:10912/user > /dev/null
+}
+getDevices() {
+    curl -sS $CURLARGS -XGET https://$SERVER:10912/device > /dev/null
+}
+getEan() {
+    curl -sS $CURLARGS -XGET https://$SERVER:10912/ean > /dev/null
+}
