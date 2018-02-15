@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="df1161b4-3695-495d-860c-d43af71a6cf2" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/2017.2/project-config.xsd">
+  <name>Stocks</name>
+  <parameters />
+  <project-extensions>
+    <extension id="PROJECT_EXT_1" type="IssueTracker">
+      <parameters>
+        <param name="host" value="https://yt.njsm.de" />
+        <param name="idPrefix" value="STOCKS" />
+        <param name="name" value="YouTrack" />
+        <param name="secure:password" value="credentialsJSON:bf0632df-bbce-44e0-888e-1df5caadc6f1" />
+        <param name="type" value="youtrack" />
+        <param name="username" value="Jan_Veen" />
+      </parameters>
+    </extension>
+    <extension id="PROJECT_EXT_2" type="OAuthProvider">
+      <parameters>
+        <param name="clientId" value="133b8d6e9faa4d280817" />
+        <param name="displayName" value="GitHub.com" />
+        <param name="gitHubUrl" value="https://github.com/" />
+        <param name="providerType" value="GitHub" />
+        <param name="secure:clientSecret" value="credentialsJSON:90a997d8-4176-441e-8112-3ddee1038ca8" />
+      </parameters>
+    </extension>
+    <extension id="PROJECT_EXT_3" type="versionedSettings">
+      <parameters>
+        <param name="buildSettings" value="PREFER_VCS" />
+        <param name="credentialsStorageType" value="credentialsJSON" />
+        <param name="enabled" value="true" />
+        <param name="rootId" value="Stocks_HttpsGithubComF1rstUnicornStocksGitRefsHeadsMaster" />
+        <param name="showChanges" value="true" />
+      </parameters>
+    </extension>
+  </project-extensions>
+  <cleanup />
+</project>
+
