@@ -27,11 +27,11 @@ public class FailSafeDatabaseHandlerTest {
     @Test
     public void openCircuitBreaker() throws InterruptedException {
         ConsumerWithExceptions<Connection, SQLException> input = (con) -> {
-            throw new RuntimeException("test");
+            throw new SQLException("test");
         };
 
         uut.runSqlOperation(input);
-        Thread.sleep(100);      // hystrix window has to shift
+        Thread.sleep(500);      // hystrix window has to shift
 
         Assert.assertTrue(uut.isCircuitBreakerOpen());
     }

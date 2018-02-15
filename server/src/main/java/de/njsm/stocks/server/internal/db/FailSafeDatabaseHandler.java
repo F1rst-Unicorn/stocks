@@ -30,14 +30,34 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
     @Override
     protected <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client) {
         HystrixFunction<R> producer = new HystrixFunction<>(resourceIdentifier,
-                () -> super.runSqlOperation(client));
+                () -> runSafeSqlOperation(client));
 
         try {
             return producer.execute();
 
         } catch (HystrixRuntimeException e) {
-            LOG.error("circuit breaker error", e);
+            if (e.getCause() instanceof RuntimeException) {
+                LOG.error("circuit breaker still open");
+            } else {
+                LOG.error("circuit breaker error", e);
+            }
             return null;
         }
     }
+
+    private <R> R runSafeSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client) throws SQLException {
+        Connection con = null;
+        try {
+            con = getConnection();
+            return client.apply(con);
+        } catch (SQLException e) {
+            rollback(con);
+            throw e;
+        } finally {
+            close(con);
+        }
+    }
+
+
+
 }
