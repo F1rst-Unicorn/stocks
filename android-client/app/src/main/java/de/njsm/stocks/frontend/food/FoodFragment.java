@@ -7,7 +7,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,7 +22,7 @@ import de.njsm.stocks.backend.network.NetworkManager;
 import de.njsm.stocks.backend.util.Config;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.frontend.AbstractDataFragment;
-import de.njsm.stocks.frontend.addfood.AddFoodItemActivity;
+import de.njsm.stocks.frontend.addfood.EditFoodItemActivity;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -50,7 +49,7 @@ public class FoodFragment extends AbstractDataFragment implements
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        swiper = (SwipeRefreshLayout) getActivity().findViewById(R.id.food_swipe);
+        swiper = getActivity().findViewById(R.id.food_swipe);
         foodId = getArguments().getInt(KEY_ID, 0);
     }
 
@@ -164,11 +163,11 @@ public class FoodFragment extends AbstractDataFragment implements
         cursor.moveToPosition(lastPos);
 
         networkManager.deleteFoodItem(selectedItem);
-        Intent intent = new Intent(getActivity(), AddFoodItemActivity.class);
-        intent.putExtra(AddFoodItemActivity.KEY_ID, foodId);
-        intent.putExtra(AddFoodItemActivity.KEY_FOOD, ((FoodActivity) getActivity()).name);
-        intent.putExtra(AddFoodItemActivity.KEY_DATE, selectedItem.eatByDate.toEpochMilli());
-        intent.putExtra(AddFoodItemActivity.KEY_LOCATION, selectedItem.storedIn);
+        Intent intent = new Intent(getActivity(), EditFoodItemActivity.class);
+        intent.putExtra(EditFoodItemActivity.KEY_ID, foodId);
+        intent.putExtra(EditFoodItemActivity.KEY_FOOD, ((FoodActivity) getActivity()).name);
+        intent.putExtra(EditFoodItemActivity.KEY_DATE, selectedItem.eatByDate.toEpochMilli());
+        intent.putExtra(EditFoodItemActivity.KEY_LOCATION, selectedItem.storedIn);
         startActivity(intent);
 
         return true;

@@ -54,6 +54,7 @@
                 android:name=".frontend.food.FoodActivity"
                 android:theme="@style/StocksTheme.NoActionBar"/>
         <activity android:name=".frontend.addfood.AddFoodItemActivity"/>
+        <activity android:name=".frontend.addfood.EditFoodItemActivity"/>
         <activity android:name=".frontend.crashlog.CrashLogActivity"/>
         <activity android:name=".frontend.emptyfood.EmptyFoodActivity"/>
         <activity android:name=".frontend.eatsoon.EatSoonActivity"/>
