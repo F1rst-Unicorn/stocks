@@ -25,7 +25,8 @@
 
         android:layout_below="@id/activity_add_food_item_date_text"
         android:layout_centerInParent="true"
-        android:calendarViewShown="false" />
+        android:calendarViewShown="false"
+        android:datePickerMode="spinner"/>
 
     <Spinner
         android:id="@+id/activity_add_food_item_spinner"

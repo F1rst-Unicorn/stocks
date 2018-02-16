@@ -59,6 +59,7 @@ public class SetupTest {
     @After
     public void tearDown() throws Exception {
         Intents.release();
+        mActivityRule.finishActivity();
     }
 
     @Test

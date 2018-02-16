@@ -3,6 +3,7 @@ package de.njsm.stocks;
 import android.support.test.rule.ActivityTestRule;
 import de.njsm.stocks.frontend.StartupActivity;
 import de.njsm.stocks.screen.MainScreen;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
@@ -24,9 +25,12 @@ public class FoodConsumptionTest {
                         {0},
                         {1},
                         {2},
-                        {3},
-                        {4}
                 });
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mActivityRule.finishActivity();
     }
 
     @Test

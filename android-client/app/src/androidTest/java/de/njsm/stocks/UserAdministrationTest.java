@@ -3,6 +3,7 @@ package de.njsm.stocks;
 import android.support.test.rule.ActivityTestRule;
 import de.njsm.stocks.frontend.StartupActivity;
 import de.njsm.stocks.screen.MainScreen;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -13,6 +14,11 @@ public class UserAdministrationTest {
     private String username = "Juliette";
 
     private String deviceName = "Mobile";
+
+    @After
+    public void tearDown() throws Exception {
+        mActivityRule.finishActivity();
+    }
 
     @Test
     public void addNewUserAndDevice() throws Exception {
