@@ -2,7 +2,6 @@ package de.njsm.stocks.common.data.view;
 
 import de.njsm.stocks.common.data.Food;
 
-import org.threeten.bp.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,18 +9,18 @@ public class FoodView {
 
     protected final Food food;
 
-    private final List<Instant> items;
+    private final List<FoodItemView> items;
 
     public FoodView(Food food) {
         this.food = food;
         this.items = new LinkedList<>();
     }
 
-    public void add(Instant i) {
+    public void add(FoodItemView i) {
         items.add(i);
     }
 
-    public List<Instant> getItems() {
+    public List<FoodItemView> getItems() {
         return items;
     }
 

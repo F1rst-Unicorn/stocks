@@ -7,16 +7,17 @@ import de.njsm.stocks.client.frontend.cli.commands.AbstractCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.service.TimeProvider;
 import de.njsm.stocks.client.storage.DatabaseManager;
+import de.njsm.stocks.common.data.view.FoodItemView;
 import de.njsm.stocks.common.data.view.FoodView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ValueRange;
+
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -170,7 +171,7 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
         LocalDate today = Instant.ofEpochMilli(timeProvider.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate listUntil = today.plus(Period.ofDays(daysLeft));
         for (FoodView f : food) {
-            f.getItems().removeIf((item) -> item.atZone(ZoneId.systemDefault()).toLocalDate().isAfter(listUntil));
+            f.getItems().removeIf((item) -> item.eatByDate.atZone(ZoneId.systemDefault()).toLocalDate().isAfter(listUntil));
 
             if ((!existing || (existing && !f.getItems().isEmpty())) &&
                     range.isValidValue(f.getItems().size()) &&
@@ -194,7 +195,8 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
     private void renderItems(StringBuilder outBuf, FoodView f) {
         int printedItems = 0;
         if (limit > 0) {
-            for (Instant date : f.getItems()) {
+            for (FoodItemView item : f.getItems()) {
+                Instant date = item.eatByDate;
                 outBuf.append("\t\t");
                 outBuf.append(FORMAT.format(date));
                 outBuf.append("\n");
