@@ -21,5 +21,8 @@ sudo virsh snapshot-create-as dp-server --name initialised-running
 
 $STOCKS_ROOT/server/src/test/system/bin/fresh-installation-test.sh dp-server
 
+scp dp-server:/var/log/stocks-server/stocks.log \
+        $STOCKS_ROOT/server/target/server.log
+
 echo "##teamcity[testSuiteFinished name='Server System Test']"
 

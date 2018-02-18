@@ -2,7 +2,7 @@
 
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 
-LOGCAT=$STOCKS_ROOT/android-client/logcat.log
+LOGCAT=$STOCKS_ROOT/android-client/app/build/app.log
 
 if [[ -z $CI_SERVER ]] ; then
         EMULATOR_ARGS=
@@ -56,5 +56,8 @@ kill $SSH_2_PID
 kill $SSH_3_PID
 kill $LOGCAT_PID
 echo -e "auth $(cat ~/.emulator_console_auth_token)\nkill\n" | nc localhost 5554
+
+scp dp-server:/var/log/stocks-server/stocks.log \
+    $STOCKS_ROOT/android-client/app/build/server.log
 
 exit $RC
