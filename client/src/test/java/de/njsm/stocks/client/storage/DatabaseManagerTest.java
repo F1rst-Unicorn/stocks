@@ -5,14 +5,15 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.init.upgrade.Version;
 import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.common.data.view.FoodItemView;
 import de.njsm.stocks.common.data.view.FoodView;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.junit.*;
 import org.mockito.Mockito;
+import org.threeten.bp.Instant;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import org.threeten.bp.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -314,7 +315,7 @@ public class DatabaseManagerTest {
     public void testGettingFoodOfLocation() throws Exception {
         List<FoodView> expectedOutput = new LinkedList<>();
         FoodView item = new FoodView(new Food(7, "Apple juice"));
-        item.add(Instant.parse("1970-01-09T00:00:00.00Z"));
+        item.add(new FoodItemView("Basement", "Juliette", "Mobile", Instant.parse("1970-01-09T00:00:00.00Z")));
         expectedOutput.add(item);
 
         List<FoodView> output = uut.getItems("", "Basement");
@@ -326,7 +327,7 @@ public class DatabaseManagerTest {
     public void testGettingFoodOfLocationAndUser() throws Exception {
         List<FoodView> expectedOutput = new LinkedList<>();
         FoodView item = new FoodView(new Food(7, "Apple juice"));
-        item.add(Instant.parse("1970-01-09T00:00:00.00Z"));
+        item.add(new FoodItemView("Basement", "Juliette", "Mobile", Instant.parse("1970-01-09T00:00:00.00Z")));
         expectedOutput.add(item);
 
         List<FoodView> output = uut.getItems("Juliette", "Basement");
