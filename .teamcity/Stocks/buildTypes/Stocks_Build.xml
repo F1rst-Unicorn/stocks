@@ -156,7 +156,7 @@
     <cleanup>
       <policy type="builds" cleanup-level="ARTIFACTS">
         <parameters>
-          <param name="keepBuilds.count" value="5" />
+          <param name="keepBuilds.count" value="100" />
         </parameters>
       </policy>
     </cleanup>
