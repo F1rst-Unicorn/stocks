@@ -7,8 +7,8 @@ set -e
 sudo virsh start dp-client || true
 sudo virsh snapshot-revert dp-server initialised-running
 sleep 10
-rm $STOCKS_ROOT/client/target/client-server.log
-rm $STOCKS_ROOT/client/target/client-client.log
+rm -rf $STOCKS_ROOT/client/target/client-server.log
+rm -rf $STOCKS_ROOT/client/target/client-client.log
 
 ansible-playbook $STOCKS_ROOT/deploy-client/install.yml
 
