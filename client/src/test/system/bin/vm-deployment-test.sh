@@ -27,8 +27,8 @@ python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
         `find $STOCKS_ROOT/client/src/test/system/usecases -type f | sort`
 
 scp dp-server:/var/log/stocks-server/stocks.log \
-        $STOCKS_ROOT/client/target/server.log
-scp dp-client:\~/.stocks/stocks.log $STOCKS_ROOT/client/target/client.log
+        $STOCKS_ROOT/client/target/client-server.log
+scp dp-client:\~/.stocks/stocks.log $STOCKS_ROOT/client/target/client-client.log
 
 echo "##teamcity[testSuiteFinished name='Client System Test']"
 echo

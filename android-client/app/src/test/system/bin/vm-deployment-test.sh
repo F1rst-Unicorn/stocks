@@ -2,7 +2,7 @@
 
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 
-LOGCAT=$STOCKS_ROOT/android-client/app/build/app.log
+LOGCAT=$STOCKS_ROOT/android-client/app/build/android-app.log
 
 if [[ -z $CI_SERVER ]] ; then
         EMULATOR_ARGS=
@@ -54,6 +54,6 @@ RC=$?
 kill $LOGCAT_PID
 
 scp dp-server:/var/log/stocks-server/stocks.log \
-    $STOCKS_ROOT/android-client/app/build/server.log
+    $STOCKS_ROOT/android-client/app/build/android-server.log
 
 exit $RC
