@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.allOf;
 public class FoodAddScreen extends AbstractScreen {
 
     public FoodAddScreen selectLocation(int itemIndex) {
-        sleep(1000);
+        sleep(2000);
         onView(withId(R.id.activity_add_food_item_spinner)).perform(click());
         onData(anything()).atPosition(itemIndex).perform(click());
         onData(anything()).atPosition(itemIndex).perform(click());

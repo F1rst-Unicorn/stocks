@@ -3,6 +3,9 @@
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 
 LOGCAT=$STOCKS_ROOT/android-client/app/build/android-app.log
+mkdir -p $STOCKS_ROOT/android-client/app/build
+rm $LOGCAT
+rm $STOCKS_ROOT/android-client/app/build/android-server.log
 
 if [[ -z $CI_SERVER ]] ; then
         EMULATOR_ARGS=

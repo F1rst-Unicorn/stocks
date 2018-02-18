@@ -3,6 +3,7 @@
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 
 sudo virsh start dp-server && sleep 10
+rm $STOCKS_ROOT/server/target/server.log
 
 set -e
 
