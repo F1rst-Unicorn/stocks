@@ -1,4 +1,3 @@
-Title: Rerun last command
-Input: user\nOA
-Commands: 2
-Output: ^Current users: \n\t1: Jack\nCurrent users: \n\t1: Jack$
+Title: Show food quietly
+Input: food list -q
+Output: ^Current food:\n\t0x Beer\n\t0x Bread\n\t0x Carrot\n\t2x Cheese\n\t6x Ham$

@@ -1,3 +1,3 @@
-Title: List remaining user
-Input: user list
-Output: ^Current users: \n\t1: Jack$
+Title: Remove user who has device
+Input: user remove Juliette
+Output: ^$
