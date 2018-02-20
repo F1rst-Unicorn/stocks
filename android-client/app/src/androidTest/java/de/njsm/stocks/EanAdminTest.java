@@ -32,6 +32,7 @@ public class EanAdminTest {
     @After
     public void tearDown() throws Exception {
         Intents.release();
+        mActivityRule.finishActivity();
     }
 
     @Test
@@ -42,9 +43,8 @@ public class EanAdminTest {
                 .goToBarCodes()
                 .recordNewBarcode()
                 .recordNewBarcode()
-                .recordNewBarcode()
-                .assertItemCount(3)
+                .assertItemCount(2)
                 .deleteBarcode(0)
-                .assertItemCount(2);
+                .assertItemCount(1);
     }
 }

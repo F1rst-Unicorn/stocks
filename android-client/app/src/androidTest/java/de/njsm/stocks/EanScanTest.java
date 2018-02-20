@@ -32,12 +32,13 @@ public class EanScanTest {
     @After
     public void tearDown() throws Exception {
         Intents.release();
+        mActivityRule.finishActivity();
     }
 
     @Test
     public void testScanning() throws Exception {
         MainScreen.test()
                 .scanSuccessful()
-                .assertTitle("Bread");
+                .assertTitle("Beer");
     }
 }

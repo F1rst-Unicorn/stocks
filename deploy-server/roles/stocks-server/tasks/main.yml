@@ -10,6 +10,40 @@
     name: "{{ remote_pkg_dir }}/{{ stocks_pkg }}"
     state: present
 
+- name: Configure stocks
+  become: True
+  template:
+    src: stocks.properties.j2
+    dest: "{{ stocks_etc }}/stocks.properties"
+    owner: tomcat8
+    group: tomcat8
+    mode: 0644
+
+- name: Link server.war
+  become: True
+  file:
+    src: "{{ stocks_lib }}/server.war"
+    dest: /usr/share/tomcat8/webapps/server.war
+    owner: tomcat8
+    group: tomcat8
+    state: link
+
+- name: Install tomcat config
+  become: True
+  copy:
+    src: "{{ stocks_base }}/server.xml"
+    dest: /usr/share/tomcat8/conf/server.xml
+    remote_src: True
+    owner: tomcat8
+    group: tomcat8
+    backup: True
+
+- name: Start tomcat
+  become: True
+  service:
+    name: tomcat8
+    state: started
+
 - name: Start MariaDB
   become: True
   service:
@@ -19,16 +53,16 @@
 - name: Setup database
   mysql_db:
     name: "{{ mysql_stocks_database }}"
-    state: present 
-    login_user: root 
+    state: present
+    login_user: root
     login_password: "{{ mysql_root_password }}"
 
 - name: Setup database user
   mysql_user:
     name: "{{ mysql_stocks_username }}"
     password: "{{ mysql_stocks_password }}"
-    priv: stocks.*:ALL 
-    state: present 
+    priv: stocks.*:ALL
+    state: present
     login_user: root
     login_password: "{{ mysql_root_password }}"
 
@@ -44,15 +78,6 @@
   command: "{{ stocks_lib }}/setup-ca {{ stocks_base }}/root/CA {{ stocks_base }}"
   become: True
   become_user: tomcat8
-  
-- name: Configure stocks
-  become: True
-  template: 
-    src: stocks.properties.j2
-    dest: "{{ stocks_etc }}/stocks.properties"
-    owner: tomcat8
-    group: tomcat8                                                                  
-    mode: 0644                                                                   
 
 - name: Create CA download point
   become: True
@@ -75,7 +100,7 @@
 - name: Create nginx SSL
   become: True
   file:
-    path: /etc/nginx/ssl 
+    path: /etc/nginx/ssl
     state: directory
 
 - name: Copy CA cert
@@ -144,31 +169,6 @@
   service:
     name: nginx
     state: reloaded
-
-- name: Link server.war
-  become: True
-  file:
-    src: "{{ stocks_lib }}/server.war"
-    dest: /usr/share/tomcat8/webapps/server.war
-    owner: tomcat8
-    group: tomcat8
-    state: link
-      
-- name: Install tomcat config
-  become: True
-  copy:
-    src: "{{ stocks_base }}/server.xml"
-    dest: /usr/share/tomcat8/conf/server.xml
-    remote_src: True
-    owner: tomcat8
-    group: tomcat8
-    backup: True
-
-- name: Start tomcat
-  become: True
-  service:
-    name: tomcat8
-    state: started
 
 - name: Start nginx server
   become: True

@@ -1,8 +1,22 @@
 #!/bin/bash
 
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
+RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
+SERVER="dp-server"
 
-LOGCAT=$STOCKS_ROOT/android-client/logcat.log
+source $STOCKS_ROOT/server/src/test/system/lib/lib.sh
+addDevice
+DEVICE_ID=$(echo $TICKET | sed 's/.*deviceId":\([0-9]*\).*/\1/g')
+TICKET_VALUE=$(echo $TICKET | sed 's/.*ticket":"\([^"]*\).*/\1/g')
+FINGERPRINT=$(curl -s http://dp-server:10910/ca | \
+        openssl x509 -noout -sha256 -fingerprint | \
+        head -n 1 | sed 's/.*=//')
+
+
+LOGCAT=$STOCKS_ROOT/android-client/app/build/android-app.log
+mkdir -p $STOCKS_ROOT/android-client/app/build
+rm -rf $LOGCAT
+rm -rf $STOCKS_ROOT/android-client/app/build/android-server.log
 
 if [[ -z $CI_SERVER ]] ; then
         EMULATOR_ARGS=
@@ -14,9 +28,6 @@ if [[ -z $ANDROID_HOME ]] ; then
         echo "ANDROID_HOME is not set!"
         exit 1
 fi
-
-sudo virsh snapshot-revert dp-server initialised-running || exit 1
-sleep 1
 
 cd $ANDROID_HOME/tools
 emulator $EMULATOR_ARGS -use-system-libs -avd dp-android &
@@ -45,16 +56,26 @@ adb uninstall de.njsm.stocks.test
 adb logcat | grep --line-buffered 'de.njsm.stocks' > $LOGCAT &
 LOGCAT_PID=$!
 
+sed -i "s/deviceId = 0/deviceId = $DEVICE_ID/g; \
+    s/ticket = \"\"/ticket = \"$TICKET_VALUE\"/g; \
+    s/fingerprint = \"\"/fingerprint = \"$FINGERPRINT\"/g" \
+    $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java
+
 RC=0
 $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
         connectedDebugAndroidTest \
         -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.SystemTestSuite
 RC=$?
 
+git checkout $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java
+
+kill $LOGCAT_PID
 kill $SSH_1_PID
 kill $SSH_2_PID
 kill $SSH_3_PID
-kill $LOGCAT_PID
-echo -e "auth $(cat ~/.emulator_console_auth_token)\nkill\n" | nc localhost 5554
+killall adb
+
+scp dp-server:/var/log/stocks-server/stocks.log \
+    $STOCKS_ROOT/android-client/app/build/android-server.log
 
 exit $RC

@@ -2,6 +2,7 @@
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
+SERVER=$1
 
 source $STOCKS_ROOT/server/src/test/system/lib/lib.sh
 
@@ -10,7 +11,6 @@ if [[ $# -ne 1 ]] ; then
         exit 1
 fi
 
-SERVER=$1
 
 set -e
 rm -rf $RESOURCES
@@ -26,6 +26,7 @@ checkFood
 checkEanNumbers
 checkFoodItems
 checkDevicesAndRevocation
+cleanUpServer
 
 
 echo SUCCESS

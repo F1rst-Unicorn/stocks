@@ -22,13 +22,15 @@ import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
 
-import java.util.function.Consumer;
-
-public class AddFoodItemActivity extends AppCompatActivity {
+public class EditFoodItemActivity extends AppCompatActivity {
 
     public static final String KEY_FOOD = "de.njsm.stocks.frontend.addfood.AddFoodItemActivity.name";
 
     public static final String KEY_ID = "de.njsm.stocks.frontend.addfood.AddFoodItemActivity.id";
+
+    public static final String KEY_LOCATION = "de.njsm.stocks.frontend.addfood.AddFoodItemActivity.location";
+
+    public static final String KEY_DATE = "de.njsm.stocks.frontend.addfood.AddFoodItemActivity.date";
 
     private String food;
     private int id;
@@ -49,13 +51,12 @@ public class AddFoodItemActivity extends AppCompatActivity {
         food = extras.getString(KEY_FOOD);
         id = extras.getInt(KEY_ID);
 
-        setTitle(String.format(getResources().getString(R.string.title_add_item), food));
+        setTitle(String.format(getResources().getString(R.string.title_edit_item), food));
 
         setupLocationDataAdapter();
 
         spinner = findViewById(R.id.activity_add_food_item_spinner);
         spinner.setAdapter(adapter);
-        Consumer<Integer> selectorCallback = resolveLocation(getIntent());
 
         picker = findViewById(R.id.activity_add_food_item_date);
         picker.setMinDate(Instant.now().toEpochMilli());
@@ -65,24 +66,28 @@ public class AddFoodItemActivity extends AppCompatActivity {
                 preselection.getDayOfMonth(), null);
 
         Bundle args = new Bundle();
-        args.putInt("id", id);
-        getLoaderManager().initLoader(1, args, new DataLoader(
+        args.putInt("id", getIntent().getExtras().getInt(KEY_LOCATION));
+        getLoaderManager().initLoader(1, args, new EditDataLoader(
                 (Cursor cursor) -> adapter.swapCursor(cursor),
-                selectorCallback,
+                (Integer value) -> spinner.setSelection(value),
                 this));
 
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         networkManager = new NetworkManager(factory);
-        Log.d(Config.LOG_TAG, "AddFoodItemActivity created");
-    }
-
-    private Consumer<Integer> resolveLocation(Intent intent) {
-        return (Integer value) -> spinner.setSelection(value);
+        Log.d(Config.LOG_TAG, "EditFoodItemActivity created");
     }
 
     private LocalDate getSelectedDate(Intent intent) {
-        long date = Instant.now().toEpochMilli();
+        long date = lookupDate(intent);
         return LocalDate.from(Instant.ofEpochMilli(date).atZone(ZoneId.of("UTC")));
+    }
+
+    private long lookupDate(Intent intent) {
+        if (intent.getExtras().containsKey(KEY_DATE)) {
+            return intent.getExtras().getLong(KEY_DATE);
+        } else {
+            return Instant.now().toEpochMilli();
+        }
     }
 
     @Override
@@ -99,6 +104,13 @@ public class AddFoodItemActivity extends AppCompatActivity {
                 R.layout.item_location,
                 null, from, to, 0);
         adapter.setDropDownViewResource(R.layout.item_location);
+    }
+
+    @Override
+    public void onBackPressed() {
+        LocalDate preselection = getSelectedDate(getIntent());
+        sendItem(preselection, getIntent().getExtras().getInt(KEY_LOCATION));
+        super.onBackPressed();
     }
 
     @Override

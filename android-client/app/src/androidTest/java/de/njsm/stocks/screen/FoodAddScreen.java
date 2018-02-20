@@ -12,18 +12,26 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static de.njsm.stocks.util.Matchers.matchesDate;
 import static org.hamcrest.CoreMatchers.anything;
+import static org.hamcrest.Matchers.allOf;
 
 public class FoodAddScreen extends AbstractScreen {
 
     public FoodAddScreen selectLocation(int itemIndex) {
+        sleep(2000);
         onView(withId(R.id.activity_add_food_item_spinner)).perform(click());
+        onData(anything()).atPosition(itemIndex).perform(click());
+        onData(anything()).atPosition(itemIndex).perform(click());
+        onData(anything()).atPosition(itemIndex).perform(click());
+        onData(anything()).atPosition(itemIndex).perform(click());
+        onData(anything()).atPosition(itemIndex).perform(click());
+        onData(anything()).atPosition(itemIndex).perform(click());
         onData(anything()).atPosition(itemIndex).perform(click());
         return this;
     }
 
     public FoodAddScreen assertLocation(String text) {
         onView(withId(R.id.item_location_name))
-                .check(matches(withText(text)));
+                .check(matches(allOf(withText(text), withEffectiveVisibility(Visibility.VISIBLE))));
         return this;
     }
 

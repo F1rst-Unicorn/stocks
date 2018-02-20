@@ -4,10 +4,13 @@
   <description />
   <settings>
     <options>
-      <option name="artifactRules" value="deploy-server/target/stocks-server-*-any.pkg.tar.xz&#xA;deploy-client/target/stocks-*-any.pkg.tar.xz&#xA;android-client/app/build/outputs/apk/app-release-unsigned.apk" />
+      <option name="artifactRules" value="deploy-server/target/stocks-server-*-any.pkg.tar.xz&#xA;deploy-client/target/stocks-*-any.pkg.tar.xz&#xA;android-client/app/build/outputs/apk/app-release-unsigned.apk&#xA;server/target/server.log&#xA;client/target/client-client.log&#xA;client/target/client-server.log&#xA;android-client/app/build/android-app.log&#xA;android-client/app/build/android-server.log" />
       <option name="executionTimeoutMin" value="45" />
       <option name="maximumNumberOfBuilds" value="2" />
     </options>
+    <disabled-settings>
+      <setting-ref ref="TRIGGER_1" />
+    </disabled-settings>
     <parameters>
       <param name="env.CI_SERVER" value="1" />
       <param name="env.NO_SIGNATURE" value="1" />
@@ -136,7 +139,7 @@
           <param name="cronExpression_dm" value="*" />
           <param name="cronExpression_dw" value="*" />
           <param name="cronExpression_hour" value="*" />
-          <param name="cronExpression_min" value="14,34,54" />
+          <param name="cronExpression_min" value="4,14,24,34,44,54" />
           <param name="cronExpression_month" value="*" />
           <param name="cronExpression_sec" value="0" />
           <param name="cronExpression_year" value="*" />
@@ -156,7 +159,7 @@
     <cleanup>
       <policy type="builds" cleanup-level="ARTIFACTS">
         <parameters>
-          <param name="keepBuilds.count" value="5" />
+          <param name="keepBuilds.count" value="100" />
         </parameters>
       </policy>
     </cleanup>

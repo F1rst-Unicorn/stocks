@@ -32,6 +32,7 @@ public class DeviceScreen extends AbstractListPresentingScreen {
     }
 
     public DeviceScreen assertDevice(int index, String name) {
+        sleep(1000);
         checkIndex(index);
         onData(anything()).inAdapterView(withId(R.id.user_detail_device_list))
                 .atPosition(index)
