@@ -71,9 +71,9 @@ public class SetupTest {
                 .assertUser("Jack")
                 .assertDevice("Device")
                 .assertUserId(1)
-                .assertDeviceId(1)
+                .assertDeviceId(Properties.deviceId)
                 .assertFingerPrint(fingerprint)
-                .assertTicket("0000")
+                .assertTicket(Properties.ticket)
                 .submit()
                 .assertRegistrationSuccess();
     }

@@ -2,6 +2,6 @@ package de.njsm.stocks;
 
 public class Properties {
 
-    public int deviceId = 0;
-    public String ticket = "";
+    public static int deviceId = 0;
+    public static String ticket = "";
 }
