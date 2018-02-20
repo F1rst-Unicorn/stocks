@@ -41,10 +41,10 @@ set -e
 
 "$STOCKS_ROOT"/android-client/gradlew assembleRelease \
         -p $STOCKS_ROOT/android-client \
-        -Pandroid.injected.signing.store.file=$STORE_FILE \
-        -Pandroid.injected.signing.store.password=$STORE_PASSWORD \
-        -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-        -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+        -Pandroid.injected.signing.store.file="${STORE_FILE}" \
+        -Pandroid.injected.signing.store.password="${STORE_PASSWORD}" \
+        -Pandroid.injected.signing.key.alias="${KEY_ALIAS}" \
+        -Pandroid.injected.signing.key.password="${KEY_PASSWORD}"
 
 echo Tagging release
 git add -A
