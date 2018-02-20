@@ -58,6 +58,7 @@ kill $LOGCAT_PID
 kill $SSH_1_PID
 kill $SSH_2_PID
 kill $SSH_3_PID
+killall adb
 
 scp dp-server:/var/log/stocks-server/stocks.log \
     $STOCKS_ROOT/android-client/app/build/android-server.log
