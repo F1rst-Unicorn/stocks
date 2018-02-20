@@ -30,14 +30,14 @@ public class SearchTest {
         MainScreen.test()
                 .search("Beer")
                 .assertResultCount(1)
-                .assertItemContent(0, searchText, 1)
+                .assertItemContent(0, searchText, 2)
                 .click(0)
                 .assertTitle(searchText);
     }
 
     @Test
     public void searchMultipleResults() throws Exception {
-        String searchText = "e";
+        String searchText = "ee";
         MainScreen.test()
                 .search(searchText)
                 .assertResultCount(2);

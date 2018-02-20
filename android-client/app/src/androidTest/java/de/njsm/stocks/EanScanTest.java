@@ -39,6 +39,6 @@ public class EanScanTest {
     public void testScanning() throws Exception {
         MainScreen.test()
                 .scanSuccessful()
-                .assertTitle("Bread");
+                .assertTitle("Beer");
     }
 }

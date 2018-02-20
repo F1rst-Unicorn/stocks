@@ -43,9 +43,8 @@ public class EanAdminTest {
                 .goToBarCodes()
                 .recordNewBarcode()
                 .recordNewBarcode()
-                .recordNewBarcode()
-                .assertItemCount(3)
+                .assertItemCount(2)
                 .deleteBarcode(0)
-                .assertItemCount(2);
+                .assertItemCount(1);
     }
 }

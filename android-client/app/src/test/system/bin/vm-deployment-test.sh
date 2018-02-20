@@ -8,6 +8,10 @@ source $STOCKS_ROOT/server/src/test/system/lib/lib.sh
 addDevice
 DEVICE_ID=$(echo $TICKET | sed 's/.*deviceId":\([0-9]*\).*/\1/g')
 TICKET_VALUE=$(echo $TICKET | sed 's/.*ticket":"\([^"]*\).*/\1/g')
+FINGERPRINT=$(curl -s http://dp-server:10910/ca | \
+        openssl x509 -noout -sha256 -fingerprint | \
+        head -n 1 | sed 's/.*=//')
+
 
 LOGCAT=$STOCKS_ROOT/android-client/app/build/android-app.log
 mkdir -p $STOCKS_ROOT/android-client/app/build
@@ -53,15 +57,14 @@ adb logcat | grep --line-buffered 'de.njsm.stocks' > $LOGCAT &
 LOGCAT_PID=$!
 
 sed -i "s/deviceId = 0/deviceId = $DEVICE_ID/g; \
-    s/ticket = \"\"/ticket = \"$TICKET_VALUE\"/g" \
+    s/ticket = \"\"/ticket = \"$TICKET_VALUE\"/g; \
+    s/fingerprint = \"\"/fingerprint = \"$FINGERPRINT\"/g" \
     $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java
 
 RC=0
 $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
         connectedDebugAndroidTest \
-        -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.SystemTestSuite \
-        -Pde.njsm.stocks.SetupTest.deviceId=$DEVICE_ID \
-        -Pde.njsm.stocks.SetupTest.ticket=$TICKET_VALUE
+        -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.SystemTestSuite
 RC=$?
 
 git checkout $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java

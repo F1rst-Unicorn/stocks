@@ -11,24 +11,10 @@ import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 
-@RunWith(Parameterized.class)
 public class LocationAddTest {
 
     @Rule
     public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
-
-    @Parameterized.Parameter
-    public String locationName;
-
-    @Parameterized.Parameters(name = "Location {0}")
-    public static Iterable<Object[]> getFoodNames() {
-        return Arrays.asList(
-                new Object[][] {
-                        {"Fridge"},
-                        {"Ground"},
-                        {"Cupboard"},
-                });
-    }
 
     @After
     public void tearDown() throws Exception {
@@ -39,7 +25,7 @@ public class LocationAddTest {
     public void addLocation() throws Exception {
         MainScreen.test()
                 .goToLocations()
-                .addLocation(locationName)
-                .assertLastItemIsNamed(locationName);
+                .addLocation("Ground")
+                .assertLastItemIsNamed("Ground");
     }
 }
