@@ -55,6 +55,9 @@ $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
 RC=$?
 
 kill $LOGCAT_PID
+kill $SSH_1_PID
+kill $SSH_2_PID
+kill $SSH_3_PID
 
 scp dp-server:/var/log/stocks-server/stocks.log \
     $STOCKS_ROOT/android-client/app/build/android-server.log
