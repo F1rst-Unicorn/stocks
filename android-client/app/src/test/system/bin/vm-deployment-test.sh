@@ -1,6 +1,13 @@
 #!/bin/bash
 
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
+RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
+SERVER="dp-server"
+
+source $STOCKS_ROOT/server/src/test/system/lib/lib.sh
+addDevice
+DEVICE_ID=$(echo $TICKET | sed 's/.*deviceId":\([0-9]*\).*/\1/g')
+TICKET_VALUE=$(echo $TICKET | sed 's/.*ticket":"\([^"]*\).*/\1/g')
 
 LOGCAT=$STOCKS_ROOT/android-client/app/build/android-app.log
 mkdir -p $STOCKS_ROOT/android-client/app/build
@@ -17,9 +24,6 @@ if [[ -z $ANDROID_HOME ]] ; then
         echo "ANDROID_HOME is not set!"
         exit 1
 fi
-
-sudo virsh snapshot-revert dp-server initialised-running || exit 1
-sleep 1
 
 cd $ANDROID_HOME/tools
 emulator $EMULATOR_ARGS -use-system-libs -avd dp-android &
@@ -48,11 +52,19 @@ adb uninstall de.njsm.stocks.test
 adb logcat | grep --line-buffered 'de.njsm.stocks' > $LOGCAT &
 LOGCAT_PID=$!
 
+sed -i "s/deviceId = 0/deviceId = $DEVICE_ID/g; \
+    s/ticket = \"\"/ticket = \"$TICKET_VALUE\"/g" \
+    $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java
+
 RC=0
 $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
         connectedDebugAndroidTest \
-        -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.SystemTestSuite
+        -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.SystemTestSuite \
+        -Pde.njsm.stocks.SetupTest.deviceId=$DEVICE_ID \
+        -Pde.njsm.stocks.SetupTest.ticket=$TICKET_VALUE
 RC=$?
+
+git checkout $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java
 
 kill $LOGCAT_PID
 kill $SSH_1_PID

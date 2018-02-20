@@ -43,9 +43,9 @@ public class SetupTest {
         String user = "Jack";
         String device = "Device";
         int uid = 1;
-        int did = 1;
+        int did = Properties.deviceId;
+        String ticket = Properties.ticket;
         fingerprint = getFingerprintFromServer();
-        String ticket = "0000";
         data.putExtra("SCAN_RESULT", user + "\n"
                 + device + "\n"
                 + uid + "\n"
