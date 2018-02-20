@@ -4,6 +4,7 @@ import android.support.test.rule.ActivityTestRule;
 import de.njsm.stocks.frontend.StartupActivity;
 import de.njsm.stocks.screen.FoodScreen;
 import de.njsm.stocks.screen.MainScreen;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +29,12 @@ public class FoodItemAddTest {
                         {0},
                         {1},
                         {2},
-                        {3},
-                        {4}
                 });
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mActivityRule.finishActivity();
     }
 
     @Test

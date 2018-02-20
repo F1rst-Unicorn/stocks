@@ -2,7 +2,10 @@
 
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 
-LOGCAT=$STOCKS_ROOT/android-client/logcat.log
+LOGCAT=$STOCKS_ROOT/android-client/app/build/android-app.log
+mkdir -p $STOCKS_ROOT/android-client/app/build
+rm -rf $LOGCAT
+rm -rf $STOCKS_ROOT/android-client/app/build/android-server.log
 
 if [[ -z $CI_SERVER ]] ; then
         EMULATOR_ARGS=
@@ -51,10 +54,13 @@ $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
         -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.SystemTestSuite
 RC=$?
 
+kill $LOGCAT_PID
 kill $SSH_1_PID
 kill $SSH_2_PID
 kill $SSH_3_PID
-kill $LOGCAT_PID
-echo -e "auth $(cat ~/.emulator_console_auth_token)\nkill\n" | nc localhost 5554
+killall adb
+
+scp dp-server:/var/log/stocks-server/stocks.log \
+    $STOCKS_ROOT/android-client/app/build/android-server.log
 
 exit $RC

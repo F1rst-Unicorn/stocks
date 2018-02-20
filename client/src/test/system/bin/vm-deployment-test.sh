@@ -7,6 +7,8 @@ set -e
 sudo virsh start dp-client || true
 sudo virsh snapshot-revert dp-server initialised-running
 sleep 10
+rm -rf $STOCKS_ROOT/client/target/client-server.log
+rm -rf $STOCKS_ROOT/client/target/client-client.log
 
 ansible-playbook $STOCKS_ROOT/deploy-client/install.yml
 
@@ -25,6 +27,10 @@ echo "##teamcity[testFinished name='Initialisation']"
 
 python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
         `find $STOCKS_ROOT/client/src/test/system/usecases -type f | sort`
+
+scp dp-server:/var/log/stocks-server/stocks.log \
+        $STOCKS_ROOT/client/target/client-server.log
+scp dp-client:\~/.stocks/stocks.log $STOCKS_ROOT/client/target/client-client.log
 
 echo "##teamcity[testSuiteFinished name='Client System Test']"
 echo

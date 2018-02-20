@@ -39,14 +39,14 @@ public class FoodActivity extends AppCompatActivity {
         name = extras.getString(KEY_NAME);
         id = extras.getInt(KEY_ID);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_food_toolbar);
+        Toolbar toolbar = findViewById(R.id.activity_food_toolbar);
         setSupportActionBar(toolbar);
         setTitle(name);
 
         AsyncTaskFactory factory = new AsyncTaskFactory(this);
         networkManager = new NetworkManager(factory);
 
-        SwipeRefreshLayout swiper = (SwipeRefreshLayout) findViewById(R.id.food_swipe);
+        SwipeRefreshLayout swiper = findViewById(R.id.food_swipe);
         swiper.setOnRefreshListener(new SwipeSyncCallback(swiper, networkManager));
 
     }

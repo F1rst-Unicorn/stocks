@@ -32,6 +32,7 @@ public class EanScanTest {
     @After
     public void tearDown() throws Exception {
         Intents.release();
+        mActivityRule.finishActivity();
     }
 
     @Test
