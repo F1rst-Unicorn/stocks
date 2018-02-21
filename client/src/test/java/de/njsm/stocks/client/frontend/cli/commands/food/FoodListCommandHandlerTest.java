@@ -79,7 +79,7 @@ public class FoodListCommandHandlerTest {
 
         verify(dbManager).getItems("", "");
         verify(writer).println("Current food:");
-        verify(writer).println("\t2x Apple juice\n");
+        verify(writer).println("    2x Apple juice\n");
         verify(timeProvider, atLeastOnce()).getTime();
     }
 
@@ -92,7 +92,9 @@ public class FoodListCommandHandlerTest {
 
         verify(dbManager).getItems("", "");
         verify(writer).println("Current food:");
-        verify(writer).println("\t2x Apple juice\n\t\t08.01.1970\n\t\t09.01.1970\n");
+        verify(writer).println("    2x Apple juice\n" +
+                "        08.01.1970 in Cupboard, Juliette @ Mobile\n" +
+                "        09.01.1970 in Basement, Juliette @ Mobile\n");
         verify(timeProvider, atLeastOnce()).getTime();
     }
 
@@ -106,7 +108,7 @@ public class FoodListCommandHandlerTest {
 
         verify(dbManager).getItems("", "");
         verify(writer).println("Current food:");
-        verify(writer).println("\t1x Apple juice\n\t\t08.01.1970\n");
+        verify(writer).println("    1x Apple juice\n        08.01.1970 in Cupboard, Juliette @ Mobile\n");
         verify(timeProvider, atLeastOnce()).getTime();
     }
 }

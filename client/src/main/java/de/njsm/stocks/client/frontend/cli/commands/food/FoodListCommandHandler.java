@@ -72,14 +72,14 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
     @Override
     public void printHelp() {
         String text = "List food in the store\n" +
-                "\t-e\t\t\texisting: Filter by food that is in store\n" +
-                "\t-q\t\t\tquiet: Only list amounts, no dates\n" +
-                "\t--a range \t\tamount: Filter amounts within range\n" +
-                "\t--d number\t\tdays: Filter food with <number> days left\n" +
-                "\t--l string\t\tlocation: Filter by given location\n" +
-                "\t--n number\t\tnumber: List at most <number> dates\n" +
-                "\t--r regex \t\tregex: Filter food names by regex\n" +
-                "\t--u string\t\tuser: Filter by user who bought it\n";
+                "    -e                existing: Filter by food that is in store\n" +
+                "    -q                quiet: Only list amounts, no dates\n" +
+                "    --a range         amount: Filter amounts within range\n" +
+                "    --d number        days: Filter food with <number> days left\n" +
+                "    --l string        location: Filter by given location\n" +
+                "    --n number        number: List at most <number> dates\n" +
+                "    --r regex         regex: Filter food names by regex\n" +
+                "    --u string        user: Filter by user who bought it\n";
 
         writer.println(text);
     }
@@ -159,14 +159,14 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
     private void listFood() {
         try {
             List<FoodView> food = dbManager.getItems(user, location);
-            StringBuilder builder = renderFoodList(food);
+            String builder = renderFoodList(food);
             printRenderedList(builder);
         } catch (DatabaseException e) {
             logDatabaseError(e);
         }
     }
 
-    private StringBuilder renderFoodList(List<FoodView> food) {
+    private String renderFoodList(List<FoodView> food) {
         StringBuilder outBuf = new StringBuilder();
         LocalDate today = Instant.ofEpochMilli(timeProvider.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate listUntil = today.plus(Period.ofDays(daysLeft));
@@ -181,11 +181,11 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
                 renderItems(outBuf, f);
             }
         }
-        return outBuf;
+        return outBuf.toString();
     }
 
     private void renderHeadlineOfType(StringBuilder outBuf, FoodView f) {
-        outBuf.append("\t");
+        outBuf.append("    ");
         outBuf.append(f.getItems().size());
         outBuf.append("x ");
         outBuf.append(f.getFood().name);
@@ -197,8 +197,14 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
         if (limit > 0) {
             for (FoodItemView item : f.getItems()) {
                 Instant date = item.eatByDate;
-                outBuf.append("\t\t");
+                outBuf.append("        ");
                 outBuf.append(FORMAT.format(date));
+                outBuf.append(" in ");
+                outBuf.append(item.location);
+                outBuf.append(", ");
+                outBuf.append(item.user);
+                outBuf.append(" @ ");
+                outBuf.append(item.device);
                 outBuf.append("\n");
                 printedItems++;
                 if (printedItems >= limit) {
@@ -208,12 +214,12 @@ public class FoodListCommandHandler extends AbstractCommandHandler {
         }
     }
 
-    private void printRenderedList(StringBuilder outBuf) {
-        if (outBuf.length() != 0) {
-            writer.println("Current food:");
-            writer.println(outBuf.toString());
-        } else {
+    private void printRenderedList(String list) {
+        if (list.isEmpty()) {
             writer.println("No food to show...");
+        } else {
+            writer.println("Current food:");
+            writer.println(list);
         }
     }
 
