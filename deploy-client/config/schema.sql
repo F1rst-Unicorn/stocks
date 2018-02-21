@@ -84,4 +84,4 @@ CREATE TABLE Config (
 
 INSERT INTO Config (`key`, `value`)
 VALUES
-    ('db.version', '2.0.0')
+    ('db.version', '2.0.1')
