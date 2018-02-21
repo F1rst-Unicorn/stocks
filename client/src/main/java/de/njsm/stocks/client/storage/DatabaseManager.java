@@ -5,15 +5,16 @@ import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.init.upgrade.Version;
 import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.common.data.view.FoodItemView;
 import de.njsm.stocks.common.data.view.FoodView;
 import de.njsm.stocks.common.data.view.UserDeviceView;
 import de.njsm.stocks.common.data.view.UserDeviceViewFactory;
 import de.njsm.stocks.common.data.visitor.VisitorException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.threeten.bp.Instant;
 
 import java.sql.*;
-import org.threeten.bp.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -229,9 +230,15 @@ public class DatabaseManager {
     }
 
     private PreparedStatement getStatementFilteringBy(String user, String location, Connection c) throws SQLException {
-        String queryStringTemplate = "SELECT f.ID as id, f.name as name, i.eat_by as date " +
-                "FROM Food f LEFT OUTER JOIN Food_item i ON f.ID=i.of_type %s" +
-                "ORDER BY f.ID ASC, i.eat_by ASC";
+        String queryStringTemplate = "SELECT f.ID as id, f.name as name, date, location, user, device " +
+                "FROM Food f LEFT OUTER JOIN " +
+                    "(SELECT i.of_type as type, i.eat_by as date, i.stored_in as stored_in, i.buys as buys, l.name as location, u.name as user, d.name as device FROM Food_item i, Location l, User u, User_device d " +
+                    "WHERE l.ID = i.stored_in " +
+                    "AND u.ID = i.buys " +
+                    "AND d.ID = i.registers) " +
+                "ON f.ID = type " +
+                "%s " +
+                "ORDER BY f.ID ASC, date ASC";
         String queryString;
         PreparedStatement sqlQuery;
         if (user.equals("")) {
@@ -240,20 +247,20 @@ public class DatabaseManager {
                 queryString = String.format(queryStringTemplate, filterClause);
                 sqlQuery = c.prepareStatement(queryString);
             } else {
-                String filterClause = "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?)";
+                String filterClause = "WHERE stored_in in (SELECT ID FROM Location WHERE name=?)";
                 queryString = String.format(queryStringTemplate, filterClause);
                 sqlQuery = c.prepareStatement(queryString);
                 sqlQuery.setString(1, location);
             }
         } else {
             if (location.equals("")) {
-                String filterClause = "WHERE i.buys in (SELECT ID FROM User WHERE name=?)";
+                String filterClause = "WHERE buys in (SELECT ID FROM User WHERE name=?)";
                 queryString = String.format(queryStringTemplate, filterClause);
                 sqlQuery = c.prepareStatement(queryString);
                 sqlQuery.setString(1, user);
             } else {
-                String filterClause = "WHERE i.stored_in in (SELECT ID FROM Location WHERE name=?) " +
-                        "AND i.buys in (SELECT ID FROM User WHERE name=?)";
+                String filterClause = "WHERE stored_in in (SELECT ID FROM Location WHERE name=?) " +
+                        "AND buys in (SELECT ID FROM User WHERE name=?)";
                 queryString = String.format(queryStringTemplate, filterClause);
                 sqlQuery = c.prepareStatement(queryString);
                 sqlQuery.setString(1, location);
@@ -353,9 +360,17 @@ public class DatabaseManager {
                 newFood.name = rs.getString("name");
                 f = new FoodView(newFood);
             }
+
             Timestamp date = rs.getTimestamp("date");
-            if (date != null && f != null) {
-                f.add(Instant.ofEpochMilli(date.getTime()));
+            if (date != null) {     // may have no elements due to outer join
+                FoodItemView item = new FoodItemView();
+                item.eatByDate = Instant.ofEpochMilli(date.getTime());
+                item.user = rs.getString("user");
+                item.location = rs.getString("location");
+                item.device = rs.getString("device");
+                if (f != null) {
+                    f.add(item);
+                }
             }
             lastId = id;
         }
