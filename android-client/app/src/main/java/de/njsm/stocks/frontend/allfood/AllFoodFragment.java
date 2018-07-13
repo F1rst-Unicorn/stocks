@@ -16,7 +16,6 @@ import de.njsm.stocks.common.data.EanNumber;
 import de.njsm.stocks.common.data.Food;
 import de.njsm.stocks.frontend.AbstractDataFragment;
 import de.njsm.stocks.frontend.ActivitySwitcher;
-import de.njsm.stocks.frontend.food.FoodFragment;
 
 public class AllFoodFragment extends AbstractDataFragment {
 
@@ -26,8 +25,8 @@ public class AllFoodFragment extends AbstractDataFragment {
 
     String ean;
 
-    public static FoodFragment newInstance(String aFoodId) {
-        FoodFragment fragment = new FoodFragment();
+    public static AllFoodFragment newInstance(String aFoodId) {
+        AllFoodFragment fragment = new AllFoodFragment();
         Bundle args = new Bundle();
         args.putString(KEY_EAN, aFoodId);
         fragment.setArguments(args);

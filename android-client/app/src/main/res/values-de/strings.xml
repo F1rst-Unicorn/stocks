@@ -22,6 +22,7 @@
     <string name="title_barcode">Barcodes</string>
     <string name="title_barcode_activity">Barcodes für %s</string>
     <string name="title_delete_barcode">Barcode entfernen</string>
+    <string name="title_assign_code">Neuen Code zuweisen</string>
 
     <string name="action_outline">Übersicht</string>
     <string name="action_users">Benutzer</string>

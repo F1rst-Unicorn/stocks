@@ -21,6 +21,7 @@ public class AllFoodActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_food);
+        setTitle(R.string.title_assign_code);
 
         ean = getIntent().getExtras().getString(KEY_EAN);
 
@@ -35,9 +36,9 @@ public class AllFoodActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Fragment listFragment = AllFoodFragment.newInstance(ean);
+        fragment = AllFoodFragment.newInstance(ean);
         getFragmentManager().beginTransaction()
-                .replace(R.id.content_all_food, listFragment)
+                .replace(R.id.content_all_food, fragment)
                 .commit();
 
     }

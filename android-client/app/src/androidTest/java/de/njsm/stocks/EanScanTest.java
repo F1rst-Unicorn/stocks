@@ -26,7 +26,7 @@ public class EanScanTest {
     }
 
     @Test
-    public void testScanning() throws Exception {
+    public void testSuccessfulScan() throws Exception {
         setupScanResult("1234567891234");
 
         MainScreen.test()
