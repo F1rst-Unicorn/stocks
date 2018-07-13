@@ -20,6 +20,8 @@ public class StocksContentProvider extends ContentProvider {
 
     public static final String EMPTY_FOOD = "Food/empty";
 
+    public static final String ALL_FOOD = "Food/all";
+
     public static final String EAT_SOON = "Food/eat_soon";
 
     public static final String MAX_LOCATION = "Location/eat_soon";
@@ -91,6 +93,9 @@ public class StocksContentProvider extends ContentProvider {
                 break;
             case 14:
                 result = db.rawQuery(SqlEanNumberTable.SELECT_FOOD_BY_NUMBER, selectionArgs);
+                break;
+            case 15:
+                result = db.rawQuery(SqlFoodTable.SELECT_ALL, null);
                 break;
             default:
                 throw new IllegalArgumentException("Uri: " + uri.toString());
@@ -197,6 +202,7 @@ public class StocksContentProvider extends ContentProvider {
         sMatcher.addURI(AUTHORITY, MAX_LOCATION, 10);
         sMatcher.addURI(AUTHORITY, SEARCH_FOOD, 11);
         sMatcher.addURI(AUTHORITY, EAN_NUMBER_TYPE, 12);
+        sMatcher.addURI(AUTHORITY, ALL_FOOD, 15);
 
         sMatcher.addURI(AUTHORITY, SqlEanNumberTable.NAME, 13);
 

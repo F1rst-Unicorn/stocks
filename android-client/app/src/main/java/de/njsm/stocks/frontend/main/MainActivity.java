@@ -175,9 +175,7 @@ public class MainActivity extends AppCompatActivity
             Log.i(Config.LOG_TAG, "Starting loading for EAN code " + eanNumber);
             ScanResultCallback loader = new ScanResultCallback(this,
                     (Food food) -> ActivitySwitcher.switchToFoodActivity(this, food),
-                    (Void dummy) ->             Toast.makeText(this,
-                            getResources().getString(R.string.dialog_no_barcode_result),
-                            Toast.LENGTH_SHORT).show());
+                    (Void dummy) -> ActivitySwitcher.switchToAllFoodActivity(this, eanNumber));
             Bundle args = new Bundle();
             args.putString(ScanResultCallback.KEY_EAN_NUMBER, eanNumber);
             getLoaderManager().restartLoader(0, args, loader);

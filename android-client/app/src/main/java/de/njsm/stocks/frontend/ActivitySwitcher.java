@@ -3,6 +3,7 @@ package de.njsm.stocks.frontend;
 import android.content.Context;
 import android.content.Intent;
 import de.njsm.stocks.common.data.Food;
+import de.njsm.stocks.frontend.allfood.AllFoodActivity;
 import de.njsm.stocks.frontend.eatsoon.EatSoonActivity;
 import de.njsm.stocks.frontend.emptyfood.EmptyFoodActivity;
 import de.njsm.stocks.frontend.food.FoodActivity;
@@ -29,6 +30,13 @@ public class ActivitySwitcher {
 
     public static void switchToEmptyFoodActivity(Context context) {
         Intent i = new Intent(context, EmptyFoodActivity.class);
+        context.startActivity(i);
+    }
+
+    public static void switchToAllFoodActivity(Context context, String ean) {
+        Intent i = new Intent(context, AllFoodActivity.class);
+        i.putExtra(AllFoodActivity.KEY_EAN, ean);
+        i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
         context.startActivity(i);
     }
 }

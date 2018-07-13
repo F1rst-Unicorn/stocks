@@ -61,6 +61,11 @@ public class MainScreen extends AbstractScreen {
         return new FoodScreen();
     }
 
+    public AllFoodScreen scanFailing() {
+        onView(withId(R.id.action_scan)).perform(click());
+        return new AllFoodScreen();
+    }
+
     public static MainScreen test() {
         return new MainScreen();
     }
