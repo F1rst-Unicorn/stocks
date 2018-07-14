@@ -49,6 +49,6 @@ chmod a-wx ~/Software/stocks/*
 
 echo Publish release
 scp "$STOCKS_ROOT"/deploy-server/target/stocks-server-$VERSION-$RELEASE-any.* \
-        web-1.vm-rv.j.njsm.de:/tmp/
-ssh -t web-1.vm-rv.j.njsm.de sudo /root/bin/publish-stocks
+        web-1.j.njsm.de:/tmp/
+ssh -t web-1.j.njsm.de sudo /root/bin/publish-stocks
 
