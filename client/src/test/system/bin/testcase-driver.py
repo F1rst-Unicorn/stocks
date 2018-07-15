@@ -53,7 +53,7 @@ def main(arguments):
 
 def setupSshConnection():
     process = subprocess.Popen(
-                    ["ssh dp-client \"TERM=xterm-256color stocks\""],
+                    ["ssh dp-client \"LANG=de_DE.UTF-8 TERM=xterm-256color stocks\""],
                    stdin=subprocess.PIPE,
                    stdout=subprocess.PIPE,
                    shell=True,

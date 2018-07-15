@@ -54,6 +54,8 @@
 
     <bean id="dbManager" class="de.njsm.stocks.client.storage.DatabaseManager" />
 
+    <bean id="qrGenerator" class="de.njsm.stocks.client.frontend.cli.service.QrGenerator" />
+
     <bean id="ticketHandler" class="de.njsm.stocks.client.init.TicketHandler" >
         <constructor-arg index="0" ref="keystoreHandler" />
         <constructor-arg index="1" ref="networkHandler" />
@@ -124,6 +126,7 @@
         <constructor-arg index="3" ref="inputCollector" />
         <constructor-arg index="4" ref="dbManager" />
         <constructor-arg index="5" ref="serverManager" />
+        <constructor-arg index="6" ref="qrGenerator" />
     </bean>
 
     <bean id="deviceRemove" class="de.njsm.stocks.client.frontend.cli.commands.dev.DeviceRemoveCommandHandler">

@@ -3,6 +3,7 @@ package de.njsm.stocks.client.frontend.cli.commands.dev;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
+import de.njsm.stocks.client.frontend.cli.service.QrGenerator;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
@@ -35,6 +36,8 @@ public class DeviceAddCommandHandlerTest {
 
     private Configuration configuration;
 
+    private QrGenerator qrGenerator;
+
     @Before
     public void setup() throws Exception {
         collector = mock(InputCollector.class);
@@ -43,7 +46,8 @@ public class DeviceAddCommandHandlerTest {
         writer = mock(ScreenWriter.class);
         dbManager = mock(DatabaseManager.class);
         configuration = mock(Configuration.class);
-        uut = new DeviceAddCommandHandler(configuration, writer, refresher, collector, dbManager, server);
+        qrGenerator = mock(QrGenerator.class);
+        uut = new DeviceAddCommandHandler(configuration, writer, refresher, collector, dbManager, server, qrGenerator);
     }
 
     @After
@@ -54,11 +58,13 @@ public class DeviceAddCommandHandlerTest {
         verifyNoMoreInteractions(writer);
         verifyNoMoreInteractions(dbManager);
         verifyNoMoreInteractions(configuration);
+        verifyNoMoreInteractions(qrGenerator);
     }
 
     @Test
     public void handlingWorks() throws Exception {
         String fingerPrint = "00:11:22:33";
+        String qrFake = "this might be a qr code";
         User user = new User(2, "Jack");
         UserDevice item = new UserDevice(3, "Mobile", user.id);
         Ticket ticket = new Ticket(item.id, "some ticket", "some fake PEM");
@@ -68,6 +74,7 @@ public class DeviceAddCommandHandlerTest {
         when(collector.confirm()).thenReturn(true);
         when(configuration.getFingerprint()).thenReturn(fingerPrint);
         when(server.addDevice(item)).thenReturn(ticket);
+        when(qrGenerator.generateQrCode(any())).thenReturn(qrFake);
         when(dbManager.getDevices(item.name)).thenReturn(Collections.singletonList(
                 new UserDeviceView(item.id, item.name, user.name, user.id)));
 
@@ -79,8 +86,10 @@ public class DeviceAddCommandHandlerTest {
         verify(server).addDevice(item);
         verify(refresher).refresh();
         verify(dbManager).getDevices(item.name);
-        verify(configuration).getFingerprint();
-        verify(writer).println("Creation successful. The new device needs these parameters:");
+        verify(configuration, times(2)).getFingerprint();
+        verify(qrGenerator).generateQrCode(any());
+        verify(writer).println("Creation successful. Enter parameters or scan QR code:");
+        verify(writer).println(qrFake);
         verify(writer).println("\tUser name: " + user.name);
         verify(writer).println("\tDevice name: " + item.name);
         verify(writer).println("\tUser ID: " + user.id);

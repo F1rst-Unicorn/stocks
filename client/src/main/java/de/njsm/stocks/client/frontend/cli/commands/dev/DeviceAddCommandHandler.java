@@ -7,6 +7,7 @@ import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.FaultyCommandHandler;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
+import de.njsm.stocks.client.frontend.cli.service.QrGenerator;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
@@ -30,12 +31,15 @@ public class DeviceAddCommandHandler extends FaultyCommandHandler {
 
     private Configuration configuration;
 
+    private QrGenerator qrGenerator;
+
     public DeviceAddCommandHandler(Configuration configuration,
                                    ScreenWriter writer,
                                    Refresher refresher,
                                    InputCollector inputCollector,
                                    DatabaseManager dbManager,
-                                   ServerManager serverManager) {
+                                   ServerManager serverManager,
+                                   QrGenerator qrGenerator) {
         super(writer);
         this.command = "add";
         this.description = "Add a device";
@@ -44,6 +48,7 @@ public class DeviceAddCommandHandler extends FaultyCommandHandler {
         this.dbManager = dbManager;
         this.serverManager = serverManager;
         this.configuration = configuration;
+        this.qrGenerator = qrGenerator;
     }
 
     @Override
@@ -67,13 +72,23 @@ public class DeviceAddCommandHandler extends FaultyCommandHandler {
         return devices.get(devices.size()-1);
     }
 
-    private void printNewDevice(UserDeviceView device, Ticket ticket) throws DatabaseException {
-        writer.println("Creation successful. The new device needs these parameters:");
+    private void printNewDevice(UserDeviceView device, Ticket ticket) {
+        writer.println("Creation successful. Enter parameters or scan QR code:");
+        writer.println(generateQrCode(device, configuration, ticket));
         writer.println("\tUser name: " + device.user);
         writer.println("\tDevice name: " + device.name);
         writer.println("\tUser ID: " + device.userId);
         writer.println("\tDevice ID: " + device.id);
         writer.println("\tFingerprint: " + configuration.getFingerprint());
         writer.println("\tTicket: " + ticket.ticket);
+    }
+
+    private String generateQrCode(UserDeviceView device, Configuration configuration, Ticket ticket) {
+        return qrGenerator.generateQrCode(device.user + "\n" +
+                device.name + "\n" +
+                device.userId + "\n" +
+                device.id + "\n" +
+                configuration.getFingerprint() + "\n" +
+                ticket.ticket);
     }
 }
