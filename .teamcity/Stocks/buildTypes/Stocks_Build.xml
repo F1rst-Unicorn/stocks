@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="3474e4f7-adab-4d16-bd86-93d050230f6e" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/2017.2/project-config.xsd">
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="3474e4f7-adab-4d16-bd86-93d050230f6e" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/2018.1/project-config.xsd">
   <name>Full Build</name>
   <description />
   <settings>
@@ -15,7 +15,7 @@
       <param name="env.CI_SERVER" value="1" />
       <param name="env.NO_SIGNATURE" value="1" />
     </parameters>
-    <build-runners order="RUNNER_14, RUNNER_11, RUNNER_12, RUNNER_7, RUNNER_8, RUNNER_13, RUNNER_16, RUNNER_9, RUNNER_17, RUNNER_10, RUNNER_15">
+    <build-runners>
       <runner id="RUNNER_14" name="Compile &amp; Unit Test" type="Maven2">
         <parameters>
           <param name="goals" value="clean install" />

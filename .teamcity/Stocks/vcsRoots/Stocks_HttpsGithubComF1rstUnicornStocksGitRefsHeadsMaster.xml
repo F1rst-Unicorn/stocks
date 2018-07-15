@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<vcs-root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="95957df6-9ebe-40d7-beb1-b8cc9488d413" type="jetbrains.git" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/2017.2/project-config.xsd">
+<vcs-root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="95957df6-9ebe-40d7-beb1-b8cc9488d413" type="jetbrains.git" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/2018.1/project-config.xsd">
   <name>Stocks Official repository</name>
   <param name="agentCleanFilesPolicy" value="ALL_UNTRACKED" />
   <param name="agentCleanPolicy" value="ON_BRANCH_CHANGE" />
