@@ -2,9 +2,9 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import fj.data.Validation;
 import org.jooq.DSLContext;
-import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.types.UInteger;
 
@@ -33,17 +33,16 @@ public class DatabaseHandler extends FailSafeDatabaseHandler {
 
     public Validation<StatusCode, List<Food>> getFood() {
         return runQuery(context -> {
-            Result<Record> cursor = context
-                    .select()
-                    .from(FOOD)
+            Result<FoodRecord> cursor = context
+                    .selectFrom(FOOD)
                     .fetch();
 
             List<Food> result = new ArrayList<>();
-            for (Record r : cursor) {
+            for (FoodRecord r : cursor) {
                 Food item = new Food();
-                item.id = r.getValue(FOOD.ID).intValue();
-                item.name = r.getValue(FOOD.NAME);
-                item.version = r.getValue(FOOD.VERSION).intValue();
+                item.id = r.getId().intValue();
+                item.name = r.getName();
+                item.version = r.getVersion().intValue();
             }
             return Validation.success(result);
         });
@@ -87,8 +86,7 @@ public class DatabaseHandler extends FailSafeDatabaseHandler {
     }
 
     private boolean isMissing(int id, DSLContext context) {
-        int count = context.select()
-                .from(FOOD)
+        int count = context.selectFrom(FOOD)
                 .where(FOOD.ID.eq(UInteger.valueOf(id)))
                 .fetch()
                 .size();

@@ -34,16 +34,11 @@ public class Food extends VersionedData {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id, name, version);
     }
 
     @Override
     public String toString() {
-        return "Food{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", version=" + version +
-                '}';
+        return "Food (" + id + ", " + name + ", " + version + ")";
     }
 }

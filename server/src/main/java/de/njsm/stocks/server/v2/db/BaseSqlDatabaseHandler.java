@@ -58,7 +58,7 @@ public class BaseSqlDatabaseHandler {
         }
     }
 
-    protected StatusCode runCommand(FunctionWithExceptions<DSLContext, StatusCode, SQLException> client) {
+    StatusCode runCommand(FunctionWithExceptions<DSLContext, StatusCode, SQLException> client) {
         Validation<StatusCode, StatusCode> result = runQuery(con -> {
             StatusCode code = client.apply(con);
             if (code == StatusCode.SUCCESS) {
@@ -74,6 +74,7 @@ public class BaseSqlDatabaseHandler {
         }
     }
 
+    @Deprecated
     protected <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client) {
         Connection con = null;
         try {
@@ -88,6 +89,7 @@ public class BaseSqlDatabaseHandler {
         }
     }
 
+    @Deprecated
     public void runSqlOperation(ConsumerWithExceptions<Connection, SQLException> client) {
         runSqlOperation(con -> {
             client.accept(con);

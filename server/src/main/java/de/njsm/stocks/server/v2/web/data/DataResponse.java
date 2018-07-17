@@ -18,11 +18,6 @@ public class DataResponse<T> extends Response {
 
     public List<T> data;
 
-    public DataResponse(StatusCode status, List<T> data) {
-        super(status);
-        this.data = data;
-    }
-
     public DataResponse(Validation<StatusCode, List<T>> option) {
         if (option.isSuccess()) {
             status = StatusCode.SUCCESS;
