@@ -17,7 +17,7 @@
         <constructor-arg index="0" ref="databaseHandler"/>
     </bean>
 
-    <bean name="foodEndPoint" class="de.njsm.stocks.server.v2.web.FoodEndpoint">
+    <bean name="foodEndpoint" class="de.njsm.stocks.server.v2.web.FoodEndpoint">
         <constructor-arg index="0" ref="businessManager" />
     </bean>
 </beans>
