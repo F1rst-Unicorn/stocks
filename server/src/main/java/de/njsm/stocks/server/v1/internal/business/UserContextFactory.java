@@ -1,4 +1,4 @@
-package de.njsm.stocks.server.util;
+package de.njsm.stocks.server.v1.internal.business;
 
 import javax.servlet.http.HttpServletRequest;
 

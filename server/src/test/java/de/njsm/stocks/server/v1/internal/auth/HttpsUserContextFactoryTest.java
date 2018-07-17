@@ -1,7 +1,7 @@
 package de.njsm.stocks.server.v1.internal.auth;
 
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.util.HttpsUserContextFactory;
+import de.njsm.stocks.server.v1.internal.business.HttpsUserContextFactory;
 import de.njsm.stocks.server.v1.endpoints.BaseTestEndpoint;
 import org.junit.Test;
 

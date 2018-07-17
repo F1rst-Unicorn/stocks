@@ -33,7 +33,9 @@ public class PrincipalFilter implements ContainerRequestFilter {
         Principals principals = parseSubjectName(requestContext.getHeaderString(SSL_CLIENT_KEY));
         requestContext.setProperty(STOCKS_PRINCIPAL, principals);
 
-        LOG.info(principals.getReadableString() + " " + requestContext.getMethod() + "s " + requestContext.getRequest());
+        LOG.info(principals.getReadableString() + " " +
+                requestContext.getMethod().toLowerCase() + "s " +
+                requestContext.getUriInfo().getPath());
     }
 
     public static Principals parseSubjectName(String subject){

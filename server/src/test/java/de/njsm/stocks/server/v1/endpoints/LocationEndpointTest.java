@@ -3,7 +3,7 @@ package de.njsm.stocks.server.v1.endpoints;
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.LocationFactory;
-import de.njsm.stocks.server.util.UserContextFactory;
+import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import org.junit.Assert;
 import org.junit.Before;

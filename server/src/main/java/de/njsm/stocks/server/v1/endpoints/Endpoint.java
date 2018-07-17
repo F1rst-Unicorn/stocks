@@ -1,7 +1,7 @@
 package de.njsm.stocks.server.v1.endpoints;
 
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.util.UserContextFactory;
+import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import org.apache.logging.log4j.Logger;
 

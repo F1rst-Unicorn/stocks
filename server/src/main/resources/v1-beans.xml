@@ -6,7 +6,7 @@
 
     <import resource="common.xml" />
 
-    <bean name="contextFactory" class="de.njsm.stocks.server.util.HttpsUserContextFactory"/>
+    <bean name="contextFactory" class="de.njsm.stocks.server.v1.internal.business.HttpsUserContextFactory"/>
 
 
     <bean name="dbHandler" class="de.njsm.stocks.server.v1.internal.db.SqlDatabaseHandler">

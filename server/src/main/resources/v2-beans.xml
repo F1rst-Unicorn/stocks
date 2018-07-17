@@ -13,11 +13,7 @@
         <constructor-arg index="3" ref="circuitBreakerDatabase" />
     </bean>
 
-    <bean name="businessManager" class="de.njsm.stocks.server.v2.business.BusinessManager">
-        <constructor-arg index="0" ref="databaseHandler"/>
-    </bean>
-
     <bean name="foodEndpoint" class="de.njsm.stocks.server.v2.web.FoodEndpoint">
-        <constructor-arg index="0" ref="businessManager" />
+        <constructor-arg index="0" ref="databaseHandler" />
     </bean>
 </beans>
