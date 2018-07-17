@@ -130,6 +130,48 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>3.11.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>3.11.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>3.11.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava</artifactId>
+            <version>4.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava-java8</artifactId>
+            <version>4.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava-quickcheck</artifactId>
+            <version>4.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava-java-core</artifactId>
+            <version>4.7</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
@@ -197,6 +239,23 @@
                         <de.njsm.stocks.internal.ticketValidityTimeInMinutes>${de.njsm.stocks.internal.ticketValidityTimeInMinutes}</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
                     </systemPropertyVariables>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>Generate Parsers</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${basedir}/bin/generate_jooq.sh</executable>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
