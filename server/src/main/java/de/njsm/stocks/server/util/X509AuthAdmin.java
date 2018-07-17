@@ -4,7 +4,6 @@ import com.netflix.hystrix.exception.HystrixBadRequestException;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import de.njsm.stocks.common.util.MakerWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
-import de.njsm.stocks.server.v1.internal.util.HystrixFunction;
 import de.njsm.stocks.server.v2.web.PrincipalFilter;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;

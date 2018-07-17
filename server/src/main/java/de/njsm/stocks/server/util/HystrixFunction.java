@@ -1,4 +1,4 @@
-package de.njsm.stocks.server.v1.internal.util;
+package de.njsm.stocks.server.util;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;

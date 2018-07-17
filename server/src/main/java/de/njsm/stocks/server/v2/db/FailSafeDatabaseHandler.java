@@ -2,7 +2,7 @@ package de.njsm.stocks.server.v2.db;
 
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
-import de.njsm.stocks.server.v1.internal.util.HystrixFunction;
+import de.njsm.stocks.server.util.HystrixFunction;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
