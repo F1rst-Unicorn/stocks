@@ -18,10 +18,18 @@ public class PrincipalFilter implements ContainerRequestFilter {
 
     public static final String SSL_CLIENT_KEY = "X-SSL-Client-S-DN";
 
+    public static final String ORIGIN = "X-ORIGIN";
+
     public static final String STOCKS_PRINCIPAL = "de.njsm.stocks.server.util.Principals";
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        if (! requestContext.getHeaderString(ORIGIN).equals("sentry")) {
+            addPrincipals(requestContext);
+        }
+    }
+
+    private void addPrincipals(ContainerRequestContext requestContext) {
         Principals principals = parseSubjectName(requestContext.getHeaderString(SSL_CLIENT_KEY));
         requestContext.setProperty(STOCKS_PRINCIPAL, principals);
 
