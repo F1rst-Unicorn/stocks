@@ -6,7 +6,7 @@
 
     <import resource="common.xml" />
 
-    <bean name="databaseHandler" class="de.njsm.stocks.server.v2.db.DatabaseHandler">
+    <bean name="foodDbHandler" class="de.njsm.stocks.server.v2.db.FoodHandler">
         <constructor-arg index="0" ref="dbUrl"/>
         <constructor-arg index="1" ref="dbUser" />
         <constructor-arg index="2" ref="dbPassword" />
@@ -14,6 +14,6 @@
     </bean>
 
     <bean name="foodEndpoint" class="de.njsm.stocks.server.v2.web.FoodEndpoint">
-        <constructor-arg index="0" ref="databaseHandler" />
+        <constructor-arg index="0" ref="foodDbHandler" />
     </bean>
 </beans>

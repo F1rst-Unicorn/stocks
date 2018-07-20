@@ -1,11 +1,69 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.util.Principals;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.UriInfo;
+
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 public class PrincipalFilterTest {
+
+    private PrincipalFilter uut;
+
+    private ContainerRequestContext context;
+
+    public static final String USER_STRING = "/CN=John$5$Mobile$1";
+
+    public static final Principals TEST_USER = new Principals("John", "Mobile", 5, 1);
+
+
+    @Before
+    public void setup() throws Exception {
+        context = Mockito.mock(ContainerRequestContext.class);
+        uut = new PrincipalFilter();
+    }
+
+    @After
+    public void tearDown() {
+        verifyNoMoreInteractions(context);
+    }
+
+    @Test
+    public void sentryRequestsAreIgnored() throws IOException {
+        when(context.getHeaderString(PrincipalFilter.ORIGIN)).thenReturn(PrincipalFilter.ORIGIN_SENTRY);
+
+        uut.filter(context);
+
+        verify(context).getHeaderString(PrincipalFilter.ORIGIN);
+    }
+
+    @Test
+    public void serverRequestsAreInvestigated() throws IOException {
+        UriInfo info = Mockito.mock(UriInfo.class);
+        when(info.getPath()).thenReturn("/foo/bar");
+        when(context.getHeaderString(PrincipalFilter.ORIGIN)).thenReturn("server");
+        when(context.getHeaderString(PrincipalFilter.SSL_CLIENT_KEY)).thenReturn(USER_STRING);
+        when(context.getMethod()).thenReturn("GET");
+        when(context.getUriInfo()).thenReturn(info);
+
+        uut.filter(context);
+
+        verify(context).getHeaderString(PrincipalFilter.ORIGIN);
+        verify(context).getHeaderString(PrincipalFilter.SSL_CLIENT_KEY);
+        verify(context).setProperty(PrincipalFilter.STOCKS_PRINCIPAL, TEST_USER);
+        verify(context).getMethod();
+        verify(context).getUriInfo();
+    }
 
     @Test
     public void testParseCorrectName() {

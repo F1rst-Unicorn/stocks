@@ -6,7 +6,6 @@ import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -16,9 +15,9 @@ import java.util.List;
 @XmlRootElement
 public class DataResponse<T> extends Response {
 
-    public List<T> data;
+    public T data;
 
-    public DataResponse(Validation<StatusCode, List<T>> option) {
+    public DataResponse(Validation<StatusCode, T> option) {
         if (option.isSuccess()) {
             status = StatusCode.SUCCESS;
             data = option.success();

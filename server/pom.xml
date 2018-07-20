@@ -221,6 +221,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
+                    <generatedSourcesDirectory>target/generated-sources/java</generatedSourcesDirectory>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
@@ -241,34 +242,38 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>exec-maven-plugin</artifactId>
-                <groupId>org.codehaus.mojo</groupId>
-                <version>1.6.0</version>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>3.11.3</version>
                 <executions>
                     <execution>
-                        <id>Generate Parsers</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>generate</goal>
                         </goals>
-                        <configuration>
-                            <executable>${basedir}/bin/generate_jooq.sh</executable>
-                        </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
                 <configuration>
-                    <generatedSourcesDirectory>target/generated-sources/java</generatedSourcesDirectory>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <jdbc>
+                        <driver>org.mariadb.jdbc.Driver</driver>
+                        <url>jdbc:mariadb://${de.njsm.stocks.internal.db.databaseAddress}:${de.njsm.stocks.internal.db.databasePort}/${de.njsm.stocks.internal.db.databaseName}</url>
+                        <user>${de.njsm.stocks.internal.db.databaseUsername}</user>
+                        <password>${de.njsm.stocks.internal.db.databasePassword}</password>
+                    </jdbc>
+                    <generator>
+                        <name>org.jooq.codegen.JavaGenerator</name>
+                        <database>
+                            <name>org.jooq.meta.mariadb.MariaDBDatabase</name>
+                            <inputSchema>${de.njsm.stocks.internal.db.databaseName}</inputSchema>
+                            <includes>.*</includes>
+                        </database>
+                        <target>
+                            <packageName>de.njsm.stocks.server.v2.db.jooq</packageName>
+                            <directory>${basedir}/target/generated-sources/java</directory>
+                        </target>
+                    </generator>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 

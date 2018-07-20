@@ -15,7 +15,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class BaseSqlDatabaseHandler {
+public abstract class BaseSqlDatabaseHandler {
 
     private static final Logger LOG = LogManager.getLogger(BaseSqlDatabaseHandler.class);
 
@@ -75,27 +75,15 @@ public class BaseSqlDatabaseHandler {
     }
 
     @Deprecated
-    protected <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client) {
-        Connection con = null;
-        try {
-            con = getConnection();
-            return client.apply(con);
-        } catch (SQLException e) {
-            LOG.error("Error during sql operation", e);
-            rollback(con);
-            return null;
-        } finally {
-            close(con);
-        }
-    }
-
-    @Deprecated
     public void runSqlOperation(ConsumerWithExceptions<Connection, SQLException> client) {
         runSqlOperation(con -> {
             client.accept(con);
             return null;
         });
     }
+
+    @Deprecated
+    public abstract <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client);
 
     protected Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);

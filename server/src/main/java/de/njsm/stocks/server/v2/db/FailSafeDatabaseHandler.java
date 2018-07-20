@@ -52,7 +52,6 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
     }
 
 
-    @Override
     @Deprecated
     public <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client) {
         HystrixFunction<R, SQLException> producer = new HystrixFunction<>(resourceIdentifier,

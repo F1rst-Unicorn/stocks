@@ -2,6 +2,7 @@ package de.njsm.stocks.server.v2.business.data;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
 
 import java.util.Objects;
 
@@ -19,7 +20,14 @@ public class Food extends VersionedData {
         this.name = name;
     }
 
-    public Food() {
+    public Food(String name) {
+        super(0, 1);
+        this.name = name;
+    }
+
+    @Override
+    public <I, O> O accept(AbstractVisitor<I, O> visitor, I arg) {
+        return visitor.food(this, arg);
     }
 
     @Override

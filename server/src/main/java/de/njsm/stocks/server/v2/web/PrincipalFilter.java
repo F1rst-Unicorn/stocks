@@ -22,9 +22,11 @@ public class PrincipalFilter implements ContainerRequestFilter {
 
     public static final String STOCKS_PRINCIPAL = "de.njsm.stocks.server.util.Principals";
 
+    public static final String ORIGIN_SENTRY = "sentry";
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        if (! requestContext.getHeaderString(ORIGIN).equals("sentry")) {
+        if (! requestContext.getHeaderString(ORIGIN).equals(ORIGIN_SENTRY)) {
             addPrincipals(requestContext);
         }
     }

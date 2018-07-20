@@ -28,7 +28,7 @@ public class UserManager {
         if (Principals.isNameValid(userToAdd.name)) {
             databaseHandler.add(userToAdd);
         } else {
-            LOG.warn("Tried to add invalid user " + userToAdd);
+            LOG.warn("Tried to addFood invalid user " + userToAdd);
         }
     }
 

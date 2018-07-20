@@ -2,24 +2,18 @@ package de.njsm.stocks.server.v2.business;
 
 public enum StatusCode {
 
-    SUCCESS(0),
+    SUCCESS,
 
-    GENERAL_ERROR(1),
+    GENERAL_ERROR,
 
-    NOT_FOUND(2),
+    NOT_FOUND,
 
-    INVALID_DATA_VERSION(3),
+    INVALID_DATA_VERSION,
 
-    FOREIGN_KEY_CONSTRAINT_VIOLATION(4),
+    FOREIGN_KEY_CONSTRAINT_VIOLATION,
 
-    DATABASE_UNREACHABLE(5),
+    DATABASE_UNREACHABLE,
 
-    ;
+    ACCESS_DENIED
 
-
-    public int code;
-
-    StatusCode(int code) {
-        this.code = code;
-    }
 }
