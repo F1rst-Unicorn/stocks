@@ -69,10 +69,6 @@ public abstract class DatabaseHandler<T extends UpdatableRecord<T>, R extends Ve
 
     protected abstract TableField<T, UInteger> getVersionField();
 
-    protected boolean isPresent(int id, DSLContext context) {
-        return ! isMissing(id, context);
-    }
-
     protected boolean isMissing(int id, DSLContext context) {
         int count = context.selectCount()
                 .from(getTable())

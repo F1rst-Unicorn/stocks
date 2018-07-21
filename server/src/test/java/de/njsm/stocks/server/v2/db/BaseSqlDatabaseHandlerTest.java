@@ -1,7 +1,9 @@
-package de.njsm.stocks.server.v1.internal.db;
+package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.server.Config;
+import de.njsm.stocks.server.v1.internal.db.SqlDatabaseHandler;
+import de.njsm.stocks.server.v2.business.StatusCode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -9,14 +11,15 @@ import org.mockito.Mockito;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class BaseSqlDatabaseHandlerTest {
 
-    private SqlDatabaseHandler uut;
+    private FailSafeDatabaseHandler uut;
 
     @Before
-    public void resetDatabase() throws SQLException {
+    public void resetDatabase() {
 
         Config c = new Config(System.getProperties());
         uut = new SqlDatabaseHandler(String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
@@ -73,5 +76,12 @@ public class BaseSqlDatabaseHandlerTest {
         Mockito.verifyNoMoreInteractions(con);
     }
 
+    @Test
+    public void commandErrorCodesArePropagated() {
+        StatusCode expected = StatusCode.INVALID_DATA_VERSION;
 
+        StatusCode actual = uut.runCommand(context -> expected);
+
+        assertEquals(expected, actual);
+    }
 }

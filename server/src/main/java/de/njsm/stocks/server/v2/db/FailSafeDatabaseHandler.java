@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
-import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 
 import java.sql.Connection;
@@ -70,20 +69,13 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
     }
 
     private <R> Validation<StatusCode, R> runAndClose(FunctionWithExceptions<DSLContext, Validation<StatusCode, R>, SQLException> client) throws SQLException {
-        Connection con = null;
-        try {
-            con = getConnection();
-            return DSL.using(con, SQLDialect.MARIADB).transactionResult(configuration -> {
-                DSLContext context = DSL.using(configuration);
-                return client.apply(context);
-            });
-        } catch (SQLException |
-                 DataAccessException e) {
-            rollback(con);
-            throw e;
-        } finally {
-            close(con);
-        }
+        Connection con = getConnection();
+        Validation<StatusCode, R> result = DSL.using(con, SQLDialect.MARIADB).transactionResult(configuration -> {
+            DSLContext context = DSL.using(configuration);
+            return client.apply(context);
+        });
+        close(con);
+        return result;
     }
 
     @Deprecated
@@ -99,7 +91,4 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
             close(con);
         }
     }
-
-
-
 }

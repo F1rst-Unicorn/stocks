@@ -7,9 +7,6 @@ import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.exception.DataAccessException;
-import org.jooq.impl.DSL;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -40,23 +37,7 @@ public abstract class BaseSqlDatabaseHandler {
         }
     }
 
-    protected <R> Validation<StatusCode, R> runQuery(FunctionWithExceptions<DSLContext, Validation<StatusCode, R>, SQLException> client) {
-        Connection con = null;
-        try {
-            con = getConnection();
-            return DSL.using(con, SQLDialect.MARIADB).transactionResult(configuration -> {
-                DSLContext context = DSL.using(configuration);
-                return client.apply(context);
-            });
-        } catch (SQLException |
-                 DataAccessException e) {
-            LOG.error("Error during sql operation", e);
-            rollback(con);
-            return Validation.fail(StatusCode.GENERAL_ERROR);
-        } finally {
-            close(con);
-        }
-    }
+    protected abstract <R> Validation<StatusCode, R> runQuery(FunctionWithExceptions<DSLContext, Validation<StatusCode, R>, SQLException> client);
 
     StatusCode runCommand(FunctionWithExceptions<DSLContext, StatusCode, SQLException> client) {
         Validation<StatusCode, StatusCode> result = runQuery(con -> {
