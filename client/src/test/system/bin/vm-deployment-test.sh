@@ -4,10 +4,8 @@ STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
 SERVER="dp-server"
 
-source $STOCKS_ROOT/server/src/test/system/lib/lib.sh
-addDevice
-DEVICE_ID=$(echo $TICKET | sed 's/.*deviceId":\([0-9]*\).*/\1/g')
-TICKET_VALUE=$(echo $TICKET | sed 's/.*ticket":"\([^"]*\).*/\1/g')
+DEVICE_ID=$(cat $STOCKS_ROOT/server-test/target/01_id)
+TICKET_VALUE=$(cat $STOCKS_ROOT/server-test/target/01_ticket)
 
 set -e
 

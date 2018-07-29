@@ -94,9 +94,24 @@
           <param name="teamcity.step.mode" value="execute_always" />
         </parameters>
       </runner>
-      <runner id="RUNNER_9" name="Server Deployment test" type="simpleRunner">
+      <runner id="RUNNER_9" name="Server Installation" type="simpleRunner">
         <parameters>
-          <param name="command.executable" value="server/src/test/system/bin/vm-deployment-test.sh" />
+          <param name="command.executable" value="server-test/bin/vm-deployment-test.sh" />
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+        <runner id="RUNNER_19" name="Server System Test" type="Maven2">
+            <parameters>
+                <param name="goals" value="test" />
+                <param name="maven.path" value="%teamcity.tool.maven.AUTO%" />
+                <param name="pomLocation" value="server-test/pom.xml" />
+                <param name="teamcity.step.mode" value="default" />
+                <param name="userSettingsSelection" value="userSettingsSelection:default" />
+            </parameters>
+        </runner>
+        <runner id="RUNNER_18" name="Server Log collection" type="simpleRunner">
+        <parameters>
+          <param name="command.executable" value="server-test/bin/collect-log.sh" />
           <param name="teamcity.step.mode" value="default" />
         </parameters>
       </runner>

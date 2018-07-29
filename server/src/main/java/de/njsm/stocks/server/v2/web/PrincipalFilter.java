@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.v2.web;
 
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 import de.njsm.stocks.server.util.Principals;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +53,7 @@ public class PrincipalFilter implements ContainerRequestFilter {
             indices[i] = commonName.indexOf('$', lastIndex+1);
             lastIndex = indices[i];
             if (lastIndex == -1){
-                throw new SecurityException("client name is malformed");
+                throw new HystrixBadRequestException("", new SecurityException("client name is malformed"));
             }
         }
 

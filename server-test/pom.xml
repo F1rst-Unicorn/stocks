@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.njsm.stocks</groupId>
+    <artifactId>server-test</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>Stocks management server system test suite</name>
+
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>de.njsm.stocks</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.57</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.57</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <de.njsm.stocks.internal.db.databaseAddress>localhost</de.njsm.stocks.internal.db.databaseAddress>
+                <de.njsm.stocks.internal.db.databasePort>3306</de.njsm.stocks.internal.db.databasePort>
+                <de.njsm.stocks.internal.db.databaseName>stocks</de.njsm.stocks.internal.db.databaseName>
+                <de.njsm.stocks.internal.db.databaseUsername>server</de.njsm.stocks.internal.db.databaseUsername>
+                <de.njsm.stocks.internal.db.databasePassword>linux</de.njsm.stocks.internal.db.databasePassword>
+                <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
+            </properties>
+        </profile>
+        <profile>
+            <id>teamcity</id>
+            <properties>
+                <de.njsm.stocks.internal.db.databaseAddress>localhost</de.njsm.stocks.internal.db.databaseAddress>
+                <de.njsm.stocks.internal.db.databasePort>3306</de.njsm.stocks.internal.db.databasePort>
+                <de.njsm.stocks.internal.db.databaseName>stocks</de.njsm.stocks.internal.db.databaseName>
+                <de.njsm.stocks.internal.db.databaseUsername>server</de.njsm.stocks.internal.db.databaseUsername>
+                <de.njsm.stocks.internal.db.databasePassword>linux</de.njsm.stocks.internal.db.databasePassword>
+                <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <de.njsm.stocks.internal.db.databaseAddress>${de.njsm.stocks.internal.db.databaseAddress}</de.njsm.stocks.internal.db.databaseAddress>
+                        <de.njsm.stocks.internal.db.databasePort>${de.njsm.stocks.internal.db.databasePort}</de.njsm.stocks.internal.db.databasePort>
+                        <de.njsm.stocks.internal.db.databaseName>${de.njsm.stocks.internal.db.databaseName}</de.njsm.stocks.internal.db.databaseName>
+                        <de.njsm.stocks.internal.db.databaseUsername>${de.njsm.stocks.internal.db.databaseUsername}</de.njsm.stocks.internal.db.databaseUsername>
+                        <de.njsm.stocks.internal.db.databasePassword>${de.njsm.stocks.internal.db.databasePassword}</de.njsm.stocks.internal.db.databasePassword>
+                        <de.njsm.stocks.internal.ticketValidityTimeInMinutes>${de.njsm.stocks.internal.ticketValidityTimeInMinutes}</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.19.1</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
+</project>
