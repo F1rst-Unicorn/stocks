@@ -12,5 +12,3 @@ ansible-playbook -b -i $STOCKS_ROOT/deploy-server/inventory-testing \
         $STOCKS_ROOT/deploy-server/play_install.yml
 echo "##teamcity[testFinished name='Server installation']"
 echo "##teamcity[testSuiteFinished name='Server System Test']"
-
-mvn -f $STOCKS_ROOT/server-test/pom.xml -Dtest=TestSuite test

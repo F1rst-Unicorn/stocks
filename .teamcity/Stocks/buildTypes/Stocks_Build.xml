@@ -104,6 +104,7 @@
             <parameters>
                 <param name="goals" value="test" />
                 <param name="maven.path" value="%teamcity.tool.maven.AUTO%" />
+                <param name="runnerArgs" value="-Dtest=TestSuite" />
                 <param name="pomLocation" value="server-test/pom.xml" />
                 <param name="teamcity.step.mode" value="default" />
                 <param name="userSettingsSelection" value="userSettingsSelection:default" />
