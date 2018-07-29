@@ -21,7 +21,7 @@ FINGERPRINT=$(curl -s http://dp-server:10910/ca | \
         openssl x509 -noout -sha256 -fingerprint | \
         head -n 1 | sed 's/.*=//')
 
-echo -e "dp-server\n\n\n\nJack\nDevice\n1\n$DEVICE_ID\n\
+echo -e "dp-server\n\n\n\nJack\ncli-client\n1\n$DEVICE_ID\n\
 $FINGERPRINT\n\
 $TICKET_VALUE\nquit\n" | \
         ssh dp-client stocks

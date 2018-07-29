@@ -30,7 +30,7 @@ public class SetupTest {
         Intents.init();
         Intent data = new Intent();
         String user = "Jack";
-        String device = "Device";
+        String device = "android-client";
         int uid = 1;
         int did = Properties.deviceId;
         String ticket = Properties.ticket;

@@ -111,8 +111,8 @@ public class Cleanup {
 
     @Test
     public void setupOtherTestAccounts() throws IOException {
-        Ticket ticket1 = DeviceTest.createNewDevice("Device", 1);
-        Ticket ticket2 = DeviceTest.createNewDevice("Device", 1);
+        Ticket ticket1 = DeviceTest.createNewDevice("cli-client", 1);
+        Ticket ticket2 = DeviceTest.createNewDevice("android-client", 1);
 
         writeToFile("target/01_ticket", ticket1.ticket);
         writeToFile("target/01_id", String.valueOf(ticket1.deviceId));
