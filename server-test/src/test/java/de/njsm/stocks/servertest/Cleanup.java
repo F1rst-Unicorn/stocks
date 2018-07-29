@@ -115,9 +115,9 @@ public class Cleanup {
         Ticket ticket2 = DeviceTest.createNewDevice("Device", 1);
 
         writeToFile("target/01_ticket", ticket1.ticket);
-        writeToFile("target/01_id", String.valueOf(ticket1.id));
+        writeToFile("target/01_id", String.valueOf(ticket1.deviceId));
         writeToFile("target/02_ticket", ticket2.ticket);
-        writeToFile("target/02_id", String.valueOf(ticket2.id));
+        writeToFile("target/02_id", String.valueOf(ticket2.deviceId));
 
     }
 
