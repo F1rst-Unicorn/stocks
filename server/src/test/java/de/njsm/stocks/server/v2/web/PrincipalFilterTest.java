@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.v2.web;
 
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 import de.njsm.stocks.server.util.Principals;
 import org.junit.After;
 import org.junit.Before;
@@ -8,13 +9,10 @@ import org.mockito.Mockito;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.UriInfo;
-
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PrincipalFilterTest {
 
@@ -127,7 +125,7 @@ public class PrincipalFilterTest {
         assertEquals(1, p.getDid());
     }
 
-    @Test(expected = SecurityException.class)
+    @Test(expected = HystrixBadRequestException.class)
     public void testMalformed() {
         String input = "/CN=$1$1";
 
@@ -135,7 +133,7 @@ public class PrincipalFilterTest {
 
     }
 
-    @Test(expected = SecurityException.class)
+    @Test(expected = HystrixBadRequestException.class)
     public void tooManyDollars() {
         String input = "/CN=omg$4$device$5$tooMuch";
 
@@ -147,7 +145,7 @@ public class PrincipalFilterTest {
         assertEquals(1, p.getDid());
     }
 
-    @Test(expected = SecurityException.class)
+    @Test(expected = HystrixBadRequestException.class)
     public void testParseNameWithDollar() {
         String[] testInput = new String[] {"my_user$name", "3",
                 "my_device_name", "6"};
@@ -160,12 +158,12 @@ public class PrincipalFilterTest {
         PrincipalFilter.parseSubjectName(input);
     }
 
-    @Test(expected = SecurityException.class)
+    @Test(expected = HystrixBadRequestException.class)
     public void testTooFewDollars() {
         PrincipalFilter.parseSubjectName("CN=username$devicename$4");
     }
 
-    @Test(expected = SecurityException.class)
+    @Test(expected = HystrixBadRequestException.class)
     public void testCompleteGarbage() {
         PrincipalFilter.parseSubjectName("29A");
     }

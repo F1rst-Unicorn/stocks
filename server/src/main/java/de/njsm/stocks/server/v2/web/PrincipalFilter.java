@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +25,7 @@ public class PrincipalFilter implements ContainerRequestFilter {
     public static final String ORIGIN_SENTRY = "sentry";
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
         if (! requestContext.getHeaderString(ORIGIN).equals(ORIGIN_SENTRY)) {
             addPrincipals(requestContext);
         }
@@ -70,7 +69,7 @@ public class PrincipalFilter implements ContainerRequestFilter {
         if (matcher.matches()) {
             return matcher.group(1);
         } else {
-            throw new SecurityException("Client name is malformed");
+            throw new HystrixBadRequestException("", new SecurityException("client name is malformed"));
         }
     }
 

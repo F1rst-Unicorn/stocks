@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.util;
 
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class PrincipalsTest {
         assertEquals(did, uut.getDid());
     }
 
-    @Test(expected = SecurityException.class)
+    @Test(expected = HystrixBadRequestException.class)
     public void invalidNumber() {
         String uname = "username";
         String dname = "device";
@@ -58,7 +59,7 @@ public class PrincipalsTest {
         new Principals(rawInput);
     }
 
-    @Test(expected = SecurityException.class)
+    @Test(expected = HystrixBadRequestException.class)
     public void invalidArray() {
         String uname = "username";
         String dname = "device";
@@ -76,7 +77,7 @@ public class PrincipalsTest {
         new Principals(rawInput);
     }
 
-    @Test(expected = SecurityException.class)
+    @Test(expected = HystrixBadRequestException.class)
     public void testWrongLength() {
         String[] input = {
                 "user",
