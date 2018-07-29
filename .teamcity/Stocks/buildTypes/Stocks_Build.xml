@@ -90,7 +90,7 @@
       </runner>
       <runner id="RUNNER_16" name="Clean server" type="simpleRunner">
         <parameters>
-          <param name="command.executable" value="server/src/test/system/bin/clean-up.sh" />
+          <param name="command.executable" value="server-test/bin/clean-up.sh" />
           <param name="teamcity.step.mode" value="execute_always" />
         </parameters>
       </runner>
