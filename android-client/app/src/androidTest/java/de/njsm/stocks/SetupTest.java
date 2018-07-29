@@ -58,7 +58,7 @@ public class SetupTest {
                 .next()
                 .next()
                 .assertUser("Jack")
-                .assertDevice("Device")
+                .assertDevice("android-client")
                 .assertUserId(1)
                 .assertDeviceId(Properties.deviceId)
                 .assertFingerPrint(Properties.fingerprint)
