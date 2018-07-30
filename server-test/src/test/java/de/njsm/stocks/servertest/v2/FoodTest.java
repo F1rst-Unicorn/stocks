@@ -17,14 +17,14 @@ public class FoodTest {
         then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("status", equalTo("SUCCESS"));
+                .body("status", equalTo(0));
 
         when()
                 .get(TestSuite.DOMAIN + "/v2/food").
         then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("status", equalTo("SUCCESS"))
+                .body("status", equalTo(0))
                 .body("data.name", hasItem("Carrot"));
     }
 }
