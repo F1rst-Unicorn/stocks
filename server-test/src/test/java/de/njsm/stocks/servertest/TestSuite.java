@@ -1,5 +1,7 @@
 package de.njsm.stocks.servertest;
 
+import de.njsm.stocks.servertest.v2.FoodTest;
+import de.njsm.stocks.servertest.v1.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -10,6 +12,7 @@ import org.junit.runners.Suite;
                      UpdateChangeTest.class,
                      LocationTest.class,
                      UserTest.class,
+                     de.njsm.stocks.servertest.v1.FoodTest.class,
                      FoodTest.class,
                      EanTest.class,
                      FoodItemTest.class,

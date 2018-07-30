@@ -6,11 +6,14 @@
 
     <import resource="common.xml" />
 
+    <bean name="dbInsertVisitor" class="de.njsm.stocks.server.v2.db.InsertVisitor" />
+
     <bean name="foodDbHandler" class="de.njsm.stocks.server.v2.db.FoodHandler">
         <constructor-arg index="0" ref="dbUrl"/>
         <constructor-arg index="1" ref="dbUser" />
         <constructor-arg index="2" ref="dbPassword" />
         <constructor-arg index="3" ref="circuitBreakerDatabase" />
+        <constructor-arg index="4" ref="dbInsertVisitor" />
     </bean>
 
     <bean name="foodEndpoint" class="de.njsm.stocks.server.v2.web.FoodEndpoint">

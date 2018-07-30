@@ -1,6 +1,7 @@
-package de.njsm.stocks.servertest;
+package de.njsm.stocks.servertest.v1;
 
 import de.njsm.stocks.common.data.Ticket;
+import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;

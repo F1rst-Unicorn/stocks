@@ -1,5 +1,6 @@
-package de.njsm.stocks.servertest;
+package de.njsm.stocks.servertest.v1;
 
+import de.njsm.stocks.servertest.TestSuite;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.when;

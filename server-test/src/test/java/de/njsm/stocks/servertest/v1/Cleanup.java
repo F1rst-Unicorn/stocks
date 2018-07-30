@@ -1,6 +1,7 @@
-package de.njsm.stocks.servertest;
+package de.njsm.stocks.servertest.v1;
 
 import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.http.ContentType;
 import org.junit.FixMethodOrder;
 import org.junit.Test;

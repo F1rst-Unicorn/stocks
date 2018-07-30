@@ -1,7 +1,8 @@
-package de.njsm.stocks.servertest;
+package de.njsm.stocks.servertest.v1;
 
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
+import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.config.SSLConfig;
 import io.restassured.http.ContentType;
