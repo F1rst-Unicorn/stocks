@@ -96,7 +96,11 @@ public class X509AuthAdmin implements AuthAdmin {
             Object csrRaw = parser.readObject();
             if (csrRaw instanceof PKCS10CertificationRequest) {
                 PKCS10CertificationRequest csr = (PKCS10CertificationRequest) csrRaw;
-                return PrincipalFilter.parseSubjectName(csr.getSubject().toString());
+                try {
+                    return PrincipalFilter.parseSubjectName(csr.getSubject().toString());
+                } catch (SecurityException e) {
+                    throw new HystrixBadRequestException("bad request", e);
+                }
             } else {
                 throw new HystrixBadRequestException("bad request", new SecurityException("failed to cast CSR"));
             }

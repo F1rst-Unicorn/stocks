@@ -1,8 +1,6 @@
 package de.njsm.stocks.server.util;
 
 
-import com.netflix.hystrix.exception.HystrixBadRequestException;
-
 import java.util.Objects;
 
 /**
@@ -19,7 +17,7 @@ public class Principals {
     public Principals(String[] rawInput) {
 
         if (rawInput.length != 4) {
-            throw new HystrixBadRequestException("bad request", new SecurityException("client name malformed"));
+            throw new SecurityException("client name malformed");
         }
 
         username = rawInput[0];
@@ -28,7 +26,7 @@ public class Principals {
             uid = Integer.parseInt(rawInput[1]);
             did = Integer.parseInt(rawInput[3]);
         } catch (NumberFormatException e) {
-            throw new HystrixBadRequestException("bad request", new SecurityException("client IDs are invalid"));
+            throw new SecurityException("client IDs are invalid");
         }
     }
 
