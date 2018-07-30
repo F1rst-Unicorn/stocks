@@ -21,7 +21,7 @@ public class Food extends VersionedData {
     }
 
     public Food(String name) {
-        super(0, 1);
+        super(0, 0);
         this.name = name;
     }
 

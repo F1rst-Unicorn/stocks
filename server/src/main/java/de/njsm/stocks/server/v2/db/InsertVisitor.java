@@ -14,6 +14,6 @@ public class InsertVisitor<T extends Record> extends AbstractVisitor<InsertSetSt
     @Override
     public Query food(Food f, InsertSetStep<T> arg) {
         return arg.columns(FOOD.NAME, FOOD.VERSION)
-                .values(f.name, UInteger.valueOf(1));
+                .values(f.name, UInteger.valueOf(f.version));
     }
 }
