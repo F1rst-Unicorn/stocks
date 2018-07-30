@@ -13,6 +13,8 @@ public abstract class Data {
 
     public int id;
 
+    public Data() {}
+
     public Data(int id) {
         this.id = id;
     }
