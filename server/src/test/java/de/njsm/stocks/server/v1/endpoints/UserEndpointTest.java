@@ -46,6 +46,17 @@ public class UserEndpointTest extends BaseTestEndpoint {
     }
 
     @Test
+    public void idIsClearedByServer() {
+        User data = new User(3, "123-123-123");
+        User expected = new User(0, "123-123-123");
+
+        uut.addUser(createMockRequest(), data);
+
+        Mockito.verify(userManager).addUser(expected);
+    }
+
+
+    @Test
     public void testGettingDevices() {
 
         Data[] output = uut.getUsers(BaseTestEndpoint.createMockRequest());

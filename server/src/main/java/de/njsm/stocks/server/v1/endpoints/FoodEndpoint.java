@@ -15,8 +15,6 @@ import javax.ws.rs.core.MediaType;
 @Path("/food")
 public class FoodEndpoint extends Endpoint {
 
-    private static final Logger LOG = LogManager.getLogger(FoodEndpoint.class);
-
     public FoodEndpoint(DatabaseHandler handler,
                         UserContextFactory contextFactory) {
         super(handler, contextFactory);
@@ -25,7 +23,6 @@ public class FoodEndpoint extends Endpoint {
     @GET
     @Produces("application/json")
     public Data[] getFood(@Context HttpServletRequest request) {
-        logAccess(LOG, request, "gets food");
         return handler.get(FoodFactory.f);
     }
 
@@ -33,7 +30,7 @@ public class FoodEndpoint extends Endpoint {
     @Consumes("application/json")
     public void addFood(@Context HttpServletRequest request,
                         Food foodToAdd){
-        logAccess(LOG, request, "adds food " + foodToAdd.name);
+        foodToAdd.id = 0;
         handler.add(foodToAdd);
     }
 
@@ -43,8 +40,6 @@ public class FoodEndpoint extends Endpoint {
     public void renameFood(@Context HttpServletRequest request,
                            Food foodToRename,
                            @PathParam("newname") String newName){
-        logAccess(LOG, request, "renames food "
-                + foodToRename.name  + " -> " + newName);
         handler.rename(foodToRename, newName);
     }
 
@@ -53,7 +48,6 @@ public class FoodEndpoint extends Endpoint {
     @Consumes("application/json")
     public void removeFood(@Context HttpServletRequest request,
                            Food foodToRemove) {
-        logAccess(LOG, request, "removes food " + foodToRemove.name);
         handler.remove(foodToRemove);
     }
 
@@ -61,7 +55,6 @@ public class FoodEndpoint extends Endpoint {
     @Path("/fooditem")
     @Produces("application/json")
     public Data[] getFoodItems(@Context HttpServletRequest request) {
-        logAccess(LOG, request, "gets food items");
         return handler.get(FoodItemFactory.f);
     }
 
@@ -70,11 +63,11 @@ public class FoodEndpoint extends Endpoint {
     @Consumes("application/json")
     public void addFoodItem(@Context HttpServletRequest request,
                             FoodItem itemToAdd){
-        logAccess(LOG, request, "adds food item " + itemToAdd.ofType);
 
         Principals uc = contextFactory.getPrincipals(request);
         itemToAdd.buys = uc.getUid();
         itemToAdd.registers = uc.getDid();
+        itemToAdd.id = 0;
 
         handler.add(itemToAdd);
     }
@@ -84,7 +77,6 @@ public class FoodEndpoint extends Endpoint {
     @Consumes("application/json")
     public void removeFoodItem(@Context HttpServletRequest request,
                                FoodItem itemToRemove){
-        logAccess(LOG, request, "removes food item " + itemToRemove.id);
         handler.remove(itemToRemove);
     }
 
@@ -94,8 +86,6 @@ public class FoodEndpoint extends Endpoint {
     public void moveFoodItem(@Context HttpServletRequest request,
                              FoodItem itemToMove,
                              @PathParam("newId") int newLocationId) {
-        logAccess(LOG, request, "moves food item " + itemToMove.id
-                + " to " + newLocationId);
         handler.moveItem(itemToMove, newLocationId);
     }
 }

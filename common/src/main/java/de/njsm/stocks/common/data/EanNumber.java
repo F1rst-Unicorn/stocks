@@ -7,6 +7,7 @@ import de.njsm.stocks.common.data.visitor.StocksDataVisitor;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
@@ -41,5 +42,30 @@ public class EanNumber extends Data implements SqlRemovable {
     @JsonIgnore
     public String getRemoveStmt() {
         return "DELETE FROM EAN_number WHERE ID=?";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EanNumber eanNumber = (EanNumber) o;
+        return id == eanNumber.id &&
+                identifiesFood == eanNumber.identifiesFood &&
+                Objects.equals(eanCode, eanNumber.eanCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, eanCode, identifiesFood);
+    }
+
+    @Override
+    public String toString() {
+        return "EanNumber{" +
+                "id=" + id +
+                ", eanCode='" + eanCode + '\'' +
+                ", identifiesFood=" + identifiesFood +
+                ", id=" + id +
+                '}';
     }
 }

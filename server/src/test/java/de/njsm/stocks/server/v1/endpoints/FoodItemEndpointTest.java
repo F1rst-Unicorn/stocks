@@ -57,6 +57,16 @@ public class FoodItemEndpointTest extends BaseTestEndpoint {
     }
 
     @Test
+    public void idIsClearedByServer() {
+        FoodItem data = new FoodItem(3, Instant.EPOCH, 0, 0, 0, 0);
+        FoodItem expected = new FoodItem(0, Instant.EPOCH, 0, 0, 1, 5);
+
+        uut.addFoodItem(createMockRequest(), data);
+
+        Mockito.verify(handler).add(expected);
+    }
+
+    @Test
     public void testRemovingFoodItem() {
         uut.removeFoodItem(createMockRequest(), testItem);
 

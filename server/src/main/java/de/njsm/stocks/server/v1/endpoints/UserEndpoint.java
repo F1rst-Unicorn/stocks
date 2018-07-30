@@ -15,8 +15,6 @@ import javax.ws.rs.core.Context;
 @Path("/user")
 public class UserEndpoint extends Endpoint {
 
-    private static final Logger LOG = LogManager.getLogger(UserEndpoint.class);
-
     private UserManager userManager;
 
     public UserEndpoint(UserManager userManager,
@@ -31,14 +29,13 @@ public class UserEndpoint extends Endpoint {
     public void addUser(@Context HttpServletRequest request,
                         User userToAdd) {
 
-        logAccess(LOG, request, "adds user " + userToAdd.name);
+        userToAdd.id = 0;
         userManager.addUser(userToAdd);
     }
 
     @GET
     @Produces("application/json")
     public Data[] getUsers(@Context HttpServletRequest request) {
-        logAccess(LOG, request, "gets users");
         return userManager.getUsers();
     }
 
@@ -47,7 +44,6 @@ public class UserEndpoint extends Endpoint {
     @Consumes("application/json")
     public void removeUser(@Context HttpServletRequest request,
                            User userToDelete) {
-        logAccess(LOG, request, "removes user " + userToDelete.name);
         userManager.removeUser(userToDelete);
     }
 

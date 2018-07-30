@@ -54,6 +54,17 @@ public class LocationEndpointTest extends BaseTestEndpoint {
     }
 
     @Test
+    public void idIsClearedByServer() {
+        Location data = new Location(3, "123-123-123");
+        Location expected = new Location(0, "123-123-123");
+
+        uut.addLocation(createMockRequest(), data);
+
+        Mockito.verify(handler).add(expected);
+    }
+
+
+    @Test
     public void testRenamingLocation() {
         String newLocation = "Basement";
         uut.renameLocation(createMockRequest(), testItem, newLocation);

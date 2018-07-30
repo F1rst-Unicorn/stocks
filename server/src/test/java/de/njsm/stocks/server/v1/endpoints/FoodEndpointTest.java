@@ -54,6 +54,16 @@ public class FoodEndpointTest extends BaseTestEndpoint {
     }
 
     @Test
+    public void idIsClearedByServer() {
+        Food data = new Food(3, "123-123-123");
+        Food expected = new Food(0, "123-123-123");
+
+        uut.addFood(createMockRequest(), data);
+
+        Mockito.verify(handler).add(expected);
+    }
+
+    @Test
     public void testRenamingFood() {
         String newName = "Beer";
         uut.renameFood(createMockRequest(), testItem, newName);

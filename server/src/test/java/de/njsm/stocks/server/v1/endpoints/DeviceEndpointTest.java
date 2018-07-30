@@ -42,12 +42,23 @@ public class DeviceEndpointTest extends de.njsm.stocks.server.v1.endpoints.BaseT
         UserDevice userDevice = new UserDevice(0, "Mobile", 3);
         Mockito.when(devicesManager.addDevice(userDevice)).thenReturn(ticket);
 
-        Ticket actual = uut.addDevice(de.njsm.stocks.server.v1.endpoints.BaseTestEndpoint.createMockRequest(), userDevice);
+        Ticket actual = uut.addDevice(createMockRequest(), userDevice);
 
         assertEquals(ticket, actual);
         Mockito.verify(devicesManager).addDevice(userDevice);
         Mockito.verifyNoMoreInteractions(handler);
         Mockito.verifyNoMoreInteractions(devicesManager);
+    }
+
+    @Test
+    public void idIsClearedByServer() {
+        UserDevice userDevice = new UserDevice(3, "Mobile", 3);
+        UserDevice expected = new UserDevice(0, "Mobile", 3);
+        Mockito.when(devicesManager.addDevice(userDevice)).thenReturn(ticket);
+
+        uut.addDevice(createMockRequest(), userDevice);
+
+        Mockito.verify(devicesManager).addDevice(expected);
     }
 
     @Test

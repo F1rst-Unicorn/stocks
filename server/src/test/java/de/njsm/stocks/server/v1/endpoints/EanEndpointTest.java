@@ -54,6 +54,16 @@ public class EanEndpointTest extends BaseTestEndpoint {
     }
 
     @Test
+    public void idIsClearedByServer() {
+        EanNumber data = new EanNumber(3, "123-123-123", 3);
+        EanNumber expected = new EanNumber(0, "123-123-123", 3);
+
+        uut.addEanNumber(createMockRequest(), data);
+
+        Mockito.verify(handler).add(expected);
+    }
+
+    @Test
     public void testRemovingNumber() {
         uut.removeEanNumber(createMockRequest(), testItem);
 

@@ -16,8 +16,6 @@ import javax.ws.rs.core.MediaType;
 @Path("/ean")
 public class EanEndpoint extends Endpoint {
 
-    private static final Logger LOG = LogManager.getLogger(EanEndpoint.class);
-
     public EanEndpoint(DatabaseHandler handler,
                        UserContextFactory contextFactory) {
         super(handler, contextFactory);
@@ -26,7 +24,6 @@ public class EanEndpoint extends Endpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Data[] getEanNumbers(@Context HttpServletRequest request) {
-        logAccess(LOG, request, "gets EAN numbers");
         return handler.get(EanNumberFactory.f);
     }
 
@@ -34,7 +31,7 @@ public class EanEndpoint extends Endpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public void addEanNumber(@Context HttpServletRequest request,
                              EanNumber numberToAdd) {
-        logAccess(LOG, request, "adds EAN number " + numberToAdd.eanCode);
+        numberToAdd.id = 0;
         handler.add(numberToAdd);
     }
 
@@ -43,7 +40,6 @@ public class EanEndpoint extends Endpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public void removeEanNumber(@Context HttpServletRequest request,
                                 EanNumber numberToRemove) {
-        logAccess(LOG, request, "removes EAN number " + numberToRemove.eanCode);
         handler.remove(numberToRemove);
     }
 }
