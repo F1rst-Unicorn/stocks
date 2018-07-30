@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public abstract class DatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData> extends FailSafeDatabaseHandler {
+public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData> extends FailSafeDatabaseHandler {
 
     private InsertVisitor<T> visitor;
 
-    public DatabaseHandler(String url, String username, String password, String resourceIdentifier, InsertVisitor<T> visitor) {
+    public CrudDatabaseHandler(String url, String username, String password, String resourceIdentifier, InsertVisitor<T> visitor) {
         super(url, username, password, resourceIdentifier);
         this.visitor = visitor;
     }

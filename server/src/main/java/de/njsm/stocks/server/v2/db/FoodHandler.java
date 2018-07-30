@@ -11,7 +11,7 @@ import java.util.function.Function;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
 
 
-public class FoodHandler extends RenamableDatabaseHandler<FoodRecord, Food> {
+public class FoodHandler extends CrudRenameDatabaseHandler<FoodRecord, Food> {
 
 
     public FoodHandler(String url,

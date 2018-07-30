@@ -6,14 +6,14 @@ import org.jooq.TableField;
 import org.jooq.UpdatableRecord;
 import org.jooq.types.UInteger;
 
-public abstract class RenamableDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData> extends DatabaseHandler<T, R> {
+public abstract class CrudRenameDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData> extends CrudDatabaseHandler<T, R> {
 
 
-    public RenamableDatabaseHandler(String url,
-                                    String username,
-                                    String password,
-                                    String resourceIdentifier,
-                                    InsertVisitor<T> visitor) {
+    public CrudRenameDatabaseHandler(String url,
+                                     String username,
+                                     String password,
+                                     String resourceIdentifier,
+                                     InsertVisitor<T> visitor) {
         super(url, username, password, resourceIdentifier, visitor);
     }
 
