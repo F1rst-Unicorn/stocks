@@ -1,17 +1,15 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
-import de.njsm.stocks.server.v1.internal.business.TicketAuthoriser;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
+import de.njsm.stocks.server.v2.business.TicketAuthoriser;
+import de.njsm.stocks.server.v2.business.data.Ticket;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 public class RegistrationEndpointTest extends BaseTestEndpoint {
-
-    private Ticket testItem;
 
     private DatabaseHandler handler;
 

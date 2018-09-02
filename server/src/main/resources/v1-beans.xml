@@ -16,7 +16,7 @@
         <constructor-arg index="3" ref="circuitBreakerDatabase"/>
     </bean>
 
-    <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v1.internal.business.TicketAuthoriser" >
+    <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" >
         <constructor-arg index="0" ref="authAdmin"/>
         <constructor-arg index="1" ref="dbHandler"/>
         <constructor-arg index="2" ref="ticketValidity"/>

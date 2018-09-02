@@ -1,10 +1,11 @@
 package de.njsm.stocks.server.v1.internal.business;
 
 import de.njsm.stocks.common.data.ServerTicket;
-import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
+import de.njsm.stocks.server.v2.business.TicketAuthoriser;
+import de.njsm.stocks.server.v2.business.data.Ticket;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

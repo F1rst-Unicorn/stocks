@@ -1,10 +1,11 @@
-package de.njsm.stocks.server.v1.internal.business;
+package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.data.ServerTicket;
-import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v1.internal.business.InvalidRequestException;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
+import de.njsm.stocks.server.v2.business.data.Ticket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

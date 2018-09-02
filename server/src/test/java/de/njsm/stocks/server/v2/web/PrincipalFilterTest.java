@@ -133,7 +133,7 @@ public class PrincipalFilterTest {
 
     }
 
-    @Test(expected = HystrixBadRequestException.class)
+    @Test(expected = SecurityException.class)
     public void tooManyDollars() {
         String input = "/CN=omg$4$device$5$tooMuch";
 
@@ -145,7 +145,7 @@ public class PrincipalFilterTest {
         assertEquals(1, p.getDid());
     }
 
-    @Test(expected = HystrixBadRequestException.class)
+    @Test(expected = SecurityException.class)
     public void testParseNameWithDollar() {
         String[] testInput = new String[] {"my_user$name", "3",
                 "my_device_name", "6"};
