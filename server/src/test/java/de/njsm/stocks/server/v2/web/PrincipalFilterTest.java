@@ -24,7 +24,6 @@ public class PrincipalFilterTest {
 
     public static final Principals TEST_USER = new Principals("John", "Mobile", 5, 1);
 
-
     @Before
     public void setup() throws Exception {
         context = Mockito.mock(ContainerRequestContext.class);
@@ -65,7 +64,6 @@ public class PrincipalFilterTest {
 
     @Test
     public void testParseCorrectName() {
-
         int uid = 3;
         int did = 6;
         String[] testInput = new String[] {
@@ -87,7 +85,6 @@ public class PrincipalFilterTest {
         assertEquals(did, p.getDid());
 
     }
-
 
     @Test
     public void testEmptyName() {

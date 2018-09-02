@@ -2,6 +2,7 @@ package de.njsm.stocks.server.v2.business.data.visitor;
 
 import de.njsm.stocks.server.v2.business.data.Data;
 import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.business.data.ServerTicket;
 
 public abstract class AbstractVisitor<I, O> {
 
@@ -10,5 +11,7 @@ public abstract class AbstractVisitor<I, O> {
     }
 
     public abstract O food(Food f, I arg);
+
+    public abstract O serverTicket(ServerTicket t, I arg);
 
 }

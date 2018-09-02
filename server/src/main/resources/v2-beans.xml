@@ -16,7 +16,24 @@
         <constructor-arg index="4" ref="dbInsertVisitor" />
     </bean>
 
+    <bean name="ticketBackend" class="de.njsm.stocks.server.v2.db.TicketBackend">
+        <constructor-arg index="0" ref="dbUrl"/>
+        <constructor-arg index="1" ref="dbUser" />
+        <constructor-arg index="2" ref="dbPassword" />
+        <constructor-arg index="3" ref="circuitBreakerDatabase" />
+    </bean>
+
+    <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" >
+        <constructor-arg index="0" ref="authAdmin"/>
+        <constructor-arg index="1" ref="ticketBackend"/>
+        <constructor-arg index="2" ref="ticketValidity"/>
+    </bean>
+
     <bean name="foodEndpoint" class="de.njsm.stocks.server.v2.web.FoodEndpoint">
         <constructor-arg index="0" ref="foodDbHandler" />
+    </bean>
+
+    <bean name="registrationEndpoint" class="de.njsm.stocks.server.v2.web.RegistrationEndpoint">
+        <constructor-arg index="0" ref="ticketAuthoriser" />
     </bean>
 </beans>

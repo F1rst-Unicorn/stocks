@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.security.SecureRandom;
 
 @XmlRootElement
-public class Ticket {
+public class ClientTicket {
 
     @JsonIgnore
     public static final int TICKET_LENGTH = 64;
@@ -17,10 +17,10 @@ public class Ticket {
 
     public String pemFile;
 
-    public Ticket() {
+    public ClientTicket() {
     }
 
-    public Ticket(int deviceId, String ticket, String pemFile) {
+    public ClientTicket(int deviceId, String ticket, String pemFile) {
         this.deviceId = deviceId;
         this.ticket = ticket;
         this.pemFile = pemFile;
@@ -31,7 +31,7 @@ public class Ticket {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Ticket ticket1 = (Ticket) o;
+        ClientTicket ticket1 = (ClientTicket) o;
 
         if (deviceId != ticket1.deviceId) return false;
         if (!ticket.equals(ticket1.ticket)) return false;
@@ -65,5 +65,14 @@ public class Ticket {
             result = (byte) generator.nextInt();
         } while (!Character.isLetterOrDigit(result));
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ClientTicket{" +
+                "deviceId=" + deviceId +
+                ", ticket='" + ticket + '\'' +
+                ", pemFile='" + pemFile + '\'' +
+                '}';
     }
 }

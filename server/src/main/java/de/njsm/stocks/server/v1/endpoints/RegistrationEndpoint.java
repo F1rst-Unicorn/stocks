@@ -2,8 +2,10 @@ package de.njsm.stocks.server.v1.endpoints;
 
 import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
+import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.TicketAuthoriser;
-import de.njsm.stocks.server.v2.business.data.Ticket;
+import de.njsm.stocks.server.v2.business.data.ClientTicket;
+import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,11 +39,13 @@ public class RegistrationEndpoint extends Endpoint {
     @Path("/newuser")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Ticket getNewCertificate(@Context HttpServletRequest request,
-                                    Ticket ticket){
+    public ClientTicket getNewCertificate(@Context HttpServletRequest request,
+                                          ClientTicket ticket){
 
         LOG.info("Got new certificate request for device id " + ticket.deviceId);
-        return authoriser.handleTicket(ticket);
+        Validation<StatusCode, String> result = authoriser.handleTicket(ticket);
+        String certificate = result.orSuccess((String) null);
+        return new ClientTicket(ticket.deviceId, ticket.ticket, certificate);
     }
 
 }
