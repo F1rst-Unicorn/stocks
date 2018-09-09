@@ -44,6 +44,6 @@ public class UpdateChangeTest {
                 .extract()
                 .response();
 
-        return response.jsonPath().getString("[0].lastUpdate");
+        return response.jsonPath().getString("data[0].lastUpdate");
     }
 }
