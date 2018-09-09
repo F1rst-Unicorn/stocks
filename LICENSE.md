@@ -1,7 +1,7 @@
 The MIT License (MIT)
 =====================
 
-Copyright © 2016 F1rst_Unicorn
+Copyright © 2018 F1rst\_Unicorn
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
