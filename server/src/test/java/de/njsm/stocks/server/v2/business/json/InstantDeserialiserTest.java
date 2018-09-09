@@ -2,8 +2,9 @@ package de.njsm.stocks.server.v2.business.json;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.threeten.bp.Instant;
-import org.threeten.bp.format.DateTimeParseException;
+
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
