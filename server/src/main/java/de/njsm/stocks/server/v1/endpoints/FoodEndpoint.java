@@ -1,25 +1,28 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
+import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.db.FoodHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import java.util.LinkedList;
+import java.util.List;
 
 @Path("/food")
-public class FoodEndpoint extends Endpoint {
+public class FoodEndpoint extends de.njsm.stocks.server.v2.web.Endpoint {
 
-    public FoodEndpoint(DatabaseHandler handler) {
-        super(handler);
+    private FoodHandler handler;
+
+    public FoodEndpoint(FoodHandler handler) {
+        this.handler = handler;
     }
 
     @GET
     @Produces("application/json")
-    public Data[] getFood(@Context HttpServletRequest request) {
-        return handler.get(FoodFactory.f);
+    public Food[] getFood(@Context HttpServletRequest request) {
+        List<Food> list = handler.get().orSuccess(new LinkedList<>());
+        return list.toArray(new Food[0]);
     }
 
     @PUT
@@ -44,44 +47,6 @@ public class FoodEndpoint extends Endpoint {
     @Consumes("application/json")
     public void removeFood(@Context HttpServletRequest request,
                            Food foodToRemove) {
-        handler.remove(foodToRemove);
-    }
-
-    @GET
-    @Path("/fooditem")
-    @Produces("application/json")
-    public Data[] getFoodItems(@Context HttpServletRequest request) {
-        return handler.get(FoodItemFactory.f);
-    }
-
-    @PUT
-    @Path("/fooditem")
-    @Consumes("application/json")
-    public void addFoodItem(@Context HttpServletRequest request,
-                            FoodItem itemToAdd){
-
-        Principals uc = getPrincipals(request);
-        itemToAdd.buys = uc.getUid();
-        itemToAdd.registers = uc.getDid();
-        itemToAdd.id = 0;
-
-        handler.add(itemToAdd);
-    }
-
-    @PUT
-    @Path("/fooditem/remove")
-    @Consumes("application/json")
-    public void removeFoodItem(@Context HttpServletRequest request,
-                               FoodItem itemToRemove){
-        handler.remove(itemToRemove);
-    }
-
-    @PUT
-    @Path("/fooditem/move/{newId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void moveFoodItem(@Context HttpServletRequest request,
-                             FoodItem itemToMove,
-                             @PathParam("newId") int newLocationId) {
-        handler.moveItem(itemToMove, newLocationId);
+        handler.delete(foodToRemove);
     }
 }

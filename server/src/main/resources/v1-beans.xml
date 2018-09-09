@@ -34,7 +34,7 @@
     </bean>
 
     <bean name="foodEndPoint" class="de.njsm.stocks.server.v1.endpoints.FoodEndpoint">
-        <constructor-arg index="0" ref="dbHandler"/>
+        <constructor-arg index="0" ref="foodDbHandler"/>
     </bean>
 
     <bean name="locationEndPoint" class="de.njsm.stocks.server.v1.endpoints.LocationEndpoint">
