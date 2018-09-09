@@ -40,7 +40,8 @@ public class UpdateChangeTest {
         then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("", iterableWithSize(6))
+                .body("status", equalTo(0))
+                .body("data", iterableWithSize(6))
                 .extract()
                 .response();
 
