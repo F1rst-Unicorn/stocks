@@ -16,6 +16,14 @@
         <constructor-arg index="4" ref="dbInsertVisitor" />
     </bean>
 
+    <bean name="locationDbHandler" class="de.njsm.stocks.server.v2.db.LocationHandler">
+        <constructor-arg index="0" ref="dbUrl"/>
+        <constructor-arg index="1" ref="dbUser" />
+        <constructor-arg index="2" ref="dbPassword" />
+        <constructor-arg index="3" ref="circuitBreakerDatabase" />
+        <constructor-arg index="4" ref="dbInsertVisitor" />
+    </bean>
+
     <bean name="ticketBackend" class="de.njsm.stocks.server.v2.db.TicketBackend">
         <constructor-arg index="0" ref="dbUrl"/>
         <constructor-arg index="1" ref="dbUser" />
@@ -31,6 +39,10 @@
 
     <bean name="foodEndpoint" class="de.njsm.stocks.server.v2.web.FoodEndpoint">
         <constructor-arg index="0" ref="foodDbHandler" />
+    </bean>
+
+    <bean name="locationEndpoint" class="de.njsm.stocks.server.v2.web.LocationEndpoint">
+        <constructor-arg index="0" ref="locationDbHandler" />
     </bean>
 
     <bean name="registrationEndpoint" class="de.njsm.stocks.server.v2.web.RegistrationEndpoint">
