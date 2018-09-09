@@ -1,28 +1,25 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.server.v2.business.data.Food;
-import de.njsm.stocks.server.v2.db.FoodHandler;
+import de.njsm.stocks.common.data.Data;
+import de.njsm.stocks.common.data.Food;
+import de.njsm.stocks.common.data.FoodFactory;
+import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import java.util.LinkedList;
-import java.util.List;
 
 @Path("/food")
-public class FoodEndpoint extends de.njsm.stocks.server.v2.web.Endpoint {
+public class FoodEndpoint extends Endpoint {
 
-    private FoodHandler handler;
-
-    public FoodEndpoint(FoodHandler handler) {
-        this.handler = handler;
+    public FoodEndpoint(DatabaseHandler handler) {
+        super(handler);
     }
 
     @GET
     @Produces("application/json")
-    public Food[] getFood(@Context HttpServletRequest request) {
-        List<Food> list = handler.get().orSuccess(new LinkedList<>());
-        return list.toArray(new Food[0]);
+    public Data[] getFood(@Context HttpServletRequest request) {
+        return handler.get(FoodFactory.f);
     }
 
     @PUT
@@ -47,6 +44,7 @@ public class FoodEndpoint extends de.njsm.stocks.server.v2.web.Endpoint {
     @Consumes("application/json")
     public void removeFood(@Context HttpServletRequest request,
                            Food foodToRemove) {
-        handler.delete(foodToRemove);
+        handler.remove(foodToRemove);
     }
+
 }
