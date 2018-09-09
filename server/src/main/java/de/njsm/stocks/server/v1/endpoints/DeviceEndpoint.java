@@ -4,7 +4,6 @@ import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.server.v1.internal.business.DevicesManager;
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,9 +17,8 @@ public class DeviceEndpoint extends Endpoint {
     private DevicesManager devicesManager;
 
     public DeviceEndpoint(DevicesManager devicesManager,
-                          DatabaseHandler handler,
-                          UserContextFactory contextFactory) {
-        super(handler, contextFactory);
+                          DatabaseHandler handler) {
+        super(handler);
         this.devicesManager = devicesManager;
     }
 

@@ -2,11 +2,8 @@ package de.njsm.stocks.server.v1.endpoints;
 
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.business.UserManager;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -18,9 +15,8 @@ public class UserEndpoint extends Endpoint {
     private UserManager userManager;
 
     public UserEndpoint(UserManager userManager,
-                        DatabaseHandler handler,
-                        UserContextFactory contextFactory) {
-        super(handler, contextFactory);
+                        DatabaseHandler handler) {
+        super(handler);
         this.userManager = userManager;
     }
 

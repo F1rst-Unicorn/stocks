@@ -3,14 +3,11 @@ package de.njsm.stocks.server.v1.endpoints;
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.LocationFactory;
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import static org.mockito.Matchers.any;
 
 public class LocationEndpointTest extends BaseTestEndpoint {
 
@@ -20,19 +17,14 @@ public class LocationEndpointTest extends BaseTestEndpoint {
 
     private DatabaseHandler handler;
 
-    private UserContextFactory authAdmin;
-
     @Before
     public void setup() {
         handler = Mockito.mock(DatabaseHandler.class);
-        authAdmin = Mockito.mock(UserContextFactory.class);
-        uut = new LocationEndpoint(handler, authAdmin);
+        uut = new LocationEndpoint(handler);
 
         testItem = new Location(1, "Fridge");
         Mockito.when(handler.get(LocationFactory.f))
                 .thenReturn(new Data[0]);
-        Mockito.when(authAdmin.getPrincipals(any()))
-                .thenReturn(TEST_USER);
     }
 
     @Test

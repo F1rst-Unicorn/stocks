@@ -113,7 +113,7 @@
         <runner id="RUNNER_18" name="Server Log collection" type="simpleRunner">
         <parameters>
           <param name="command.executable" value="server-test/bin/collect-log.sh" />
-          <param name="teamcity.step.mode" value="default" />
+          <param name="teamcity.step.mode" value="execute_always" />
         </parameters>
       </runner>
       <runner id="RUNNER_17" name="Clean client" type="simpleRunner">

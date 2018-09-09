@@ -3,7 +3,6 @@ package de.njsm.stocks.server.v1.endpoints;
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.common.data.LocationFactory;
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +13,8 @@ import javax.ws.rs.core.Context;
 @Path("/location")
 public class LocationEndpoint extends Endpoint {
 
-    public LocationEndpoint(DatabaseHandler handler,
-                            UserContextFactory contextFactory) {
-        super(handler, contextFactory);
+    public LocationEndpoint(DatabaseHandler handler) {
+        super(handler);
     }
 
     @GET

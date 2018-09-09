@@ -1,11 +1,8 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -15,9 +12,8 @@ import javax.ws.rs.core.MediaType;
 @Path("/food")
 public class FoodEndpoint extends Endpoint {
 
-    public FoodEndpoint(DatabaseHandler handler,
-                        UserContextFactory contextFactory) {
-        super(handler, contextFactory);
+    public FoodEndpoint(DatabaseHandler handler) {
+        super(handler);
     }
 
     @GET
@@ -64,7 +60,7 @@ public class FoodEndpoint extends Endpoint {
     public void addFoodItem(@Context HttpServletRequest request,
                             FoodItem itemToAdd){
 
-        Principals uc = contextFactory.getPrincipals(request);
+        Principals uc = getPrincipals(request);
         itemToAdd.buys = uc.getUid();
         itemToAdd.registers = uc.getDid();
         itemToAdd.id = 0;

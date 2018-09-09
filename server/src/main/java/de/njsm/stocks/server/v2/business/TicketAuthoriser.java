@@ -69,9 +69,9 @@ public class TicketAuthoriser {
             LOG.error("Could not remove previously found ticket " + dbTicket);
         }
 
-        ticket.pemFile = authAdmin.getCertificate(ticket.deviceId);
+        String certificate = authAdmin.getCertificate(ticket.deviceId);
         LOG.info("Authorised new device with ID " + ticket.deviceId);
-        return Validation.success(ticket.pemFile);
+        return Validation.success(certificate);
     }
 
     /**
@@ -99,7 +99,7 @@ public class TicketAuthoriser {
             LOG.warn("No principals in CSR found");
             return false;
         } else if (! csrPrincipals.equals(dbPrincipals.success())) {
-            LOG.warn("CSR Subject name differs from database! DB:" + dbPrincipals.toString()
+            LOG.warn("CSR Subject name differs from database! DB:" + dbPrincipals.success().toString()
                     + " CSR:" + csrPrincipals.toString());
             return false;
         } else {

@@ -1,6 +1,5 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.TicketAuthoriser;
@@ -15,8 +14,6 @@ public class RegistrationEndpointTest extends BaseTestEndpoint {
 
     private DatabaseHandler handler;
 
-    private UserContextFactory authAdmin;
-
     private TicketAuthoriser authoriser;
 
     private RegistrationEndpoint uut;
@@ -24,9 +21,8 @@ public class RegistrationEndpointTest extends BaseTestEndpoint {
     @Before
     public void setup() {
         handler = Mockito.mock(DatabaseHandler.class);
-        authAdmin = Mockito.mock(UserContextFactory.class);
         authoriser = Mockito.mock(TicketAuthoriser.class);
-        uut = new RegistrationEndpoint(handler, authAdmin, authoriser);
+        uut = new RegistrationEndpoint(handler, authoriser);
     }
 
     @Test
@@ -39,7 +35,6 @@ public class RegistrationEndpointTest extends BaseTestEndpoint {
         Assert.assertEquals("certificate", result.pemFile);
         Mockito.verify(authoriser).handleTicket(ticket);
         Mockito.verifyNoMoreInteractions(handler);
-        Mockito.verifyNoMoreInteractions(authAdmin);
         Mockito.verifyNoMoreInteractions(authoriser);
     }
 
@@ -53,7 +48,6 @@ public class RegistrationEndpointTest extends BaseTestEndpoint {
         Assert.assertNull(result.pemFile);
         Mockito.verify(authoriser).handleTicket(ticket);
         Mockito.verifyNoMoreInteractions(handler);
-        Mockito.verifyNoMoreInteractions(authAdmin);
         Mockito.verifyNoMoreInteractions(authoriser);
     }
 }

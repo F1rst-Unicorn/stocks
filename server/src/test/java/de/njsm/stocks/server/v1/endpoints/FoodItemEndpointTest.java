@@ -3,15 +3,12 @@ package de.njsm.stocks.server.v1.endpoints;
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.FoodItemFactory;
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.threeten.bp.Instant;
-
-import static org.mockito.Matchers.any;
 
 public class FoodItemEndpointTest extends BaseTestEndpoint {
 
@@ -21,21 +18,16 @@ public class FoodItemEndpointTest extends BaseTestEndpoint {
 
     private DatabaseHandler handler;
 
-    private UserContextFactory authAdmin;
-
     @Before
     public void setup() {
         handler = Mockito.mock(DatabaseHandler.class);
-        authAdmin = Mockito.mock(UserContextFactory.class);
-        uut = new FoodEndpoint(handler, authAdmin);
+        uut = new FoodEndpoint(handler);
 
         testItem = new FoodItem(1,
                 Instant.now(),
                 2, 3, 4, 5);
         Mockito.when(handler.get(FoodItemFactory.f))
                 .thenReturn(new Data[0]);
-        Mockito.when(authAdmin.getPrincipals(any()))
-                .thenReturn(TEST_USER);
     }
 
     @Test

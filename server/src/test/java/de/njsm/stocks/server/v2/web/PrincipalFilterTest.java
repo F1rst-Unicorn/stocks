@@ -1,6 +1,5 @@
 package de.njsm.stocks.server.v2.web;
 
-import com.netflix.hystrix.exception.HystrixBadRequestException;
 import de.njsm.stocks.server.util.Principals;
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +8,6 @@ import org.mockito.Mockito;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -25,7 +23,7 @@ public class PrincipalFilterTest {
     public static final Principals TEST_USER = new Principals("John", "Mobile", 5, 1);
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         context = Mockito.mock(ContainerRequestContext.class);
         uut = new PrincipalFilter();
     }
@@ -36,7 +34,7 @@ public class PrincipalFilterTest {
     }
 
     @Test
-    public void sentryRequestsAreIgnored() throws IOException {
+    public void sentryRequestsAreIgnored() {
         when(context.getHeaderString(PrincipalFilter.ORIGIN)).thenReturn(PrincipalFilter.ORIGIN_SENTRY);
 
         uut.filter(context);
@@ -45,7 +43,7 @@ public class PrincipalFilterTest {
     }
 
     @Test
-    public void serverRequestsAreInvestigated() throws IOException {
+    public void serverRequestsAreInvestigated() {
         UriInfo info = Mockito.mock(UriInfo.class);
         when(info.getPath()).thenReturn("/foo/bar");
         when(context.getHeaderString(PrincipalFilter.ORIGIN)).thenReturn("server");
@@ -122,7 +120,7 @@ public class PrincipalFilterTest {
         assertEquals(1, p.getDid());
     }
 
-    @Test(expected = HystrixBadRequestException.class)
+    @Test(expected = SecurityException.class)
     public void testMalformed() {
         String input = "/CN=$1$1";
 
@@ -155,15 +153,19 @@ public class PrincipalFilterTest {
         PrincipalFilter.parseSubjectName(input);
     }
 
-    @Test(expected = HystrixBadRequestException.class)
+    @Test(expected = SecurityException.class)
     public void testTooFewDollars() {
         PrincipalFilter.parseSubjectName("CN=username$devicename$4");
     }
 
-    @Test(expected = HystrixBadRequestException.class)
+    @Test(expected = SecurityException.class)
     public void testCompleteGarbage() {
         PrincipalFilter.parseSubjectName("29A");
     }
 
+    @Test(expected = SecurityException.class)
+    public void testEmptySubject() {
+        PrincipalFilter.parseSubjectName("");
+    }
 
 }

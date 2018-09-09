@@ -1,6 +1,5 @@
 package de.njsm.stocks.server.v2.web;
 
-import com.netflix.hystrix.exception.HystrixBadRequestException;
 import de.njsm.stocks.server.util.Principals;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,9 +17,9 @@ public class PrincipalFilter implements ContainerRequestFilter {
 
     public static final String SSL_CLIENT_KEY = "X-SSL-Client-S-DN";
 
-    public static final String ORIGIN = "X-ORIGIN";
-
     public static final String STOCKS_PRINCIPAL = "de.njsm.stocks.server.util.Principals";
+
+    public static final String ORIGIN = "X-ORIGIN";
 
     public static final String ORIGIN_SENTRY = "sentry";
 
@@ -52,7 +51,7 @@ public class PrincipalFilter implements ContainerRequestFilter {
             indices[i] = commonName.indexOf('$', lastIndex+1);
             lastIndex = indices[i];
             if (lastIndex == -1){
-                throw new HystrixBadRequestException("", new SecurityException("client name is malformed"));
+                throw new SecurityException("client name is malformed");
             }
         }
 
@@ -69,7 +68,7 @@ public class PrincipalFilter implements ContainerRequestFilter {
         if (matcher.matches()) {
             return matcher.group(1);
         } else {
-            throw new HystrixBadRequestException("", new SecurityException("client name is malformed"));
+            throw new SecurityException("client name is malformed");
         }
     }
 

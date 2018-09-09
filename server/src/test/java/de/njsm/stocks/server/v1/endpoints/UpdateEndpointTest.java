@@ -2,14 +2,11 @@ package de.njsm.stocks.server.v1.endpoints;
 
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.UpdateFactory;
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import static org.mockito.Matchers.any;
 
 public class UpdateEndpointTest extends BaseTestEndpoint {
 
@@ -17,18 +14,14 @@ public class UpdateEndpointTest extends BaseTestEndpoint {
 
     private DatabaseHandler handler;
 
-    private UserContextFactory authAdmin;
 
     @Before
     public void setup() {
         handler = Mockito.mock(DatabaseHandler.class);
-        authAdmin = Mockito.mock(UserContextFactory.class);
-        uut = new UpdateEndpoint(handler, authAdmin);
+        uut = new UpdateEndpoint(handler);
 
         Mockito.when(handler.get(UpdateFactory.f))
                 .thenReturn(new Data[0]);
-        Mockito.when(authAdmin.getPrincipals(any()))
-                .thenReturn(TEST_USER);
     }
     
     @Test

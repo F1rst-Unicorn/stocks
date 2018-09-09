@@ -3,10 +3,7 @@ package de.njsm.stocks.server.v1.endpoints;
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.EanNumber;
 import de.njsm.stocks.common.data.EanNumberFactory;
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -16,9 +13,8 @@ import javax.ws.rs.core.MediaType;
 @Path("/ean")
 public class EanEndpoint extends Endpoint {
 
-    public EanEndpoint(DatabaseHandler handler,
-                       UserContextFactory contextFactory) {
-        super(handler, contextFactory);
+    public EanEndpoint(DatabaseHandler handler) {
+        super(handler);
     }
 
     @GET

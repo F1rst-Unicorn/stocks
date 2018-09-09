@@ -1,6 +1,5 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.TicketAuthoriser;
@@ -25,9 +24,8 @@ public class RegistrationEndpoint extends Endpoint {
     private TicketAuthoriser authoriser;
 
     public RegistrationEndpoint(DatabaseHandler handler,
-                                UserContextFactory contextFactory,
                                 TicketAuthoriser authoriser) {
-        super(handler, contextFactory);
+        super(handler);
         this.authoriser = authoriser;
     }
 

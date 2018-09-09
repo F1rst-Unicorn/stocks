@@ -2,7 +2,6 @@ package de.njsm.stocks.server.v1.endpoints;
 
 import de.njsm.stocks.common.data.Data;
 import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.server.v1.internal.business.UserContextFactory;
 import de.njsm.stocks.server.v1.internal.business.UserManager;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import org.junit.Before;
@@ -10,7 +9,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 
 public class UserEndpointTest extends BaseTestEndpoint {
 
@@ -24,13 +22,10 @@ public class UserEndpointTest extends BaseTestEndpoint {
     public void setup() {
         userManager = Mockito.mock(UserManager.class);
         handler = Mockito.mock(DatabaseHandler.class);
-        UserContextFactory contextFactory = Mockito.mock(UserContextFactory.class);
-        uut = new UserEndpoint(userManager, handler, contextFactory);
+        uut = new UserEndpoint(userManager, handler);
 
         Mockito.when(userManager.getUsers())
                 .thenReturn(new Data[0]);
-        Mockito.when(contextFactory.getPrincipals(any()))
-                .thenReturn(TEST_USER);
     }
 
 
