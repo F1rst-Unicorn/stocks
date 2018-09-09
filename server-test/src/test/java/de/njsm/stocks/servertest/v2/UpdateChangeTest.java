@@ -1,6 +1,5 @@
 package de.njsm.stocks.servertest.v2;
 
-import de.njsm.stocks.common.data.Location;
 import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -8,6 +7,7 @@ import org.junit.Test;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.iterableWithSize;
 import static org.junit.Assert.assertTrue;
 
@@ -24,19 +24,13 @@ public class UpdateChangeTest {
 
     private void changeLocations() {
         given()
-                .contentType(ContentType.JSON)
-                .body(new Location(1, "Cupboard")).
+                .queryParam("name", "update").
         when()
-                .put(TestSuite.DOMAIN + "/location").
+                .put(TestSuite.DOMAIN + "/v2/location").
         then()
-                .statusCode(204);
-        given()
+                .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body(new Location(1, "Cupboard")).
-        when()
-                .put(TestSuite.DOMAIN + "/location/remove").
-        then()
-                .statusCode(204);
+                .body("status", equalTo(0));
     }
 
     private String getLocationChangeDate() {
