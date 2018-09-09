@@ -1,13 +1,14 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.common.data.Data;
-import de.njsm.stocks.common.data.Food;
-import de.njsm.stocks.common.data.FoodFactory;
-import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
+import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.db.FoodHandler;
+import fj.data.Validation;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.LinkedList;
 
 public class FoodEndpointTest extends BaseTestEndpoint {
 
@@ -15,25 +16,25 @@ public class FoodEndpointTest extends BaseTestEndpoint {
 
     private FoodEndpoint uut;
 
-    private DatabaseHandler handler;
+    private FoodHandler handler;
 
     @Before
     public void setup() {
-        handler = Mockito.mock(DatabaseHandler.class);
+        handler = Mockito.mock(FoodHandler.class);
         uut = new FoodEndpoint(handler);
 
-        Mockito.when(handler.get(FoodFactory.f))
-                .thenReturn(new Data[0]);
-        testItem = new Food(1, "Carrot");
+        Mockito.when(handler.get())
+                .thenReturn(Validation.success(new LinkedList<>()));
+        testItem = new Food(1, "Carrot", 1);
     }
 
     @Test
     public void testGettingFood() {
-        Data[] result = uut.getFood(createMockRequest());
+        Food[] result = uut.getFood(createMockRequest());
 
         Assert.assertNotNull(result);
         Assert.assertEquals(0, result.length);
-        Mockito.verify(handler).get(FoodFactory.f);
+        Mockito.verify(handler).get();
         Mockito.verifyNoMoreInteractions(handler);
     }
 
@@ -47,8 +48,8 @@ public class FoodEndpointTest extends BaseTestEndpoint {
 
     @Test
     public void idIsClearedByServer() {
-        Food data = new Food(3, "123-123-123");
-        Food expected = new Food(0, "123-123-123");
+        Food data = new Food(3, "123-123-123", 1);
+        Food expected = new Food(0, "123-123-123", 1);
 
         uut.addFood(createMockRequest(), data);
 
@@ -68,7 +69,7 @@ public class FoodEndpointTest extends BaseTestEndpoint {
     public void testRemovingFood() {
         uut.removeFood(createMockRequest(), testItem);
 
-        Mockito.verify(handler).remove(testItem);
+        Mockito.verify(handler).delete(testItem);
         Mockito.verifyNoMoreInteractions(handler);
     }
 

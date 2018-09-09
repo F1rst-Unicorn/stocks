@@ -14,14 +14,14 @@ public class FoodItemEndpointTest extends BaseTestEndpoint {
 
     private FoodItem testItem;
 
-    private FoodEndpoint uut;
+    private FoodItemEndpoint uut;
 
     private DatabaseHandler handler;
 
     @Before
     public void setup() {
         handler = Mockito.mock(DatabaseHandler.class);
-        uut = new FoodEndpoint(handler);
+        uut = new FoodItemEndpoint(handler);
 
         testItem = new FoodItem(1,
                 Instant.now(),
