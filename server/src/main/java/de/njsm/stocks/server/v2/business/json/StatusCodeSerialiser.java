@@ -10,6 +10,10 @@ import java.io.IOException;
 public class StatusCodeSerialiser extends StdSerializer<StatusCode> {
 
 
+    public StatusCodeSerialiser() {
+        this(null);
+    }
+
     public StatusCodeSerialiser(Class<StatusCode> t) {
         super(t);
     }
