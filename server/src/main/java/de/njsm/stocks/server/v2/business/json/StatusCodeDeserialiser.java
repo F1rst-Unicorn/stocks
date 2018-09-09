@@ -10,10 +10,6 @@ import java.io.IOException;
 
 public class StatusCodeDeserialiser extends StdDeserializer<StatusCode> {
 
-    protected StatusCodeDeserialiser() {
-        this(null);
-    }
-
     public StatusCodeDeserialiser(Class<?> vc) {
         super(vc);
     }
