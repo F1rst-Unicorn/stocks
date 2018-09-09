@@ -6,8 +6,6 @@
 
     <import resource="v2-beans.xml" />
 
-    <bean name="contextFactory" class="de.njsm.stocks.server.v1.internal.business.HttpsUserContextFactory"/>
-
 
     <bean name="dbHandler" class="de.njsm.stocks.server.v1.internal.db.SqlDatabaseHandler">
         <constructor-arg index="0" ref="dbUrl"/>
@@ -29,39 +27,32 @@
     <bean name="deviceEndPoint" class="de.njsm.stocks.server.v1.endpoints.DeviceEndpoint">
         <constructor-arg index="0" ref="devicesManager"/>
         <constructor-arg index="1" ref="dbHandler"/>
-        <constructor-arg index="2" ref="contextFactory"/>
     </bean>
 
     <bean name="eanEndPoint" class="de.njsm.stocks.server.v1.endpoints.EanEndpoint">
         <constructor-arg index="0" ref="dbHandler"/>
-        <constructor-arg index="1" ref="contextFactory"/>
     </bean>
 
     <bean name="foodEndPoint" class="de.njsm.stocks.server.v1.endpoints.FoodEndpoint">
         <constructor-arg index="0" ref="dbHandler"/>
-        <constructor-arg index="1" ref="contextFactory"/>
     </bean>
 
     <bean name="locationEndPoint" class="de.njsm.stocks.server.v1.endpoints.LocationEndpoint">
         <constructor-arg index="0" ref="dbHandler"/>
-        <constructor-arg index="1" ref="contextFactory"/>
     </bean>
 
     <bean name="updateEndPoint" class="de.njsm.stocks.server.v1.endpoints.UpdateEndpoint">
         <constructor-arg index="0" ref="dbHandler"/>
-        <constructor-arg index="1" ref="contextFactory"/>
     </bean>
 
     <bean name="userEndPoint" class="de.njsm.stocks.server.v1.endpoints.UserEndpoint">
         <constructor-arg index="0" ref="userManager"/>
         <constructor-arg index="1" ref="dbHandler"/>
-        <constructor-arg index="2" ref="contextFactory"/>
     </bean>
 
     <bean name="userGeneratorEndPoint" class="de.njsm.stocks.server.v1.endpoints.RegistrationEndpoint">
         <constructor-arg index="0" ref="dbHandler"/>
-        <constructor-arg index="1" ref="contextFactory"/>
-        <constructor-arg index="2" ref="ticketAuthoriser"/>
+        <constructor-arg index="1" ref="ticketAuthoriser"/>
     </bean>
 
 </beans>
