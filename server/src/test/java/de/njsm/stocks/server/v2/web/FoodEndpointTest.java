@@ -25,13 +25,13 @@ public class FoodEndpointTest {
     private FoodHandler dbLayer;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         dbLayer = Mockito.mock(FoodHandler.class);
         uut = new FoodEndpoint(dbLayer);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         Mockito.verifyNoMoreInteractions(dbLayer);
     }
 

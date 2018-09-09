@@ -1,7 +1,5 @@
-package de.njsm.stocks.server.v1.internal.auth;
+package de.njsm.stocks.server.util;
 
-import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.util.X509AuthAdmin;
 import org.apache.commons.io.IOUtils;
 import org.junit.*;
 

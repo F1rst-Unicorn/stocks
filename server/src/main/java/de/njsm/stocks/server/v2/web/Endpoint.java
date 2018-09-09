@@ -7,8 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 public class Endpoint {
 
     protected Principals getPrincipals(HttpServletRequest request) {
-        return (Principals) request.getServletContext()
-                .getAttribute(PrincipalFilter.STOCKS_PRINCIPAL);
+        return (Principals) request.getAttribute(PrincipalFilter.STOCKS_PRINCIPAL);
     }
 
 }

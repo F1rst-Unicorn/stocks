@@ -1,7 +1,6 @@
-package de.njsm.stocks.server.v1.internal.auth;
+package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.web.PrincipalFilter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +9,7 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 
 @RunWith(Parameterized.class)
-public class HttpsUserContextFactoryParameterizedTest {
+public class PrincipalFilterParameterizedTest {
 
     @Parameterized.Parameter
     public String subject;
