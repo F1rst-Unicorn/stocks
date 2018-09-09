@@ -3,6 +3,7 @@ package de.njsm.stocks.servertest;
 import de.njsm.stocks.servertest.v1.*;
 import de.njsm.stocks.servertest.v2.FoodTest;
 import de.njsm.stocks.servertest.v2.LocationTest;
+import de.njsm.stocks.servertest.v2.UpdateChangeTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -10,6 +11,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({SetupTest.class,
                      InvalidAccessTest.class,
                      InitialServerTest.class,
+                     de.njsm.stocks.servertest.v1.UpdateChangeTest.class,
                      UpdateChangeTest.class,
                      de.njsm.stocks.servertest.v1.LocationTest.class,
                      LocationTest.class,

@@ -31,10 +31,21 @@
         <constructor-arg index="3" ref="circuitBreakerDatabase" />
     </bean>
 
+    <bean name="updateBackend" class="de.njsm.stocks.server.v2.db.UpdateBackend">
+        <constructor-arg index="0" ref="dbUrl"/>
+        <constructor-arg index="1" ref="dbUser" />
+        <constructor-arg index="2" ref="dbPassword" />
+        <constructor-arg index="3" ref="circuitBreakerDatabase" />
+    </bean>
+
     <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" >
         <constructor-arg index="0" ref="authAdmin"/>
         <constructor-arg index="1" ref="ticketBackend"/>
         <constructor-arg index="2" ref="ticketValidity"/>
+    </bean>
+
+    <bean name="updateEndpoint" class="de.njsm.stocks.server.v2.web.UpdateEndpoint">
+        <constructor-arg index="0" ref="updateBackend" />
     </bean>
 
     <bean name="foodEndpoint" class="de.njsm.stocks.server.v2.web.FoodEndpoint">
