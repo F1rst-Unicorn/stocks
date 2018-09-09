@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.v1.endpoints;
 
+import de.njsm.stocks.server.v2.web.HealthEndpoint;
 import org.junit.Before;
 import org.junit.Test;
 

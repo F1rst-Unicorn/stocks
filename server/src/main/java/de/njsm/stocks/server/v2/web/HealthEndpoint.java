@@ -1,4 +1,4 @@
-package de.njsm.stocks.server.v1.endpoints;
+package de.njsm.stocks.server.v2.web;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
