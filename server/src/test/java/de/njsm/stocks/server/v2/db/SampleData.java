@@ -22,7 +22,7 @@ class SampleData {
                     "(2, '1970-01-01 00:00:00', 3, 2, 1, 2)," +
                     "(3, '1970-01-01 00:00:00', 3, 2, 1, 2)",
             "INSERT INTO Ticket (ticket, belongs_device) VALUES ('AAAA', 3)",
-            "INSERT INTO EAN_number (number, identifies) VALUES ('EAN BEER', 2)",
+            "INSERT INTO EAN_number (ID, number, identifies) VALUES (1, 'EAN BEER', 2)",
             "SET FOREIGN_KEY_CHECKS = 1",
     };
 

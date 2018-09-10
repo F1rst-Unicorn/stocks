@@ -4,6 +4,8 @@ import de.njsm.stocks.servertest.v1.*;
 import de.njsm.stocks.servertest.v2.FoodTest;
 import de.njsm.stocks.servertest.v2.LocationTest;
 import de.njsm.stocks.servertest.v2.UpdateChangeTest;
+import de.njsm.stocks.servertest.v2.EanTest;
+import de.njsm.stocks.servertest.v2.RegistrationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -18,6 +20,7 @@ import org.junit.runners.Suite;
                      UserTest.class,
                      de.njsm.stocks.servertest.v1.FoodTest.class,
                      FoodTest.class,
+                     de.njsm.stocks.servertest.v1.EanTest.class,
                      EanTest.class,
                      FoodItemTest.class,
                      DeviceTest.class,

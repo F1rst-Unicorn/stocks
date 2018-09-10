@@ -1,9 +1,6 @@
 package de.njsm.stocks.server.v2.business.data.visitor;
 
-import de.njsm.stocks.server.v2.business.data.Data;
-import de.njsm.stocks.server.v2.business.data.Food;
-import de.njsm.stocks.server.v2.business.data.Location;
-import de.njsm.stocks.server.v2.business.data.ServerTicket;
+import de.njsm.stocks.server.v2.business.data.*;
 
 public abstract class AbstractVisitor<I, O> {
 
@@ -14,6 +11,8 @@ public abstract class AbstractVisitor<I, O> {
     public abstract O food(Food f, I arg);
 
     public abstract O location(Location l, I arg);
+
+    public abstract O eanNumber(EanNumber n, I arg);
 
     public abstract O serverTicket(ServerTicket t, I arg);
 

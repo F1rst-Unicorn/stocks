@@ -88,12 +88,12 @@ public class FoodTest {
                 .contentType(ContentType.JSON);
     }
 
-    private int createNewFoodType(String name) {
+    static int createNewFoodType(String name) {
         addFoodType(name);
         return getIdOfFood(name);
     }
 
-    private void addFoodType(String name) {
+    private static void addFoodType(String name) {
         given()
                 .queryParam("name", name).
         when()
@@ -104,7 +104,7 @@ public class FoodTest {
                 .body("status", equalTo(0));
     }
 
-    private int getIdOfFood(String name) {
+    private static int getIdOfFood(String name) {
         return assertOnFood()
                 .extract()
                 .jsonPath()
@@ -125,7 +125,7 @@ public class FoodTest {
                 .contentType(ContentType.JSON);
     }
 
-    private ValidatableResponse assertOnFood() {
+    private static ValidatableResponse assertOnFood() {
         return
         when()
                 .get(TestSuite.DOMAIN + "/v2/food").
