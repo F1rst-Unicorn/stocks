@@ -22,7 +22,7 @@ public class EanTest {
 
         assertOnEans()
                 .body("data.eanCode", hasItems(code))
-                .body("data.identifies", hasItems(foodId));
+                .body("data.identifiesFood", hasItems(foodId));
     }
 
     @Test
