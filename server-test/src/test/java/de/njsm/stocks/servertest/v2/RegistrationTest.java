@@ -128,12 +128,14 @@ public class RegistrationTest {
 
     private ValidatableResponse register(int deviceId, String ticket, String commonName) throws Exception {
         String csr = SetupTest.getCsr(keypair, commonName);
-        return given()
-                .contentType(ContentType.JSON)
-                .body(new Ticket(deviceId, ticket, csr)).
-                        when()
+        return
+        given()
+                .queryParam("device", deviceId)
+                .queryParam("token", ticket)
+                .queryParam("csr", csr).
+        when()
                 .post("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/v2/auth/newuser").
-                        then()
+        then()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
 
