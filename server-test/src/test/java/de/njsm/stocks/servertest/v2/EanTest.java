@@ -36,7 +36,7 @@ public class EanTest {
                 .queryParam("id", id)
                 .queryParam("version", 0).
         when()
-                .delete(TestSuite.DOMAIN + "v2/ean").
+                .delete(TestSuite.DOMAIN + "/v2/ean").
         then()
                 .statusCode(204);
 
@@ -46,7 +46,7 @@ public class EanTest {
 
     private static int getIdOfEan(String firstName) {
         return when()
-                    .get(TestSuite.DOMAIN + "v2/ean").
+                    .get(TestSuite.DOMAIN + "/v2/ean").
             then()
                     .statusCode(200)
                     .extract()
@@ -57,7 +57,7 @@ public class EanTest {
     private static ValidatableResponse assertOnEans() {
         return
                 when()
-                        .get(TestSuite.DOMAIN + "v2/ean").
+                        .get(TestSuite.DOMAIN + "/v2/ean").
                 then()
                         .statusCode(200)
                         .contentType(ContentType.JSON);
@@ -68,7 +68,7 @@ public class EanTest {
                 .queryParam("code", firstName)
                 .queryParam("identifies", foodId).
         when()
-                .put(TestSuite.DOMAIN + "v2/ean").
+                .put(TestSuite.DOMAIN + "/v2/ean").
         then()
                 .statusCode(204)
                 .body("status", equalTo(0));
