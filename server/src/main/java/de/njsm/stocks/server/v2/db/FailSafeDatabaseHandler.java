@@ -40,7 +40,7 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
             return producer.execute();
         } catch (HystrixRuntimeException e) {
             if (e.getCause() instanceof RuntimeException) {
-                LOG.error("circuit breaker still open");
+                LOG.error("circuit breaker still open", e);
             } else {
                 LOG.error("circuit breaker error", e);
             }
@@ -58,7 +58,7 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
             return producer.execute();
         } catch (HystrixRuntimeException e) {
             if (e.getCause() instanceof RuntimeException) {
-                LOG.error("circuit breaker still open");
+                LOG.error("circuit breaker still open", e);
             } else {
                 LOG.error("circuit breaker error", e);
             }
