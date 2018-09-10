@@ -17,8 +17,10 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
 
     private InsertVisitor<T> visitor;
 
-    public CrudDatabaseHandler(String url, String username, String password, String resourceIdentifier, InsertVisitor<T> visitor) {
-        super(url, username, password, resourceIdentifier);
+    public CrudDatabaseHandler(ConnectionFactory connectionFactory,
+                               String resourceIdentifier,
+                               InsertVisitor<T> visitor) {
+        super(connectionFactory, resourceIdentifier);
         this.visitor = visitor;
     }
 

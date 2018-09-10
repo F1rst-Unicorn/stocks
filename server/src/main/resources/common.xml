@@ -62,4 +62,10 @@
         </constructor-arg>
     </bean>
 
+    <bean name="connectionFactory" class="de.njsm.stocks.server.v2.db.ConnectionFactoryImpl">
+        <constructor-arg index="0" ref="dbUrl" />
+        <constructor-arg index="1" ref="dbUser" />
+        <constructor-arg index="2" ref="dbPassword" />
+    </bean>
+
 </beans>

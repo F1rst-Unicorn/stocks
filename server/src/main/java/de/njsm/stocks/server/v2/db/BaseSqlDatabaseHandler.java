@@ -9,26 +9,16 @@ import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public abstract class BaseSqlDatabaseHandler {
 
     private static final Logger LOG = LogManager.getLogger(BaseSqlDatabaseHandler.class);
 
-    private final String url;
+    private final ConnectionFactory connectionFactory;
 
-    private final String username;
-
-    private final String password;
-
-
-    public BaseSqlDatabaseHandler(String url,
-                                  String username,
-                                  String password) {
-        this.username = username;
-        this.password = password;
-        this.url = url;
+    public BaseSqlDatabaseHandler(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
 
         try {
             Class.forName("org.mariadb.jdbc.Driver");
@@ -66,21 +56,21 @@ public abstract class BaseSqlDatabaseHandler {
     @Deprecated
     public abstract <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client);
 
-    protected Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, username, password);
-    }
-
-    public void close(Connection con) {
+    void close(Connection con) {
         if (con != null) {
             try {
-                con.close();
+                connectionFactory.returnConnection(con);
             } catch (SQLException e) {
                 LOG.error("Error closing connection", e);
             }
         }
     }
 
-    public void rollback(Connection con) {
+    Connection getConnection() throws SQLException {
+        return connectionFactory.getConnection();
+    }
+
+    void rollback(Connection con) {
         if (con != null) {
             try {
                 con.rollback();

@@ -14,12 +14,10 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.LOCATION;
 public class LocationHandler extends CrudRenameDatabaseHandler<LocationRecord, Location> {
 
 
-    public LocationHandler(String url,
-                           String username,
-                           String password,
+    public LocationHandler(ConnectionFactory connectionFactory,
                            String resourceIdentifier,
                            InsertVisitor<LocationRecord> visitor) {
-        super(url, username, password, resourceIdentifier, visitor);
+        super(connectionFactory, resourceIdentifier, visitor);
     }
 
     @Override

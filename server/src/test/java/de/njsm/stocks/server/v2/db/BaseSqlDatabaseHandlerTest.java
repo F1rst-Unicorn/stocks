@@ -1,7 +1,6 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.util.FunctionWithExceptions;
-import de.njsm.stocks.server.Config;
 import de.njsm.stocks.server.v1.internal.db.SqlDatabaseHandler;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import org.junit.Before;
@@ -14,19 +13,14 @@ import java.sql.SQLException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class BaseSqlDatabaseHandlerTest {
+public class BaseSqlDatabaseHandlerTest extends DbTestCase {
 
     private FailSafeDatabaseHandler uut;
 
     @Before
-    public void resetDatabase() {
-
-        Config c = new Config(System.getProperties());
-        uut = new SqlDatabaseHandler(String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
-                c.getDbAddress(), c.getDbPort(), c.getDbName()),
-                c.getDbUsername(),
-                c.getDbPassword(),
-                "base");
+    public void setup() {
+        uut = new SqlDatabaseHandler(getConnectionFactory(),
+                getNewResourceIdentifier());
     }
 
 
@@ -72,7 +66,6 @@ public class BaseSqlDatabaseHandlerTest {
 
         uut.close(con);
 
-        Mockito.verify(con).close();
         Mockito.verifyNoMoreInteractions(con);
     }
 

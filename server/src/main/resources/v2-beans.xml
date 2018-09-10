@@ -9,33 +9,25 @@
     <bean name="dbInsertVisitor" class="de.njsm.stocks.server.v2.db.InsertVisitor" />
 
     <bean name="foodDbHandler" class="de.njsm.stocks.server.v2.db.FoodHandler">
-        <constructor-arg index="0" ref="dbUrl"/>
-        <constructor-arg index="1" ref="dbUser" />
-        <constructor-arg index="2" ref="dbPassword" />
-        <constructor-arg index="3" ref="circuitBreakerDatabase" />
-        <constructor-arg index="4" ref="dbInsertVisitor" />
+        <constructor-arg index="0" ref="connectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="dbInsertVisitor" />
     </bean>
 
     <bean name="locationDbHandler" class="de.njsm.stocks.server.v2.db.LocationHandler">
-        <constructor-arg index="0" ref="dbUrl"/>
-        <constructor-arg index="1" ref="dbUser" />
-        <constructor-arg index="2" ref="dbPassword" />
-        <constructor-arg index="3" ref="circuitBreakerDatabase" />
-        <constructor-arg index="4" ref="dbInsertVisitor" />
+        <constructor-arg index="0" ref="connectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="dbInsertVisitor" />
     </bean>
 
     <bean name="ticketBackend" class="de.njsm.stocks.server.v2.db.TicketBackend">
-        <constructor-arg index="0" ref="dbUrl"/>
-        <constructor-arg index="1" ref="dbUser" />
-        <constructor-arg index="2" ref="dbPassword" />
-        <constructor-arg index="3" ref="circuitBreakerDatabase" />
+        <constructor-arg index="0" ref="connectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
     </bean>
 
     <bean name="updateBackend" class="de.njsm.stocks.server.v2.db.UpdateBackend">
-        <constructor-arg index="0" ref="dbUrl"/>
-        <constructor-arg index="1" ref="dbUser" />
-        <constructor-arg index="2" ref="dbPassword" />
-        <constructor-arg index="3" ref="circuitBreakerDatabase" />
+        <constructor-arg index="0" ref="connectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
     </bean>
 
     <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" >

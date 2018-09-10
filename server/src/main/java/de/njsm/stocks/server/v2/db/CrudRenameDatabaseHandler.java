@@ -9,12 +9,10 @@ import org.jooq.types.UInteger;
 public abstract class CrudRenameDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData> extends CrudDatabaseHandler<T, R> {
 
 
-    public CrudRenameDatabaseHandler(String url,
-                                     String username,
-                                     String password,
+    public CrudRenameDatabaseHandler(ConnectionFactory connectionFactory,
                                      String resourceIdentifier,
                                      InsertVisitor<T> visitor) {
-        super(url, username, password, resourceIdentifier, visitor);
+        super(connectionFactory, resourceIdentifier, visitor);
     }
 
     public StatusCode rename(R item, String newName) {

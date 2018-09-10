@@ -1,10 +1,10 @@
 package de.njsm.stocks.server.v2.business.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import de.njsm.stocks.common.data.json.InstantSerialiser;
 import org.junit.Before;
 import org.junit.Test;
-import org.threeten.bp.Instant;
+
+import java.time.Instant;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;

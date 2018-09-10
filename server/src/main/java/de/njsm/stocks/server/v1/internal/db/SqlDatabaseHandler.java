@@ -4,6 +4,7 @@ import de.njsm.stocks.common.data.*;
 import de.njsm.stocks.common.data.visitor.AddStatementVisitor;
 import de.njsm.stocks.common.data.visitor.SqlStatementFillerVisitor;
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.db.ConnectionFactory;
 import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
 
 import java.sql.PreparedStatement;
@@ -17,8 +18,8 @@ public class SqlDatabaseHandler extends FailSafeDatabaseHandler implements de.nj
 
     private SqlStatementFillerVisitor fillerVisitor;
 
-    public SqlDatabaseHandler(String url, String username, String password, String resourceIdentifier) {
-        super(url, username, password, resourceIdentifier);
+    public SqlDatabaseHandler(ConnectionFactory connectionFactory, String resourceIdentifier) {
+        super(connectionFactory, resourceIdentifier);
         this.addStatementVisitor = new AddStatementVisitor();
         this.fillerVisitor = new SqlStatementFillerVisitor();
     }

@@ -20,11 +20,9 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
 
     private String resourceIdentifier;
 
-    public FailSafeDatabaseHandler(String url,
-                                   String username,
-                                   String password,
+    public FailSafeDatabaseHandler(ConnectionFactory connectionFactory,
                                    String resourceIdentifier) {
-        super(url, username, password);
+        super(connectionFactory);
         this.resourceIdentifier = resourceIdentifier;
     }
 

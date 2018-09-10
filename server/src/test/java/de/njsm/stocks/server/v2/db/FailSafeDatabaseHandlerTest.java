@@ -2,7 +2,6 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.util.ConsumerWithExceptions;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
-import de.njsm.stocks.server.Config;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 import org.jooq.DSLContext;
@@ -14,22 +13,14 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class FailSafeDatabaseHandlerTest {
+public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
     private FailSafeDatabaseHandler uut;
 
-    private static int resourceCounter = 0;
-
     @Before
-    public void setup() throws Exception {
-        Config c = new Config(System.getProperties());
-
-        uut = new FailSafeDatabaseHandler(String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
-                c.getDbAddress(), c.getDbPort(), c.getDbName()),
-                c.getDbUsername(),
-                c.getDbPassword(),
-                "hystrix group failsafe" + String.valueOf(resourceCounter));
-        resourceCounter++;
+    public void setup() {
+        uut = new FailSafeDatabaseHandler(getConnectionFactory(),
+                getNewResourceIdentifier());
     }
 
     @Test

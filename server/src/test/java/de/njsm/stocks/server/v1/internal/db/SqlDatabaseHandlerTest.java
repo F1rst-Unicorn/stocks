@@ -1,37 +1,27 @@
 package de.njsm.stocks.server.v1.internal.db;
 
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.server.Config;
+import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.db.DbTestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.threeten.bp.Instant;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class SqlDatabaseHandlerTest {
+public class SqlDatabaseHandlerTest extends DbTestCase {
 
     private SqlDatabaseHandler uut;
 
-    private static int resourceCounter = 0;
-
     @Before
-    public void resetDatabase() throws SQLException {
-        DatabaseHelper.resetSampleData();
-
-        Config c = new Config(System.getProperties());
-        uut = new SqlDatabaseHandler(String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
-                c.getDbAddress(), c.getDbPort(), c.getDbName()),
-                c.getDbUsername(),
-                c.getDbPassword(),
-                "hystrix group " + String.valueOf(resourceCounter));
-        resourceCounter++;
+    public void setup() {
+        uut = new SqlDatabaseHandler(getConnectionFactory(),
+                getNewResourceIdentifier());
     }
 
     @Test

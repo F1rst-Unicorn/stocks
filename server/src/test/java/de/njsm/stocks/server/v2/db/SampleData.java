@@ -1,10 +1,10 @@
-package de.njsm.stocks.server.v1.internal.db;
+package de.njsm.stocks.server.v2.db;
 
 import java.sql.*;
 
-public class DatabaseHelper {
+class SampleData {
 
-    public static String[] resetProcedure = {
+    private static final String[] sampleDbData = {
             "SET FOREIGN_KEY_CHECKS = 0",
             "DELETE FROM Food",
             "DELETE FROM Food_item",
@@ -26,28 +26,12 @@ public class DatabaseHelper {
             "SET FOREIGN_KEY_CHECKS = 1",
     };
 
-    public static void resetSampleData() throws SQLException {
-        Connection c = getConnection();
+    static void insertSampleData(Connection c) throws SQLException {
         Statement stmt = c.createStatement();
 
-        for (String cmd : resetProcedure) {
+        for (String cmd : sampleDbData) {
             stmt.execute(cmd);
         }
     }
 
-    public static Connection getConnection() throws SQLException {
-        String url;
-        String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
-        String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
-        String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
-        String username = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
-        String password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
-
-        url = String.format("jdbc:mariadb://%s:%s/%s",
-                address,
-                port,
-                name);
-
-        return DriverManager.getConnection(url, username, password);
-    }
 }

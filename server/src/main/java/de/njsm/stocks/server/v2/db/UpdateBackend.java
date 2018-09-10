@@ -11,11 +11,9 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.UPDATES;
 
 public class UpdateBackend extends FailSafeDatabaseHandler {
 
-    public UpdateBackend(String url,
-                         String username,
-                         String password,
+    public UpdateBackend(ConnectionFactory connectionFactory,
                          String resourceIdentifier) {
-        super(url, username, password, resourceIdentifier);
+        super(connectionFactory, resourceIdentifier);
     }
 
     public Validation<StatusCode, List<Update>> getUpdates() {

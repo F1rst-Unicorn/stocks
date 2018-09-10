@@ -22,11 +22,9 @@ public class TicketBackend extends FailSafeDatabaseHandler {
 
     private static final Logger LOG = LogManager.getLogger(TicketBackend.class);
 
-    public TicketBackend(String url,
-                         String username,
-                         String password,
+    public TicketBackend(ConnectionFactory connectionFactory,
                          String resourceIdentifier) {
-        super(url, username, password, resourceIdentifier);
+        super(connectionFactory, resourceIdentifier);
     }
 
     public Validation<StatusCode, ServerTicket> getTicket(ClientTicket ticket) {

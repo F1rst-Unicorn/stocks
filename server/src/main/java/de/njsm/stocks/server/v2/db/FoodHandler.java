@@ -14,12 +14,10 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
 public class FoodHandler extends CrudRenameDatabaseHandler<FoodRecord, Food> {
 
 
-    public FoodHandler(String url,
-                       String username,
-                       String password,
+    public FoodHandler(ConnectionFactory connectionFactory,
                        String resourceIdentifier,
                        InsertVisitor<FoodRecord> visitor) {
-        super(url, username, password, resourceIdentifier, visitor);
+        super(connectionFactory, resourceIdentifier, visitor);
     }
 
     @Override
