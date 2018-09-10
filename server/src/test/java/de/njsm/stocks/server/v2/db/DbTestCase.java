@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DbTestCase {
+public abstract class DbTestCase {
 
     private static int resourceCounter = 0;
 
@@ -24,7 +24,7 @@ public class DbTestCase {
     @Before
     public void resetDatabase() throws SQLException {
         SampleData.insertSampleData(connection);
-        factory = new TestConnectionFactory(connection);
+        factory = new MockConnectionFactory(connection);
 
         resourceCounter++;
     }

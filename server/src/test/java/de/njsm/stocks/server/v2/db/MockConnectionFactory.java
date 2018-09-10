@@ -3,11 +3,11 @@ package de.njsm.stocks.server.v2.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class TestConnectionFactory implements ConnectionFactory {
+public class MockConnectionFactory implements ConnectionFactory {
 
     private Connection connection;
 
-    public TestConnectionFactory(Connection connection) {
+    MockConnectionFactory(Connection connection) {
         this.connection = connection;
     }
 
