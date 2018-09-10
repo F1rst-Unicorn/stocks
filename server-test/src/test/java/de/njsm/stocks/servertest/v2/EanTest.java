@@ -38,7 +38,9 @@ public class EanTest {
         when()
                 .delete(TestSuite.DOMAIN + "/v2/ean").
         then()
-                .statusCode(204);
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(0));
 
         assertOnEans()
                 .body("eanCode", not(hasItems(name)));
@@ -49,6 +51,7 @@ public class EanTest {
                     .get(TestSuite.DOMAIN + "/v2/ean").
             then()
                     .statusCode(200)
+                    .contentType(ContentType.JSON)
                     .extract()
                     .jsonPath()
                     .getInt("findAll{ it.eanCode == '" + firstName + "' }.id[0]");
@@ -60,7 +63,8 @@ public class EanTest {
                         .get(TestSuite.DOMAIN + "/v2/ean").
                 then()
                         .statusCode(200)
-                        .contentType(ContentType.JSON);
+                        .contentType(ContentType.JSON)
+                        .body("status", equalTo(0));
     }
 
     private static void addEan(String firstName, int foodId) {
@@ -70,7 +74,8 @@ public class EanTest {
         when()
                 .put(TestSuite.DOMAIN + "/v2/ean").
         then()
-                .statusCode(204)
+                .statusCode(200)
+                .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
     }
 }
