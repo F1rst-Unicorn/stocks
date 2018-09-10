@@ -28,6 +28,7 @@ public class RegistrationEndpoint extends de.njsm.stocks.server.v2.web.Endpoint 
      */
     @POST
     @Path("newuser")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
     public DataResponse<String> getNewCertificate(@FormParam("device") int device,
                                                   @FormParam("token") String token,
