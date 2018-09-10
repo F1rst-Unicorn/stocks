@@ -52,9 +52,10 @@ public class EanTest {
             then()
                     .statusCode(200)
                     .contentType(ContentType.JSON)
+                    .body("status", equalTo(0))
                     .extract()
                     .jsonPath()
-                    .getInt("findAll{ it.eanCode == '" + firstName + "' }.id[0]");
+                    .getInt("data.findAll{ it.eanCode == '" + firstName + "' }.id[0]");
     }
 
     private static ValidatableResponse assertOnEans() {
