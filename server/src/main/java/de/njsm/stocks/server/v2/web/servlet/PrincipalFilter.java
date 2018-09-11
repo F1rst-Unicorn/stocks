@@ -1,4 +1,4 @@
-package de.njsm.stocks.server.v2.web;
+package de.njsm.stocks.server.v2.web.servlet;
 
 import de.njsm.stocks.server.util.Principals;
 import org.apache.logging.log4j.LogManager;

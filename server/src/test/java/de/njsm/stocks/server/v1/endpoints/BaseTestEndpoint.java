@@ -1,6 +1,6 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.server.v2.web.PrincipalFilter;
+import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import de.njsm.stocks.server.v2.web.PrincipalFilterTest;
 import org.mockito.Mockito;
 

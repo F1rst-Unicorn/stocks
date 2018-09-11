@@ -1,6 +1,7 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
