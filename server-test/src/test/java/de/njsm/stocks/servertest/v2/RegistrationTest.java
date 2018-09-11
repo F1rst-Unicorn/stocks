@@ -130,9 +130,9 @@ public class RegistrationTest {
         String csr = SetupTest.getCsr(keypair, commonName);
         return
         given()
-                .queryParam("device", deviceId)
-                .queryParam("token", ticket)
-                .queryParam("csr", csr).
+                .formParam("device", deviceId)
+                .formParam("token", ticket)
+                .formParam("csr", csr).
         when()
                 .post("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/v2/auth/newuser").
         then()
