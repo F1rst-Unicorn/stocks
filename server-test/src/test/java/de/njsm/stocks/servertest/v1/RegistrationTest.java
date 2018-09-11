@@ -36,12 +36,12 @@ public class RegistrationTest {
     @BeforeClass
     public static void setupCredentials() throws Exception {
         userId = UserTest.createNewUser("Jon");
-        Ticket ticket = DeviceTest.createNewDevice("Laptop", userId);
+        Ticket ticket = DeviceTest.createNewDevice("Laptop2", userId);
         RegistrationTest.ticket = ticket.ticket;
         RegistrationTest.deviceId = ticket.deviceId;
 
         keypair = SetupTest.generateKeyPair();
-        commonName = "Jon$" + userId + "$Laptop$" + deviceId;
+        commonName = "Jon$" + userId + "$Laptop2$" + deviceId;
     }
 
     @AfterClass

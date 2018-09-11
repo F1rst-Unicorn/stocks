@@ -21,6 +21,7 @@ import java.security.KeyPair;
 import java.security.KeyStore;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 
@@ -115,21 +116,24 @@ public class RegistrationTest {
 
     private void tryFailingRegistration(int deviceId, String ticket, String commonName) throws Exception {
         register(deviceId, ticket, commonName)
-                .body("pemFile", isEmptyOrNullString());
+                .body("status", equalTo(6))
+                .body("data", isEmptyOrNullString());
     }
 
     private String registerSuccessfully(int deviceId, String ticket, String commonName) throws Exception {
         return register(deviceId, ticket, commonName)
-                .body("pemFile", not(isEmptyOrNullString()))
+                .body("status", equalTo(0))
+                .body("data", not(isEmptyOrNullString()))
                 .extract()
                 .jsonPath()
-                .getString("pemFile");
+                .getString("data");
     }
 
     private ValidatableResponse register(int deviceId, String ticket, String commonName) throws Exception {
         String csr = SetupTest.getCsr(keypair, commonName);
         return
         given()
+                .log().ifValidationFails()
                 .formParam("device", deviceId)
                 .formParam("token", ticket)
                 .formParam("csr", csr).

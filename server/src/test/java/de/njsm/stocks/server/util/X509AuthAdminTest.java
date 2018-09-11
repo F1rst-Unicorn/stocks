@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class X509AuthAdminTest {
@@ -57,12 +58,13 @@ public class X509AuthAdminTest {
         Assert.assertEquals(input, p);
     }
 
-    @Test(expected=SecurityException.class)
+    @Test
     public void testParsingInvalidCsr() throws Exception {
         File invalidCsr = new File(caDirectory.getPath() + "/intermediate/csr/user_-1.csr.pem");
         IOUtils.write("invalid csr", new FileOutputStream(invalidCsr));
 
-        uut.getPrincipals(-1);
+        Principals result = uut.getPrincipals(-1);
+        assertNull(result);
     }
 
     @Test

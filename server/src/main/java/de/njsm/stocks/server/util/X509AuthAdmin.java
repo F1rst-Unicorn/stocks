@@ -99,10 +99,12 @@ public class X509AuthAdmin implements AuthAdmin {
                 try {
                     return PrincipalFilter.parseSubjectName(csr.getSubject().toString());
                 } catch (SecurityException e) {
-                    throw new HystrixBadRequestException("bad request", e);
+                    LOG.warn("Problem parsing subject name", e);
+                    return null;
                 }
             } else {
-                throw new HystrixBadRequestException("bad request", new SecurityException("failed to cast CSR"));
+                LOG.warn("Could not parse CSR");
+                return null;
             }
         });
     }
