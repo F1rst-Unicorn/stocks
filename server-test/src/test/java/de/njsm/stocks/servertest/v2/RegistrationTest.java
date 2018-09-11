@@ -136,6 +136,7 @@ public class RegistrationTest {
         when()
                 .post("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/v2/auth/newuser").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
 

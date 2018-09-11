@@ -84,6 +84,7 @@ public class LocationTest {
         when()
                 .delete(TestSuite.DOMAIN + "/v2/location").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
     }
@@ -99,6 +100,7 @@ public class LocationTest {
         when()
                 .put(TestSuite.DOMAIN + "/v2/location").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
@@ -121,6 +123,7 @@ public class LocationTest {
         when()
                 .put(TestSuite.DOMAIN + "/v2/location/rename").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
     }
@@ -130,6 +133,7 @@ public class LocationTest {
         when()
                 .get(TestSuite.DOMAIN + "/v2/location").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
     }

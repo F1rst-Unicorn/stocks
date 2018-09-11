@@ -29,6 +29,7 @@ public class UpdateChangeTest {
         when()
                 .put(TestSuite.DOMAIN + "/location").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
         given()
                 .contentType(ContentType.JSON)
@@ -36,6 +37,7 @@ public class UpdateChangeTest {
         when()
                 .put(TestSuite.DOMAIN + "/location/remove").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
     }
 
@@ -44,6 +46,7 @@ public class UpdateChangeTest {
         when()
                 .get(TestSuite.DOMAIN + "/update").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("", iterableWithSize(6))

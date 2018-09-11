@@ -38,6 +38,7 @@ public class DeviceTest {
         when()
                 .put(TestSuite.DOMAIN + "/device/remove").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
 
         assertOnDevices()
@@ -56,6 +57,7 @@ public class DeviceTest {
         return when()
                     .get(TestSuite.DOMAIN + "/device").
             then()
+                    .log().ifValidationFails()
                     .statusCode(200)
                     .extract()
                     .jsonPath()
@@ -67,6 +69,7 @@ public class DeviceTest {
                 when()
                         .get(TestSuite.DOMAIN + "/device").
                 then()
+                        .log().ifValidationFails()
                         .statusCode(200)
                         .contentType(ContentType.JSON);
     }
@@ -79,6 +82,7 @@ public class DeviceTest {
         when()
                 .put(TestSuite.DOMAIN + "/device").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("pemFile", isEmptyOrNullString())

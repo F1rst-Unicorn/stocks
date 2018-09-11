@@ -35,6 +35,7 @@ public class FoodTest {
         when()
                 .put(TestSuite.DOMAIN + "/food/" + secondName).
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
 
         assertOnFoods()
@@ -54,6 +55,7 @@ public class FoodTest {
         when()
                 .put(TestSuite.DOMAIN + "/food/remove").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
 
         assertOnFoods()
@@ -69,6 +71,7 @@ public class FoodTest {
         return when()
                     .get(TestSuite.DOMAIN + "/food").
             then()
+                    .log().ifValidationFails()
                     .statusCode(200)
                     .extract()
                     .jsonPath()
@@ -80,6 +83,7 @@ public class FoodTest {
                 when()
                         .get(TestSuite.DOMAIN + "/food").
                 then()
+                        .log().ifValidationFails()
                         .statusCode(200)
                         .contentType(ContentType.JSON);
     }
@@ -92,6 +96,7 @@ public class FoodTest {
         when()
                 .put(TestSuite.DOMAIN + "/food").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
     }
 }

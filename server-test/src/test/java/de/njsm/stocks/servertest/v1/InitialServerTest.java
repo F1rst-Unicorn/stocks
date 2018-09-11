@@ -14,6 +14,7 @@ public class InitialServerTest {
         when()
                 .get(TestSuite.DOMAIN + "/food").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("", is(empty()));
@@ -24,6 +25,7 @@ public class InitialServerTest {
         when()
                 .get(TestSuite.DOMAIN + "/location").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("", is(empty()));
@@ -34,6 +36,7 @@ public class InitialServerTest {
         when()
                 .get(TestSuite.DOMAIN + "/food/fooditem").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("", is(empty()));
@@ -45,6 +48,7 @@ public class InitialServerTest {
         when().
                 get(TestSuite.DOMAIN + "/ean").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("", is(empty()));
@@ -55,6 +59,7 @@ public class InitialServerTest {
         when()
                 .get(TestSuite.DOMAIN + "/user").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("", iterableWithSize(1))
@@ -67,6 +72,7 @@ public class InitialServerTest {
         when()
                 .get(TestSuite.DOMAIN + "/device").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("", iterableWithSize(1))

@@ -41,6 +41,7 @@ public class FoodItemTest {
         when()
                 .put(TestSuite.DOMAIN + "/food/fooditem/move/" + newLocationId).
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
 
         assertOnResult()
@@ -63,6 +64,7 @@ public class FoodItemTest {
         when()
                 .put(TestSuite.DOMAIN + "/food/fooditem/remove").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
 
         assertOnResult()
@@ -72,7 +74,8 @@ public class FoodItemTest {
     private ValidatableResponse assertOnResult() {
         return         when()
                 .get(TestSuite.DOMAIN + "/food/fooditem").
-                        then()
+        then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
     }
@@ -89,6 +92,7 @@ public class FoodItemTest {
         when()
                 .put(TestSuite.DOMAIN + "/food/fooditem").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
     }
 
@@ -96,6 +100,7 @@ public class FoodItemTest {
         return when()
                 .get(TestSuite.DOMAIN + "/food/fooditem").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .extract()

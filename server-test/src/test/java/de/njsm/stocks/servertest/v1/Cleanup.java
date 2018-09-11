@@ -29,6 +29,7 @@ public class Cleanup {
             when()
                     .put(TestSuite.DOMAIN + "/food/fooditem/remove").
             then()
+                    .log().ifValidationFails()
                     .statusCode(204);
         }
     }
@@ -44,6 +45,7 @@ public class Cleanup {
             when()
                     .put(TestSuite.DOMAIN + "/ean/remove").
             then()
+                    .log().ifValidationFails()
                     .statusCode(204);
         }
     }
@@ -59,6 +61,7 @@ public class Cleanup {
             when()
                     .put(TestSuite.DOMAIN + "/food/remove").
             then()
+                    .log().ifValidationFails()
                     .statusCode(204);
         }
     }
@@ -74,6 +77,7 @@ public class Cleanup {
             when()
                     .put(TestSuite.DOMAIN + "/location/remove").
             then()
+                    .log().ifValidationFails()
                     .statusCode(204);
         }
     }
@@ -90,6 +94,7 @@ public class Cleanup {
             when()
                     .put(TestSuite.DOMAIN + "/device/remove").
             then()
+                    .log().ifValidationFails()
                     .statusCode(204);
         }
     }
@@ -106,6 +111,7 @@ public class Cleanup {
             when()
                     .put(TestSuite.DOMAIN + "/user/remove").
             then()
+                    .log().ifValidationFails()
                     .statusCode(204);
         }
     }
@@ -131,7 +137,8 @@ public class Cleanup {
     private List<Integer> getIds(String path) {
         return when()
                 .get(TestSuite.DOMAIN + path).
-                        then()
+        then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .extract()

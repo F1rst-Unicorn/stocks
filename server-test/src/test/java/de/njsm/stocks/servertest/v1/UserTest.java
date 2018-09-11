@@ -34,6 +34,7 @@ public class UserTest {
         when()
                 .put(TestSuite.DOMAIN + "/user/remove").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
 
         assertOnUsers()
@@ -49,6 +50,7 @@ public class UserTest {
         return when()
                     .get(TestSuite.DOMAIN + "/user").
             then()
+                    .log().ifValidationFails()
                     .statusCode(200)
                     .extract()
                     .jsonPath()
@@ -60,6 +62,7 @@ public class UserTest {
                 when()
                         .get(TestSuite.DOMAIN + "/user").
                 then()
+                        .log().ifValidationFails()
                         .statusCode(200)
                         .contentType(ContentType.JSON);
     }
@@ -72,6 +75,7 @@ public class UserTest {
         when()
                 .put(TestSuite.DOMAIN + "/user").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
     }
 }

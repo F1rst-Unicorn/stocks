@@ -38,6 +38,7 @@ public class EanTest {
         when()
                 .delete(TestSuite.DOMAIN + "/v2/ean").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
@@ -50,7 +51,8 @@ public class EanTest {
         return when()
                     .get(TestSuite.DOMAIN + "/v2/ean").
             then()
-                    .statusCode(200)
+                    .log().ifValidationFails()
+                     .statusCode(200)
                     .contentType(ContentType.JSON)
                     .body("status", equalTo(0))
                     .extract()
@@ -63,6 +65,7 @@ public class EanTest {
                 when()
                         .get(TestSuite.DOMAIN + "/v2/ean").
                 then()
+                        .log().ifValidationFails()
                         .statusCode(200)
                         .contentType(ContentType.JSON)
                         .body("status", equalTo(0));
@@ -75,6 +78,7 @@ public class EanTest {
         when()
                 .put(TestSuite.DOMAIN + "/v2/ean").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));

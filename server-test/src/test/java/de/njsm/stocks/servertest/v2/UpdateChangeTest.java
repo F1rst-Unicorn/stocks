@@ -28,6 +28,7 @@ public class UpdateChangeTest {
         when()
                 .put(TestSuite.DOMAIN + "/v2/location").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
@@ -38,6 +39,7 @@ public class UpdateChangeTest {
         when()
                 .get(TestSuite.DOMAIN + "/v2/update").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0))

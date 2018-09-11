@@ -71,9 +71,10 @@ public class SetupTest {
                 body(ticket).
         when().
                 post("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/uac/newuser").
-        then().
-                statusCode(200).
-                contentType(ContentType.JSON)
+        then()
+                .log().ifValidationFails()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
                 .body("deviceId", equalTo(1))
                 .body("pemFile", not(equalTo("")));
 

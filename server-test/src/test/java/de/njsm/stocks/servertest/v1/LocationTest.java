@@ -35,6 +35,7 @@ public class LocationTest {
         when()
                 .put(TestSuite.DOMAIN + "/location/" + secondName).
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
 
         assertOnLocations()
@@ -54,6 +55,7 @@ public class LocationTest {
         when()
                 .put(TestSuite.DOMAIN + "/location/remove").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
 
         assertOnLocations()
@@ -69,6 +71,7 @@ public class LocationTest {
         return when()
                     .get(TestSuite.DOMAIN + "/location").
             then()
+                    .log().ifValidationFails()
                     .statusCode(200)
                     .extract()
                     .jsonPath()
@@ -80,6 +83,7 @@ public class LocationTest {
                 when()
                         .get(TestSuite.DOMAIN + "/location").
                 then()
+                        .log().ifValidationFails()
                         .statusCode(200)
                         .contentType(ContentType.JSON);
     }
@@ -92,6 +96,7 @@ public class LocationTest {
         when()
                 .put(TestSuite.DOMAIN + "/location").
         then()
+                .log().ifValidationFails()
                 .statusCode(204);
     }
 }

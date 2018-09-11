@@ -11,15 +11,17 @@ public class InvalidAccessTest {
     public void cannotAccessServerViaSentry() {
         when().
                 get("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/location").
-        then().
-                statusCode(404);
+        then()
+                .log().ifValidationFails()
+                .statusCode(404);
     }
 
     @Test
     public void cannotAccessSentryViaServer() {
         when().
                 post(TestSuite.DOMAIN + "/uac/newuser").
-        then().
-                statusCode(404);
+        then()
+                .log().ifValidationFails()
+                .statusCode(404);
     }
 }
