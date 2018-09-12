@@ -1,5 +1,7 @@
 package de.njsm.stocks.server.util;
 
+import de.njsm.stocks.server.v2.business.StatusCode;
+import fj.data.Validation;
 import org.apache.commons.io.IOUtils;
 import org.junit.*;
 
@@ -8,7 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class X509AuthAdminTest {
@@ -53,9 +54,10 @@ public class X509AuthAdminTest {
         Principals input = getFreshPrincipals();
         generateCsr(input);
 
-        Principals p = uut.getPrincipals(deviceCounter);
+        Validation<StatusCode, Principals> p = uut.getPrincipals(deviceCounter);
 
-        Assert.assertEquals(input, p);
+        Assert.assertTrue(p.isSuccess());
+        Assert.assertEquals(input, p.success());
     }
 
     @Test
@@ -63,8 +65,8 @@ public class X509AuthAdminTest {
         File invalidCsr = new File(caDirectory.getPath() + "/intermediate/csr/user_-1.csr.pem");
         IOUtils.write("invalid csr", new FileOutputStream(invalidCsr));
 
-        Principals result = uut.getPrincipals(-1);
-        assertNull(result);
+        Validation<StatusCode, Principals> result = uut.getPrincipals(-1);
+        Assert.assertFalse(result.isSuccess());
     }
 
     @Test
@@ -97,9 +99,10 @@ public class X509AuthAdminTest {
         uut.saveCsr(input.getDid(), content);
         uut.generateCertificate(input.getDid());
 
-        String certificate = uut.getCertificate(input.getDid());
+        Validation<StatusCode, String> certificate = uut.getCertificate(input.getDid());
 
-        assertFalse(certificate.isEmpty());
+        Assert.assertTrue(certificate.isSuccess());
+        assertFalse(certificate.success().isEmpty());
     }
 
     @Test

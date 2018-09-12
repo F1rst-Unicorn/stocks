@@ -69,9 +69,12 @@ public class TicketAuthoriser {
             LOG.error("Could not remove previously found ticket " + dbTicket);
         }
 
-        String certificate = authAdmin.getCertificate(ticket.deviceId);
+        Validation<StatusCode, String> certificate = authAdmin.getCertificate(ticket.deviceId);
+        if (certificate.isFail()) {
+            return Validation.fail(certificate.fail());
+        }
         LOG.info("Authorised new device with ID " + ticket.deviceId);
-        return Validation.success(certificate);
+        return Validation.success(certificate.success());
     }
 
     /**
@@ -90,15 +93,15 @@ public class TicketAuthoriser {
     }
 
     private boolean arePrincipalsValid(ClientTicket ticket) {
-        Principals csrPrincipals = authAdmin.getPrincipals(ticket.deviceId);
+        Validation<StatusCode, Principals> csrPrincipals = authAdmin.getPrincipals(ticket.deviceId);
         Validation<StatusCode, Principals> dbPrincipals = databaseHandler.getPrincipalsForTicket(ticket.ticket);
 
         if (dbPrincipals.isFail()) {
             return false;
-        } else if (csrPrincipals == null) {
+        } else if (csrPrincipals.isFail()) {
             LOG.warn("No principals in CSR found");
             return false;
-        } else if (! csrPrincipals.equals(dbPrincipals.success())) {
+        } else if (! csrPrincipals.success().equals(dbPrincipals.success())) {
             LOG.warn("CSR Subject name differs from database! DB:" + dbPrincipals.success().toString()
                     + " CSR:" + csrPrincipals.toString());
             return false;

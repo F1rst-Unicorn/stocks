@@ -28,7 +28,7 @@ public class TicketBackend extends FailSafeDatabaseHandler {
     }
 
     public Validation<StatusCode, ServerTicket> getTicket(ClientTicket ticket) {
-        return runQuery(context -> {
+        return runFunction(context -> {
             Result<TicketRecord> dbResult = context.selectFrom(TICKET)
                     .where(TICKET.TICKET_.eq(ticket.ticket))
                     .limit(1)
@@ -65,7 +65,7 @@ public class TicketBackend extends FailSafeDatabaseHandler {
     }
 
     public Validation<StatusCode, Principals> getPrincipalsForTicket(String token) {
-        return runQuery(context -> {
+        return runFunction(context -> {
             Result<Record4<UInteger, String, UInteger, String>> dbResult = context.select(USER_DEVICE.ID, USER_DEVICE.NAME, USER.ID, USER.NAME)
                     .from(TICKET.join(USER_DEVICE
                                         .join(USER).on(USER.ID.eq(USER_DEVICE.BELONGS_TO)))

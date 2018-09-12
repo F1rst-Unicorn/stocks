@@ -1,17 +1,20 @@
 package de.njsm.stocks.server.util;
 
+import de.njsm.stocks.server.v2.business.StatusCode;
+import fj.data.Validation;
+
 public interface AuthAdmin {
 
-    void saveCsr(int deviceId, String content);
+    StatusCode saveCsr(int deviceId, String content);
 
-    String getCertificate(int deviceId);
+    Validation<StatusCode, String> getCertificate(int deviceId);
 
     void wipeDeviceCredentials(int deviceId);
 
-    void generateCertificate(int deviceId);
+    StatusCode generateCertificate(int deviceId);
 
-    de.njsm.stocks.server.util.Principals getPrincipals(int deviceId);
+    Validation<StatusCode, Principals> getPrincipals(int deviceId);
 
-    void revokeCertificate(int id);
+    StatusCode revokeCertificate(int id);
 
 }

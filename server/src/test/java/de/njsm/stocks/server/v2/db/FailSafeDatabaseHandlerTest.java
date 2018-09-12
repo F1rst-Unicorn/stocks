@@ -41,7 +41,7 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
             throw new DataAccessException("test");
         };
 
-        uut.runQuery(input);
+        uut.runFunction(input);
         Thread.sleep(500);      // hystrix window has to shift
 
         Assert.assertTrue(uut.isCircuitBreakerOpen());

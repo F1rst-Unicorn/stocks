@@ -2,7 +2,9 @@ package de.njsm.stocks.server.v2.db;
 
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
-import de.njsm.stocks.server.util.HystrixFunction;
+import de.njsm.stocks.common.util.ProducerWithExceptions;
+import de.njsm.stocks.server.util.HystrixProducer;
+import de.njsm.stocks.server.util.HystrixWrapper;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +16,7 @@ import org.jooq.impl.DSL;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
+public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements HystrixWrapper<DSLContext, SQLException> {
 
     private static final Logger LOG = LogManager.getLogger(FailSafeDatabaseHandler.class);
 
@@ -26,33 +28,16 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
         this.resourceIdentifier = resourceIdentifier;
     }
 
-    public boolean isCircuitBreakerOpen() {
-        return new HystrixFunction<>(resourceIdentifier, null)
+    boolean isCircuitBreakerOpen() {
+        return new HystrixProducer<>(resourceIdentifier, null, null)
                 .isCircuitBreakerOpen();
     }
 
-    @Override
-    public <R> Validation<StatusCode, R> runQuery(FunctionWithExceptions<DSLContext, Validation<StatusCode, R>, SQLException> client) {
-        HystrixFunction<Validation<StatusCode, R>, SQLException> producer = new HystrixFunction<>(resourceIdentifier,
-                () -> runAndClose(client));
-
-        try {
-            return producer.execute();
-        } catch (HystrixRuntimeException e) {
-            if (e.getCause() instanceof RuntimeException) {
-                LOG.error("circuit breaker still open", e);
-            } else {
-                LOG.error("circuit breaker error", e);
-            }
-            return Validation.fail(StatusCode.DATABASE_UNREACHABLE);
-        }
-    }
-
-
     @Deprecated
     public <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client) {
-        HystrixFunction<R, SQLException> producer = new HystrixFunction<>(resourceIdentifier,
-                () -> runAndCloseSqlCommand(client));
+        HystrixProducer<Connection, R, SQLException> producer = new HystrixProducer<>(resourceIdentifier,
+                this::runAndCloseSqlCommand,
+                client);
 
         try {
             return producer.execute();
@@ -66,27 +51,44 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler {
         }
     }
 
-    private <R> Validation<StatusCode, R> runAndClose(FunctionWithExceptions<DSLContext, Validation<StatusCode, R>, SQLException> client) throws SQLException {
-        Connection con = getConnection();
-        Validation<StatusCode, R> result = DSL.using(con, SQLDialect.MARIADB).transactionResult(configuration -> {
-            DSLContext context = DSL.using(configuration);
-            return client.apply(context);
-        });
-        close(con);
-        return result;
+    @Override
+    public String getResourceIdentifier() {
+        return resourceIdentifier;
+    }
+
+    @Override
+    public StatusCode getDefaultErrorCode() {
+        return StatusCode.DATABASE_UNREACHABLE;
+    }
+
+    @Override
+    public <O> ProducerWithExceptions<Validation<StatusCode, O>, SQLException>
+    wrap(FunctionWithExceptions<DSLContext, Validation<StatusCode, O>, SQLException> client) {
+        return () -> {
+            Connection con = getConnection();
+            Validation<StatusCode, O> result = DSL.using(con, SQLDialect.MARIADB).transactionResult(configuration -> {
+                DSLContext context = DSL.using(configuration);
+                return client.apply(context);
+            });
+            close(con);
+            return result;
+        };
     }
 
     @Deprecated
-    private <R> R runAndCloseSqlCommand(FunctionWithExceptions<Connection, R, SQLException> client) throws SQLException {
-        Connection con = null;
-        try {
-            con = getConnection();
-            return client.apply(con);
-        } catch (SQLException e) {
-            rollback(con);
-            throw e;
-        } finally {
-            close(con);
-        }
+    private <R> ProducerWithExceptions<R, SQLException>
+    runAndCloseSqlCommand(FunctionWithExceptions<Connection, R, SQLException> client) {
+        return () -> {
+            Connection con = null;
+            try {
+                con = getConnection();
+                return client.apply(con);
+            } catch (SQLException e) {
+                rollback(con);
+                throw e;
+            } finally {
+                close(con);
+            }
+        };
     }
 }

@@ -18,4 +18,6 @@ public enum StatusCode {
 
     INVALID_ARGUMENT,
 
+    CA_UNREACHABLE,
+
 }

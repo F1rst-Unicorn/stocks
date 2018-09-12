@@ -1,11 +1,14 @@
 package de.njsm.stocks.server.v2.web.servlet;
 
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.business.StatusCode;
+import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,13 +28,30 @@ public class PrincipalFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        if (! requestContext.getHeaderString(ORIGIN).equals(ORIGIN_SENTRY)) {
+        if (requestContext.getHeaderString(ORIGIN).equals(ORIGIN_SENTRY)) {
+            LOG.info("Anonymous user " +
+                    requestContext.getMethod().toLowerCase() + "s " +
+                    requestContext.getUriInfo().getPath());
+        } else {
             addPrincipals(requestContext);
+
         }
     }
 
     private void addPrincipals(ContainerRequestContext requestContext) {
-        Principals principals = parseSubjectName(requestContext.getHeaderString(SSL_CLIENT_KEY));
+        String headerContent = requestContext.getHeaderString(SSL_CLIENT_KEY);
+        Validation<StatusCode, Principals> principals = parseSubjectName(headerContent);
+
+        if (principals.isFail()) {
+            LOG.error("Got invalid request with SSL header '"
+                    + SSL_CLIENT_KEY + ": " + headerContent);
+            requestContext.abortWith(Response.status(403).build());
+        }
+
+        grantAccess(requestContext, principals.success());
+    }
+
+    private void grantAccess(ContainerRequestContext requestContext, Principals principals) {
         requestContext.setProperty(STOCKS_PRINCIPAL, principals);
 
         LOG.info(principals.getReadableString() + " " +
@@ -39,10 +59,16 @@ public class PrincipalFilter implements ContainerRequestFilter {
                 requestContext.getUriInfo().getPath());
     }
 
-    public static Principals parseSubjectName(String subject){
+    public static Validation<StatusCode, Principals> parseSubjectName(String subject){
         LOG.debug("Parsing " + subject);
         subject = subject.trim();
-        String commonName = extractCommonName(subject);
+        Validation<StatusCode, String> rawSubject = extractCommonName(subject);
+
+        if (rawSubject.isFail()) {
+            return Validation.fail(rawSubject.fail());
+        }
+
+        String commonName = rawSubject.success();
 
         int[] indices = new int[3];
         int lastIndex = -1;
@@ -51,24 +77,26 @@ public class PrincipalFilter implements ContainerRequestFilter {
             indices[i] = commonName.indexOf('$', lastIndex+1);
             lastIndex = indices[i];
             if (lastIndex == -1){
-                throw new SecurityException("client name is malformed");
+                LOG.warn("client name '" + subject + "' is malformed");
+                return Validation.fail(StatusCode.INVALID_ARGUMENT);
             }
         }
 
-        return new Principals(commonName.substring(0, indices[0]),
+        return Validation.success(new Principals(commonName.substring(0, indices[0]),
                 commonName.substring(indices[1] + 1, indices[2]),
                 commonName.substring(indices[0] + 1, indices[1]),
-                commonName.substring(indices[2] + 1, commonName.length()));
+                commonName.substring(indices[2] + 1, commonName.length())));
 
     }
 
-    private static String extractCommonName(String subject) {
+    private static Validation<StatusCode, String> extractCommonName(String subject) {
         Pattern pattern = Pattern.compile(".*CN=([-_ a-zA-Z0-9\\$]*).*");
         Matcher matcher = pattern.matcher(subject);
         if (matcher.matches()) {
-            return matcher.group(1);
+            return Validation.success(matcher.group(1));
         } else {
-            throw new SecurityException("client name is malformed");
+            LOG.warn("client name '" + subject + "' is malformed");
+            return Validation.fail(StatusCode.INVALID_ARGUMENT);
         }
     }
 

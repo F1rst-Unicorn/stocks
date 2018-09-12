@@ -1,10 +1,10 @@
 package de.njsm.stocks.server.util;
 
-import com.netflix.hystrix.exception.HystrixBadRequestException;
-import com.netflix.hystrix.exception.HystrixRuntimeException;
-import de.njsm.stocks.common.util.MakerWithExceptions;
+import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
+import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
+import fj.data.Validation;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 
-public class X509AuthAdmin implements AuthAdmin {
+public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception> {
 
     private static final Logger LOG = LogManager.getLogger(X509AuthAdmin.class);
 
@@ -41,11 +41,12 @@ public class X509AuthAdmin implements AuthAdmin {
     }
 
     @Override
-    public synchronized void saveCsr(int deviceId, String content) {
-        runSafeAction(() -> {
+    public synchronized StatusCode saveCsr(int deviceId, String content) {
+        return runCommand(dummy -> {
             FileOutputStream csrFile = new FileOutputStream(getCsrFileName(deviceId));
             IOUtils.write(content, csrFile);
             csrFile.close();
+            return StatusCode.SUCCESS;
         });
     }
 
@@ -55,7 +56,7 @@ public class X509AuthAdmin implements AuthAdmin {
         (new File(getCertificateFileName(deviceId))).delete();
     }
 
-    public synchronized void generateCertificate(int deviceId) {
+    public synchronized StatusCode generateCertificate(int deviceId) {
 
         String command = String.format("openssl ca " +
                         "-config %s/intermediate/openssl.cnf " +
@@ -69,19 +70,20 @@ public class X509AuthAdmin implements AuthAdmin {
                 getCsrFileName(deviceId),
                 getCertificateFileName(deviceId));
 
-        runSafeAction(() -> {
+        return runCommand(dummy -> {
             Process p = Runtime.getRuntime().exec(command);
             p.waitFor();
+            return StatusCode.SUCCESS;
         });
     }
 
     @Override
-    public synchronized String getCertificate(int deviceId) {
-        return runSafeAction(() -> {
+    public synchronized Validation<StatusCode, String> getCertificate(int deviceId) {
+        return runFunction(dummy -> {
             FileInputStream input = new FileInputStream(getCertificateFileName(deviceId));
             String result = IOUtils.toString(input);
             input.close();
-            return result;
+            return Validation.success(result);
         });
     }
 
@@ -90,28 +92,24 @@ public class X509AuthAdmin implements AuthAdmin {
      *
      * @return The parsed principals
      */
-    public synchronized Principals getPrincipals(int deviceId) {
-        return runSafeAction(() -> {
+    @Override
+    public synchronized Validation<StatusCode, Principals> getPrincipals(int deviceId) {
+        return runFunction(dummy -> {
             PEMParser parser = new PEMParser(new FileReader(getCsrFileName(deviceId)));
             Object csrRaw = parser.readObject();
             if (csrRaw instanceof PKCS10CertificationRequest) {
                 PKCS10CertificationRequest csr = (PKCS10CertificationRequest) csrRaw;
-                try {
-                    return PrincipalFilter.parseSubjectName(csr.getSubject().toString());
-                } catch (SecurityException e) {
-                    LOG.warn("Problem parsing subject name", e);
-                    return null;
-                }
+                return PrincipalFilter.parseSubjectName(csr.getSubject().toString());
             } else {
                 LOG.warn("Could not parse CSR");
-                return null;
+                return Validation.fail(StatusCode.INVALID_ARGUMENT);
             }
         });
     }
 
-
-    public synchronized void revokeCertificate(int id) {
-        runSafeAction(() -> {
+    @Override
+    public synchronized StatusCode revokeCertificate(int id) {
+        return runCommand(dummy -> {
             String command = String.format("openssl ca " +
                             "-config %s/intermediate/openssl.cnf " +
                             "-batch " +
@@ -120,11 +118,30 @@ public class X509AuthAdmin implements AuthAdmin {
                     getCertificateFileName(id));
             Runtime.getRuntime().exec(command).waitFor();
             refreshCrl();
+            return StatusCode.SUCCESS;
         });
     }
 
+    @Override
+    public String getResourceIdentifier() {
+        return resourceIdentifier;
+    }
+
+    @Override
+    public StatusCode getDefaultErrorCode() {
+        return StatusCode.CA_UNREACHABLE;
+    }
+
+    @Override
+    public <O> ProducerWithExceptions<Validation<StatusCode, O>, Exception>
+    wrap(FunctionWithExceptions<Void, Validation<StatusCode, O>, Exception> client) {
+        return () -> {
+            return client.apply(null);
+        };
+    }
+
     private void refreshCrl() {
-        runSafeAction(() -> {
+        runCommand(dummy -> {
             String crlCommand = String.format("openssl ca " +
                             "-config %s/intermediate/openssl.cnf " +
                             "-gencrl " +
@@ -140,37 +157,8 @@ public class X509AuthAdmin implements AuthAdmin {
             out.close();
 
             Runtime.getRuntime().exec(reloadCommand).waitFor();
+            return null;
         });
-    }
-
-    private <R> R runSafeAction(ProducerWithExceptions<R, Exception> client) {
-        HystrixFunction<R, Exception> producer = new HystrixFunction<>(resourceIdentifier,
-                client);
-        return runHystrixFunction(producer);
-    }
-
-    private void runSafeAction(MakerWithExceptions<Exception> client) {
-        HystrixFunction<Void, Exception> producer = new HystrixFunction<>(resourceIdentifier,
-                () -> {
-                    client.accept();
-                    return null;
-                });
-        runHystrixFunction(producer);
-    }
-
-    private <R> R runHystrixFunction(HystrixFunction<R, Exception> producer) {
-        try {
-            return producer.execute();
-        } catch (HystrixRuntimeException e) {
-            if (e.getCause() instanceof RuntimeException) {
-                LOG.error("circuit breaker still open");
-            } else {
-                LOG.error("circuit breaker error", e);
-            }
-            throw new SecurityException(e.getCause());
-        } catch (HystrixBadRequestException e) {
-            throw new SecurityException(e.getCause());
-        }
     }
 
     private String getCsrFileName(int deviceId) {

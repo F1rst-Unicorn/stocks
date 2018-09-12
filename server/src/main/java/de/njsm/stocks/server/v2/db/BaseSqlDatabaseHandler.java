@@ -2,11 +2,8 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.util.ConsumerWithExceptions;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jooq.DSLContext;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,24 +21,6 @@ public abstract class BaseSqlDatabaseHandler {
             Class.forName("org.mariadb.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             LOG.error("DB driver not present", e);
-        }
-    }
-
-    protected abstract <R> Validation<StatusCode, R> runQuery(FunctionWithExceptions<DSLContext, Validation<StatusCode, R>, SQLException> client);
-
-    StatusCode runCommand(FunctionWithExceptions<DSLContext, StatusCode, SQLException> client) {
-        Validation<StatusCode, StatusCode> result = runQuery(con -> {
-            StatusCode code = client.apply(con);
-            if (code == StatusCode.SUCCESS) {
-                return Validation.success(code);
-            } else {
-                return Validation.fail(code);
-            }
-        });
-        if (result.isFail()) {
-            return result.fail();
-        } else {
-            return result.success();
         }
     }
 

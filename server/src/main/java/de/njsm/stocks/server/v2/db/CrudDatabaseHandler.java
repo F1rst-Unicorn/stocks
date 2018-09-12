@@ -34,7 +34,7 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
     }
 
     public Validation<StatusCode, List<R>> get() {
-        return runQuery(context -> {
+        return runFunction(context -> {
             List<R> result = context
                     .selectFrom(getTable())
                     .fetch()

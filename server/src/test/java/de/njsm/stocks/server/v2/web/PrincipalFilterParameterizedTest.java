@@ -1,7 +1,9 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
+import fj.data.Validation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,12 +39,13 @@ public class PrincipalFilterParameterizedTest {
     @Test
     public void testParsing() {
 
-        Principals p = PrincipalFilter.parseSubjectName(subject);
+        Validation<StatusCode, Principals> p = PrincipalFilter.parseSubjectName(subject);
 
-        Assert.assertEquals("Jack", p.getUsername());
-        Assert.assertEquals("Laptop", p.getDeviceName());
-        Assert.assertEquals(1, p.getUid());
-        Assert.assertEquals(2, p.getDid());
+        Assert.assertTrue(p.isSuccess());
+        Assert.assertEquals("Jack", p.success().getUsername());
+        Assert.assertEquals("Laptop", p.success().getDeviceName());
+        Assert.assertEquals(1, p.success().getUid());
+        Assert.assertEquals(2, p.success().getDid());
     }
 
 }

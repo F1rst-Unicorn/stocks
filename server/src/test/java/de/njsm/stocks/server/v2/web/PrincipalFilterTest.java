@@ -1,7 +1,9 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
+import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.UriInfo;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class PrincipalFilterTest {
@@ -36,11 +39,16 @@ public class PrincipalFilterTest {
 
     @Test
     public void sentryRequestsAreIgnored() {
+        UriInfo info = Mockito.mock(UriInfo.class);
         when(context.getHeaderString(PrincipalFilter.ORIGIN)).thenReturn(PrincipalFilter.ORIGIN_SENTRY);
+        when(context.getMethod()).thenReturn("GET");
+        when(context.getUriInfo()).thenReturn(info);
 
         uut.filter(context);
 
         verify(context).getHeaderString(PrincipalFilter.ORIGIN);
+        verify(context).getMethod();
+        verify(context).getUriInfo();
     }
 
     @Test
@@ -76,12 +84,13 @@ public class PrincipalFilterTest {
         }
         input = input.concat(testInput[testInput.length-1]);
 
-        Principals p = PrincipalFilter.parseSubjectName(input);
+        Validation<StatusCode, Principals> p = PrincipalFilter.parseSubjectName(input);
 
-        assertEquals(testInput[0], p.getUsername());
-        assertEquals(uid, p.getUid());
-        assertEquals(testInput[2], p.getDeviceName());
-        assertEquals(did, p.getDid());
+        assertTrue(p.isSuccess());
+        assertEquals(testInput[0], p.success().getUsername());
+        assertEquals(uid, p.success().getUid());
+        assertEquals(testInput[2], p.success().getDeviceName());
+        assertEquals(did, p.success().getDid());
 
     }
 
@@ -89,56 +98,61 @@ public class PrincipalFilterTest {
     public void testEmptyName() {
         String input = "/CN=$1$$1";
 
-        Principals p = PrincipalFilter.parseSubjectName(input);
+        Validation<StatusCode, Principals> p = PrincipalFilter.parseSubjectName(input);
 
-        assertEquals("", p.getUsername());
-        assertEquals("", p.getDeviceName());
-        assertEquals(1, p.getUid());
-        assertEquals(1, p.getDid());
+        assertTrue(p.isSuccess());
+        assertEquals("", p.success().getUsername());
+        assertEquals("", p.success().getDeviceName());
+        assertEquals(1, p.success().getUid());
+        assertEquals(1, p.success().getDid());
     }
 
     @Test
     public void testEmptyNameNoSlashes() {
         String input = "CN=$1$$1";
 
-        Principals p = PrincipalFilter.parseSubjectName(input);
+        Validation<StatusCode, Principals> p = PrincipalFilter.parseSubjectName(input);
 
-        assertEquals("", p.getUsername());
-        assertEquals("", p.getDeviceName());
-        assertEquals(1, p.getUid());
-        assertEquals(1, p.getDid());
+        assertTrue(p.isSuccess());
+        assertEquals("", p.success().getUsername());
+        assertEquals("", p.success().getDeviceName());
+        assertEquals(1, p.success().getUid());
+        assertEquals(1, p.success().getDid());
     }
 
     @Test
     public void testNameWithSpacesAndSpecialCharacters() {
         String input = "CN=John Doe$1$my-test_device$1";
 
-        Principals p = PrincipalFilter.parseSubjectName(input);
+        Validation<StatusCode, Principals> p = PrincipalFilter.parseSubjectName(input);
 
-        assertEquals("John Doe", p.getUsername());
-        assertEquals("my-test_device", p.getDeviceName());
-        assertEquals(1, p.getUid());
-        assertEquals(1, p.getDid());
+        assertTrue(p.isSuccess());
+        assertEquals("John Doe", p.success().getUsername());
+        assertEquals("my-test_device", p.success().getDeviceName());
+        assertEquals(1, p.success().getUid());
+        assertEquals(1, p.success().getDid());
     }
 
-    @Test(expected = SecurityException.class)
     public void testMalformed() {
         String input = "/CN=$1$1";
 
-        PrincipalFilter.parseSubjectName(input);
+        Validation<StatusCode, Principals> result = PrincipalFilter.parseSubjectName(input);
 
+        assertTrue(result.isFail());
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.fail());
     }
 
     @Test(expected = SecurityException.class)
     public void tooManyDollars() {
         String input = "/CN=omg$4$device$5$tooMuch";
 
-        Principals p = PrincipalFilter.parseSubjectName(input);
+        Validation<StatusCode, Principals> p = PrincipalFilter.parseSubjectName(input);
 
-        assertEquals("", p.getUsername());
-        assertEquals("", p.getDeviceName());
-        assertEquals(1, p.getUid());
-        assertEquals(1, p.getDid());
+        assertTrue(p.isSuccess());
+        assertEquals("", p.success().getUsername());
+        assertEquals("", p.success().getDeviceName());
+        assertEquals(1, p.success().getUid());
+        assertEquals(1, p.success().getDid());
     }
 
     @Test(expected = SecurityException.class)
@@ -154,19 +168,25 @@ public class PrincipalFilterTest {
         PrincipalFilter.parseSubjectName(input);
     }
 
-    @Test(expected = SecurityException.class)
     public void testTooFewDollars() {
-        PrincipalFilter.parseSubjectName("CN=username$devicename$4");
+        Validation<StatusCode, Principals> result = PrincipalFilter.parseSubjectName("CN=username$devicename$4");
+
+        assertTrue(result.isFail());
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.fail());
     }
 
-    @Test(expected = SecurityException.class)
     public void testCompleteGarbage() {
-        PrincipalFilter.parseSubjectName("29A");
+        Validation<StatusCode, Principals> result = PrincipalFilter.parseSubjectName("29A");
+
+        assertTrue(result.isFail());
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.fail());
     }
 
-    @Test(expected = SecurityException.class)
     public void testEmptySubject() {
-        PrincipalFilter.parseSubjectName("");
+        Validation<StatusCode, Principals> result = PrincipalFilter.parseSubjectName("");
+
+        assertTrue(result.isFail());
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.fail());
     }
 
 }

@@ -17,7 +17,7 @@ public class UpdateBackend extends FailSafeDatabaseHandler {
     }
 
     public Validation<StatusCode, List<Update>> getUpdates() {
-        return runQuery(context -> {
+        return runFunction(context -> {
             List<Update> dbResult = context.selectFrom(UPDATES)
                     .fetch()
                     .stream()
