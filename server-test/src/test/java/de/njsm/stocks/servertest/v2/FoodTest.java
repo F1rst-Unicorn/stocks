@@ -6,7 +6,6 @@ import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
@@ -48,7 +47,7 @@ public class FoodTest {
     public void renamingUnknownIdIsReported() {
         String newName = "Cabal";
 
-        assertOnRename(-1, 0, newName)
+        assertOnRename(9999, 0, newName)
                 .body("status", equalTo(2));
     }
 
@@ -72,13 +71,14 @@ public class FoodTest {
 
     @Test
     public void deletingUnknownIdIsReported() {
-        assertOnDelete(-1, 0)
+        assertOnDelete(9999, 0)
                 .body("status", equalTo(2));
     }
 
     private ValidatableResponse assertOnDelete(int id, int version) {
         return
         given()
+                .log().ifValidationFails()
                 .queryParam("id", id)
                 .queryParam("version", version).
         when()
@@ -96,6 +96,7 @@ public class FoodTest {
 
     private static void addFoodType(String name) {
         given()
+                .log().ifValidationFails()
                 .queryParam("name", name).
         when()
                 .put(TestSuite.DOMAIN + "/v2/food").
@@ -117,6 +118,7 @@ public class FoodTest {
     private ValidatableResponse assertOnRename(int id, int version, String newName) {
         return
         given()
+                .log().ifValidationFails()
                 .queryParam("id", id)
                 .queryParam("version", version)
                 .queryParam("new", newName).
@@ -130,6 +132,8 @@ public class FoodTest {
 
     private static ValidatableResponse assertOnFood() {
         return
+        given()
+                .log().ifValidationFails().
         when()
                 .get(TestSuite.DOMAIN + "/v2/food").
         then()

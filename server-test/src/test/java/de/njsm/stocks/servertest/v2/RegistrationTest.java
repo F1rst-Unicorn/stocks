@@ -59,7 +59,7 @@ public class RegistrationTest {
     @Test
     public void test1cannotRegisterWithWrongTicket() throws Exception {
         tryFailingRegistration(deviceId, "0000", commonName);
-        tryFailingRegistration(deviceId, "", commonName);
+        tryFailingRegistration(deviceId, "fdsa", commonName);
     }
 
     @Test

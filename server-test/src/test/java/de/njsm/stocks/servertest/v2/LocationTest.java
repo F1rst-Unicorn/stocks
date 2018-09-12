@@ -48,7 +48,7 @@ public class LocationTest {
     public void renamingUnknownIdIsReported() {
         String newName = "Location2";
 
-        assertOnRename(-1, 0, newName)
+        assertOnRename(9999, 0, newName)
                 .body("status", equalTo(2));
     }
 
@@ -72,13 +72,14 @@ public class LocationTest {
 
     @Test
     public void deletingUnknownIdIsReported() {
-        assertOnDelete(-1, 0)
+        assertOnDelete(99999, 0)
                 .body("status", equalTo(2));
     }
 
     private ValidatableResponse assertOnDelete(int id, int version) {
         return
         given()
+                .log().ifValidationFails()
                 .queryParam("id", id)
                 .queryParam("version", version).
         when()
@@ -96,6 +97,7 @@ public class LocationTest {
 
     private void addLocationType(String name) {
         given()
+                .log().ifValidationFails()
                 .queryParam("name", name).
         when()
                 .put(TestSuite.DOMAIN + "/v2/location").
@@ -117,6 +119,7 @@ public class LocationTest {
     private ValidatableResponse assertOnRename(int id, int version, String newName) {
         return
         given()
+                .log().ifValidationFails()
                 .queryParam("id", id)
                 .queryParam("version", version)
                 .queryParam("new", newName).
