@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import java.util.Collections;
 import java.util.List;
 
+import static de.njsm.stocks.server.v2.business.StatusCode.INVALID_ARGUMENT;
 import static de.njsm.stocks.server.v2.business.StatusCode.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -33,6 +34,62 @@ public class LocationEndpointTest {
     @After
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(dbLayer);
+    }
+
+    @Test
+    public void puttingNullCodeIsInvalid() {
+
+        Response result = uut.putLocation(null);
+
+        assertEquals(INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
+    public void puttingEmptyCodeIsInvalid() {
+
+        Response result = uut.putLocation("");
+
+        assertEquals(INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
+    public void renamingInvalidIdIsInvalid() {
+
+        Response result = uut.renameLocation(0, 1, "fdsa");
+
+        assertEquals(INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
+    public void renamingInvalidVersionIsInvalid() {
+
+        Response result = uut.renameLocation(1, -1, "fdsa");
+
+        assertEquals(INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
+    public void renamingToInvalidNameIsInvalid() {
+
+        Response result = uut.renameLocation(1, 1, "");
+
+        assertEquals(INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
+    public void deletingInvalidIdIsInvalid() {
+
+        Response result = uut.deleteLocation(0, 1);
+
+        assertEquals(INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
+    public void deletingInvalidVersionIsInvalid() {
+
+        Response result = uut.deleteLocation(1, -1);
+
+        assertEquals(INVALID_ARGUMENT, result.status);
     }
 
     @Test

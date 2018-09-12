@@ -14,6 +14,8 @@ public enum StatusCode {
 
     DATABASE_UNREACHABLE,
 
-    ACCESS_DENIED
+    ACCESS_DENIED,
+
+    INVALID_ARGUMENT,
 
 }

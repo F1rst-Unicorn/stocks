@@ -23,8 +23,12 @@ public class LocationEndpoint extends Endpoint {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response putLocation(@QueryParam("name") String name) {
-        StatusCode status = databaseHandler.add(new Location(name));
-        return new Response(status);
+        if (isValid(name, "name")) {
+            StatusCode status = databaseHandler.add(new Location(name));
+            return new Response(status);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
     }
 
     @GET
@@ -40,15 +44,27 @@ public class LocationEndpoint extends Endpoint {
     public Response renameLocation(@QueryParam("id") int id,
                                @QueryParam("version") int version,
                                @QueryParam("new") String newName) {
-        StatusCode status = databaseHandler.rename(new Location(id, "", version), newName);
-        return new Response(status);
+
+        if (isValid(id, "id") &&
+                isValidVersion(version, "version") &&
+                isValid(newName, "newName")) {
+            StatusCode status = databaseHandler.rename(new Location(id, "", version), newName);
+            return new Response(status);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteLocation(@QueryParam("id") int id,
                                @QueryParam("version") int version) {
-        StatusCode status = databaseHandler.delete(new Location(id, "", version));
-        return new Response(status);
+        if (isValid(id, "id") &&
+                isValidVersion(version, "version")) {
+            StatusCode status = databaseHandler.delete(new Location(id, "", version));
+            return new Response(status);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
     }
 }

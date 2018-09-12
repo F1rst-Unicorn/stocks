@@ -11,6 +11,6 @@ public class HealthEndpoint {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String getStatus() {
-        return "System is healthy";
+        return "System is healthy\n\n";
     }
 }

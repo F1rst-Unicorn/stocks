@@ -23,8 +23,12 @@ public class FoodEndpoint extends Endpoint {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response putFood(@QueryParam("name") String name) {
-        StatusCode status = databaseHandler.add(new Food(name));
-        return new Response(status);
+        if (isValid(name, "name")) {
+            StatusCode status = databaseHandler.add(new Food(name));
+            return new Response(status);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
     }
 
     @GET
@@ -40,16 +44,29 @@ public class FoodEndpoint extends Endpoint {
     public Response renameFood(@QueryParam("id") int id,
                                @QueryParam("version") int version,
                                @QueryParam("new") String newName) {
-        StatusCode status = databaseHandler.rename(new Food(id, "", version), newName);
-        return new Response(status);
+        if (isValid(id, "id") &&
+                isValidVersion(version, "version") &&
+                isValid(newName, "newName")) {
+
+            StatusCode status = databaseHandler.rename(new Food(id, "", version), newName);
+            return new Response(status);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteFood(@QueryParam("id") int id,
                                @QueryParam("version") int version) {
-        StatusCode status = databaseHandler.delete(new Food(id, "", version));
-        return new Response(status);
+
+        if (isValid(id, "id") &&
+                isValidVersion(version, "version")) {
+            StatusCode status = databaseHandler.delete(new Food(id, "", version));
+            return new Response(status);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
     }
 
 

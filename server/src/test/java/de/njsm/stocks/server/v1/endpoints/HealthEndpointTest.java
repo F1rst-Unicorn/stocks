@@ -17,7 +17,7 @@ public class HealthEndpointTest {
 
     @Test
     public void testSuccess() {
-        assertEquals("System is healthy", uut.getStatus());
+        assertEquals("System is healthy\n\n", uut.getStatus());
     }
 
 }

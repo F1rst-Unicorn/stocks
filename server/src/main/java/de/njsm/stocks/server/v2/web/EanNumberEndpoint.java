@@ -24,8 +24,14 @@ public class EanNumberEndpoint extends Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response putEanNumber(@QueryParam("code") String code,
                                  @QueryParam("identifies") int foodId) {
-        StatusCode status = databaseHandler.add(new EanNumber(code, foodId));
-        return new Response(status);
+        if (isValid(code, "code") &&
+                isValid(foodId, "foodId")) {
+
+            StatusCode status = databaseHandler.add(new EanNumber(code, foodId));
+            return new Response(status);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
     }
 
     @GET
@@ -39,8 +45,15 @@ public class EanNumberEndpoint extends Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteEanNumber(@QueryParam("id") int id,
                                     @QueryParam("version") int version) {
-        StatusCode status = databaseHandler.delete(new EanNumber(id, version, "", 0));
-        return new Response(status);
+
+        if (isValid(id, "id") &&
+                isValidVersion(version, "version")) {
+
+            StatusCode status = databaseHandler.delete(new EanNumber(id, version, "", 0));
+            return new Response(status);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
     }
 
 

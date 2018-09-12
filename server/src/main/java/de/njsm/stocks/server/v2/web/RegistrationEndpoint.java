@@ -36,9 +36,16 @@ public class RegistrationEndpoint extends de.njsm.stocks.server.v2.web.Endpoint 
 
         LOG.info("Got new certificate request for device id " + device);
 
-        Validation<StatusCode, String> response = authoriser.handleTicket(new ClientTicket(device, token, csr));
+        if (isValid(device, "device") &&
+                isValid(token, "token") &&
+                isValid(csr, "csr")) {
 
-        return new DataResponse<>(response);
+            Validation<StatusCode, String> response = authoriser.handleTicket(new ClientTicket(device, token, csr));
+
+            return new DataResponse<>(response);
+        } else {
+            return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
+        }
     }
 
 }
