@@ -7,6 +7,8 @@ public class MockConnectionFactory implements ConnectionFactory {
 
     private Connection connection;
 
+    private boolean throwException;
+
     MockConnectionFactory(Connection connection) {
         this.connection = connection;
     }
@@ -18,5 +20,16 @@ public class MockConnectionFactory implements ConnectionFactory {
 
     @Override
     public void returnConnection(Connection connection) throws SQLException {
+        if (throwException) {
+            throw new SQLException("test");
+        }
+    }
+
+    public void setThrowException(boolean throwException) {
+        this.throwException = throwException;
+    }
+
+    public boolean isThrowException() {
+        return throwException;
     }
 }

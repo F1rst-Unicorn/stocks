@@ -36,6 +36,18 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
     }
 
     @Test
+    public void openCircuitBreakerWithUncheckedException() throws InterruptedException {
+        ConsumerWithExceptions<Connection, SQLException> input = (con) -> {
+            throw new RuntimeException("test");
+        };
+
+        uut.runSqlOperation(input);
+        Thread.sleep(500);      // hystrix window has to shift
+
+        Assert.assertTrue(uut.isCircuitBreakerOpen());
+    }
+
+    @Test
     public void openCircuitBreakerInNewApi() throws InterruptedException {
         FunctionWithExceptions<DSLContext, Validation<StatusCode, String>, SQLException> input = (con) -> {
             throw new DataAccessException("test");

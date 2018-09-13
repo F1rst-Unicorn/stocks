@@ -20,12 +20,13 @@ public class StatusCodeDeserialiser extends StdDeserializer<StatusCode> {
 
     @Override
     public StatusCode deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
-        int code = node.asInt();
+        return parseCode(((JsonNode) p.getCodec().readTree(p)).asInt());
+    }
+
+    StatusCode parseCode(int code) throws IOException {
         if (code < 0 || code >= StatusCode.values().length) {
             throw new IOException("Invalid status code " + code);
         }
-
         return StatusCode.values()[code];
     }
 }

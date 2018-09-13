@@ -163,6 +163,56 @@ public class TicketAuthoriserTest {
     }
 
     @Test
+    public void authorisationProceedsIfTicketIsNotFound() {
+        int deviceId = 3;
+        Principals p = new Principals("Jack", "Device", 1, deviceId);
+        ClientTicket input = new ClientTicket(deviceId, "", "");
+        ServerTicket storedTicket = new ServerTicket(0, new Date(), deviceId, "");
+        Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
+        Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket)).thenReturn(Validation.success(p));
+        Mockito.when(databaseHandler.removeTicket(storedTicket)).thenReturn(StatusCode.NOT_FOUND);
+        Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.success(p));
+        Mockito.when(authAdmin.getCertificate(deviceId)).thenReturn(Validation.success("certificate"));
+
+        Validation<StatusCode, String> result = uut.handleTicket(input);
+
+        Assert.assertTrue(result.isSuccess());
+        assertEquals("certificate", result.success());
+        verify(databaseHandler).getTicket(input);
+        verify(databaseHandler).getPrincipalsForTicket(input.ticket);
+        verify(databaseHandler).removeTicket(storedTicket);
+        verify(authAdmin).saveCsr(deviceId, "");
+        verify(authAdmin).getPrincipals(deviceId);
+        verify(authAdmin).generateCertificate(deviceId);
+        verify(authAdmin).getCertificate(deviceId);
+    }
+
+    @Test
+    public void authorisationAbortsIfCertificateIsNotFound() {
+        int deviceId = 3;
+        Principals p = new Principals("Jack", "Device", 1, deviceId);
+        ClientTicket input = new ClientTicket(deviceId, "", "");
+        ServerTicket storedTicket = new ServerTicket(0, new Date(), deviceId, "");
+        Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
+        Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket)).thenReturn(Validation.success(p));
+        Mockito.when(databaseHandler.removeTicket(storedTicket)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.success(p));
+        Mockito.when(authAdmin.getCertificate(deviceId)).thenReturn(Validation.fail(StatusCode.NOT_FOUND));
+
+        Validation<StatusCode, String> result = uut.handleTicket(input);
+
+        Assert.assertTrue(result.isFail());
+        assertEquals(StatusCode.NOT_FOUND, result.fail());
+        verify(databaseHandler).getTicket(input);
+        verify(databaseHandler).getPrincipalsForTicket(input.ticket);
+        verify(databaseHandler).removeTicket(storedTicket);
+        verify(authAdmin).saveCsr(deviceId, "");
+        verify(authAdmin).getPrincipals(deviceId);
+        verify(authAdmin).generateCertificate(deviceId);
+        verify(authAdmin).getCertificate(deviceId);
+    }
+
+    @Test
     public void correctTicketIsHandled() {
         int deviceId = 3;
         Principals p = new Principals("Jack", "Device", 1, deviceId);
@@ -170,6 +220,7 @@ public class TicketAuthoriserTest {
         ServerTicket storedTicket = new ServerTicket(0, new Date(), deviceId, "");
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
         Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket)).thenReturn(Validation.success(p));
+        Mockito.when(databaseHandler.removeTicket(storedTicket)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.success(p));
         Mockito.when(authAdmin.getCertificate(deviceId)).thenReturn(Validation.success("certificate"));
 

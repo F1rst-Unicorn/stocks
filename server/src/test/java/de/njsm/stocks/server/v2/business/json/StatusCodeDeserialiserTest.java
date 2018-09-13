@@ -1,27 +1,27 @@
 package de.njsm.stocks.server.v2.business.json;
 
+import de.njsm.stocks.server.v2.business.StatusCode;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.time.Instant;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class InstantDeserialiserTest {
+public class StatusCodeDeserialiserTest {
 
-    private InstantDeserialiser uut;
+    private StatusCodeDeserialiser uut;
 
     @Before
     public void setup() {
-        uut = new InstantDeserialiser();
+        uut = new StatusCodeDeserialiser();
     }
 
     @Test
     public void invalidInputThrowsException() {
         try {
-            uut.parseString("fdsaklföe");
+            uut.parseCode(-1);
             fail();
         } catch (IOException e) {
 
@@ -30,10 +30,9 @@ public class InstantDeserialiserTest {
 
     @Test
     public void validInputIsParsedWithoutModification() throws IOException {
-        String input = "1970.01.01-00:00:00.000-+0000";
-        Instant expected = Instant.ofEpochMilli(0);
+        StatusCode expected = StatusCode.SUCCESS;
 
-        Instant actual = uut.parseString(input);
+        StatusCode actual = uut.parseCode(expected.ordinal());
 
         assertEquals(expected, actual);
     }

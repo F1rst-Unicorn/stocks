@@ -22,16 +22,14 @@ public class InstantDeserialiser extends StdDeserializer<Instant> {
 
     @Override
     public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
-        String rawTimestamp = node.asText();
+        return parseString(((JsonNode) p.getCodec().readTree(p)).asText());
+    }
+
+    Instant parseString(String rawTimestamp) throws IOException {
         try {
-            return parseString(rawTimestamp);
+            return InstantSerialiser.FORMAT.parse(rawTimestamp, Instant::from);
         } catch (DateTimeParseException e) {
             throw new IOException("Cannot parse date value " + rawTimestamp, e);
         }
-    }
-
-    Instant parseString(String rawTimestamp) {
-        return InstantSerialiser.FORMAT.parse(rawTimestamp, Instant::from);
     }
 }

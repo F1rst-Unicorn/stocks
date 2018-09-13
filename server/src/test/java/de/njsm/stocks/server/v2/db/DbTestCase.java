@@ -42,20 +42,31 @@ public abstract class DbTestCase {
         return "hystrix group " + String.valueOf(resourceCounter);
     }
 
-    private static Connection getConnection() throws SQLException {
-        String url;
+    static Connection getConnection() throws SQLException {
+        String url = getUrl();
+        String username = getUsername();
+        String password = getPassword();
+
+        return DriverManager.getConnection(url, username, password);
+    }
+
+    static String getPassword() {
+        return System.getProperty("de.njsm.stocks.internal.db.databasePassword");
+    }
+
+    static String getUrl() {
         String address = System.getProperty("de.njsm.stocks.internal.db.databaseAddress");
         String port = System.getProperty("de.njsm.stocks.internal.db.databasePort");
         String name = System.getProperty("de.njsm.stocks.internal.db.databaseName");
-        String username = System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
-        String password = System.getProperty("de.njsm.stocks.internal.db.databasePassword");
 
-        url = String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
+        return String.format("jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&serverTimezone=+00:00",
                 address,
                 port,
                 name);
+    }
 
-        return DriverManager.getConnection(url, username, password);
+    static String getUsername() {
+        return System.getProperty("de.njsm.stocks.internal.db.databaseUsername");
     }
 
 }

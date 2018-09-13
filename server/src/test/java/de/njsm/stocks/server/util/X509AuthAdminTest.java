@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -50,6 +51,11 @@ public class X509AuthAdminTest {
     }
 
     @Test
+    public void defaultErrorIsCorrect() {
+        assertEquals(StatusCode.CA_UNREACHABLE, uut.getDefaultErrorCode());
+    }
+
+    @Test
     public void testParseCsr() throws Exception {
         Principals input = getFreshPrincipals();
         generateCsr(input);
@@ -57,7 +63,7 @@ public class X509AuthAdminTest {
         Validation<StatusCode, Principals> p = uut.getPrincipals(deviceCounter);
 
         Assert.assertTrue(p.isSuccess());
-        Assert.assertEquals(input, p.success());
+        assertEquals(input, p.success());
     }
 
     @Test
@@ -78,7 +84,7 @@ public class X509AuthAdminTest {
         deviceCounter++;
 
         String savedContent = IOUtils.toString(new FileInputStream(caDirectory.getAbsoluteFile() + "/intermediate/csr/user_" + deviceCounter + ".csr.pem"));
-        Assert.assertEquals(content, savedContent);
+        assertEquals(content, savedContent);
     }
 
     @Test

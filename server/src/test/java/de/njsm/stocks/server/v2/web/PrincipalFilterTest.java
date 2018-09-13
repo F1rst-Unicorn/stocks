@@ -7,9 +7,11 @@ import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import static org.junit.Assert.assertEquals;
@@ -67,6 +69,20 @@ public class PrincipalFilterTest {
         verify(context).setProperty(PrincipalFilter.STOCKS_PRINCIPAL, TEST_USER);
         verify(context).getMethod();
         verify(context).getUriInfo();
+    }
+
+    @Test
+    public void invalidServerRequestsAreReported() {
+        when(context.getHeaderString(PrincipalFilter.ORIGIN)).thenReturn("server");
+        when(context.getHeaderString(PrincipalFilter.SSL_CLIENT_KEY)).thenReturn("$$$$$");
+
+        uut.filter(context);
+
+        verify(context).getHeaderString(PrincipalFilter.ORIGIN);
+        verify(context).getHeaderString(PrincipalFilter.SSL_CLIENT_KEY);
+        ArgumentCaptor<Response> captor = ArgumentCaptor.forClass(Response.class);
+        verify(context).abortWith(captor.capture());
+        assertEquals(403, captor.getValue().getStatus());
     }
 
     @Test
@@ -168,6 +184,7 @@ public class PrincipalFilterTest {
         PrincipalFilter.parseSubjectName(input);
     }
 
+    @Test
     public void testTooFewDollars() {
         Validation<StatusCode, Principals> result = PrincipalFilter.parseSubjectName("CN=username$devicename$4");
 
@@ -175,6 +192,7 @@ public class PrincipalFilterTest {
         assertEquals(StatusCode.INVALID_ARGUMENT, result.fail());
     }
 
+    @Test
     public void testCompleteGarbage() {
         Validation<StatusCode, Principals> result = PrincipalFilter.parseSubjectName("29A");
 
@@ -182,6 +200,7 @@ public class PrincipalFilterTest {
         assertEquals(StatusCode.INVALID_ARGUMENT, result.fail());
     }
 
+    @Test
     public void testEmptySubject() {
         Validation<StatusCode, Principals> result = PrincipalFilter.parseSubjectName("");
 

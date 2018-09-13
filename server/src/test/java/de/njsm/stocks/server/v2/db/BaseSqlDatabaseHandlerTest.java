@@ -60,12 +60,19 @@ public class BaseSqlDatabaseHandlerTest extends DbTestCase {
     }
 
     @Test
+    public void testCloseWithNull() {
+        uut.close(null);
+    }
+
+    @Test
     public void testClosingWithException() throws SQLException {
         Connection con = Mockito.mock(Connection.class);
         Mockito.doThrow(new SQLException("Mockito")).when(con).close();
+        ((MockConnectionFactory) getConnectionFactory()).setThrowException(true);
 
         uut.close(con);
 
+        ((MockConnectionFactory) getConnectionFactory()).setThrowException(false);
         Mockito.verifyNoMoreInteractions(con);
     }
 

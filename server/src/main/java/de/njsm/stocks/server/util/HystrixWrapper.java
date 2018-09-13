@@ -36,11 +36,7 @@ public interface HystrixWrapper<I, E extends Exception> {
         try {
             return producer.execute();
         } catch (HystrixRuntimeException e) {
-            if (e.getCause() instanceof RuntimeException) {
-                LOG.error("circuit breaker still open", e);
-            } else {
-                LOG.error("circuit breaker error", e);
-            }
+            LOG.error("circuit breaker error", e);
             return Validation.fail(getDefaultErrorCode());
         }
     }

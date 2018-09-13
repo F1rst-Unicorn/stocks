@@ -46,6 +46,7 @@ public class PrincipalFilter implements ContainerRequestFilter {
             LOG.error("Got invalid request with SSL header '"
                     + SSL_CLIENT_KEY + ": " + headerContent);
             requestContext.abortWith(Response.status(403).build());
+            return;
         }
 
         grantAccess(requestContext, principals.success());

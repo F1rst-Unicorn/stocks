@@ -16,7 +16,7 @@ public class ExceptionHandler {
 
     private static final Logger LOG = LogManager.getLogger(ExceptionHandler.class);
 
-    private static final String EXCEPTION_KEY = "javax.servlet.error.exception";
+    static final String EXCEPTION_KEY = "javax.servlet.error.exception";
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
