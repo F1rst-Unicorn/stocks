@@ -44,17 +44,6 @@ public class EanNumber extends VersionedData {
     }
 
     @Override
-    public String toString() {
-        return "EanNumber{" +
-                "id=" + id +
-                "version=" + version +
-                ", eanCode='" + eanCode + '\'' +
-                ", identifiesFood=" + identifiesFood +
-                ", id=" + id +
-                '}';
-    }
-
-    @Override
     public <I, O> O accept(AbstractVisitor<I, O> visitor, I arg) {
         return visitor.eanNumber(this, arg);
     }
