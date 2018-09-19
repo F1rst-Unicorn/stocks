@@ -1,6 +1,6 @@
 # Build instructions
 
-This guide tells how to build the server. 
+This guide tells how to build the server.
 
 ## Arch Linux
 
