@@ -31,7 +31,7 @@ local environment. The following assumes you use the developer's libvirt VMs.
 
 To create an Arch Linux package from the sources, run the deploy-server/bin/
 package.sh script. This will also sign the package with your default GPG key.
-To prevent signing the package, set the bash environment variable NO_SIGNATURE
+To prevent signing the package, set the bash environment variable NO\_SIGNATURE
 to 1.
 The package will be located in deploy-server/target.
 
@@ -40,10 +40,9 @@ The package will be located in deploy-server/target.
 After the package has been built all you need to do is running the server/src/
 test/system/bin/vm-deployment-test.sh script. It will locate the package you
 built depending on the version number.
-Then it resets the VM to a clean state. After that two ansible scripts will
-be started on the VM, one for installing, and one for deploying. The deployment
-script will just do the same as described in manual/server-admin/server-
-installation.md.
+Two ansible scripts will be started on the VM, one for installing, and one for
+deploying. The deployment script will just do the same as described in
+manual/server-admin/server-installation.md.
 After successful setup the server will be tested from a mock client which calls
 on all the available endpoints and verifies the answers from the server. It
 also tests the creation of new devices (with certificate handling) as well
@@ -75,7 +74,7 @@ The following assumes you use the developer's libvirt VMs.
 
 To create an Arch Linux package from the sources, run the deploy-client/bin/
 package.sh script. This will also sign the package with your default GPG key
-unless you export the bash environment variable NO_SIGNATURE with "1".
+unless you export the bash environment variable NO\_SIGNATURE with "1".
 The package will be located in deploy-client/target.
 
 #### Testing New Clients
@@ -83,11 +82,8 @@ The package will be located in deploy-client/target.
 After the package has been built all you need to do is running the client/src/
 test/system/bin/vm-deployment-test.sh script. It will locate the package you
 built depending on the version number.
-Then it resets the dp-server VM to the snapshot "initialised-running", so make
-sure it has been created with the server instance you want to test against.
-Once the VMs are set up the use cases provided in client/src/test/system/
-usecases/ will be run in alphabetical order to verify the behaviour of the
-client.
+The use cases provided in client/src/test/system/usecases/ will be run in
+alphabetical order to verify the behaviour of the client.
 Output texts will contain both human readable text as well as TeamCity
 service messages to be parsed by the CI server.
 

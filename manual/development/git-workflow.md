@@ -18,9 +18,8 @@ the latest version of each subcomponent.
 
 ## Feature branches
 Each feature needed for a new version is implemented in a separate feature
-branch. The naming convention is subcomponent-featureid, where the subcomponent
-is one of the four defined above and the featureid can be obtained by the
-roadmap of the project.
+branch. The naming convention is the ticket number in the YouTrack Ticket
+System (access on request).
 Inside a feature branch, everything that is needed for the feature to function
 is written. This includes in particular
 
