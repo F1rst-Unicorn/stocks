@@ -1,11 +1,13 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 public class Endpoint {
 
@@ -46,5 +48,16 @@ public class Endpoint {
 
         LOG.info("Request is invalid as " + name + " has value '" + parameter + "'");
         return false;
+    }
+
+    protected boolean isValidInstant(String rawInstant, String name) {
+        LOG.debug("Checking parameter " + name);
+
+        try {
+            InstantDeserialiser.parseString(rawInstant);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }

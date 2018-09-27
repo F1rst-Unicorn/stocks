@@ -76,7 +76,7 @@ public class LocationTest {
                 .body("status", equalTo(2));
     }
 
-    private ValidatableResponse assertOnDelete(int id, int version) {
+    ValidatableResponse assertOnDelete(int id, int version) {
         return
         given()
                 .log().ifValidationFails()
@@ -90,12 +90,12 @@ public class LocationTest {
                 .contentType(ContentType.JSON);
     }
 
-    private int createNewLocationType(String name) {
+    static int createNewLocationType(String name) {
         addLocationType(name);
         return getIdOfLocation(name);
     }
 
-    private void addLocationType(String name) {
+    static void addLocationType(String name) {
         given()
                 .log().ifValidationFails()
                 .queryParam("name", name).
@@ -108,7 +108,7 @@ public class LocationTest {
                 .body("status", equalTo(0));
     }
 
-    private int getIdOfLocation(String name) {
+    static int getIdOfLocation(String name) {
         return assertOnLocation()
                 .extract()
                 .jsonPath()
@@ -131,7 +131,7 @@ public class LocationTest {
                 .contentType(ContentType.JSON);
     }
 
-    private ValidatableResponse assertOnLocation() {
+    private static ValidatableResponse assertOnLocation() {
         return
         when()
                 .get(TestSuite.DOMAIN + "/v2/location").

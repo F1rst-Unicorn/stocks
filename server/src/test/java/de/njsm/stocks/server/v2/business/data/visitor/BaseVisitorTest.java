@@ -8,7 +8,7 @@ import static org.hamcrest.CoreMatchers.*;
 
 public class BaseVisitorTest {
 
-    BaseVisitor<Void, Void> uut;
+    private BaseVisitor<Void, Void> uut;
 
     @Before
     public void setup() {
@@ -33,5 +33,10 @@ public class BaseVisitorTest {
     @Test(expected = RuntimeException.class)
     public void serverTicketIsNotImplemented() {
         uut.serverTicket(null, null);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void foodItemIsNotImplemented() {
+        uut.foodItem(null, null);
     }
 }

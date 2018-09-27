@@ -6,15 +6,15 @@ import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class BaseTestEndpoint {
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.USER_STRING;
 
-    public static final String USER_STRING = "/CN=John$5$Mobile$1";
+public class BaseTestEndpoint {
 
     public static HttpServletRequest createMockRequest() {
         HttpServletRequest result = Mockito.mock(HttpServletRequest.class);
 
         Mockito.when(result.getHeader(PrincipalFilter.SSL_CLIENT_KEY))
-                .thenReturn(USER_STRING);
+                .thenReturn(PrincipalFilterTest.USER_STRING);
         Mockito.when(result.getAttribute(PrincipalFilter.STOCKS_PRINCIPAL))
                 .thenReturn(PrincipalFilterTest.TEST_USER);
 

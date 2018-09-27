@@ -16,4 +16,5 @@ public abstract class AbstractVisitor<I, O> {
 
     public abstract O serverTicket(ServerTicket t, I arg);
 
+    public abstract O foodItem(FoodItem foodItem, I input);
 }

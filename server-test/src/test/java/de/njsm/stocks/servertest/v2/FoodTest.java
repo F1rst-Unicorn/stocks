@@ -16,7 +16,6 @@ public class FoodTest {
         addFoodType("Carrot");
 
         assertOnFood()
-                .body("status", equalTo(0))
                 .body("data.name", hasItem("Carrot"));
     }
 
@@ -139,6 +138,7 @@ public class FoodTest {
         then()
                 .log().ifValidationFails()
                 .statusCode(200)
-                .contentType(ContentType.JSON);
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(0));
     }
 }

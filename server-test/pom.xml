@@ -65,34 +65,6 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <de.njsm.stocks.internal.db.databaseAddress>localhost</de.njsm.stocks.internal.db.databaseAddress>
-                <de.njsm.stocks.internal.db.databasePort>3306</de.njsm.stocks.internal.db.databasePort>
-                <de.njsm.stocks.internal.db.databaseName>stocks</de.njsm.stocks.internal.db.databaseName>
-                <de.njsm.stocks.internal.db.databaseUsername>server</de.njsm.stocks.internal.db.databaseUsername>
-                <de.njsm.stocks.internal.db.databasePassword>linux</de.njsm.stocks.internal.db.databasePassword>
-                <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
-            </properties>
-        </profile>
-        <profile>
-            <id>teamcity</id>
-            <properties>
-                <de.njsm.stocks.internal.db.databaseAddress>localhost</de.njsm.stocks.internal.db.databaseAddress>
-                <de.njsm.stocks.internal.db.databasePort>3306</de.njsm.stocks.internal.db.databasePort>
-                <de.njsm.stocks.internal.db.databaseName>stocks</de.njsm.stocks.internal.db.databaseName>
-                <de.njsm.stocks.internal.db.databaseUsername>server</de.njsm.stocks.internal.db.databaseUsername>
-                <de.njsm.stocks.internal.db.databasePassword>linux</de.njsm.stocks.internal.db.databasePassword>
-                <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
-            </properties>
-        </profile>
-    </profiles>
-
     <build>
         <plugins>
             <plugin>
@@ -108,16 +80,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.5</version>
-                <configuration>
-                    <systemPropertyVariables>
-                        <de.njsm.stocks.internal.db.databaseAddress>${de.njsm.stocks.internal.db.databaseAddress}</de.njsm.stocks.internal.db.databaseAddress>
-                        <de.njsm.stocks.internal.db.databasePort>${de.njsm.stocks.internal.db.databasePort}</de.njsm.stocks.internal.db.databasePort>
-                        <de.njsm.stocks.internal.db.databaseName>${de.njsm.stocks.internal.db.databaseName}</de.njsm.stocks.internal.db.databaseName>
-                        <de.njsm.stocks.internal.db.databaseUsername>${de.njsm.stocks.internal.db.databaseUsername}</de.njsm.stocks.internal.db.databaseUsername>
-                        <de.njsm.stocks.internal.db.databasePassword>${de.njsm.stocks.internal.db.databasePassword}</de.njsm.stocks.internal.db.databasePassword>
-                        <de.njsm.stocks.internal.ticketValidityTimeInMinutes>${de.njsm.stocks.internal.ticketValidityTimeInMinutes}</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
-                    </systemPropertyVariables>
-                </configuration>
             </plugin>
         </plugins>
     </build>

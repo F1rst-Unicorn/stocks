@@ -73,4 +73,14 @@ public class EndpointTest {
         assertTrue(uut.isValid("-----BEGIN CERTIFICATE REQUEST-----\n", "value name"));
         assertTrue(uut.isValid("CMV7oaD99ElqaOX8urfgRFTqClPlRag9XpyLgiSHg/18UwIDAQABoAAwDQYJKoZI", "value name"));
     }
+
+    @Test
+    public void testValidInstant() {
+        assertTrue(uut.isValidInstant("1970.01.01-00:00:00.000-+0000", "name"));
+    }
+
+    @Test
+    public void testInvalidInstant() {
+        assertFalse(uut.isValidInstant("jfidfd", "name"));
+    }
 }

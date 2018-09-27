@@ -1,6 +1,5 @@
-package de.njsm.stocks.server.v1.internal;
+package de.njsm.stocks.server;
 
-import de.njsm.stocks.server.Config;
 import org.junit.Before;
 import org.junit.Test;
 
