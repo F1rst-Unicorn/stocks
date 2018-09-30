@@ -3,10 +3,7 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.VersionedData;
 import fj.data.Validation;
-import org.jooq.DSLContext;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UpdatableRecord;
+import org.jooq.*;
 import org.jooq.types.UInteger;
 
 import java.util.List;
@@ -24,11 +21,12 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
         this.visitor = visitor;
     }
 
-    public StatusCode add(R item) {
-        return runCommand(context -> {
-            visitor.visit(item, context.insertInto(getTable()))
+    public Validation<StatusCode, Integer> add(R item) {
+        return runFunction(context -> {
+            int lastInsertId = visitor.visit(item, context.insertInto(getTable()))
+                    .returning(getIdField())
                     .execute();
-            return StatusCode.SUCCESS;
+            return Validation.success(lastInsertId);
         });
 
     }

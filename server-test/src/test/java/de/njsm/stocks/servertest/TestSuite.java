@@ -1,11 +1,12 @@
 package de.njsm.stocks.servertest;
 
 import de.njsm.stocks.servertest.v1.*;
-import de.njsm.stocks.servertest.v2.FoodTest;
-import de.njsm.stocks.servertest.v2.LocationTest;
-import de.njsm.stocks.servertest.v2.UpdateChangeTest;
 import de.njsm.stocks.servertest.v2.EanTest;
+import de.njsm.stocks.servertest.v2.FoodTest;
+import de.njsm.stocks.servertest.v2.FoodItemTest;
+import de.njsm.stocks.servertest.v2.LocationTest;
 import de.njsm.stocks.servertest.v2.RegistrationTest;
+import de.njsm.stocks.servertest.v2.UpdateChangeTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,6 +23,7 @@ import org.junit.runners.Suite;
                      FoodTest.class,
                      de.njsm.stocks.servertest.v1.EanTest.class,
                      EanTest.class,
+                     de.njsm.stocks.servertest.v1.FoodItemTest.class,
                      FoodItemTest.class,
                      DeviceTest.class,
                      de.njsm.stocks.servertest.v1.RegistrationTest.class,

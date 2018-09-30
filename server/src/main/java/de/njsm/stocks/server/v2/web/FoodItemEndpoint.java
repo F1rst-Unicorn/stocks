@@ -39,7 +39,7 @@ public class FoodItemEndpoint extends Endpoint {
 
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
-            StatusCode status = databaseHandler.add(new FoodItem(eatByDate,
+            Validation<StatusCode, Integer> status = databaseHandler.add(new FoodItem(eatByDate,
                     ofType, storedIn, user.getDid(), user.getUid()));
             return new Response(status);
 

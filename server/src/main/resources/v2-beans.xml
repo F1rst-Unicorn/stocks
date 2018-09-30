@@ -8,6 +8,7 @@
 
     <bean name="dbInsertVisitor" class="de.njsm.stocks.server.v2.db.InsertVisitor" />
 
+    <!-- DB Layer -->
     <bean name="foodDbHandler" class="de.njsm.stocks.server.v2.db.FoodHandler">
         <constructor-arg index="0" ref="connectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
@@ -36,6 +37,13 @@
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
     </bean>
 
+    <bean name="foodItemBackend" class="de.njsm.stocks.server.v2.db.FoodItemHandler">
+        <constructor-arg index="0" ref="connectionFactory" />
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="dbInsertVisitor" />
+    </bean>
+
+    <!-- Business Layer -->
     <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" >
         <constructor-arg index="0" ref="authAdmin"/>
         <constructor-arg index="1" ref="ticketBackend"/>
@@ -60,5 +68,9 @@
 
     <bean name="registrationEndpoint" class="de.njsm.stocks.server.v2.web.RegistrationEndpoint">
         <constructor-arg index="0" ref="ticketAuthoriser" />
+    </bean>
+
+    <bean name="foodItemEndpoint" class="de.njsm.stocks.server.v2.web.FoodItemEndpoint" >
+        <constructor-arg index="0" ref="foodItemBackend" />
     </bean>
 </beans>

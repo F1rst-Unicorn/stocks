@@ -24,7 +24,7 @@ public class LocationEndpoint extends Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response putLocation(@QueryParam("name") String name) {
         if (isValid(name, "name")) {
-            StatusCode status = databaseHandler.add(new Location(name));
+            Validation<StatusCode, Integer> status = databaseHandler.add(new Location(name));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

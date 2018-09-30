@@ -27,7 +27,7 @@ public class DevicesManager {
         if (Principals.isNameValid(d.name)) {
             return setupNewDevice(d);
         } else {
-            LOG.warn("Tried to addFood invalid device " + d.name);
+            LOG.warn("Tried to add invalid device " + d.name);
             return new Ticket();
         }
     }

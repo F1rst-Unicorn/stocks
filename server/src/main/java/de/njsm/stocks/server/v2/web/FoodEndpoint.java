@@ -24,7 +24,7 @@ public class FoodEndpoint extends Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response putFood(@QueryParam("name") String name) {
         if (isValid(name, "name")) {
-            StatusCode status = databaseHandler.add(new Food(name));
+            Validation<StatusCode, Integer> status = databaseHandler.add(new Food(name));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

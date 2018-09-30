@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.json.StatusCodeDeserialiser;
 import de.njsm.stocks.server.v2.business.json.StatusCodeSerialiser;
+import fj.data.Validation;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -21,6 +22,14 @@ public class Response {
     @JsonSerialize(using = StatusCodeSerialiser.class)
     @JsonDeserialize(using = StatusCodeDeserialiser.class)
     public StatusCode status;
+
+    public <T> Response(Validation<StatusCode, T> validation) {
+        if (validation.isSuccess()) {
+            status = StatusCode.SUCCESS;
+        } else {
+            status = validation.fail();
+        }
+    }
 
     public Response(StatusCode status) {
         this.status = status;

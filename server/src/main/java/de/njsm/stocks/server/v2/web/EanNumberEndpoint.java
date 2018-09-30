@@ -27,7 +27,7 @@ public class EanNumberEndpoint extends Endpoint {
         if (isValid(code, "code") &&
                 isValid(foodId, "foodId")) {
 
-            StatusCode status = databaseHandler.add(new EanNumber(code, foodId));
+            Validation<StatusCode, Integer> status = databaseHandler.add(new EanNumber(code, foodId));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
