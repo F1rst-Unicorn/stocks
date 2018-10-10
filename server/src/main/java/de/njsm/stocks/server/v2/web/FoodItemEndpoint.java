@@ -29,13 +29,13 @@ public class FoodItemEndpoint extends Endpoint {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response putItem(@Context HttpServletRequest request,
-                            @QueryParam("eatBy") String expirationDate,
+                            @QueryParam("eatByDate") String expirationDate,
                             @QueryParam("storedIn") int storedIn,
                             @QueryParam("ofType") int ofType) throws IOException {
 
         if (isValid(storedIn, "storedIn") &&
                 isValid(ofType, "ofType") &&
-                isValidInstant(expirationDate, "eatBy")) {
+                isValidInstant(expirationDate, "eatByDate")) {
 
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
@@ -61,11 +61,11 @@ public class FoodItemEndpoint extends Endpoint {
     public Response editItem(@Context HttpServletRequest request,
                              @QueryParam("id") int id,
                              @QueryParam("version") int version,
-                             @QueryParam("eatBy") String expirationDate,
+                             @QueryParam("eatByDate") String expirationDate,
                              @QueryParam("storedIn") int storedIn) throws IOException {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
-                isValidInstant(expirationDate, "eatBy") &&
+                isValidInstant(expirationDate, "eatByDate") &&
                 isValid(storedIn, "storedIn")) {
 
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);

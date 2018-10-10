@@ -139,7 +139,7 @@ public class FoodItemTest {
         return assertOnItems()
                 .extract()
                 .jsonPath()
-                .getInt("data.findAll{ it.eatBy == '" + FORMAT.format(date) + "' }.last().id");
+                .getInt("data.findAll{ it.eatByDate == '" + FORMAT.format(date) + "' }.last().id");
     }
 
     private static ValidatableResponse assertOnEdit(int id, int version, Instant eatByDate, int storedIn) {
