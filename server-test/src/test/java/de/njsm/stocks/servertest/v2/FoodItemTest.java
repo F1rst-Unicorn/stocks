@@ -28,7 +28,7 @@ public class FoodItemTest {
         addFoodItem(date, locationId, foodId);
 
         assertOnItems()
-                .body("data.eatBy", hasItem(FORMAT.format(date)));
+                .body("data.eatByDate", hasItem(FORMAT.format(date)));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class FoodItemTest {
 
         int version = assertOnItems()
                 .body("data.storedIn", hasItem(movedLocation))
-                .body("data.eatBy", hasItem(FORMAT.format(editedDate)))
+                .body("data.eatByDate", hasItem(FORMAT.format(editedDate)))
                 .extract()
                 .jsonPath()
                 .getInt("data.findAll{ it.version == 1 }.last().version");
@@ -123,7 +123,7 @@ public class FoodItemTest {
     private static void addFoodItem(Instant eatByDate, int storedIn, int ofType) {
         given()
                 .log().ifValidationFails()
-                .queryParam("eatBy", FORMAT.format(eatByDate))
+                .queryParam("eatByDate", FORMAT.format(eatByDate))
                 .queryParam("storedIn", storedIn)
                 .queryParam("ofType", ofType).
         when()
@@ -147,7 +147,7 @@ public class FoodItemTest {
                 .log().ifValidationFails()
                 .queryParam("id", id)
                 .queryParam("version", version)
-                .queryParam("eatBy", FORMAT.format(eatByDate))
+                .queryParam("eatByDate", FORMAT.format(eatByDate))
                 .queryParam("storedIn", storedIn).
         when()
                 .put(TestSuite.DOMAIN + "/v2/fooditem/edit").
