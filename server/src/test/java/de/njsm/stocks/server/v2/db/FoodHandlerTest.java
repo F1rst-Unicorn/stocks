@@ -26,9 +26,9 @@ public class FoodHandlerTest extends DbTestCase {
     public void addAFood() {
         Food data = new Food(7, "Banana", 1);
 
-        StatusCode code = uut.add(data);
+        Validation<StatusCode, Integer> code = uut.add(data);
 
-        assertEquals(StatusCode.SUCCESS, code);
+        assertTrue(code.isSuccess());
 
         Validation<StatusCode, List<Food>> dbData = uut.get();
 

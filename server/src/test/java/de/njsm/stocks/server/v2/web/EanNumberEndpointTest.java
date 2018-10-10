@@ -79,7 +79,7 @@ public class EanNumberEndpointTest {
     @Test
     public void eanNumberIsAdded() {
         EanNumber data = new EanNumber("CODE", 2);
-        when(dbLayer.add(data)).thenReturn(SUCCESS);
+        when(dbLayer.add(data)).thenReturn(Validation.success(5));
 
         Response response = uut.putEanNumber(data.eanCode, data.identifiesFood);
 

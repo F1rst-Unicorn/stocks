@@ -26,9 +26,9 @@ public class EanNumberHandlerTest extends DbTestCase {
     public void addAEanNumber() {
         EanNumber data = new EanNumber(1, 1, "Code", 1);
 
-        StatusCode code = uut.add(data);
+        Validation<StatusCode, Integer> code = uut.add(data);
 
-        assertEquals(StatusCode.SUCCESS, code);
+        assertTrue(code.isSuccess());
 
         Validation<StatusCode, List<EanNumber>> dbData = uut.get();
 

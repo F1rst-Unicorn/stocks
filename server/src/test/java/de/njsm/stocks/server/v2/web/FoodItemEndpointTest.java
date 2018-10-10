@@ -77,7 +77,7 @@ public class FoodItemEndpointTest {
         FoodItem expected = new FoodItem(0, 0, Instant.EPOCH, 2, 2,
                 PrincipalFilterTest.TEST_USER.getDid(),
                 PrincipalFilterTest.TEST_USER.getUid());
-        Mockito.when(databaseHandler.add(expected)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(databaseHandler.add(expected)).thenReturn(Validation.success(5));
 
         Response result = uut.putItem(BaseTestEndpoint.createMockRequest(), DATE, expected.storedIn, expected.ofType);
 

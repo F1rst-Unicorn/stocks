@@ -3,6 +3,7 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
 import fj.data.Validation;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,10 +28,10 @@ public class FoodItemHandlerTest extends DbTestCase {
     public void testInserting() {
         FoodItem item = new FoodItem(1, 0, Instant.EPOCH, 2, 1, 1, 1);
 
-        StatusCode result = uut.add(item);
+        Validation<StatusCode, Integer> result = uut.add(item);
 
         Validation<StatusCode, List<FoodItem>> items = uut.get();
-        assertEquals(StatusCode.SUCCESS, result);
+        Assert.assertTrue(result.isSuccess());
         assertTrue(items.isSuccess());
         assertEquals(4, items.success().size());
     }

@@ -26,9 +26,9 @@ public class LocationHandlerTest extends DbTestCase {
     public void addALocation() {
         Location data = new Location(7, "Fridge", 1);
 
-        StatusCode code = uut.add(data);
+        Validation<StatusCode, Integer> code = uut.add(data);
 
-        assertEquals(StatusCode.SUCCESS, code);
+        assertTrue(code.isSuccess());
 
         Validation<StatusCode, List<Location>> dbData = uut.get();
 

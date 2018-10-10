@@ -95,7 +95,7 @@ public class FoodEndpointTest {
     @Test
     public void foodIsAdded() {
         Food data = new Food(0, "Banana", 0);
-        when(dbLayer.add(data)).thenReturn(SUCCESS);
+        when(dbLayer.add(data)).thenReturn(Validation.success(5));
 
         Response response = uut.putFood(data.name);
 
