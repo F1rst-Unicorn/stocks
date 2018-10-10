@@ -71,7 +71,7 @@ public class FoodItemTest {
         Instant editedDate = Instant.ofEpochMilli(15);
 
         assertOnEdit(99999, 0, editedDate, 1)
-                .body("status", equalTo(3));
+                .body("status", equalTo(2));
     }
 
     @Test
