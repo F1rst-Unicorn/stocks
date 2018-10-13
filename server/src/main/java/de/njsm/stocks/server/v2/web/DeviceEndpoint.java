@@ -51,7 +51,7 @@ public class DeviceEndpoint extends Endpoint {
                                  @QueryParam("id") int id,
                                  @QueryParam("version") int version) {
         if (isValid(id, "id") &&
-                isValid(version, "version")) {
+                isValidVersion(version, "version")) {
 
             StatusCode result = deviceManager.removeDevice(new UserDevice(id, version), getPrincipals(request));
             return new Response(result);
@@ -67,7 +67,7 @@ public class DeviceEndpoint extends Endpoint {
                                  @QueryParam("id") int id,
                                  @QueryParam("version") int version) {
         if (isValid(id, "id") &&
-                isValid(version, "version")) {
+                isValidVersion(version, "version")) {
 
             StatusCode result = deviceManager.revokeDevice(new UserDevice(id, version));
             return new Response(result);

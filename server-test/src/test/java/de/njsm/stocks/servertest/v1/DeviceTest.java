@@ -27,7 +27,7 @@ public class DeviceTest {
 
     @Test
     public void removeADevice() {
-        String name = "Mobile";
+        String name = "Mobile2";
         int userId = UserTest.createNewUser("Jabba");
         addDevice(name, userId);
         int id = getIdOfDevice(name);

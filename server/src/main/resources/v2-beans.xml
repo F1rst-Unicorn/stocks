@@ -88,4 +88,8 @@
     <bean name="foodItemEndpoint" class="de.njsm.stocks.server.v2.web.FoodItemEndpoint" >
         <constructor-arg index="0" ref="foodItemBackend" />
     </bean>
+
+    <bean name="deviceEndpoint" class="de.njsm.stocks.server.v2.web.DeviceEndpoint" >
+        <constructor-arg index="0" ref="deviceManager" />
+    </bean>
 </beans>

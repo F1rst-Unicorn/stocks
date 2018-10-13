@@ -25,6 +25,7 @@ import org.junit.runners.Suite;
                      EanTest.class,
                      de.njsm.stocks.servertest.v1.FoodItemTest.class,
                      FoodItemTest.class,
+                     de.njsm.stocks.servertest.v1.DeviceTest.class,
                      DeviceTest.class,
                      de.njsm.stocks.servertest.v1.RegistrationTest.class,
                      RegistrationTest.class,

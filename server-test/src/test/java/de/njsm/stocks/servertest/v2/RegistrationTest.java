@@ -1,7 +1,6 @@
 package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.common.data.Ticket;
-import de.njsm.stocks.common.data.UserDevice;
 import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.v1.DeviceTest;
 import de.njsm.stocks.servertest.v1.SetupTest;
@@ -21,9 +20,7 @@ import java.security.KeyPair;
 import java.security.KeyStore;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RegistrationTest {
@@ -91,12 +88,16 @@ public class RegistrationTest {
 
     private void revokedUserCannotAccessAnyMore() throws InterruptedException {
         given()
+                .log().ifValidationFails()
                 .contentType(ContentType.JSON)
-                .body(new UserDevice(deviceId, "", 0)).
+                .queryParam("id", deviceId)
+                .queryParam("version", 0).
         when()
-                .put(TestSuite.DOMAIN + "/device/remove").
+                .delete(TestSuite.DOMAIN + "/v2/device").
         then()
-                .statusCode(204);
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(0));
         Thread.sleep(3000);
 
         accessServerWithSecondAccount(keystore)
@@ -105,12 +106,13 @@ public class RegistrationTest {
 
     public static ValidatableResponse accessServerWithSecondAccount(KeyStore keystore) {
         return given()
+                .log().ifValidationFails()
                 .config(RestAssuredConfig.config().sslConfig(SSLConfig.sslConfig()
                         .allowAllHostnames()
                         .trustStore(keystore)
                         .keyStore("keystore_2", SetupTest.PASSWORD))).
         when()
-                .get(TestSuite.DOMAIN + "/location").
+                .get(TestSuite.DOMAIN + "/v2/location").
         then();
     }
 
