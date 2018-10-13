@@ -42,4 +42,10 @@ public class InsertVisitor<T extends Record> extends BaseVisitor<InsertSetStep<T
                         UInteger.valueOf(i.registers),
                         UInteger.valueOf(i.buys));
     }
+
+    @Override
+    public InsertOnDuplicateStep<T> userDevice(UserDevice userDevice, InsertSetStep<T> input) {
+        return input.columns(USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO)
+                .values(userDevice.name, UInteger.valueOf(userDevice.userId));
+    }
 }

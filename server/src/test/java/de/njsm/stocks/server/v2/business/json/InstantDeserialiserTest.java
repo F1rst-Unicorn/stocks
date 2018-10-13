@@ -11,6 +11,11 @@ import static org.junit.Assert.fail;
 public class InstantDeserialiserTest {
 
     @Test
+    public void constructorWorks() {
+        new InstantDeserialiser();
+    }
+
+    @Test
     public void invalidInputThrowsException() {
         try {
             InstantDeserialiser.parseString("fdsaklföe");

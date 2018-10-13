@@ -4,6 +4,7 @@ import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
 import de.njsm.stocks.server.v2.business.data.ServerTicket;
+import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.TicketRecord;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,8 @@ import org.jooq.Record4;
 import org.jooq.Result;
 import org.jooq.types.UInteger;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.Ticket.TICKET;
@@ -25,6 +28,16 @@ public class TicketBackend extends FailSafeDatabaseHandler {
     public TicketBackend(ConnectionFactory connectionFactory,
                          String resourceIdentifier) {
         super(connectionFactory, resourceIdentifier);
+    }
+
+    public StatusCode addTicket(UserDevice device, String ticket) {
+        return runCommand(context -> {
+            context.insertInto(TICKET)
+                    .columns(TICKET.BELONGS_DEVICE, TICKET.CREATED_ON, TICKET.TICKET_)
+                    .values(UInteger.valueOf(device.id), new Timestamp(Instant.now().toEpochMilli()), ticket)
+                    .execute();
+            return StatusCode.SUCCESS;
+        });
     }
 
     public Validation<StatusCode, ServerTicket> getTicket(ClientTicket ticket) {

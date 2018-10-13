@@ -1,15 +1,9 @@
 package de.njsm.stocks.server.v2.business.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.xml.bind.annotation.XmlRootElement;
-import java.security.SecureRandom;
 
 @XmlRootElement
 public class ClientTicket {
-
-    @JsonIgnore
-    public static final int TICKET_LENGTH = 64;
 
     public int deviceId;
 
@@ -18,6 +12,11 @@ public class ClientTicket {
     public String pemFile;
 
     public ClientTicket() {
+    }
+
+    public ClientTicket(int deviceId, String ticket) {
+        this.deviceId = deviceId;
+        this.ticket = ticket;
     }
 
     public ClientTicket(int deviceId, String ticket, String pemFile) {
@@ -43,27 +42,6 @@ public class ClientTicket {
         int result = deviceId;
         result = 31 * result + ticket.hashCode();
         result = 31 * result + pemFile.hashCode();
-        return result;
-    }
-
-    @JsonIgnore
-    public static String generateTicket() {
-        SecureRandom generator = new SecureRandom();
-        byte[] content = new byte[TICKET_LENGTH];
-
-        for (int i = 0; i < TICKET_LENGTH; i++){
-            content[i] = getNextByte(generator);
-        }
-
-        return new String(content);
-    }
-
-    @JsonIgnore
-    private static byte getNextByte(SecureRandom generator) {
-        byte result;
-        do {
-            result = (byte) generator.nextInt();
-        } while (!Character.isLetterOrDigit(result));
         return result;
     }
 

@@ -41,6 +41,13 @@
         <constructor-arg index="0" ref="connectionFactory" />
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="dbInsertVisitor" />
+        <constructor-arg index="3" ref="deviceBackend" />
+    </bean>
+
+    <bean name="deviceBackend" class="de.njsm.stocks.server.v2.db.UserDeviceHandler">
+        <constructor-arg index="0" ref="connectionFactory" />
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="dbInsertVisitor" />
     </bean>
 
     <!-- Business Layer -->
@@ -50,6 +57,14 @@
         <constructor-arg index="2" ref="ticketValidity"/>
     </bean>
 
+    <bean name="deviceManager" class="de.njsm.stocks.server.v2.business.DeviceManager" >
+        <constructor-arg index="0" ref="deviceBackend" />
+        <constructor-arg index="1" ref="foodItemBackend" />
+        <constructor-arg index="2" ref="ticketBackend" />
+        <constructor-arg index="3" ref="authAdmin" />
+    </bean>
+
+    <!-- Web Layer -->
     <bean name="updateEndpoint" class="de.njsm.stocks.server.v2.web.UpdateEndpoint">
         <constructor-arg index="0" ref="updateBackend" />
     </bean>

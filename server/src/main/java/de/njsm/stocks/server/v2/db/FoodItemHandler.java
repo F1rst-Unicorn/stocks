@@ -2,7 +2,10 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
+import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.types.UInteger;
@@ -15,16 +18,21 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD_ITEM;
 
 public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodItem> {
 
+    private static final Logger LOG = LogManager.getLogger(FoodItemHandler.class);
+
+    private PresenceChecker<UserDevice> userDeviceChecker;
 
     public FoodItemHandler(ConnectionFactory connectionFactory,
                            String resourceIdentifier,
-                           InsertVisitor<FoodItemRecord> visitor) {
+                           InsertVisitor<FoodItemRecord> visitor,
+                           PresenceChecker<UserDevice> userDeviceChecker) {
         super(connectionFactory, resourceIdentifier, visitor);
+        this.userDeviceChecker = userDeviceChecker;
     }
 
     public StatusCode edit(FoodItem item) {
         return runCommand(context -> {
-            if (isMissing(item.id, context)) {
+            if (isMissing(item, context)) {
                 return StatusCode.NOT_FOUND;
             }
 
@@ -41,6 +49,28 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
             } else {
                 return StatusCode.INVALID_DATA_VERSION;
             }
+        });
+    }
+
+    public StatusCode transferFoodItems(UserDevice from, UserDevice to) {
+        return runCommand(context -> {
+            if (userDeviceChecker.isMissing(from, context)) {
+                LOG.warn("Origin ID " + from + " not found");
+                return StatusCode.NOT_FOUND;
+            }
+
+            if (userDeviceChecker.isMissing(to, context)) {
+                LOG.warn("Target ID " + from + " not found");
+                return StatusCode.NOT_FOUND;
+            }
+
+            context.update(FOOD_ITEM)
+                    .set(FOOD_ITEM.REGISTERS, UInteger.valueOf(to.id))
+                    .set(FOOD_ITEM.VERSION, FOOD_ITEM.VERSION.add(1))
+                    .where(FOOD_ITEM.REGISTERS.eq(UInteger.valueOf(from.id)))
+                    .execute();
+
+            return StatusCode.SUCCESS;
         });
     }
 

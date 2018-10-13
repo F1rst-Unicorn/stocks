@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData> extends FailSafeDatabaseHandler {
+public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData>
+        extends FailSafeDatabaseHandler
+        implements PresenceChecker<R> {
 
     private InsertVisitor<T> visitor;
 
@@ -25,7 +27,9 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
         return runFunction(context -> {
             int lastInsertId = visitor.visit(item, context.insertInto(getTable()))
                     .returning(getIdField())
-                    .execute();
+                    .fetch()
+                    .getValue(0, getIdField())
+                    .intValue();
             return Validation.success(lastInsertId);
         });
 
@@ -46,7 +50,7 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
 
     public StatusCode delete(R item) {
         return runCommand(context -> {
-            if (isMissing(item.id, context))
+            if (isMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
             int changedItems = context.deleteFrom(getTable())
@@ -61,6 +65,18 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
         });
     }
 
+    @Override
+    public boolean isMissing(R item, DSLContext context) {
+        int count = context.selectCount()
+                .from(getTable())
+                .where(getIdField().eq(UInteger.valueOf(item.id)))
+                .fetch()
+                .get(0)
+                .value1();
+
+        return count == 0;
+    }
+
     protected abstract Table<T> getTable();
 
     protected abstract Function<T, R> getDtoMap();
@@ -68,15 +84,4 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
     protected abstract TableField<T, UInteger> getIdField();
 
     protected abstract TableField<T, UInteger> getVersionField();
-
-    protected boolean isMissing(int id, DSLContext context) {
-        int count = context.selectCount()
-                .from(getTable())
-                .where(getIdField().eq(UInteger.valueOf(id)))
-                .fetch()
-                .get(0)
-                .value1();
-
-        return count == 0;
-    }
 }

@@ -17,7 +17,7 @@ public abstract class CrudRenameDatabaseHandler<T extends UpdatableRecord<T>, R 
 
     public StatusCode rename(R item, String newName) {
         return runCommand(context -> {
-            if (isMissing(item.id, context))
+            if (isMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
             int changedItems = context.update(getTable())

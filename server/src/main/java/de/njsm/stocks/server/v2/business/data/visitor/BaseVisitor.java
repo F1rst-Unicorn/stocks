@@ -28,4 +28,9 @@ public class BaseVisitor<I,O> extends AbstractVisitor<I,O> {
     public O serverTicket(ServerTicket t, I arg) {
         throw new RuntimeException("Not implemented");
     }
+
+    @Override
+    public O userDevice(UserDevice userDevice, I arg) {
+        throw new RuntimeException("Not implemented");
+    }
 }

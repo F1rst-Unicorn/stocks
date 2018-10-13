@@ -6,6 +6,7 @@ class SampleData {
 
     private static final String[] sampleDbData = {
             "SET FOREIGN_KEY_CHECKS = 0",
+
             "DELETE FROM Food",
             "DELETE FROM Food_item",
             "DELETE FROM User",
@@ -13,6 +14,15 @@ class SampleData {
             "DELETE FROM Ticket",
             "DELETE FROM Location",
             "DELETE FROM EAN_number",
+
+            "ALTER TABLE Food AUTO_INCREMENT = 1",
+            "ALTER TABLE Food_item AUTO_INCREMENT = 1",
+            "ALTER TABLE User AUTO_INCREMENT = 1",
+            "ALTER TABLE User_device AUTO_INCREMENT = 1",
+            "ALTER TABLE Ticket AUTO_INCREMENT = 1",
+            "ALTER TABLE Location AUTO_INCREMENT = 1",
+            "ALTER TABLE EAN_number AUTO_INCREMENT = 1",
+
             "INSERT INTO Food (ID, name) VALUES (1, 'Carrot'), (2, 'Beer'), (3, 'Cheese')",
             "INSERT INTO Location (ID, name) VALUES (1, 'Fridge') , (2, 'Cupboard')",
             "INSERT INTO User (ID, name) VALUES (1, 'Bob'), (2, 'Alice'), (3, 'Jack')",
@@ -23,6 +33,7 @@ class SampleData {
                     "(3, '1970-01-01 00:00:00', 3, 2, 1, 2)",
             "INSERT INTO Ticket (ticket, belongs_device) VALUES ('AAAA', 3)",
             "INSERT INTO EAN_number (ID, number, identifies) VALUES (1, 'EAN BEER', 2)",
+
             "SET FOREIGN_KEY_CHECKS = 1",
     };
 

@@ -57,6 +57,7 @@ public class Endpoint {
             InstantDeserialiser.parseString(rawInstant);
             return true;
         } catch (IOException e) {
+            LOG.info("Request is invalid as " + name + " has value '" + rawInstant + "'");
             return false;
         }
     }
