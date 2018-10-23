@@ -5,7 +5,7 @@
   <project-extensions>
     <extension id="PROJECT_EXT_1" type="IssueTracker">
       <parameters>
-        <param name="host" value="https://yt.njsm.de" />
+        <param name="host" value="https://j.njsm.de/youtrack" />
         <param name="idPrefix" value="STOCKS" />
         <param name="name" value="YouTrack" />
         <param name="secure:password" value="credentialsJSON:bf0632df-bbce-44e0-888e-1df5caadc6f1" />
