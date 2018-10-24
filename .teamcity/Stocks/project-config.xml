@@ -8,7 +8,7 @@
         <param name="host" value="https://j.njsm.de/youtrack" />
         <param name="idPrefix" value="STOCKS" />
         <param name="name" value="YouTrack" />
-        <param name="secure:password" value="credentialsJSON:bf0632df-bbce-44e0-888e-1df5caadc6f1" />
+        <param name="secure:password" value="credentialsJSON:41891c3f-2007-42a0-ac33-c6281d54301b" />
         <param name="type" value="youtrack" />
         <param name="username" value="Jan_Veen" />
       </parameters>
