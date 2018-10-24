@@ -1,6 +1,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import fj.data.Validation;
 import org.junit.Before;
@@ -80,5 +81,16 @@ public class UserDeviceHandlerTest extends DbTestCase {
         assertTrue(devices.isSuccess());
         assertEquals(3, devices.success().size());
         assertThat(devices.success(), not(hasItem(device)));
+    }
+
+    @Test
+    public void gettingDevicesOfUserWorks() {
+
+        Validation<StatusCode, List<UserDevice>> result = uut.getDevicesOfUser(new User(1, 2));
+
+        assertTrue(result.isSuccess());
+        assertEquals(2, result.success().size());
+        assertThat(result.success(), hasItem(new UserDevice(1, 0, "mobile", 1)));
+        assertThat(result.success(), hasItem(new UserDevice(2, 0, "mobile2", 1)));
     }
 }

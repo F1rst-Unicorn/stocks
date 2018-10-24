@@ -33,4 +33,9 @@ public class BaseVisitor<I,O> extends AbstractVisitor<I,O> {
     public O userDevice(UserDevice userDevice, I arg) {
         throw new RuntimeException("Not implemented");
     }
+
+    @Override
+    public O user(User u, I arg) {
+        throw new RuntimeException("Not implemented");
+    }
 }

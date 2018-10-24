@@ -3,6 +3,7 @@ package de.njsm.stocks.server.v2.business;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
+import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.TicketBackend;
@@ -58,6 +59,10 @@ public class DeviceManager {
 
     public Validation<StatusCode, List<UserDevice>> get() {
         return deviceBackend.get();
+    }
+
+    public Validation<StatusCode, List<UserDevice>> getDevicesBelonging(User u) {
+        return deviceBackend.getDevicesOfUser(u);
     }
 
     public StatusCode removeDevice(UserDevice device, Principals currentUser) {

@@ -1,6 +1,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.visitor.BaseVisitor;
 import org.jooq.*;
 import org.jooq.types.UInteger;
@@ -47,5 +48,11 @@ public class InsertVisitor<T extends Record> extends BaseVisitor<InsertSetStep<T
     public InsertOnDuplicateStep<T> userDevice(UserDevice userDevice, InsertSetStep<T> input) {
         return input.columns(USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO)
                 .values(userDevice.name, UInteger.valueOf(userDevice.userId));
+    }
+
+    @Override
+    public InsertOnDuplicateStep<T> user(User u, InsertSetStep<T> arg) {
+        return arg.columns(USER.NAME)
+                .values(u.name);
     }
 }

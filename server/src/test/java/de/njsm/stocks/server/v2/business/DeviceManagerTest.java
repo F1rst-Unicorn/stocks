@@ -3,6 +3,7 @@ package de.njsm.stocks.server.v2.business;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
+import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.TicketBackend;
@@ -106,6 +107,17 @@ public class DeviceManagerTest {
 
         assertTrue(result.isSuccess());
         Mockito.verify(dbHandler).get();
+    }
+
+    @Test
+    public void gettingDevicesOfUserWorks() {
+        User input = new User(1, 2, "Jack");
+        Mockito.when(dbHandler.getDevicesOfUser(input)).thenReturn(Validation.success(Collections.emptyList()));
+
+        Validation<StatusCode, List<UserDevice>> result = uut.getDevicesBelonging(input);
+
+        assertTrue(result.isSuccess());
+        Mockito.verify(dbHandler).getDevicesOfUser(input);
     }
 
     @Test

@@ -19,4 +19,6 @@ public abstract class AbstractVisitor<I, O> {
     public abstract O foodItem(FoodItem foodItem, I input);
 
     public abstract O userDevice(UserDevice userDevice, I arg);
+
+    public abstract O user(User u, I arg);
 }

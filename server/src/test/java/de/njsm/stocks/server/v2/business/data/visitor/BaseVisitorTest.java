@@ -3,9 +3,6 @@ package de.njsm.stocks.server.v2.business.data.visitor;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-
 public class BaseVisitorTest {
 
     private BaseVisitor<Void, Void> uut;
@@ -38,5 +35,15 @@ public class BaseVisitorTest {
     @Test(expected = RuntimeException.class)
     public void foodItemIsNotImplemented() {
         uut.foodItem(null, null);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void userDeviceIsNotImplemented() {
+        uut.userDevice(null, null);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void userIsNotImplemented() {
+        uut.user(null, null);
     }
 }
