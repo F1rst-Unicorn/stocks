@@ -121,6 +121,7 @@
     </build-runners>
     <vcs-settings>
       <vcs-entry-ref root-id="Stocks_HttpsGithubComF1rstUnicornStocksGitRefsHeadsMaster" />
+      <vcs-entry-ref root-id="Stocks_Gitlab" />
     </vcs-settings>
     <requirements>
       <exists id="RQ_1" name="env.ANDROID_HOME" />
