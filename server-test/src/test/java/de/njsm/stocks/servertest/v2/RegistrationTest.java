@@ -1,10 +1,7 @@
 package de.njsm.stocks.servertest.v2;
 
-import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.servertest.TestSuite;
-import de.njsm.stocks.servertest.v1.DeviceTest;
-import de.njsm.stocks.servertest.v1.SetupTest;
-import de.njsm.stocks.servertest.v1.UserTest;
+import groovy.lang.Tuple2;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.config.SSLConfig;
 import io.restassured.http.ContentType;
@@ -40,9 +37,9 @@ public class RegistrationTest {
     @BeforeClass
     public static void setupCredentials() throws Exception {
         userId = UserTest.createNewUser("Jon");
-        Ticket ticket = DeviceTest.createNewDevice("Laptop", userId);
-        RegistrationTest.ticket = ticket.ticket;
-        RegistrationTest.deviceId = ticket.deviceId;
+        Tuple2<Integer, String> ticket = DeviceTest.createNewDevice("Laptop", userId);
+        RegistrationTest.ticket = ticket.getSecond();
+        RegistrationTest.deviceId = ticket.getFirst();
 
         keypair = SetupTest.generateKeyPair();
         commonName = "Jon$" + userId + "$Laptop$" + deviceId;

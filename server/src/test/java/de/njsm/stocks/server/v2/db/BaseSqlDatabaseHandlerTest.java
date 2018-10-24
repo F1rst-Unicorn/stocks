@@ -1,7 +1,6 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.util.FunctionWithExceptions;
-import de.njsm.stocks.server.v1.internal.db.SqlDatabaseHandler;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +18,7 @@ public class BaseSqlDatabaseHandlerTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new SqlDatabaseHandler(getConnectionFactory(),
+        uut = new FailSafeDatabaseHandler(getConnectionFactory(),
                 getNewResourceIdentifier());
     }
 

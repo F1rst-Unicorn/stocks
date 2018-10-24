@@ -1,7 +1,7 @@
 package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.servertest.TestSuite;
-import de.njsm.stocks.servertest.v1.UserTest;
+import groovy.lang.Tuple2;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.BeforeClass;
@@ -9,8 +9,7 @@ import org.junit.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 public class DeviceTest {
 
@@ -27,7 +26,7 @@ public class DeviceTest {
 
         assertOnAdd(name, userId)
                 .body("status", equalTo(0));
-        
+
         assertOnDevices()
                 .body("data.name", hasItems(name));
     }
@@ -81,7 +80,32 @@ public class DeviceTest {
                 .body("data.id", hasItems(deviceId));
     }
 
-    private ValidatableResponse assertOnAdd(String name, int userId) {
+    public static Tuple2<Integer, String> createNewDevice(String name, int userId) {
+        String ticket = addDevice(name, userId);
+        int id = getIdOfDevice(name);
+
+        return new Tuple2<>(id, ticket);
+    }
+
+    private static int getIdOfDevice(String name) {
+        return assertOnDevices()
+                .extract()
+                .jsonPath()
+                .getInt("data.findAll{ it.name == '" + name + "' }.last().id");
+    }
+
+
+
+    private static String addDevice(String name, int userId) {
+        return assertOnAdd(name, userId)
+                .body("data.pemFile", isEmptyOrNullString())
+                .body("data.ticket", not(isEmptyOrNullString()))
+                .extract()
+                .jsonPath()
+                .getString("data.ticket");
+    }
+
+    private static ValidatableResponse assertOnAdd(String name, int userId) {
         return given()
                 .log().ifValidationFails()
                 .queryParam("name", name)
@@ -93,7 +117,7 @@ public class DeviceTest {
                 .contentType(ContentType.JSON);
     }
 
-    private ValidatableResponse assertOnDevices() {
+    private static ValidatableResponse assertOnDevices() {
         return given()
                 .log().ifValidationFails().
         when()
@@ -103,4 +127,5 @@ public class DeviceTest {
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
     }
+
 }

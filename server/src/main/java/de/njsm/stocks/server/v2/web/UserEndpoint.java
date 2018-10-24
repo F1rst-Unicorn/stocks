@@ -43,7 +43,7 @@ public class UserEndpoint extends Endpoint {
     }
 
     @DELETE
-    @Consumes("application/json")
+    @Produces("application/json")
     public Response deleteUser(@Context HttpServletRequest request,
                            @QueryParam("id") int id,
                            @QueryParam("version") int version) {

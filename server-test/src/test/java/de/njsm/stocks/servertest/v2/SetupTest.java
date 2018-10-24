@@ -1,6 +1,5 @@
-package de.njsm.stocks.servertest.v1;
+package de.njsm.stocks.servertest.v2;
 
-import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -28,9 +27,11 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import static io.restassured.config.SSLConfig.sslConfig;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 
 public class SetupTest {
@@ -40,7 +41,7 @@ public class SetupTest {
     private KeyPair clientKeys;
 
     private static KeyStore keystore;
-    
+
     public static final String PASSWORD = "thisisapassword";
 
     @Before
@@ -63,22 +64,23 @@ public class SetupTest {
     public void setupFirstAccount() throws Exception {
         clientKeys = generateKeyPair();
         String csr = getCsr(clientKeys, subjectName);
-        Ticket ticket = new Ticket(1, "0000", csr);
 
         ValidatableResponse response =
-                given().
-                contentType(ContentType.JSON).
-                body(ticket).
+        given()
+                .log().ifValidationFails()
+                .formParam("device", 1)
+                .formParam("token", "0000")
+                .formParam("csr", csr).
         when().
-                post("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/uac/newuser").
+                post("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/v2/auth/newuser").
         then()
                 .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("deviceId", equalTo(1))
-                .body("pemFile", not(equalTo("")));
+                .body("status", equalTo(0))
+                .body("data", not(isEmptyOrNullString()));
 
-        String rawCert = response.extract().body().jsonPath().getString("pemFile");
+        String rawCert = response.extract().jsonPath().getString("data");
         storeToDisk(keystore, rawCert, "keystore_test", clientKeys);
 
     }
