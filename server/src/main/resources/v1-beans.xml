@@ -12,7 +12,7 @@
         <constructor-arg index="1" ref="circuitBreakerDatabase"/>
     </bean>
 
-    <bean name="userManager" class="de.njsm.stocks.server.v1.internal.business.UserManager">
+    <bean name="usersManager" class="de.njsm.stocks.server.v1.internal.business.UserManager">
         <constructor-arg index="0" ref="dbHandler"/>
         <constructor-arg index="1" ref="authAdmin"/>
     </bean>
@@ -48,7 +48,7 @@
     </bean>
 
     <bean name="userEndPoint" class="de.njsm.stocks.server.v1.endpoints.UserEndpoint">
-        <constructor-arg index="0" ref="userManager"/>
+        <constructor-arg index="0" ref="usersManager"/>
         <constructor-arg index="1" ref="dbHandler"/>
     </bean>
 
