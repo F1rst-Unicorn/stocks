@@ -28,7 +28,8 @@ public class DeviceTest {
                 .body("status", equalTo(0));
 
         assertOnDevices()
-                .body("data.name", hasItems(name));
+                .body("data.name", hasItems(name))
+                .body("data.userId", hasItems(userId));
     }
 
     @Test
