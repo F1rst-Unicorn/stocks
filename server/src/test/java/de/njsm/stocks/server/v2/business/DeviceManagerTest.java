@@ -122,7 +122,7 @@ public class DeviceManagerTest {
 
     @Test
     public void removeDeviceWorks() {
-        Mockito.when(foodDbHandler.transferFoodItems(any(), any())).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(foodDbHandler.transferFoodItems(any(UserDevice.class), any(UserDevice.class))).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(authAdmin.revokeCertificate(device.id)).thenReturn(StatusCode.SUCCESS);
         Principals currentUser = new Principals("Jack", "Device", 1, 1);
@@ -139,7 +139,7 @@ public class DeviceManagerTest {
 
     @Test
     public void deletingErrorIsPropagated() {
-        Mockito.when(foodDbHandler.transferFoodItems(any(), any())).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(foodDbHandler.transferFoodItems(any(UserDevice.class), any(UserDevice.class))).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         Principals currentUser = new Principals("Jack", "Device", 1, 1);
 
@@ -154,7 +154,7 @@ public class DeviceManagerTest {
 
     @Test
     public void foodItemTransferFailIsPropagated() {
-        Mockito.when(foodDbHandler.transferFoodItems(any(), any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+        Mockito.when(foodDbHandler.transferFoodItems(any(UserDevice.class), any(UserDevice.class))).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         Principals currentUser = new Principals("Jack", "Device", 1, 1);
 
         StatusCode result = uut.removeDevice(device, currentUser);

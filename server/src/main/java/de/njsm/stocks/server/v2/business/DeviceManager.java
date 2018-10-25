@@ -67,7 +67,7 @@ public class DeviceManager {
 
     public StatusCode removeDevice(UserDevice device, Principals currentUser) {
 
-        StatusCode transferResult = foodItemHandler.transferFoodItems(device, new UserDevice(currentUser.getDid(), 0));
+        StatusCode transferResult = foodItemHandler.transferFoodItems(device, currentUser.toDevice());
         if (transferResult != StatusCode.SUCCESS)
             return transferResult;
 

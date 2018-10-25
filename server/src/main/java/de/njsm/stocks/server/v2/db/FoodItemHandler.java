@@ -2,6 +2,7 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
+import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import org.apache.logging.log4j.LogManager;
@@ -22,12 +23,16 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
 
     private PresenceChecker<UserDevice> userDeviceChecker;
 
+    private PresenceChecker<User> userChecker;
+
     public FoodItemHandler(ConnectionFactory connectionFactory,
                            String resourceIdentifier,
                            InsertVisitor<FoodItemRecord> visitor,
-                           PresenceChecker<UserDevice> userDeviceChecker) {
+                           PresenceChecker<UserDevice> userDeviceChecker,
+                           PresenceChecker<User> userChecker) {
         super(connectionFactory, resourceIdentifier, visitor);
         this.userDeviceChecker = userDeviceChecker;
+        this.userChecker = userChecker;
     }
 
     public StatusCode edit(FoodItem item) {
@@ -68,6 +73,28 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     .set(FOOD_ITEM.REGISTERS, UInteger.valueOf(to.id))
                     .set(FOOD_ITEM.VERSION, FOOD_ITEM.VERSION.add(1))
                     .where(FOOD_ITEM.REGISTERS.eq(UInteger.valueOf(from.id)))
+                    .execute();
+
+            return StatusCode.SUCCESS;
+        });
+    }
+
+    public StatusCode transferFoodItems(User from, User to) {
+        return runCommand(context -> {
+            if (userChecker.isMissing(from, context)) {
+                LOG.warn("Origin ID " + from + " not found");
+                return StatusCode.NOT_FOUND;
+            }
+
+            if (userChecker.isMissing(to, context)) {
+                LOG.warn("Target ID " + to + " not found");
+                return StatusCode.NOT_FOUND;
+            }
+
+            context.update(FOOD_ITEM)
+                    .set(FOOD_ITEM.BUYS, UInteger.valueOf(to.id))
+                    .set(FOOD_ITEM.VERSION, FOOD_ITEM.VERSION.add(1))
+                    .where(FOOD_ITEM.BUYS.eq(UInteger.valueOf(from.id)))
                     .execute();
 
             return StatusCode.SUCCESS;

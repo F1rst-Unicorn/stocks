@@ -2,6 +2,7 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.UserHandler;
 import de.njsm.stocks.server.v2.web.PrincipalFilterTest;
 import fj.data.Validation;
@@ -26,18 +27,22 @@ public class UserManagerTest {
 
     private DeviceManager deviceManager;
 
+    private FoodItemHandler foodItemHandler;
+
     @Before
     public void setup() {
         userDbHandler = Mockito.mock(UserHandler.class);
         deviceManager = Mockito.mock(DeviceManager.class);
+        foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
-        uut = new UserManager(userDbHandler, deviceManager);
+        uut = new UserManager(userDbHandler, deviceManager, foodItemHandler);
     }
 
     @After
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(userDbHandler);
         Mockito.verifyNoMoreInteractions(deviceManager);
+        Mockito.verifyNoMoreInteractions(foodItemHandler);
     }
 
     @Test
@@ -110,6 +115,33 @@ public class UserManagerTest {
     }
 
     @Test
+    public void deleteWithFailingUserTransfer() {
+        StatusCode code = StatusCode.DATABASE_UNREACHABLE;
+        List<UserDevice> devices = new LinkedList<>();
+        User input = new User(1, 2, "user");
+        devices.add(new UserDevice(1, 2, "fdsa", input.id));
+        devices.add(new UserDevice(2, 2, "fdsa", input.id));
+        devices.add(new UserDevice(3, 2, "fdsa", input.id));
+        Mockito.when(deviceManager.getDevicesBelonging(input)).thenReturn(Validation.success(devices));
+        Mockito.when(deviceManager.removeDevice(devices.get(0), PrincipalFilterTest.TEST_USER))
+                .thenReturn(StatusCode.SUCCESS);
+        Mockito.when(deviceManager.removeDevice(devices.get(1), PrincipalFilterTest.TEST_USER))
+                .thenReturn(StatusCode.SUCCESS);
+        Mockito.when(deviceManager.removeDevice(devices.get(2), PrincipalFilterTest.TEST_USER))
+                .thenReturn(StatusCode.SUCCESS);
+        Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser()))
+                .thenReturn(code);
+        StatusCode result = uut.deleteUser(input, PrincipalFilterTest.TEST_USER);
+
+        assertEquals(code, result);
+        Mockito.verify(deviceManager).getDevicesBelonging(input);
+        Mockito.verify(deviceManager).removeDevice(devices.get(0), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDevice(devices.get(1), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDevice(devices.get(2), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(foodItemHandler).transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser());
+    }
+
+    @Test
     public void deleteSuccessfully() {
         List<UserDevice> devices = new LinkedList<>();
         User input = new User(1, 2, "user");
@@ -123,6 +155,8 @@ public class UserManagerTest {
                 .thenReturn(StatusCode.SUCCESS);
         Mockito.when(deviceManager.removeDevice(devices.get(2), PrincipalFilterTest.TEST_USER))
                 .thenReturn(StatusCode.SUCCESS);
+        Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser()))
+                .thenReturn(StatusCode.SUCCESS);
         Mockito.when(userDbHandler.delete(input)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.deleteUser(input, PrincipalFilterTest.TEST_USER);
@@ -132,6 +166,7 @@ public class UserManagerTest {
         Mockito.verify(deviceManager).removeDevice(devices.get(0), PrincipalFilterTest.TEST_USER);
         Mockito.verify(deviceManager).removeDevice(devices.get(1), PrincipalFilterTest.TEST_USER);
         Mockito.verify(deviceManager).removeDevice(devices.get(2), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(foodItemHandler).transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser());
         Mockito.verify(userDbHandler).delete(input);
     }
 }

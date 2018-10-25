@@ -3,6 +3,7 @@ package de.njsm.stocks.server.v2.business;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.UserHandler;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
@@ -18,10 +19,14 @@ public class UserManager {
 
     private DeviceManager deviceManager;
 
+    private FoodItemHandler foodItemHandler;
+
     public UserManager(UserHandler dbHandler,
-                       DeviceManager deviceManager) {
+                       DeviceManager deviceManager,
+                       FoodItemHandler foodItemHandler) {
         this.dbHandler = dbHandler;
         this.deviceManager = deviceManager;
+        this.foodItemHandler = foodItemHandler;
     }
 
     public StatusCode addUser(User u) {
@@ -50,6 +55,11 @@ public class UserManager {
             if (removeCode != StatusCode.SUCCESS) {
                 return removeCode;
             }
+        }
+        StatusCode transferItemsCode = foodItemHandler.transferFoodItems(userToDelete, currentUser.toUser());
+
+        if (transferItemsCode != StatusCode.SUCCESS) {
+            return transferItemsCode;
         }
 
         return dbHandler.delete(userToDelete);
