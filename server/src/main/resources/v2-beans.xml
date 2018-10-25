@@ -42,6 +42,7 @@
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="dbInsertVisitor" />
         <constructor-arg index="3" ref="deviceBackend" />
+        <constructor-arg index="4" ref="userBackend" />
     </bean>
 
     <bean name="deviceBackend" class="de.njsm.stocks.server.v2.db.UserDeviceHandler">
@@ -73,6 +74,7 @@
     <bean name="userManager" class="de.njsm.stocks.server.v2.business.UserManager">
         <constructor-arg index="0" ref="userBackend" />
         <constructor-arg index="1" ref="deviceManager" />
+        <constructor-arg index="2" ref="foodItemBackend" />
     </bean>
 
     <!-- Web Layer -->
