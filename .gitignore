@@ -5,6 +5,7 @@
 # java build dirs
 lib
 target
+build
 
 # IntelliJ files
 .idea
@@ -20,6 +21,5 @@ target
 *.ps
 
 # test files
-server/src/test/system/resources
 client/src/test/system/resources
-tmp
+server-test/keystore_test

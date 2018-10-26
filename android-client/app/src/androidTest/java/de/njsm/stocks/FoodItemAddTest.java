@@ -33,10 +33,10 @@ public class FoodItemAddTest {
                 .addAndFinish();
 
         for (int i = 0; i < numberOfItems; i++) {
-            finalScreen.assertItem(i, "Jack", "Device", LocalDate.now(), "Basement");
+            finalScreen.assertItem(i, "Jack", "android-client", LocalDate.now(), "Basement");
         }
 
-        finalScreen.assertItem(numberOfItems, "Jack", "Device", "31.12.00", "Basement");
+        finalScreen.assertItem(numberOfItems, "Jack", "android-client", "31.12.00", "Basement");
 
     }
 }

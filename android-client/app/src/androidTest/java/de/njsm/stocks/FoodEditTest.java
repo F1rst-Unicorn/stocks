@@ -22,19 +22,19 @@ public class FoodEditTest {
         MainScreen.test()
                 .goToEatSoon()
                 .click(0)
-                .assertLastItem("Jack", "Device", "31.12.00", "Basement")
+                .assertLastItem("Jack", "android-client", "31.12.00", "Basement")
                 .longClickLast()
                 .assertLocation("Basement")
                 .assertDate(2100, 12, 31)
                 .selectDate(2099, 12, 31)
                 .addAndFinish()
-                .assertLastItem("Jack", "Device", "31.12.99", "Basement")
+                .assertLastItem("Jack", "android-client", "31.12.99", "Basement")
                 .longClickLast()
                 .assertLocation("Basement")
                 .assertDate(2099, 12, 31)
                 .selectDate(2100, 12, 31)
                 .addAndFinish()
-                .assertLastItem("Jack", "Device", "31.12.00", "Basement");
+                .assertLastItem("Jack", "android-client", "31.12.00", "Basement");
     }
 
     @Test
@@ -51,9 +51,9 @@ public class FoodEditTest {
         MainScreen.test()
                 .goToEatSoon()
                 .click(0)
-                .assertLastItem("Jack", "Device", "31.12.00", "Basement")
+                .assertLastItem("Jack", "android-client", "31.12.00", "Basement")
                 .longClickLast()
                 .pressBack()
-                .assertLastItem("Jack", "Device", "31.12.00", "Basement");
+                .assertLastItem("Jack", "android-client", "31.12.00", "Basement");
     }
 }

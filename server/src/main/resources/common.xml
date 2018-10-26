@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+       default-lazy-init="true">
+
+    <bean name="circuitBreakerDatabase" class="java.lang.String">
+        <constructor-arg index="0" value="database"/>
+    </bean>
+
+    <bean name="circuitBreakerCertificateAuthority" class="java.lang.String">
+        <constructor-arg index="0" value="certificateAuthority"/>
+    </bean>
+
+    <bean name="propertiesFile" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>file:/etc/stocks-server/stocks.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean name="certificateAuthorityPath" class="java.lang.String">
+        <constructor-arg index="0" value="/usr/share/stocks-server/root/CA" type="java.lang.String"/>
+    </bean>
+
+    <bean name="nginxReloadCommand" class="java.lang.String">
+        <constructor-arg index="0" value="sudo /usr/lib/stocks-server/nginx-reload" type="java.lang.String"/>
+    </bean>
+
+    <bean name="config" class="de.njsm.stocks.server.Config">
+        <constructor-arg index="0" ref="propertiesFile"/>
+    </bean>
+
+    <bean name="authAdmin" class="de.njsm.stocks.server.util.X509AuthAdmin">
+        <constructor-arg index="0" ref="certificateAuthorityPath"/>
+        <constructor-arg index="1" ref="nginxReloadCommand"/>
+        <constructor-arg index="2" ref="circuitBreakerCertificateAuthority"/>
+    </bean>
+
+    <bean name="dbAddress" factory-bean="config" factory-method="getDbAddress"/>
+
+    <bean name="dbPort" factory-bean="config" factory-method="getDbPort"/>
+
+    <bean name="dbName" factory-bean="config" factory-method="getDbName"/>
+
+    <bean name="dbUser" factory-bean="config" factory-method="getDbUsername"/>
+
+    <bean name="dbPassword" factory-bean="config" factory-method="getDbPassword"/>
+
+    <bean name="ticketValidity" factory-bean="config" factory-method="getTicketValidity"/>
+
+    <bean name="dbUrl" class="java.lang.String" factory-method="format">
+        <constructor-arg index="0" value="jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&amp;serverTimezone=+00:00"/>
+        <constructor-arg index="1" type="java.lang.Object[]">
+            <util:list>
+                <ref bean="dbAddress"/>
+                <ref bean="dbPort"/>
+                <ref bean="dbName"/>
+            </util:list>
+        </constructor-arg>
+    </bean>
+
+    <bean name="connectionFactory" class="de.njsm.stocks.server.v2.db.ConnectionFactoryImpl">
+        <constructor-arg index="0" ref="dbUrl" />
+        <constructor-arg index="1" ref="dbUser" />
+        <constructor-arg index="2" ref="dbPassword" />
+    </bean>
+
+</beans>

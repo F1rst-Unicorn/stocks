@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+       default-lazy-init="true">
+
+    <import resource="v2-beans.xml" />
+
+
+    <bean name="dbHandler" class="de.njsm.stocks.server.v1.internal.db.SqlDatabaseHandler">
+        <constructor-arg index="0" ref="connectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase"/>
+    </bean>
+
+    <bean name="usersManager" class="de.njsm.stocks.server.v1.internal.business.UserManager">
+        <constructor-arg index="0" ref="dbHandler"/>
+        <constructor-arg index="1" ref="authAdmin"/>
+    </bean>
+
+    <bean name="devicesManager" class="de.njsm.stocks.server.v1.internal.business.DevicesManager">
+        <constructor-arg index="0" ref="dbHandler"/>
+        <constructor-arg index="1" ref="authAdmin"/>
+    </bean>
+
+    <bean name="deviceEndPoint" class="de.njsm.stocks.server.v1.endpoints.DeviceEndpoint">
+        <constructor-arg index="0" ref="devicesManager"/>
+        <constructor-arg index="1" ref="dbHandler"/>
+    </bean>
+
+    <bean name="eanEndPoint" class="de.njsm.stocks.server.v1.endpoints.EanEndpoint">
+        <constructor-arg index="0" ref="dbHandler"/>
+    </bean>
+
+    <bean name="foodEndPoint" class="de.njsm.stocks.server.v1.endpoints.FoodEndpoint">
+        <constructor-arg index="0" ref="dbHandler"/>
+    </bean>
+
+    <bean name="foodItemEndPoint" class="de.njsm.stocks.server.v1.endpoints.FoodItemEndpoint">
+        <constructor-arg index="0" ref="dbHandler"/>
+    </bean>
+
+    <bean name="locationEndPoint" class="de.njsm.stocks.server.v1.endpoints.LocationEndpoint">
+        <constructor-arg index="0" ref="dbHandler"/>
+    </bean>
+
+    <bean name="updateEndPoint" class="de.njsm.stocks.server.v1.endpoints.UpdateEndpoint">
+        <constructor-arg index="0" ref="dbHandler"/>
+    </bean>
+
+    <bean name="userEndPoint" class="de.njsm.stocks.server.v1.endpoints.UserEndpoint">
+        <constructor-arg index="0" ref="usersManager"/>
+        <constructor-arg index="1" ref="dbHandler"/>
+    </bean>
+
+    <bean name="userGeneratorEndPoint" class="de.njsm.stocks.server.v1.endpoints.RegistrationEndpoint">
+        <constructor-arg index="0" ref="dbHandler"/>
+        <constructor-arg index="1" ref="ticketAuthoriser"/>
+    </bean>
+
+</beans>

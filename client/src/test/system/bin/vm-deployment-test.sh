@@ -4,10 +4,8 @@ STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
 SERVER="dp-server"
 
-source $STOCKS_ROOT/server/src/test/system/lib/lib.sh
-addDevice
-DEVICE_ID=$(echo $TICKET | sed 's/.*deviceId":\([0-9]*\).*/\1/g')
-TICKET_VALUE=$(echo $TICKET | sed 's/.*ticket":"\([^"]*\).*/\1/g')
+DEVICE_ID=$(cat $STOCKS_ROOT/server-test/target/01_id)
+TICKET_VALUE=$(cat $STOCKS_ROOT/server-test/target/01_ticket)
 
 set -e
 
@@ -23,7 +21,7 @@ FINGERPRINT=$(curl -s http://dp-server:10910/ca | \
         openssl x509 -noout -sha256 -fingerprint | \
         head -n 1 | sed 's/.*=//')
 
-echo -e "dp-server\n\n\n\nJack\nDevice\n1\n$DEVICE_ID\n\
+echo -e "dp-server\n\n\n\nJack\ncli-client\n1\n$DEVICE_ID\n\
 $FINGERPRINT\n\
 $TICKET_VALUE\nquit\n" | \
         ssh dp-client stocks

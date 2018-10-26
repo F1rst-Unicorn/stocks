@@ -23,6 +23,6 @@ public class FoodConsumptionTest {
                 .goToEatSoon()
                 .click(0)
                 .eatAllButOne()
-                .assertItem(0, "Jack", "Device", "31.12.00", "Basement");
+                .assertItem(0, "Jack", "android-client", "31.12.00", "Basement");
     }
 }
