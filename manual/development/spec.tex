@@ -60,11 +60,10 @@ Server database & UTC \\\hline
 
 \chapter{Architecture}
 
-\section{Used Software}
-
-\section{Server}
-
 \section{Client}
+
+Here interesting use cases for clients interacting with the server
+are described.
 
 \subsection{Register New Data}
 
@@ -101,8 +100,6 @@ entered text into the QR code. The order of the values is the same as in the dia
 \subsection{Device removal}
 
 \includegraphics[width=\linewidth]{diagrams/remove-device.png}
-
-\section{Security}
 
 \chapter{REST API}
 
@@ -346,11 +343,15 @@ Query parameters:
 \item \texttt{newName: String}: The new name of the location
 \end{itemize}
 Result: \texttt{application/json}, \texttt{Response}\vspace{7mm}\\
-\texttt{DELETE /v2/location}: Delete a location.\\
+\texttt{DELETE /v2/location}: Delete a location. Deleting a location containing
+food items is restricted by default, raising status code 4. When setting the
+cascade flag, the items stored in that location will be deleted as well.\\
 Query parameters:
 \begin{itemize}
 \item \texttt{id: int}: The ID of the location to rename
 \item \texttt{version: int}: The version to rename
+\item \texttt{cascade: int}: Set to 1 to delete all food items contained
+in the location as well.
 \end{itemize}
 Result: \texttt{application/json}, \texttt{Response}\vspace{7mm}\\
 
