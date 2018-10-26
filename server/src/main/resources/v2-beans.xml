@@ -25,6 +25,7 @@
         <constructor-arg index="0" ref="connectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="dbInsertVisitor" />
+        <constructor-arg index="3" ref="foodItemBackend" />
     </bean>
 
     <bean name="ticketBackend" class="de.njsm.stocks.server.v2.db.TicketBackend">
@@ -77,6 +78,11 @@
         <constructor-arg index="2" ref="foodItemBackend" />
     </bean>
 
+    <bean name="locationManager" class="de.njsm.stocks.server.v2.business.LocationManager">
+        <constructor-arg index="0" ref="locationDbHandler" />
+        <constructor-arg index="1" ref="foodItemBackend" />
+    </bean>
+
     <!-- Web Layer -->
     <bean name="updateEndpoint" class="de.njsm.stocks.server.v2.web.UpdateEndpoint">
         <constructor-arg index="0" ref="updateBackend" />
@@ -87,7 +93,7 @@
     </bean>
 
     <bean name="locationEndpoint" class="de.njsm.stocks.server.v2.web.LocationEndpoint">
-        <constructor-arg index="0" ref="locationDbHandler" />
+        <constructor-arg index="0" ref="locationManager" />
     </bean>
 
     <bean name="eanNumberEndpoint" class="de.njsm.stocks.server.v2.web.EanNumberEndpoint">

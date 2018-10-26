@@ -5,21 +5,28 @@ import de.njsm.stocks.server.v2.business.data.Location;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 
 public class LocationHandlerTest extends DbTestCase {
 
     private LocationHandler uut;
 
+    private FoodItemHandler foodItemHandler;
+
     @Before
     public void setup() {
+        foodItemHandler = Mockito.mock(FoodItemHandler.class);
+
         uut = new LocationHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
-                new InsertVisitor<>());
+                new InsertVisitor<>(),
+                foodItemHandler);
     }
 
     @Test
@@ -84,6 +91,16 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(1, dbData.success().size());
         assertTrue(dbData.success().stream().map(f -> f.name).noneMatch(name -> name.equals("Cupboard")));
+    }
+
+    @Test
+    public void deleteALocationWithItemsInside() {
+        Location data = new Location(1, "Fridge", 0);
+        Mockito.when(foodItemHandler.areItemsStoredIn(any(), any())).thenReturn(true);
+
+        StatusCode result = uut.delete(data);
+
+        assertEquals(StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION, result);
     }
 
     @Test

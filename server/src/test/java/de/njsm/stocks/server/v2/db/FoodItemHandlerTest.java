@@ -2,6 +2,7 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
+import de.njsm.stocks.server.v2.business.data.Location;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import fj.data.Validation;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -212,6 +214,24 @@ public class FoodItemHandlerTest extends DbTestCase {
         assertTrue(items.stream().allMatch(item -> (item.version == 1) == (item.registers == to.id)));
         Mockito.verify(userPresenceChecker).isMissing(eq(from), any());
         Mockito.verify(userPresenceChecker).isMissing(eq(to), any());
+    }
 
+    @Test
+    public void deleteItemsInLocationWorks() {
+        Location input = new Location(1, "", 0);
+
+        StatusCode deleteResult = uut.deleteItemsStoredIn(input);
+
+        Validation<StatusCode, List<FoodItem>> items = uut.get();
+
+        assertEquals(StatusCode.SUCCESS, deleteResult);
+        assertTrue(items.isSuccess());
+        assertEquals(0, items.success().size());
+    }
+
+    @Test
+    public void testingAreItemsStoredIn() {
+        assertTrue(uut.areItemsStoredIn(new Location(1, "", 0), getDSLContext()));
+        assertFalse(uut.areItemsStoredIn(new Location(2, "", 0), getDSLContext()));
     }
 }

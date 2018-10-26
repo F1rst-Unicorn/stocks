@@ -2,13 +2,16 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
+import de.njsm.stocks.server.v2.business.data.Location;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jooq.DSLContext;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
 import java.sql.Timestamp;
@@ -99,6 +102,26 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
 
             return StatusCode.SUCCESS;
         });
+    }
+
+    public StatusCode deleteItemsStoredIn(Location location) {
+        return runCommand(context -> {
+
+            context.deleteFrom(FOOD_ITEM)
+                    .where(FOOD_ITEM.STORED_IN.eq(UInteger.valueOf(location.id)))
+                    .execute();
+
+            return StatusCode.SUCCESS;
+        });
+    }
+
+    boolean areItemsStoredIn(Location location, DSLContext context) {
+        int result = context.select(DSL.count())
+                    .from(FOOD_ITEM)
+                    .where(FOOD_ITEM.STORED_IN.eq(UInteger.valueOf(location.id)))
+                    .fetchOne(0, int.class);
+
+        return result != 0;
     }
 
     @Override

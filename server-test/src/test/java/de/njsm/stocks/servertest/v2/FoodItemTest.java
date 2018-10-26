@@ -115,7 +115,7 @@ public class FoodItemTest {
                 .contentType(ContentType.JSON);
     }
 
-    private static int createNewItem(Instant eatByDate, int storedIn, int ofType) {
+    static int createNewItem(Instant eatByDate, int storedIn, int ofType) {
         addFoodItem(eatByDate, storedIn, ofType);
         return getIdOfItem(eatByDate);
     }

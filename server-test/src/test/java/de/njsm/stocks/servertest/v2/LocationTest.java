@@ -5,6 +5,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 
+import java.time.Instant;
+
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
@@ -57,7 +59,7 @@ public class LocationTest {
         String name = "Location1";
         int id = createNewLocationType(name);
 
-        assertOnDelete(id, 0)
+        assertOnDelete(id, 0, false)
                 .body("status", equalTo(0));
     }
 
@@ -66,22 +68,36 @@ public class LocationTest {
         String name = "Location1";
         int id = createNewLocationType(name);
 
-        assertOnDelete(id, 99)
+        assertOnDelete(id, 99, false)
                 .body("status", equalTo(3));
     }
 
     @Test
     public void deletingUnknownIdIsReported() {
-        assertOnDelete(99999, 0)
+        assertOnDelete(99999, 0, false)
                 .body("status", equalTo(2));
     }
 
-    ValidatableResponse assertOnDelete(int id, int version) {
+    @Test
+    public void deleteCascadinglySucceeds() {
+        int locId = createNewLocationType("cascadingTest");
+        int foodId = FoodTest.createNewFoodType("cascadingTest");
+        FoodItemTest.createNewItem(Instant.EPOCH, locId, foodId);
+
+        assertOnDelete(locId, 0, false)
+                .body("status", equalTo(4));
+
+        assertOnDelete(locId, 0, true)
+                .body("status", equalTo(0));
+    }
+
+    ValidatableResponse assertOnDelete(int id, int version, boolean cascade) {
         return
         given()
                 .log().ifValidationFails()
                 .queryParam("id", id)
-                .queryParam("version", version).
+                .queryParam("version", version)
+                .queryParam("cascade", cascade ? 1 : 0).
         when()
                 .delete(TestSuite.DOMAIN + "/v2/location").
         then()

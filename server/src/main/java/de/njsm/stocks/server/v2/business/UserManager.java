@@ -30,13 +30,8 @@ public class UserManager {
     }
 
     public StatusCode addUser(User u) {
-        Validation<StatusCode, Integer> result = dbHandler.add(u);
-
-        if (result.isSuccess()) {
-            return StatusCode.SUCCESS;
-        } else {
-            return result.fail();
-        }
+        return dbHandler.add(u)
+                .toEither().left().orValue(StatusCode.SUCCESS);
     }
 
     public Validation<StatusCode, List<User>> get() {

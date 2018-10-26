@@ -1,5 +1,8 @@
 package de.njsm.stocks.server.v2.db;
 
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,6 +39,10 @@ public abstract class DbTestCase {
 
     protected ConnectionFactory getConnectionFactory() {
         return factory;
+    }
+
+    protected DSLContext getDSLContext() {
+        return DSL.using(connection, SQLDialect.MARIADB);
     }
 
     protected String getNewResourceIdentifier() {
