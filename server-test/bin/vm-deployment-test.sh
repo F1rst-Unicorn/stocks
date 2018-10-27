@@ -2,6 +2,8 @@
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 
+set -e
+
 rm -rf $STOCKS_ROOT/server/target/server.log
 
 cd "$STOCKS_ROOT/deploy-server"
