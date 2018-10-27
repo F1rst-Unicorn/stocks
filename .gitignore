@@ -23,3 +23,7 @@ build
 # test files
 client/src/test/system/resources
 server-test/keystore_test
+
+# Ansible
+*.retry
+cache

@@ -22,7 +22,7 @@ backup=("etc/$pkgname/stocks.properties"
 
 build() {
     cd "$srcdir"
-    
+
     cd server
     mvn -Dmaven.test.skip=true clean package
     cd ..
@@ -30,29 +30,28 @@ build() {
 
 package() {
     cd "$srcdir"
-    
+
     install -D -m 444 deploy-server/config/schema.sql                   $pkgdir/usr/share/$pkgname/schema.sql
     install -D -m 444 deploy-server/config/db-migration-2.1.0.0-1.sql   $pkgdir/usr/share/$pkgname/db-migration.sql
     install -D -m 444 deploy-server/config/nginx.conf                   $pkgdir/usr/share/$pkgname/nginx.example.conf
     install -D -m 444 deploy-server/config/tomcat-server.xml            $pkgdir/usr/share/$pkgname/server.xml
     install -D -m 444 deploy-server/config/openssl.cnf                  $pkgdir/usr/share/$pkgname/openssl.cnf
     install -D -m 444 deploy-server/config/openssl_intermediate.cnf     $pkgdir/usr/share/$pkgname/openssl_intermediate.cnf
-    
-    mkdir -p $pkgdir/usr/share/$pkgname/root/CA/intermediate
+
     mkdir -p $pkgdir/usr/share/$pkgname/root/nginx
-    
+
     install -D -m 555 deploy-server/config/setup-ca     $pkgdir/usr/lib/$pkgname/setup-ca
     install -D -m 555 deploy-server/config/nginx-reload $pkgdir/usr/lib/$pkgname/nginx-reload
     install -D -m 444 server/target/server-*.war        $pkgdir/usr/lib/$pkgname/server.war
 
     install -D -m 644 deploy-server/config/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
-    
+
     install -D -m 444 README.md                                     $pkgdir/usr/share/doc/$pkgname/README.md
     install -D -m 444 manual/server-admin/server-installation.md    $pkgdir/usr/share/doc/$pkgname/
     install -D -m 444 manual/server-admin/maintainance.md           $pkgdir/usr/share/doc/$pkgname/
-    
+
     install -D -m 444 LICENSE.md                             $pkgdir/usr/share/licenses/$pkgname/LICENSE.md
-    
+
     mkdir -p $pkgdir/var/log/$pkgname
     touch $pkgdir/var/log/$pkgname/stocks.log
 }
