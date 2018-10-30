@@ -5,50 +5,46 @@ import java.sql.*;
 class SampleData {
 
     private static final String[] sampleDbData = {
-            "SET FOREIGN_KEY_CHECKS = 0",
+            "DELETE FROM \"Food_item\"",
+            "DELETE FROM \"Ticket\"",
+            "DELETE FROM \"User_device\"",
+            "DELETE FROM \"EAN_number\"",
+            "DELETE FROM \"Food\"",
+            "DELETE FROM \"User\"",
+            "DELETE FROM \"Location\"",
 
-            "DELETE FROM Food",
-            "DELETE FROM Food_item",
-            "DELETE FROM User",
-            "DELETE FROM User_device",
-            "DELETE FROM Ticket",
-            "DELETE FROM Location",
-            "DELETE FROM EAN_number",
+            "ALTER SEQUENCE \"Food_item_ID_seq\" RESTART",
+            "ALTER SEQUENCE \"Food_ID_seq\" RESTART",
+            "ALTER SEQUENCE \"User_device_ID_seq\" RESTART",
+            "ALTER SEQUENCE \"User_ID_seq\" RESTART",
+            "ALTER SEQUENCE \"Location_ID_seq\" RESTART",
+            "ALTER SEQUENCE \"Ticket_ID_seq\" RESTART",
+            "ALTER SEQUENCE \"EAN_number_ID_seq\" RESTART",
 
-            "ALTER TABLE Food AUTO_INCREMENT = 1",
-            "ALTER TABLE Food_item AUTO_INCREMENT = 1",
-            "ALTER TABLE User AUTO_INCREMENT = 1",
-            "ALTER TABLE User_device AUTO_INCREMENT = 1",
-            "ALTER TABLE Ticket AUTO_INCREMENT = 1",
-            "ALTER TABLE Location AUTO_INCREMENT = 1",
-            "ALTER TABLE EAN_number AUTO_INCREMENT = 1",
-
-            "INSERT INTO Food (ID, name) VALUES " +
-                    "(1, 'Carrot'), " +
-                    "(2, 'Beer'), " +
-                    "(3, 'Cheese')",
-            "INSERT INTO Location (ID, name) VALUES " +
-                    "(1, 'Fridge'), " +
-                    "(2, 'Cupboard')",
-            "INSERT INTO User (ID, name) VALUES " +
-                    "(1, 'Bob'), " +
-                    "(2, 'Alice'), " +
-                    "(3, 'Jack')",
-            "INSERT INTO User_device (ID, name, belongs_to) VALUES " +
-                    "(1, 'mobile', 1), " +
-                    "(2, 'mobile2', 1), " +
-                    "(3, 'laptop', 2), " +
-                    "(4, 'pending_device', 2)",
-            "INSERT INTO Food_item (ID, eat_by, registers, buys, stored_in, of_type) VALUES" +
-                    "(1, '1970-01-01 00:00:00', 3, 2, 1, 2)," +
-                    "(2, '1970-01-01 00:00:00', 3, 2, 1, 2)," +
-                    "(3, '1970-01-01 00:00:00', 3, 2, 1, 2)",
-            "INSERT INTO Ticket (ticket, belongs_device) VALUES " +
+            "INSERT INTO \"Food\" (\"name\") VALUES " +
+                    "('Carrot'), " +
+                    "('Beer'), " +
+                    "('Cheese')",
+            "INSERT INTO \"Location\" (\"name\") VALUES " +
+                    "('Fridge'), " +
+                    "('Cupboard')",
+            "INSERT INTO \"User\" (\"name\") VALUES " +
+                    "('Bob'), " +
+                    "('Alice'), " +
+                    "('Jack')",
+            "INSERT INTO \"User_device\" (\"name\", \"belongs_to\") VALUES " +
+                    "('mobile', 1), " +
+                    "('mobile2', 1), " +
+                    "('laptop', 2), " +
+                    "('pending_device', 2)",
+            "INSERT INTO \"Food_item\" (\"eat_by\", \"registers\", \"buys\", \"stored_in\", \"of_type\") VALUES" +
+                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2)," +
+                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2)," +
+                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2)",
+            "INSERT INTO \"Ticket\" (\"ticket\", \"belongs_device\") VALUES " +
                     "('AAAA', 3)",
-            "INSERT INTO EAN_number (ID, number, identifies) VALUES " +
-                    "(1, 'EAN BEER', 2)",
-
-            "SET FOREIGN_KEY_CHECKS = 1",
+            "INSERT INTO \"EAN_number\" (\"number\", \"identifies\") VALUES " +
+                    "('EAN BEER', 2)",
     };
 
     static void insertSampleData(Connection c) throws SQLException {

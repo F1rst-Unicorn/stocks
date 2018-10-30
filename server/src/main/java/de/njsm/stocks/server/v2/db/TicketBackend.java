@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.Record4;
 import org.jooq.Result;
-import org.jooq.types.UInteger;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -34,7 +33,7 @@ public class TicketBackend extends FailSafeDatabaseHandler {
         return runCommand(context -> {
             context.insertInto(TICKET)
                     .columns(TICKET.BELONGS_DEVICE, TICKET.CREATED_ON, TICKET.TICKET_)
-                    .values(UInteger.valueOf(device.id), new Timestamp(Instant.now().toEpochMilli()), ticket)
+                    .values(device.id, new Timestamp(Instant.now().toEpochMilli()), ticket)
                     .execute();
             return StatusCode.SUCCESS;
         });
@@ -54,9 +53,9 @@ public class TicketBackend extends FailSafeDatabaseHandler {
                 TicketRecord record = dbResult.get(0);
 
                 return Validation.success(new ServerTicket(
-                        record.getId().intValue(),
+                        record.getId(),
                         new Date(record.getCreatedOn().toInstant().toEpochMilli()),
-                        record.getBelongsDevice().intValue(),
+                        record.getBelongsDevice(),
                         record.getTicket()));
             }
         });
@@ -65,7 +64,7 @@ public class TicketBackend extends FailSafeDatabaseHandler {
     public StatusCode removeTicket(ServerTicket ticket) {
         return runCommand(context -> {
             int changedItems = context.deleteFrom(TICKET)
-                    .where(TICKET.ID.eq(UInteger.valueOf(ticket.id)))
+                    .where(TICKET.ID.eq(ticket.id))
                     .execute();
 
             if (changedItems == 1) {
@@ -79,7 +78,7 @@ public class TicketBackend extends FailSafeDatabaseHandler {
 
     public Validation<StatusCode, Principals> getPrincipalsForTicket(String token) {
         return runFunction(context -> {
-            Result<Record4<UInteger, String, UInteger, String>> dbResult = context.select(USER_DEVICE.ID, USER_DEVICE.NAME, USER.ID, USER.NAME)
+            Result<Record4<Integer, String, Integer, String>> dbResult = context.select(USER_DEVICE.ID, USER_DEVICE.NAME, USER.ID, USER.NAME)
                     .from(TICKET.join(USER_DEVICE
                                         .join(USER).on(USER.ID.eq(USER_DEVICE.BELONGS_TO)))
                                 .on(TICKET.BELONGS_DEVICE.eq(USER_DEVICE.ID)))
@@ -91,12 +90,12 @@ public class TicketBackend extends FailSafeDatabaseHandler {
                 LOG.warn("Not found");
                 return Validation.fail(StatusCode.NOT_FOUND);
             } else {
-                Record4<UInteger, String, UInteger, String> record = dbResult.get(0);
+                Record4<Integer, String, Integer, String> record = dbResult.get(0);
                 return Validation.success(new Principals(
                         record.component4(),
                         record.component2(),
-                        record.component3().intValue(),
-                        record.component1().intValue()));
+                        record.component3(),
+                        record.component1()));
             }
         });
     }

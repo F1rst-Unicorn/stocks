@@ -16,8 +16,8 @@ log4j2.xml. The server refreshes the config every 30 seconds
 so the log level can be adjusted without restarting the server.
 
 The config can be reset by removing the directory
-/usr/share/tomcat8/webapps/server (but not the symlinks) and restarting tomcat
-to redeploy the webapp.
+/usr/share/tomcat8/webapps/server (but not the symlinks). Note that during
+redeployment the webapp might be subject to downtime.
 
 ## Stocks config file
 
@@ -29,7 +29,7 @@ any time. A restart of the tomcat container is required to apply the changes.
 If for some reason the server has to be migrated to another instance the
 following system parts must be backed up:
 
- * MariaDB stocks databas
+ * PostgreSQL stocks database
  * Stocks CA at /usr/share/stocks-server/root/CA/
 
 In addition to that the following files should be saved if you modified them:

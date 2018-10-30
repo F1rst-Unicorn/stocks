@@ -4,7 +4,6 @@ import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.types.UInteger;
 
 import java.util.function.Function;
 
@@ -27,19 +26,19 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
     @Override
     protected Function<UserRecord, User> getDtoMap() {
         return record -> new User(
-                record.getId().intValue(),
-                record.getVersion().intValue(),
+                record.getId(),
+                record.getVersion(),
                 record.getName()
         );
     }
 
     @Override
-    protected TableField<UserRecord, UInteger> getIdField() {
+    protected TableField<UserRecord, Integer> getIdField() {
         return USER.ID;
     }
 
     @Override
-    protected TableField<UserRecord, UInteger> getVersionField() {
+    protected TableField<UserRecord, Integer> getVersionField() {
         return USER.VERSION;
     }
 }

@@ -18,7 +18,7 @@ public abstract class BaseSqlDatabaseHandler {
         this.connectionFactory = connectionFactory;
 
         try {
-            Class.forName("org.mariadb.jdbc.Driver");
+            Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             LOG.error("DB driver not present", e);
         }

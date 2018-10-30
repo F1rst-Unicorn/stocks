@@ -4,7 +4,6 @@ import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.VersionedData;
 import org.jooq.TableField;
 import org.jooq.UpdatableRecord;
-import org.jooq.types.UInteger;
 
 public abstract class CrudRenameDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData> extends CrudDatabaseHandler<T, R> {
 
@@ -23,8 +22,9 @@ public abstract class CrudRenameDatabaseHandler<T extends UpdatableRecord<T>, R 
             int changedItems = context.update(getTable())
                     .set(getNameColumn(), newName)
                     .set(getVersionField(), getVersionField().add(1))
-                    .where(getIdField().eq(UInteger.valueOf(item.id))
-                            .and(getVersionField().eq(UInteger.valueOf(item.version))))
+                    .where(getIdField().eq(item.id)
+                            .and(getVersionField().eq(item.version)))
+                            .and(getVersionField().eq(item.version))
                     .execute();
 
             if (changedItems == 1)

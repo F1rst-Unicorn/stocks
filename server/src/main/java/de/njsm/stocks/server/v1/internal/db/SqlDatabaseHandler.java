@@ -1,9 +1,9 @@
 package de.njsm.stocks.server.v1.internal.db;
 
-import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.common.data.visitor.AddStatementVisitor;
-import de.njsm.stocks.common.data.visitor.SqlStatementFillerVisitor;
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v1.internal.data.*;
+import de.njsm.stocks.server.v1.internal.data.visitor.AddStatementVisitor;
+import de.njsm.stocks.server.v1.internal.data.visitor.SqlStatementFillerVisitor;
 import de.njsm.stocks.server.v2.db.ConnectionFactory;
 import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
 
@@ -30,7 +30,7 @@ public class SqlDatabaseHandler extends FailSafeDatabaseHandler implements de.nj
             PreparedStatement stmt = con.prepareStatement(addStatementVisitor.visit(d, null));
             fillerVisitor.visit(d, stmt);
             stmt.execute();
-            ResultSet keys = stmt.getGeneratedKeys();
+            ResultSet keys = stmt.getResultSet();
             keys.next();
             return keys.getInt(1);
         });
@@ -67,7 +67,7 @@ public class SqlDatabaseHandler extends FailSafeDatabaseHandler implements de.nj
     @Override
     public List<Integer> getDeviceIdsOfUser(User u) {
         return runSqlOperation(con -> {
-            String getDevicesQuery = "SELECT * FROM User_device WHERE belongs_to=?";
+            String getDevicesQuery = "SELECT * FROM \"User_device\" WHERE \"belongs_to\"=?";
             PreparedStatement sqlQuery = con.prepareStatement(getDevicesQuery);
             List<Integer> certificateList = new ArrayList<>();
             sqlQuery.setInt(1, u.id);
@@ -82,18 +82,18 @@ public class SqlDatabaseHandler extends FailSafeDatabaseHandler implements de.nj
     @Override
     public void moveItem(FoodItem item, int loc) {
         runSqlOperation(con -> {
-                String sqlString = "UPDATE Food_item SET stored_in=? WHERE ID=?";
+                String sqlString = "UPDATE \"Food_item\" SET \"stored_in\"=? WHERE \"ID\"=?";
                 PreparedStatement stmt = con.prepareStatement(sqlString);
                 stmt.setInt(1, loc);
                 stmt.setInt(2, item.id);
-                stmt.executeQuery();
+                stmt.executeUpdate();
         });
     }
 
     @Override
     public ServerTicket getTicket(String ticket) {
         return runSqlOperation(con -> {
-            String query = "SELECT * FROM Ticket WHERE ticket=?";
+            String query = "SELECT * FROM \"Ticket\" WHERE \"ticket\"=?";
             PreparedStatement sqlQuery = con.prepareStatement(query);
             sqlQuery.setString(1, ticket);
 
@@ -113,9 +113,9 @@ public class SqlDatabaseHandler extends FailSafeDatabaseHandler implements de.nj
     @Override
     public Principals getPrincipalsForTicket(String ticket) {
         return runSqlOperation(con -> {
-            String getTicketQuery = "SELECT d.`ID` as did, d.name as dname, u.`ID` as uid, u.name as uname " +
-                    "FROM Ticket t, User u, User_device d " +
-                    "WHERE ticket=? AND t.belongs_device=d.`ID` AND d.belongs_to=u.`ID`";
+            String getTicketQuery = "SELECT d.\"ID\" as did, d.name as dname, u.\"ID\" as uid, u.name as uname " +
+                    "FROM \"Ticket\" t, \"User\" u, \"User_device\" d " +
+                    "WHERE \"ticket\"=? AND t.\"belongs_device\"=d.\"ID\" AND d.\"belongs_to\"=u.\"ID\"";
             PreparedStatement sqlQuery = con.prepareStatement(getTicketQuery);
             sqlQuery.setString(1, ticket);
 

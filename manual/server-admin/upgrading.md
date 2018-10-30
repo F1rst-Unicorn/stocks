@@ -11,6 +11,20 @@ If the instruction is to simply perform an upgrade via the distribution's
 package manager this means that the tomcat container has to be restarted after
 installation.
 
+## 3.0.0.0-1
+
+This version switches from MariaDB to PostgreSQL. To migrate your data perform
+the following steps: 
+
+* Stop the tomcat application server
+* Perform the pacman upgrade
+* Setup an empty PostgreSQL database for stocks
+* Import /usr/share/stocks-server/schema.sql
+* Edit /etc/stocks-server/stocks.properties and add the new configuration
+  options for your database instance.
+* Run /usr/lib/stocks-server/migrate-to-postgres
+* Start the tomcat application server
+
 ## 2.1.0.0-1
 
 Changes in the database model require a database migration. Shut down the

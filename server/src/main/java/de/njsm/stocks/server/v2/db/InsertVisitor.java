@@ -1,12 +1,13 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.data.*;
-import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.visitor.BaseVisitor;
-import org.jooq.*;
-import org.jooq.types.UInteger;
+import org.jooq.InsertOnDuplicateStep;
+import org.jooq.InsertSetStep;
+import org.jooq.Record;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.*;
 
@@ -15,19 +16,19 @@ public class InsertVisitor<T extends Record> extends BaseVisitor<InsertSetStep<T
     @Override
     public InsertOnDuplicateStep<T> food(Food f, InsertSetStep<T> arg) {
         return arg.columns(FOOD.NAME, FOOD.VERSION)
-                .values(f.name, UInteger.valueOf(f.version));
+                .values(f.name, f.version);
     }
 
     @Override
     public InsertOnDuplicateStep<T> location(Location l, InsertSetStep<T> arg) {
         return arg.columns(LOCATION.NAME, LOCATION.VERSION)
-                .values(l.name, UInteger.valueOf(l.version));
+                .values(l.name, l.version);
     }
 
     @Override
     public InsertOnDuplicateStep<T> eanNumber(EanNumber n, InsertSetStep<T> arg) {
         return arg.columns(EAN_NUMBER.NUMBER, EAN_NUMBER.IDENTIFIES)
-                .values(n.eanCode, UInteger.valueOf(n.identifiesFood));
+                .values(n.eanCode, n.identifiesFood);
     }
 
     @Override
@@ -37,17 +38,17 @@ public class InsertVisitor<T extends Record> extends BaseVisitor<InsertSetStep<T
                 FOOD_ITEM.OF_TYPE,
                 FOOD_ITEM.REGISTERS,
                 FOOD_ITEM.BUYS)
-                .values(new Timestamp(i.eatByDate.toEpochMilli()),
-                        UInteger.valueOf(i.storedIn),
-                        UInteger.valueOf(i.ofType),
-                        UInteger.valueOf(i.registers),
-                        UInteger.valueOf(i.buys));
+                .values(OffsetDateTime.from(i.eatByDate.atOffset(ZoneOffset.UTC)),
+                        i.storedIn,
+                        i.ofType,
+                        i.registers,
+                        i.buys);
     }
 
     @Override
     public InsertOnDuplicateStep<T> userDevice(UserDevice userDevice, InsertSetStep<T> input) {
         return input.columns(USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO)
-                .values(userDevice.name, UInteger.valueOf(userDevice.userId));
+                .values(userDevice.name, userDevice.userId);
     }
 
     @Override

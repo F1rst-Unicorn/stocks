@@ -30,9 +30,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>1.4.2</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.5</version>
         </dependency>
 
         <dependency>
@@ -165,12 +165,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.threeten</groupId>
-            <artifactId>threetenbp</artifactId>
-            <version>1.3.6</version>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
@@ -192,22 +186,32 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <de.njsm.stocks.internal.db.databaseAddress>localhost</de.njsm.stocks.internal.db.databaseAddress>
-                <de.njsm.stocks.internal.db.databasePort>3306</de.njsm.stocks.internal.db.databasePort>
-                <de.njsm.stocks.internal.db.databaseName>stocks</de.njsm.stocks.internal.db.databaseName>
-                <de.njsm.stocks.internal.db.databaseUsername>server</de.njsm.stocks.internal.db.databaseUsername>
-                <de.njsm.stocks.internal.db.databasePassword>linux</de.njsm.stocks.internal.db.databasePassword>
+                <de.njsm.stocks.server.v2.db.host>localhost</de.njsm.stocks.server.v2.db.host>
+                <de.njsm.stocks.server.v2.db.port>5432</de.njsm.stocks.server.v2.db.port>
+                <de.njsm.stocks.server.v2.db.name>stocks</de.njsm.stocks.server.v2.db.name>
+                <de.njsm.stocks.server.v2.db.postgres.user>stocks</de.njsm.stocks.server.v2.db.postgres.user>
+                <de.njsm.stocks.server.v2.db.postgres.password>linux</de.njsm.stocks.server.v2.db.postgres.password>
+                <de.njsm.stocks.server.v2.db.postgres.ssl />
+                <de.njsm.stocks.server.v2.db.postgres.sslmode />
+                <de.njsm.stocks.server.v2.db.postgres.sslcert />
+                <de.njsm.stocks.server.v2.db.postgres.sslkey />
+                <de.njsm.stocks.server.v2.db.postgres.sslrootcert />
                 <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
             </properties>
         </profile>
         <profile>
             <id>teamcity</id>
             <properties>
-                <de.njsm.stocks.internal.db.databaseAddress>localhost</de.njsm.stocks.internal.db.databaseAddress>
-                <de.njsm.stocks.internal.db.databasePort>3306</de.njsm.stocks.internal.db.databasePort>
-                <de.njsm.stocks.internal.db.databaseName>stocks</de.njsm.stocks.internal.db.databaseName>
-                <de.njsm.stocks.internal.db.databaseUsername>server</de.njsm.stocks.internal.db.databaseUsername>
-                <de.njsm.stocks.internal.db.databasePassword>linux</de.njsm.stocks.internal.db.databasePassword>
+                <de.njsm.stocks.server.v2.db.host>db.j.njsm.de</de.njsm.stocks.server.v2.db.host>
+                <de.njsm.stocks.server.v2.db.port>5432</de.njsm.stocks.server.v2.db.port>
+                <de.njsm.stocks.server.v2.db.name>stocks-teamcity-rivendell</de.njsm.stocks.server.v2.db.name>
+                <de.njsm.stocks.server.v2.db.postgres.user>stocks-teamcity-rivendell</de.njsm.stocks.server.v2.db.postgres.user>
+                <de.njsm.stocks.server.v2.db.postgres.password>linux</de.njsm.stocks.server.v2.db.postgres.password>
+                <de.njsm.stocks.server.v2.db.postgres.ssl>true</de.njsm.stocks.server.v2.db.postgres.ssl>
+                <de.njsm.stocks.server.v2.db.postgres.sslmode>verify-ca</de.njsm.stocks.server.v2.db.postgres.sslmode>
+                <de.njsm.stocks.server.v2.db.postgres.sslcert>${user.home}/ssl/stocks@rivendell.j.njsm.de.crt</de.njsm.stocks.server.v2.db.postgres.sslcert>
+                <de.njsm.stocks.server.v2.db.postgres.sslkey>${user.home}/ssl/stocks@rivendell.j.njsm.de.key</de.njsm.stocks.server.v2.db.postgres.sslkey>
+                <de.njsm.stocks.server.v2.db.postgres.sslrootcert>${user.home}/ssl/ca.crt</de.njsm.stocks.server.v2.db.postgres.sslrootcert>
                 <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
             </properties>
         </profile>
@@ -231,11 +235,16 @@
                 <version>2.5</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <de.njsm.stocks.internal.db.databaseAddress>${de.njsm.stocks.internal.db.databaseAddress}</de.njsm.stocks.internal.db.databaseAddress>
-                        <de.njsm.stocks.internal.db.databasePort>${de.njsm.stocks.internal.db.databasePort}</de.njsm.stocks.internal.db.databasePort>
-                        <de.njsm.stocks.internal.db.databaseName>${de.njsm.stocks.internal.db.databaseName}</de.njsm.stocks.internal.db.databaseName>
-                        <de.njsm.stocks.internal.db.databaseUsername>${de.njsm.stocks.internal.db.databaseUsername}</de.njsm.stocks.internal.db.databaseUsername>
-                        <de.njsm.stocks.internal.db.databasePassword>${de.njsm.stocks.internal.db.databasePassword}</de.njsm.stocks.internal.db.databasePassword>
+                        <de.njsm.stocks.server.v2.db.host>${de.njsm.stocks.server.v2.db.host}</de.njsm.stocks.server.v2.db.host>
+                        <de.njsm.stocks.server.v2.db.port>${de.njsm.stocks.server.v2.db.port}</de.njsm.stocks.server.v2.db.port>
+                        <de.njsm.stocks.server.v2.db.name>${de.njsm.stocks.server.v2.db.name}</de.njsm.stocks.server.v2.db.name>
+                        <de.njsm.stocks.server.v2.db.postgres.user>${de.njsm.stocks.server.v2.db.postgres.user}</de.njsm.stocks.server.v2.db.postgres.user>
+                        <de.njsm.stocks.server.v2.db.postgres.password>${de.njsm.stocks.server.v2.db.postgres.password}</de.njsm.stocks.server.v2.db.postgres.password>
+                        <de.njsm.stocks.server.v2.db.postgres.ssl>${de.njsm.stocks.server.v2.db.postgres.ssl}</de.njsm.stocks.server.v2.db.postgres.ssl>
+                        <de.njsm.stocks.server.v2.db.postgres.sslmode>${de.njsm.stocks.server.v2.db.postgres.sslmode}</de.njsm.stocks.server.v2.db.postgres.sslmode>
+                        <de.njsm.stocks.server.v2.db.postgres.sslcert>${de.njsm.stocks.server.v2.db.postgres.sslcert}</de.njsm.stocks.server.v2.db.postgres.sslcert>
+                        <de.njsm.stocks.server.v2.db.postgres.sslkey>${de.njsm.stocks.server.v2.db.postgres.sslkey}</de.njsm.stocks.server.v2.db.postgres.sslkey>
+                        <de.njsm.stocks.server.v2.db.postgres.sslrootcert>${de.njsm.stocks.server.v2.db.postgres.sslrootcert}</de.njsm.stocks.server.v2.db.postgres.sslrootcert>
                         <de.njsm.stocks.internal.ticketValidityTimeInMinutes>${de.njsm.stocks.internal.ticketValidityTimeInMinutes}</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
                     </systemPropertyVariables>
                 </configuration>
@@ -254,17 +263,51 @@
                 </executions>
                 <configuration>
                     <jdbc>
-                        <driver>org.mariadb.jdbc.Driver</driver>
-                        <url>jdbc:mariadb://${de.njsm.stocks.internal.db.databaseAddress}:${de.njsm.stocks.internal.db.databasePort}/${de.njsm.stocks.internal.db.databaseName}</url>
-                        <user>${de.njsm.stocks.internal.db.databaseUsername}</user>
-                        <password>${de.njsm.stocks.internal.db.databasePassword}</password>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://${de.njsm.stocks.server.v2.db.host}:${de.njsm.stocks.server.v2.db.port}/${de.njsm.stocks.server.v2.db.name}</url>
+                        <properties>
+                            <property>
+                                <key>user</key>
+                                <value>${de.njsm.stocks.server.v2.db.postgres.user}</value>
+                            </property>
+                            <property>
+                                <key>password</key>
+                                <value>${de.njsm.stocks.server.v2.db.postgres.password}</value>
+                            </property>
+                            <property>
+                                <key>ssl</key>
+                                <value>${de.njsm.stocks.server.v2.db.postgres.ssl}</value>
+                            </property>
+                            <property>
+                                <key>sslmode</key>
+                                <value>${de.njsm.stocks.server.v2.db.postgres.sslmode}</value>
+                            </property>
+                            <property>
+                                <key>sslcert</key>
+                                <value>${de.njsm.stocks.server.v2.db.postgres.sslcert}</value>
+                            </property>
+                            <property>
+                                <key>sslkey</key>
+                                <value>${de.njsm.stocks.server.v2.db.postgres.sslkey}</value>
+                            </property>
+                            <property>
+                                <key>sslrootcert</key>
+                                <value>${de.njsm.stocks.server.v2.db.postgres.sslrootcert}</value>
+                            </property>
+                        </properties>
                     </jdbc>
                     <generator>
                         <name>org.jooq.codegen.JavaGenerator</name>
                         <database>
-                            <name>org.jooq.meta.mariadb.MariaDBDatabase</name>
-                            <inputSchema>${de.njsm.stocks.internal.db.databaseName}</inputSchema>
+                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+                            <inputSchema>public</inputSchema>
                             <includes>.*</includes>
+                            <properties>
+                                <property>
+                                    <key>dialect</key>
+                                    <value>POSTGRES_10</value>
+                                </property>
+                            </properties>
                         </database>
                         <target>
                             <packageName>de.njsm.stocks.server.v2.db.jooq</packageName>

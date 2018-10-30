@@ -1,8 +1,8 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.common.data.Data;
-import de.njsm.stocks.common.data.EanNumber;
-import de.njsm.stocks.common.data.EanNumberFactory;
+import de.njsm.stocks.server.v1.internal.data.Data;
+import de.njsm.stocks.server.v1.internal.data.EanNumber;
+import de.njsm.stocks.server.v1.internal.data.EanNumberFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import org.junit.Assert;
 import org.junit.Before;

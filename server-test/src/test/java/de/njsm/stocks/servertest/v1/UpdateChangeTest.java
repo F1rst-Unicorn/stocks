@@ -19,7 +19,8 @@ public class UpdateChangeTest {
         changeLocations();
         String youngerDate = getLocationChangeDate();
 
-        assertTrue(olderDate.compareTo(youngerDate) < 0);
+        assertTrue(olderDate + " is not older than " + youngerDate,
+                olderDate.compareTo(youngerDate) < 0);
     }
 
     private void changeLocations() {
@@ -29,7 +30,6 @@ public class UpdateChangeTest {
         when()
                 .put(TestSuite.DOMAIN + "/location").
         then()
-                .log().ifValidationFails()
                 .statusCode(204);
         given()
                 .contentType(ContentType.JSON)
@@ -37,7 +37,6 @@ public class UpdateChangeTest {
         when()
                 .put(TestSuite.DOMAIN + "/location/remove").
         then()
-                .log().ifValidationFails()
                 .statusCode(204);
     }
 
@@ -46,13 +45,12 @@ public class UpdateChangeTest {
         when()
                 .get(TestSuite.DOMAIN + "/update").
         then()
-                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("", iterableWithSize(6))
                 .extract()
                 .response();
 
-        return response.jsonPath().getString("[0].lastUpdate");
+        return response.jsonPath().getString("findAll{ it.table == 'Location' }[0].lastUpdate");
     }
 }

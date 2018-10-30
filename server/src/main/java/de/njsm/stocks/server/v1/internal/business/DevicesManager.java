@@ -1,9 +1,9 @@
 package de.njsm.stocks.server.v1.internal.business;
 
-import de.njsm.stocks.common.data.Data;
-import de.njsm.stocks.common.data.Ticket;
-import de.njsm.stocks.common.data.UserDevice;
-import de.njsm.stocks.common.data.UserDeviceFactory;
+import de.njsm.stocks.server.v1.internal.data.Data;
+import de.njsm.stocks.server.v1.internal.data.Ticket;
+import de.njsm.stocks.server.v1.internal.data.UserDevice;
+import de.njsm.stocks.server.v1.internal.data.UserDeviceFactory;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;

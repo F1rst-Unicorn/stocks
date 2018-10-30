@@ -1,8 +1,8 @@
 package de.njsm.stocks.server.v1.internal.business;
 
-import de.njsm.stocks.common.data.Data;
-import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.common.data.UserFactory;
+import de.njsm.stocks.server.v1.internal.data.Data;
+import de.njsm.stocks.server.v1.internal.data.User;
+import de.njsm.stocks.server.v1.internal.data.UserFactory;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import org.junit.Before;

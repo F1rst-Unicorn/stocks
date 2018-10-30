@@ -18,9 +18,9 @@ public class ConfigTest {
         p.put(DB_ADDRESS_KEY, "localhost");
         p.put(DB_PORT_KEY, "1234");
         p.put(DB_NAME_KEY, "name");
-        p.put(DB_USERNAME_KEY, "username");
-        p.put(DB_PASSWORD_KEY, "password");
         p.put(DB_VALIDITY_KEY, "10");
+        p.put(POSTGRESQL_CONFIG_PREFIX + "user", "user");
+        p.put(POSTGRESQL_CONFIG_PREFIX + "password", "password");
     }
 
     @Test
@@ -30,8 +30,8 @@ public class ConfigTest {
         assertEquals("localhost", uut.getDbAddress());
         assertEquals("1234", uut.getDbPort());
         assertEquals("name", uut.getDbName());
-        assertEquals("username", uut.getDbUsername());
-        assertEquals("password", uut.getDbPassword());
+        assertEquals("user", uut.getDbProperties().getProperty("user"));
+        assertEquals("password", uut.getDbProperties().getProperty("password"));
         assertEquals(10, uut.getTicketValidity());
     }
 

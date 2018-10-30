@@ -1,12 +1,12 @@
 package de.njsm.stocks.server.v1.internal.db;
 
-import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.server.v1.internal.data.*;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.DbTestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,7 +6,6 @@ import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.types.UInteger;
 
 import java.util.function.Function;
 
@@ -51,8 +50,8 @@ public class LocationHandler extends CrudRenameDatabaseHandler<LocationRecord, L
 
     private StatusCode deleteInternally(Location item, DSLContext context) {
         int changedItems = context.deleteFrom(getTable())
-                .where(getIdField().eq(UInteger.valueOf(item.id))
-                        .and(getVersionField().eq(UInteger.valueOf(item.version))))
+                .where(getIdField().eq(item.id)
+                        .and(getVersionField().eq(item.version)))
                 .execute();
 
         if (changedItems == 1)
@@ -67,12 +66,12 @@ public class LocationHandler extends CrudRenameDatabaseHandler<LocationRecord, L
     }
 
     @Override
-    protected TableField<LocationRecord, UInteger> getIdField() {
+    protected TableField<LocationRecord, Integer> getIdField() {
         return LOCATION.ID;
     }
 
     @Override
-    protected TableField<LocationRecord, UInteger> getVersionField() {
+    protected TableField<LocationRecord, Integer> getVersionField() {
         return LOCATION.VERSION;
     }
 
@@ -84,9 +83,9 @@ public class LocationHandler extends CrudRenameDatabaseHandler<LocationRecord, L
     @Override
     protected Function<LocationRecord, Location> getDtoMap() {
         return cursor -> new Location(
-                cursor.getId().intValue(),
+                cursor.getId(),
                 cursor.getName(),
-                cursor.getVersion().intValue()
+                cursor.getVersion()
         );
     }
 

@@ -2,6 +2,7 @@ package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.RestAssured;
+import io.restassured.config.LogConfig;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.bouncycastle.operator.ContentSigner;
@@ -49,7 +50,9 @@ public class SetupTest {
         keystore = getFirstKeystore();
         RestAssured.config = RestAssured.config().sslConfig(sslConfig()
                 .allowAllHostnames()
-                .trustStore(keystore));
+                .trustStore(keystore))
+                .logConfig(LogConfig.logConfig()
+                        .enableLoggingOfRequestAndResponseIfValidationFails());
     }
 
     @After
@@ -57,7 +60,10 @@ public class SetupTest {
         RestAssured.config = RestAssured.config().sslConfig(sslConfig()
                 .allowAllHostnames()
                 .trustStore(keystore)
-                .keyStore("keystore_test", PASSWORD));
+                .keyStore("keystore_test", PASSWORD))
+                .logConfig(LogConfig.logConfig()
+                        .enableLoggingOfRequestAndResponseIfValidationFails());
+
     }
 
     @Test

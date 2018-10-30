@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertEquals;
 
 public class FoodItemTest {
@@ -28,7 +29,11 @@ public class FoodItemTest {
         addFoodItem(date, locationId, foodId);
 
         assertOnItems()
-                .body("data.eatByDate", hasItem(FORMAT.format(date)));
+                .body("data.ofType", hasItems(foodId))
+                .body("data.storedIn", hasItems(locationId))
+                .body("data.eatByDate", hasItem(FORMAT.format(date)))
+                .body("data.registers", hasItems(1))
+                .body("data.buys", hasItems(1));
     }
 
     @Test

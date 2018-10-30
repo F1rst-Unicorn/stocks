@@ -4,3 +4,8 @@ stocks_package_directory: "target"
 
 stocks_mysql_admin_password: ""
 stocks_mysql_stocks_password: "linux"
+
+stocks_postgresql_ansible_host: "dp-server"
+stocks_postgresql_options:
+  user: stocks
+  password: linux

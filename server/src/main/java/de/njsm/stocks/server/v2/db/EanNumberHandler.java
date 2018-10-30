@@ -4,7 +4,6 @@ import de.njsm.stocks.server.v2.business.data.EanNumber;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.types.UInteger;
 
 import java.util.function.Function;
 
@@ -26,22 +25,22 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
     }
 
     @Override
-    protected TableField<EanNumberRecord, UInteger> getIdField() {
+    protected TableField<EanNumberRecord, Integer> getIdField() {
         return EAN_NUMBER.ID;
     }
 
     @Override
-    protected TableField<EanNumberRecord, UInteger> getVersionField() {
+    protected TableField<EanNumberRecord, Integer> getVersionField() {
         return EAN_NUMBER.VERSION;
     }
 
     @Override
     protected Function<EanNumberRecord, EanNumber> getDtoMap() {
         return cursor -> new EanNumber(
-                cursor.getId().intValue(),
-                cursor.getVersion().intValue(),
+                cursor.getId(),
+                cursor.getVersion(),
                 cursor.getNumber(),
-                cursor.getIdentifies().intValue()
+                cursor.getIdentifies()
                 );
     }
 

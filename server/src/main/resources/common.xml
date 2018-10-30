@@ -45,14 +45,12 @@
 
     <bean name="dbName" factory-bean="config" factory-method="getDbName"/>
 
-    <bean name="dbUser" factory-bean="config" factory-method="getDbUsername"/>
-
-    <bean name="dbPassword" factory-bean="config" factory-method="getDbPassword"/>
+    <bean name="dbConfig" factory-bean="config" factory-method="getDbProperties"/>
 
     <bean name="ticketValidity" factory-bean="config" factory-method="getTicketValidity"/>
 
     <bean name="dbUrl" class="java.lang.String" factory-method="format">
-        <constructor-arg index="0" value="jdbc:mariadb://%s:%s/%s?useLegacyDatetimeCode=false&amp;serverTimezone=+00:00"/>
+        <constructor-arg index="0" value="jdbc:postgresql://%s:%s/%s"/>
         <constructor-arg index="1" type="java.lang.Object[]">
             <util:list>
                 <ref bean="dbAddress"/>
@@ -64,8 +62,7 @@
 
     <bean name="connectionFactory" class="de.njsm.stocks.server.v2.db.ConnectionFactoryImpl">
         <constructor-arg index="0" ref="dbUrl" />
-        <constructor-arg index="1" ref="dbUser" />
-        <constructor-arg index="2" ref="dbPassword" />
+        <constructor-arg index="1" ref="dbConfig" />
     </bean>
 
 </beans>

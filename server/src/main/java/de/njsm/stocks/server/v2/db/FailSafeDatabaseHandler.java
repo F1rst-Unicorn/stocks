@@ -66,7 +66,7 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
     wrap(FunctionWithExceptions<DSLContext, Validation<StatusCode, O>, SQLException> client) {
         return () -> {
             Connection con = getConnection();
-            Validation<StatusCode, O> result = DSL.using(con, SQLDialect.MARIADB).transactionResult(configuration -> {
+            Validation<StatusCode, O> result = DSL.using(con, SQLDialect.POSTGRES_10).transactionResult(configuration -> {
                 DSLContext context = DSL.using(configuration);
                 return client.apply(context);
             });

@@ -4,7 +4,6 @@ import de.njsm.stocks.server.v2.business.data.Food;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.types.UInteger;
 
 import java.util.function.Function;
 
@@ -26,12 +25,12 @@ public class FoodHandler extends CrudRenameDatabaseHandler<FoodRecord, Food> {
     }
 
     @Override
-    protected TableField<FoodRecord, UInteger> getIdField() {
+    protected TableField<FoodRecord, Integer> getIdField() {
         return FOOD.ID;
     }
 
     @Override
-    protected TableField<FoodRecord, UInteger> getVersionField() {
+    protected TableField<FoodRecord, Integer> getVersionField() {
         return FOOD.VERSION;
     }
 
@@ -43,9 +42,9 @@ public class FoodHandler extends CrudRenameDatabaseHandler<FoodRecord, Food> {
     @Override
     protected Function<FoodRecord, Food> getDtoMap() {
         return cursor -> new Food(
-                cursor.getId().intValue(),
+                cursor.getId(),
                 cursor.getName(),
-                cursor.getVersion().intValue()
+                cursor.getVersion()
         );
     }
 

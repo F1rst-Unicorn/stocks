@@ -1,6 +1,6 @@
 package de.njsm.stocks.server.v1.internal.db;
 
-import de.njsm.stocks.common.data.*;
+import de.njsm.stocks.server.v1.internal.data.*;
 import de.njsm.stocks.server.util.Principals;
 
 import java.util.List;

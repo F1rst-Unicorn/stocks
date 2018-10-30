@@ -3,8 +3,10 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.VersionedData;
 import fj.data.Validation;
-import org.jooq.*;
-import org.jooq.types.UInteger;
+import org.jooq.DSLContext;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UpdatableRecord;
 
 import java.util.List;
 import java.util.function.Function;
@@ -28,8 +30,7 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
             int lastInsertId = visitor.visit(item, context.insertInto(getTable()))
                     .returning(getIdField())
                     .fetch()
-                    .getValue(0, getIdField())
-                    .intValue();
+                    .getValue(0, getIdField());
             return Validation.success(lastInsertId);
         });
 
@@ -54,8 +55,8 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
                 return StatusCode.NOT_FOUND;
 
             int changedItems = context.deleteFrom(getTable())
-                    .where(getIdField().eq(UInteger.valueOf(item.id))
-                            .and(getVersionField().eq(UInteger.valueOf(item.version))))
+                    .where(getIdField().eq(item.id)
+                            .and(getVersionField().eq(item.version)))
                     .execute();
 
             if (changedItems == 1)
@@ -69,7 +70,7 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
     public boolean isMissing(R item, DSLContext context) {
         int count = context.selectCount()
                 .from(getTable())
-                .where(getIdField().eq(UInteger.valueOf(item.id)))
+                .where(getIdField().eq(item.id))
                 .fetch()
                 .get(0)
                 .value1();
@@ -81,7 +82,7 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
 
     protected abstract Function<T, R> getDtoMap();
 
-    protected abstract TableField<T, UInteger> getIdField();
+    protected abstract TableField<T, Integer> getIdField();
 
-    protected abstract TableField<T, UInteger> getVersionField();
+    protected abstract TableField<T, Integer> getVersionField();
 }

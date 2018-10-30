@@ -16,8 +16,7 @@ public class ConnectionFactoryImplTest extends DbTestCase {
     @Before
     public void setup() {
         uut = new ConnectionFactoryImpl(getUrl(),
-                getUsername(),
-                getPassword());
+                getPostgresqlProperties(System.getProperties()));
     }
 
     @Test

@@ -1,8 +1,8 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.common.data.Data;
-import de.njsm.stocks.common.data.FoodItem;
-import de.njsm.stocks.common.data.FoodItemFactory;
+import de.njsm.stocks.server.v1.internal.data.Data;
+import de.njsm.stocks.server.v1.internal.data.FoodItem;
+import de.njsm.stocks.server.v1.internal.data.FoodItemFactory;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 

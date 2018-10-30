@@ -1,233 +1,139 @@
-SET foreign_key_checks = 0;
+DROP TABLE IF EXISTS "Food" CASCADE;
 
-DROP TABLE IF EXISTS `Food`;
+CREATE TABLE "Food" (
+  "ID" SERIAL NOT NULL UNIQUE,
+  "name" TEXT NOT NULL,
+  "version" INT NOT NULL DEFAULT 0,
+  PRIMARY KEY ("ID")
+);
 
-CREATE TABLE `Food` (
-  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-  `name` varchar(200) NOT NULL,
-  `version` int UNSIGNED NOT NULL DEFAULT 0,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS "User" CASCADE;
 
+CREATE TABLE "User" (
+    "ID" SERIAL NOT NULL UNIQUE,
+    "name" TEXT NOT NULL,
+    "version" INT NOT NULL DEFAULT 0,
+    PRIMARY KEY ("ID")
+);
 
-DROP TABLE IF EXISTS `User`;
+DROP TABLE IF EXISTS "Location" CASCADE;
 
-CREATE TABLE `User` (
-    `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-    `name` varchar(200) NOT NULL,
-    `version` int UNSIGNED NOT NULL DEFAULT 0,
-    PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE "Location" (
+    "ID" SERIAL NOT NULL UNIQUE,
+    "name" TEXT NOT NULL,
+    "version" INT NOT NULL DEFAULT 0,
+    PRIMARY KEY ("ID")
+);
 
+DROP TABLE IF EXISTS "User_device" CASCADE;
 
+CREATE TABLE "User_device" (
+    "ID" SERIAL NOT NULL UNIQUE,
+    "name" TEXT NOT NULL,
+    "version" INT NOT NULL DEFAULT 0,
+    belongs_to INT NOT NULL,
+    CONSTRAINT "device_points_to_user" FOREIGN KEY ("belongs_to") REFERENCES "User"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY ("ID")
+);
 
-DROP TABLE IF EXISTS `Location`;
+DROP TABLE IF EXISTS "Food_item" CASCADE;
 
-CREATE TABLE `Location` (
-    `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-    `name` varchar(200) NOT NULL,
-    `version` int UNSIGNED NOT NULL DEFAULT 0,
-    PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE "Food_item" (
+    "ID" SERIAL NOT NULL UNIQUE,
+    "eat_by" TIMESTAMP WITH TIME ZONE NOT NULL,
+    "of_type" INT NOT NULL,
+    "stored_in" INT NOT NULL,
+    "registers" INT NOT NULL,
+    "buys" INT NOT NULL,
+    "version" INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (of_type) REFERENCES "Food"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (stored_in) REFERENCES "Location"("ID") ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (registers) REFERENCES "User_device"("ID") ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (buys) REFERENCES "User"("ID") ON DELETE RESTRICT ON UPDATE CASCADE,
+    PRIMARY KEY ("ID")
+);
 
+DROP TABLE IF EXISTS "Ticket" CASCADE;
 
-DROP TABLE IF EXISTS User_device;
+CREATE TABLE "Ticket" (
+    "ID" SERIAL NOT NULL UNIQUE,
+    "ticket" TEXT NOT NULL,
+    "belongs_device" INT NOT NULL,
+    "created_on" TIMESTAMP NOT NULL DEFAULT '2100-01-01 00:00:00.000',
+    PRIMARY KEY ("ID"),
+    FOREIGN KEY (belongs_device) REFERENCES "User_device"("ID") ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-CREATE TABLE User_device (
-    `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-    `name` varchar(200) NOT NULL,
-    `version` int UNSIGNED NOT NULL DEFAULT 0,
-    belongs_to int UNSIGNED NOT NULL,
-    CONSTRAINT `device_points_to_user` FOREIGN KEY (`belongs_to`) REFERENCES `User`(`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS "Updates" CASCADE;
 
+CREATE TABLE "Updates" (
+    "ID" SERIAL NOT NULL,
+    "table_name" TEXT NOT NULL,
+    "last_update" TIMESTAMP WITH TIME ZONE NOT NULL,
+    PRIMARY KEY ("ID")
+);
 
+DROP TABLE IF EXISTS "EAN_number" CASCADE;
 
-DROP TABLE IF EXISTS Food_item;
+CREATE TABLE "EAN_number" (
+    "ID" SERIAL NOT NULL,
+    "number" TEXT NOT NULL,
+    "identifies" INT NOT NULL,
+    "version" INT NOT NULL DEFAULT 0,
+    PRIMARY KEY ("ID"),
+    FOREIGN KEY (identifies) REFERENCES "Food"("ID") ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-CREATE TABLE Food_item (
-    `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-    `eat_by` DATETIME(3) NOT NULL,
-    `of_type` int UNSIGNED NOT NULL,
-    `stored_in` int UNSIGNED NOT NULL,
-    `registers` int UNSIGNED NOT NULL,
-    `buys` int UNSIGNED NOT NULL,
-    `version` int UNSIGNED NOT NULL DEFAULT 0,
-    FOREIGN KEY (of_type) REFERENCES Food(`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (stored_in) REFERENCES Location(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (registers) REFERENCES User_device(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (buys) REFERENCES `User`(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO "Updates" ("table_name", "last_update")
+VALUES
+       ('Location', NOW()),
+       ('User', NOW()),
+       ('User_device', NOW()),
+       ('Food', NOW()),
+       ('Food_item', NOW()),
+       ('EAN_number', NOW());
 
+DROP FUNCTION IF EXISTS "update_timestamp" CASCADE;
 
+CREATE FUNCTION update_timestamp()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+    AS $$
+        BEGIN
+            UPDATE "Updates"
+            SET "last_update" = NOW()
+            WHERE "table_name" = TG_ARGV[0];
 
-DROP TABLE IF EXISTS Ticket;
+            RETURN NEW;
+        END;
+    $$;
 
-CREATE TABLE Ticket (
-    `ID` int UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-    `ticket` varchar(64) NOT NULL,
-    `belongs_device` int UNSIGNED NOT NULL,
-    `created_on` DATETIME(3) NOT NULL DEFAULT '2100-01-01 00:00:00.000',
-    PRIMARY KEY (`ID`),
-    FOREIGN KEY (belongs_device) REFERENCES User_device(`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
+CREATE TRIGGER Location_timestamp_update
+    AFTER INSERT OR UPDATE OR DELETE ON "Location"
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE update_timestamp('Location');
 
-    
-DROP TABLE IF EXISTS Updates;
+CREATE TRIGGER Food_timestamp_update
+    AFTER INSERT OR UPDATE OR DELETE ON "Food"
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE update_timestamp('Food');
 
-CREATE TABLE Updates (
-    `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
-    `table_name` varchar(200) NOT NULL,
-    `last_update` DATETIME(3) NOT NULL,
-    PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TRIGGER User_timestamp_update
+    AFTER INSERT OR UPDATE OR DELETE ON "User"
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE update_timestamp('User');
 
-INSERT INTO Updates (`table_name`, `last_update`)
-VALUES 
-    ('Location', UTC_TIMESTAMP(3)),
-    ('User', UTC_TIMESTAMP(3)),
-    ('User_device', UTC_TIMESTAMP(3)),
-    ('Food', UTC_TIMESTAMP(3)),
-    ('Food_item', UTC_TIMESTAMP(3)),
-    ('EAN_number', UTC_TIMESTAMP(3));
-    
-DROP TABLE IF EXISTS EAN_number;
+CREATE TRIGGER User_device_timestamp_update
+    AFTER INSERT OR UPDATE OR DELETE ON "User_device"
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE update_timestamp('User_device');
 
-CREATE TABLE EAN_number (
-    `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
-    `number` varchar(13) NOT NULL,
-    `identifies` int UNSIGNED NOT NULL,
-    `version` int UNSIGNED NOT NULL DEFAULT 0,
-    PRIMARY KEY (`ID`),
-    FOREIGN KEY (identifies) REFERENCES Food(`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
+CREATE TRIGGER Food_item_timestamp_update
+    AFTER INSERT OR UPDATE OR DELETE ON "Food_item"
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE update_timestamp('Food_item');
 
-delimiter |    
-
-CREATE TRIGGER Location_insert AFTER INSERT ON `Location` FOR EACH ROW
-BEGIN
-    UPDATE Updates 
-    SET last_update=UTC_TIMESTAMP(3) 
-    WHERE `table_name`='Location';
-END;
-
-CREATE TRIGGER Location_update
-AFTER UPDATE ON Location FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Location';
-END;
-
-CREATE TRIGGER Location_delete
-AFTER DELETE ON Location FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Location';
-END;
-
-
-
-CREATE TRIGGER Food_insert
-AFTER INSERT ON Food FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food';
-END;
-
-CREATE TRIGGER Food_update
-AFTER UPDATE ON Food FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food';
-END;
-
-CREATE TRIGGER Food_delete
-AFTER DELETE ON Food FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food';
-END;
-
-
-
-CREATE TRIGGER User_insert
-AFTER INSERT ON `User` FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User';
-END;
-
-CREATE TRIGGER User_update
-AFTER UPDATE ON `User` FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User';
-END;
-
-CREATE TRIGGER User_delete
-AFTER DELETE ON `User` FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User';
-END;
-
-
-
-CREATE TRIGGER User_device_insert
-AFTER INSERT ON User_device FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User_device';
-END;
-
-CREATE TRIGGER User_device_update
-AFTER UPDATE ON User_device FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User_device';
-END;
-
-CREATE TRIGGER User_device_delete
-AFTER DELETE ON User_device FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='User_device';
-END;
-
-
-
-CREATE TRIGGER Food_item_insert
-AFTER INSERT ON Food_item FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food_item';
-END;
-
-CREATE TRIGGER Food_item_update
-AFTER UPDATE ON Food_item FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food_item';
-END;
-
-CREATE TRIGGER Food_item_delete
-AFTER DELETE ON Food_item FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='Food_item';
-END;
-
-
-
-CREATE TRIGGER EAN_number_insert
-AFTER INSERT ON EAN_number FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='EAN_number';
-END;
-
-CREATE TRIGGER EAN_number_update
-AFTER UPDATE ON EAN_number FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='EAN_number';
-END;
-
-CREATE TRIGGER EAN_number_delete
-AFTER DELETE ON EAN_number FOR EACH ROW
-BEGIN
-    UPDATE Updates SET last_update=UTC_TIMESTAMP(3) WHERE `table_name`='EAN_number';
-END;
-
-|
-
-delimiter ;
-
-SET foreign_key_checks = 1;
+CREATE TRIGGER EAN_number_timestamp_update
+    AFTER INSERT OR UPDATE OR DELETE ON "EAN_number"
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE update_timestamp('EAN_number');

@@ -7,7 +7,6 @@ import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.types.UInteger;
 
 import java.util.List;
 import java.util.function.Function;
@@ -28,7 +27,7 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
         return runFunction(context -> {
             List<UserDevice> result = context
                     .selectFrom(USER_DEVICE)
-                    .where(USER_DEVICE.BELONGS_TO.eq(UInteger.valueOf(user.id)))
+                    .where(USER_DEVICE.BELONGS_TO.eq(user.id))
                     .fetch()
                     .stream()
                     .map(getDtoMap())
@@ -47,20 +46,20 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
     @Override
     protected Function<UserDeviceRecord, UserDevice> getDtoMap() {
         return record -> new UserDevice(
-                record.getId().intValue(),
-                record.getVersion().intValue(),
+                record.getId(),
+                record.getVersion(),
                 record.getName(),
-                record.getBelongsTo().intValue()
+                record.getBelongsTo()
         );
     }
 
     @Override
-    protected TableField<UserDeviceRecord, UInteger> getIdField() {
+    protected TableField<UserDeviceRecord, Integer> getIdField() {
         return USER_DEVICE.ID;
     }
 
     @Override
-    protected TableField<UserDeviceRecord, UInteger> getVersionField() {
+    protected TableField<UserDeviceRecord, Integer> getVersionField() {
         return USER_DEVICE.VERSION;
     }
 }

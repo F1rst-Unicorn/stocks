@@ -1,14 +1,14 @@
 package de.njsm.stocks.server.v1.endpoints;
 
-import de.njsm.stocks.common.data.Data;
-import de.njsm.stocks.common.data.FoodItem;
-import de.njsm.stocks.common.data.FoodItemFactory;
+import de.njsm.stocks.server.v1.internal.data.Data;
+import de.njsm.stocks.server.v1.internal.data.FoodItem;
+import de.njsm.stocks.server.v1.internal.data.FoodItemFactory;
 import de.njsm.stocks.server.v1.internal.db.DatabaseHandler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 public class FoodItemEndpointTest extends BaseTestEndpoint {
 

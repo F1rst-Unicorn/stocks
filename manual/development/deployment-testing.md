@@ -9,12 +9,12 @@ There are various different ways to test the server components
 There are many unit and integration tests located in src/java/test.
 It contains a mix of unit tests which can run in isolation, but also
 integration tests which require the existence of a stocks
-mariadb database or do access the local file system. They only test small
+PostgreSQL database or do access the local file system. They only test small
 parts of the system in isolation.
 
 #### Integration Test Database Setup
 
-To run the tests you need a mariadb stocks instance. It can be created by
+To run the tests you need a PostgreSQL stocks instance. It can be created by
 importing the deploy-server/config/schema.sql script into a newly created
 database. No data imports are needed. Then configure your profile for running
 inside the server pom.xml, or adapt your setup to match an existing
