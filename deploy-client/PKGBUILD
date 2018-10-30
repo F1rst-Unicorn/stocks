@@ -19,12 +19,18 @@ install=stocks.install
 build() {
     cd "$srcdir/"
 
-    mvn -Dmaven.test.skip=true package
+    cd common
+    mvn -Dmaven.test.skip=true install
+    cd ..
+
+    cd client
+    mvn -Dmaven.test.skip=true install
+    cd ..
 }
 
 package() {
     cd "$srcdir/"
-    
+
     mkdir -p $pkgdir/usr/lib/stocks/
     cp client/target/client-*.jar $pkgdir/usr/lib/stocks/client.jar
     chmod -R 555 $pkgdir/usr/lib/stocks/
@@ -32,14 +38,14 @@ package() {
     mkdir -p $pkgdir/usr/bin/
     cp deploy-client/config/client.sh $pkgdir/usr/bin/stocks
     chmod 555 $pkgdir/usr/bin/stocks
-    
+
     mkdir -p $pkgdir/usr/share/stocks/
     cp deploy-client/config/schema.sql $pkgdir/usr/share/stocks/
     chmod 444 $pkgdir/usr/share/stocks/schema.sql
 
     mkdir -p $pkgdir/usr/share/licenses/$pkgname/
     cp LICENSE.md $pkgdir/usr/share/licenses/$pkgname/
-    
+
     mkdir -p $pkgdir/usr/share/doc/$pkgname/
     cp manual/client/README.md $pkgdir/usr/share/doc/$pkgname/
 }
