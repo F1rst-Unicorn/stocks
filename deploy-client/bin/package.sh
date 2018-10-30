@@ -10,7 +10,6 @@ mkdir -p $STOCKS_ROOT/deploy-client/target
 tar -cf $STOCKS_ROOT/deploy-client/stocks.tar \
         --exclude=android-client \
         --exclude=target \
-        --exclude=deploy-server \
         --exclude=.git \
         $STOCKS_ROOT
 
