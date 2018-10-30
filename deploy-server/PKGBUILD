@@ -22,12 +22,16 @@ backup=("etc/$pkgname/stocks.properties"
 build() {
     cd "$srcdir"
 
+    if [[ "$CI_SERVER" != "" ]] ; then
+        MVN_ARGS="-P teamcity"
+    fi
+
     cd server
-    mvn -Dmaven.test.skip=true clean package
+    mvn $MVN_ARGS -Dmaven.test.skip=true clean package
     cd ..
 
     cd deploy-server/postgresql-migration
-    mvn -Dmaven.test.skip=true clean package
+    mvn $MVN_ARGS -Dmaven.test.skip=true clean package
     cd ..
 }
 
