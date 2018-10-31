@@ -36,7 +36,7 @@ public class InputCollector extends Selector {
         FoodItem result = new FoodItem();
         result.ofType = determineFoodFromParameter(c).id;
         result.storedIn = determineLocationFromParameter(c, result.ofType).id;
-        result.eatByDate = Instant.from(resolveDate(c).atStartOfDay(ZoneId.systemDefault()));
+        result.eatByDate = Instant.from(resolveDate(c).atStartOfDay(ZoneId.of("UTC")));
         return result;
     }
 
