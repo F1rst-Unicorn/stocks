@@ -100,17 +100,17 @@
           <param name="teamcity.step.mode" value="default" />
         </parameters>
       </runner>
-        <runner id="RUNNER_19" name="Server System Test" type="Maven2">
-            <parameters>
-                <param name="goals" value="test" />
-                <param name="maven.path" value="%teamcity.tool.maven.AUTO%" />
-                <param name="runnerArgs" value="-Dtest=TestSuite" />
-                <param name="pomLocation" value="server-test/pom.xml" />
-                <param name="teamcity.step.mode" value="default" />
-                <param name="userSettingsSelection" value="userSettingsSelection:default" />
-            </parameters>
-        </runner>
-        <runner id="RUNNER_18" name="Server Log collection" type="simpleRunner">
+      <runner id="RUNNER_19" name="Server System Test" type="Maven2">
+        <parameters>
+          <param name="goals" value="test" />
+          <param name="maven.path" value="%teamcity.tool.maven.AUTO%" />
+          <param name="pomLocation" value="server-test/pom.xml" />
+          <param name="runnerArgs" value="-Dtest=TestSuite" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="userSettingsSelection" value="userSettingsSelection:default" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_18" name="Server Log collection" type="simpleRunner">
         <parameters>
           <param name="command.executable" value="server-test/bin/collect-log.sh" />
           <param name="teamcity.step.mode" value="execute_always" />
@@ -151,7 +151,7 @@
       </build-trigger>
       <build-trigger id="TRIGGER_1" type="schedulingTrigger">
         <parameters>
-          <param name="branchFilter" value="+:sos-android" />
+          <param name="branchFilter" value="+:STOCKS-67" />
           <param name="cronExpression_dm" value="*" />
           <param name="cronExpression_dw" value="*" />
           <param name="cronExpression_hour" value="*" />
