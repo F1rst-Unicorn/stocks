@@ -219,7 +219,33 @@ public class InputCollectorTest {
 
         assertEquals(food.id, output.ofType);
         assertEquals(location.id, output.storedIn);
-        assertEquals(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), output.eatByDate);
+        assertEquals(date.atStartOfDay(ZoneId.of("UTC")).toInstant(), output.eatByDate);
+        assertEquals(0, output.buys);
+        assertEquals(0, output.registers);
+        verify(dbManager).getFood(food.name);
+        verify(dbManager).getLocations(location.name);
+    }
+
+    @Test
+    public void createItemUsesCorrectTimezone() throws Exception {
+        Food food = new Food(4, "Beer");
+        Location location = new Location(5, "Fridge");
+        setupMockDatabase(food, location);
+        String inputDate = "01.01.1970";
+        Command c = Command.createCommand(new String[] {
+                "--f",
+                food.name,
+                "--l",
+                location.name,
+                "--d",
+                inputDate
+        });
+
+        FoodItem output = uut.createFoodItem(c);
+
+        assertEquals(food.id, output.ofType);
+        assertEquals(location.id, output.storedIn);
+        assertEquals(Instant.EPOCH, output.eatByDate);
         assertEquals(0, output.buys);
         assertEquals(0, output.registers);
         verify(dbManager).getFood(food.name);
@@ -248,7 +274,7 @@ public class InputCollectorTest {
 
         assertEquals(food.id, output.ofType);
         assertEquals(location.id, output.storedIn);
-        assertEquals(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), output.eatByDate);
+        assertEquals(date.atStartOfDay(ZoneId.of("UTC")).toInstant(), output.eatByDate);
         assertEquals(0, output.buys);
         assertEquals(0, output.registers);
         verify(dbManager).getFood(food.name);
@@ -274,7 +300,7 @@ public class InputCollectorTest {
 
         assertEquals(food.id, output.ofType);
         assertEquals(location.id, output.storedIn);
-        assertEquals(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), output.eatByDate);
+        assertEquals(date.atStartOfDay(ZoneId.of("UTC")).toInstant(), output.eatByDate);
         assertEquals(0, output.buys);
         assertEquals(0, output.registers);
         verify(dbManager).getFood(food.name);
@@ -306,7 +332,7 @@ public class InputCollectorTest {
 
         assertEquals(food.id, output.ofType);
         assertEquals(location.id, output.storedIn);
-        assertEquals(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), output.eatByDate);
+        assertEquals(date.atStartOfDay(ZoneId.of("UTC")).toInstant(), output.eatByDate);
         assertEquals(0, output.buys);
         assertEquals(0, output.registers);
         verify(dbManager).getFood(food.name);
@@ -339,7 +365,7 @@ public class InputCollectorTest {
 
         assertEquals(food.id, output.ofType);
         assertEquals(location.id, output.storedIn);
-        assertEquals(date.atStartOfDay(ZoneId.systemDefault()).toInstant(), output.eatByDate);
+        assertEquals(date.atStartOfDay(ZoneId.of("UTC")).toInstant(), output.eatByDate);
         assertEquals(0, output.buys);
         assertEquals(0, output.registers);
         verify(dbManager).getFood(food.name);
