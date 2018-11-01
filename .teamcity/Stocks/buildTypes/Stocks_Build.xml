@@ -8,6 +8,9 @@
       <option name="executionTimeoutMin" value="45" />
       <option name="maximumNumberOfBuilds" value="2" />
     </options>
+    <disabled-settings>
+      <setting-ref ref="TRIGGER_1" />
+    </disabled-settings>
     <parameters>
       <param name="env.CI_SERVER" value="1" />
       <param name="env.NO_SIGNATURE" value="1" />
