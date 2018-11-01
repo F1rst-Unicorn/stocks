@@ -53,7 +53,7 @@ public class EanNumberFactoryTest {
 
     @Test
     public void testGetQuery() {
-        String expectedQuery = "SELECT * FROM EAN_number";
+        String expectedQuery = "SELECT * FROM EAN_number ORDER BY number, ID";
 
         String actualQuery = uut.getQuery();
 

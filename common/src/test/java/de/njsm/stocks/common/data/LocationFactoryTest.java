@@ -52,7 +52,7 @@ public class LocationFactoryTest {
 
     @Test
     public void testGetQuery() {
-        String expectedQuery = "SELECT * FROM Location";
+        String expectedQuery = "SELECT * FROM Location ORDER BY name, ID";
 
         String actualQuery = uut.getQuery();
 
