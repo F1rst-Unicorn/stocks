@@ -22,7 +22,7 @@ public class SqlLocationTable {
                 "    PRIMARY KEY (" + COL_ID + ")\n" +
                 ")";
         DROP = "DROP TABLE IF EXISTS " + NAME;
-        SELECT_ALL = "SELECT * FROM " + NAME;
+        SELECT_ALL = "SELECT * FROM " + NAME + " ORDER BY " + COL_ID;
         SELECT_NAME = "SELECT * FROM " + NAME + " WHERE " + COL_NAME + "=?";
     }
 }
