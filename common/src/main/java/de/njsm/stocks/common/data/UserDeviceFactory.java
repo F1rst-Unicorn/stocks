@@ -9,7 +9,7 @@ public class UserDeviceFactory extends DataFactory<UserDevice> {
 
     @Override
     public String getQuery() {
-        return "SELECT * FROM User_device";
+        return "SELECT * FROM User_device ORDER BY name, ID";
     }
 
     @Override

@@ -52,7 +52,7 @@ public class UserFactoryTest {
 
     @Test
     public void testGetQuery() {
-        String expectedQuery = "SELECT * FROM User";
+        String expectedQuery = "SELECT * FROM User ORDER BY name, ID";
 
         String actualQuery = uut.getQuery();
 

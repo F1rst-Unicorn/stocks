@@ -52,7 +52,7 @@ public class FoodFactoryTest {
 
     @Test
     public void testGetQuery() {
-        String expectedQuery = "SELECT * FROM Food";
+        String expectedQuery = "SELECT * FROM Food ORDER BY name, ID";
 
         String actualQuery = uut.getQuery();
 

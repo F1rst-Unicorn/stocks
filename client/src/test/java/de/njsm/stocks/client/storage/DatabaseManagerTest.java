@@ -90,21 +90,21 @@ public class DatabaseManagerTest {
     @Test
     public void gettingAllUsersWorks() throws DatabaseException {
         List<User> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new User(1, "John"));
         expectedOutput.add(new User(2, "Jack"));
+        expectedOutput.add(new User(1, "John"));
         expectedOutput.add(new User(3, "Juliette"));
 
         List<User> output = uut.getUsers();
 
         assertThat(output, is(expectedOutput));
     }
-    
+
     @Test
     public void gettingFilteredUsersWorks() throws DatabaseException {
         User user = new User(1, "John");
-        
+
         List<User> output = uut.getUsers(user.name);
-        
+
         assertEquals(1, output.size());
         assertTrue(output.stream().anyMatch(u -> u.equals(user)));
     }
@@ -169,10 +169,10 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingLocations() throws Exception {
         List<Location> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new Location(1, "Fridge"));
+        expectedOutput.add(new Location(4, "Basement"));
         expectedOutput.add(new Location(2, "Cupboard"));
         expectedOutput.add(new Location(3, "Cupboard"));
-        expectedOutput.add(new Location(4, "Basement"));
+        expectedOutput.add(new Location(1, "Fridge"));
 
         List<Location> output = uut.getLocations();
 
@@ -204,8 +204,8 @@ public class DatabaseManagerTest {
     @Test
     public void testWritingLocations() throws Exception {
         List<Location> input = new LinkedList<>();
-        input.add(new Location(3, "Cupboard"));
         input.add(new Location(4, "Basement"));
+        input.add(new Location(3, "Cupboard"));
 
         uut.writeLocations(input);
 
@@ -216,13 +216,13 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingAllFood() throws Exception {
         List<Food> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new Food(1, "Beer"));
-        expectedOutput.add(new Food(2, "Carrot"));
-        expectedOutput.add(new Food(3, "Bread"));
-        expectedOutput.add(new Food(4, "Milk"));
-        expectedOutput.add(new Food(5, "Yoghurt"));
-        expectedOutput.add(new Food(6, "Raspberry jam"));
         expectedOutput.add(new Food(7, "Apple juice"));
+        expectedOutput.add(new Food(1, "Beer"));
+        expectedOutput.add(new Food(3, "Bread"));
+        expectedOutput.add(new Food(2, "Carrot"));
+        expectedOutput.add(new Food(4, "Milk"));
+        expectedOutput.add(new Food(6, "Raspberry jam"));
+        expectedOutput.add(new Food(5, "Yoghurt"));
 
         List<Food> output = uut.getFood();
 

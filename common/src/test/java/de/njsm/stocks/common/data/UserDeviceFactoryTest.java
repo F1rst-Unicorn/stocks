@@ -54,7 +54,7 @@ public class UserDeviceFactoryTest {
 
     @Test
     public void testGetQuery() {
-        String expectedQuery = "SELECT * FROM User_device";
+        String expectedQuery = "SELECT * FROM User_device ORDER BY name, ID";
 
         String actualQuery = uut.getQuery();
 

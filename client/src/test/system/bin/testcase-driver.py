@@ -4,6 +4,7 @@ import sys
 import re
 import subprocess
 
+
 class TestCase:
     def __init__(self, title, input, output, count=1):
         self.title = title
@@ -27,20 +28,24 @@ class TestCase:
         self.actualOutput = "\n".join(self.actualOutput)
         print(self.actualOutput)
 
-
     def check(self, index):
         matcher = re.match(self.referenceOutput,
                 self.actualOutput, re.MULTILINE)
-        if matcher is None:
+
+        if (matcher is None) \
+                or (matcher.start() != 0) \
+                or (matcher.end() != len(self.actualOutput)):
+
             print(index + " failed!\n\n")
-            print("Expected: " + self.referenceOutput + "\n\n")
-            print("Actual:   " + self.actualOutput + "\n\n")
+            print("Expected: '" + self.referenceOutput + "'\n\n")
+            print("Actual:   '" + self.actualOutput + "'\n\n")
             print("##teamcity[testFailed name='" + self.title + "' message='"
                     + "Comparison failed' expected='"
                     + escapeForTeamcity(self.referenceOutput)
                     + "' actual='"
                     + escapeForTeamcity(self.actualOutput)
                     + "' type='comparisonFailure']")
+
 
 def main(arguments):
     process = setupSshConnection()
@@ -59,6 +64,7 @@ def setupSshConnection():
                    shell=True,
                    encoding="utf-8")
     return process
+
 
 def handleOneTest(process, testcaseFileName):
     testcase = parseFileFromName(testcaseFileName)
@@ -79,8 +85,6 @@ def parseFileFromName(fileName):
         if lines[2].startswith("Commands"):
             count = lines[2].replace("Commands: ", "")
             count = int(count)
-            output = lines[2].replace("Output: ", "")
-            output = transformEscapes(output)
             outputIndex = 3
         else:
             outputIndex = 2
@@ -91,10 +95,12 @@ def parseFileFromName(fileName):
         result = TestCase(title, input, output, count)
         return result
 
+
 def transformEscapes(string):
     string = string.replace("\\n", "\n")
     string = string.replace("\\t", "\t")
     return string
+
 
 def escapeForTeamcity(string):
     return (string
@@ -103,6 +109,7 @@ def escapeForTeamcity(string):
             .replace("[", "|[")
             .replace("]", "|]")
             )
+
 
 def consumeOutput(pipe):
     char = pipe.read(1)
@@ -113,8 +120,10 @@ def consumeOutput(pipe):
     result = result + char
     return result
 
+
 def printUsage():
-    print("Usage: testcase-driver <filename>")
+    print("Usage: testcase-driver <filename>...")
+
 
 if __name__ == '__main__':
     main(sys.argv)

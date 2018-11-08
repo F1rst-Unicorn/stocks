@@ -9,7 +9,7 @@ public class LocationFactory extends DataFactory<Location> {
 
     @Override
     public String getQuery() {
-        return "SELECT * FROM Location";
+        return "SELECT * FROM Location ORDER BY name, ID";
     }
 
     @Override

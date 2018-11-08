@@ -9,7 +9,7 @@ public class FoodFactory extends DataFactory<Food> {
 
     @Override
     public String getQuery() {
-        return "SELECT * FROM Food";
+        return "SELECT * FROM Food ORDER BY name, ID";
     }
 
     @Override

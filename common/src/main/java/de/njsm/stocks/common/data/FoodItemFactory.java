@@ -1,8 +1,9 @@
 package de.njsm.stocks.common.data;
 
+import org.threeten.bp.Instant;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.threeten.bp.Instant;
 
 public class FoodItemFactory extends DataFactory<FoodItem> {
 
@@ -10,7 +11,7 @@ public class FoodItemFactory extends DataFactory<FoodItem> {
 
     @Override
     public String getQuery() {
-        return "SELECT * FROM Food_item";
+        return "SELECT * FROM Food_item ORDER BY eat_by, ID";
     }
 
     @Override

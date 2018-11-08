@@ -21,7 +21,9 @@ public class Version implements Comparable<Version> {
 
     public static final Version V_2_0_2 = new Version(2, 0, 2);
 
-    public static final Version CURRENT = V_2_0_2;
+    public static final Version V_2_0_3 = new Version(2, 0, 3);
+
+    public static final Version CURRENT = V_2_0_3;
 
     private int major;
 

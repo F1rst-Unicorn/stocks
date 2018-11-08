@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.threeten.bp.Instant;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.threeten.bp.Instant;
 import java.util.List;
 
 public class FoodItemFactoryTest {
@@ -60,7 +60,7 @@ public class FoodItemFactoryTest {
 
     @Test
     public void testGetQuery() {
-        String expectedQuery = "SELECT * FROM Food_item";
+        String expectedQuery = "SELECT * FROM Food_item ORDER BY eat_by, ID";
 
         String actualQuery = uut.getQuery();
 
