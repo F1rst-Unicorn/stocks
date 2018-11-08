@@ -1,6 +1,6 @@
 # Maintainer: aliena <dairyman@njsm.de>
 pkgname=stocks
-pkgver=2.0.2.0
+pkgver=2.0.3.0
 pkgrel=1
 pkgdesc="Manages a household's stocks client"
 arch=('any')
