@@ -270,8 +270,8 @@ public class SqlDatabaseHandlerTest extends DbTestCase {
 
         output = uut.get(factory);
         assertEquals(2, output.length);
-        assertEquals(2, ((User) output[0]).id);
-        assertEquals(1, ((User) output[1]).id);
+        assertEquals(1, ((User) output[0]).id);
+        assertEquals(2, ((User) output[1]).id);
     }
 
     @Test
