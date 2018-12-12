@@ -124,13 +124,13 @@ public class DatabaseManagerTest {
     @Test
     public void gettingDevicesWorks() throws DatabaseException {
         List<UserDeviceView> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new UserDeviceView(5, "Desktop-PC", "John", 1));
+        expectedOutput.add(new UserDeviceView(4, "Laptop", "John", 1));
+        expectedOutput.add(new UserDeviceView(7, "Laptop", "Juliette", 3));
         expectedOutput.add(new UserDeviceView(1, "Mobile", "John", 1));
         expectedOutput.add(new UserDeviceView(2, "Mobile", "Jack", 2));
         expectedOutput.add(new UserDeviceView(3, "Mobile", "Juliette", 3));
-        expectedOutput.add(new UserDeviceView(4, "Laptop", "John", 1));
-        expectedOutput.add(new UserDeviceView(5, "Desktop-PC", "John", 1));
         expectedOutput.add(new UserDeviceView(6, "PC-Work", "Jack", 2));
-        expectedOutput.add(new UserDeviceView(7, "Laptop", "Juliette", 3));
 
         List<UserDeviceView> output = uut.getDevices();
 

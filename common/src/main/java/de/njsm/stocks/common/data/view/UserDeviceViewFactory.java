@@ -13,7 +13,8 @@ public class UserDeviceViewFactory extends DataFactory<UserDeviceView> {
     public String getQuery() {
         return "SELECT d.id, d.name, u.name as belongs_to, u.ID as belongs_id " +
                 "FROM User_device d, User u " +
-                "WHERE d.belongs_to=u.ID";
+                "WHERE d.belongs_to=u.ID " +
+                "ORDER BY d.name";
     }
 
     @Override

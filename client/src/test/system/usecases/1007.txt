@@ -1,3 +1,3 @@
 Title: List devices after refresh
 Input: dev list
-Output: ^Current devices: \n\t10: Jack's android-client\n\t9: Jack's cli-client\n\t1: Jack's Device$
+Output: ^Current devices: \n\t1: Jack's Device\n\t10: Jack's android-client\n\t9: Jack's cli-client$
