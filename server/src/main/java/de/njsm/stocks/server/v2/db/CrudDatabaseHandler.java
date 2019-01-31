@@ -8,6 +8,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UpdatableRecord;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -18,10 +19,10 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
 
     private InsertVisitor<T> visitor;
 
-    public CrudDatabaseHandler(ConnectionFactory connectionFactory,
+    public CrudDatabaseHandler(Connection connection,
                                String resourceIdentifier,
                                InsertVisitor<T> visitor) {
-        super(connectionFactory, resourceIdentifier);
+        super(connection, resourceIdentifier);
         this.visitor = visitor;
     }
 

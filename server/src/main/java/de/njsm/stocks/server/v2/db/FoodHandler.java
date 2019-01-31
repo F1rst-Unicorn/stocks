@@ -5,6 +5,7 @@ import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import org.jooq.Table;
 import org.jooq.TableField;
 
+import java.sql.Connection;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
@@ -13,10 +14,10 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
 public class FoodHandler extends CrudRenameDatabaseHandler<FoodRecord, Food> {
 
 
-    public FoodHandler(ConnectionFactory connectionFactory,
+    public FoodHandler(Connection connection,
                        String resourceIdentifier,
                        InsertVisitor<FoodRecord> visitor) {
-        super(connectionFactory, resourceIdentifier, visitor);
+        super(connection, resourceIdentifier, visitor);
     }
 
     @Override

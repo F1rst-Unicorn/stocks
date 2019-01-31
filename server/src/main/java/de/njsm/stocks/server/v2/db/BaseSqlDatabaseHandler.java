@@ -12,10 +12,10 @@ public abstract class BaseSqlDatabaseHandler {
 
     private static final Logger LOG = LogManager.getLogger(BaseSqlDatabaseHandler.class);
 
-    private final ConnectionFactory connectionFactory;
+    private final Connection connection;
 
-    public BaseSqlDatabaseHandler(ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    public BaseSqlDatabaseHandler(Connection connection) {
+        this.connection = connection;
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -35,18 +35,28 @@ public abstract class BaseSqlDatabaseHandler {
     @Deprecated
     public abstract <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client);
 
-    void close(Connection con) {
+    protected Connection getConnection() throws SQLException {
+        return connection;
+    }
+
+    protected void close(Connection con) {
         if (con != null) {
             try {
-                connectionFactory.returnConnection(con);
+                con.close();
             } catch (SQLException e) {
                 LOG.error("Error closing connection", e);
             }
         }
     }
 
-    Connection getConnection() throws SQLException {
-        return connectionFactory.getConnection();
+    void commit(Connection con) {
+        if (con != null) {
+            try {
+                con.commit();
+            } catch (SQLException e1) {
+                LOG.error("Error while commit", e1);
+            }
+        }
     }
 
     void rollback(Connection con) {

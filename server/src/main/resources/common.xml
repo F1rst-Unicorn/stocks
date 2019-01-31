@@ -5,6 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
        default-lazy-init="true">
 
+    <bean name="driver" class="java.lang.Class" factory-method="forName" lazy-init="false">
+        <constructor-arg index="0" value="org.postgresql.Driver"/>
+    </bean>
+
     <bean name="circuitBreakerDatabase" class="java.lang.String">
         <constructor-arg index="0" value="database"/>
     </bean>
@@ -60,9 +64,9 @@
         </constructor-arg>
     </bean>
 
-    <bean name="connectionFactory" class="de.njsm.stocks.server.v2.db.ConnectionFactoryImpl">
-        <constructor-arg index="0" ref="dbUrl" />
-        <constructor-arg index="1" ref="dbConfig" />
+    <bean name="requestConnection" class="java.sql.DriverManager" factory-method="getConnection" scope="request">
+        <constructor-arg index="0" ref="dbUrl"/>
+        <constructor-arg index="1" ref="dbConfig"/>
     </bean>
 
 </beans>

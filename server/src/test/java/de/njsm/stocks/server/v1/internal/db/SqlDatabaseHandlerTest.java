@@ -20,7 +20,9 @@ public class SqlDatabaseHandlerTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new SqlDatabaseHandler(getConnectionFactory(),
+        uut = new SqlDatabaseHandler(getConnection(),
+                DbTestCase.getUrl(),
+                DbTestCase.getPostgresqlProperties(System.getProperties()),
                 getNewResourceIdentifier());
     }
 

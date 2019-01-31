@@ -61,6 +61,7 @@ public class DeviceManagerTest {
     @Test
     public void addDeviceSuccessfully() {
         Mockito.when(dbHandler.add(device)).thenReturn(Validation.success(device.id));
+        Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(ticketDbHandler.addTicket(eq(device), any())).thenReturn(StatusCode.SUCCESS);
 
         Validation<StatusCode, ClientTicket> result = uut.addDevice(device);
@@ -70,6 +71,7 @@ public class DeviceManagerTest {
         assertNull(result.success().pemFile);
 
         Mockito.verify(dbHandler).add(device);
+        Mockito.verify(dbHandler).commit();
         Mockito.verify(ticketDbHandler).addTicket(eq(device), any(String.class));
     }
 
@@ -83,6 +85,7 @@ public class DeviceManagerTest {
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
 
         Mockito.verify(dbHandler).add(device);
+        Mockito.verify(dbHandler).rollback();
     }
 
     @Test
@@ -96,17 +99,20 @@ public class DeviceManagerTest {
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
 
         Mockito.verify(dbHandler).add(device);
+        Mockito.verify(dbHandler).rollback();
         Mockito.verify(ticketDbHandler).addTicket(eq(device), any(String.class));
     }
 
     @Test
     public void gettingDevicesWorks() {
         Mockito.when(dbHandler.get()).thenReturn(Validation.success(Collections.emptyList()));
+        Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
         Validation<StatusCode, List<UserDevice>> result = uut.get();
 
         assertTrue(result.isSuccess());
         Mockito.verify(dbHandler).get();
+        Mockito.verify(dbHandler).commit();
     }
 
     @Test
@@ -124,6 +130,7 @@ public class DeviceManagerTest {
     public void removeDeviceWorks() {
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDevice.class), any(UserDevice.class))).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(authAdmin.revokeCertificate(device.id)).thenReturn(StatusCode.SUCCESS);
         Principals currentUser = new Principals("Jack", "Device", 1, 1);
 
@@ -132,8 +139,21 @@ public class DeviceManagerTest {
         assertEquals(StatusCode.SUCCESS, result);
         ArgumentCaptor<UserDevice> captor = ArgumentCaptor.forClass(UserDevice.class);
         Mockito.verify(dbHandler).delete(device);
+        Mockito.verify(dbHandler).commit();
         Mockito.verify(foodDbHandler).transferFoodItems(eq(device), captor.capture());
         assertEquals(currentUser.getDid(), captor.getValue().id);
+        Mockito.verify(authAdmin).revokeCertificate(device.id);
+    }
+
+    @Test
+    public void revokingDeviceWorks() {
+        Mockito.when(authAdmin.revokeCertificate(device.id)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.revokeDevice(device);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        Mockito.verify(dbHandler).commit();
         Mockito.verify(authAdmin).revokeCertificate(device.id);
     }
 
@@ -148,6 +168,7 @@ public class DeviceManagerTest {
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         ArgumentCaptor<UserDevice> captor = ArgumentCaptor.forClass(UserDevice.class);
         Mockito.verify(dbHandler).delete(device);
+        Mockito.verify(dbHandler).rollback();
         Mockito.verify(foodDbHandler).transferFoodItems(eq(device), captor.capture());
         assertEquals(currentUser.getDid(), captor.getValue().id);
     }
@@ -162,6 +183,7 @@ public class DeviceManagerTest {
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         ArgumentCaptor<UserDevice> captor = ArgumentCaptor.forClass(UserDevice.class);
         Mockito.verify(foodDbHandler).transferFoodItems(eq(device), captor.capture());
+        Mockito.verify(dbHandler).rollback();
         assertEquals(currentUser.getDid(), captor.getValue().id);
     }
 }

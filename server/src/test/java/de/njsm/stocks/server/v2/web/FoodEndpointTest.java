@@ -1,7 +1,7 @@
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.server.v2.business.FoodManager;
 import de.njsm.stocks.server.v2.business.data.Food;
-import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
 import fj.data.Validation;
@@ -23,17 +23,17 @@ public class FoodEndpointTest {
 
     private FoodEndpoint uut;
 
-    private FoodHandler dbLayer;
+    private FoodManager manager;
 
     @Before
     public void setup() {
-        dbLayer = Mockito.mock(FoodHandler.class);
-        uut = new FoodEndpoint(dbLayer);
+        manager = Mockito.mock(FoodManager.class);
+        uut = new FoodEndpoint(manager);
     }
 
     @After
     public void tearDown() {
-        Mockito.verifyNoMoreInteractions(dbLayer);
+        Mockito.verifyNoMoreInteractions(manager);
     }
 
     @Test
@@ -95,46 +95,46 @@ public class FoodEndpointTest {
     @Test
     public void foodIsAdded() {
         Food data = new Food(0, "Banana", 0);
-        when(dbLayer.add(data)).thenReturn(Validation.success(5));
+        when(manager.add(data)).thenReturn(Validation.success(5));
 
         Response response = uut.putFood(data.name);
 
         assertEquals(SUCCESS, response.status);
-        verify(dbLayer).add(data);
+        verify(manager).add(data);
     }
 
     @Test
     public void getFoodReturnsList() {
         List<Food> data = Collections.singletonList(new Food(2, "Banana", 2));
-        when(dbLayer.get()).thenReturn(Validation.success(data));
+        when(manager.get()).thenReturn(Validation.success(data));
 
         ListResponse<Food> response = uut.getFood();
 
         assertEquals(SUCCESS, response.status);
         assertEquals(data, response.data);
-        verify(dbLayer).get();
+        verify(manager).get();
     }
 
     @Test
     public void renameFoodWorks() {
         Food data = new Food(1, "", 2);
         String newName = "Bread";
-        when(dbLayer.rename(data, newName)).thenReturn(SUCCESS);
+        when(manager.rename(data, newName)).thenReturn(SUCCESS);
 
         Response response = uut.renameFood(data.id, data.version, newName);
 
         assertEquals(SUCCESS, response.status);
-        verify(dbLayer).rename(data, newName);
+        verify(manager).rename(data, newName);
     }
 
     @Test
     public void deleteFoodWorks() {
         Food data = new Food(1, "", 2);
-        when(dbLayer.delete(data)).thenReturn(SUCCESS);
+        when(manager.delete(data)).thenReturn(SUCCESS);
 
         Response response = uut.deleteFood(data.id, data.version);
 
         assertEquals(SUCCESS, response.status);
-        verify(dbLayer).delete(data);
+        verify(manager).delete(data);
     }
 }

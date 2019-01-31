@@ -4,6 +4,7 @@ import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Update;
 import fj.data.Validation;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,9 +12,9 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.UPDATES;
 
 public class UpdateBackend extends FailSafeDatabaseHandler {
 
-    public UpdateBackend(ConnectionFactory connectionFactory,
+    public UpdateBackend(Connection connection,
                          String resourceIdentifier) {
-        super(connectionFactory, resourceIdentifier);
+        super(connection, resourceIdentifier);
     }
 
     public Validation<StatusCode, List<Update>> getUpdates() {

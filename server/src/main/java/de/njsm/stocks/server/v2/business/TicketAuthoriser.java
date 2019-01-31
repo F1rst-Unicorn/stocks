@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Date;
 
-public class TicketAuthoriser {
+public class TicketAuthoriser extends BusinessObject {
 
     private static final Logger LOG = LogManager.getLogger(TicketAuthoriser.class);
 
@@ -32,17 +32,17 @@ public class TicketAuthoriser {
         Validation<StatusCode, ServerTicket> dbTicket = doPrevalidation(ticket);
 
         if (dbTicket.isFail()) {
-            return Validation.fail(StatusCode.ACCESS_DENIED);
+            return finishTransaction(Validation.fail(StatusCode.ACCESS_DENIED), databaseHandler);
         }
 
         authAdmin.saveCsr(ticket.deviceId, ticket.pemFile);
 
         if (! arePrincipalsValid(ticket)) {
             authAdmin.wipeDeviceCredentials(ticket.deviceId);
-            return Validation.fail(StatusCode.ACCESS_DENIED);
+            return finishTransaction(Validation.fail(StatusCode.ACCESS_DENIED), databaseHandler);
         }
 
-        return grantAccess(ticket, dbTicket.success());
+        return finishTransaction(grantAccess(ticket, dbTicket.success()), databaseHandler);
     }
 
     private Validation<StatusCode, ServerTicket> doPrevalidation(ClientTicket ticket) {

@@ -17,7 +17,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new FoodHandler(getConnectionFactory(),
+        uut = new FoodHandler(getConnection(),
                 getNewResourceIdentifier(),
                 new InsertVisitor<>());
     }

@@ -1,10 +1,10 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.business.FoodItemManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
 import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
-import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
 import fj.data.Validation;
@@ -20,10 +20,10 @@ import java.util.List;
 @Path("v2/fooditem")
 public class FoodItemEndpoint extends Endpoint {
 
-    private FoodItemHandler databaseHandler;
+    private FoodItemManager manager;
 
-    public FoodItemEndpoint(FoodItemHandler databaseHandler) {
-        this.databaseHandler = databaseHandler;
+    public FoodItemEndpoint(FoodItemManager manager) {
+        this.manager = manager;
     }
 
     @PUT
@@ -39,7 +39,7 @@ public class FoodItemEndpoint extends Endpoint {
 
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
-            Validation<StatusCode, Integer> status = databaseHandler.add(new FoodItem(eatByDate,
+            Validation<StatusCode, Integer> status = manager.add(new FoodItem(eatByDate,
                     ofType, storedIn, user.getDid(), user.getUid()));
             return new Response(status);
 
@@ -51,7 +51,7 @@ public class FoodItemEndpoint extends Endpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public ListResponse<FoodItem> getItems() {
-        Validation<StatusCode, List<FoodItem>> result = databaseHandler.get();
+        Validation<StatusCode, List<FoodItem>> result = manager.get();
         return new ListResponse<>(result);
     }
 
@@ -70,7 +70,7 @@ public class FoodItemEndpoint extends Endpoint {
 
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
-            StatusCode result = databaseHandler.edit(new FoodItem(id, version,
+            StatusCode result = manager.edit(new FoodItem(id, version,
                     eatByDate, 0, storedIn, user.getDid(), user.getUid()));
 
             return new Response(result);
@@ -86,7 +86,7 @@ public class FoodItemEndpoint extends Endpoint {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-            StatusCode status = databaseHandler.delete(new FoodItem(id, version));
+            StatusCode status = manager.delete(new FoodItem(id, version));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

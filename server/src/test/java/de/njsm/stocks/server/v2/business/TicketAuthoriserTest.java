@@ -52,6 +52,7 @@ public class TicketAuthoriserTest {
         Assert.assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(stub);
+        verify(databaseHandler).rollback();
     }
 
     @Test
@@ -67,6 +68,7 @@ public class TicketAuthoriserTest {
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(stub);
         verify(databaseHandler).getPrincipalsForTicket(stub.ticket);
+        verify(databaseHandler).rollback();
         verify(authAdmin).saveCsr(stub.deviceId, stub.pemFile);
         verify(authAdmin).getPrincipals(stub.deviceId);
         verify(authAdmin).wipeDeviceCredentials(stub.deviceId);
@@ -84,6 +86,7 @@ public class TicketAuthoriserTest {
         Assert.assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
+        verify(databaseHandler).rollback();
     }
 
     @Test
@@ -98,6 +101,7 @@ public class TicketAuthoriserTest {
         Assert.assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
+        verify(databaseHandler).rollback();
     }
 
     @Test
@@ -115,6 +119,7 @@ public class TicketAuthoriserTest {
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket);
+        verify(databaseHandler).rollback();
         verify(authAdmin).saveCsr(deviceId, "");
         verify(authAdmin).getPrincipals(deviceId);
         verify(authAdmin).wipeDeviceCredentials(deviceId);
@@ -136,6 +141,7 @@ public class TicketAuthoriserTest {
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket);
+        verify(databaseHandler).rollback();
         verify(authAdmin).saveCsr(deviceId, "");
         verify(authAdmin).getPrincipals(deviceId);
         verify(authAdmin).wipeDeviceCredentials(deviceId);
@@ -157,6 +163,7 @@ public class TicketAuthoriserTest {
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket);
+        verify(databaseHandler).rollback();
         verify(authAdmin).saveCsr(deviceId, "");
         verify(authAdmin).getPrincipals(deviceId);
         verify(authAdmin).wipeDeviceCredentials(deviceId);
@@ -171,6 +178,7 @@ public class TicketAuthoriserTest {
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
         Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket)).thenReturn(Validation.success(p));
         Mockito.when(databaseHandler.removeTicket(storedTicket)).thenReturn(StatusCode.NOT_FOUND);
+        Mockito.when(databaseHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.success(p));
         Mockito.when(authAdmin.getCertificate(deviceId)).thenReturn(Validation.success("certificate"));
 
@@ -181,6 +189,7 @@ public class TicketAuthoriserTest {
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket);
         verify(databaseHandler).removeTicket(storedTicket);
+        verify(databaseHandler).commit();
         verify(authAdmin).saveCsr(deviceId, "");
         verify(authAdmin).getPrincipals(deviceId);
         verify(authAdmin).generateCertificate(deviceId);
@@ -206,6 +215,7 @@ public class TicketAuthoriserTest {
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket);
         verify(databaseHandler).removeTicket(storedTicket);
+        verify(databaseHandler).rollback();
         verify(authAdmin).saveCsr(deviceId, "");
         verify(authAdmin).getPrincipals(deviceId);
         verify(authAdmin).generateCertificate(deviceId);
@@ -221,6 +231,7 @@ public class TicketAuthoriserTest {
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
         Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket)).thenReturn(Validation.success(p));
         Mockito.when(databaseHandler.removeTicket(storedTicket)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(databaseHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.success(p));
         Mockito.when(authAdmin.getCertificate(deviceId)).thenReturn(Validation.success("certificate"));
 
@@ -231,6 +242,7 @@ public class TicketAuthoriserTest {
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket);
         verify(databaseHandler).removeTicket(storedTicket);
+        verify(databaseHandler).commit();
         verify(authAdmin).saveCsr(deviceId, "");
         verify(authAdmin).getPrincipals(deviceId);
         verify(authAdmin).generateCertificate(deviceId);

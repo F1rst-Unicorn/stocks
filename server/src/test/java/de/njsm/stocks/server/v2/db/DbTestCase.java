@@ -3,9 +3,8 @@ package de.njsm.stocks.server.v2.db;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,28 +18,21 @@ public abstract class DbTestCase {
 
     private static Connection connection;
 
-    private ConnectionFactory factory;
-
-    @BeforeClass
-    public static void connect() throws SQLException {
-        connection = getConnection();
-    }
-
     @Before
     public void resetDatabase() throws SQLException {
+        connection = createConnection();
         SampleData.insertSampleData(connection);
-        factory = new MockConnectionFactory(connection);
 
         resourceCounter++;
     }
 
-    @AfterClass
-    public static void tearDown() throws SQLException {
+    @After
+    public void tearDown() throws SQLException {
         connection.close();
     }
 
-    protected ConnectionFactory getConnectionFactory() {
-        return factory;
+    protected Connection getConnection() {
+        return connection;
     }
 
     protected DSLContext getDSLContext() {
@@ -51,13 +43,13 @@ public abstract class DbTestCase {
         return "hystrix group " + String.valueOf(resourceCounter);
     }
 
-    static Connection getConnection() throws SQLException {
+    static Connection createConnection() throws SQLException {
         String url = getUrl();
 
         return DriverManager.getConnection(url, getPostgresqlProperties(System.getProperties()));
     }
 
-    static String getUrl() {
+    protected static String getUrl() {
         String address = System.getProperty("de.njsm.stocks.server.v2.db.host");
         String port = System.getProperty("de.njsm.stocks.server.v2.db.port");
         String name = System.getProperty("de.njsm.stocks.server.v2.db.name");
@@ -68,7 +60,7 @@ public abstract class DbTestCase {
                 name);
     }
 
-    static Properties getPostgresqlProperties(Properties config) {
+    protected static Properties getPostgresqlProperties(Properties config) {
         String postgresqlConfigPrefix = "de.njsm.stocks.server.v2.db.postgres.";
         Properties result = new Properties();
 

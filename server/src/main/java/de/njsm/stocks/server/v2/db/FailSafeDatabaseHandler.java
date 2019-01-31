@@ -22,9 +22,9 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
 
     private String resourceIdentifier;
 
-    public FailSafeDatabaseHandler(ConnectionFactory connectionFactory,
+    public FailSafeDatabaseHandler(Connection connection,
                                    String resourceIdentifier) {
-        super(connectionFactory);
+        super(connection);
         this.resourceIdentifier = resourceIdentifier;
     }
 
@@ -51,6 +51,24 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
         }
     }
 
+    public StatusCode commit() {
+        try {
+            return new ConnectionCloser(resourceIdentifier, getConnection()).commit();
+        } catch (SQLException e) {
+            LOG.error("This should not happen", e);
+            return getDefaultErrorCode();
+        }
+    }
+
+    public StatusCode rollback() {
+        try {
+            return new ConnectionCloser(resourceIdentifier, getConnection()).rollback();
+        } catch (SQLException e) {
+            LOG.error("This should not happen", e);
+            return getDefaultErrorCode();
+        }
+    }
+
     @Override
     public String getResourceIdentifier() {
         return resourceIdentifier;
@@ -66,12 +84,9 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
     wrap(FunctionWithExceptions<DSLContext, Validation<StatusCode, O>, SQLException> client) {
         return () -> {
             Connection con = getConnection();
-            Validation<StatusCode, O> result = DSL.using(con, SQLDialect.POSTGRES_10).transactionResult(configuration -> {
-                DSLContext context = DSL.using(configuration);
-                return client.apply(context);
-            });
-            close(con);
-            return result;
+            con.setAutoCommit(false);
+            DSLContext context = DSL.using(con, SQLDialect.POSTGRES);
+            return client.apply(context);
         };
     }
 

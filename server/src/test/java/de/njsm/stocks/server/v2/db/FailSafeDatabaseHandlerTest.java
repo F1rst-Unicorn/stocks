@@ -13,13 +13,18 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+
 public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
     private FailSafeDatabaseHandler uut;
 
     @Before
-    public void setup() {
-        uut = new FailSafeDatabaseHandler(getConnectionFactory(),
+    public void setup() throws SQLException {
+        Connection c = getConnection();
+        c.setAutoCommit(false);
+        uut = new FailSafeDatabaseHandler(getConnection(),
                 getNewResourceIdentifier());
     }
 
@@ -57,5 +62,23 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         Thread.sleep(500);      // hystrix window has to shift
 
         Assert.assertTrue(uut.isCircuitBreakerOpen());
+    }
+
+    @Test
+    public void testCommitting() throws SQLException {
+
+        StatusCode result = uut.commit();
+
+        assertEquals(StatusCode.SUCCESS, result);
+        assertTrue(getConnection().isClosed());
+    }
+
+    @Test
+    public void testRollingBack() throws SQLException {
+
+        StatusCode result = uut.rollback();
+
+        assertEquals(StatusCode.SUCCESS, result);
+        assertTrue(getConnection().isClosed());
     }
 }

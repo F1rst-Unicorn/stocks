@@ -18,7 +18,7 @@ public class UserHandlerTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new UserHandler(getConnectionFactory(),
+        uut = new UserHandler(getConnection(),
                 getNewResourceIdentifier(),
                 new InsertVisitor<>());
     }

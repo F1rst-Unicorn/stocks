@@ -1,9 +1,9 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v1.endpoints.BaseTestEndpoint;
+import de.njsm.stocks.server.v2.business.FoodItemManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
 import fj.data.Validation;
@@ -24,28 +24,28 @@ public class FoodItemEndpointTest {
 
     private FoodItemEndpoint uut;
 
-    private FoodItemHandler databaseHandler;
+    private FoodItemManager manager;
 
     @Before
     public void setup() {
-        databaseHandler = Mockito.mock(FoodItemHandler.class);
-        uut = new FoodItemEndpoint(databaseHandler);
+        manager = Mockito.mock(FoodItemManager.class);
+        uut = new FoodItemEndpoint(manager);
     }
 
     @After
     public void tearDown() {
-        Mockito.verifyNoMoreInteractions(databaseHandler);
+        Mockito.verifyNoMoreInteractions(manager);
     }
 
     @Test
     public void testGettingItems() {
-        Mockito.when(databaseHandler.get()).thenReturn(Validation.success(new LinkedList<>()));
+        Mockito.when(manager.get()).thenReturn(Validation.success(new LinkedList<>()));
 
         ListResponse<FoodItem> result = uut.getItems();
 
         assertEquals(StatusCode.SUCCESS, result.status);
         assertEquals(0, result.data.size());
-        Mockito.verify(databaseHandler).get();
+        Mockito.verify(manager).get();
     }
 
     @Test
@@ -77,12 +77,12 @@ public class FoodItemEndpointTest {
         FoodItem expected = new FoodItem(0, 0, Instant.EPOCH, 2, 2,
                 PrincipalFilterTest.TEST_USER.getDid(),
                 PrincipalFilterTest.TEST_USER.getUid());
-        Mockito.when(databaseHandler.add(expected)).thenReturn(Validation.success(5));
+        Mockito.when(manager.add(expected)).thenReturn(Validation.success(5));
 
         Response result = uut.putItem(BaseTestEndpoint.createMockRequest(), DATE, expected.storedIn, expected.ofType);
 
         assertEquals(StatusCode.SUCCESS, result.status);
-        Mockito.verify(databaseHandler).add(expected);
+        Mockito.verify(manager).add(expected);
     }
 
     @Test
@@ -122,13 +122,13 @@ public class FoodItemEndpointTest {
         FoodItem expected = new FoodItem(2, 2, Instant.EPOCH, 0, 2,
                 PrincipalFilterTest.TEST_USER.getDid(),
                 PrincipalFilterTest.TEST_USER.getUid());
-        Mockito.when(databaseHandler.edit(expected)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(manager.edit(expected)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.editItem(BaseTestEndpoint.createMockRequest(),
                 expected.id, expected.version, DATE, expected.storedIn);
 
         assertEquals(StatusCode.SUCCESS, result.status);
-        Mockito.verify(databaseHandler).edit(expected);
+        Mockito.verify(manager).edit(expected);
     }
 
     @Test
@@ -150,11 +150,11 @@ public class FoodItemEndpointTest {
     @Test
     public void validDeletionHappens() {
         FoodItem expected = new FoodItem(2, 2, Instant.EPOCH, 0, 0, 0, 0);
-        Mockito.when(databaseHandler.delete(expected)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(manager.delete(expected)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.deleteItem(expected.id, expected.version);
 
         assertEquals(StatusCode.SUCCESS, result.status);
-        Mockito.verify(databaseHandler).delete(expected);
+        Mockito.verify(manager).delete(expected);
     }
 }

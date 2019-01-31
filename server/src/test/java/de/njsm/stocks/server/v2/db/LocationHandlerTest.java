@@ -23,7 +23,7 @@ public class LocationHandlerTest extends DbTestCase {
     public void setup() {
         foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
-        uut = new LocationHandler(getConnectionFactory(),
+        uut = new LocationHandler(getConnection(),
                 getNewResourceIdentifier(),
                 new InsertVisitor<>(),
                 foodItemHandler);

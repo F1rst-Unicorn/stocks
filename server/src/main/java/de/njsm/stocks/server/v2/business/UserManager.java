@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-public class UserManager {
+public class UserManager extends BusinessObject {
 
     private static final Logger LOG = LogManager.getLogger(UserManager.class);
 
@@ -30,34 +30,35 @@ public class UserManager {
     }
 
     public StatusCode addUser(User u) {
-        return dbHandler.add(u)
+        StatusCode result = dbHandler.add(u)
                 .toEither().left().orValue(StatusCode.SUCCESS);
+        return finishTransaction(result, dbHandler);
     }
 
     public Validation<StatusCode, List<User>> get() {
-        return dbHandler.get();
+        return finishTransaction(dbHandler.get(), dbHandler);
     }
 
     public StatusCode deleteUser(User userToDelete, Principals currentUser) {
         Validation<StatusCode, List<UserDevice>> devices = deviceManager.getDevicesBelonging(userToDelete);
 
         if (devices.isFail())
-            return devices.fail();
+            return finishTransaction(devices.fail(), dbHandler);
 
         for (UserDevice device : devices.success()) {
-            StatusCode removeCode = deviceManager.removeDevice(device, currentUser);
+            StatusCode removeCode = deviceManager.removeDeviceInternally(device, currentUser);
 
             if (removeCode != StatusCode.SUCCESS) {
-                return removeCode;
+                return finishTransaction(removeCode, dbHandler);
             }
         }
         StatusCode transferItemsCode = foodItemHandler.transferFoodItems(userToDelete, currentUser.toUser());
 
         if (transferItemsCode != StatusCode.SUCCESS) {
-            return transferItemsCode;
+            return finishTransaction(transferItemsCode, dbHandler);
         }
 
-        return dbHandler.delete(userToDelete);
+        return finishTransaction(dbHandler.delete(userToDelete), dbHandler);
     }
 
 }

@@ -9,110 +9,126 @@
     <bean name="dbInsertVisitor" class="de.njsm.stocks.server.v2.db.InsertVisitor" />
 
     <!-- DB Layer -->
-    <bean name="foodDbHandler" class="de.njsm.stocks.server.v2.db.FoodHandler">
-        <constructor-arg index="0" ref="connectionFactory"/>
+    <bean name="foodDbHandler" class="de.njsm.stocks.server.v2.db.FoodHandler" scope="request">
+        <constructor-arg index="0" ref="requestConnection"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="dbInsertVisitor" />
     </bean>
 
-    <bean name="eanNumberDbHandler" class="de.njsm.stocks.server.v2.db.EanNumberHandler">
-        <constructor-arg index="0" ref="connectionFactory"/>
+    <bean name="eanNumberDbHandler" class="de.njsm.stocks.server.v2.db.EanNumberHandler" scope="request">
+        <constructor-arg index="0" ref="requestConnection"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="dbInsertVisitor" />
     </bean>
 
-    <bean name="locationDbHandler" class="de.njsm.stocks.server.v2.db.LocationHandler">
-        <constructor-arg index="0" ref="connectionFactory"/>
+    <bean name="locationDbHandler" class="de.njsm.stocks.server.v2.db.LocationHandler" scope="request">
+        <constructor-arg index="0" ref="requestConnection"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="dbInsertVisitor" />
         <constructor-arg index="3" ref="foodItemBackend" />
     </bean>
 
-    <bean name="ticketBackend" class="de.njsm.stocks.server.v2.db.TicketBackend">
-        <constructor-arg index="0" ref="connectionFactory"/>
+    <bean name="ticketBackend" class="de.njsm.stocks.server.v2.db.TicketBackend" scope="request">
+        <constructor-arg index="0" ref="requestConnection"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
     </bean>
 
-    <bean name="updateBackend" class="de.njsm.stocks.server.v2.db.UpdateBackend">
-        <constructor-arg index="0" ref="connectionFactory"/>
+    <bean name="updateBackend" class="de.njsm.stocks.server.v2.db.UpdateBackend" scope="request">
+        <constructor-arg index="0" ref="requestConnection"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
     </bean>
 
-    <bean name="foodItemBackend" class="de.njsm.stocks.server.v2.db.FoodItemHandler">
-        <constructor-arg index="0" ref="connectionFactory" />
+    <bean name="foodItemBackend" class="de.njsm.stocks.server.v2.db.FoodItemHandler" scope="request">
+        <constructor-arg index="0" ref="requestConnection" />
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="dbInsertVisitor" />
         <constructor-arg index="3" ref="deviceBackend" />
         <constructor-arg index="4" ref="userBackend" />
     </bean>
 
-    <bean name="deviceBackend" class="de.njsm.stocks.server.v2.db.UserDeviceHandler">
-        <constructor-arg index="0" ref="connectionFactory" />
+    <bean name="deviceBackend" class="de.njsm.stocks.server.v2.db.UserDeviceHandler" scope="request">
+        <constructor-arg index="0" ref="requestConnection" />
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="dbInsertVisitor" />
     </bean>
 
-    <bean name="userBackend" class="de.njsm.stocks.server.v2.db.UserHandler">
-        <constructor-arg index="0" ref="connectionFactory" />
+    <bean name="userBackend" class="de.njsm.stocks.server.v2.db.UserHandler" scope="request">
+        <constructor-arg index="0" ref="requestConnection" />
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="dbInsertVisitor" />
     </bean>
 
     <!-- Business Layer -->
-    <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" >
+    <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" scope="request">
         <constructor-arg index="0" ref="authAdmin"/>
         <constructor-arg index="1" ref="ticketBackend"/>
         <constructor-arg index="2" ref="ticketValidity"/>
     </bean>
 
-    <bean name="deviceManager" class="de.njsm.stocks.server.v2.business.DeviceManager" >
+    <bean name="deviceManager" class="de.njsm.stocks.server.v2.business.DeviceManager" scope="request">
         <constructor-arg index="0" ref="deviceBackend" />
         <constructor-arg index="1" ref="foodItemBackend" />
         <constructor-arg index="2" ref="ticketBackend" />
         <constructor-arg index="3" ref="authAdmin" />
     </bean>
 
-    <bean name="userManager" class="de.njsm.stocks.server.v2.business.UserManager">
+    <bean name="userManager" class="de.njsm.stocks.server.v2.business.UserManager" scope="request">
         <constructor-arg index="0" ref="userBackend" />
         <constructor-arg index="1" ref="deviceManager" />
         <constructor-arg index="2" ref="foodItemBackend" />
     </bean>
 
-    <bean name="locationManager" class="de.njsm.stocks.server.v2.business.LocationManager">
+    <bean name="locationManager" class="de.njsm.stocks.server.v2.business.LocationManager" scope="request">
         <constructor-arg index="0" ref="locationDbHandler" />
         <constructor-arg index="1" ref="foodItemBackend" />
     </bean>
 
+    <bean name="updateManager" class="de.njsm.stocks.server.v2.business.UpdateManager" scope="request">
+        <constructor-arg index="0" ref="updateBackend"/>
+    </bean>
+
+    <bean name="eanNumberManager" class="de.njsm.stocks.server.v2.business.EanNumberManager" scope="request">
+        <constructor-arg index="0" ref="eanNumberDbHandler"/>
+    </bean>
+
+    <bean name="foodManager" class="de.njsm.stocks.server.v2.business.FoodManager" scope="request">
+        <constructor-arg index="0" ref="foodDbHandler"/>
+    </bean>
+
+    <bean name="foodItemManager" class="de.njsm.stocks.server.v2.business.FoodItemManager" scope="request">
+        <constructor-arg index="0" ref="foodItemBackend"/>
+    </bean>
+
     <!-- Web Layer -->
-    <bean name="updateEndpoint" class="de.njsm.stocks.server.v2.web.UpdateEndpoint">
-        <constructor-arg index="0" ref="updateBackend" />
+    <bean name="updateEndpoint" class="de.njsm.stocks.server.v2.web.UpdateEndpoint" scope="request">
+        <constructor-arg index="0" ref="updateManager" />
     </bean>
 
-    <bean name="foodEndpoint" class="de.njsm.stocks.server.v2.web.FoodEndpoint">
-        <constructor-arg index="0" ref="foodDbHandler" />
+    <bean name="foodEndpoint" class="de.njsm.stocks.server.v2.web.FoodEndpoint" scope="request">
+        <constructor-arg index="0" ref="foodManager" />
     </bean>
 
-    <bean name="locationEndpoint" class="de.njsm.stocks.server.v2.web.LocationEndpoint">
+    <bean name="locationEndpoint" class="de.njsm.stocks.server.v2.web.LocationEndpoint" scope="request">
         <constructor-arg index="0" ref="locationManager" />
     </bean>
 
-    <bean name="eanNumberEndpoint" class="de.njsm.stocks.server.v2.web.EanNumberEndpoint">
-        <constructor-arg index="0" ref="eanNumberDbHandler" />
+    <bean name="eanNumberEndpoint" class="de.njsm.stocks.server.v2.web.EanNumberEndpoint" scope="request">
+        <constructor-arg index="0" ref="eanNumberManager" />
     </bean>
 
-    <bean name="registrationEndpoint" class="de.njsm.stocks.server.v2.web.RegistrationEndpoint">
+    <bean name="registrationEndpoint" class="de.njsm.stocks.server.v2.web.RegistrationEndpoint" scope="request">
         <constructor-arg index="0" ref="ticketAuthoriser" />
     </bean>
 
-    <bean name="foodItemEndpoint" class="de.njsm.stocks.server.v2.web.FoodItemEndpoint" >
-        <constructor-arg index="0" ref="foodItemBackend" />
+    <bean name="foodItemEndpoint" class="de.njsm.stocks.server.v2.web.FoodItemEndpoint" scope="request">
+        <constructor-arg index="0" ref="foodItemManager" />
     </bean>
 
-    <bean name="deviceEndpoint" class="de.njsm.stocks.server.v2.web.DeviceEndpoint" >
+    <bean name="deviceEndpoint" class="de.njsm.stocks.server.v2.web.DeviceEndpoint" scope="request">
         <constructor-arg index="0" ref="deviceManager" />
     </bean>
 
-    <bean name="userEndpoint" class="de.njsm.stocks.server.v2.web.UserEndpoint">
+    <bean name="userEndpoint" class="de.njsm.stocks.server.v2.web.UserEndpoint" scope="request">
         <constructor-arg index="0" ref="userManager" />
     </bean>
 </beans>

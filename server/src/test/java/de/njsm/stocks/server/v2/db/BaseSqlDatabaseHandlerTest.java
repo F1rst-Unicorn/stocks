@@ -18,7 +18,7 @@ public class BaseSqlDatabaseHandlerTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new FailSafeDatabaseHandler(getConnectionFactory(),
+        uut = new FailSafeDatabaseHandler(getConnection(),
                 getNewResourceIdentifier());
     }
 
@@ -48,6 +48,21 @@ public class BaseSqlDatabaseHandlerTest extends DbTestCase {
     }
 
     @Test
+    public void testCommitWithNull() {
+        uut.commit(null);
+    }
+
+    @Test
+    public void testCommitWithConnection() throws SQLException {
+        Connection con = Mockito.mock(Connection.class);
+
+        uut.commit(con);
+
+        Mockito.verify(con).commit();
+        Mockito.verifyNoMoreInteractions(con);
+    }
+
+    @Test
     public void testRollbackWithException() throws SQLException {
         Connection con = Mockito.mock(Connection.class);
         Mockito.doThrow(new SQLException("Mockito")).when(con).rollback();
@@ -67,11 +82,10 @@ public class BaseSqlDatabaseHandlerTest extends DbTestCase {
     public void testClosingWithException() throws SQLException {
         Connection con = Mockito.mock(Connection.class);
         Mockito.doThrow(new SQLException("Mockito")).when(con).close();
-        ((MockConnectionFactory) getConnectionFactory()).setThrowException(true);
 
         uut.close(con);
 
-        ((MockConnectionFactory) getConnectionFactory()).setThrowException(false);
+        Mockito.verify(con).close();
         Mockito.verifyNoMoreInteractions(con);
     }
 

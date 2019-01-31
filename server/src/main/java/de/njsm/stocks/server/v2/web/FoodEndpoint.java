@@ -1,8 +1,8 @@
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.server.v2.business.FoodManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Food;
-import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
 import fj.data.Validation;
@@ -14,17 +14,17 @@ import java.util.List;
 @Path("v2/food")
 public class FoodEndpoint extends Endpoint {
 
-    private FoodHandler databaseHandler;
+    private FoodManager manager;
 
-    public FoodEndpoint(FoodHandler databaseHandler) {
-        this.databaseHandler = databaseHandler;
+    public FoodEndpoint(FoodManager manager) {
+        this.manager = manager;
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response putFood(@QueryParam("name") String name) {
         if (isValid(name, "name")) {
-            Validation<StatusCode, Integer> status = databaseHandler.add(new Food(name));
+            Validation<StatusCode, Integer> status = manager.add(new Food(name));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -34,7 +34,7 @@ public class FoodEndpoint extends Endpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public ListResponse<Food> getFood() {
-        Validation<StatusCode, List<Food>> result = databaseHandler.get();
+        Validation<StatusCode, List<Food>> result = manager.get();
         return new ListResponse<>(result);
     }
 
@@ -48,7 +48,7 @@ public class FoodEndpoint extends Endpoint {
                 isValidVersion(version, "version") &&
                 isValid(newName, "newName")) {
 
-            StatusCode status = databaseHandler.rename(new Food(id, "", version), newName);
+            StatusCode status = manager.rename(new Food(id, "", version), newName);
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -62,7 +62,7 @@ public class FoodEndpoint extends Endpoint {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-            StatusCode status = databaseHandler.delete(new Food(id, "", version));
+            StatusCode status = manager.delete(new Food(id, "", version));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

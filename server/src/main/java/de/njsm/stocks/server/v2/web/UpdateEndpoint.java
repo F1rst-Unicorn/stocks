@@ -1,8 +1,8 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.server.v2.business.UpdateManager;
 import de.njsm.stocks.server.v2.business.data.Update;
-import de.njsm.stocks.server.v2.db.UpdateBackend;
 import de.njsm.stocks.server.v2.web.data.ListResponse;
 import fj.data.Validation;
 
@@ -14,9 +14,9 @@ import java.util.List;
 @Path("/v2/update")
 public class UpdateEndpoint {
 
-    private UpdateBackend handler;
+    private UpdateManager handler;
 
-    public UpdateEndpoint(UpdateBackend handler) {
+    public UpdateEndpoint(UpdateManager handler) {
         this.handler = handler;
     }
 

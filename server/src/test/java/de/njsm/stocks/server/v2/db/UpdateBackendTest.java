@@ -20,7 +20,7 @@ public class UpdateBackendTest extends DbTestCase {
     public void setup() {
 
         Config c = new Config(System.getProperties());
-        uut = new UpdateBackend(getConnectionFactory(),
+        uut = new UpdateBackend(getConnection(),
                 getNewResourceIdentifier());
     }
 

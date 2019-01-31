@@ -7,7 +7,7 @@ import fj.data.Validation;
 
 import java.util.List;
 
-public class LocationManager {
+public class LocationManager extends BusinessObject {
 
     private LocationHandler locationHandler;
 
@@ -20,16 +20,17 @@ public class LocationManager {
     }
 
     public StatusCode put(Location location) {
-        return locationHandler.add(location)
+        StatusCode result = locationHandler.add(location)
                 .toEither().left().orValue(StatusCode.SUCCESS);
+        return finishTransaction(result, locationHandler);
     }
 
     public Validation<StatusCode, List<Location>> get() {
-        return locationHandler.get();
+        return finishTransaction(locationHandler.get(), locationHandler);
     }
 
     public StatusCode rename(Location item, String newName) {
-        return locationHandler.rename(item, newName);
+        return finishTransaction(locationHandler.rename(item, newName), locationHandler);
     }
 
     public StatusCode delete(Location l, boolean cascadeOnFoodItems) {
@@ -37,9 +38,10 @@ public class LocationManager {
             StatusCode deleteFoodResult = foodItemHandler.deleteItemsStoredIn(l);
 
             if (deleteFoodResult != StatusCode.SUCCESS)
-                return deleteFoodResult;
+                return finishTransaction(deleteFoodResult, foodItemHandler);
         }
 
-        return locationHandler.delete(l);
+        StatusCode result = locationHandler.delete(l);
+        return finishTransaction(result, locationHandler);
     }
 }

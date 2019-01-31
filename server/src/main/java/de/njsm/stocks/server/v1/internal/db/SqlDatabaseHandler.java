@@ -4,13 +4,12 @@ import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v1.internal.data.*;
 import de.njsm.stocks.server.v1.internal.data.visitor.AddStatementVisitor;
 import de.njsm.stocks.server.v1.internal.data.visitor.SqlStatementFillerVisitor;
-import de.njsm.stocks.server.v2.db.ConnectionFactory;
 import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class SqlDatabaseHandler extends FailSafeDatabaseHandler implements de.njsm.stocks.server.v1.internal.db.DatabaseHandler {
 
@@ -18,10 +17,22 @@ public class SqlDatabaseHandler extends FailSafeDatabaseHandler implements de.nj
 
     private SqlStatementFillerVisitor fillerVisitor;
 
-    public SqlDatabaseHandler(ConnectionFactory connectionFactory, String resourceIdentifier) {
-        super(connectionFactory, resourceIdentifier);
+    private String dbUrl;
+
+    private Properties dbConfig;
+
+    public SqlDatabaseHandler(Connection connection, String dbUrl, Properties dbConfig, String resourceIdentifier) {
+        super(connection, resourceIdentifier);
+        close(connection);
         this.addStatementVisitor = new AddStatementVisitor();
         this.fillerVisitor = new SqlStatementFillerVisitor();
+        this.dbUrl = dbUrl;
+        this.dbConfig = dbConfig;
+    }
+
+    @Override
+    protected Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(dbUrl, dbConfig);
     }
 
     @Override

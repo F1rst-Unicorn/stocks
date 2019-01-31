@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 import java.security.SecureRandom;
 import java.util.List;
 
-public class DeviceManager {
+public class DeviceManager extends BusinessObject {
 
     private static final Logger LOG = LogManager.getLogger(DeviceManager.class);
 
@@ -43,29 +43,38 @@ public class DeviceManager {
 
         Validation<StatusCode, Integer> deviceAddResult = deviceBackend.add(device);
         if (deviceAddResult.isFail())
-            return Validation.fail(deviceAddResult.fail());
+            return finishTransaction(Validation.fail(deviceAddResult.fail()), deviceBackend);
 
         device.id = deviceAddResult.success();
         String ticket = generateTicket();
 
         StatusCode ticketAddResult = ticketBackend.addTicket(device, ticket);
         if (ticketAddResult != StatusCode.SUCCESS)
-            return Validation.fail(ticketAddResult);
+            return finishTransaction(Validation.fail(ticketAddResult), deviceBackend);
 
         ClientTicket result = new ClientTicket(deviceAddResult.success(), ticket);
 
-        return Validation.success(result);
+        return finishTransaction(Validation.success(result), deviceBackend);
     }
 
     public Validation<StatusCode, List<UserDevice>> get() {
-        return deviceBackend.get();
-    }
-
-    public Validation<StatusCode, List<UserDevice>> getDevicesBelonging(User u) {
-        return deviceBackend.getDevicesOfUser(u);
+        return finishTransaction(deviceBackend.get(), deviceBackend);
     }
 
     public StatusCode removeDevice(UserDevice device, Principals currentUser) {
+        StatusCode result = removeDeviceInternally(device, currentUser);
+        return finishTransaction(result, deviceBackend);
+    }
+
+    public StatusCode revokeDevice(UserDevice device) {
+        return finishTransaction(authAdmin.revokeCertificate(device.id), deviceBackend);
+    }
+
+    Validation<StatusCode, List<UserDevice>> getDevicesBelonging(User u) {
+        return deviceBackend.getDevicesOfUser(u);
+    }
+
+    StatusCode removeDeviceInternally(UserDevice device, Principals currentUser) {
 
         StatusCode transferResult = foodItemHandler.transferFoodItems(device, currentUser.toDevice());
         if (transferResult != StatusCode.SUCCESS)
@@ -75,10 +84,6 @@ public class DeviceManager {
         if (deleteResult != StatusCode.SUCCESS)
             return deleteResult;
 
-        return revokeDevice(device);
-    }
-
-    public StatusCode revokeDevice(UserDevice device) {
         return authAdmin.revokeCertificate(device.id);
     }
 

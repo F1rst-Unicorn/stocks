@@ -19,7 +19,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new UserDeviceHandler(getConnectionFactory(),
+        uut = new UserDeviceHandler(getConnection(),
                 getNewResourceIdentifier(),
                 new InsertVisitor<>());
     }

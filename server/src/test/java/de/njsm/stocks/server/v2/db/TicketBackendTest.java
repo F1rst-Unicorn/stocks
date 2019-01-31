@@ -20,7 +20,7 @@ public class TicketBackendTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new TicketBackend(getConnectionFactory(),
+        uut = new TicketBackend(getConnection(),
                 getNewResourceIdentifier());
     }
 

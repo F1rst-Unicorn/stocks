@@ -34,7 +34,7 @@ public class FoodItemHandlerTest extends DbTestCase {
         userDevicePresenceChecker = (PresenceChecker<UserDevice>) Mockito.mock(PresenceChecker.class);
         userPresenceChecker = (PresenceChecker<User>) Mockito.mock(PresenceChecker.class);
 
-        uut = new FoodItemHandler(getConnectionFactory(),
+        uut = new FoodItemHandler(getConnection(),
                 getNewResourceIdentifier(),
                 new InsertVisitor<>(),
                 userDevicePresenceChecker,

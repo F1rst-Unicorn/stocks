@@ -48,22 +48,26 @@ public class UserManagerTest {
     @Test
     public void getUsersWorks() {
         Mockito.when(userDbHandler.get()).thenReturn(Validation.success(Collections.emptyList()));
+        Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
         Validation<StatusCode, List<User>> result = uut.get();
 
         assertTrue(result.isSuccess());
         Mockito.verify(userDbHandler).get();
+        Mockito.verify(userDbHandler).commit();
     }
 
     @Test
     public void successfulAddingWorks() {
         User input = new User("fdsa");
         Mockito.when(userDbHandler.add(any())).thenReturn(Validation.success(4));
+        Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.addUser(input);
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(userDbHandler).add(input);
+        Mockito.verify(userDbHandler).commit();
     }
 
     @Test
@@ -75,6 +79,7 @@ public class UserManagerTest {
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         Mockito.verify(userDbHandler).add(input);
+        Mockito.verify(userDbHandler).rollback();
     }
 
     @Test
@@ -87,6 +92,7 @@ public class UserManagerTest {
 
         assertEquals(code, result);
         Mockito.verify(deviceManager).getDevicesBelonging(input);
+        Mockito.verify(userDbHandler).rollback();
     }
 
     @Test
@@ -98,20 +104,21 @@ public class UserManagerTest {
         devices.add(new UserDevice(2, 2, "fdsa", input.id));
         devices.add(new UserDevice(3, 2, "fdsa", input.id));
         Mockito.when(deviceManager.getDevicesBelonging(input)).thenReturn(Validation.success(devices));
-        Mockito.when(deviceManager.removeDevice(devices.get(0), PrincipalFilterTest.TEST_USER))
+        Mockito.when(deviceManager.removeDeviceInternally(devices.get(0), PrincipalFilterTest.TEST_USER))
                 .thenReturn(StatusCode.SUCCESS);
-        Mockito.when(deviceManager.removeDevice(devices.get(1), PrincipalFilterTest.TEST_USER))
+        Mockito.when(deviceManager.removeDeviceInternally(devices.get(1), PrincipalFilterTest.TEST_USER))
                 .thenReturn(StatusCode.SUCCESS);
-        Mockito.when(deviceManager.removeDevice(devices.get(2), PrincipalFilterTest.TEST_USER))
+        Mockito.when(deviceManager.removeDeviceInternally(devices.get(2), PrincipalFilterTest.TEST_USER))
                 .thenReturn(code);
 
         StatusCode result = uut.deleteUser(input, PrincipalFilterTest.TEST_USER);
 
         assertEquals(code, result);
         Mockito.verify(deviceManager).getDevicesBelonging(input);
-        Mockito.verify(deviceManager).removeDevice(devices.get(0), PrincipalFilterTest.TEST_USER);
-        Mockito.verify(deviceManager).removeDevice(devices.get(1), PrincipalFilterTest.TEST_USER);
-        Mockito.verify(deviceManager).removeDevice(devices.get(2), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDeviceInternally(devices.get(0), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDeviceInternally(devices.get(1), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDeviceInternally(devices.get(2), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(userDbHandler).rollback();
     }
 
     @Test
@@ -123,22 +130,24 @@ public class UserManagerTest {
         devices.add(new UserDevice(2, 2, "fdsa", input.id));
         devices.add(new UserDevice(3, 2, "fdsa", input.id));
         Mockito.when(deviceManager.getDevicesBelonging(input)).thenReturn(Validation.success(devices));
-        Mockito.when(deviceManager.removeDevice(devices.get(0), PrincipalFilterTest.TEST_USER))
+        Mockito.when(deviceManager.removeDeviceInternally(devices.get(0), PrincipalFilterTest.TEST_USER))
                 .thenReturn(StatusCode.SUCCESS);
-        Mockito.when(deviceManager.removeDevice(devices.get(1), PrincipalFilterTest.TEST_USER))
+        Mockito.when(deviceManager.removeDeviceInternally(devices.get(1), PrincipalFilterTest.TEST_USER))
                 .thenReturn(StatusCode.SUCCESS);
-        Mockito.when(deviceManager.removeDevice(devices.get(2), PrincipalFilterTest.TEST_USER))
+        Mockito.when(deviceManager.removeDeviceInternally(devices.get(2), PrincipalFilterTest.TEST_USER))
                 .thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser()))
                 .thenReturn(code);
+
         StatusCode result = uut.deleteUser(input, PrincipalFilterTest.TEST_USER);
 
         assertEquals(code, result);
         Mockito.verify(deviceManager).getDevicesBelonging(input);
-        Mockito.verify(deviceManager).removeDevice(devices.get(0), PrincipalFilterTest.TEST_USER);
-        Mockito.verify(deviceManager).removeDevice(devices.get(1), PrincipalFilterTest.TEST_USER);
-        Mockito.verify(deviceManager).removeDevice(devices.get(2), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDeviceInternally(devices.get(0), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDeviceInternally(devices.get(1), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDeviceInternally(devices.get(2), PrincipalFilterTest.TEST_USER);
         Mockito.verify(foodItemHandler).transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser());
+        Mockito.verify(userDbHandler).rollback();
     }
 
     @Test
@@ -149,24 +158,26 @@ public class UserManagerTest {
         devices.add(new UserDevice(2, 2, "fdsa", input.id));
         devices.add(new UserDevice(3, 2, "fdsa", input.id));
         Mockito.when(deviceManager.getDevicesBelonging(input)).thenReturn(Validation.success(devices));
-        Mockito.when(deviceManager.removeDevice(devices.get(0), PrincipalFilterTest.TEST_USER))
+        Mockito.when(deviceManager.removeDeviceInternally(devices.get(0), PrincipalFilterTest.TEST_USER))
                 .thenReturn(StatusCode.SUCCESS);
-        Mockito.when(deviceManager.removeDevice(devices.get(1), PrincipalFilterTest.TEST_USER))
+        Mockito.when(deviceManager.removeDeviceInternally(devices.get(1), PrincipalFilterTest.TEST_USER))
                 .thenReturn(StatusCode.SUCCESS);
-        Mockito.when(deviceManager.removeDevice(devices.get(2), PrincipalFilterTest.TEST_USER))
+        Mockito.when(deviceManager.removeDeviceInternally(devices.get(2), PrincipalFilterTest.TEST_USER))
                 .thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser()))
                 .thenReturn(StatusCode.SUCCESS);
         Mockito.when(userDbHandler.delete(input)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.deleteUser(input, PrincipalFilterTest.TEST_USER);
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(deviceManager).getDevicesBelonging(input);
-        Mockito.verify(deviceManager).removeDevice(devices.get(0), PrincipalFilterTest.TEST_USER);
-        Mockito.verify(deviceManager).removeDevice(devices.get(1), PrincipalFilterTest.TEST_USER);
-        Mockito.verify(deviceManager).removeDevice(devices.get(2), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDeviceInternally(devices.get(0), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDeviceInternally(devices.get(1), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(deviceManager).removeDeviceInternally(devices.get(2), PrincipalFilterTest.TEST_USER);
         Mockito.verify(foodItemHandler).transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser());
         Mockito.verify(userDbHandler).delete(input);
+        Mockito.verify(userDbHandler).commit();
     }
 }
