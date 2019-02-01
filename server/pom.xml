@@ -38,143 +38,149 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet</artifactId>
-            <version>2.26</version>
+            <version>2.28</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
-            <version>2.26</version>
+            <version>2.28</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.ext</groupId>
             <artifactId>jersey-spring4</artifactId>
-            <version>2.26</version>
+            <version>2.28</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-common</artifactId>
-            <version>2.26</version>
+            <version>2.28</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
-            <version>2.26</version>
+            <version>2.28</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.4</version>
+            <version>2.6</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.7</version>
+            <version>2.11.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.7</version>
+            <version>2.11.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>4.3.8.RELEASE</version>
+            <version>4.3.22.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>4.3.8.RELEASE</version>
+            <version>4.3.22.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>4.3.22.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
-            <version>2.19</version>
+            <version>2.28</version>
         </dependency>
 
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.54</version>
+            <version>1.60</version>
         </dependency>
 
         <dependency>
             <groupId>com.netflix.hystrix</groupId>
             <artifactId>hystrix-core</artifactId>
-            <version>1.5.12</version>
+            <version>1.5.18</version>
         </dependency>
 
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
-            <version>3.11.3</version>
+            <version>3.11.9</version>
         </dependency>
 
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-meta</artifactId>
-            <version>3.11.3</version>
+            <version>3.11.9</version>
         </dependency>
 
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-codegen</artifactId>
-            <version>3.11.3</version>
+            <version>3.11.9</version>
         </dependency>
 
         <dependency>
             <groupId>org.functionaljava</groupId>
             <artifactId>functionaljava</artifactId>
-            <version>4.7</version>
+            <version>4.8.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.functionaljava</groupId>
             <artifactId>functionaljava-java8</artifactId>
-            <version>4.7</version>
+            <version>4.8.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.functionaljava</groupId>
             <artifactId>functionaljava-quickcheck</artifactId>
-            <version>4.7</version>
+            <version>4.8.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.functionaljava</groupId>
             <artifactId>functionaljava-java-core</artifactId>
-            <version>4.7</version>
+            <version>4.8.1</version>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.13-beta-1</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
+            <version>2.0.2-beta</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -305,7 +311,7 @@
                             <properties>
                                 <property>
                                     <key>dialect</key>
-                                    <value>POSTGRES_10</value>
+                                    <value>POSTGRES</value>
                                 </property>
                             </properties>
                         </database>
