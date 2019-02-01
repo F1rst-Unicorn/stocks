@@ -53,7 +53,7 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
 
     public StatusCode commit() {
         try {
-            return new ConnectionCloser(resourceIdentifier, getConnection()).commit();
+            return new ConnectionHandler(resourceIdentifier, getConnection()).commit();
         } catch (SQLException e) {
             LOG.error("This should not happen", e);
             return getDefaultErrorCode();
@@ -62,7 +62,16 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
 
     public StatusCode rollback() {
         try {
-            return new ConnectionCloser(resourceIdentifier, getConnection()).rollback();
+            return new ConnectionHandler(resourceIdentifier, getConnection()).rollback();
+        } catch (SQLException e) {
+            LOG.error("This should not happen", e);
+            return getDefaultErrorCode();
+        }
+    }
+
+    public StatusCode setReadOnly() {
+        try {
+            return new ConnectionHandler(resourceIdentifier, getConnection()).setReadOnly();
         } catch (SQLException e) {
             LOG.error("This should not happen", e);
             return getDefaultErrorCode();
@@ -85,6 +94,8 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
         return () -> {
             Connection con = getConnection();
             con.setAutoCommit(false);
+            if (con.getTransactionIsolation() != Connection.TRANSACTION_SERIALIZABLE)
+                con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             DSLContext context = DSL.using(con, SQLDialect.POSTGRES);
             return client.apply(context);
         };

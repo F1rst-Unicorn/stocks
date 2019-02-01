@@ -36,8 +36,7 @@ public interface HystrixWrapper<I, E extends Exception> {
         try {
             return producer.execute();
         } catch (HystrixRuntimeException e) {
-            LOG.error("circuit breaker error", e);
-            return Validation.fail(getDefaultErrorCode());
+            return handleException(e);
         }
     }
 
@@ -47,5 +46,10 @@ public interface HystrixWrapper<I, E extends Exception> {
 
     <O> ProducerWithExceptions<Validation<StatusCode, O>, E>
     wrap(FunctionWithExceptions<I, Validation<StatusCode, O>, E> client);
+
+    default <O> Validation<StatusCode, O> handleException(HystrixRuntimeException e) {
+        LOG.error("circuit breaker error", e);
+        return Validation.fail(getDefaultErrorCode());
+    }
 
 }

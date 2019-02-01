@@ -42,6 +42,7 @@ public class FoodItemManagerTest {
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).get();
+        Mockito.verify(backend).setReadOnly();
     }
 
     @Test

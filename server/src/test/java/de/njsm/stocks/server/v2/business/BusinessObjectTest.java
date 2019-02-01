@@ -19,7 +19,7 @@ public class BusinessObjectTest {
     @Before
     public void setup() {
         backend = Mockito.mock(FailSafeDatabaseHandler.class);
-        uut = new BusinessObject();
+        uut = new BusinessObject(backend);
     }
 
     @After
@@ -31,7 +31,7 @@ public class BusinessObjectTest {
     public void committingWorks() {
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.finishTransaction(StatusCode.SUCCESS, backend);
+        StatusCode result = uut.finishTransaction(StatusCode.SUCCESS);
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(backend).commit();
@@ -41,7 +41,7 @@ public class BusinessObjectTest {
     public void failingCommitIsPropagated() {
         Mockito.when(backend.commit()).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        StatusCode result = uut.finishTransaction(StatusCode.SUCCESS, backend);
+        StatusCode result = uut.finishTransaction(StatusCode.SUCCESS);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         Mockito.verify(backend).commit();
@@ -51,7 +51,7 @@ public class BusinessObjectTest {
     public void rollingBackWorks() {
         Mockito.when(backend.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.finishTransaction(StatusCode.DATABASE_UNREACHABLE, backend);
+        StatusCode result = uut.finishTransaction(StatusCode.DATABASE_UNREACHABLE);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         Mockito.verify(backend).rollback();
@@ -61,7 +61,7 @@ public class BusinessObjectTest {
     public void committingWithResultWorks() {
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, String> result = uut.finishTransaction(Validation.success("yei"), backend);
+        Validation<StatusCode, String> result = uut.finishTransaction(Validation.success("yei"));
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).commit();
@@ -71,7 +71,7 @@ public class BusinessObjectTest {
     public void failingCommitWithResultIsPropagated() {
         Mockito.when(backend.commit()).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        Validation<StatusCode, String> result = uut.finishTransaction(Validation.success("yei"), backend);
+        Validation<StatusCode, String> result = uut.finishTransaction(Validation.success("yei"));
 
         assertTrue(result.isFail());
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
@@ -82,7 +82,7 @@ public class BusinessObjectTest {
     public void rollingBackWithResultWorks() {
         Mockito.when(backend.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, String> result = uut.finishTransaction(Validation.fail(StatusCode.DATABASE_UNREACHABLE), backend);
+        Validation<StatusCode, String> result = uut.finishTransaction(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
 
         assertTrue(result.isFail());
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());

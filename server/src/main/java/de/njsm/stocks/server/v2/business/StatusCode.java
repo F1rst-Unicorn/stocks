@@ -20,4 +20,6 @@ public enum StatusCode {
 
     CA_UNREACHABLE,
 
+    SERIALISATION_CONFLICT,
+
 }

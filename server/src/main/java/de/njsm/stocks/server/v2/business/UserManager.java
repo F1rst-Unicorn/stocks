@@ -24,41 +24,46 @@ public class UserManager extends BusinessObject {
     public UserManager(UserHandler dbHandler,
                        DeviceManager deviceManager,
                        FoodItemHandler foodItemHandler) {
+        super(dbHandler);
         this.dbHandler = dbHandler;
         this.deviceManager = deviceManager;
         this.foodItemHandler = foodItemHandler;
     }
 
     public StatusCode addUser(User u) {
-        StatusCode result = dbHandler.add(u)
-                .toEither().left().orValue(StatusCode.SUCCESS);
-        return finishTransaction(result, dbHandler);
+        return runOperation(() -> dbHandler.add(u)
+                .toEither().left().orValue(StatusCode.SUCCESS));
     }
 
     public Validation<StatusCode, List<User>> get() {
-        return finishTransaction(dbHandler.get(), dbHandler);
+        return runFunction(() -> {
+            dbHandler.setReadOnly();
+            return dbHandler.get();
+        });
     }
 
     public StatusCode deleteUser(User userToDelete, Principals currentUser) {
-        Validation<StatusCode, List<UserDevice>> devices = deviceManager.getDevicesBelonging(userToDelete);
+        return runOperation(() -> {
+            Validation<StatusCode, List<UserDevice>> devices = deviceManager.getDevicesBelonging(userToDelete);
 
-        if (devices.isFail())
-            return finishTransaction(devices.fail(), dbHandler);
+            if (devices.isFail())
+                return devices.fail();
 
-        for (UserDevice device : devices.success()) {
-            StatusCode removeCode = deviceManager.removeDeviceInternally(device, currentUser);
+            for (UserDevice device : devices.success()) {
+                StatusCode removeCode = deviceManager.removeDeviceInternally(device, currentUser);
 
-            if (removeCode != StatusCode.SUCCESS) {
-                return finishTransaction(removeCode, dbHandler);
+                if (removeCode != StatusCode.SUCCESS) {
+                    return removeCode;
+                }
             }
-        }
-        StatusCode transferItemsCode = foodItemHandler.transferFoodItems(userToDelete, currentUser.toUser());
+            StatusCode transferItemsCode = foodItemHandler.transferFoodItems(userToDelete, currentUser.toUser());
 
-        if (transferItemsCode != StatusCode.SUCCESS) {
-            return finishTransaction(transferItemsCode, dbHandler);
-        }
+            if (transferItemsCode != StatusCode.SUCCESS) {
+                return transferItemsCode;
+            }
 
-        return finishTransaction(dbHandler.delete(userToDelete), dbHandler);
+            return dbHandler.delete(userToDelete);
+        });
     }
 
 }

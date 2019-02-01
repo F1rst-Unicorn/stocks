@@ -11,22 +11,26 @@ public class FoodManager extends BusinessObject {
     private FoodHandler dbHandler;
 
     public FoodManager(FoodHandler dbHandler) {
+        super(dbHandler);
         this.dbHandler = dbHandler;
     }
 
     public Validation<StatusCode, Integer> add(Food item) {
-        return finishTransaction(dbHandler.add(item), dbHandler);
+        return runFunction(() -> dbHandler.add(item));
     }
 
     public Validation<StatusCode, List<Food>> get() {
-        return finishTransaction(dbHandler.get(), dbHandler);
+        return runFunction(() -> {
+            dbHandler.setReadOnly();
+            return dbHandler.get();
+        });
     }
 
     public StatusCode rename(Food item, String newName) {
-        return finishTransaction(dbHandler.rename(item, newName), dbHandler);
+        return runOperation(() -> dbHandler.rename(item, newName));
     }
 
     public StatusCode delete(Food item) {
-        return finishTransaction(dbHandler.delete(item), dbHandler);
+        return runOperation(() -> dbHandler.delete(item));
     }
 }

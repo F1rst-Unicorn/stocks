@@ -22,27 +22,30 @@ public class TicketAuthoriser extends BusinessObject {
     private int validityTime;
 
     public TicketAuthoriser(AuthAdmin authAdmin, TicketBackend databaseHandler, int validityTime) {
+        super(databaseHandler);
         this.authAdmin = authAdmin;
         this.databaseHandler = databaseHandler;
         this.validityTime = validityTime;
     }
 
     public Validation<StatusCode, String> handleTicket(ClientTicket ticket) {
+        return runFunction(() -> {
 
-        Validation<StatusCode, ServerTicket> dbTicket = doPrevalidation(ticket);
+            Validation<StatusCode, ServerTicket> dbTicket = doPrevalidation(ticket);
 
-        if (dbTicket.isFail()) {
-            return finishTransaction(Validation.fail(StatusCode.ACCESS_DENIED), databaseHandler);
-        }
+            if (dbTicket.isFail()) {
+                return Validation.fail(StatusCode.ACCESS_DENIED);
+            }
 
-        authAdmin.saveCsr(ticket.deviceId, ticket.pemFile);
+            authAdmin.saveCsr(ticket.deviceId, ticket.pemFile);
 
-        if (! arePrincipalsValid(ticket)) {
-            authAdmin.wipeDeviceCredentials(ticket.deviceId);
-            return finishTransaction(Validation.fail(StatusCode.ACCESS_DENIED), databaseHandler);
-        }
+            if (!arePrincipalsValid(ticket)) {
+                authAdmin.wipeDeviceCredentials(ticket.deviceId);
+                return Validation.fail(StatusCode.ACCESS_DENIED);
+            }
 
-        return finishTransaction(grantAccess(ticket, dbTicket.success()), databaseHandler);
+            return grantAccess(ticket, dbTicket.success());
+        });
     }
 
     private Validation<StatusCode, ServerTicket> doPrevalidation(ClientTicket ticket) {

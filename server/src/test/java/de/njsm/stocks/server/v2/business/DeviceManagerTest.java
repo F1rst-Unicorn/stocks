@@ -113,6 +113,7 @@ public class DeviceManagerTest {
         assertTrue(result.isSuccess());
         Mockito.verify(dbHandler).get();
         Mockito.verify(dbHandler).commit();
+        Mockito.verify(dbHandler).setReadOnly();
     }
 
     @Test
@@ -153,6 +154,7 @@ public class DeviceManagerTest {
         StatusCode result = uut.revokeDevice(device);
 
         assertEquals(StatusCode.SUCCESS, result);
+        Mockito.verify(dbHandler).setReadOnly();
         Mockito.verify(dbHandler).commit();
         Mockito.verify(authAdmin).revokeCertificate(device.id);
     }

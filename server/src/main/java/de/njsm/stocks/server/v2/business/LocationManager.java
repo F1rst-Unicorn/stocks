@@ -15,33 +15,37 @@ public class LocationManager extends BusinessObject {
 
     public LocationManager(LocationHandler locationHandler,
                            FoodItemHandler foodItemHandler) {
+        super(locationHandler);
         this.locationHandler = locationHandler;
         this.foodItemHandler = foodItemHandler;
     }
 
     public StatusCode put(Location location) {
-        StatusCode result = locationHandler.add(location)
-                .toEither().left().orValue(StatusCode.SUCCESS);
-        return finishTransaction(result, locationHandler);
+        return runOperation(() -> locationHandler.add(location)
+                .toEither().left().orValue(StatusCode.SUCCESS));
     }
 
     public Validation<StatusCode, List<Location>> get() {
-        return finishTransaction(locationHandler.get(), locationHandler);
+        return runFunction(() -> {
+            locationHandler.setReadOnly();
+            return locationHandler.get();
+        });
     }
 
     public StatusCode rename(Location item, String newName) {
-        return finishTransaction(locationHandler.rename(item, newName), locationHandler);
+        return runOperation(() -> locationHandler.rename(item, newName));
     }
 
     public StatusCode delete(Location l, boolean cascadeOnFoodItems) {
-        if (cascadeOnFoodItems) {
-            StatusCode deleteFoodResult = foodItemHandler.deleteItemsStoredIn(l);
+        return runOperation(() -> {
+            if (cascadeOnFoodItems) {
+                StatusCode deleteFoodResult = foodItemHandler.deleteItemsStoredIn(l);
 
-            if (deleteFoodResult != StatusCode.SUCCESS)
-                return finishTransaction(deleteFoodResult, foodItemHandler);
-        }
+                if (deleteFoodResult != StatusCode.SUCCESS)
+                    return deleteFoodResult;
+            }
 
-        StatusCode result = locationHandler.delete(l);
-        return finishTransaction(result, locationHandler);
+            return locationHandler.delete(l);
+        });
     }
 }

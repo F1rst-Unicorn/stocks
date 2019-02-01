@@ -11,10 +11,14 @@ public class UpdateManager extends BusinessObject {
     private UpdateBackend updateBackend;
 
     public UpdateManager(UpdateBackend updateBackend) {
+        super(updateBackend);
         this.updateBackend = updateBackend;
     }
 
     public Validation<StatusCode, List<Update>> getUpdates() {
-        return finishTransaction(updateBackend.getUpdates(), updateBackend);
+        return runFunction(() -> {
+            updateBackend.setReadOnly();
+            return updateBackend.getUpdates();
+        });
     }
 }

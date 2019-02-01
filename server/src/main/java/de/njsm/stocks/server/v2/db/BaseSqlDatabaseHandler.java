@@ -49,16 +49,6 @@ public abstract class BaseSqlDatabaseHandler {
         }
     }
 
-    void commit(Connection con) {
-        if (con != null) {
-            try {
-                con.commit();
-            } catch (SQLException e1) {
-                LOG.error("Error while commit", e1);
-            }
-        }
-    }
-
     void rollback(Connection con) {
         if (con != null) {
             try {

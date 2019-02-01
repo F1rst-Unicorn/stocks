@@ -33,47 +33,6 @@ public class BaseSqlDatabaseHandlerTest extends DbTestCase {
     }
 
     @Test
-    public void testRollbackWithNull() {
-        uut.rollback(null);
-    }
-
-    @Test
-    public void testRollbackWithConnection() throws SQLException {
-        Connection con = Mockito.mock(Connection.class);
-
-        uut.rollback(con);
-
-        Mockito.verify(con).rollback();
-        Mockito.verifyNoMoreInteractions(con);
-    }
-
-    @Test
-    public void testCommitWithNull() {
-        uut.commit(null);
-    }
-
-    @Test
-    public void testCommitWithConnection() throws SQLException {
-        Connection con = Mockito.mock(Connection.class);
-
-        uut.commit(con);
-
-        Mockito.verify(con).commit();
-        Mockito.verifyNoMoreInteractions(con);
-    }
-
-    @Test
-    public void testRollbackWithException() throws SQLException {
-        Connection con = Mockito.mock(Connection.class);
-        Mockito.doThrow(new SQLException("Mockito")).when(con).rollback();
-
-        uut.rollback(con);
-
-        Mockito.verify(con).rollback();
-        Mockito.verifyNoMoreInteractions(con);
-    }
-
-    @Test
     public void testCloseWithNull() {
         uut.close(null);
     }

@@ -11,18 +11,22 @@ public class EanNumberManager extends BusinessObject {
     private EanNumberHandler eanNumberHandler;
 
     public EanNumberManager(EanNumberHandler eanNumberHandler) {
+        super(eanNumberHandler);
         this.eanNumberHandler = eanNumberHandler;
     }
 
     public Validation<StatusCode, Integer> add(EanNumber item) {
-        return finishTransaction(eanNumberHandler.add(item), eanNumberHandler);
+        return runFunction(() -> eanNumberHandler.add(item));
     }
 
     public Validation<StatusCode, List<EanNumber>> get() {
-        return finishTransaction(eanNumberHandler.get(), eanNumberHandler);
+        return runFunction(() -> {
+            eanNumberHandler.setReadOnly();
+            return eanNumberHandler.get();
+        });
     }
 
     public StatusCode delete(EanNumber item) {
-        return finishTransaction(eanNumberHandler.delete(item), eanNumberHandler);
+        return runOperation(() -> eanNumberHandler.delete(item));
     }
 }

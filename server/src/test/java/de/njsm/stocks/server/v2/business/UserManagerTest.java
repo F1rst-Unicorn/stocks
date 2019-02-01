@@ -55,6 +55,7 @@ public class UserManagerTest {
         assertTrue(result.isSuccess());
         Mockito.verify(userDbHandler).get();
         Mockito.verify(userDbHandler).commit();
+        Mockito.verify(userDbHandler).setReadOnly();
     }
 
     @Test

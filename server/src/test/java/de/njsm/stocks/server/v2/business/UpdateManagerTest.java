@@ -40,6 +40,7 @@ public class UpdateManagerTest {
         assertTrue(result.isSuccess());
         Mockito.verify(backend).getUpdates();
         Mockito.verify(backend).commit();
+        Mockito.verify(backend).setReadOnly();
     }
 
 }

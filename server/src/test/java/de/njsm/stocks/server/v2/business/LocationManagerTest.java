@@ -61,6 +61,7 @@ public class LocationManagerTest {
         assertEquals(0, result.success().size());
         Mockito.verify(dbLayer).get();
         Mockito.verify(dbLayer).commit();
+        Mockito.verify(dbLayer).setReadOnly();
     }
 
     @Test
@@ -116,6 +117,6 @@ public class LocationManagerTest {
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         Mockito.verify(foodItemDbLayer).deleteItemsStoredIn(input);
-        Mockito.verify(foodItemDbLayer).rollback();
+        Mockito.verify(dbLayer).rollback();
     }
 }
