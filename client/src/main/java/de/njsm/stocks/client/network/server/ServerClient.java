@@ -2,11 +2,11 @@ package de.njsm.stocks.client.network.server;
 
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.common.data.*;
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.PUT;
-import retrofit.http.Path;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 
 public interface ServerClient {

@@ -1,12 +1,15 @@
 package de.njsm.stocks.client.network.sentry;
 
-import com.squareup.okhttp.OkHttpClient;
-import de.njsm.stocks.common.data.Ticket;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.network.TcpHost;
+import de.njsm.stocks.common.data.Ticket;
+import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import retrofit.*;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
 
@@ -46,7 +49,7 @@ public class SentryManager {
     }
 
     private String handleResponse(Response<Ticket> response) throws NetworkException {
-        if (response.isSuccess()) {
+        if (response.isSuccessful()) {
             return handleSuccess(response);
         } else {
             logError(response);

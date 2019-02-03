@@ -1,14 +1,15 @@
 package de.njsm.stocks.client.network;
 
-import com.squareup.okhttp.OkHttpClient;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.CryptoException;
+import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.SecureRandom;
@@ -51,9 +52,10 @@ public class HttpClientFactory {
                     tmf.getTrustManagers(),
                     new SecureRandom());
 
-            return new OkHttpClient()
-                    .setSslSocketFactory(context.getSocketFactory())
-                    .setHostnameVerifier((s, sslSession) -> true);
+            return new OkHttpClient.Builder()
+                    .sslSocketFactory(context.getSocketFactory(), (X509TrustManager) tmf.getTrustManagers()[0])
+                    .hostnameVerifier((s, sslSession) -> true)
+                    .build();
         } catch (Exception e) {
             throw error(e);
         }

@@ -4,8 +4,8 @@ import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.common.data.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import retrofit.Call;
-import retrofit.Response;
+import retrofit2.Call;
+import retrofit2.Response;
 
 import java.io.IOException;
 
@@ -25,7 +25,7 @@ public class ServerManager {
         try {
             Response<Update[]> r = call.execute();
 
-            if (r.isSuccess()) {
+            if (r.isSuccessful()) {
                 return r.body();
             } else {
                 throw error(r, "Error getting updates");
@@ -41,7 +41,7 @@ public class ServerManager {
         try {
             Response<User[]> r = call.execute();
 
-            if (r.isSuccess()) {
+            if (r.isSuccessful()) {
                 return r.body();
             } else {
                 throw error(r, "Error getting users");
@@ -57,7 +57,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error adding user");
             }
         } catch (IOException e) {
@@ -71,7 +71,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error removing user");
             }
         } catch (IOException e) {
@@ -85,7 +85,7 @@ public class ServerManager {
         try {
             Response<UserDevice[]> r = u.execute();
 
-            if (r.isSuccess()) {
+            if (r.isSuccessful()) {
                 return r.body();
             } else {
                 throw error(r, "Error getting devices");
@@ -101,7 +101,7 @@ public class ServerManager {
         try {
             Response<Ticket> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error adding device");
             } else {
                 return r.body();
@@ -117,7 +117,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error removing device");
             }
         } catch (IOException e) {
@@ -131,7 +131,7 @@ public class ServerManager {
         try {
             Response<Location[]> r = u.execute();
 
-            if (r.isSuccess()) {
+            if (r.isSuccessful()) {
                 return r.body();
             } else {
                 throw error(r, "Error getting locations");
@@ -147,7 +147,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error adding location");
             }
         } catch (IOException e) {
@@ -161,7 +161,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error removing location");
             }
         } catch (IOException e) {
@@ -175,7 +175,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error renaming location");
             }
         } catch (IOException e) {
@@ -189,7 +189,7 @@ public class ServerManager {
         try {
             Response<Food[]> r = u.execute();
 
-            if (r.isSuccess()) {
+            if (r.isSuccessful()) {
                 return r.body();
             } else {
                 throw error(r, "Error getting food");
@@ -205,7 +205,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error adding food");
             }
         } catch (IOException e) {
@@ -219,7 +219,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error removing food");
             }
         } catch (IOException e) {
@@ -233,7 +233,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error renaming food");
             }
         } catch (IOException e) {
@@ -247,7 +247,7 @@ public class ServerManager {
         try {
             Response<FoodItem[]> r = u.execute();
 
-            if (r.isSuccess()) {
+            if (r.isSuccessful()) {
                 return r.body();
             } else {
                 throw error(r, "Error getting food items");
@@ -263,7 +263,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error adding food item");
             }
         } catch (IOException e) {
@@ -277,7 +277,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error removing food item");
             }
         } catch (IOException e) {
@@ -291,7 +291,7 @@ public class ServerManager {
         try {
             Response<Void> r = call.execute();
 
-            if (!r.isSuccess()) {
+            if (!r.isSuccessful()) {
                 throw error(r, "Error moving food item");
             }
         } catch (IOException e) {

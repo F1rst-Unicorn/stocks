@@ -5,8 +5,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
        default-lazy-init="true">
 
-    <util:constant id="stdin" static-field="java.lang.System.in" />
-
     <util:constant id="stdout" static-field="java.lang.System.out" />
 
     <bean id="propertiesFileHandler" class="de.njsm.stocks.client.config.PropertiesFileHandlerImpl" />
@@ -29,10 +27,7 @@
         <constructor-arg index="0" ref="dayDateFormat" />
     </bean>
 
-    <bean id="consoleReader" class="jline.console.ConsoleReader">
-        <constructor-arg index="0" ref="stdin" />
-        <constructor-arg index="1" ref="stdout" />
-    </bean>
+    <bean id="consoleReader" class="de.njsm.stocks.client.frontend.cli.service.InputReader" factory-method="buildReader"/>
 
     <bean id="inputReader" class="de.njsm.stocks.client.frontend.cli.service.InputReader">
         <constructor-arg index="0" ref="consoleReader"/>

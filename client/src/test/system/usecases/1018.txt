@@ -1,3 +1,3 @@
 Title: Rename food interactively
 Input: food rename\nBread\nCarrot
-Output: ^Food name: Bread\nNew name: Carrot$
+Output: ^Food name: New name: $

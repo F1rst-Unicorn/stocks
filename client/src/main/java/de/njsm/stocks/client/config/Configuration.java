@@ -1,6 +1,5 @@
 package de.njsm.stocks.client.config;
 
-import com.squareup.okhttp.OkHttpClient;
 import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.exceptions.InvalidConfigException;
@@ -8,10 +7,11 @@ import de.njsm.stocks.client.network.HttpClientFactory;
 import de.njsm.stocks.client.network.TcpHost;
 import de.njsm.stocks.client.network.server.ServerClient;
 import de.njsm.stocks.client.network.server.ServerManager;
+import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import retrofit.JacksonConverterFactory;
-import retrofit.Retrofit;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
 import java.util.Properties;

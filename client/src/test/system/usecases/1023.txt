@@ -1,3 +1,3 @@
 Title: List after conflict resolution
 Input: food list
-Output: ^Current food:\n    0x Beer\n    0x Bread\n    0x Carrot\n$
+Output: ^Current food:\n    0x Beer\n    0x Bread\n    0x Carrot\n\n$

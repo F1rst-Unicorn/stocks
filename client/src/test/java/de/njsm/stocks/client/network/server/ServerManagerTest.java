@@ -2,14 +2,15 @@ package de.njsm.stocks.client.network.server;
 
 import de.njsm.stocks.common.data.FoodItem;
 import de.njsm.stocks.common.data.Update;
+import okhttp3.Request;
 import org.junit.Before;
 import org.junit.Test;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
+import org.threeten.bp.Instant;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.io.IOException;
-import org.threeten.bp.Instant;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -66,17 +67,32 @@ public class ServerManagerTest {
             }
 
             @Override
+            public boolean isExecuted() {
+                return true;
+            }
+
+            @Override
             public void cancel() {
 
+            }
+
+            @Override
+            public boolean isCanceled() {
+                return false;
             }
 
             @Override
             public Call<Update[]> clone() {
                 return null;
             }
+
+            @Override
+            public Request request() {
+                return null;
+            }
         };
     }
-    
+
     private Call<FoodItem[]> createMockCall(FoodItem[] input) {
         return new Call<FoodItem[]>() {
             @Override
@@ -90,12 +106,27 @@ public class ServerManagerTest {
             }
 
             @Override
+            public boolean isExecuted() {
+                return false;
+            }
+
+            @Override
             public void cancel() {
 
             }
 
             @Override
+            public boolean isCanceled() {
+                return false;
+            }
+
+            @Override
             public Call<FoodItem[]> clone() {
+                return null;
+            }
+
+            @Override
+            public Request request() {
                 return null;
             }
         };

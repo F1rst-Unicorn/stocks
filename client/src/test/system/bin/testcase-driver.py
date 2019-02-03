@@ -17,16 +17,13 @@ class TestCase:
         process.stdin.write(self.input + "\r\n")
         process.stdin.flush()
 
-        consumeOutput(process.stdout)
         for i in range(0, self.count):
             self.actualOutput = self.actualOutput + consumeOutput(process.stdout)
 
-        self.actualOutput = self.actualOutput.replace("\r", "")
-        self.actualOutput = self.actualOutput.split("\n")
-        self.actualOutput = [line for line in self.actualOutput if not line.startswith("stocks $")]
-        self.actualOutput = self.actualOutput[1:]
-        self.actualOutput = "\n".join(self.actualOutput)
-        print(self.actualOutput)
+        print("'" + self.actualOutput + "'")
+        print("\n")
+        self.actualOutput = self.actualOutput.replace("\r", "")[1:].replace("stocks $", "")
+        print("'" + self.actualOutput + "'")
 
     def check(self, index):
         matcher = re.match(self.referenceOutput,
@@ -49,6 +46,7 @@ class TestCase:
 
 def main(arguments):
     process = setupSshConnection()
+    consumeOutput(process.stdout)   # initial prompt for 'stocks $'
 
     for testcase in arguments[1:len(arguments)]:
         handleOneTest(process, testcase)
@@ -58,7 +56,7 @@ def main(arguments):
 
 def setupSshConnection():
     process = subprocess.Popen(
-                    ["ssh dp-client \"LANG=de_DE.UTF-8 TERM=xterm-256color stocks\""],
+                    ["ssh dp-client \"LANG=de_DE.UTF-8 stocks\""],
                    stdin=subprocess.PIPE,
                    stdout=subprocess.PIPE,
                    shell=True,

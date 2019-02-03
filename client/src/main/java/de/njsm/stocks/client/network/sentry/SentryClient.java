@@ -2,9 +2,9 @@ package de.njsm.stocks.client.network.sentry;
 
 
 import de.njsm.stocks.common.data.Ticket;
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.POST;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
 
 public interface SentryClient {

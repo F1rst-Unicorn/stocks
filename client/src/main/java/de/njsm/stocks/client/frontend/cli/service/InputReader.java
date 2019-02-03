@@ -3,13 +3,11 @@ package de.njsm.stocks.client.frontend.cli.service;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.service.TimeProvider;
-import jline.console.ConsoleReader;
-import jline.console.history.FileHistory;
-import jline.console.history.History;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
+import org.jline.reader.EndOfFileException;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.impl.history.DefaultHistory;
+import org.jline.terminal.TerminalBuilder;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Period;
@@ -17,50 +15,42 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+
 public class InputReader {
 
     private PrintStream output;
 
-    private ConsoleReader reader;
+    private LineReader reader;
 
     private TimeProvider timeProvider;
 
-
-    public InputReader(ConsoleReader reader, PrintStream output, TimeProvider timeProvider) {
+    public InputReader(LineReader reader, PrintStream output, TimeProvider timeProvider) {
         this.output = output;
         this.timeProvider = timeProvider;
-        try {
-            this.reader = reader;
-
-            History file = new FileHistory(new File(Configuration.STOCKS_HOME + "/history"));
-            this.reader.setHistory(file);
-            this.reader.setHistoryEnabled(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.reader = reader;
     }
 
     public String next(String prompt) {
-        reader.setPrompt(prompt);
         try {
-            String input = reader.readLine();
+            String input = reader.readLine(prompt);
             if (input == null) {
                 return "\n";
             } else {
                 return input;
             }
-        } catch (IOException e) {
-            return "";
+        } catch (EndOfFileException e) {
+            return "quit";
         }
     }
 
     public void shutdown() {
-        if (reader.getHistory() instanceof FileHistory){
-            try {
-                ((FileHistory) reader.getHistory()).flush();
-            } catch (IOException e) {
-                output.println("History not saved: " + e.getMessage());
-            }
+        try {
+            reader.getHistory().save();
+        } catch (IOException e) {
+            output.println("History not saved: " + e.getMessage());
         }
     }
 
@@ -178,5 +168,14 @@ public class InputReader {
                 throw new ParseException(input);
         }
         return today.plus(periodFromNow);
+    }
+
+    public static LineReader buildReader() throws IOException {
+        return LineReaderBuilder.builder()
+                .history(new DefaultHistory())
+                .terminal(TerminalBuilder.terminal())
+                .variable(LineReader.HISTORY_FILE, new File(Configuration.STOCKS_HOME + "/history"))
+                .build();
+
     }
 }
