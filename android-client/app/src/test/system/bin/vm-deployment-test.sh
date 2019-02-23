@@ -49,8 +49,8 @@ done
 adb -s $DEVICE reverse tcp:10910 tcp:10910
 adb -s $DEVICE reverse tcp:10911 tcp:10911
 adb -s $DEVICE reverse tcp:10912 tcp:10912
-adb uninstall de.njsm.stocks
-adb uninstall de.njsm.stocks.test
+adb uninstall de.njsm.stocks || true
+adb uninstall de.njsm.stocks.test || true
 adb logcat | grep --line-buffered 'de.njsm.stocks' > $LOGCAT &
 LOGCAT_PID=$!
 
