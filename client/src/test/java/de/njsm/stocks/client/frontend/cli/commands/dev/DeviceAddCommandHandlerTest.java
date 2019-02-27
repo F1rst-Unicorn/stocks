@@ -1,5 +1,9 @@
 package de.njsm.stocks.client.frontend.cli.commands.dev;
 
+import de.njsm.stocks.client.business.data.ServerTicket;
+import de.njsm.stocks.client.business.data.User;
+import de.njsm.stocks.client.business.data.UserDevice;
+import de.njsm.stocks.client.business.data.view.UserDeviceView;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
@@ -8,10 +12,6 @@ import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
 import de.njsm.stocks.client.storage.DatabaseManager;
-import de.njsm.stocks.common.data.Ticket;
-import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.common.data.UserDevice;
-import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,9 +65,9 @@ public class DeviceAddCommandHandlerTest {
     public void handlingWorks() throws Exception {
         String fingerPrint = "00:11:22:33";
         String qrFake = "this might be a qr code";
-        User user = new User(2, "Jack");
-        UserDevice item = new UserDevice(3, "Mobile", user.id);
-        Ticket ticket = new Ticket(item.id, "some ticket", "some fake PEM");
+        User user = new User(2, 7, "Jack");
+        UserDevice item = new UserDevice(3, 8, "Mobile", user.id);
+        ServerTicket ticket = new ServerTicket(item.id, "some ticket");
         Command input = Command.createCommand(new String[0]);
         when(collector.determineUser(input)).thenReturn(user);
         when(collector.createDevice(input, user)).thenReturn(item);
@@ -76,7 +76,7 @@ public class DeviceAddCommandHandlerTest {
         when(server.addDevice(item)).thenReturn(ticket);
         when(qrGenerator.generateQrCode(any())).thenReturn(qrFake);
         when(dbManager.getDevices(item.name)).thenReturn(Collections.singletonList(
-                new UserDeviceView(item.id, item.name, user.name, user.id)));
+                new UserDeviceView(item.id, item.version, item.name, user.name, user.id)));
 
         uut.handle(input);
 
@@ -100,8 +100,8 @@ public class DeviceAddCommandHandlerTest {
 
     @Test
     public void noConfirmationAborts() throws Exception {
-        User user = new User(2, "Jack");
-        UserDevice item = new UserDevice(3, "Mobile", user.id);
+        User user = new User(2, 7, "Jack");
+        UserDevice item = new UserDevice(3, 8, "Mobile", user.id);
         Command input = Command.createCommand(new String[0]);
         when(collector.determineUser(input)).thenReturn(user);
         when(collector.createDevice(input, user)).thenReturn(item);

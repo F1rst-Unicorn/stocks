@@ -1,11 +1,11 @@
 package de.njsm.stocks.client;
 
-import de.njsm.stocks.common.data.Food;
-import de.njsm.stocks.common.data.view.FoodItemView;
-import de.njsm.stocks.common.data.view.FoodView;
-import org.threeten.bp.Instant;
+import de.njsm.stocks.client.business.data.Food;
+import de.njsm.stocks.client.business.data.view.FoodItemView;
+import de.njsm.stocks.client.business.data.view.FoodView;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,32 +19,32 @@ public class MockData {
         List<FoodView> expectedOutput = new LinkedList<>();
         FoodView item;
 
-        item = new FoodView(new Food(1, "Beer"));
+        item = new FoodView(new Food(1, 6, "Beer"));
         item.add(new FoodItemView("Fridge", "Jack", "Mobile", Instant.parse("1970-01-01T00:00:00.00Z")));
         item.add(new FoodItemView("Fridge", "Jack", "Mobile", Instant.parse("1970-01-02T00:00:00.00Z")));
         item.add(new FoodItemView("Fridge", "Jack", "Mobile", Instant.parse("1970-01-05T00:00:00.00Z")));
         item.add(new FoodItemView("Fridge", "Jack", "Mobile", Instant.parse("1970-01-06T00:00:00.00Z")));
         expectedOutput.add(item);
 
-        item = new FoodView(new Food(2, "Carrot"));
+        item = new FoodView(new Food(2, 7, "Carrot"));
         expectedOutput.add(item);
 
-        item = new FoodView(new Food(3, "Bread"));
+        item = new FoodView(new Food(3, 8, "Bread"));
         item.add(new FoodItemView("Cupboard", "John", "Mobile", Instant.parse("1970-01-03T00:00:00.00Z")));
         expectedOutput.add(item);
 
-        item = new FoodView(new Food(4, "Milk"));
+        item = new FoodView(new Food(4, 9, "Milk"));
         item.add(new FoodItemView("Fridge", "John", "Mobile", Instant.parse("1970-01-04T00:00:00.00Z")));
         expectedOutput.add(item);
 
-        item = new FoodView(new Food(5, "Yoghurt"));
+        item = new FoodView(new Food(5, 10, "Yoghurt"));
         expectedOutput.add(item);
 
-        item = new FoodView(new Food(6, "Raspberry jam"));
+        item = new FoodView(new Food(6, 11, "Raspberry jam"));
         item.add(new FoodItemView("Cupboard", "Jack", "Mobile", Instant.parse("1970-01-07T00:00:00.00Z")));
         expectedOutput.add(item);
 
-        item = new FoodView(new Food(7, "Apple juice"));
+        item = new FoodView(new Food(7, 12, "Apple juice"));
         item.add(new FoodItemView("Cupboard", "Juliette", "Mobile", Instant.parse("1970-01-08T00:00:00.00Z")));
         item.add(new FoodItemView("Basement", "Juliette", "Mobile", Instant.parse("1970-01-09T00:00:00.00Z")));
         expectedOutput.add(item);

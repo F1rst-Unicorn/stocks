@@ -3,7 +3,7 @@
   vars:
       remote_pkg_dir: /tmp
       stocks_pkg_dir: "{{ playbook_dir }}/target"
-      stocks_version: 2.0.3.0-1
+      stocks_version: 3.0.0.0-1
       stocks_pkg: stocks-{{ stocks_version }}-any.pkg.tar.xz
 
 

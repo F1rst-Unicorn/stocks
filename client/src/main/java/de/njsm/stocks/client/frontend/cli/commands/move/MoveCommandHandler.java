@@ -1,5 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands.move;
 
+import de.njsm.stocks.client.business.data.FoodItem;
+import de.njsm.stocks.client.business.data.Location;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
@@ -9,8 +11,8 @@ import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
-import de.njsm.stocks.common.data.FoodItem;
-import de.njsm.stocks.common.data.Location;
+
+import java.time.Instant;
 
 public class MoveCommandHandler extends FaultyCommandHandler {
 
@@ -54,7 +56,8 @@ public class MoveCommandHandler extends FaultyCommandHandler {
     protected void handleInternally(Command command) throws NetworkException, DatabaseException, InputException {
         FoodItem item = inputCollector.determineItem(command);
         Location location = inputCollector.determineDestinationLocation(command);
-        serverManager.move(item, location.id);
+        Instant newEatByDate = inputCollector.createDate("New expiration date", item.eatByDate);
+        serverManager.edit(item, newEatByDate, location.id);
         refresher.refresh();
     }
 }

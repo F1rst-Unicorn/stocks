@@ -11,11 +11,11 @@
 
     <bean id="timeProvider" class="de.njsm.stocks.client.service.TimeProviderImpl" />
 
-    <bean id="dayDateFactory" class="org.threeten.bp.format.DateTimeFormatter" factory-method="ofPattern">
+    <bean id="dayDateFactory" class="java.time.format.DateTimeFormatter" factory-method="ofPattern">
         <constructor-arg index="0" type="java.lang.String" value="dd.MM.yyyy" />
     </bean>
 
-    <bean name="utcTimezone" class="org.threeten.bp.ZoneId" factory-method="of" >
+    <bean name="utcTimezone" class="java.time.ZoneId" factory-method="of" >
         <constructor-arg index="0" type="java.lang.String" value="UTC" />
     </bean>
 
@@ -23,16 +23,17 @@
         <constructor-arg index="0" ref="utcTimezone" />
     </bean>
 
-    <bean id="stringBuilder" class="de.njsm.stocks.common.data.visitor.ToStringVisitor" >
+    <bean id="stringBuilder" class="de.njsm.stocks.client.business.data.visitor.ToStringVisitor" >
         <constructor-arg index="0" ref="dayDateFormat" />
     </bean>
 
     <bean id="consoleReader" class="de.njsm.stocks.client.frontend.cli.service.InputReader" factory-method="buildReader"/>
 
     <bean id="inputReader" class="de.njsm.stocks.client.frontend.cli.service.InputReader">
-        <constructor-arg index="0" ref="consoleReader"/>
-        <constructor-arg index="1" ref="stdout" />
+        <constructor-arg index="0" ref="stdout" />
+        <constructor-arg index="1" ref="consoleReader"/>
         <constructor-arg index="2" ref="timeProvider" />
+        <constructor-arg index="3" ref="dayDateFactory"/>
     </bean>
 
     <bean id="configGenerator" class="de.njsm.stocks.client.frontend.cli.CliConfigGenerator">
@@ -62,6 +63,9 @@
                 <bean class="de.njsm.stocks.client.init.upgrade.PreVersionedUpgradeProcedure" >
                     <constructor-arg index="0" ref="dbManager" />
                 </bean>
+                <bean class="de.njsm.stocks.client.init.upgrade.EntityVersioningUpgradeProcedure" >
+                    <constructor-arg index="0" ref="dbManager" />
+                </bean>
             </list>
         </constructor-arg>
     </bean>
@@ -86,13 +90,6 @@
     <bean id="screenWriter" class="de.njsm.stocks.client.frontend.cli.service.ScreenWriter">
         <constructor-arg index="0" ref="stdout" />
         <constructor-arg index="1" ref="stringBuilder" />
-    </bean>
-
-    <bean id="serverDataConverter" class="de.njsm.stocks.client.network.server.DataConverter" >
-        <constructor-arg>
-            <list>
-            </list>
-        </constructor-arg>
     </bean>
 
     <bean id="serverManager" factory-bean="configuration" factory-method="getServerManager" />

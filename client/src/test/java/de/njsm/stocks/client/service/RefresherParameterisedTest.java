@@ -1,14 +1,14 @@
 package de.njsm.stocks.client.service;
 
+import de.njsm.stocks.client.business.data.*;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.storage.DatabaseManager;
-import de.njsm.stocks.common.data.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import org.threeten.bp.Instant;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -52,13 +52,13 @@ public class RefresherParameterisedTest {
         Update serverUpdate = new Update(tableName, Instant.ofEpochMilli(1L));
         List<Update> list = Collections.singletonList(localUpdate);
         Update[] array = new Update[] {serverUpdate};
-        when(serverManager.getUpdates()).thenReturn(array);
+        when(serverManager.getUpdates()).thenReturn(Arrays.asList(array));
         when(dbManager.getUpdates()).thenReturn(list);
-        when(serverManager.getDevices()).thenReturn(new UserDevice[0]);
-        when(serverManager.getUsers()).thenReturn(new User[0]);
-        when(serverManager.getLocations()).thenReturn(new Location[0]);
-        when(serverManager.getFood()).thenReturn(new Food[0]);
-        when(serverManager.getFoodItems()).thenReturn(new FoodItem[0]);
+        when(serverManager.getDevices()).thenReturn(Collections.emptyList());
+        when(serverManager.getUsers()).thenReturn(Collections.emptyList());
+        when(serverManager.getLocations()).thenReturn(Collections.emptyList());
+        when(serverManager.getFood()).thenReturn(Collections.emptyList());
+        when(serverManager.getFoodItems()).thenReturn(Collections.emptyList());
 
         uut.refresh();
 
@@ -95,13 +95,13 @@ public class RefresherParameterisedTest {
         Update serverUpdate = new Update(tableName, Instant.ofEpochMilli(1L));
         List<Update> list = Collections.singletonList(localUpdate);
         Update[] array = new Update[] {serverUpdate};
-        when(serverManager.getUpdates()).thenReturn(array);
+        when(serverManager.getUpdates()).thenReturn(Arrays.asList(array));
         when(dbManager.getUpdates()).thenReturn(list);
-        when(serverManager.getDevices()).thenReturn(new UserDevice[0]);
-        when(serverManager.getUsers()).thenReturn(new User[0]);
-        when(serverManager.getLocations()).thenReturn(new Location[0]);
-        when(serverManager.getFood()).thenReturn(new Food[0]);
-        when(serverManager.getFoodItems()).thenReturn(new FoodItem[0]);
+        when(serverManager.getDevices()).thenReturn(Collections.emptyList());
+        when(serverManager.getUsers()).thenReturn(Collections.emptyList());
+        when(serverManager.getLocations()).thenReturn(Collections.emptyList());
+        when(serverManager.getFood()).thenReturn(Collections.emptyList());
+        when(serverManager.getFoodItems()).thenReturn(Collections.emptyList());
 
         uut.refresh();
 

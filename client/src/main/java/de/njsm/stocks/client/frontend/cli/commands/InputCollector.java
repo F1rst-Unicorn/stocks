@@ -1,5 +1,7 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
+import de.njsm.stocks.client.business.data.*;
+import de.njsm.stocks.client.business.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.ParseException;
@@ -9,12 +11,10 @@ import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.frontend.cli.service.Selector;
 import de.njsm.stocks.client.service.TimeProvider;
 import de.njsm.stocks.client.storage.DatabaseManager;
-import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.common.data.view.UserDeviceView;
 
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZoneId;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 public class InputCollector extends Selector {
@@ -52,6 +52,10 @@ public class InputCollector extends Selector {
         String foodFromUser = getFoodFromParameter(command);
         Food foodToMove = resolveFood(foodFromUser);
         return getItemToMove(foodToMove);
+    }
+
+    public Instant createDate(String prompt, Instant eatByDate) {
+        return Instant.from(reader.nextDate(prompt, LocalDate.from(eatByDate)).atStartOfDay(ZoneId.of("UTC")));
     }
 
     public User createUser(Command c) {
@@ -246,7 +250,7 @@ public class InputCollector extends Selector {
     private UserDevice resolveDevice(String name) throws DatabaseException, InputException {
         List<UserDeviceView> devices = dbManager.getDevices(name);
         UserDeviceView view = selectDevice(devices, name);
-        return new UserDevice(view.id, view.name, view.userId);
+        return new UserDevice(view.id, view.version, view.name, view.userId);
     }
 
     private Food resolveFood(String food) throws DatabaseException, InputException {

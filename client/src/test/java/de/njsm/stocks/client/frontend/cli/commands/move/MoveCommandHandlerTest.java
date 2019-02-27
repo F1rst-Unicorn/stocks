@@ -1,16 +1,17 @@
-package de.njsm.stocks.client.frontend.cli.commands.add;
+package de.njsm.stocks.client.frontend.cli.commands.move;
 
+import de.njsm.stocks.client.business.data.FoodItem;
+import de.njsm.stocks.client.business.data.Location;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
-import de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
-import de.njsm.stocks.common.data.FoodItem;
-import de.njsm.stocks.common.data.Location;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.time.Instant;
 
 import static org.mockito.Mockito.*;
 
@@ -46,16 +47,20 @@ public class MoveCommandHandlerTest {
     @Test
     public void handlesWorks() throws Exception {
         FoodItem item = new FoodItem();
-        Location location = new Location(2, "Fridge");
+        Location location = new Location(2, 7, "Fridge");
+        Instant newEatBy = Instant.now();
+        item.eatByDate = newEatBy;
         Command input = Command.createCommand(new String[0]);
         when(collector.determineItem(input)).thenReturn(item);
         when(collector.determineDestinationLocation(input)).thenReturn(location);
+        when(collector.createDate("New expiration date", newEatBy)).thenReturn(newEatBy);
 
         uut.handle(input);
 
         verify(collector).determineItem(input);
         verify(collector).determineDestinationLocation(input);
-        verify(server).move(item, location.id);
+        verify(collector).createDate("New expiration date", newEatBy);
+        verify(server).edit(item, newEatBy, location.id);
         verify(refresher).refresh();
     }
 

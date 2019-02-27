@@ -13,4 +13,9 @@ public class MockUpgradeProcedure extends UpgradeProcedure {
     public void upgrade() throws InitialisationException {
 
     }
+
+    @Override
+    public void downgrade() throws InitialisationException {
+
+    }
 }

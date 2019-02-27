@@ -5,7 +5,7 @@
 
     <groupId>de.njsm.stocks</groupId>
     <artifactId>client</artifactId>
-    <version>2.0</version>
+    <version>3.0</version>
     <packaging>jar</packaging>
 
     <name>Stocks management client</name>
@@ -15,12 +15,6 @@
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>de.njsm.stocks</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0</version>
-        </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
@@ -119,6 +113,24 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>3.11.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>3.11.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>3.11.9</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13-beta-1</version>
@@ -202,6 +214,60 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>Setup JOOQ Database</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${basedir}/bin/setup-jooq-db.sh</executable>
+                            <arguments>
+                                <argument>${sql.schema.path}</argument>
+                                <argument>${sql.db.path}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>3.11.3</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jdbc>
+                        <driver>org.sqlite.JDBC</driver>
+                        <url>jdbc:sqlite://${sql.db.path}</url>
+                    </jdbc>
+                    <generator>
+                        <name>org.jooq.codegen.JavaGenerator</name>
+                        <database>
+                            <name>org.jooq.meta.sqlite.SQLiteDatabase</name>
+                            <includes>.*</includes>
+                        </database>
+                        <target>
+                            <packageName>de.njsm.stocks.client.storage.jooq</packageName>
+                            <directory>${basedir}/target/generated-sources/java</directory>
+                        </target>
+                    </generator>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -215,6 +281,7 @@
                 <user.stocks.dir>${basedir}/src/test/system/resources</user.stocks.dir>
                 <system.stocks.dir>${basedir}/src/test/system/resources</system.stocks.dir>
                 <sql.schema.path>${basedir}/../deploy-client/config/schema.sql</sql.schema.path>
+                <sql.db.path>${user.stocks.dir}/db-jooq.sqlite</sql.db.path>
             </properties>
         </profile>
     </profiles>

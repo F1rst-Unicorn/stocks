@@ -1,8 +1,8 @@
 package de.njsm.stocks.client.network.sentry;
 
+import de.njsm.stocks.client.business.data.ClientTicket;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.network.TcpHost;
-import de.njsm.stocks.common.data.Ticket;
 import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,15 +32,15 @@ public class SentryManager {
         LOG.info("New ticket backend to " + url);
     }
 
-    public String requestCertificate(Ticket requestTicket) throws NetworkException {
+    public String requestCertificate(ClientTicket requestTicket) throws NetworkException {
         LOG.info("Requesting ticket");
-        Response<Ticket> response = executeCall(requestTicket);
+        Response<SentryClient.Result> response = executeCall(requestTicket);
         return handleResponse(response);
     }
 
-    private Response<Ticket> executeCall(Ticket ticket) throws NetworkException {
+    private Response<SentryClient.Result> executeCall(ClientTicket ticket) throws NetworkException {
         try {
-            Call<Ticket> callback = backend.requestCertificate(ticket);
+            Call<SentryClient.Result> callback = backend.requestCertificate(ticket.deviceId, ticket.ticket, ticket.pemFile);
             return callback.execute();
         } catch (IOException e) {
             LOG.error("Failed to execute", e);
@@ -48,29 +48,41 @@ public class SentryManager {
         }
     }
 
-    private String handleResponse(Response<Ticket> response) throws NetworkException {
+    private String handleResponse(Response<SentryClient.Result> response) throws NetworkException {
         if (response.isSuccessful()) {
-            return handleSuccess(response);
+            return handleHttpSuccess(response);
         } else {
             logError(response);
             throw new NetworkException("Sentry returned error");
         }
     }
 
-    private String handleSuccess(Response<Ticket> response) throws NetworkException {
-        Ticket responseTicket = response.body();
-        if (responseTicket.pemFile == null || responseTicket.pemFile.isEmpty()) {
-            LOG.error("Sentry returned empty file");
-            throw new NetworkException("Sentry rejected ticket!");
+    private String handleHttpSuccess(Response<SentryClient.Result> response) throws NetworkException {
+        SentryClient.Result responseTicket = response.body();
+        if (responseTicket == null) {
+            LOG.error("Sentry returned empty response");
+            throw new NetworkException("Sentry returned empty response");
         }
-        LOG.info("Sentry request was successful");
-        return responseTicket.pemFile;
+
+        switch (responseTicket.status) {
+            case SUCCESS:
+                LOG.info("Sentry request was successful");
+                return responseTicket.pemCertificate;
+
+            case ACCESS_DENIED:
+                LOG.error("Sentry denied access");
+                throw new NetworkException("Server denied access");
+
+            default:
+                LOG.error("Sentry returned error code " + responseTicket.status.name());
+                throw new NetworkException("Sentry returned error");
+        }
     }
 
-    private void logError(Response<Ticket> response) {
+    private void logError(Response<SentryClient.Result> response) {
         LOG.error("Request was not successful: HTTP Code " + response.code());
         try {
-            LOG.error(response.errorBody().string());
+            LOG.error(response.errorBody() != null ? response.errorBody().string() : "");
         } catch (IOException e) {
             LOG.error("Could not read error response", e);
         }

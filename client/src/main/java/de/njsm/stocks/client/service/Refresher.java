@@ -1,14 +1,13 @@
 package de.njsm.stocks.client.service;
 
+import de.njsm.stocks.client.business.data.*;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.storage.DatabaseManager;
-import de.njsm.stocks.common.data.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class Refresher {
@@ -37,7 +36,7 @@ public class Refresher {
             dbManager.resetUpdates();
         }
 
-        Update[] serverUpdates = serverManager.getUpdates();
+        List<Update> serverUpdates = serverManager.getUpdates();
         List<Update> localUpdates = dbManager.getUpdates();
 
         boolean upToDate = true;
@@ -51,7 +50,7 @@ public class Refresher {
             }
         }
 
-        dbManager.writeUpdates(Arrays.asList(serverUpdates));
+        dbManager.writeUpdates(serverUpdates);
 
         return upToDate;
     }
@@ -88,27 +87,27 @@ public class Refresher {
     }
 
     private void refreshUsers() throws DatabaseException, NetworkException {
-        List<User> serverUsers = Arrays.asList(serverManager.getUsers());
+        List<User> serverUsers = serverManager.getUsers();
         dbManager.writeUsers(serverUsers);
     }
 
     private void refreshDevices() throws DatabaseException, NetworkException {
-        List<UserDevice> serverDevices = Arrays.asList(serverManager.getDevices());
+        List<UserDevice> serverDevices = serverManager.getDevices();
         dbManager.writeDevices(serverDevices);
     }
 
     private void refreshLocations() throws DatabaseException, NetworkException {
-        List<Location> serverLocations = Arrays.asList(serverManager.getLocations());
+        List<Location> serverLocations = serverManager.getLocations();
         dbManager.writeLocations(serverLocations);
     }
 
     private void refreshFood() throws DatabaseException, NetworkException {
-        List<Food> serverFood = Arrays.asList(serverManager.getFood());
+        List<Food> serverFood = serverManager.getFood();
         dbManager.writeFood(serverFood);
     }
 
     private void refreshFoodItems() throws DatabaseException, NetworkException {
-        List<FoodItem> serverItems = Arrays.asList(serverManager.getFoodItems());
+        List<FoodItem> serverItems = serverManager.getFoodItems();
         dbManager.writeFoodItems(serverItems);
     }
 

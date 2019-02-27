@@ -7,10 +7,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.Period;
 
 import java.io.PrintStream;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -33,7 +34,7 @@ public class InputReaderTest {
         outMock = mock(PrintStream.class);
         timeMock = mock(TimeProvider.class);
         when(timeMock.getTime()).thenReturn(0L);
-        uut = new InputReader(inMock, outMock, timeMock);
+        uut = new InputReader(outMock, inMock, timeMock, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         captor = ArgumentCaptor.forClass(String.class);
     }
 

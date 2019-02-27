@@ -21,6 +21,8 @@ public abstract class UpgradeProcedure {
 
     public abstract void upgrade() throws InitialisationException;
 
+    public abstract void downgrade() throws InitialisationException;
+
     public Version getBaseVersion() {
         return baseVersion;
     }

@@ -1,8 +1,8 @@
 package de.njsm.stocks.client.frontend.cli.service;
 
-import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.common.data.view.UserDeviceView;
-import de.njsm.stocks.common.data.visitor.ToStringVisitor;
+import de.njsm.stocks.client.business.data.*;
+import de.njsm.stocks.client.business.data.view.UserDeviceView;
+import de.njsm.stocks.client.business.data.visitor.ToStringVisitor;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -62,7 +62,7 @@ public class ScreenWriter {
     public void printUserDeviceViews(String headline, List<UserDeviceView> devices) {
         printDataList(headline, "devices", devices);
     }
-    
+
     public void printData(Data input) {
         println(stringBuilder.visit(input, null));
     }
