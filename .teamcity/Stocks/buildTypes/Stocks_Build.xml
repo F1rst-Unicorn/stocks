@@ -21,6 +21,7 @@
           <param name="goals" value="clean install" />
           <param name="maven.path" value="%teamcity.tool.maven.AUTO%" />
           <param name="pomLocation" value="pom.xml" />
+          <param name="runnerArgs" value="-P teamcity" />
           <param name="teamcity.coverage.idea.excludePatterns" value="de.njsm.*.*Test" />
           <param name="teamcity.coverage.idea.includePatterns" value="de.njsm.stocks.*" />
           <param name="teamcity.coverage.runner" value="IDEA" />
