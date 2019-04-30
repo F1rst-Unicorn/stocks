@@ -19,10 +19,6 @@ install=stocks.install
 build() {
     cd "$srcdir/"
 
-    cd common
-    mvn -Dmaven.test.skip=true install
-    cd ..
-
     cd client
     mvn -Dmaven.test.skip=true install
     cd ..

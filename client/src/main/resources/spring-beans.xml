@@ -272,7 +272,7 @@
         <constructor-arg index="3" ref="screenWriter" />
     </bean>
 
-    <bean id="move" class="de.njsm.stocks.client.frontend.cli.commands.move.MoveCommandHandler">
+    <bean id="move" class="de.njsm.stocks.client.frontend.cli.commands.edit.EditCommandHandler">
         <constructor-arg index="0" ref="serverManager" />
         <constructor-arg index="1" ref="inputCollector" />
         <constructor-arg index="2" ref="screenWriter" />

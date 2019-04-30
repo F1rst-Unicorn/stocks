@@ -30,6 +30,9 @@ public class Update extends Data {
         this.lastUpdate = lastUpdate;
     }
 
+    public Update() {
+    }
+
     @Override
     public <I, O> O accept(AbstractVisitor<I, O> visitor, I arg) {
         return visitor.update(this, arg);

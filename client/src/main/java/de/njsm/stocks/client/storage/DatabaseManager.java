@@ -62,7 +62,7 @@ public class DatabaseManager extends BaseDatabaseManager {
     public List<User> getUsers() throws DatabaseException {
         LOG.info("Getting all users");
         return runFunction(c -> c.selectFrom(USER)
-                .orderBy(USER.ID)
+                .orderBy(USER.NAME)
                 .fetch()
                 .map(r -> new User(r.getId(), r.getVersion(), r.getName())));
     }
@@ -106,7 +106,7 @@ public class DatabaseManager extends BaseDatabaseManager {
         LOG.info("Getting all devices");
         return runFunction(c -> c.select(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.NAME, USER.NAME, USER.ID)
                 .from(USER_DEVICE).join(USER).on(USER.ID.eq(USER_DEVICE.BELONGS_TO)))
-                .orderBy(USER_DEVICE.ID)
+                .orderBy(USER_DEVICE.NAME)
                 .fetch()
                 .map(r -> new UserDeviceView(r.component1(), r.component2(), r.component3(), r.component4(), r.component5()));
     }
@@ -127,7 +127,7 @@ public class DatabaseManager extends BaseDatabaseManager {
     public List<Location> getLocations() throws DatabaseException {
         LOG.info("Getting all locations");
         return runFunction(c -> c.selectFrom(LOCATION)
-                .orderBy(LOCATION.ID)
+                .orderBy(LOCATION.NAME)
                 .fetch()
                 .map(r -> new Location(r.getId(), r.getVersion(), r.getName())));
     }

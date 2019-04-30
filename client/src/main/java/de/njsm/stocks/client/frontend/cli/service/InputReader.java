@@ -104,38 +104,25 @@ public class InputReader {
     }
 
     public LocalDate nextDate(String prompt) {
-        String input = next(prompt);
-        LocalDate result;
-
-        do {
-            try {
-                result = parseDate(input);
-            } catch (ParseException e) {
-                input = next("Invalid date. Try again: ");
-                result = null;
-            }
-        } while (result == null);
-        return result;
+        return nextDate(prompt, null);
     }
 
     public LocalDate nextDate(String prompt, LocalDate defaultValue) {
         LocalDate result;
-        boolean prependedError = false;
-        String localPrompt = prompt;
+
+        if (defaultValue != null)
+            prompt = prompt + "(" + defaultValue.format(format) + ") ";
 
         do {
-            String input = next(localPrompt + " (" + defaultValue.format(format) + ")");
-            if (input.isEmpty()) {
+            String input = next(prompt);
+            if (input.isEmpty() && defaultValue != null) {
                 return defaultValue;
             }
             try {
                 result = parseDate(input);
             } catch (ParseException e) {
-                if (!prependedError) {
-                    localPrompt = "Invalid date. " + prompt;
-                    prependedError = true;
-                }
                 result = null;
+                prompt = "Invalid date. Try again: ";
             }
         } while (result == null);
         return result;

@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.frontend.cli.commands.move;
+package de.njsm.stocks.client.frontend.cli.commands.edit;
 
 import de.njsm.stocks.client.business.data.FoodItem;
 import de.njsm.stocks.client.business.data.Location;
@@ -15,9 +15,9 @@ import java.time.Instant;
 
 import static org.mockito.Mockito.*;
 
-public class MoveCommandHandlerTest {
+public class EditCommandHandlerTest {
 
-    private MoveCommandHandler uut;
+    private EditCommandHandler uut;
 
     private InputCollector collector;
 
@@ -33,7 +33,7 @@ public class MoveCommandHandlerTest {
         server = mock(ServerManager.class);
         refresher = mock(Refresher.class);
         writer = mock(ScreenWriter.class);
-        uut = new MoveCommandHandler(server, collector, writer, refresher);
+        uut = new EditCommandHandler(server, collector, writer, refresher);
     }
 
     @After
@@ -53,13 +53,13 @@ public class MoveCommandHandlerTest {
         Command input = Command.createCommand(new String[0]);
         when(collector.determineItem(input)).thenReturn(item);
         when(collector.determineDestinationLocation(input)).thenReturn(location);
-        when(collector.createDate("New expiration date", newEatBy)).thenReturn(newEatBy);
+        when(collector.determineDate(input, newEatBy)).thenReturn(newEatBy);
 
         uut.handle(input);
 
         verify(collector).determineItem(input);
         verify(collector).determineDestinationLocation(input);
-        verify(collector).createDate("New expiration date", newEatBy);
+        verify(collector).determineDate(input, newEatBy);
         verify(server).edit(item, newEatBy, location.id);
         verify(refresher).refresh();
     }

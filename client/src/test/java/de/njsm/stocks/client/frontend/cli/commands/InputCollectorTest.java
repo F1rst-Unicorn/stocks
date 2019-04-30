@@ -3,6 +3,7 @@ package de.njsm.stocks.client.frontend.cli.commands;
 import de.njsm.stocks.client.business.data.*;
 import de.njsm.stocks.client.business.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
@@ -425,7 +426,7 @@ public class InputCollectorTest {
     public void determineDestinationInteractively() throws Exception {
         Location expected = new Location(2, 7, "Fridge");
         Command command = Command.createCommand(new String[0]);
-        String prompt = "Where to move to? ";
+        String prompt = "Where to put? ";
         setupMockDatabase(new Food(), expected);
         when(dbManager.getLocations()).thenReturn(Collections.singletonList(expected));
         when(dbManager.getLocations(expected.name)).thenReturn(Collections.singletonList(expected));
@@ -623,7 +624,7 @@ public class InputCollectorTest {
         Food expectedType = new Food(2, 7, "Beer");
         FoodItem expected = new FoodItem(2, 7, Instant.now(), expectedType.id, 2, 3, 4);
         Command command = Command.createCommand(new String[0]);
-        String prompt = "What to move? ";
+        String prompt = "What to edit? ";
         setupMockDatabase(expectedType, new Location());
         when(dbManager.getItems(expectedType.id)).thenReturn(Collections.singletonList(expected));
         when(dbManager.getFood()).thenReturn(Collections.singletonList(expectedType));
@@ -637,6 +638,50 @@ public class InputCollectorTest {
         verify(dbManager).getItems(expectedType.id);
         verify(reader).next(prompt);
         verify(writer).printFood("Available food: ", Collections.singletonList(expectedType));
+    }
+
+    @Test
+    public void determineDateFromCommand() throws ParseException {
+        Command command = Command.createCommand(new String[] {
+                "--d",
+                "+0d"
+        });
+
+        Instant actual = uut.determineDate(command, Instant.now());
+
+        assertEquals(0L, actual.toEpochMilli());
+        verify(timeProvider).getTime();
+    }
+
+    @Test
+    public void invalidDateGoesInteractive() throws ParseException {
+        Command command = Command.createCommand(new String[] {
+                "--d",
+                "invalid"
+        });
+        String prompt = "Eat before:  ";
+        LocalDate date = LocalDate.now();
+        Instant expected = Instant.from(date.atStartOfDay(ZoneId.of("UTC")));
+        when(reader.nextDate(eq(prompt), any(LocalDate.class))).thenReturn(date);
+
+        Instant actual = uut.determineDate(command, Instant.now());
+
+        assertEquals(expected, actual);
+        verify(reader).nextDate(eq(prompt), any(LocalDate.class));
+    }
+
+    @Test
+    public void determineDateInteractively() throws ParseException {
+        Command command = Command.createCommand(new String[0]);
+        String prompt = "Eat before:  ";
+        LocalDate date = LocalDate.now();
+        Instant expected = Instant.from(date.atStartOfDay(ZoneId.of("UTC")));
+        when(reader.nextDate(eq(prompt), any(LocalDate.class))).thenReturn(date);
+
+        Instant actual = uut.determineDate(command, Instant.now());
+
+        assertEquals(expected, actual);
+        verify(reader).nextDate(eq(prompt), any(LocalDate.class));
     }
 
     private void setupMockDatabase(Food food, Location location) throws DatabaseException {

@@ -54,8 +54,9 @@ public class InputCollector extends Selector {
         return getItemToMove(foodToMove);
     }
 
-    public Instant createDate(String prompt, Instant eatByDate) {
-        return Instant.from(reader.nextDate(prompt, LocalDate.from(eatByDate)).atStartOfDay(ZoneId.of("UTC")));
+    public Instant determineDate(Command command, Instant defaultValue) {
+        LocalDate result = resolveDate(command, LocalDate.from(defaultValue.atZone(ZoneId.of("UTC"))));
+        return Instant.from(result.atStartOfDay(ZoneId.of("UTC")));
     }
 
     public User createUser(Command c) {
@@ -70,7 +71,7 @@ public class InputCollector extends Selector {
         return selectUser(users, ownerName);
     }
 
-    public UserDevice createDevice(Command command, User owner) throws DatabaseException, InputException {
+    public UserDevice createDevice(Command command, User owner) {
         writer.println("Adding a new device");
         UserDevice result = new UserDevice();
         result.name = resolveName(command, "Device name: ");
@@ -162,6 +163,14 @@ public class InputCollector extends Selector {
         }
     }
 
+    private LocalDate resolveDate(Command command, LocalDate defaultValue) {
+        try {
+            return resolveDateInternally(command, defaultValue);
+        } catch (ParseException e) {
+            return askForDate(defaultValue);
+        }
+    }
+
     private LocalDate resolveDateInternally(Command command) throws ParseException {
         if (command.hasArg('d')) {
             return command.getParamDate('d', timeProvider);
@@ -170,8 +179,20 @@ public class InputCollector extends Selector {
         }
     }
 
+    private LocalDate resolveDateInternally(Command command, LocalDate defaultValue) throws ParseException {
+        if (command.hasArg('d')) {
+            return command.getParamDate('d', timeProvider);
+        } else {
+            return askForDate(defaultValue);
+        }
+    }
+
     private LocalDate askForDate() {
         return reader.nextDate("Eat before:  ");
+    }
+
+    private LocalDate askForDate(LocalDate defaultValue) {
+        return reader.nextDate("Eat before:  ", defaultValue);
     }
 
     private Food determineFoodFromParameter(Command c) throws DatabaseException, InputException {
@@ -265,12 +286,12 @@ public class InputCollector extends Selector {
 
     private String askForFood() throws DatabaseException {
         listFood();
-        return reader.next("What to move? ");
+        return reader.next("What to edit? ");
     }
 
     private String askForLocation() throws DatabaseException {
         listLocations();
-        return reader.next("Where to move to? ");
+        return reader.next("Where to put? ");
     }
 
     private void listFood() throws DatabaseException {

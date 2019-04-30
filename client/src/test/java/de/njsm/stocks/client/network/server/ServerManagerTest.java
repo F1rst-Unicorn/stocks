@@ -1,7 +1,8 @@
 package de.njsm.stocks.client.network.server;
 
 import de.njsm.stocks.client.business.StatusCode;
-import de.njsm.stocks.client.business.data.*;
+import de.njsm.stocks.client.business.data.FoodItem;
+import de.njsm.stocks.client.business.data.Update;
 import okhttp3.Request;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +12,6 @@ import retrofit2.Response;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -60,7 +60,7 @@ public class ServerManagerTest {
         return new Call<ListResponse<T>>() {
             @Override
             public Response<ListResponse<T>> execute() throws IOException {
-                return Response.success(new ListResponse<T>(StatusCode.SUCCESS, Arrays.asList(input)));
+                return Response.success(new ListResponse<T>(StatusCode.SUCCESS, input));
             }
 
             @Override

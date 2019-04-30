@@ -48,7 +48,7 @@ public abstract class AbstractCommandHandler {
     }
 
     protected void logNetworkError(NetworkException e) {
-        writer.println("There is a problem with the server connection");
+        writer.println(e.getMessage());
         LOG.error("Network action failed", e);
     }
 

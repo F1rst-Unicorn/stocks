@@ -2,6 +2,7 @@ package de.njsm.stocks.client.network.server;
 
 import de.njsm.stocks.client.business.StatusCode;
 import de.njsm.stocks.client.business.data.*;
+import de.njsm.stocks.client.business.json.InstantSerialiser;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +11,7 @@ import retrofit2.Response;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 public class ServerManager {
@@ -103,7 +105,7 @@ public class ServerManager {
     }
 
     public void addItem(FoodItem f) throws NetworkException {
-        Call<de.njsm.stocks.client.network.server.Response> call = backend.addFoodItem(f.eatByDate, f.storedIn, f.ofType);
+        Call<de.njsm.stocks.client.network.server.Response> call = backend.addFoodItem(InstantSerialiser.FORMAT.format(f.eatByDate), f.storedIn, f.ofType);
         executeCommand(call);
     }
 
@@ -113,14 +115,14 @@ public class ServerManager {
     }
 
     public void edit(FoodItem f, Instant eatBy, int newLoc) throws NetworkException {
-        Call<de.njsm.stocks.client.network.server.Response> call = backend.editFoodItem(f.id, f.version, eatBy, newLoc);
+        Call<de.njsm.stocks.client.network.server.Response> call = backend.editFoodItem(f.id, f.version, InstantSerialiser.FORMAT.format(eatBy), newLoc);
         executeCommand(call);
     }
 
     private <T> List<T> executeQuery(Call<ListResponse<T>> call) throws NetworkException {
         try {
             Response<ListResponse<T>> r = call.execute();
-            return returnResponse(r);
+            return Arrays.asList(returnResponse(r));
         } catch (IOException e) {
             throw new NetworkException("Error connecting to the server", e);
         }
@@ -145,9 +147,10 @@ public class ServerManager {
     }
 
     private <T extends de.njsm.stocks.client.network.server.Response> void handleResponse(Response<T> response) throws NetworkException {
-        if (!response.isSuccessful()) {
+        if (!response.isSuccessful()
+                || response.body() == null
+                || response.body().status != StatusCode.SUCCESS)
             throw error(response);
-        }
     }
 
     private <D> D returnResponse(Response<? extends DataResponse<D>> response) throws NetworkException {

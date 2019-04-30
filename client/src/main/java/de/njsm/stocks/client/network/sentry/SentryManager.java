@@ -67,7 +67,7 @@ public class SentryManager {
         switch (responseTicket.status) {
             case SUCCESS:
                 LOG.info("Sentry request was successful");
-                return responseTicket.pemCertificate;
+                return responseTicket.data;
 
             case ACCESS_DENIED:
                 LOG.error("Sentry denied access");

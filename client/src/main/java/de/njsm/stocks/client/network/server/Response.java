@@ -9,4 +9,8 @@ public class Response {
     public Response(StatusCode status) {
         this.status = status;
     }
+
+    public Response() {
+
+    }
 }

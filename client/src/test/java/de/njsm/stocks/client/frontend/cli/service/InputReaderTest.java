@@ -188,6 +188,18 @@ public class InputReaderTest {
     }
 
     @Test
+    public void enteringDateWithDefaultWorks() {
+        String prompt = "some prompt";
+        LocalDate defaultValue = LocalDate.parse("1991-09-11");
+        when(inMock.readLine(any(String.class))).thenReturn("");
+
+        LocalDate output = uut.nextDate(prompt, defaultValue);
+
+        verify(inMock).readLine(prompt + "(11.09.1991) ");
+        assertEquals(defaultValue, output);
+    }
+
+    @Test
     public void testGettingYes() {
         String prompt = " (y/N): ";
         when(inMock.readLine(prompt)).thenReturn("y");

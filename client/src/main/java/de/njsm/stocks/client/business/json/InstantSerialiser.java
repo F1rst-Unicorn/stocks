@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 public class InstantSerialiser extends StdSerializer<Instant> {
 
-    static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSS-Z")
+    public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSS-Z")
             .withZone(ZoneId.of("UTC"));
 
     public InstantSerialiser() {

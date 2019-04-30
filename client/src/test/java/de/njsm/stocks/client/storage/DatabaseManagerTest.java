@@ -90,8 +90,8 @@ public class DatabaseManagerTest {
     @Test
     public void gettingAllUsersWorks() throws DatabaseException {
         List<User> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new User(1, 6, "John"));
         expectedOutput.add(new User(2, 7, "Jack"));
+        expectedOutput.add(new User(1, 6, "John"));
         expectedOutput.add(new User(3, 8, "Juliette"));
 
         List<User> output = uut.getUsers();
@@ -124,13 +124,13 @@ public class DatabaseManagerTest {
     @Test
     public void gettingDevicesWorks() throws DatabaseException {
         List<UserDeviceView> expectedOutput = new LinkedList<>();
+        expectedOutput.add(new UserDeviceView(5, 10, "Desktop-PC", "John", 1));
+        expectedOutput.add(new UserDeviceView(4, 9, "Laptop", "John", 1));
+        expectedOutput.add(new UserDeviceView(7, 12, "Laptop", "Juliette", 3));
         expectedOutput.add(new UserDeviceView(1, 6, "Mobile", "John", 1));
         expectedOutput.add(new UserDeviceView(2, 7, "Mobile", "Jack", 2));
         expectedOutput.add(new UserDeviceView(3, 8, "Mobile", "Juliette", 3));
-        expectedOutput.add(new UserDeviceView(4, 9, "Laptop", "John", 1));
-        expectedOutput.add(new UserDeviceView(5, 10, "Desktop-PC", "John", 1));
         expectedOutput.add(new UserDeviceView(6, 11, "PC-Work", "Jack", 2));
-        expectedOutput.add(new UserDeviceView(7, 12, "Laptop", "Juliette", 3));
 
         List<UserDeviceView> output = uut.getDevices();
 
@@ -169,10 +169,10 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingLocations() throws Exception {
         List<Location> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new Location(1, 6, "Fridge"));
+        expectedOutput.add(new Location(4, 9, "Basement"));
         expectedOutput.add(new Location(2, 7, "Cupboard"));
         expectedOutput.add(new Location(3, 8, "Cupboard"));
-        expectedOutput.add(new Location(4, 9, "Basement"));
+        expectedOutput.add(new Location(1, 6, "Fridge"));
 
         List<Location> output = uut.getLocations();
 
@@ -204,8 +204,8 @@ public class DatabaseManagerTest {
     @Test
     public void testWritingLocations() throws Exception {
         List<Location> input = new LinkedList<>();
-        input.add(new Location(3, 8, "Cupboard"));
         input.add(new Location(4, 9, "Basement"));
+        input.add(new Location(3, 8, "Cupboard"));
 
         uut.writeLocations(input);
 

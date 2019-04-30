@@ -43,7 +43,7 @@ public class AddCommandHandler extends FaultyCommandHandler {
     @Override
     public void printHelp() {
         String text = "Add food item to the store\n" +
-                "\t--f string\t\t\tfood: What to add" +
+                "\t--f string\t\t\tfood: What to add\n" +
                 "\t--d date  \t\t\tdate: Eat before this date\n" +
                 "\t--l string\t\t\tlocation: Where to put the food\n\n";
 

@@ -3,9 +3,10 @@ package de.njsm.stocks.client.network.server;
 import de.njsm.stocks.client.business.data.*;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import retrofit2.Call;
-import retrofit2.http.*;
-
-import java.time.Instant;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.PUT;
+import retrofit2.http.Query;
 
 
 public interface ServerClient {
@@ -47,7 +48,7 @@ public interface ServerClient {
     @PUT("/v2/location/rename")
     Call<Response> renameLocation(@Query("id") int id,
                                   @Query("version") int version,
-                                  @Query("newName") String newName) throws NetworkException;
+                                  @Query("new") String newName) throws NetworkException;
 
     @DELETE("/v2/location")
     Call<Response> removeLocation(@Query("id") int id,
@@ -64,7 +65,7 @@ public interface ServerClient {
     @PUT("/v2/food/rename")
     Call<Response> renameFood(@Query("id") int id,
                               @Query("version") int version,
-                              @Query("newName") String newName) throws NetworkException;
+                              @Query("new") String newName) throws NetworkException;
 
     @DELETE("/v2/food")
     Call<Response> removeFood(@Query("id") int id,
@@ -75,14 +76,14 @@ public interface ServerClient {
     Call<ListResponse<FoodItem>> getFoodItems() throws NetworkException;
 
     @PUT("/v2/fooditem")
-    Call<Response> addFoodItem(@Query("eatByDate") Instant eatByDate,
+    Call<Response> addFoodItem(@Query("eatByDate") String eatByDate,
                                @Query("storedIn") int storedIn,
                                @Query("ofType") int ofType) throws NetworkException;
 
     @PUT("/v2/fooditem/edit")
     Call<Response> editFoodItem(@Query("id") int id,
                                 @Query("version") int version,
-                                @Query("eatByDate") Instant eatByDate,
+                                @Query("eatByDate") String eatByDate,
                                 @Query("storedIn") int storedIn) throws NetworkException;
 
     @DELETE("/v2/fooditem")

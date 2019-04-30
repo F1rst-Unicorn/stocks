@@ -1,4 +1,4 @@
-package de.njsm.stocks.client.frontend.cli.commands.move;
+package de.njsm.stocks.client.frontend.cli.commands.edit;
 
 import de.njsm.stocks.client.business.data.FoodItem;
 import de.njsm.stocks.client.business.data.Location;
@@ -14,7 +14,7 @@ import de.njsm.stocks.client.service.Refresher;
 
 import java.time.Instant;
 
-public class MoveCommandHandler extends FaultyCommandHandler {
+public class EditCommandHandler extends FaultyCommandHandler {
 
     private final InputCollector inputCollector;
 
@@ -22,13 +22,13 @@ public class MoveCommandHandler extends FaultyCommandHandler {
 
     private Refresher refresher;
 
-    public MoveCommandHandler(ServerManager serverManager,
+    public EditCommandHandler(ServerManager serverManager,
                               InputCollector inputCollector,
                               ScreenWriter writer,
                               Refresher refresher) {
         super(writer);
-        command = "move";
-        description = "Move a food item to a different location";
+        command = "edit";
+        description = "Edit a food item to change location or due date";
         this.inputCollector = inputCollector;
         this.serverManager = serverManager;
         this.refresher = refresher;
@@ -45,9 +45,10 @@ public class MoveCommandHandler extends FaultyCommandHandler {
 
     @Override
     public void printHelp() {
-        String text = "Move a food item to a different location\n" +
+        String text = "Edit a food item to change location or due date\n" +
                 "\t--f string\t\t\tfood: The food type to move\n" +
-                "\t--l string\t\t\tlocation: Where to put the food\n";
+                "\t--l string\t\t\tlocation: Where to put the food\n" +
+                "\t--d date  \t\t\tdate: Eat before this date\n";
 
         writer.println(text);
     }
@@ -56,7 +57,7 @@ public class MoveCommandHandler extends FaultyCommandHandler {
     protected void handleInternally(Command command) throws NetworkException, DatabaseException, InputException {
         FoodItem item = inputCollector.determineItem(command);
         Location location = inputCollector.determineDestinationLocation(command);
-        Instant newEatByDate = inputCollector.createDate("New expiration date", item.eatByDate);
+        Instant newEatByDate = inputCollector.determineDate(command, item.eatByDate);
         serverManager.edit(item, newEatByDate, location.id);
         refresher.refresh();
     }

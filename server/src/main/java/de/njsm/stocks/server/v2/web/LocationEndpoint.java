@@ -47,7 +47,7 @@ public class LocationEndpoint extends Endpoint {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
-                isValid(newName, "newName")) {
+                isValid(newName, "new")) {
             StatusCode status = locationManager.rename(new Location(id, "", version), newName);
             return new Response(status);
         } else {
