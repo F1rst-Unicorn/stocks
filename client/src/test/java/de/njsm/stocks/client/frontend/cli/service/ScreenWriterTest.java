@@ -1,7 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.service;
 
 import de.njsm.stocks.client.business.data.Food;
-import de.njsm.stocks.client.business.data.FoodItem;
 import de.njsm.stocks.client.business.data.Location;
 import de.njsm.stocks.client.business.data.User;
 import de.njsm.stocks.client.business.data.view.UserDeviceView;
@@ -12,7 +11,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.PrintStream;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -56,17 +54,6 @@ public class ScreenWriterTest {
     }
 
     @Test
-    public void printingLocationWorks() {
-        Location location = new Location(4, 9, "Fridge");
-        String expectedResult = "\t" + location.id + ": " + location.name;
-
-        uut.printLocation(location);
-
-        verify(mockStream).println(captor.capture());
-        assertEquals(expectedResult, captor.getValue());
-    }
-
-    @Test
     public void printingEmptyLocationListShowsConstantMessage() {
         String message = "No locations there...";
 
@@ -91,17 +78,6 @@ public class ScreenWriterTest {
         assertEquals(headline, captor.getAllValues().get(0));
         assertEquals(item1, captor.getAllValues().get(1));
         assertEquals(item2, captor.getAllValues().get(2));
-    }
-
-    @Test
-    public void printingFoodWorks() {
-        Food food = new Food(4, 9, "Beer");
-        String expectedResult = "\t" + food.id + ": " + food.name;
-
-        uut.printFood(food);
-
-        verify(mockStream).println(captor.capture());
-        assertEquals(expectedResult, captor.getValue());
     }
 
     @Test
@@ -132,62 +108,6 @@ public class ScreenWriterTest {
     }
 
     @Test
-    public void printingItemWorks() {
-        FoodItem item = new FoodItem();
-        item.id = 4;
-        item.eatByDate = Instant.EPOCH;
-        String expectedResult = "\t\t" + item.id + ": " + format.format(item.eatByDate);
-
-        uut.printItem(item);
-
-        verify(mockStream).println(captor.capture());
-        assertEquals(expectedResult, captor.getValue());
-    }
-
-    @Test
-    public void printingEmptyFoodItemListShowsConstantMessage() {
-        String message = "No items there...";
-
-        uut.printItems("Unused headline", Collections.emptyList());
-
-        verify(mockStream).println(captor.capture());
-        assertEquals(message, captor.getValue());
-    }
-
-    @Test
-    public void printingFoodItemListWorks() {
-        List<FoodItem> list = new LinkedList<>();
-        FoodItem item1 = new FoodItem();
-        item1.id = 3;
-        item1.eatByDate = Instant.now();
-        FoodItem item2 = new FoodItem();
-        item2.id = 3;
-        item2.eatByDate = Instant.now();
-        list.add(item1);
-        list.add(item2);
-        String headline = "Some headline";
-        String item1Text = "\t\t" + list.get(0).id + ": " + format.format(list.get(0).eatByDate);
-        String item2Text = "\t\t" + list.get(1).id + ": " + format.format(list.get(1).eatByDate);
-
-        uut.printItems(headline, list);
-
-        verify(mockStream, times(3)).println(captor.capture());
-        assertEquals(headline, captor.getAllValues().get(0));
-        assertEquals(item1Text, captor.getAllValues().get(1));
-        assertEquals(item2Text, captor.getAllValues().get(2));
-    }
-
-    @Test
-    public void testPrintingUser() {
-        User input = new User(3, 8, "Jack");
-        String expectedOutput = "\t" + input.id + ": " + input.name;
-
-        uut.printUser(input);
-
-        verify(mockStream).println(expectedOutput);
-    }
-
-    @Test
     public void printingEmptyUserListGivesMessage() {
         String message = "No users there...";
 
@@ -210,16 +130,6 @@ public class ScreenWriterTest {
         verify(mockStream).println(headline);
         verify(mockStream).println("\t" + user1.id + ": " + user1.name);
         verify(mockStream).println("\t" + user2.id + ": " + user2.name);
-    }
-
-    @Test
-    public void testPrintingUserDevice() {
-        UserDeviceView input = new UserDeviceView(3, 8, "Mobile", "Jack", 1);
-        String expectedOutput = "\t" + input.id + ": " + input.user + "'s " + input.name;
-
-        uut.printUserDeviceView(input);
-
-        verify(mockStream).println(expectedOutput);
     }
 
     @Test

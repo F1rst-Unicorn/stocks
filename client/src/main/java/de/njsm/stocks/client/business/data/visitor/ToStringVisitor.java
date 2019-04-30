@@ -20,7 +20,7 @@ public class ToStringVisitor extends BaseVisitor<Void, String> {
 
     @Override
     public String foodItem(FoodItem item, Void input) {
-        return "\t\t" + item.id + ": " + format.format(item.eatByDate);
+        return "\t" + item.id + ": " + format.format(item.eatByDate);
     }
 
     @Override
