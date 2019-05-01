@@ -29,10 +29,6 @@ build() {
     cd server
     mvn $MVN_ARGS -Dmaven.test.skip=true clean package
     cd ..
-
-    cd deploy-server/postgresql-migration
-    mvn $MVN_ARGS -Dmaven.test.skip=true clean package
-    cd ..
 }
 
 package() {
@@ -48,10 +44,7 @@ package() {
 
     install -D -m 555 deploy-server/config/setup-ca     $pkgdir/usr/lib/$pkgname/setup-ca
     install -D -m 555 deploy-server/config/nginx-reload $pkgdir/usr/lib/$pkgname/nginx-reload
-    install -D -m 555 deploy-server/config/migrate-postgres.sh $pkgdir/usr/lib/$pkgname/migrate-to-postgres
     install -D -m 444 server/target/server-*.war        $pkgdir/usr/lib/$pkgname/server.war
-    install -D -m 444 deploy-server/postgresql-migration/target/postgresql-migration-1.0.jar        $pkgdir/usr/lib/stocks-server/migrate-postgres.jar
-
 
     install -D -m 644 deploy-server/config/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
 
