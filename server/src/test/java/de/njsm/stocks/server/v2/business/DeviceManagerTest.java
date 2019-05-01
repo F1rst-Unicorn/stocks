@@ -2,7 +2,7 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.ClientTicket;
+import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -64,11 +63,10 @@ public class DeviceManagerTest {
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(ticketDbHandler.addTicket(eq(device), any())).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, ClientTicket> result = uut.addDevice(device);
+        Validation<StatusCode, NewDeviceTicket> result = uut.addDevice(device);
 
         assertTrue(result.isSuccess());
         assertEquals(device.id, result.success().deviceId);
-        assertNull(result.success().pemFile);
 
         Mockito.verify(dbHandler).add(device);
         Mockito.verify(dbHandler).commit();
@@ -79,7 +77,7 @@ public class DeviceManagerTest {
     public void addDeviceDbErrorPropagates() {
         Mockito.when(dbHandler.add(device)).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
 
-        Validation<StatusCode, ClientTicket> result = uut.addDevice(device);
+        Validation<StatusCode, NewDeviceTicket> result = uut.addDevice(device);
 
         assertTrue(result.isFail());
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
@@ -93,7 +91,7 @@ public class DeviceManagerTest {
         Mockito.when(dbHandler.add(device)).thenReturn(Validation.success(device.id));
         Mockito.when(ticketDbHandler.addTicket(eq(device), any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        Validation<StatusCode, ClientTicket> result = uut.addDevice(device);
+        Validation<StatusCode, NewDeviceTicket> result = uut.addDevice(device);
 
         assertTrue(result.isFail());
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());

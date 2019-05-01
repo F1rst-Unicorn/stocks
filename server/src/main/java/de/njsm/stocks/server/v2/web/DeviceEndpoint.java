@@ -2,7 +2,7 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.ClientTicket;
+import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
 import de.njsm.stocks.server.v2.web.data.ListResponse;
@@ -26,12 +26,12 @@ public class DeviceEndpoint extends Endpoint {
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public DataResponse<ClientTicket> putDevice(@QueryParam("name") String name,
+    public DataResponse<NewDeviceTicket> putDevice(@QueryParam("name") String name,
                                                 @QueryParam("belongsTo") int userId) {
         if (isValid(name, "name") &&
                 isValid(userId, "userId")) {
 
-            Validation<StatusCode, ClientTicket> result = deviceManager.addDevice(new UserDevice(name, userId));
+            Validation<StatusCode, NewDeviceTicket> result = deviceManager.addDevice(new UserDevice(name, userId));
             return new DataResponse<>(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));

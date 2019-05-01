@@ -2,7 +2,7 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.ClientTicket;
+import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
@@ -40,7 +40,7 @@ public class DeviceManager extends BusinessObject {
         this.authAdmin = authAdmin;
     }
 
-    public Validation<StatusCode, ClientTicket> addDevice(UserDevice device) {
+    public Validation<StatusCode, NewDeviceTicket> addDevice(UserDevice device) {
         return runFunction(() -> {
 
             Validation<StatusCode, Integer> deviceAddResult = deviceBackend.add(device);
@@ -54,8 +54,7 @@ public class DeviceManager extends BusinessObject {
             if (ticketAddResult != StatusCode.SUCCESS)
                 return Validation.fail(ticketAddResult);
 
-            ClientTicket result = new ClientTicket(deviceAddResult.success(), ticket);
-
+            NewDeviceTicket result = new NewDeviceTicket(deviceAddResult.success(), ticket);
             return Validation.success(result);
         });
     }

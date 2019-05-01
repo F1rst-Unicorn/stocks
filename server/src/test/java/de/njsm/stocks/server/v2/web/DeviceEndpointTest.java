@@ -3,7 +3,7 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v1.endpoints.BaseTestEndpoint;
 import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.ClientTicket;
+import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
 import de.njsm.stocks.server.v2.web.data.ListResponse;
@@ -53,11 +53,11 @@ public class DeviceEndpointTest {
 
     @Test
     public void addDevice() {
-        Mockito.when(businessObject.addDevice(any())).thenReturn(Validation.success(new ClientTicket()));
+        Mockito.when(businessObject.addDevice(any())).thenReturn(Validation.success(new NewDeviceTicket()));
         String name = "test";
         int belongsUser = 2;
 
-        DataResponse<ClientTicket> result = uut.putDevice(name, belongsUser);
+        DataResponse<NewDeviceTicket> result = uut.putDevice(name, belongsUser);
 
         assertEquals(StatusCode.SUCCESS, result.status);
         ArgumentCaptor<UserDevice> captor = ArgumentCaptor.forClass(UserDevice.class);
@@ -71,7 +71,7 @@ public class DeviceEndpointTest {
         String name = "";
         int belongsUser = 2;
 
-        DataResponse<ClientTicket> result = uut.putDevice(name, belongsUser);
+        DataResponse<NewDeviceTicket> result = uut.putDevice(name, belongsUser);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -81,7 +81,7 @@ public class DeviceEndpointTest {
         String name = "test";
         int belongsUser = 0;
 
-        DataResponse<ClientTicket> result = uut.putDevice(name, belongsUser);
+        DataResponse<NewDeviceTicket> result = uut.putDevice(name, belongsUser);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
