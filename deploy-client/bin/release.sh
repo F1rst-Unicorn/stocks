@@ -34,7 +34,7 @@ sed "0,/version/{s$<version>.*</version>$<version>$MAVEN_VERSION</version>$}" \
 sed -i "s/pkgver=.*/pkgver=$VERSION/g" "$STOCKS_ROOT"/deploy-client/PKGBUILD
 sed -i "s/pkgrel=.*/pkgrel=$RELEASE/g" "$STOCKS_ROOT"/deploy-client/PKGBUILD
 
-if ! grep 'CURRENT = V_$JAVA_VERSION' ; then
+if ! grep "CURRENT = V_$JAVA_VERSION" $VERSION_FILE >/dev/null ; then
     sed -i "s/CURRENT = .*/CURRENT = V_$JAVA_VERSION;/g;
             s/\(.*CURRENT.*\)/    public static final Version V_$JAVA_VERSION = new Version($JAVA_ARGUMENTS);\n\n\1/g" \
         $VERSION_FILE
