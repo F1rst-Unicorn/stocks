@@ -1,5 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands.add;
 
+import de.njsm.stocks.client.business.data.FoodItem;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
@@ -9,7 +10,6 @@ import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
-import de.njsm.stocks.common.data.FoodItem;
 
 public class AddCommandHandler extends FaultyCommandHandler {
 
@@ -43,7 +43,7 @@ public class AddCommandHandler extends FaultyCommandHandler {
     @Override
     public void printHelp() {
         String text = "Add food item to the store\n" +
-                "\t--f string\t\t\tfood: What to add" +
+                "\t--f string\t\t\tfood: What to add\n" +
                 "\t--d date  \t\t\tdate: Eat before this date\n" +
                 "\t--l string\t\t\tlocation: Where to put the food\n\n";
 

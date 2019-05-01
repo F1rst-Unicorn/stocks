@@ -1,28 +1,30 @@
 package de.njsm.stocks.client.storage;
 
 import de.njsm.stocks.client.MockData;
+import de.njsm.stocks.client.business.data.*;
+import de.njsm.stocks.client.business.data.view.FoodItemView;
+import de.njsm.stocks.client.business.data.view.FoodView;
+import de.njsm.stocks.client.business.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.init.upgrade.Version;
-import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.common.data.view.FoodItemView;
-import de.njsm.stocks.common.data.view.FoodView;
-import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.junit.*;
 import org.mockito.Mockito;
-import org.threeten.bp.Instant;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
+import static junit.framework.TestCase.*;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DatabaseManagerTest {
 
     private DatabaseManager uut;
+
     private static DatabaseHelper helper;
 
     @BeforeClass
@@ -60,9 +62,7 @@ public class DatabaseManagerTest {
 
     @Test
     public void writingUpdatesWorks() throws DatabaseException {
-        Update inputItem = new Update();
-        inputItem.table = "Location";
-        inputItem.lastUpdate = Instant.now();
+        Update inputItem = new Update("Location", Instant.now());
         List<Update> input = new LinkedList<>();
         input.add(inputItem);
 
@@ -90,9 +90,9 @@ public class DatabaseManagerTest {
     @Test
     public void gettingAllUsersWorks() throws DatabaseException {
         List<User> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new User(2, "Jack"));
-        expectedOutput.add(new User(1, "John"));
-        expectedOutput.add(new User(3, "Juliette"));
+        expectedOutput.add(new User(2, 7, "Jack"));
+        expectedOutput.add(new User(1, 6, "John"));
+        expectedOutput.add(new User(3, 8, "Juliette"));
 
         List<User> output = uut.getUsers();
 
@@ -101,7 +101,7 @@ public class DatabaseManagerTest {
 
     @Test
     public void gettingFilteredUsersWorks() throws DatabaseException {
-        User user = new User(1, "John");
+        User user = new User(1, 6, "John");
 
         List<User> output = uut.getUsers(user.name);
 
@@ -112,7 +112,7 @@ public class DatabaseManagerTest {
     @Test
     public void writingUsersWorks() throws DatabaseException {
         List<User> input = new LinkedList<>();
-        User inputItem = new User(2, "John");
+        User inputItem = new User(2, 7, "John");
         input.add(inputItem);
 
         uut.writeUsers(input);
@@ -124,13 +124,13 @@ public class DatabaseManagerTest {
     @Test
     public void gettingDevicesWorks() throws DatabaseException {
         List<UserDeviceView> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new UserDeviceView(5, "Desktop-PC", "John", 1));
-        expectedOutput.add(new UserDeviceView(4, "Laptop", "John", 1));
-        expectedOutput.add(new UserDeviceView(7, "Laptop", "Juliette", 3));
-        expectedOutput.add(new UserDeviceView(1, "Mobile", "John", 1));
-        expectedOutput.add(new UserDeviceView(2, "Mobile", "Jack", 2));
-        expectedOutput.add(new UserDeviceView(3, "Mobile", "Juliette", 3));
-        expectedOutput.add(new UserDeviceView(6, "PC-Work", "Jack", 2));
+        expectedOutput.add(new UserDeviceView(5, 10, "Desktop-PC", "John", 1));
+        expectedOutput.add(new UserDeviceView(4, 9, "Laptop", "John", 1));
+        expectedOutput.add(new UserDeviceView(7, 12, "Laptop", "Juliette", 3));
+        expectedOutput.add(new UserDeviceView(1, 6, "Mobile", "John", 1));
+        expectedOutput.add(new UserDeviceView(2, 7, "Mobile", "Jack", 2));
+        expectedOutput.add(new UserDeviceView(3, 8, "Mobile", "Juliette", 3));
+        expectedOutput.add(new UserDeviceView(6, 11, "PC-Work", "Jack", 2));
 
         List<UserDeviceView> output = uut.getDevices();
 
@@ -140,9 +140,9 @@ public class DatabaseManagerTest {
     @Test
     public void gettingFilteredDevicesWorks() throws DatabaseException {
         List<UserDeviceView> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new UserDeviceView(1, "Mobile", "John", 1));
-        expectedOutput.add(new UserDeviceView(2, "Mobile", "Jack", 2));
-        expectedOutput.add(new UserDeviceView(3, "Mobile", "Juliette", 3));
+        expectedOutput.add(new UserDeviceView(1, 6, "Mobile", "John", 1));
+        expectedOutput.add(new UserDeviceView(2, 7, "Mobile", "Jack", 2));
+        expectedOutput.add(new UserDeviceView(3, 8, "Mobile", "Juliette", 3));
 
         List<UserDeviceView> output = uut.getDevices("Mobile");
 
@@ -152,13 +152,13 @@ public class DatabaseManagerTest {
     @Test
     public void writingDevicesWorks() throws DatabaseException {
         List<UserDevice> input = new LinkedList<>();
-        input.add(new UserDevice(1, "Mobile", 1));
-        input.add(new UserDevice(2, "Mobile", 2));
-        input.add(new UserDevice(3, "Mobile", 3));
+        input.add(new UserDevice(1, 6, "Mobile", 1));
+        input.add(new UserDevice(2, 7, "Mobile", 2));
+        input.add(new UserDevice(3, 8, "Mobile", 3));
         List<UserDeviceView> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new UserDeviceView(1, "Mobile", "John", 1));
-        expectedOutput.add(new UserDeviceView(2, "Mobile", "Jack", 2));
-        expectedOutput.add(new UserDeviceView(3, "Mobile", "Juliette", 3));
+        expectedOutput.add(new UserDeviceView(1, 6, "Mobile", "John", 1));
+        expectedOutput.add(new UserDeviceView(2, 7, "Mobile", "Jack", 2));
+        expectedOutput.add(new UserDeviceView(3, 8, "Mobile", "Juliette", 3));
 
         uut.writeDevices(input);
 
@@ -169,10 +169,10 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingLocations() throws Exception {
         List<Location> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new Location(4, "Basement"));
-        expectedOutput.add(new Location(2, "Cupboard"));
-        expectedOutput.add(new Location(3, "Cupboard"));
-        expectedOutput.add(new Location(1, "Fridge"));
+        expectedOutput.add(new Location(4, 9, "Basement"));
+        expectedOutput.add(new Location(2, 7, "Cupboard"));
+        expectedOutput.add(new Location(3, 8, "Cupboard"));
+        expectedOutput.add(new Location(1, 6, "Fridge"));
 
         List<Location> output = uut.getLocations();
 
@@ -182,8 +182,8 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingFilteredLocations() throws Exception {
         List<Location> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new Location(2, "Cupboard"));
-        expectedOutput.add(new Location(3, "Cupboard"));
+        expectedOutput.add(new Location(2, 7, "Cupboard"));
+        expectedOutput.add(new Location(3, 8, "Cupboard"));
 
         List<Location> output = uut.getLocations("Cupboard");
 
@@ -193,8 +193,8 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingLocationsForFoodType() throws Exception {
         List<Location> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new Location(3, "Cupboard"));
-        expectedOutput.add(new Location(4, "Basement"));
+        expectedOutput.add(new Location(3, 8, "Cupboard"));
+        expectedOutput.add(new Location(4, 9, "Basement"));
 
         List<Location> output = uut.getLocationsForFoodType(7);
 
@@ -204,8 +204,8 @@ public class DatabaseManagerTest {
     @Test
     public void testWritingLocations() throws Exception {
         List<Location> input = new LinkedList<>();
-        input.add(new Location(4, "Basement"));
-        input.add(new Location(3, "Cupboard"));
+        input.add(new Location(4, 9, "Basement"));
+        input.add(new Location(3, 8, "Cupboard"));
 
         uut.writeLocations(input);
 
@@ -216,13 +216,13 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingAllFood() throws Exception {
         List<Food> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new Food(7, "Apple juice"));
-        expectedOutput.add(new Food(1, "Beer"));
-        expectedOutput.add(new Food(3, "Bread"));
-        expectedOutput.add(new Food(2, "Carrot"));
-        expectedOutput.add(new Food(4, "Milk"));
-        expectedOutput.add(new Food(6, "Raspberry jam"));
-        expectedOutput.add(new Food(5, "Yoghurt"));
+        expectedOutput.add(new Food(1, 6, "Beer"));
+        expectedOutput.add(new Food(2, 7, "Carrot"));
+        expectedOutput.add(new Food(3, 8, "Bread"));
+        expectedOutput.add(new Food(4, 9, "Milk"));
+        expectedOutput.add(new Food(5, 10, "Yoghurt"));
+        expectedOutput.add(new Food(6, 11, "Raspberry jam"));
+        expectedOutput.add(new Food(7, 12, "Apple juice"));
 
         List<Food> output = uut.getFood();
 
@@ -232,7 +232,7 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingFilteredFood() throws Exception {
         List<Food> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new Food(4, "Milk"));
+        expectedOutput.add(new Food(4, 9, "Milk"));
 
         List<Food> output = uut.getFood("Milk");
 
@@ -242,7 +242,7 @@ public class DatabaseManagerTest {
     @Test
     public void testWritingFood() throws Exception {
         List<Food> input = new LinkedList<>();
-        input.add(new Food(4, "Milk"));
+        input.add(new Food(4, 9, "Milk"));
 
         uut.writeFood(input);
 
@@ -253,8 +253,8 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingFoodItems() throws Exception {
         List<FoodItem> expectedOutput = new LinkedList<>();
-        expectedOutput.add(new FoodItem(8, Instant.parse("1970-01-08T00:00:00.00Z"), 7, 3, 3, 3));
-        expectedOutput.add(new FoodItem(9, Instant.parse("1970-01-09T00:00:00.00Z"), 7, 4, 3, 3));
+        expectedOutput.add(new FoodItem(8, 13, Instant.parse("1970-01-08T00:00:00.00Z"), 7, 3, 3, 3));
+        expectedOutput.add(new FoodItem(9, 14, Instant.parse("1970-01-09T00:00:00.00Z"), 7, 4, 3, 3));
 
         List<FoodItem> output = uut.getItems(7);
 
@@ -264,8 +264,8 @@ public class DatabaseManagerTest {
     @Test
     public void testWritingFoodItems() throws Exception {
         List<FoodItem> input = new LinkedList<>();
-        input.add(new FoodItem(8, Instant.ofEpochMilli(0), 7, 3, 3, 3));
-        input.add(new FoodItem(9, Instant.ofEpochMilli(0), 7, 4, 3, 3));
+        input.add(new FoodItem(8, 13, Instant.ofEpochMilli(0), 7, 3, 3, 3));
+        input.add(new FoodItem(9, 14, Instant.ofEpochMilli(0), 7, 4, 3, 3));
 
         uut.writeFoodItems(input);
 
@@ -275,8 +275,8 @@ public class DatabaseManagerTest {
 
     @Test
     public void testGettingNextItem() throws Exception {
-        FoodItem item1 = new FoodItem(3, Instant.parse("1970-01-03T00:00:00.00Z"), 3, 2, 1, 1);
-        FoodItem item2 = new FoodItem(1, Instant.parse("1970-01-01T00:00:00.00Z"), 1, 1, 2, 2);
+        FoodItem item1 = new FoodItem(3, 8, Instant.parse("1970-01-03T00:00:00.00Z"), 3, 2, 1, 1);
+        FoodItem item2 = new FoodItem(1, 6, Instant.parse("1970-01-01T00:00:00.00Z"), 1, 1, 2, 2);
         assertEquals(item1, uut.getNextItem(3));
         assertEquals(item2, uut.getNextItem(1));
     }
@@ -314,7 +314,7 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingFoodOfLocation() throws Exception {
         List<FoodView> expectedOutput = new LinkedList<>();
-        FoodView item = new FoodView(new Food(7, "Apple juice"));
+        FoodView item = new FoodView(new Food(7, 12, "Apple juice"));
         item.add(new FoodItemView("Basement", "Juliette", "Mobile", Instant.parse("1970-01-09T00:00:00.00Z")));
         expectedOutput.add(item);
 
@@ -326,7 +326,7 @@ public class DatabaseManagerTest {
     @Test
     public void testGettingFoodOfLocationAndUser() throws Exception {
         List<FoodView> expectedOutput = new LinkedList<>();
-        FoodView item = new FoodView(new Food(7, "Apple juice"));
+        FoodView item = new FoodView(new Food(7, 12, "Apple juice"));
         item.add(new FoodItemView("Basement", "Juliette", "Mobile", Instant.parse("1970-01-09T00:00:00.00Z")));
         expectedOutput.add(item);
 
@@ -365,21 +365,6 @@ public class DatabaseManagerTest {
         Version output = uut.getDbVersion();
 
         assertEquals(Version.V_0_5_0, output);
-    }
-
-    @Test
-    public void noRollbackOnNullConnection() {
-        DatabaseManager.rollback(null);
-    }
-
-    @Test
-    public void testRollback() throws SQLException {
-        Connection c = Mockito.mock(Connection.class);
-
-        DatabaseManager.rollback(c);
-
-        Mockito.verify(c).rollback();
-        Mockito.verifyNoMoreInteractions(c);
     }
 
     @Test

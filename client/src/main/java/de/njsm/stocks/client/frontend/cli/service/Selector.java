@@ -1,8 +1,8 @@
 package de.njsm.stocks.client.frontend.cli.service;
 
+import de.njsm.stocks.client.business.data.*;
+import de.njsm.stocks.client.business.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.InputException;
-import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.common.data.view.UserDeviceView;
 
 import java.util.List;
 

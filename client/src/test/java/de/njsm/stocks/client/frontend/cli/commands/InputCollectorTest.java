@@ -1,20 +1,21 @@
 package de.njsm.stocks.client.frontend.cli.commands;
 
+import de.njsm.stocks.client.business.data.*;
+import de.njsm.stocks.client.business.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.DatabaseException;
+import de.njsm.stocks.client.exceptions.ParseException;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.service.TimeProvider;
 import de.njsm.stocks.client.storage.DatabaseManager;
-import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.common.data.view.UserDeviceView;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZoneId;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
@@ -51,7 +52,7 @@ public class InputCollectorTest {
     }
 
     @Test
-    public void testConfirmation() throws Exception {
+    public void testConfirmation() {
         when(reader.getYesNo()).thenReturn(true);
 
         assertTrue(uut.confirm());
@@ -152,7 +153,7 @@ public class InputCollectorTest {
     @Test
     public void missingDeviceNameGoesInteractive() throws Exception {
         String interactiveName = "Mobile";
-        User owner = new User(1, "Jack");
+        User owner = new User(1, 6, "Jack");
         String prompt = "Device name: ";
         Command c = Command.createCommand(new String[0]);
         when(reader.nextName(prompt)).thenReturn(interactiveName);
@@ -170,7 +171,7 @@ public class InputCollectorTest {
     public void invalidNameGoesInteractive() throws Exception {
         String invalidName = "1$Mobile";
         String interactiveName = "Mobile";
-        User owner = new User(1, "Jack");
+        User owner = new User(1, 6, "Jack");
         String prompt = "Device name: ";
         Command c = Command.createCommand(invalidName);
         when(reader.nextName(prompt)).thenReturn(interactiveName);
@@ -188,7 +189,7 @@ public class InputCollectorTest {
     @Test
     public void creatingDeviceNonInteractivelyWorks() throws Exception {
         String name = "Mobile";
-        User owner = new User(1, "Jack");
+        User owner = new User(1, 6, "Jack");
         Command c = Command.createCommand(name);
 
         UserDevice output = uut.createDevice(c, owner);
@@ -201,8 +202,8 @@ public class InputCollectorTest {
 
     @Test
     public void createItemNonInteractivelyWorks() throws Exception {
-        Food food = new Food(4, "Beer");
-        Location location = new Location(5, "Fridge");
+        Food food = new Food(4, 9, "Beer");
+        Location location = new Location(5, 10, "Fridge");
         setupMockDatabase(food, location);
         String inputDate = "01.01.2015";
         LocalDate date = LocalDate.parse("2015-01-01");
@@ -228,8 +229,8 @@ public class InputCollectorTest {
 
     @Test
     public void createItemUsesCorrectTimezone() throws Exception {
-        Food food = new Food(4, "Beer");
-        Location location = new Location(5, "Fridge");
+        Food food = new Food(4, 9, "Beer");
+        Location location = new Location(5, 10, "Fridge");
         setupMockDatabase(food, location);
         String inputDate = "01.01.1970";
         Command c = Command.createCommand(new String[] {
@@ -254,8 +255,8 @@ public class InputCollectorTest {
 
     @Test
     public void createItemInvalidDateGoesInteractive() throws Exception {
-        Food food = new Food(4, "Beer");
-        Location location = new Location(5, "Fridge");
+        Food food = new Food(4, 9, "Beer");
+        Location location = new Location(5, 10, "Fridge");
         setupMockDatabase(food, location);
         String invalidDate = "fdsa";
         LocalDate date = LocalDate.parse("2015-01-01");
@@ -284,8 +285,8 @@ public class InputCollectorTest {
 
     @Test
     public void createItemInteractively() throws Exception {
-        Food food = new Food(4, "Beer");
-        Location location = new Location(5, "Fridge");
+        Food food = new Food(4, 9, "Beer");
+        Location location = new Location(5, 10, "Fridge");
         LocalDate date = LocalDate.parse("2015-01-01");
         setupMockDatabase(food, location);
         String foodPrompt = "What to add?  ";
@@ -314,8 +315,8 @@ public class InputCollectorTest {
 
     @Test
     public void createItemInvalidLocationSelection() throws Exception {
-        Food food = new Food(4, "Beer");
-        Location location = new Location(5, "Fridge");
+        Food food = new Food(4, 9, "Beer");
+        Location location = new Location(5, 10, "Fridge");
         LocalDate date = LocalDate.parse("2015-01-01");
         setupMockDatabase(food, location);
         String foodPrompt = "What to add?  ";
@@ -348,8 +349,8 @@ public class InputCollectorTest {
 
     @Test
     public void createInteractivelyWithoutSuggestion() throws Exception {
-        Food food = new Food(4, "Beer");
-        Location location = new Location(5, "Fridge");
+        Food food = new Food(4, 9, "Beer");
+        Location location = new Location(5, 10, "Fridge");
         LocalDate date = LocalDate.parse("2015-01-01");
         setupMockDatabase(food, location);
         String foodPrompt = "What to add?  ";
@@ -378,8 +379,8 @@ public class InputCollectorTest {
 
     @Test
     public void getNextItemNonInteractively() throws Exception {
-        Food input = new Food(2, "Beer");
-        FoodItem expected = new FoodItem(2, Instant.now(), input.id, 0, 0, 0);
+        Food input = new Food(2, 7, "Beer");
+        FoodItem expected = new FoodItem(2, 7, Instant.now(), input.id, 0, 0, 0);
         Command command = Command.createCommand(input.name);
         setupMockDatabase(input, new Location());
         when(dbManager.getNextItem(input.id)).thenReturn(expected);
@@ -393,8 +394,8 @@ public class InputCollectorTest {
 
     @Test
     public void getNextItemInteractively() throws Exception {
-        Food input = new Food(2, "Beer");
-        FoodItem expected = new FoodItem(2, Instant.now(), input.id, 0, 0, 0);
+        Food input = new Food(2, 7, "Beer");
+        FoodItem expected = new FoodItem(2, 7, Instant.now(), input.id, 0, 0, 0);
         Command command = Command.createCommand(new String[0]);
         String prompt = "What to eat?  ";
         setupMockDatabase(input, new Location());
@@ -411,7 +412,7 @@ public class InputCollectorTest {
 
     @Test
     public void determineDestinationNonInteractively() throws Exception {
-        Location expected = new Location(2, "Fridge");
+        Location expected = new Location(2, 7, "Fridge");
         Command command = Command.createCommand("--l " + expected.name);
         setupMockDatabase(new Food(), expected);
 
@@ -423,9 +424,9 @@ public class InputCollectorTest {
 
     @Test
     public void determineDestinationInteractively() throws Exception {
-        Location expected = new Location(2, "Fridge");
+        Location expected = new Location(2, 7, "Fridge");
         Command command = Command.createCommand(new String[0]);
-        String prompt = "Where to move to? ";
+        String prompt = "Where to put? ";
         setupMockDatabase(new Food(), expected);
         when(dbManager.getLocations()).thenReturn(Collections.singletonList(expected));
         when(dbManager.getLocations(expected.name)).thenReturn(Collections.singletonList(expected));
@@ -442,7 +443,7 @@ public class InputCollectorTest {
 
     @Test
     public void determineLocationNonInteractively() throws Exception {
-        Location expected = new Location(2, "Fridge");
+        Location expected = new Location(2, 7, "Fridge");
         Command command = Command.createCommand(expected.name);
         setupMockDatabase(new Food(), expected);
 
@@ -454,7 +455,7 @@ public class InputCollectorTest {
 
     @Test
     public void determineLocationInteractively() throws Exception {
-        Location expected = new Location(2, "Fridge");
+        Location expected = new Location(2, 7, "Fridge");
         Command command = Command.createCommand(new String[0]);
         String prompt = "Location name: ";
         setupMockDatabase(new Food(), expected);
@@ -469,7 +470,7 @@ public class InputCollectorTest {
 
     @Test
     public void determineFoodNonInteractively() throws Exception {
-        Food expected = new Food(2, "Beer");
+        Food expected = new Food(2, 7, "Beer");
         Command command = Command.createCommand(expected.name);
         setupMockDatabase(expected, new Location());
 
@@ -481,7 +482,7 @@ public class InputCollectorTest {
 
     @Test
     public void determineFoodInteractively() throws Exception {
-        Food expected = new Food(2, "Beer");
+        Food expected = new Food(2, 7, "Beer");
         Command command = Command.createCommand(new String[0]);
         String prompt = "Food name: ";
         setupMockDatabase(expected, new Location());
@@ -496,11 +497,12 @@ public class InputCollectorTest {
 
     @Test
     public void determineDeviceNonInteractively() throws Exception {
-        UserDevice expected = new UserDevice(2, "Mobile", 1);
+        UserDevice expected = new UserDevice(2, 7, "Mobile", 1);
         Command command = Command.createCommand(expected.name);
         when(dbManager.getDevices(expected.name)).thenReturn(
                 Collections.singletonList(new UserDeviceView(
                         expected.id,
+                        expected.version,
                         expected.name,
                         "John",
                         expected.userId
@@ -514,12 +516,13 @@ public class InputCollectorTest {
 
     @Test
     public void determineDeviceInteractively() throws Exception {
-        UserDevice expected = new UserDevice(2, "Mobile", 1);
+        UserDevice expected = new UserDevice(2, 7, "Mobile", 1);
         Command command = Command.createCommand(new String[0]);
         String prompt = "Device name: ";
         when(dbManager.getDevices(expected.name)).thenReturn(
                 Collections.singletonList(new UserDeviceView(
                         expected.id,
+                        expected.version,
                         expected.name,
                         "John",
                         expected.userId
@@ -535,12 +538,13 @@ public class InputCollectorTest {
 
     @Test
     public void determineDeviceInvalidNameGoesInteractively() throws Exception {
-        UserDevice expected = new UserDevice(2, "Mobile", 1);
+        UserDevice expected = new UserDevice(2, 7, "Mobile", 1);
         Command command = Command.createCommand("$invalid$name$");
         String prompt = "Device name: ";
         when(dbManager.getDevices(expected.name)).thenReturn(
                 Collections.singletonList(new UserDeviceView(
                         expected.id,
+                        expected.version,
                         expected.name,
                         "John",
                         expected.userId
@@ -557,7 +561,7 @@ public class InputCollectorTest {
 
     @Test
     public void determineUserNonInteractively() throws Exception {
-        User expected = new User(2, "John");
+        User expected = new User(2, 7, "John");
         Command command = Command.createCommand(expected.name);
         when(dbManager.getUsers(expected.name)).thenReturn(Collections.singletonList(expected));
 
@@ -569,11 +573,11 @@ public class InputCollectorTest {
 
     @Test
     public void determineUserInteractively() throws Exception {
-        User expected = new User(2, "John");
+        User expected = new User(2, 7, "John");
         Command command = Command.createCommand(new String[0]);
         String prompt = "User name: ";
         when(dbManager.getUsers(expected.name)).thenReturn(
-                Collections.singletonList(new User(expected.id,expected.name)));
+                Collections.singletonList(new User(expected.id, expected.version, expected.name)));
         when(reader.nextName(prompt)).thenReturn(expected.name);
 
         User output = uut.determineUser(command);
@@ -585,11 +589,11 @@ public class InputCollectorTest {
 
     @Test
     public void determineUserInvalidNameGoesInteractively() throws Exception {
-        User expected = new User(2, "John");
+        User expected = new User(2, 7, "John");
         Command command = Command.createCommand("$invalid$name=");
         String prompt = "User name: ";
         when(dbManager.getUsers(expected.name)).thenReturn(
-                Collections.singletonList(new User(expected.id,expected.name)));
+                Collections.singletonList(new User(expected.id, expected.version, expected.name)));
         when(reader.nextName(prompt)).thenReturn(expected.name);
 
         User output = uut.determineUser(command);
@@ -602,8 +606,8 @@ public class InputCollectorTest {
 
     @Test
     public void determineItemNonInteractively() throws Exception {
-        Food expectedType = new Food(2, "Beer");
-        FoodItem expected = new FoodItem(2, Instant.now(), expectedType.id, 2, 3, 4);
+        Food expectedType = new Food(2, 7, "Beer");
+        FoodItem expected = new FoodItem(2, 7, Instant.now(), expectedType.id, 2, 3, 4);
         Command command = Command.createCommand("--f " + expectedType.name);
         setupMockDatabase(expectedType, new Location());
         when(dbManager.getItems(expectedType.id)).thenReturn(Collections.singletonList(expected));
@@ -617,10 +621,10 @@ public class InputCollectorTest {
 
     @Test
     public void determineItemInteractively() throws Exception {
-        Food expectedType = new Food(2, "Beer");
-        FoodItem expected = new FoodItem(2, Instant.now(), expectedType.id, 2, 3, 4);
+        Food expectedType = new Food(2, 7, "Beer");
+        FoodItem expected = new FoodItem(2, 7, Instant.now(), expectedType.id, 2, 3, 4);
         Command command = Command.createCommand(new String[0]);
-        String prompt = "What to move? ";
+        String prompt = "What to edit? ";
         setupMockDatabase(expectedType, new Location());
         when(dbManager.getItems(expectedType.id)).thenReturn(Collections.singletonList(expected));
         when(dbManager.getFood()).thenReturn(Collections.singletonList(expectedType));
@@ -634,6 +638,50 @@ public class InputCollectorTest {
         verify(dbManager).getItems(expectedType.id);
         verify(reader).next(prompt);
         verify(writer).printFood("Available food: ", Collections.singletonList(expectedType));
+    }
+
+    @Test
+    public void determineDateFromCommand() throws ParseException {
+        Command command = Command.createCommand(new String[] {
+                "--d",
+                "+0d"
+        });
+
+        Instant actual = uut.determineDate(command, Instant.now());
+
+        assertEquals(0L, actual.toEpochMilli());
+        verify(timeProvider).getTime();
+    }
+
+    @Test
+    public void invalidDateGoesInteractive() throws ParseException {
+        Command command = Command.createCommand(new String[] {
+                "--d",
+                "invalid"
+        });
+        String prompt = "Eat before:  ";
+        LocalDate date = LocalDate.now();
+        Instant expected = Instant.from(date.atStartOfDay(ZoneId.of("UTC")));
+        when(reader.nextDate(eq(prompt), any(LocalDate.class))).thenReturn(date);
+
+        Instant actual = uut.determineDate(command, Instant.now());
+
+        assertEquals(expected, actual);
+        verify(reader).nextDate(eq(prompt), any(LocalDate.class));
+    }
+
+    @Test
+    public void determineDateInteractively() throws ParseException {
+        Command command = Command.createCommand(new String[0]);
+        String prompt = "Eat before:  ";
+        LocalDate date = LocalDate.now();
+        Instant expected = Instant.from(date.atStartOfDay(ZoneId.of("UTC")));
+        when(reader.nextDate(eq(prompt), any(LocalDate.class))).thenReturn(date);
+
+        Instant actual = uut.determineDate(command, Instant.now());
+
+        assertEquals(expected, actual);
+        verify(reader).nextDate(eq(prompt), any(LocalDate.class));
     }
 
     private void setupMockDatabase(Food food, Location location) throws DatabaseException {

@@ -1,11 +1,11 @@
 package de.njsm.stocks.client.frontend.cli.commands.loc;
 
+import de.njsm.stocks.client.business.data.Location;
 import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
-import de.njsm.stocks.common.data.Location;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class LocationRemoveCommandHandlerTest {
         uut.handle(input);
 
         verify(collector).determineLocation(input);
-        verify(server).removeLocation(item);
+        verify(server).removeLocation(item, false);
         verify(refresher).refresh();
     }
 }

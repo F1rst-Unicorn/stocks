@@ -46,7 +46,7 @@ public class FoodEndpoint extends Endpoint {
                                @QueryParam("new") String newName) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
-                isValid(newName, "newName")) {
+                isValid(newName, "new")) {
 
             StatusCode status = manager.rename(new Food(id, "", version), newName);
             return new Response(status);

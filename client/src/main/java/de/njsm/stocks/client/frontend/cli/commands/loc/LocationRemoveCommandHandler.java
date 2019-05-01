@@ -9,7 +9,7 @@ import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
-import de.njsm.stocks.common.data.Location;
+import de.njsm.stocks.client.business.data.Location;
 
 public class LocationRemoveCommandHandler extends FaultyCommandHandler {
 
@@ -31,7 +31,7 @@ public class LocationRemoveCommandHandler extends FaultyCommandHandler {
     @Override
     protected void handleInternally(Command command) throws NetworkException, DatabaseException, InputException {
         Location location = inputCollector.determineLocation(command);
-        serverManager.removeLocation(location);
+        serverManager.removeLocation(location, false);
         refresher.refresh();
 
     }

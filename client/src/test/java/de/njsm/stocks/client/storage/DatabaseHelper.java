@@ -19,6 +19,7 @@ public class DatabaseHelper {
 
     private Connection dbConnection;
 
+    // Version = ID + 5
     private String[] resetCommands = {
             "DELETE FROM Food",
             "DELETE FROM Food_item",
@@ -34,46 +35,46 @@ public class DatabaseHelper {
                     "(4, 'Food', 0), " +
                     "(5, 'Food_item', 0)",
 
-            "INSERT INTO User (`ID`, `name`) VALUES " +
-                    "(1, 'John'), " +
-                    "(2, 'Jack'), " +
-                    "(3, 'Juliette') ",
+            "INSERT INTO User (`ID`, `version`, `name`) VALUES " +
+                    "(1, 6, 'John'), " +
+                    "(2, 7, 'Jack'), " +
+                    "(3, 8, 'Juliette') ",
 
-            "INSERT INTO User_device (`ID`, `name`, `belongs_to`) VALUES " +
-                    "(1, 'Mobile', 1), " +
-                    "(2, 'Mobile', 2), " +
-                    "(3, 'Mobile', 3), " +
-                    "(4, 'Laptop', 1), " +
-                    "(5, 'Desktop-PC', 1), " +
-                    "(6, 'PC-Work', 2), " +
-                    "(7, 'Laptop', 3)",
+            "INSERT INTO User_device (`ID`, `version`, `name`, `belongs_to`) VALUES " +
+                    "(1, 6, 'Mobile', 1), " +
+                    "(2, 7, 'Mobile', 2), " +
+                    "(3, 8, 'Mobile', 3), " +
+                    "(4, 9, 'Laptop', 1), " +
+                    "(5, 10, 'Desktop-PC', 1), " +
+                    "(6, 11, 'PC-Work', 2), " +
+                    "(7, 12, 'Laptop', 3)",
 
-            "INSERT INTO Location (`ID`, `name`) VALUES " +
-                    "(1, 'Fridge'), " +
-                    "(2, 'Cupboard'), " +
-                    "(3, 'Cupboard'), " +
-                    "(4, 'Basement')",
+            "INSERT INTO Location (`ID`, `version`, `name`) VALUES " +
+                    "(1, 6, 'Fridge'), " +
+                    "(2, 7, 'Cupboard'), " +
+                    "(3, 8, 'Cupboard'), " +
+                    "(4, 9, 'Basement')",
 
-            "INSERT INTO Food (`ID`, `name`) VALUES " +
-                    "(1, 'Beer')," +
-                    "(2, 'Carrot')," +
-                    "(3, 'Bread')," +
-                    "(4, 'Milk')," +
-                    "(5, 'Yoghurt')," +
-                    "(6, 'Raspberry jam')," +
-                    "(7, 'Apple juice')",
+            "INSERT INTO Food (`ID`, `version`, `name`) VALUES " +
+                    "(1, 6, 'Beer')," +
+                    "(2, 7, 'Carrot')," +
+                    "(3, 8, 'Bread')," +
+                    "(4, 9, 'Milk')," +
+                    "(5, 10, 'Yoghurt')," +
+                    "(6, 11, 'Raspberry jam')," +
+                    "(7, 12, 'Apple juice')",
 
-            "INSERT INTO Food_item (`ID`, eat_by, of_type, stored_in, registers, buys) " +
+            "INSERT INTO Food_item (`ID`, `version`, eat_by, of_type, stored_in, registers, buys) " +
                     "VALUES " +
-                    "(1, 0, 1, 1, 2, 2), " +
-                    "(2, 86400000, 1, 1, 2, 2), " +
-                    "(3, 172800000, 3, 2, 1, 1), " +
-                    "(4, 259200000, 4, 1, 1, 1), " +
-                    "(5, 345600000, 1, 1, 2, 2), " +
-                    "(6, 432000000, 1, 1, 2, 2), " +
-                    "(7, 518400000, 6, 3, 2, 2), " +
-                    "(8, 604800000, 7, 3, 3, 3), " +
-                    "(9, 691200000, 7, 4, 3, 3)"
+                    "(1, 6, 0, 1, 1, 2, 2), " +
+                    "(2, 7, 86400000, 1, 1, 2, 2), " +
+                    "(3, 8, 172800000, 3, 2, 1, 1), " +
+                    "(4, 9, 259200000, 4, 1, 1, 1), " +
+                    "(5, 10, 345600000, 1, 1, 2, 2), " +
+                    "(6, 11, 432000000, 1, 1, 2, 2), " +
+                    "(7, 12, 518400000, 6, 3, 2, 2), " +
+                    "(8, 13, 604800000, 7, 3, 3, 3), " +
+                    "(9, 14, 691200000, 7, 4, 3, 3)"
     };
 
     public void setupDatabase() throws SQLException, IOException {

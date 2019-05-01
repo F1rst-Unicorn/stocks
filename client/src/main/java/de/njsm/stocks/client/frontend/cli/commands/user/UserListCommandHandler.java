@@ -1,5 +1,6 @@
 package de.njsm.stocks.client.frontend.cli.commands.user;
 
+import de.njsm.stocks.client.business.data.User;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.exceptions.NetworkException;
@@ -7,7 +8,6 @@ import de.njsm.stocks.client.frontend.cli.Command;
 import de.njsm.stocks.client.frontend.cli.commands.FaultyCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.storage.DatabaseManager;
-import de.njsm.stocks.common.data.User;
 
 import java.util.List;
 

@@ -1,436 +1,337 @@
 package de.njsm.stocks.client.storage;
 
-import de.njsm.stocks.client.config.Configuration;
+import de.njsm.stocks.client.business.data.Update;
+import de.njsm.stocks.client.business.data.User;
+import de.njsm.stocks.client.business.data.*;
+import de.njsm.stocks.client.business.data.view.FoodItemView;
+import de.njsm.stocks.client.business.data.view.FoodView;
+import de.njsm.stocks.client.business.data.view.UserDeviceView;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
 import de.njsm.stocks.client.init.upgrade.Version;
-import de.njsm.stocks.common.data.*;
-import de.njsm.stocks.common.data.view.FoodItemView;
-import de.njsm.stocks.common.data.view.FoodView;
-import de.njsm.stocks.common.data.view.UserDeviceView;
-import de.njsm.stocks.common.data.view.UserDeviceViewFactory;
-import de.njsm.stocks.common.data.visitor.VisitorException;
+import de.njsm.stocks.client.storage.jooq.tables.records.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.threeten.bp.Instant;
+import org.jooq.*;
 
-import java.sql.*;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class DatabaseManager {
+import static de.njsm.stocks.client.storage.jooq.Tables.*;
+import static org.jooq.impl.DSL.condition;
+
+public class DatabaseManager extends BaseDatabaseManager {
 
     private static final Logger LOG = LogManager.getLogger(DatabaseManager.class);
 
-    private DatabaseImpl backend;
-
-    public DatabaseManager() {
-        backend = new DatabaseImpl();
-    }
-
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:" + Configuration.DB_PATH);
-    }
-
-    private Connection getConnectionWithoutAutoCommit() throws SQLException {
-        Connection result = getConnection();
-        result.setAutoCommit(false);
-        return result;
-    }
-
     public List<Update> getUpdates() throws DatabaseException {
         LOG.info("Getting updates");
-        return getData(UpdateFactory.f);
+        return runFunction(
+                c -> c.selectFrom(UPDATES)
+                        .fetch()
+                        .map(r -> new Update(r.getTableName(),
+                                             Instant.ofEpochMilli(r.getLastUpdate().getTime())
+                        )
+                )
+        );
     }
 
-    public void writeUpdates(List<Update> u) throws DatabaseException {
-        writeData("Updates", u);
+    public void writeUpdates(List<Update> values) throws DatabaseException {
+        LOG.info("Writing updates");
+        runCommand(c -> {
+            for (Update u : values) {
+                c.update(UPDATES)
+                        .set(UPDATES.LAST_UPDATE, new Timestamp(u.lastUpdate.toEpochMilli()))
+                        .where(UPDATES.TABLE_NAME.eq(u.table))
+                        .execute();
+            }
+
+        });
     }
 
     public void resetUpdates() throws DatabaseException {
         LOG.info("Resetting updates");
-        String sql = "UPDATE Updates SET last_update=0";
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement s = c.prepareStatement(sql);
-            s.execute();
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not reset updates", e);
-        } finally {
-            close(c);
-        }
+        runCommand(c -> c.update(UPDATES)
+                .set(UPDATES.LAST_UPDATE, new Timestamp(0))
+                .execute());
     }
 
     public List<User> getUsers() throws DatabaseException {
         LOG.info("Getting all users");
-        return getData(UserFactory.f);
+        return runFunction(c -> c.selectFrom(USER)
+                .orderBy(USER.NAME)
+                .fetch()
+                .map(r -> new User(r.getId(), r.getVersion(), r.getName())));
     }
 
     public List<User> getUsers(String name) throws DatabaseException {
         LOG.info("Getting users matching name '" + name + "'");
-        String queryUsers = "SELECT * FROM User WHERE name=?";
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement p = c.prepareStatement(queryUsers);
-            p.setString(1, name);
-            ResultSet rs = p.executeQuery();
-            return UserFactory.f.createDataList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get filtered users", e);
-        } finally {
-            close(c);
-        }
+        return runFunction(c -> c.selectFrom(USER)
+                .where(USER.NAME.eq(name))
+                .fetch()
+                .map(r -> new User(r.getId(), r.getVersion(), r.getName())));
     }
 
-    public void writeUsers(List<User> u) throws DatabaseException {
-        writeData("User", u);
+    public void writeUsers(List<User> values) throws DatabaseException {
+        LOG.info("Writing users");
+        runCommand(c -> {
+            c.deleteFrom(USER).execute();
+            InsertValuesStep3<UserRecord, Integer, Integer, String> base = c.insertInto(USER)
+                    .columns(USER.ID, USER.VERSION, USER.NAME);
+
+            for (User u : values) {
+                base = base.values(u.id, u.version, u.name);
+            }
+            base.execute();
+        });
     }
 
-    public void writeDevices(List<UserDevice> u) throws DatabaseException {
-        writeData("User_device", u);
+    public void writeDevices(List<UserDevice> values) throws DatabaseException {
+        runCommand(c -> {
+            c.deleteFrom(USER_DEVICE).execute();
+            InsertValuesStep4<UserDeviceRecord, Integer, Integer, String, Integer> base = c.insertInto(USER_DEVICE)
+                    .columns(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO);
+
+            for (UserDevice u : values) {
+                base = base.values(u.id, u.version, u.name, u.userId);
+            }
+            base.execute();
+        });
     }
 
     public List<UserDeviceView> getDevices() throws DatabaseException {
         LOG.info("Getting all devices");
-        return getData(UserDeviceViewFactory.f);
+        return runFunction(c -> c.select(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.NAME, USER.NAME, USER.ID)
+                .from(USER_DEVICE).join(USER).on(USER.ID.eq(USER_DEVICE.BELONGS_TO)))
+                .orderBy(USER_DEVICE.NAME)
+                .fetch()
+                .map(r -> new UserDeviceView(r.component1(), r.component2(), r.component3(), r.component4(), r.component5()));
     }
 
     public List<UserDeviceView> getDevices(String name) throws DatabaseException {
         LOG.info("Getting devices for " + name);
-        String queryDevices = "SELECT d.id, d.name, u.name as belongs_to, u.ID as belongs_id " +
-                "FROM User_device d, User u " +
-                "WHERE d.belongs_to=u.ID AND d.name=?";
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement p = c.prepareStatement(queryDevices);
-            p.setString(1, name);
-            ResultSet rs = p.executeQuery();
-            return UserDeviceViewFactory.f.createDataList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get devices", e);
-        } finally {
-            close(c);
-        }
+        return runFunction(c -> c.select(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.NAME, USER.NAME, USER.ID))
+                .from(USER_DEVICE.join(USER).on(USER.ID.eq(USER_DEVICE.BELONGS_TO)))
+                .where(USER_DEVICE.NAME.eq(name))
+                .fetch()
+                .map(r -> new UserDeviceView(r.component1(),
+                        r.component2(),
+                        r.component3(),
+                        r.component4(),
+                        r.component5()));
     }
 
     public List<Location> getLocations() throws DatabaseException {
         LOG.info("Getting all locations");
-        return getData(LocationFactory.f);
+        return runFunction(c -> c.selectFrom(LOCATION)
+                .orderBy(LOCATION.NAME)
+                .fetch()
+                .map(r -> new Location(r.getId(), r.getVersion(), r.getName())));
     }
 
     public List<Location> getLocations(String name) throws DatabaseException {
         LOG.info("Getting locations matching name '" + name + "'");
-        String getLocations = "SELECT * FROM Location WHERE name=?";
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement selectStmt = c.prepareStatement(getLocations);
-            selectStmt.setString(1, name);
-            ResultSet rs = selectStmt.executeQuery();
-            return LocationFactory.f.createDataList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get locations", e);
-        } finally {
-            close(c);
-        }
+        return runFunction(c -> c.selectFrom(LOCATION)
+                .where(LOCATION.NAME.eq(name))
+                .fetch()
+                .map(r -> new Location(r.getId(), r.getVersion(), r.getName())));
     }
+
 
     public List<Location> getLocationsForFoodType(int foodId) throws DatabaseException {
         LOG.info("Getting locations for food type " + foodId);
-        String getLocations = "SELECT DISTINCT l.ID, l.name " +
-                "FROM Location l, Food_item i " +
-                "WHERE i.of_type=? AND i.stored_in=l.ID";
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement stmt = c.prepareStatement(getLocations);
-            stmt.setInt(1, foodId);
-            ResultSet rs = stmt.executeQuery();
-            return LocationFactory.f.createDataList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get locations", e);
-        } finally {
-            close(c);
-        }
+        return runFunction(c -> c.selectDistinct(LOCATION.ID, LOCATION.NAME, LOCATION.VERSION)
+                .from(LOCATION)
+                .join(FOOD_ITEM).on(FOOD_ITEM.STORED_IN.eq(LOCATION.ID))
+                .where(FOOD_ITEM.OF_TYPE.eq(foodId))
+                .fetch()
+                .map(r -> new Location(r.component1(), r.component3(), r.component2())));
     }
 
-    public void writeLocations(List<Location> l) throws DatabaseException {
-        writeData("Location", l);
+    public void writeLocations(List<Location> values) throws DatabaseException {
+        runCommand(c -> {
+            c.deleteFrom(LOCATION).execute();
+            InsertValuesStep3<LocationRecord, Integer, Integer, String> base = c.insertInto(LOCATION)
+                    .columns(LOCATION.ID, LOCATION.VERSION, LOCATION.NAME);
+
+            for (Location u : values) {
+                base = base.values(u.id, u.version, u.name);
+            }
+            base.execute();
+        });
     }
 
-    public void writeFood(List<Food> f) throws DatabaseException {
-        writeData("Food", f);
+    public void writeFood(List<Food> values) throws DatabaseException {
+        runCommand(c -> {
+            c.deleteFrom(FOOD).execute();
+            InsertValuesStep3<FoodRecord, Integer, Integer, String> base = c.insertInto(FOOD)
+                    .columns(FOOD.ID, FOOD.VERSION, FOOD.NAME);
+
+            for (Food u : values) {
+                base = base.values(u.id, u.version, u.name);
+            }
+            base.execute();
+        });
     }
 
     public List<Food> getFood(String name) throws DatabaseException {
         LOG.info("Getting food matching name '" + name + "'");
-        String getFood = "SELECT * FROM Food WHERE name=?";
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement selectStmt = c.prepareStatement(getFood);
-            selectStmt.setString(1, name);
-            ResultSet rs = selectStmt.executeQuery();
-            return FoodFactory.f.createDataList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get food", e);
-        } finally {
-            close(c);
-        }
+        return runFunction(c -> c.selectFrom(FOOD)
+                .where(FOOD.NAME.eq(name)))
+                .fetch()
+                .map(r -> new Food(r.getId(), r.getVersion(), r.getName()));
     }
 
     public List<Food> getFood() throws DatabaseException {
         LOG.info("Getting all food");
-        return getData(FoodFactory.f);
+        return runFunction(c -> c.selectFrom(FOOD)
+                .orderBy(FOOD.ID)
+                .fetch()
+                .map(r -> new Food(r.getId(), r.getVersion(), r.getName())));
     }
 
     public List<FoodItem> getItems(int foodId) throws DatabaseException {
         LOG.info("Getting food items of type " + foodId);
-        String queryString = "SELECT * " +
-                "FROM Food_item " +
-                "WHERE of_type=?";
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement sqlQuery = c.prepareStatement(queryString);
-            sqlQuery.setInt(1, foodId);
-            ResultSet rs = sqlQuery.executeQuery();
-            return FoodItemFactory.f.createDataList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get food items", e);
-        } finally {
-            close(c);
-        }
+        return runFunction(c -> c.selectFrom(FOOD_ITEM)
+                .where(FOOD_ITEM.OF_TYPE.eq(foodId))
+                .fetch()
+                .map(r -> new FoodItem(
+                        r.getId(),
+                        r.getVersion(),
+                        Instant.ofEpochMilli(r.getEatBy().getTime()),
+                        r.getOfType(),
+                        r.getStoredIn(),
+                        r.getRegisters(),
+                        r.getBuys()
+                )));
     }
 
     public List<FoodView> getItems(String user, String location) throws DatabaseException {
         LOG.info("Getting items matching user '" + user + "' and location '" + location + "'");
-        Connection c = null;
+        return runFunction(c -> {
+            de.njsm.stocks.client.storage.jooq.tables.Food F = FOOD;
+            de.njsm.stocks.client.storage.jooq.tables.FoodItem I = FOOD_ITEM;
+            de.njsm.stocks.client.storage.jooq.tables.Location L = LOCATION;
 
-        try {
-            c = getConnection();
-            PreparedStatement sqlQuery = getStatementFilteringBy(user, location, c);
-            ResultSet rs = sqlQuery.executeQuery();
-            return getFoodView(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get items", e);
-        } finally {
-            close(c);
-        }
+            Table<Record7<Integer, Timestamp, Integer, Integer, String, String, String>> richFoodItems =
+                    c.select(I.OF_TYPE.as("type"), I.EAT_BY.as("date"), I.STORED_IN.as("stored_in"), I.BUYS.as("buys"), L.NAME.as("location"), USER.NAME.as("user"), USER_DEVICE.NAME.as("device"))
+                            .from(FOOD_ITEM, LOCATION, USER, USER_DEVICE)
+                            .where(L.ID.eq(I.STORED_IN))
+                            .and(USER.ID.eq(I.BUYS))
+                            .and(USER_DEVICE.ID.eq(I.REGISTERS))
+                            .asTable("richFoodItems");
+
+            Condition userCondition = condition("{0} = {1}", "", user).or(richFoodItems.field("buys", Integer.class).in(c.select(USER.ID).from(USER).where(USER.NAME.eq(user))));
+            Condition locationCondition = condition("{0} = {1}", "", location).or(richFoodItems.field("stored_in", Integer.class).in(c.select(L.ID).from(L).where(L.NAME.eq(location))));
+
+            List<FoodView> result = new ArrayList<>();
+            int lastId = -1;
+            FoodView f = null;
+
+            Result<Record7<Integer, String, Integer, Timestamp, String, String, String>> items = c.select(F.ID, F.NAME, F.VERSION,
+                    richFoodItems.field("date", Timestamp.class),
+                    richFoodItems.field("location", String.class),
+                    richFoodItems.field("user", String.class),
+                    richFoodItems.field("device", String.class))
+                    .from(F)
+                    .leftOuterJoin(richFoodItems)
+                    .on(F.ID.eq(richFoodItems.field("type", Integer.class)))
+                    .where(userCondition.and(locationCondition))
+                    .orderBy(F.ID.asc(), richFoodItems.field("date").asc())
+                    .fetch();
+
+            for (Record7<Integer, String, Integer, Timestamp, String, String, String> rs : items) {
+                int id = rs.component1();
+                if (id != lastId) {
+                    if (f != null) {
+                        result.add(f);
+                    }
+                    Food newFood = new Food(id, rs.component3(), rs.component2());
+                    f = new FoodView(newFood);
+                }
+
+                Timestamp date = rs.component4();
+                if (date != null) {     // may have no elements due to outer join
+                    FoodItemView item = new FoodItemView();
+                    item.eatByDate = Instant.ofEpochMilli(date.getTime());
+                    item.location = rs.component5();
+                    item.user = rs.component6();
+                    item.device = rs.component7();
+                    if (f != null) {
+                        f.add(item);
+                    }
+                }
+                lastId = id;
+            }
+
+            if (f != null) {
+                result.add(f);
+            }
+            return result;
+        });
     }
 
-    private PreparedStatement getStatementFilteringBy(String user, String location, Connection c) throws SQLException {
-        String queryStringTemplate = "SELECT f.ID as id, f.name as name, date, location, user, device " +
-                "FROM Food f LEFT OUTER JOIN " +
-                    "(SELECT i.of_type as type, i.eat_by as date, i.stored_in as stored_in, i.buys as buys, l.name as location, u.name as user, d.name as device FROM Food_item i, Location l, User u, User_device d " +
-                    "WHERE l.ID = i.stored_in " +
-                    "AND u.ID = i.buys " +
-                    "AND d.ID = i.registers) " +
-                "ON f.ID = type " +
-                "%s " +
-                "ORDER BY f.ID ASC, date ASC";
-        String queryString;
-        PreparedStatement sqlQuery;
-        if (user.equals("")) {
-            if (location.equals("")) {
-                String filterClause = "";
-                queryString = String.format(queryStringTemplate, filterClause);
-                sqlQuery = c.prepareStatement(queryString);
-            } else {
-                String filterClause = "WHERE stored_in in (SELECT ID FROM Location WHERE name=?)";
-                queryString = String.format(queryStringTemplate, filterClause);
-                sqlQuery = c.prepareStatement(queryString);
-                sqlQuery.setString(1, location);
-            }
-        } else {
-            if (location.equals("")) {
-                String filterClause = "WHERE buys in (SELECT ID FROM User WHERE name=?)";
-                queryString = String.format(queryStringTemplate, filterClause);
-                sqlQuery = c.prepareStatement(queryString);
-                sqlQuery.setString(1, user);
-            } else {
-                String filterClause = "WHERE stored_in in (SELECT ID FROM Location WHERE name=?) " +
-                        "AND buys in (SELECT ID FROM User WHERE name=?)";
-                queryString = String.format(queryStringTemplate, filterClause);
-                sqlQuery = c.prepareStatement(queryString);
-                sqlQuery.setString(1, location);
-                sqlQuery.setString(2, user);
-            }
-        }
-        return sqlQuery;
-    }
+    public void writeFoodItems(List<FoodItem> values) throws DatabaseException {
+        runCommand(c -> {
+            c.deleteFrom(FOOD_ITEM).execute();
+            InsertValuesStep7<FoodItemRecord, Integer, Integer, Timestamp, Integer, Integer, Integer, Integer> base = c.insertInto(FOOD_ITEM)
+                    .columns(FOOD_ITEM.ID, FOOD_ITEM.VERSION, FOOD_ITEM.EAT_BY, FOOD_ITEM.STORED_IN, FOOD_ITEM.BUYS, FOOD_ITEM.REGISTERS, FOOD_ITEM.OF_TYPE);
 
-    public void writeFoodItems(List<FoodItem> list) throws DatabaseException {
-        writeData("Food_item", list);
+            for (FoodItem u : values) {
+                base = base.values(u.id,
+                        u.version,
+                        new Timestamp(u.eatByDate.toEpochMilli()),
+                        u.storedIn,
+                        u.buys,
+                        u.registers,
+                        u.ofType);
+            }
+            base.execute();
+        });
+
     }
 
     public FoodItem getNextItem(int foodId) throws InputException, DatabaseException {
         LOG.info("Getting next item for food id " + foodId);
-        String query = "SELECT * " +
-                "FROM Food_item " +
-                "WHERE of_type=? " +
-                "ORDER BY eat_by ASC " +
-                "LIMIT 1";
-        Connection c = null;
+        Optional<FoodItem> item = runFunction(c -> c.selectFrom(FOOD_ITEM)
+                .where(FOOD_ITEM.OF_TYPE.eq(foodId))
+                .orderBy(FOOD_ITEM.EAT_BY.asc())
+                .limit(1)
+                .fetchOptional()
+                .map(r -> new FoodItem(
+                        r.getId(),
+                        r.getVersion(),
+                        Instant.ofEpochMilli(r.getEatBy().getTime()),
+                        r.getOfType(),
+                        r.getStoredIn(),
+                        r.getRegisters(),
+                        r.getBuys())));
 
-        try {
-            c = getConnection();
-            PreparedStatement stmt = c.prepareStatement(query);
-            stmt.setInt(1, foodId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return FoodItemFactory.f.createData(rs);
-            } else {
-                throw new InputException("You don't have any...");
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get next food item", e);
-        } finally {
-            close(c);
-        }
+        if (item.isPresent())
+            return item.get();
+        else
+            throw new InputException("You don't have any...");
     }
 
     public Version getDbVersion() throws DatabaseException {
         LOG.info("Getting version");
-        String tableQuery = "SELECT name FROM sqlite_master WHERE type='table' " +
-                "AND name='Config' ";
-        String query = "SELECT value FROM Config WHERE key='db.version'";
-        Connection c = null;
+        return runFunction(c -> {
+            boolean tableExists = c.select()
+                    .from("sqlite_master")
+                    .where("type = {0}", "table")
+                    .and("name = {0}", "Config")
+                    .fetchOptional()
+                    .isPresent();
 
-        try {
-            c = getConnection();
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery(tableQuery);
-            if (rs.next()) {
-                ResultSet configResult = stmt.executeQuery(query);
-                return Version.create(configResult.getString("value"));
-            } else {
+            if (tableExists) {
+                return c.selectFrom(CONFIG)
+                        .where(CONFIG.KEY.eq("db.version"))
+                        .fetchOne(r -> Version.create(r.getValue()));
+            } else
                 return Version.PRE_VERSIONED;
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get DB version", e);
-        } finally {
-            close(c);
-        }
-    }
-
-    public void runSqlScript(List<String> script) throws DatabaseException {
-        LOG.info("Running script");
-        Connection c = null;
-
-        try {
-            c = getConnectionWithoutAutoCommit();
-            Statement stmt = c.createStatement();
-            for (String command : script) {
-                stmt.execute(command);
-            }
-            stmt.close();
-            c.commit();
-        } catch (SQLException e) {
-            throw new DatabaseException("Could complete SQL script", e);
-        } finally {
-            close(c);
-        }
-    }
-
-    private ArrayList<FoodView> getFoodView(ResultSet rs) throws SQLException {
-        ArrayList<FoodView> result = new ArrayList<>();
-        int lastId = -1;
-        FoodView f = null;
-        while (rs.next()) {
-            int id = rs.getInt("id");
-
-            if (id != lastId) {
-                if (f != null) {
-                    result.add(f);
-                }
-                Food newFood = new Food();
-                newFood.id = id;
-                newFood.name = rs.getString("name");
-                f = new FoodView(newFood);
-            }
-
-            Timestamp date = rs.getTimestamp("date");
-            if (date != null) {     // may have no elements due to outer join
-                FoodItemView item = new FoodItemView();
-                item.eatByDate = Instant.ofEpochMilli(date.getTime());
-                item.user = rs.getString("user");
-                item.location = rs.getString("location");
-                item.device = rs.getString("device");
-                if (f != null) {
-                    f.add(item);
-                }
-            }
-            lastId = id;
-        }
-        if (f != null) {
-            result.add(f);
-        }
-        return result;
-    }
-
-    private void writeData(String table, List<? extends Data> list) throws DatabaseException {
-        LOG.info("Writing " + table);
-        Connection c = null;
-
-        try {
-            c = getConnectionWithoutAutoCommit();
-            backend.writeData(c, table, list);
-            c.commit();
-        } catch (SQLException | VisitorException e) {
-            rollback(c);
-            throw new DatabaseException("Could not write " + table, e);
-        } finally {
-            close(c);
-        }
-    }
-
-    private <T extends Data> List<T> getData(DataFactory<T> factory) throws DatabaseException {
-        String query = factory.getQuery();
-        Connection c = null;
-
-        try {
-            c = getConnection();
-            PreparedStatement p = c.prepareStatement(query);
-            ResultSet rs = p.executeQuery();
-            return factory.createDataList(rs);
-        } catch (SQLException e) {
-            throw new DatabaseException("Could not get all data", e);
-        } finally {
-            close(c);
-        }
-    }
-
-    static void rollback(Connection c) {
-        if (c != null) {
-            try {
-                LOG.warn("Rolling back transaction");
-                c.rollback();
-                LOG.info("Successful rollback");
-            } catch (SQLException e) {
-                LOG.error("Rollback failed", e);
-            }
-        }
-    }
-
-    static void close(Connection con) {
-        if (con != null) {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                LOG.error("Error closing connection", e);
-            }
-        }
+        });
     }
 }

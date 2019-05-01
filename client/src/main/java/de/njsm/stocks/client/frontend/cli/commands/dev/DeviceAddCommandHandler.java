@@ -1,5 +1,9 @@
 package de.njsm.stocks.client.frontend.cli.commands.dev;
 
+import de.njsm.stocks.client.business.data.ServerTicket;
+import de.njsm.stocks.client.business.data.User;
+import de.njsm.stocks.client.business.data.UserDevice;
+import de.njsm.stocks.client.business.data.view.UserDeviceView;
 import de.njsm.stocks.client.config.Configuration;
 import de.njsm.stocks.client.exceptions.DatabaseException;
 import de.njsm.stocks.client.exceptions.InputException;
@@ -12,10 +16,6 @@ import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
 import de.njsm.stocks.client.storage.DatabaseManager;
-import de.njsm.stocks.common.data.Ticket;
-import de.njsm.stocks.common.data.User;
-import de.njsm.stocks.common.data.UserDevice;
-import de.njsm.stocks.common.data.view.UserDeviceView;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class DeviceAddCommandHandler extends FaultyCommandHandler {
     }
 
     private void addNewDevice(UserDevice deviceToAdd) throws NetworkException, DatabaseException {
-        Ticket ticket = serverManager.addDevice(deviceToAdd);
+        ServerTicket ticket = serverManager.addDevice(deviceToAdd);
         refresher.refresh();
         UserDeviceView newDevice = getNewDeviceFromDatabase(deviceToAdd.name);
         printNewDevice(newDevice, ticket);
@@ -72,7 +72,7 @@ public class DeviceAddCommandHandler extends FaultyCommandHandler {
         return devices.get(devices.size()-1);
     }
 
-    private void printNewDevice(UserDeviceView device, Ticket ticket) {
+    private void printNewDevice(UserDeviceView device, ServerTicket ticket) {
         writer.println("Creation successful. Enter parameters or scan QR code:");
         writer.println(generateQrCode(device, configuration, ticket));
         writer.println("\tUser name: " + device.user);
@@ -83,7 +83,7 @@ public class DeviceAddCommandHandler extends FaultyCommandHandler {
         writer.println("\tTicket: " + ticket.ticket);
     }
 
-    private String generateQrCode(UserDeviceView device, Configuration configuration, Ticket ticket) {
+    private String generateQrCode(UserDeviceView device, Configuration configuration, ServerTicket ticket) {
         return qrGenerator.generateQrCode(device.user + "\n" +
                 device.name + "\n" +
                 device.userId + "\n" +

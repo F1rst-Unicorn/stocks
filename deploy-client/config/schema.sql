@@ -1,9 +1,10 @@
 DROP TABLE IF EXISTS `Food`;
 
 CREATE TABLE `Food` (
-  `ID` int UNSIGNED NOT NULL UNIQUE,
+  `ID` INT NOT NULL UNIQUE,
   `name` varchar(200) NOT NULL,
   `image_path` varchar(200) NOT NULL DEFAULT '',
+  `version` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`)
 );
 
@@ -12,8 +13,9 @@ CREATE TABLE `Food` (
 DROP TABLE IF EXISTS `User`;
 
 CREATE TABLE `User` (
-    `ID` int UNSIGNED NOT NULL UNIQUE,
+    `ID` INT NOT NULL UNIQUE,
     `name` varchar(200) NOT NULL,
+    `version` INT NOT NULL DEFAULT 0,
     PRIMARY KEY (`ID`)
 );
 
@@ -22,8 +24,9 @@ CREATE TABLE `User` (
 DROP TABLE IF EXISTS `Location`;
 
 CREATE TABLE `Location` (
-    `ID` int UNSIGNED NOT NULL UNIQUE,
+    `ID` INT NOT NULL UNIQUE,
     `name` varchar(200) NOT NULL,
+    `version` INT NOT NULL DEFAULT 0,
     PRIMARY KEY (`ID`)
 );
 
@@ -31,10 +34,11 @@ CREATE TABLE `Location` (
 DROP TABLE IF EXISTS User_device;
 
 CREATE TABLE User_device (
-    `ID` int UNSIGNED NOT NULL UNIQUE,
+    `ID` INT NOT NULL UNIQUE,
     `name` varchar(200) NOT NULL,
-    belongs_to int UNSIGNED NOT NULL,
-    CONSTRAINT `device_points_to_user` FOREIGN KEY (`belongs_to`) REFERENCES `User`(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    belongs_to INT NOT NULL,
+    `version` INT NOT NULL DEFAULT 0,
+    CONSTRAINT `device_poINTs_to_user` FOREIGN KEY (`belongs_to`) REFERENCES `User`(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (`ID`)
 );
 
@@ -43,12 +47,13 @@ CREATE TABLE User_device (
 DROP TABLE IF EXISTS Food_item;
 
 CREATE TABLE Food_item (
-    `ID` int UNSIGNED NOT NULL UNIQUE,
+    `ID` INT NOT NULL UNIQUE,
     `eat_by` DATETIME NOT NULL,
-    `of_type` int UNSIGNED NOT NULL,
-    `stored_in` int UNSIGNED NOT NULL,
-    `registers` int UNSIGNED NOT NULL,
-    `buys` int UNSIGNED NOT NULL,    
+    `of_type` INT NOT NULL,
+    `stored_in` INT NOT NULL,
+    `registers` INT NOT NULL,
+    `buys` INT NOT NULL,
+    `version` INT NOT NULL DEFAULT 0,
     FOREIGN KEY (of_type) REFERENCES Food(`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (stored_in) REFERENCES Location(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (registers) REFERENCES User_device(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -56,18 +61,18 @@ CREATE TABLE Food_item (
     PRIMARY KEY (`ID`)
 );
 
-    
+
 DROP TABLE IF EXISTS Updates;
 
 CREATE TABLE Updates (
-    `ID` int UNSIGNED NOT NULL,
+    `ID` INT NOT NULL,
     `table_name` varchar(200) NOT NULL,
     `last_update` DATETIME NOT NULL DEFAULT 0,
     PRIMARY KEY (`ID`)
 );
 
 INSERT INTO Updates (`ID`, `table_name`)
-VALUES 
+VALUES
     (1, 'Location'),
     (2, 'User'),
     (3, 'User_device'),
@@ -84,4 +89,4 @@ CREATE TABLE Config (
 
 INSERT INTO Config (`key`, `value`)
 VALUES
-    ('db.version', '2.0.3')
+    ('db.version', '3.0.0')

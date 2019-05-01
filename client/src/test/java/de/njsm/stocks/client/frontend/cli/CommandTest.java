@@ -1,10 +1,10 @@
 package de.njsm.stocks.client.frontend.cli;
 
+import de.njsm.stocks.client.exceptions.ParseException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.njsm.stocks.client.exceptions.ParseException;
-import org.threeten.bp.temporal.ValueRange;
+import java.time.temporal.ValueRange;
 
 public class CommandTest {
 

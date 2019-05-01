@@ -1,6 +1,6 @@
 # Maintainer: aliena <dairyman@njsm.de>
 pkgname=stocks
-pkgver=2.0.3.0
+pkgver=3.0.0.0
 pkgrel=1
 pkgdesc="Manages a household's stocks client"
 arch=('any')
@@ -18,10 +18,6 @@ install=stocks.install
 
 build() {
     cd "$srcdir/"
-
-    cd common
-    mvn -Dmaven.test.skip=true install
-    cd ..
 
     cd client
     mvn -Dmaven.test.skip=true install

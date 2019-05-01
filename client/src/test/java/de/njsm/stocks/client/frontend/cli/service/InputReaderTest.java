@@ -7,10 +7,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.Period;
 
 import java.io.PrintStream;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -33,7 +34,7 @@ public class InputReaderTest {
         outMock = mock(PrintStream.class);
         timeMock = mock(TimeProvider.class);
         when(timeMock.getTime()).thenReturn(0L);
-        uut = new InputReader(inMock, outMock, timeMock);
+        uut = new InputReader(outMock, inMock, timeMock, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         captor = ArgumentCaptor.forClass(String.class);
     }
 
@@ -184,6 +185,18 @@ public class InputReaderTest {
         assertEquals(prompt, captor.getAllValues().get(0));
         assertEquals(errorMessage, captor.getAllValues().get(1));
         assertEquals(errorMessage, captor.getAllValues().get(2));
+    }
+
+    @Test
+    public void enteringDateWithDefaultWorks() {
+        String prompt = "some prompt";
+        LocalDate defaultValue = LocalDate.parse("1991-09-11");
+        when(inMock.readLine(any(String.class))).thenReturn("");
+
+        LocalDate output = uut.nextDate(prompt, defaultValue);
+
+        verify(inMock).readLine(prompt + "(11.09.1991) ");
+        assertEquals(defaultValue, output);
     }
 
     @Test

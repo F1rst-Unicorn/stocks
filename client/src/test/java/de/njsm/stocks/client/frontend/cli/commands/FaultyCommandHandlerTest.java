@@ -73,7 +73,7 @@ public class FaultyCommandHandlerTest {
 
         uut.handleWithFaultLogger(input);
 
-        verify(writer).println("There is a problem with the server connection");
+        verify(writer).println(NETWORK_ERROR);
     }
 
     @Test

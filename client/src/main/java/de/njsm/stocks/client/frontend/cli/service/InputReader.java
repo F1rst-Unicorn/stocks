@@ -8,16 +8,16 @@ import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.TerminalBuilder;
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.Period;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeParseException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class InputReader {
 
@@ -27,10 +27,13 @@ public class InputReader {
 
     private TimeProvider timeProvider;
 
-    public InputReader(LineReader reader, PrintStream output, TimeProvider timeProvider) {
+    private DateTimeFormatter format;
+
+    public InputReader(PrintStream output, LineReader reader, TimeProvider timeProvider, DateTimeFormatter format) {
         this.output = output;
-        this.timeProvider = timeProvider;
         this.reader = reader;
+        this.timeProvider = timeProvider;
+        this.format = format;
     }
 
     public String next(String prompt) {
@@ -101,15 +104,25 @@ public class InputReader {
     }
 
     public LocalDate nextDate(String prompt) {
-        String input = next(prompt);
+        return nextDate(prompt, null);
+    }
+
+    public LocalDate nextDate(String prompt, LocalDate defaultValue) {
         LocalDate result;
 
+        if (defaultValue != null)
+            prompt = prompt + "(" + defaultValue.format(format) + ") ";
+
         do {
+            String input = next(prompt);
+            if (input.isEmpty() && defaultValue != null) {
+                return defaultValue;
+            }
             try {
                 result = parseDate(input);
             } catch (ParseException e) {
-                input = next("Invalid date. Try again: ");
                 result = null;
+                prompt = "Invalid date. Try again: ";
             }
         } while (result == null);
         return result;
@@ -126,7 +139,7 @@ public class InputReader {
         return noDollar == -1 && noEqual == -1;
     }
 
-    public LocalDate parseDate(String input) throws ParseException {
+    LocalDate parseDate(String input) throws ParseException {
         return parseDate(input, timeProvider);
     }
 
@@ -145,7 +158,7 @@ public class InputReader {
         return result;
     }
 
-    protected static LocalDate parseRelative(String input, TimeProvider timeProvider) throws ParseException {
+    private static LocalDate parseRelative(String input, TimeProvider timeProvider) throws ParseException {
         char unit = input.charAt(input.length()-1);
         int amount;
         try {

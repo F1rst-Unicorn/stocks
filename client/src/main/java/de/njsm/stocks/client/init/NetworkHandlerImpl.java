@@ -1,6 +1,6 @@
 package de.njsm.stocks.client.init;
 
-import de.njsm.stocks.common.data.Ticket;
+import de.njsm.stocks.client.business.data.ClientTicket;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.network.TcpHost;
@@ -41,7 +41,7 @@ public class NetworkHandlerImpl implements NetworkHandler {
     }
 
     @Override
-    public String handleTicket(Ticket ticket) throws NetworkException {
+    public String handleTicket(ClientTicket ticket) throws NetworkException {
         if (networkBackend == null) {
             throw new NetworkException("No network backend given");
         }

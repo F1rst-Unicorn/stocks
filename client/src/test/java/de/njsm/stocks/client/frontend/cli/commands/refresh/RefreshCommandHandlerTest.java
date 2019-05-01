@@ -1,12 +1,8 @@
-package de.njsm.stocks.client.frontend.cli.commands.add;
+package de.njsm.stocks.client.frontend.cli.commands.refresh;
 
 import de.njsm.stocks.client.frontend.cli.Command;
-import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
-import de.njsm.stocks.client.frontend.cli.commands.refresh.RefreshCommandHandler;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
-import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
-import de.njsm.stocks.common.data.FoodItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

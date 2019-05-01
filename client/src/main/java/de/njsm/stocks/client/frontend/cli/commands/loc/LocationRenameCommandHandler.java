@@ -9,7 +9,7 @@ import de.njsm.stocks.client.frontend.cli.commands.InputCollector;
 import de.njsm.stocks.client.frontend.cli.service.ScreenWriter;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.service.Refresher;
-import de.njsm.stocks.common.data.Location;
+import de.njsm.stocks.client.business.data.Location;
 
 public class LocationRenameCommandHandler extends FaultyCommandHandler {
 

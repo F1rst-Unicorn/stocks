@@ -1,12 +1,12 @@
 package de.njsm.stocks.client.init;
 
+import de.njsm.stocks.client.business.data.ClientTicket;
 import de.njsm.stocks.client.exceptions.CryptoException;
 import de.njsm.stocks.client.exceptions.InitialisationException;
 import de.njsm.stocks.client.exceptions.NetworkException;
 import de.njsm.stocks.client.network.HttpClientFactory;
 import de.njsm.stocks.client.network.TcpHost;
 import de.njsm.stocks.client.network.sentry.SentryManager;
-import de.njsm.stocks.common.data.Ticket;
 import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,7 +63,7 @@ class TicketHandler {
 
     void handleTicket(TcpHost ticketHost, String ticket, int id) throws InitialisationException {
         try {
-            Ticket request = new Ticket(id, ticket, csr);
+            ClientTicket request = new ClientTicket(id, ticket, csr);
             SentryManager sentryManager = createSentryManager(ticketHost);
             networkHandler.setNetworkBackend(sentryManager);
             String certificate = networkHandler.handleTicket(request);

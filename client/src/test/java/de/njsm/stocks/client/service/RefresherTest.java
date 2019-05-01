@@ -1,12 +1,12 @@
 package de.njsm.stocks.client.service;
 
+import de.njsm.stocks.client.business.data.Update;
 import de.njsm.stocks.client.network.server.ServerManager;
 import de.njsm.stocks.client.storage.DatabaseManager;
-import de.njsm.stocks.common.data.Update;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.threeten.bp.Instant;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class RefresherTest {
 
     @Test
     public void fullRefreshResetsDatabaseTable() throws Exception {
-        when(serverManager.getUpdates()).thenReturn(new Update[0]);
+        when(serverManager.getUpdates()).thenReturn(Collections.emptyList());
         when(dbManager.getUpdates()).thenReturn(Collections.emptyList());
 
         uut.refreshFull();
@@ -41,7 +41,7 @@ public class RefresherTest {
     public void noUpdateOnEqualDate() throws Exception {
         Update u = new Update("foo", Instant.now());
         List<Update> updateList = Collections.singletonList(u);
-        when(serverManager.getUpdates()).thenReturn(new Update[] {u});
+        when(serverManager.getUpdates()).thenReturn(Collections.singletonList(u));
         when(dbManager.getUpdates()).thenReturn(updateList);
 
         uut.refresh();
@@ -56,7 +56,7 @@ public class RefresherTest {
     @Test
     public void ignoreUnknownTables() throws Exception {
         Update u = new Update("foo", Instant.now());
-        when(serverManager.getUpdates()).thenReturn(new Update[] {u});
+        when(serverManager.getUpdates()).thenReturn(Collections.singletonList(u));
         when(dbManager.getUpdates()).thenReturn(Collections.emptyList());
 
         uut.refresh();
