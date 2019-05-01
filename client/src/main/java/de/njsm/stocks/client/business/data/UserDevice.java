@@ -1,6 +1,7 @@
 package de.njsm.stocks.client.business.data;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import de.njsm.stocks.client.business.data.visitor.AbstractVisitor;
 
@@ -12,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @XmlRootElement
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDevice extends VersionedData {
 
     public String name;
