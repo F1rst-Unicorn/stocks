@@ -17,7 +17,6 @@
         <module>common</module>
         <module>client</module>
         <module>server</module>
-        <module>deploy-server/postgresql-migration</module>
     </modules>
 
     <dependencies>
