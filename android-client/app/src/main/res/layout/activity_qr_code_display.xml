@@ -1,28 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
-    tools:context="de.njsm.stocks.frontend.user.QrCodeDisplayActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              android:orientation="vertical"
+              tools:context="de.njsm.stocks.frontend.user.QrCodeDisplayActivity"
+              android:gravity="center">
+
+    <ProgressBar
+            android:id="@+id/qr_code_waiting_progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/text_show_qr_code_friend"
-        android:textSize="9pt"
-        android:textColor="@android:color/black"
-        android:layout_gravity="center"
-        />
+            android:id="@+id/qr_code_waiting_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="9pt"
+            android:text="@string/dialog_create_device"/>
+
+    <TextView
+            android:id="@+id/qr_code_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_show_qr_code_friend"
+            android:textSize="9pt"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
 
     <ImageView
-        android:id="@+id/qr_code_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+            android:id="@+id/qr_code_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:contentDescription="@string/title_qr_code_content_desc"/>
 
 </LinearLayout>

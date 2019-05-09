@@ -1,0 +1,118 @@
+package de.njsm.stocks.android.frontend.setup;
+
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.github.fcannizzaro.materialstepper.AbstractStep;
+import de.njsm.stocks.R;
+import de.njsm.stocks.android.util.Config;
+import de.njsm.stocks.android.util.Logger;
+
+public class PrincipalsFragment extends AbstractStep {
+
+    private static final Logger LOG = new Logger(PrincipalsFragment.class);
+
+    private String errorText;
+
+    private EditText userName;
+
+    private EditText userId;
+
+    private EditText deviceName;
+
+    private EditText deviceId;
+
+    private EditText fingerprint;
+
+    private EditText ticket;
+
+    @Override
+    public String name() {
+        return "User";
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_principals, container, false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        userName = getActivity().findViewById(R.id.user_name);
+        userId = getActivity().findViewById(R.id.user_id);
+        deviceName = getActivity().findViewById(R.id.device_name);
+        deviceId = getActivity().findViewById(R.id.device_id);
+        fingerprint = getActivity().findViewById(R.id.fingerprint);
+        ticket = getActivity().findViewById(R.id.ticket);
+    }
+
+    @Override
+    public boolean nextIf() {
+        if (userId.getText().length() == 0 ||
+                deviceId.getText().length() == 0) {
+            errorText = getResources().getString(R.string.error_no_id);
+            return false;
+        }
+        Bundle data = mStepper.getExtras();
+        data.putString(Config.USERNAME_CONFIG, userName.getText().toString());
+        data.putString(Config.DEVICE_NAME_CONFIG, deviceName.getText().toString());
+        data.putInt(Config.UID_CONFIG, Integer.parseInt(userId.getText().toString()));
+        data.putInt(Config.DID_CONFIG, Integer.parseInt(deviceId.getText().toString()));
+        data.putString(Config.FPR_CONFIG, fingerprint.getText().toString());
+        data.putString(Config.TICKET_CONFIG, ticket.getText().toString());
+        return true;
+    }
+
+    @Override
+    public String error() {
+        return errorText;
+    }
+
+    @Override
+    public void onPrevious() {
+        mStepper.getExtras().remove(Config.USERNAME_CONFIG);
+    }
+
+    @Override
+    public void onStepVisible() {
+        Bundle data = resolveDataSource();
+        if (data == null) return;
+
+        userName.setText(data.getString(Config.USERNAME_CONFIG));
+        deviceName.setText(data.getString(Config.DEVICE_NAME_CONFIG));
+        if (data.containsKey(Config.UID_CONFIG)) {
+            userId.setText(String.valueOf(data.getInt(Config.UID_CONFIG)));
+        }
+        if (data.containsKey(Config.DID_CONFIG)) {
+            deviceId.setText(String.valueOf(data.getInt(Config.DID_CONFIG)));
+        }
+        fingerprint.setText(data.getString(Config.FPR_CONFIG));
+        ticket.setText(data.getString(Config.TICKET_CONFIG));
+
+    }
+
+    @Nullable
+    private Bundle resolveDataSource() {
+        Bundle data = getActivity().getIntent().getExtras();
+
+        if (data == null) {
+            LOG.i("Using stepper extras");
+            data = mStepper.getExtras();
+            if (data == null) {
+                LOG.i("No data from previous steps available");
+                return null;
+            }
+        } else {
+            LOG.i("Using intent extras");
+        }
+        return data;
+    }
+}

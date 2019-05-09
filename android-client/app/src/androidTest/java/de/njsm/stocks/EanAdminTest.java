@@ -5,7 +5,7 @@ import android.app.Instrumentation;
 import android.content.Intent;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
-import de.njsm.stocks.frontend.StartupActivity;
+import de.njsm.stocks.frontend.startup.StartupActivity;
 import de.njsm.stocks.screen.MainScreen;
 import org.junit.After;
 import org.junit.Before;

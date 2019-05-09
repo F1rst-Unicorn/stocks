@@ -1,0 +1,35 @@
+package de.njsm.stocks.android.frontend.util;
+
+
+import androidx.lifecycle.LiveData;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import de.njsm.stocks.android.frontend.BaseActivity;
+import de.njsm.stocks.android.network.server.StatusCode;
+
+public class SwipeSyncCallback implements SwipeRefreshLayout.OnRefreshListener {
+
+    private BaseActivity owner;
+
+    private SwipeRefreshLayout swiper;
+
+    private RefreshViewModel refreshViewModel;
+
+    public SwipeSyncCallback(BaseActivity owner,
+                             SwipeRefreshLayout swiper,
+                             RefreshViewModel refreshViewModel) {
+        this.owner = owner;
+        this.swiper = swiper;
+        this.refreshViewModel = refreshViewModel;
+    }
+
+    @Override
+    public void onRefresh() {
+        swiper.setRefreshing(true);
+        LiveData<StatusCode> result = refreshViewModel.refresh();
+        result.observe(owner, code -> {
+            swiper.setRefreshing(false);
+            result.removeObservers(owner);
+            owner.maybeShowReadError(code);
+        });
+    }
+}

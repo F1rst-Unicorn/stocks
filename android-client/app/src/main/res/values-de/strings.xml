@@ -62,7 +62,7 @@
     <string name="dialog_verify_cert">Prüfe Serverzertifikat</string>
     <string name="dialog_create_key">Erzeuge Schlüssel</string>
     <string name="dialog_register_key">Registriere Schlüssel</string>
-    <string name="dialog_error">Fehler</string>
+    <string name="dialog_error">Ein unvorhergesehener Fehler ist aufgetreten.</string>
     <string name="dialog_wrong_fpr">Falscher fingerprint</string>
     <string name="dialog_ticket_reject">Server weist Ticket ab</string>
     <string name="dialog_invalid_answer">Ungültige Antwort vom Server!</string>
@@ -70,7 +70,6 @@
     <string name="dialog_retry">WIEDERHOLEN</string>
     <string name="dialog_abort">ABBRECHEN</string>
     <string name="dialog_ok">OK</string>
-    <string name="dialog_cancel">ABBRECHEN</string>
     <string name="dialog_store_settings">Speichere Einstellungen</string>
     <string name="dialog_new_device">Neues Gerät erstellen</string>
     <string name="dialog_new_user">Neuen Nutzer erstellen</string>
@@ -97,6 +96,22 @@
     <string name="text_eat_by_date">Haltbarkeitsdatum:</string>
     <string name="text_no_crash_logs">Die App läuft stabil.</string>
     <string name="text_no_search_result">Kein Essen gefunden</string>
+    <string name="dialog_server_trouble">Server hat Probleme. Benachrichtige
+        deinen Admin.
+    </string>
+    <string name="dialog_done">Aufgabe erfolgreich</string>
+    <string name="dialog_invalid_input">Ungültige Eingabe</string>
+    <string name="dialog_not_found">Objekt wurde schon von jemandem entfernt
+    </string>
+    <string name="dialog_delete_but_edited">"Das Objekt wurde in der Zwischenzeit verändert. Prüfe, ob du es wirklich entfernen möchtest.\n "</string>
+    <string name="dialog_delete_but_dependants">Das Objekt kann nicht gelöscht werden, da andere Objekte noch damit verknüpft sind. Z.B. ein Ort, der noch Waren enthält.</string>
+    <string name="dialog_edit_but_edited">Das Objekt wurde in der Zwischenzeit geändert. Prüfe deine Änderungen erneut.</string>
+    <string name="dialog_create_device">Erstelle neues Gerät</string>
+    <string name="title_qr_code_content_desc">QR Code</string>
+    <string name="title_error">Fehler</string>
+    <string name="action_undo">RÜCKGÄNGIG</string>
+    <string name="dialog_user_was_deleted">Benutzer wurde gelöscht</string>
+    <string name="error_wrong_name_format">Name darf nicht enthalten: $ =</string>
 
 
 </resources>

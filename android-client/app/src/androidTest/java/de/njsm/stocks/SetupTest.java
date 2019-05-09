@@ -7,7 +7,7 @@ import android.support.test.espresso.intent.Intents;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import de.njsm.stocks.frontend.StartupActivity;
+import de.njsm.stocks.frontend.startup.StartupActivity;
 import de.njsm.stocks.screen.ServerInputScreen;
 import org.junit.After;
 import org.junit.Before;

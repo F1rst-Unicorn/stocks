@@ -1,15 +1,11 @@
 package de.njsm.stocks;
 
 import android.support.test.rule.ActivityTestRule;
-import de.njsm.stocks.frontend.StartupActivity;
+import de.njsm.stocks.frontend.startup.StartupActivity;
 import de.njsm.stocks.screen.MainScreen;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
-import java.util.Arrays;
 
 public class FoodAddTest {
 
