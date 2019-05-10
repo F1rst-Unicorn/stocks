@@ -3,18 +3,18 @@ package de.njsm.stocks.android.frontend.util;
 
 import androidx.lifecycle.LiveData;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import de.njsm.stocks.android.frontend.BaseActivity;
+import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.network.server.StatusCode;
 
 public class SwipeSyncCallback implements SwipeRefreshLayout.OnRefreshListener {
 
-    private BaseActivity owner;
+    private BaseFragment owner;
 
     private SwipeRefreshLayout swiper;
 
     private RefreshViewModel refreshViewModel;
 
-    public SwipeSyncCallback(BaseActivity owner,
+    public SwipeSyncCallback(BaseFragment owner,
                              SwipeRefreshLayout swiper,
                              RefreshViewModel refreshViewModel) {
         this.owner = owner;

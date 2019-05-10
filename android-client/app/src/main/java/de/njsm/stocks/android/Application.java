@@ -1,12 +1,12 @@
 package de.njsm.stocks.android;
 
 import android.app.Activity;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
-import dagger.android.HasFragmentInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 import de.njsm.stocks.android.dagger.DaggerRootComponent;
 import de.njsm.stocks.android.util.ExceptionHandler;
 
@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 public class Application extends android.app.Application
         implements HasActivityInjector,
-        HasFragmentInjector {
+        HasSupportFragmentInjector {
 
     private DispatchingAndroidInjector<Activity> injector;
 
@@ -49,7 +49,7 @@ public class Application extends android.app.Application
     }
 
     @Override
-    public AndroidInjector<Fragment> fragmentInjector() {
+    public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentInjector;
     }
 }

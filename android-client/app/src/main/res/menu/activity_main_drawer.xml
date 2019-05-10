@@ -4,10 +4,6 @@
     <group android:checkableBehavior="single"
         android:id="@+id/category">
         <item
-            android:id="@+id/outline"
-            android:icon="@drawable/ic_view_list_black_24dp"
-            android:title="@string/action_outline" />
-        <item
             android:id="@+id/locations"
             android:icon="@drawable/ic_account_balance_wallet_black_24dp"
             android:title="@string/action_locations"/>

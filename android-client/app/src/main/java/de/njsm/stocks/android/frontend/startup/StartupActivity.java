@@ -11,8 +11,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.frontend.setup.SetupActivity;
-import de.njsm.stocks.android.frontend.user.UserActivity;
 import de.njsm.stocks.android.service.SetupHandler;
 import de.njsm.stocks.android.service.SetupService;
 import de.njsm.stocks.android.util.Config;
@@ -128,7 +128,7 @@ public class StartupActivity extends AppCompatActivity {
     }
 
     private void goToMainActivity() {
-        Intent i = new Intent(this, UserActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);

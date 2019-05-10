@@ -1,13 +1,12 @@
 package de.njsm.stocks.android.frontend;
 
-import android.annotation.SuppressLint;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-@SuppressLint("Registered")
-public class BaseActivity extends AppCompatActivity {
+public class BaseFragment extends Fragment {
 
     public void maybeShowAddError(StatusCode code) {
         if (code != StatusCode.SUCCESS) {
@@ -28,7 +27,11 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void showErrorMessage(int resourceId) {
-        new AlertDialog.Builder(this)
+        FragmentActivity activity = getActivity();
+        if (activity == null)
+            return;
+
+        new AlertDialog.Builder(activity)
                 .setTitle(R.string.title_error)
                 .setMessage(resourceId)
                 .setCancelable(true)

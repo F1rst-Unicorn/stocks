@@ -1,12 +1,18 @@
 package de.njsm.stocks.android.frontend.user;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -16,10 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import dagger.android.AndroidInjection;
+import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
-import de.njsm.stocks.android.frontend.BaseActivity;
+import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.util.NameValidator;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.frontend.util.SwipeCallback;
@@ -29,9 +35,9 @@ import de.njsm.stocks.android.util.Logger;
 
 import javax.inject.Inject;
 
-public class UserActivity extends BaseActivity {
+public class UserFragment extends BaseFragment {
 
-    private static final Logger LOG = new Logger(UserActivity.class);
+    private static final Logger LOG = new Logger(UserFragment.class);
 
     private RecyclerView view;
 
@@ -42,22 +48,28 @@ public class UserActivity extends BaseActivity {
     private ViewModelProvider.Factory viewModelFactory;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        AndroidInjection.inject(this);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_users);
-        setTitle(R.string.action_users);
+    public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
+    }
 
-        view = findViewById(R.id.users_list);
-        view.setLayoutManager(new LinearLayoutManager(this));
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View result = inflater.inflate(R.layout.fragment_users, container, false);
+        FragmentActivity activity = getActivity();
+        if (activity == null) return result;
+
+        view = result.findViewById(R.id.users_list);
+        view.setLayoutManager(new LinearLayoutManager(activity));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
         SwipeCallback<User> callback = new SwipeCallback<>(
                 viewModel.getUsers().getValue(),
                 this::initiateUserDeletion,
-                ContextCompat.getDrawable(this, R.drawable.ic_delete_white_24dp),
-                new ColorDrawable(ContextCompat.getColor(this, R.color.colorAccent))
-                );
+                ContextCompat.getDrawable(activity, R.drawable.ic_delete_white_24dp),
+                new ColorDrawable(ContextCompat.getColor(activity, R.color.colorAccent))
+        );
         viewModel.getUsers().observe(this, callback::setData);
         new ItemTouchHelper(callback).attachToRecyclerView(view);
 
@@ -65,13 +77,16 @@ public class UserActivity extends BaseActivity {
         viewModel.getUsers().observe(this, u -> adapter.notifyDataSetChanged());
         view.setAdapter(adapter);
 
-        SwipeRefreshLayout refresher = findViewById(R.id.users_swipe);
+        SwipeRefreshLayout refresher = result.findViewById(R.id.users_swipe);
         RefreshViewModel refreshViewModel = ViewModelProviders.of(this, viewModelFactory).get(RefreshViewModel.class);
         refresher.setOnRefreshListener(new SwipeSyncCallback(this, refresher, refreshViewModel));
+
+        result.findViewById(R.id.users_fab).setOnClickListener(this::addUser);
+        return result;
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         viewModel.getUsers().removeObservers(this);
     }
@@ -81,12 +96,15 @@ public class UserActivity extends BaseActivity {
         this.viewModelFactory = viewModelFactory;
     }
 
-    public void addUser(View view) {
+    private void addUser(View view) {
+        Activity activity = getActivity();
+        if (activity == null)
+            return;
         EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
         textField.addTextChangedListener(
                 new NameValidator(e -> textField.setError(getResources().getString(e))));
         textField.setHint(getResources().getString(R.string.hint_username));
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(activity)
                 .setTitle(getResources().getString(R.string.dialog_new_user))
                 .setView(textField)
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
@@ -116,7 +134,7 @@ public class UserActivity extends BaseActivity {
                             case DISMISS_EVENT_TIMEOUT:
                                 adapter.notifyDataSetChanged();
                                 LiveData<StatusCode> result = viewModel.deleteUser(u);
-                                result.observe(UserActivity.this, UserActivity.this::maybeShowDeleteError);
+                                result.observe(UserFragment.this, UserFragment.this::maybeShowDeleteError);
                                 break;
                         }
                     }

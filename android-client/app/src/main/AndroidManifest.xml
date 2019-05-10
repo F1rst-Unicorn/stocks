@@ -22,9 +22,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".android.frontend.user.UserActivity" />
         <activity android:name=".android.frontend.setup.SetupActivity" />
-        <service android:name=".android.service.SetupService" />
+        <activity android:name=".android.frontend.main.MainActivity"
+            android:theme="@style/StocksTheme.NoActionBar">
+        </activity>
+        <service android:name=".android.service.SetupService"
+            android:exported="false"
+        />
     </application>
 
 </manifest>
