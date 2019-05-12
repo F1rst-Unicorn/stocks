@@ -55,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.users:
                 navController.navigate(R.id.action_nav_fragment_outline_to_nav_fragment_users);
                 break;
+            case R.id.settings:
+                navController.navigate(R.id.action_nav_fragment_outline_to_nav_fragment_settings);
+                break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

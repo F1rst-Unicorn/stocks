@@ -19,4 +19,8 @@ public class RefreshViewModel extends ViewModel {
     public LiveData<StatusCode> refresh() {
         return refreshRepo.synchronise();
     }
+
+    public LiveData<StatusCode> refreshComplete() {
+        return refreshRepo.synchroniseFully();
+    }
 }

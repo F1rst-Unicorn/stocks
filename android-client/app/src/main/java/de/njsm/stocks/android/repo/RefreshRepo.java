@@ -17,4 +17,8 @@ public class RefreshRepo {
     public LiveData<StatusCode> synchronise() {
         return synchroniser.synchronise();
     }
+
+    public LiveData<StatusCode> synchroniseFully() {
+        return synchroniser.synchroniseFully();
+    }
 }

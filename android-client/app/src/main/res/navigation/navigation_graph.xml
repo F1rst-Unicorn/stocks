@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_nav_fragment_outline_to_nav_fragment_startup"
             app:destination="@id/nav_fragment_startup" />
+        <action
+            android:id="@+id/action_nav_fragment_outline_to_nav_fragment_settings"
+            app:destination="@id/nav_fragment_settings" />
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_users"
@@ -228,4 +231,8 @@
             android:defaultValue=""
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_settings"
+        android:name="de.njsm.stocks.android.frontend.settings.SettingsFragment"
+        android:label="@string/action_settings" />
 </navigation>
