@@ -10,10 +10,10 @@ public class StartupBroadcastReceiver extends BroadcastReceiver {
 
     private static final Logger LOG = new Logger(StartupBroadcastReceiver.class);
 
-    private StartupActivity startupActivity;
+    private StartupFragment startupFragment;
 
-    public StartupBroadcastReceiver(StartupActivity startupActivity) {
-        this.startupActivity = startupActivity;
+    public StartupBroadcastReceiver(StartupFragment startupFragment) {
+        this.startupFragment = startupFragment;
     }
 
     @Override
@@ -24,11 +24,11 @@ public class StartupBroadcastReceiver extends BroadcastReceiver {
         switch (intent.getAction()) {
 
             case SetupHandler.ACTION_UPDATE:
-                startupActivity.setDialogMessage(intent.getIntExtra(SetupHandler.PARAM_MESSAGE, 0));
+                startupFragment.setDialogMessage(intent.getIntExtra(SetupHandler.PARAM_MESSAGE, 0));
                 break;
 
             case SetupHandler.ACTION_DONE:
-                startupActivity.showTerminationDialog(
+                startupFragment.showTerminationDialog(
                         intent.getIntExtra(SetupHandler.PARAM_TITLE, 0),
                         intent.getIntExtra(SetupHandler.PARAM_MESSAGE, 0),
                         intent.getBooleanExtra(SetupHandler.PARAM_SUCCESS, false)

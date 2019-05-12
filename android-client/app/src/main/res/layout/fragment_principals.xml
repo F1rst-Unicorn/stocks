@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/StocksTheme.Activity"
-    tools:context="de.njsm.stocks.frontend.setup.ServerFragment">
+    tools:context="de.njsm.stocks.android.frontend.setup.ServerFragment">
 
     <EditText
         style="@style/StocksTheme.EditText"
@@ -54,5 +54,14 @@
         android:hint="@string/hint_ticket"
         android:layout_alignParentStart="true" />
 
-
+    <Button
+        android:id="@+id/principals_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ticket"
+        android:layout_alignEnd="@id/ticket"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:text="@android:string/ok"
+        android:background="@color/colorAccent" />
 </RelativeLayout>

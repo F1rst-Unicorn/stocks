@@ -12,9 +12,9 @@ import de.njsm.stocks.android.util.ExceptionHandler;
 
 import javax.inject.Inject;
 
-public class Application extends android.app.Application
-        implements HasActivityInjector,
-        HasSupportFragmentInjector {
+public class Application
+        extends android.app.Application
+        implements HasActivityInjector, HasSupportFragmentInjector {
 
     private DispatchingAndroidInjector<Activity> injector;
 
@@ -29,8 +29,9 @@ public class Application extends android.app.Application
                 .build()
             .inject(this);
 
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(getFilesDir(),
-                Thread.getDefaultUncaughtExceptionHandler()));
+        if (! (Thread.getDefaultUncaughtExceptionHandler() instanceof ExceptionHandler))
+            Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(getFilesDir(),
+                    Thread.getDefaultUncaughtExceptionHandler()));
     }
 
     @Inject

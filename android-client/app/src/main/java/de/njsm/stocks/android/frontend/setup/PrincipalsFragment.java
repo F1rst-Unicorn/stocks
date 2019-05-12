@@ -5,19 +5,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.github.fcannizzaro.materialstepper.AbstractStep;
+import androidx.navigation.Navigation;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.util.Config;
+import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.util.Logger;
 
-public class PrincipalsFragment extends AbstractStep {
+public class PrincipalsFragment extends BaseFragment {
 
     private static final Logger LOG = new Logger(PrincipalsFragment.class);
 
-    private String errorText;
+    private PrincipalsFragmentArgs input;
 
     private EditText userName;
 
@@ -31,88 +32,73 @@ public class PrincipalsFragment extends AbstractStep {
 
     private EditText ticket;
 
-    @Override
-    public String name() {
-        return "User";
-    }
+    private Button next;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_principals, container, false);
-    }
+        View root = inflater.inflate(R.layout.fragment_principals, container, false);
+        assert getArguments() != null;
+        input = PrincipalsFragmentArgs.fromBundle(getArguments());
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        userName = getActivity().findViewById(R.id.user_name);
-        userId = getActivity().findViewById(R.id.user_id);
-        deviceName = getActivity().findViewById(R.id.device_name);
-        deviceId = getActivity().findViewById(R.id.device_id);
-        fingerprint = getActivity().findViewById(R.id.fingerprint);
-        ticket = getActivity().findViewById(R.id.ticket);
-    }
+        userName = root.findViewById(R.id.user_name);
+        userId = root.findViewById(R.id.user_id);
+        deviceName = root.findViewById(R.id.device_name);
+        deviceId = root.findViewById(R.id.device_id);
+        fingerprint = root.findViewById(R.id.fingerprint);
+        ticket = root.findViewById(R.id.ticket);
+        next = root.findViewById(R.id.principals_button);
 
-    @Override
-    public boolean nextIf() {
-        if (userId.getText().length() == 0 ||
-                deviceId.getText().length() == 0) {
-            errorText = getResources().getString(R.string.error_no_id);
-            return false;
-        }
-        Bundle data = mStepper.getExtras();
-        data.putString(Config.USERNAME_CONFIG, userName.getText().toString());
-        data.putString(Config.DEVICE_NAME_CONFIG, deviceName.getText().toString());
-        data.putInt(Config.UID_CONFIG, Integer.parseInt(userId.getText().toString()));
-        data.putInt(Config.DID_CONFIG, Integer.parseInt(deviceId.getText().toString()));
-        data.putString(Config.FPR_CONFIG, fingerprint.getText().toString());
-        data.putString(Config.TICKET_CONFIG, ticket.getText().toString());
-        return true;
-    }
-
-    @Override
-    public String error() {
-        return errorText;
-    }
-
-    @Override
-    public void onPrevious() {
-        mStepper.getExtras().remove(Config.USERNAME_CONFIG);
-    }
-
-    @Override
-    public void onStepVisible() {
-        Bundle data = resolveDataSource();
-        if (data == null) return;
-
-        userName.setText(data.getString(Config.USERNAME_CONFIG));
-        deviceName.setText(data.getString(Config.DEVICE_NAME_CONFIG));
-        if (data.containsKey(Config.UID_CONFIG)) {
-            userId.setText(String.valueOf(data.getInt(Config.UID_CONFIG)));
-        }
-        if (data.containsKey(Config.DID_CONFIG)) {
-            deviceId.setText(String.valueOf(data.getInt(Config.DID_CONFIG)));
-        }
-        fingerprint.setText(data.getString(Config.FPR_CONFIG));
-        ticket.setText(data.getString(Config.TICKET_CONFIG));
-
-    }
-
-    @Nullable
-    private Bundle resolveDataSource() {
-        Bundle data = getActivity().getIntent().getExtras();
-
-        if (data == null) {
-            LOG.i("Using stepper extras");
-            data = mStepper.getExtras();
-            if (data == null) {
-                LOG.i("No data from previous steps available");
-                return null;
-            }
+        if (input.getUsername() != null) {
+            LOG.d("Got input from qr fragment");
+            userName.setText(input.getUsername());
+            deviceName.setText(input.getDeviceName());
+            fingerprint.setText(input.getFingerprint());
+            ticket.setText(input.getTicket());
+            userId.setText(String.valueOf(input.getUserId()));
+            deviceId.setText(String.valueOf(input.getDeviceId()));
         } else {
-            LOG.i("Using intent extras");
+            LOG.d("Requiring user input");
+            next.setEnabled(false);
         }
-        return data;
+
+        userName.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, userName));
+        userId.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, userId));
+        deviceName.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, deviceName));
+        deviceId.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, deviceId));
+        fingerprint.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, fingerprint));
+        ticket.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, ticket));
+
+        next.setOnClickListener(this::next);
+        requireActivity().setTitle(R.string.title_principals);
+
+        return root;
+    }
+
+    private void invalidateButton(EditText view, Boolean isEmpty) {
+        next.setEnabled(!isEmpty);
+        if (isEmpty) {
+            String error = requireActivity().getResources().getString(R.string.error_may_not_be_empty);
+            view.setError(error);
+        } else {
+            view.setError(null);
+        }
+    }
+
+    private void next(View view) {
+        PrincipalsFragmentDirections.ActionNavFragmentPrincipalsToNavFragmentStartup args =
+                PrincipalsFragmentDirections.actionNavFragmentPrincipalsToNavFragmentStartup()
+                .setServerUrl(input.getServerUrl())
+                .setCaPort(input.getCaPort())
+                .setSentryPort(input.getSentryPort())
+                .setServerPort(input.getServerPort())
+                .setUsername(userName.getText().toString())
+                .setUserId(Integer.parseInt(userId.getText().toString()))
+                .setDeviceName(deviceName.getText().toString())
+                .setDeviceId(Integer.parseInt(deviceId.getText().toString()))
+                .setFingerprint(fingerprint.getText().toString())
+                .setTicket(ticket.getText().toString());
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(args);
     }
 }

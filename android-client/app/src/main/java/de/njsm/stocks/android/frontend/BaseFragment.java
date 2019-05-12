@@ -5,10 +5,20 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.android.util.Logger;
 
 public class BaseFragment extends Fragment {
 
-    public void maybeShowAddError(StatusCode code) {
+    private static final Logger LOG = new Logger(BaseFragment.class);
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        LOG.d("" + getArguments());
+
+    }
+
+    protected void maybeShowAddError(StatusCode code) {
         if (code != StatusCode.SUCCESS) {
             showErrorMessage(code.getAddErrorMessage());
         }

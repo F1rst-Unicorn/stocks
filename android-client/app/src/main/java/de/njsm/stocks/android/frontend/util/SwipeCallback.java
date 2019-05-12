@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.android.db.entities.User;
 
 import java.util.List;
 

@@ -8,7 +8,7 @@ import android.content.IntentFilter;
 import android.os.Process;
 import android.os.*;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import de.njsm.stocks.android.frontend.startup.StartupActivity;
+import de.njsm.stocks.android.frontend.startup.StartupFragment;
 import de.njsm.stocks.android.util.Logger;
 
 public class SetupService extends Service {
@@ -24,8 +24,7 @@ public class SetupService extends Service {
     @Override
     public void onCreate() {
         LOG.d("setup service created");
-        thread = new HandlerThread("setup-thread",
-                Process.THREAD_PRIORITY_BACKGROUND);
+        thread = new HandlerThread("setup-thread", Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
 
         Looper looper = thread.getLooper();
@@ -41,7 +40,7 @@ public class SetupService extends Service {
         LOG.d("Registering setup service brr");
         receiver = new SetupBroadcastReceiver(serviceHandler);
         IntentFilter filter = new IntentFilter();
-        filter.addAction(StartupActivity.ACTION_INPUT_AVAILABLE);
+        filter.addAction(StartupFragment.ACTION_INPUT_AVAILABLE);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
     }
 
@@ -56,6 +55,4 @@ public class SetupService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
-
 }

@@ -16,7 +16,7 @@ public class RefreshViewModel extends ViewModel {
         this.refreshRepo = refreshRepo;
     }
 
-    LiveData<StatusCode> refresh() {
+    public LiveData<StatusCode> refresh() {
         return refreshRepo.synchronise();
     }
 }

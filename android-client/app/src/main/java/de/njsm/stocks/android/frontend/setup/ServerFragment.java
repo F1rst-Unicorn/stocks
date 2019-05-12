@@ -1,21 +1,19 @@
 package de.njsm.stocks.android.frontend.setup;
 
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import androidx.annotation.NonNull;
-import com.github.fcannizzaro.materialstepper.AbstractStep;
+import androidx.navigation.Navigation;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.util.Config;
+import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 
-public class ServerFragment extends AbstractStep {
-
-    private String errorText;
+public class ServerFragment extends BaseFragment {
 
     private EditText serverUrl;
 
@@ -27,67 +25,77 @@ public class ServerFragment extends AbstractStep {
 
     private Switch portDisplaySwitch;
 
-    @Override
-    public String name() {
-        return "Server";
-    }
+    private Button next;
+
+    private ServerFragmentArgs input;
 
     @Override
+    @NonNull
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_server, container, false);
+        View result = inflater.inflate(R.layout.fragment_server, container, false);
+        assert getArguments() != null;
+        input = ServerFragmentArgs.fromBundle(getArguments());
+        serverUrl = result.findViewById(R.id.server_url);
+        caPort = result.findViewById(R.id.ca_port);
+        sentryPort = result.findViewById(R.id.sentry_port);
+        serverPort = result.findViewById(R.id.server_port);
+        portDisplaySwitch = result.findViewById(R.id.expert_switch);
+        next = result.findViewById(R.id.server_button);
+
+        serverUrl.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, serverUrl));
+        portDisplaySwitch.setOnClickListener(this::onExpertSwitch);
+        next.setOnClickListener(this::goToNextStep);
+
+        requireActivity().setTitle(R.string.title_server);
+        return result;
+    }
+
+    private void invalidateButton(EditText view, Boolean isEmpty) {
+        next.setEnabled(!isEmpty);
+        if (isEmpty) {
+            String error = requireActivity().getResources().getString(R.string.error_may_not_be_empty);
+            view.setError(error);
+        } else {
+            view.setError(null);
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Activity activity = getActivity();
-        assert activity != null;
-        serverUrl = activity.findViewById(R.id.server_url);
-        caPort = activity.findViewById(R.id.ca_port);
-        sentryPort = activity.findViewById(R.id.sentry_port);
-        serverPort = activity.findViewById(R.id.server_port);
-        portDisplaySwitch = activity.findViewById(R.id.expert_switch);
 
-        Bundle extras = activity.getIntent().getExtras();
-        if (extras == null) {
-            return;
+        if (!input.getServerUrl().isEmpty()) {
+            serverUrl.setText(input.getServerUrl());
+        } else {
+            next.setEnabled(false);
         }
-        serverUrl.setText(extras.getString(Config.SERVER_NAME_CONFIG, ""));
-
-        if (extras.containsKey(Config.CA_PORT_CONFIG)) {
-            caPort.setText(String.valueOf(extras.getInt(Config.CA_PORT_CONFIG, 0)));
+        if (input.getCaPort() != 0) {
+            caPort.setText(String.valueOf(input.getCaPort()));
         }
-        if (extras.containsKey(Config.SENTRY_PORT_CONFIG)) {
-            sentryPort.setText(String.valueOf(extras.getInt(Config.SENTRY_PORT_CONFIG, 0)));
+        if (input.getSentryPort() != 0) {
+            caPort.setText(String.valueOf(input.getSentryPort()));
         }
-        if (extras.containsKey(Config.SERVER_PORT_CONFIG)) {
-            serverPort.setText(String.valueOf(extras.getInt(Config.SERVER_PORT_CONFIG, 0)));
+        if (input.getServerPort() != 0) {
+            caPort.setText(String.valueOf(input.getServerPort()));
         }
     }
 
-    @Override
-    public boolean nextIf() {
-        if (getServerName().isEmpty()) {
-            errorText = getResources().getString(R.string.error_no_server_name);
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void onNext() {
-        Bundle data = mStepper.getExtras();
-        data.putString(Config.SERVER_NAME_CONFIG, getServerName());
-        data.putInt(Config.CA_PORT_CONFIG, getCaPort());
-        data.putInt(Config.SENTRY_PORT_CONFIG, getSentryPort());
-        data.putInt(Config.SERVER_PORT_CONFIG, getServerPort());
-    }
-
-    @Override
-    public String error() {
-        return errorText;
+    private void goToNextStep(View v) {
+        ServerFragmentDirections.ActionNavFragmentServerToNavFragmentQr args =
+                ServerFragmentDirections.actionNavFragmentServerToNavFragmentQr(
+                getServerName(),
+                getCaPort(),
+                getSentryPort(),
+                getServerPort(),
+                input.getUsername())
+                .setUserId(input.getUserId())
+                .setDeviceName(input.getDeviceName())
+                .setDeviceId(input.getDeviceId())
+                .setFingerprint(input.getFingerprint())
+                .setTicket(input.getTicket());
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(args);
     }
 
     private String getServerName() {
@@ -118,4 +126,24 @@ public class ServerFragment extends AbstractStep {
             return defaultValue;
         }
     }
+
+    private void onExpertSwitch(View view) {
+        Switch s = (Switch) view;
+        LinearLayout l = getView().findViewById(R.id.expert_options);
+        if (l == null) {
+            return;
+        }
+        if (s.isChecked()) {
+            l.setVisibility(View.VISIBLE);
+            for (int i = 0; i < l.getChildCount(); i++) {
+                l.getChildAt(i).setVisibility(View.VISIBLE);
+            }
+        } else {
+            l.setVisibility(View.GONE);
+            for (int i = 0; i < l.getChildCount(); i++) {
+                l.getChildAt(i).setVisibility(View.GONE);
+            }
+        }
+    }
+
 }

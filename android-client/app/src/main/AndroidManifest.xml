@@ -16,15 +16,12 @@
             android:theme="@style/StocksTheme"
         >
 
-        <activity android:name=".android.frontend.startup.StartupActivity">
+        <activity android:name=".android.frontend.main.MainActivity"
+            android:theme="@style/StocksTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".android.frontend.setup.SetupActivity" />
-        <activity android:name=".android.frontend.main.MainActivity"
-            android:theme="@style/StocksTheme.NoActionBar">
         </activity>
         <service android:name=".android.service.SetupService"
             android:exported="false"

@@ -37,13 +37,13 @@ import javax.inject.Inject;
 
 public class UserFragment extends BaseFragment {
 
-    private static final Logger LOG = new Logger(UserFragment.class);
+    static final Logger LOG = new Logger(UserFragment.class);
 
     private RecyclerView view;
 
-    private RecyclerView.Adapter<UserAdapter.ViewHolder> adapter;
+    RecyclerView.Adapter<UserAdapter.ViewHolder> adapter;
 
-    private UserViewModel viewModel;
+    UserViewModel viewModel;
 
     private ViewModelProvider.Factory viewModelFactory;
 

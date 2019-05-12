@@ -5,7 +5,6 @@
     <string name="navigation_drawer_close">Navigationsleiste schließen</string>
 
     <string name="title_connection_setup">Verbindung einrichten</string>
-    <string name="title_settings">Einstellungen</string>
     <string name="title_activity_location">LocationActivity</string>
     <string name="title_delete_user">Benutzer entfernen</string>
     <string name="title_delete_device">Gerät entfernen</string>
@@ -75,8 +74,8 @@
     <string name="dialog_new_user">Neuen Nutzer erstellen</string>
     <string name="dialog_new_location">Neuen Ort erstellen</string>
     <string name="dialog_new_food">Neues Lebensmittel erstellen</string>
-    <string name="dialog_delete_format">"%s" entfernen?</string>
-    <string name="dialog_eat_format">"%s" essen?</string>
+    <string name="dialog_delete_format">%s entfernen?</string>
+    <string name="dialog_eat_format">%s essen?</string>
     <string name="dialog_added">erfolgreich hinzugefügt</string>
     <string name="dialog_undo">Rückgängig</string>
     <string name="dialog_delete_food">%s als Essenskategorie entfernen?</string>
@@ -86,7 +85,7 @@
     <string name="dialog_remove_crash_log">Diesen Absturzbericht entfernen?</string>
     <string name="dialog_no_barcode_result">Unbekannter Barcode</string>
 
-    <string name="error_no_server_name">Kein Server gesetzt</string>
+    <string name="error_may_not_be_empty">Hier Eingabe machen</string>
     <string name="error_no_id">ID darf nicht leer sein</string>
     <string name="error_no_location_present">Erstelle zuerst einen Ort</string>
 
@@ -112,6 +111,11 @@
     <string name="action_undo">RÜCKGÄNGIG</string>
     <string name="dialog_user_was_deleted">Benutzer wurde gelöscht</string>
     <string name="error_wrong_name_format">Name darf nicht enthalten: $ =</string>
+    <string name="title_server">1 / 3: Server</string>
+    <string name="title_principals">3 / 3: Benutzerangaben</string>
+    <string name="action_continue">Weiter</string>
+    <string name="action_back">Zurück</string>
+    <string name="title_qr_code_scan">2 / 3: QR Code lesen</string>
 
 
 </resources>

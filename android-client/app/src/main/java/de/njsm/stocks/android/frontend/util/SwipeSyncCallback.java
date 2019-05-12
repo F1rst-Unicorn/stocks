@@ -10,24 +10,24 @@ public class SwipeSyncCallback implements SwipeRefreshLayout.OnRefreshListener {
 
     private BaseFragment owner;
 
-    private SwipeRefreshLayout swiper;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private RefreshViewModel refreshViewModel;
 
     public SwipeSyncCallback(BaseFragment owner,
-                             SwipeRefreshLayout swiper,
+                             SwipeRefreshLayout swipeRefreshLayout,
                              RefreshViewModel refreshViewModel) {
         this.owner = owner;
-        this.swiper = swiper;
+        this.swipeRefreshLayout = swipeRefreshLayout;
         this.refreshViewModel = refreshViewModel;
     }
 
     @Override
     public void onRefresh() {
-        swiper.setRefreshing(true);
+        swipeRefreshLayout.setRefreshing(true);
         LiveData<StatusCode> result = refreshViewModel.refresh();
         result.observe(owner, code -> {
-            swiper.setRefreshing(false);
+            swipeRefreshLayout.setRefreshing(false);
             result.removeObservers(owner);
             owner.maybeShowReadError(code);
         });

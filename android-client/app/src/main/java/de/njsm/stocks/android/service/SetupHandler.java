@@ -73,8 +73,9 @@ public class SetupHandler extends Handler {
 
     @Override
     public void handleMessage(Message msg) {
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(c.getFilesDir(),
-                Thread.getDefaultUncaughtExceptionHandler()));
+        if (! (Thread.getDefaultUncaughtExceptionHandler() instanceof ExceptionHandler))
+            Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(c.getFilesDir(),
+                    Thread.getDefaultUncaughtExceptionHandler()));
         LOG.d("Received message " + msg.what);
 
         try {
@@ -98,19 +99,17 @@ public class SetupHandler extends Handler {
                             true);
             }
         } catch (TextResourceException e) {
-            LOG.e("Caught exception during initialisation", e);
-            new File(c.getFilesDir().getAbsolutePath() + "/keystore").delete();
-            broadcastTermination(R.string.title_error,
-                    e.getResourceId(),
-                    false);
+            cleanup(e, e.getResourceId());
         } catch (Exception e) {
-            LOG.e("Caught exception during initialisation", e);
-            new File(c.getFilesDir().getAbsolutePath() + "/keystore").delete();
-            broadcastTermination(R.string.title_error,
-                    R.string.dialog_invalid_answer,
-                    false);
+            cleanup(e, R.string.dialog_invalid_answer);
         }
         LOG.d("Done with message " + msg.what);
+    }
+
+    private void cleanup(Exception e, int p) {
+        LOG.e("Caught exception during initialisation", e);
+        new File(c.getFilesDir().getAbsolutePath() + "/keystore").delete();
+        broadcastTermination(R.string.title_error, p, false);
     }
 
     private void broadcastUpdate(int message) {
