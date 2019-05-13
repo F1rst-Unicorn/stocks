@@ -234,5 +234,29 @@
     <fragment
         android:id="@+id/nav_fragment_settings"
         android:name="de.njsm.stocks.android.frontend.settings.SettingsFragment"
-        android:label="@string/action_settings" />
+        android:label="@string/action_settings">
+        <action
+            android:id="@+id/action_nav_fragment_settings_to_nav_fragment_crashlogs"
+            app:destination="@id/nav_fragment_crashlogs" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_crashlogs"
+        android:name="de.njsm.stocks.android.frontend.crashlog.CrashLogListFragment"
+        android:label="@string/title_crash_logs" />
+    <action
+        android:id="@+id/action_global_nav_fragment_settings"
+        app:destination="@id/nav_fragment_settings"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popUpTo="@id/nav_fragment_outline"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    <action
+        android:id="@+id/action_global_nav_fragment_users"
+        app:destination="@id/nav_fragment_users"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popUpTo="@id/nav_fragment_outline"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 </navigation>

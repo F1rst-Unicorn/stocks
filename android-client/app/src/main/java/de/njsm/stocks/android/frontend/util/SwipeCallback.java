@@ -58,7 +58,6 @@ public class SwipeCallback<T> extends ItemTouchHelper.SimpleCallback {
                             @NonNull RecyclerView.ViewHolder viewHolder,
                             float dX, float dY,
                             int actionState, boolean isCurrentlyActive) {
-        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         View itemView = viewHolder.itemView;
         int backgroundCornerOffset = 20;
 
@@ -74,11 +73,9 @@ public class SwipeCallback<T> extends ItemTouchHelper.SimpleCallback {
                     itemView.getTop(),
                     itemView.getLeft() + ((int) dX) + backgroundCornerOffset,
                     itemView.getBottom());
-        } else {
-            background.setBounds(0, 0, 0, 0);
+            background.draw(c);
+            icon.draw(c);
         }
-
-        background.draw(c);
-        icon.draw(c);
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }
 }

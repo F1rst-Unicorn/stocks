@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -57,18 +56,16 @@ public class UserFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_users, container, false);
-        FragmentActivity activity = getActivity();
-        if (activity == null) return result;
 
         view = result.findViewById(R.id.users_list);
-        view.setLayoutManager(new LinearLayoutManager(activity));
+        view.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
         SwipeCallback<User> callback = new SwipeCallback<>(
                 viewModel.getUsers().getValue(),
                 this::initiateUserDeletion,
-                ContextCompat.getDrawable(activity, R.drawable.ic_delete_white_24dp),
-                new ColorDrawable(ContextCompat.getColor(activity, R.color.colorAccent))
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
+                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent))
         );
         viewModel.getUsers().observe(this, callback::setData);
         new ItemTouchHelper(callback).attachToRecyclerView(view);

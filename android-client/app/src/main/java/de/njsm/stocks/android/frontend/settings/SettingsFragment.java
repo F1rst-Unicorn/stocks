@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import dagger.android.support.AndroidSupportInjection;
@@ -56,6 +57,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private boolean goToCrashLogs(Preference preference) {
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                .navigate(R.id.action_nav_fragment_settings_to_nav_fragment_crashlogs);
         return true;
     }
 

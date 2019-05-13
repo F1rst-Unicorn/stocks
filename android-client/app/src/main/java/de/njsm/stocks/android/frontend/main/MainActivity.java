@@ -53,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
         int id = menuItem.getItemId();
         switch (id) {
             case R.id.users:
-                navController.navigate(R.id.action_nav_fragment_outline_to_nav_fragment_users);
+                navController.navigate(R.id.action_global_nav_fragment_users);
                 break;
             case R.id.settings:
-                navController.navigate(R.id.action_nav_fragment_outline_to_nav_fragment_settings);
+                navController.navigate(R.id.action_global_nav_fragment_settings);
                 break;
         }
 

@@ -2,6 +2,7 @@ package de.njsm.stocks.android.dagger.modules;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
+import de.njsm.stocks.android.frontend.crashlog.CrashLogListFragment;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.frontend.main.OutlineFragment;
 import de.njsm.stocks.android.frontend.settings.SettingsFragment;
@@ -18,10 +19,13 @@ public abstract class ActivityModule {
     abstract OutlineFragment contributeOutlineFragment();
 
     @ContributesAndroidInjector
-    abstract StartupFragment contributeStartupActivity();
+    abstract StartupFragment contributeStartupFragment();
 
     @ContributesAndroidInjector
-    abstract SettingsFragment contributeSettingsActivity();
+    abstract SettingsFragment contributeSettingsFragment();
+
+    @ContributesAndroidInjector
+    abstract CrashLogListFragment contributeCrashLogFragment();
 
     @ContributesAndroidInjector
     abstract MainActivity contributeMainActivity();

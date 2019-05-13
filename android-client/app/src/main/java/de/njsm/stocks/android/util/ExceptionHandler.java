@@ -31,6 +31,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
             pw.println(occuredException.getClass().getSimpleName());
             pw.println(timestamp);
             occuredException.printStackTrace(pw);
+            pw.flush();
 
         } catch(Exception e) {
             LOG.e("Exception during crash logging", e);
