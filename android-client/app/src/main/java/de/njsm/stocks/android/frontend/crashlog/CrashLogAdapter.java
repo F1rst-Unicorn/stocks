@@ -10,7 +10,6 @@ import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.business.CrashLog;
 
 import java.util.List;
 

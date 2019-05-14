@@ -1,4 +1,4 @@
-package de.njsm.stocks.android.business;
+package de.njsm.stocks.android.frontend.crashlog;
 
 import java.io.File;
 

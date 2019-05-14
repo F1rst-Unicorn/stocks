@@ -3,8 +3,11 @@ package de.njsm.stocks.android.network.server;
 
 import de.njsm.stocks.android.db.entities.Update;
 import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.network.server.data.DataResponse;
 import de.njsm.stocks.android.network.server.data.ListResponse;
 import de.njsm.stocks.android.network.server.data.Response;
+import de.njsm.stocks.android.frontend.device.ServerTicket;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -23,7 +26,6 @@ public interface ServerClient {
     Call<Response> deleteUser(@Query("id") int id,
                               @Query("version") int version);
 
-/*
     @PUT("/v2/device")
     Call<DataResponse<ServerTicket>> addDevice(@Query("name") String name,
                                                @Query("belongsTo") int uid);
@@ -32,10 +34,8 @@ public interface ServerClient {
     Call<ListResponse<UserDevice>> getDevices();
 
     @DELETE("/v2/device")
-    Call<Response> removeDevice(@Query("id") int id,
+    Call<Response> deleteDevice(@Query("id") int id,
                                 @Query("version") int version);
-
-*/
 
     @GET("/v2/update")
     Call<ListResponse<Update>> getUpdates();

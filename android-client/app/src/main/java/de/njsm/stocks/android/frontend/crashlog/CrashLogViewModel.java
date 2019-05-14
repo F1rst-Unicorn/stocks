@@ -2,8 +2,7 @@ package de.njsm.stocks.android.frontend.crashlog;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import de.njsm.stocks.android.business.CrashLog;
-import de.njsm.stocks.android.repo.CrashLogRepo;
+import de.njsm.stocks.android.repo.CrashLogRepository;
 import de.njsm.stocks.android.util.Logger;
 
 import javax.inject.Inject;
@@ -15,17 +14,17 @@ public class CrashLogViewModel extends ViewModel {
 
     private LiveData<List<CrashLog>> data;
 
-    private CrashLogRepo crashLogRepo;
+    private CrashLogRepository crashLogRepository;
 
     @Inject
-    public CrashLogViewModel(CrashLogRepo crashLogRepo) {
-        this.crashLogRepo = crashLogRepo;
+    public CrashLogViewModel(CrashLogRepository crashLogRepository) {
+        this.crashLogRepository = crashLogRepository;
     }
 
     public void init() {
         if (data == null) {
             LOG.d("initialising");
-            data = crashLogRepo.getCrashLogs();
+            data = crashLogRepository.getCrashLogs();
         }
     }
 
@@ -34,6 +33,6 @@ public class CrashLogViewModel extends ViewModel {
     }
 
     public void delete(CrashLog t) {
-        crashLogRepo.delete(t);
+        crashLogRepository.delete(t);
     }
 }

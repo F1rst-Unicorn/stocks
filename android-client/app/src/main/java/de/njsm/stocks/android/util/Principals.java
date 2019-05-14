@@ -1,4 +1,4 @@
-package de.njsm.stocks.android.business;
+package de.njsm.stocks.android.util;
 
 import androidx.annotation.NonNull;
 import de.njsm.stocks.android.db.entities.User;

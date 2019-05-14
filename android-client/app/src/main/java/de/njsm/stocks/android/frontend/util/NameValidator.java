@@ -4,7 +4,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import androidx.core.util.Consumer;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.business.Principals;
+import de.njsm.stocks.android.util.Principals;
 
 public class NameValidator implements TextWatcher {
 

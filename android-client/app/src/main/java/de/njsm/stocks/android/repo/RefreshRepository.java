@@ -5,12 +5,12 @@ import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
 
-public class RefreshRepo {
+public class RefreshRepository {
 
     private Synchroniser synchroniser;
 
     @Inject
-    RefreshRepo(Synchroniser synchroniser) {
+    RefreshRepository(Synchroniser synchroniser) {
         this.synchroniser = synchroniser;
     }
 

@@ -29,7 +29,11 @@
         android:id="@+id/nav_fragment_users"
         android:name="de.njsm.stocks.android.frontend.user.UserFragment"
         android:label="@string/action_users"
-        tools:layout="@layout/fragment_users" />
+        tools:layout="@layout/fragment_users">
+        <action
+            android:id="@+id/action_nav_fragment_users_to_nav_fragment_devices"
+            app:destination="@id/nav_fragment_devices" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_fragment_server"
@@ -242,7 +246,39 @@
     <fragment
         android:id="@+id/nav_fragment_crashlogs"
         android:name="de.njsm.stocks.android.frontend.crashlog.CrashLogListFragment"
-        android:label="@string/title_crash_logs" />
+        android:label="@string/title_crash_logs"
+        tools:layout="@layout/fragment_crash_logs"/>
+    <fragment
+        android:id="@+id/nav_fragment_devices"
+        android:name="de.njsm.stocks.android.frontend.device.DeviceFragment"
+        tools:layout="@layout/fragment_devices">
+        <argument
+            android:name="userId"
+            app:argType="integer"/>
+        <action
+            android:id="@+id/action_nav_fragment_devices_to_nav_fragment_qr_code"
+            app:destination="@id/nav_fragment_qr_code" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_qr_code"
+        android:name="de.njsm.stocks.android.frontend.device.QrCodeDisplayFragment"
+        tools:layout="@layout/fragment_qr_code_display">
+        <argument
+            android:name="userId"
+            app:argType="integer"/>
+        <argument
+            android:name="username"
+            app:argType="string"/>
+        <argument
+            android:name="deviceId"
+            app:argType="integer"/>
+        <argument
+            android:name="deviceName"
+            app:argType="string"/>
+        <argument
+            android:name="ticket"
+            app:argType="string"/>
+    </fragment>
     <action
         android:id="@+id/action_global_nav_fragment_settings"
         app:destination="@id/nav_fragment_settings"

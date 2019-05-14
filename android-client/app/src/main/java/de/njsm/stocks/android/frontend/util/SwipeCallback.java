@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +14,7 @@ import java.util.List;
 
 public class SwipeCallback<T> extends ItemTouchHelper.SimpleCallback {
 
+    @Nullable
     private List<T> data;
 
     private Consumer<T> deleteCallback;
@@ -21,7 +23,7 @@ public class SwipeCallback<T> extends ItemTouchHelper.SimpleCallback {
 
     private ColorDrawable background;
 
-    public SwipeCallback(List<T> data,
+    public SwipeCallback(@Nullable List<T> data,
                          Consumer<T> deleteCallback,
                          Drawable icon,
                          ColorDrawable background) {

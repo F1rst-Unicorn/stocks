@@ -1,4 +1,4 @@
-package de.njsm.stocks.android.business;
+package de.njsm.stocks.android.util;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package de.njsm.stocks.android.frontend.user;
+package de.njsm.stocks.android.frontend.device;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,14 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 
 import java.util.List;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
+public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
 
-    private LiveData<List<User>> data;
+    private LiveData<List<UserDevice>> data;
 
     private Consumer<View> onClickListener;
 
@@ -33,7 +32,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
     }
 
-    UserAdapter(LiveData<List<User>> data, Consumer<View> onClickListener) {
+    DeviceAdapter(LiveData<List<UserDevice>> data, Consumer<View> onClickListener) {
         this.data = data;
         this.onClickListener = onClickListener;
     }
@@ -42,8 +41,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         TextView v = (TextView) LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_user, viewGroup, false);
-        ViewHolder result =  new UserAdapter.ViewHolder(v);
+                .inflate(android.R.layout.simple_list_item_1, viewGroup, false);
+        ViewHolder result =  new DeviceAdapter.ViewHolder(v);
         v.setTag(result);
         v.setOnClickListener(this::onClick);
         return result;
@@ -51,7 +50,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        List<User> list = data.getValue();
+        List<UserDevice> list = data.getValue();
         if (list != null) {
             String username = list.get(i).name;
             viewHolder.setText(username);
@@ -66,7 +65,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        List<User> list = data.getValue();
+        List<UserDevice> list = data.getValue();
         if (list != null)
             return list.size();
         else

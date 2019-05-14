@@ -7,6 +7,7 @@ import dagger.Provides;
 import de.njsm.stocks.android.db.StocksDatabase;
 import de.njsm.stocks.android.db.dao.UpdateDao;
 import de.njsm.stocks.android.db.dao.UserDao;
+import de.njsm.stocks.android.db.dao.UserDeviceDao;
 
 import javax.inject.Singleton;
 
@@ -24,6 +25,11 @@ public abstract class DbModule {
     @Provides
     static UserDao provideUserDao(StocksDatabase database) {
         return database.userDao();
+    }
+
+    @Provides
+    static UserDeviceDao provideUserDeviceDao(StocksDatabase database) {
+        return database.userDeviceDao();
     }
 
     @Provides

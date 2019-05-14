@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import de.njsm.stocks.android.db.dao.UpdateDao;
 import de.njsm.stocks.android.db.dao.UserDao;
+import de.njsm.stocks.android.db.dao.UserDeviceDao;
 import de.njsm.stocks.android.db.entities.Update;
 import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.error.StatusCodeException;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
@@ -25,17 +27,21 @@ public class Synchroniser {
 
     private UserDao userDao;
 
+    private UserDeviceDao userDeviceDao;
+
     private UpdateDao updateDao;
 
     private Executor executor;
 
     @Inject
     Synchroniser(ServerClient serverClient,
-                        UserDao userDao,
-                        UpdateDao updateDao,
-                        Executor executor) {
+                 UserDao userDao,
+                 UserDeviceDao userDeviceDao,
+                 UpdateDao updateDao,
+                 Executor executor) {
         this.serverClient = serverClient;
         this.userDao = userDao;
+        this.userDeviceDao = userDeviceDao;
         this.updateDao = updateDao;
         this.executor = executor;
     }
@@ -94,9 +100,10 @@ public class Synchroniser {
 
     private void refreshAll() throws StatusCodeException {
         refreshUsers();
+        refreshUserDevices();
     }
 
-    private void refreshOutdatedTables(Update[] serverUpdates, Update[] localUpdates) throws StatusCodeException {
+    void refreshOutdatedTables(Update[] serverUpdates, Update[] localUpdates) throws StatusCodeException {
         for (Update update : serverUpdates) {
             if (isTableOutdated(localUpdates, update)) {
                 LOG.d("Refreshing " + update.table);
@@ -109,12 +116,19 @@ public class Synchroniser {
     private void refresh(String table) throws StatusCodeException {
         if (table.equals("User")) {
             refreshUsers();
+        } else if (table.equals("User_device")) {
+            refreshUserDevices();
         }
     }
 
     private void refreshUsers() throws StatusCodeException {
         User[] u = StatusCodeCallback.executeCall(serverClient.getUsers());
         userDao.synchronise(u);
+    }
+
+    private void refreshUserDevices() throws StatusCodeException {
+        UserDevice[] u = StatusCodeCallback.executeCall(serverClient.getDevices());
+        userDeviceDao.synchronise(u);
     }
 
     private boolean isTableOutdated(Update[] localUpdates, Update update) {

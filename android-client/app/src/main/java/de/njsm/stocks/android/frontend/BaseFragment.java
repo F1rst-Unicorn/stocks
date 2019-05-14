@@ -14,7 +14,7 @@ public class BaseFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        LOG.d("" + getArguments());
+        LOG.d("starting with args " + getArguments());
 
     }
 

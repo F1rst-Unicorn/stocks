@@ -8,6 +8,7 @@ import de.njsm.stocks.android.network.server.data.DataResponse;
 import de.njsm.stocks.android.network.server.data.Response;
 import de.njsm.stocks.android.repo.Synchroniser;
 import de.njsm.stocks.android.util.Logger;
+import fj.data.Validation;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -48,13 +49,22 @@ public class StatusCodeCallback implements Callback<Response> {
         data.setValue(StatusCode.GENERAL_ERROR);
     }
 
-    private static <T extends Response> StatusCode handleResponse(retrofit2.Response<T> response) {
+    static <T extends Response> StatusCode handleResponse(retrofit2.Response<T> response) {
         if (!response.isSuccessful()
                 || response.body() == null
                 || response.body().status != StatusCode.SUCCESS)
             return error(response);
         else
             return StatusCode.SUCCESS;
+    }
+
+    static <T> Validation<StatusCode, T> returnResponse(retrofit2.Response<DataResponse<T>> response) {
+        if (!response.isSuccessful()
+                || response.body() == null
+                || response.body().status != StatusCode.SUCCESS)
+            return Validation.fail(error(response));
+        else
+            return Validation.success(response.body().data);
     }
 
     /**

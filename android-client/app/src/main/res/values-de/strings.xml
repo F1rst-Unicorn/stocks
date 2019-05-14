@@ -116,6 +116,8 @@
     <string name="action_continue">Weiter</string>
     <string name="action_back">Zurück</string>
     <string name="title_qr_code_scan">2 / 3: QR Code lesen</string>
+    <string name="desc_profile_picture">Profilbild des Benutzers</string>
+    <string name="dialog_device_was_deleted">Gerät wurde gelöscht</string>
 
 
 </resources>

@@ -1,6 +1,5 @@
 package de.njsm.stocks.android.frontend.user;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +33,7 @@ import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class UserFragment extends BaseFragment {
 
@@ -70,7 +71,7 @@ public class UserFragment extends BaseFragment {
         viewModel.getUsers().observe(this, callback::setData);
         new ItemTouchHelper(callback).attachToRecyclerView(view);
 
-        adapter = new UserAdapter(viewModel.getUsers());
+        adapter = new UserAdapter(viewModel.getUsers(), this::onListItemClick);
         viewModel.getUsers().observe(this, u -> adapter.notifyDataSetChanged());
         view.setAdapter(adapter);
 
@@ -93,15 +94,24 @@ public class UserFragment extends BaseFragment {
         this.viewModelFactory = viewModelFactory;
     }
 
+    private void onListItemClick(View view) {
+        UserAdapter.ViewHolder holder = (UserAdapter.ViewHolder) view.getTag();
+        int position = holder.getAdapterPosition();
+        List<User> list = viewModel.getUsers().getValue();
+        if (list != null) {
+            int userId = list.get(position).id;
+            UserFragmentDirections.ActionNavFragmentUsersToNavFragmentDevices args =
+                    UserFragmentDirections.actionNavFragmentUsersToNavFragmentDevices(userId);
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(args);
+        }
+    }
+
     private void addUser(View view) {
-        Activity activity = getActivity();
-        if (activity == null)
-            return;
         EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
         textField.addTextChangedListener(
                 new NameValidator(e -> textField.setError(getResources().getString(e))));
         textField.setHint(getResources().getString(R.string.hint_username));
-        new AlertDialog.Builder(activity)
+        new AlertDialog.Builder(requireActivity())
                 .setTitle(getResources().getString(R.string.dialog_new_user))
                 .setView(textField)
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {

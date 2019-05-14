@@ -10,7 +10,7 @@ import android.os.Looper;
 import android.os.Message;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.business.Principals;
+import de.njsm.stocks.android.util.Principals;
 import de.njsm.stocks.android.dagger.modules.WebModule;
 import de.njsm.stocks.android.error.TextResourceException;
 import de.njsm.stocks.android.network.sentry.SentryClient;

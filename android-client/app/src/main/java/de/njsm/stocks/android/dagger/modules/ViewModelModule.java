@@ -8,10 +8,13 @@ import dagger.multibindings.IntoMap;
 import de.njsm.stocks.android.dagger.annotations.ViewModelKey;
 import de.njsm.stocks.android.dagger.factories.ViewModelFactory;
 import de.njsm.stocks.android.frontend.crashlog.CrashLogViewModel;
+import de.njsm.stocks.android.frontend.device.SingleUserViewModel;
+import de.njsm.stocks.android.frontend.device.UserDeviceViewModel;
 import de.njsm.stocks.android.frontend.user.UserViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
-import de.njsm.stocks.android.repo.CrashLogRepo;
-import de.njsm.stocks.android.repo.RefreshRepo;
+import de.njsm.stocks.android.repo.CrashLogRepository;
+import de.njsm.stocks.android.repo.RefreshRepository;
+import de.njsm.stocks.android.repo.UserDeviceRepository;
 import de.njsm.stocks.android.repo.UserRepository;
 
 import javax.inject.Provider;
@@ -28,7 +31,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(UserViewModel.class)
-    ViewModel provideUserViewModel(UserRepository repo) {
+    ViewModel provideUsersViewModel(UserRepository repo) {
         UserViewModel result = new UserViewModel(repo);
         result.init();
         return result;
@@ -36,15 +39,29 @@ public class ViewModelModule {
 
     @Provides
     @IntoMap
+    @ViewModelKey(UserDeviceViewModel.class)
+    ViewModel provideUserDeviceViewModel(UserDeviceRepository repo) {
+        return new UserDeviceViewModel(repo);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(SingleUserViewModel.class)
+    ViewModel provideUserViewModel(UserRepository repo) {
+        return new SingleUserViewModel(repo);
+    }
+
+    @Provides
+    @IntoMap
     @ViewModelKey(RefreshViewModel.class)
-    ViewModel provideRefreshViewModel(RefreshRepo repo) {
+    ViewModel provideRefreshViewModel(RefreshRepository repo) {
         return new RefreshViewModel(repo);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(CrashLogViewModel.class)
-    ViewModel provideCrashLogViewModel(CrashLogRepo repo) {
+    ViewModel provideCrashLogViewModel(CrashLogRepository repo) {
         CrashLogViewModel result = new CrashLogViewModel(repo);
         result.init();
         return result;

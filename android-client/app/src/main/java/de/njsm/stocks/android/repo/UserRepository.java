@@ -2,7 +2,7 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import de.njsm.stocks.android.business.Principals;
+import de.njsm.stocks.android.util.Principals;
 import de.njsm.stocks.android.db.dao.UserDao;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.network.server.ServerClient;
@@ -35,6 +35,11 @@ public class UserRepository {
     public LiveData<List<User>> getUsers() {
         LOG.d("getting users");
         return userDao.getAll();
+    }
+
+    public LiveData<User> getUser(int userId) {
+        LOG.d("Getting user for id " + userId);
+        return userDao.getUser(userId);
     }
 
     public LiveData<StatusCode> addUser(String name) {

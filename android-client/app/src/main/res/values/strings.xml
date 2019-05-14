@@ -108,11 +108,13 @@
     <string name="dialog_error">An unforeseen error has occurred.</string>
     <string name="action_undo">UNDO</string>
     <string name="dialog_user_was_deleted">User was deleted</string>
+    <string name="dialog_device_was_deleted">Device was deleted</string>
     <string name="error_wrong_name_format">Name may not contain: $ =</string>
     <string name="title_server">1 / 3: Server Setup</string>
     <string name="title_principals">3 / 3: User information</string>
     <string name="action_continue">Continue</string>
     <string name="action_back">Back</string>
     <string name="title_qr_code_scan">2 / 3: Scan QR Code</string>
+    <string name="desc_profile_picture">The user\'s profile picture</string>
 
 </resources>

@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity
+@Entity(tableName = "User_device")
 public class UserDevice extends VersionedData {
 
     @ColumnInfo(name = "name")
@@ -41,6 +41,7 @@ public class UserDevice extends VersionedData {
         this.userId = userId;
     }
 
+    @Ignore
     public UserDevice() {
     }
 

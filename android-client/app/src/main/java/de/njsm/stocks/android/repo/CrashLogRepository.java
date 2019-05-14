@@ -3,7 +3,7 @@ package de.njsm.stocks.android.repo;
 import android.content.Context;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import de.njsm.stocks.android.business.CrashLog;
+import de.njsm.stocks.android.frontend.crashlog.CrashLog;
 import de.njsm.stocks.android.util.Logger;
 import org.apache.commons.io.IOUtils;
 
@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-public class CrashLogRepo {
+public class CrashLogRepository {
 
-    private static final Logger LOG = new Logger(CrashLogRepo.class);
+    private static final Logger LOG = new Logger(CrashLogRepository.class);
 
     private Executor executor;
 
@@ -28,7 +28,7 @@ public class CrashLogRepo {
     private MutableLiveData<List<CrashLog>> data;
 
     @Inject
-    public CrashLogRepo(Executor executor, Context context) {
+    public CrashLogRepository(Executor executor, Context context) {
         this.executor = executor;
         this.context = context;
     }
