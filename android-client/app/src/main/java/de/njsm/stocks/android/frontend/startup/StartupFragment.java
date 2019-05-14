@@ -38,14 +38,11 @@ public class StartupFragment extends BaseFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        assert getContext() != null;
-
         Bundle args = getArguments() == null ? new Bundle() : getArguments();
         input = StartupFragmentArgs.fromBundle(args);
 
         LinearLayout view = new LinearLayout(getActivity());
-        SharedPreferences prefs = getContext().getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        SharedPreferences prefs = requireActivity().getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);
         requireActivity().setTitle(R.string.app_name);
 
         if (input.getUsername() != null) {

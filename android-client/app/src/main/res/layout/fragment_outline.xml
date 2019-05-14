@@ -45,6 +45,7 @@
                             android:id="@+id/fragment_outline_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/desc_cutlery"
 
                             android:padding="@dimen/activity_horizontal_margin"
                             android:src="@drawable/ic_local_dining_black_24dp" />
@@ -84,7 +85,7 @@
                         android:id="@+id/fragment_outline_icon2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
+                        android:contentDescription="@string/desc_supermarket"
                         android:padding="@dimen/activity_horizontal_margin"
                         android:src="@drawable/ic_store_black_24dp" />
 

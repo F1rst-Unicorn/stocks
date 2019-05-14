@@ -1,13 +1,14 @@
 package de.njsm.stocks.android.network.server;
 
 
+import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.db.entities.Update;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.frontend.device.ServerTicket;
 import de.njsm.stocks.android.network.server.data.DataResponse;
 import de.njsm.stocks.android.network.server.data.ListResponse;
 import de.njsm.stocks.android.network.server.data.Response;
-import de.njsm.stocks.android.frontend.device.ServerTicket;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -39,7 +40,6 @@ public interface ServerClient {
 
     @GET("/v2/update")
     Call<ListResponse<Update>> getUpdates();
-/*
 
     @GET("/v2/location")
     Call<ListResponse<Location>> getLocations();
@@ -53,10 +53,11 @@ public interface ServerClient {
                                   @Query("new") String newName);
 
     @DELETE("/v2/location")
-    Call<Response> removeLocation(@Query("id") int id,
+    Call<Response> deleteLocation(@Query("id") int id,
                                   @Query("version") int version,
                                   @Query("cascade") int cascade);
 
+/*
 
     @GET("/v2/food")
     Call<ListResponse<Food>> getFood();

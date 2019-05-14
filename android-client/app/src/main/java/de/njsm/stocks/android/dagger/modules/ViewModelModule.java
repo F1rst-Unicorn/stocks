@@ -10,12 +10,10 @@ import de.njsm.stocks.android.dagger.factories.ViewModelFactory;
 import de.njsm.stocks.android.frontend.crashlog.CrashLogViewModel;
 import de.njsm.stocks.android.frontend.device.SingleUserViewModel;
 import de.njsm.stocks.android.frontend.device.UserDeviceViewModel;
+import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.frontend.user.UserViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
-import de.njsm.stocks.android.repo.CrashLogRepository;
-import de.njsm.stocks.android.repo.RefreshRepository;
-import de.njsm.stocks.android.repo.UserDeviceRepository;
-import de.njsm.stocks.android.repo.UserRepository;
+import de.njsm.stocks.android.repo.*;
 
 import javax.inject.Provider;
 import java.util.Map;
@@ -49,6 +47,15 @@ public class ViewModelModule {
     @ViewModelKey(SingleUserViewModel.class)
     ViewModel provideUserViewModel(UserRepository repo) {
         return new SingleUserViewModel(repo);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(LocationViewModel.class)
+    ViewModel provideLocationViewModel(LocationRepository repo) {
+        LocationViewModel result = new LocationViewModel(repo);
+        result.init();
+        return result;
     }
 
     @Provides

@@ -54,6 +54,7 @@
         android:layout_height="wrap_content"
 
         android:src="@drawable/ic_alarm_black_24dp"
+        android:contentDescription="@string/desc_expiration_state"
         android:layout_gravity="end"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/item_food_outline_name" />

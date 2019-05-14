@@ -5,6 +5,7 @@ import androidx.room.Room;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.android.db.StocksDatabase;
+import de.njsm.stocks.android.db.dao.LocationDao;
 import de.njsm.stocks.android.db.dao.UpdateDao;
 import de.njsm.stocks.android.db.dao.UserDao;
 import de.njsm.stocks.android.db.dao.UserDeviceDao;
@@ -25,6 +26,11 @@ public abstract class DbModule {
     @Provides
     static UserDao provideUserDao(StocksDatabase database) {
         return database.userDao();
+    }
+
+    @Provides
+    static LocationDao provideLocationDao(StocksDatabase database) {
+        return database.locationDao();
     }
 
     @Provides

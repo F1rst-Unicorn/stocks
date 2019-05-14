@@ -55,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.users:
                 navController.navigate(R.id.action_global_nav_fragment_users);
                 break;
+            case R.id.locations:
+                navController.navigate(R.id.action_global_nav_fragment_locations);
+                break;
             case R.id.settings:
                 navController.navigate(R.id.action_global_nav_fragment_settings);
                 break;

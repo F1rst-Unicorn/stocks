@@ -34,7 +34,7 @@ public class SynchroniserTest {
         updateDao = Mockito.mock(UpdateDao.class);
         executor = Mockito.mock(Executor.class);
 
-        uut = new Synchroniser(serverClient, userDao, userDeviceDao, updateDao, executor);
+        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, updateDao, executor);
     }
 
     @Test

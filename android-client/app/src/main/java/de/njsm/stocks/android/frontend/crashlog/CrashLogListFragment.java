@@ -60,9 +60,8 @@ public class CrashLogListFragment extends BaseFragment {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CrashLogViewModel.class);
         SwipeCallback<CrashLog> callback = new SwipeCallback<>(
                 viewModel.getData().getValue(),
-                this::deleteCrashLog,
-                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
-                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)));
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp), new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)), this::deleteCrashLog
+        );
         viewModel.getData().observe(this, callback::setData);
         new ItemTouchHelper(callback).attachToRecyclerView(list);
 

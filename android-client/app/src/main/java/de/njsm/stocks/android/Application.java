@@ -1,6 +1,7 @@
 package de.njsm.stocks.android;
 
 import android.app.Activity;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import dagger.android.AndroidInjector;
@@ -35,20 +36,22 @@ public class Application
     }
 
     @Inject
-    public void setInjector(DispatchingAndroidInjector<Activity> injector) {
+    public void setInjector(@NonNull DispatchingAndroidInjector<Activity> injector) {
         this.injector = injector;
     }
 
     @Inject
-    public void setFragmentInjector(DispatchingAndroidInjector<Fragment> fragmentInjector) {
+    public void setFragmentInjector(@NonNull DispatchingAndroidInjector<Fragment> fragmentInjector) {
         this.fragmentInjector = fragmentInjector;
     }
 
+    @NonNull
     @Override
     public AndroidInjector<Activity> activityInjector() {
         return injector;
     }
 
+    @NonNull
     @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentInjector;

@@ -1,9 +1,15 @@
 package de.njsm.stocks.android.frontend;
 
 import android.app.Activity;
+import android.view.View;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.frontend.util.RefreshViewModel;
+import de.njsm.stocks.android.frontend.util.SwipeSyncCallback;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
 
@@ -28,6 +34,12 @@ public class BaseFragment extends Fragment {
         maybeShowReadError(requireActivity(), code);
     }
 
+    public void maybeShowEditError(StatusCode code) {
+        if (code != StatusCode.SUCCESS) {
+            showErrorMessage(requireActivity(), code.getEditErrorMessage());
+        }
+    }
+
     protected void maybeShowDeleteError(StatusCode code) {
         if (code != StatusCode.SUCCESS) {
             showErrorMessage(requireActivity(), code.getDeleteErrorMessage());
@@ -49,5 +61,14 @@ public class BaseFragment extends Fragment {
                 .setPositiveButton(a.getResources().getString(R.string.dialog_ok), (d, w) -> d.dismiss())
                 .create()
                 .show();
+    }
+
+    protected RefreshViewModel initialiseSwipeRefresh(View view,
+                                          int swiperId,
+                                          ViewModelProvider.Factory viewModelFactory) {
+        SwipeRefreshLayout refresher = view.findViewById(swiperId);
+        RefreshViewModel refreshViewModel = ViewModelProviders.of(this, viewModelFactory).get(RefreshViewModel.class);
+        refresher.setOnRefreshListener(new SwipeSyncCallback(this, refresher, refreshViewModel));
+        return refreshViewModel;
     }
 }

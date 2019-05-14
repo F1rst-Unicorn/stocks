@@ -24,9 +24,9 @@ public class SwipeCallback<T> extends ItemTouchHelper.SimpleCallback {
     private ColorDrawable background;
 
     public SwipeCallback(@Nullable List<T> data,
-                         Consumer<T> deleteCallback,
                          Drawable icon,
-                         ColorDrawable background) {
+                         ColorDrawable background,
+                         Consumer<T> deleteCallback) {
         super(0, ItemTouchHelper.RIGHT);
         this.data = data;
         this.deleteCallback = deleteCallback;

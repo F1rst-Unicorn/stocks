@@ -28,7 +28,7 @@ public class CrashLogRepository {
     private MutableLiveData<List<CrashLog>> data;
 
     @Inject
-    public CrashLogRepository(Executor executor, Context context) {
+    public CrashLogRepository(Context context, Executor executor) {
         this.executor = executor;
         this.context = context;
     }

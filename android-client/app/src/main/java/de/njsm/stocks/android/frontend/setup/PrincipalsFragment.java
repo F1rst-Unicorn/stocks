@@ -63,12 +63,12 @@ public class PrincipalsFragment extends BaseFragment {
             next.setEnabled(false);
         }
 
-        userName.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, userName));
-        userId.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, userId));
-        deviceName.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, deviceName));
-        deviceId.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, deviceId));
-        fingerprint.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, fingerprint));
-        ticket.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, ticket));
+        userName.addTextChangedListener(new NonEmptyValidator(userName, this::invalidateButton));
+        userId.addTextChangedListener(new NonEmptyValidator(userId, this::invalidateButton));
+        deviceName.addTextChangedListener(new NonEmptyValidator(deviceName, this::invalidateButton));
+        deviceId.addTextChangedListener(new NonEmptyValidator(deviceId, this::invalidateButton));
+        fingerprint.addTextChangedListener(new NonEmptyValidator(fingerprint, this::invalidateButton));
+        ticket.addTextChangedListener(new NonEmptyValidator(ticket, this::invalidateButton));
 
         next.setOnClickListener(this::next);
         requireActivity().setTitle(R.string.title_principals);

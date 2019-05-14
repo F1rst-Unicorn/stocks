@@ -2,9 +2,11 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import de.njsm.stocks.android.db.dao.LocationDao;
 import de.njsm.stocks.android.db.dao.UpdateDao;
 import de.njsm.stocks.android.db.dao.UserDao;
 import de.njsm.stocks.android.db.dao.UserDeviceDao;
+import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.db.entities.Update;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
@@ -29,6 +31,8 @@ public class Synchroniser {
 
     private UserDeviceDao userDeviceDao;
 
+    private LocationDao locationDao;
+
     private UpdateDao updateDao;
 
     private Executor executor;
@@ -37,11 +41,13 @@ public class Synchroniser {
     Synchroniser(ServerClient serverClient,
                  UserDao userDao,
                  UserDeviceDao userDeviceDao,
+                 LocationDao locationDao,
                  UpdateDao updateDao,
                  Executor executor) {
         this.serverClient = serverClient;
         this.userDao = userDao;
         this.userDeviceDao = userDeviceDao;
+        this.locationDao = locationDao;
         this.updateDao = updateDao;
         this.executor = executor;
     }
@@ -101,6 +107,7 @@ public class Synchroniser {
     private void refreshAll() throws StatusCodeException {
         refreshUsers();
         refreshUserDevices();
+        refreshLocations();
     }
 
     void refreshOutdatedTables(Update[] serverUpdates, Update[] localUpdates) throws StatusCodeException {
@@ -109,7 +116,7 @@ public class Synchroniser {
                 LOG.d("Refreshing " + update.table);
                 refresh(update.table);
             } else
-                LOG.d("Table " + update.table + " is up to date");
+                LOG.v("Table " + update.table + " is up to date");
         }
     }
 
@@ -118,12 +125,19 @@ public class Synchroniser {
             refreshUsers();
         } else if (table.equals("User_device")) {
             refreshUserDevices();
+        } else if (table.equals("Location")) {
+            refreshLocations();
         }
     }
 
     private void refreshUsers() throws StatusCodeException {
         User[] u = StatusCodeCallback.executeCall(serverClient.getUsers());
         userDao.synchronise(u);
+    }
+
+    private void refreshLocations() throws StatusCodeException {
+        Location[] u = StatusCodeCallback.executeCall(serverClient.getLocations());
+        locationDao.synchronise(u);
     }
 
     private void refreshUserDevices() throws StatusCodeException {

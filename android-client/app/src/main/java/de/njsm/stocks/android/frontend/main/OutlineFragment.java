@@ -8,15 +8,12 @@ import android.view.*;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.navigation.NavigationView;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
-import de.njsm.stocks.android.frontend.util.SwipeSyncCallback;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
 
@@ -54,10 +51,8 @@ public class OutlineFragment extends BaseFragment {
         if (!initialised) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(R.id.nav_fragment_startup);
         } else {
-            SwipeRefreshLayout swiper = result.findViewById(R.id.fragment_outline_swipe);
-            RefreshViewModel refresher = ViewModelProviders.of(this, viewModelFactory).get(RefreshViewModel.class);
+            RefreshViewModel refresher = initialiseSwipeRefresh(result, R.id.fragment_outline_swipe, viewModelFactory);
             refresher.refresh();
-            swiper.setOnRefreshListener(new SwipeSyncCallback(this, swiper, refresher));
             setHasOptionsMenu(true);
             NavigationView nav = requireActivity().findViewById(R.id.main_nav);
             TextView view = nav.getHeaderView(0).findViewById(R.id.drawer_username);

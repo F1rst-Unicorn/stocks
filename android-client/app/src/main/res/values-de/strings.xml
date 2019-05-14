@@ -102,9 +102,9 @@
     <string name="dialog_invalid_input">Ungültige Eingabe</string>
     <string name="dialog_not_found">Objekt wurde schon von jemandem entfernt
     </string>
-    <string name="dialog_delete_but_edited">"Das Objekt wurde in der Zwischenzeit verändert. Prüfe, ob du es wirklich entfernen möchtest.\n "</string>
+    <string name="dialog_delete_but_edited">"Das Objekt wurde in der Zwischenzeit verändert. Aktualisiere und prüfe, ob du es wirklich entfernen möchtest.  "</string>
     <string name="dialog_delete_but_dependants">Das Objekt kann nicht gelöscht werden, da andere Objekte noch damit verknüpft sind. Z.B. ein Ort, der noch Waren enthält.</string>
-    <string name="dialog_edit_but_edited">Das Objekt wurde in der Zwischenzeit geändert. Prüfe deine Änderungen erneut.</string>
+    <string name="dialog_edit_but_edited">Das Objekt wurde in der Zwischenzeit geändert. Aktualisiere und prüfe deine Änderungen erneut.</string>
     <string name="dialog_create_device">Erstelle neues Gerät</string>
     <string name="title_qr_code_content_desc">QR Code</string>
     <string name="title_error">Fehler</string>
@@ -118,6 +118,16 @@
     <string name="title_qr_code_scan">2 / 3: QR Code lesen</string>
     <string name="desc_profile_picture">Profilbild des Benutzers</string>
     <string name="dialog_device_was_deleted">Gerät wurde gelöscht</string>
+    <string name="dialog_location_was_deleted">Ort wurde gelöscht</string>
+    <string name="dialog_rename_location">Ort umbenennen</string>
+    <string name="hint_new_name">Neuer Name</string>
+    <string name="desc_app_icon">Applikationslogo</string>
+    <string name="desc_cutlery">Besteck</string>
+    <string name="desc_expiration_state">Ablaufzustand</string>
+    <string name="desc_supermarket">Supermarkt</string>
+    <string name="desc_location">Ortsicon</string>
+    <string name="error_location_changed">Der Ort wurde von %1$s zu %2$s umbenannt. Möchtest du ihn immer noch löschen?</string>
+    <string name="error_location_foreign_key_violation">%1$s enthält immer noch Lebensmittel. Möchtest du die auch alle löschen?</string>
 
 
 </resources>

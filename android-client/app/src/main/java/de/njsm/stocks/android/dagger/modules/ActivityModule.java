@@ -4,6 +4,7 @@ import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 import de.njsm.stocks.android.frontend.crashlog.CrashLogListFragment;
 import de.njsm.stocks.android.frontend.device.DeviceFragment;
+import de.njsm.stocks.android.frontend.locations.LocationFragment;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.frontend.main.OutlineFragment;
 import de.njsm.stocks.android.frontend.settings.SettingsFragment;
@@ -15,6 +16,9 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract UserFragment contributeUserFragment();
+
+    @ContributesAndroidInjector
+    abstract LocationFragment contributeLocationFragment();
 
     @ContributesAndroidInjector
     abstract DeviceFragment contributeUserDeviceFragment();

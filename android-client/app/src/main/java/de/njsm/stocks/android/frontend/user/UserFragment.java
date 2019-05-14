@@ -18,7 +18,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import dagger.android.support.AndroidSupportInjection;
@@ -26,9 +25,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.util.NameValidator;
-import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.frontend.util.SwipeCallback;
-import de.njsm.stocks.android.frontend.util.SwipeSyncCallback;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
 
@@ -39,7 +36,7 @@ public class UserFragment extends BaseFragment {
 
     static final Logger LOG = new Logger(UserFragment.class);
 
-    private RecyclerView view;
+    private RecyclerView list;
 
     RecyclerView.Adapter<UserAdapter.ViewHolder> adapter;
 
@@ -58,26 +55,24 @@ public class UserFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_users, container, false);
 
-        view = result.findViewById(R.id.users_list);
-        view.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        list = result.findViewById(R.id.users_list);
+        list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
         SwipeCallback<User> callback = new SwipeCallback<>(
-                viewModel.getUsers().getValue(),
-                this::initiateUserDeletion,
+                null,
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
-                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent))
+                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
+                this::initiateUserDeletion
         );
         viewModel.getUsers().observe(this, callback::setData);
-        new ItemTouchHelper(callback).attachToRecyclerView(view);
+        new ItemTouchHelper(callback).attachToRecyclerView(list);
 
         adapter = new UserAdapter(viewModel.getUsers(), this::onListItemClick);
         viewModel.getUsers().observe(this, u -> adapter.notifyDataSetChanged());
-        view.setAdapter(adapter);
+        list.setAdapter(adapter);
 
-        SwipeRefreshLayout refresher = result.findViewById(R.id.users_swipe);
-        RefreshViewModel refreshViewModel = ViewModelProviders.of(this, viewModelFactory).get(RefreshViewModel.class);
-        refresher.setOnRefreshListener(new SwipeSyncCallback(this, refresher, refreshViewModel));
+        initialiseSwipeRefresh(result, R.id.users_swipe, viewModelFactory);
 
         result.findViewById(R.id.users_fab).setOnClickListener(this::addUser);
         return result;
@@ -125,7 +120,7 @@ public class UserFragment extends BaseFragment {
     }
 
     private void initiateUserDeletion(User u) {
-        Snackbar.make(view, R.string.dialog_user_was_deleted, Snackbar.LENGTH_SHORT)
+        Snackbar.make(list, R.string.dialog_user_was_deleted, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.action_undo, v -> {})
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
@@ -148,5 +143,4 @@ public class UserFragment extends BaseFragment {
                 })
                 .show();
     }
-
 }

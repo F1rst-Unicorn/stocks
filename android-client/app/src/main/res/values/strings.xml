@@ -99,9 +99,9 @@
     <string name="dialog_invalid_input">Invalid input</string>
     <string name="dialog_not_found">Object already deleted by someone else
     </string>
-    <string name="dialog_delete_but_edited">"The object was changed in the meantime. Check if you really want to delete it.\n \n \n "</string>
+    <string name="dialog_delete_but_edited">"The object was changed in the meantime. Refresh and check if you really want to delete it.      "</string>
     <string name="dialog_delete_but_dependants">The object can\'t be deleted because it is still linked to other objects. E.g. a location still contains food items.</string>
-    <string name="dialog_edit_but_edited">The object was edited in the meantime. Please check your change again.</string>
+    <string name="dialog_edit_but_edited">The object was edited in the meantime. Refresh and check your change again.</string>
     <string name="dialog_create_device">Creating new device</string>
     <string name="title_qr_code_content_desc">QR Code</string>
     <string name="title_error">Error</string>
@@ -116,5 +116,15 @@
     <string name="action_back">Back</string>
     <string name="title_qr_code_scan">2 / 3: Scan QR Code</string>
     <string name="desc_profile_picture">The user\'s profile picture</string>
+    <string name="dialog_location_was_deleted">Location was deleted</string>
+    <string name="hint_new_name">New name</string>
+    <string name="dialog_rename_location">Rename location</string>
+    <string name="desc_cutlery">Cutlery</string>
+    <string name="desc_supermarket">Supermarket</string>
+    <string name="desc_expiration_state">Expiration state</string>
+    <string name="desc_app_icon">Application Logo</string>
+    <string name="desc_location">Location icon</string>
+    <string name="error_location_foreign_key_violation">%1$s still contains food items. Do you want to delete all the items, too?</string>
+    <string name="error_location_changed">The location was renamed from %1$s to %2$s. Do you still want to delete it?</string>
 
 </resources>

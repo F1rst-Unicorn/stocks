@@ -2,7 +2,9 @@ package de.njsm.stocks.android.frontend.setup;
 
 
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -44,7 +46,7 @@ public class ServerFragment extends BaseFragment {
         portDisplaySwitch = result.findViewById(R.id.expert_switch);
         next = result.findViewById(R.id.server_button);
 
-        serverUrl.addTextChangedListener(new NonEmptyValidator(this::invalidateButton, serverUrl));
+        serverUrl.addTextChangedListener(new NonEmptyValidator(serverUrl, this::invalidateButton));
         portDisplaySwitch.setOnClickListener(this::onExpertSwitch);
         next.setOnClickListener(this::goToNextStep);
 
@@ -145,5 +147,4 @@ public class ServerFragment extends BaseFragment {
             }
         }
     }
-
 }

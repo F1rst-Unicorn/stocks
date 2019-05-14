@@ -10,6 +10,14 @@ public class Logger {
         this.tag = tag;
     }
 
+    public void v(String message, Throwable t) {
+        Log.v(tag.getCanonicalName(), message, t);
+    }
+
+    public void v(String message) {
+        Log.v(tag.getCanonicalName(), message);
+    }
+
     public void d(String message, Throwable t) {
         Log.d(tag.getCanonicalName(), message, t);
     }

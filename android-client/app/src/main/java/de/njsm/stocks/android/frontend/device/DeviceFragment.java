@@ -19,7 +19,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import dagger.android.support.AndroidSupportInjection;
@@ -29,9 +28,7 @@ import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.user.UserFragment;
 import de.njsm.stocks.android.frontend.util.NameValidator;
-import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.frontend.util.SwipeCallback;
-import de.njsm.stocks.android.frontend.util.SwipeSyncCallback;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
 import fj.data.Validation;
@@ -46,13 +43,13 @@ public class DeviceFragment extends BaseFragment {
 
     private ViewModelProvider.Factory viewModelFactory;
 
-    private UserDeviceViewModel viewModel;
+    UserDeviceViewModel viewModel;
 
     private SingleUserViewModel singleUserViewModel;
 
     private RecyclerView list;
 
-    private DeviceAdapter adapter;
+    DeviceAdapter adapter;
 
     @Override
     public void onAttach(Context context) {
@@ -78,9 +75,9 @@ public class DeviceFragment extends BaseFragment {
 
         SwipeCallback<UserDevice> callback = new SwipeCallback<>(
                 null,
-                this::initiateDeletion,
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
-                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent))
+                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
+                this::initiateDeletion
         );
         viewModel.getDevices().observe(this, callback::setData);
         new ItemTouchHelper(callback).attachToRecyclerView(list);
@@ -89,9 +86,7 @@ public class DeviceFragment extends BaseFragment {
         viewModel.getDevices().observe(this, d -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
-        SwipeRefreshLayout refresher = result.findViewById(R.id.devices_swipe);
-        RefreshViewModel refreshViewModel = ViewModelProviders.of(this, viewModelFactory).get(RefreshViewModel.class);
-        refresher.setOnRefreshListener(new SwipeSyncCallback(this, refresher, refreshViewModel));
+        initialiseSwipeRefresh(result, R.id.devices_swipe, viewModelFactory);
 
         singleUserViewModel.getUser().observe(this, u -> requireActivity().setTitle(u == null ? "" : u.name));
         return result;
@@ -99,7 +94,8 @@ public class DeviceFragment extends BaseFragment {
 
     private void initiateDeletion(UserDevice d) {
         Snackbar.make(list, R.string.dialog_device_was_deleted, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.action_undo, v -> {})
+                .setAction(R.string.action_undo, v -> {
+                })
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
@@ -160,7 +156,8 @@ public class DeviceFragment extends BaseFragment {
         }
     }
 
-    private void onListItemClick(View view) {}
+    private void onListItemClick(View view) {
+    }
 
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {

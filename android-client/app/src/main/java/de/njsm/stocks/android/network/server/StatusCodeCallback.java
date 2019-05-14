@@ -36,7 +36,10 @@ public class StatusCodeCallback implements Callback<Response> {
 
         StatusCode result = handleResponse(response);
         data.setValue(result);
-        if (result == StatusCode.SUCCESS) {
+        if (result == StatusCode.SUCCESS ||
+                result == StatusCode.INVALID_DATA_VERSION ||
+                result == StatusCode.NOT_FOUND ||
+                result == StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION) {
             LiveData<StatusCode> syncResult = synchroniser.synchronise();
             data.addSource(syncResult, value -> data.setValue(value));
         }
@@ -69,7 +72,7 @@ public class StatusCodeCallback implements Callback<Response> {
 
     /**
      * @throws StatusCodeException if retrofit raises error or server returns
-     * erroneous StatusCode.
+     *                             erroneous StatusCode.
      */
     public static <D> D executeCall(retrofit2.Call<? extends DataResponse<D>> call) throws StatusCodeException {
         retrofit2.Response<? extends DataResponse<D>> response;
