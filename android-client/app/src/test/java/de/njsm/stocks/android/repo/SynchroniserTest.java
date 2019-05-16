@@ -1,8 +1,6 @@
 package de.njsm.stocks.android.repo;
 
-import de.njsm.stocks.android.db.dao.UpdateDao;
-import de.njsm.stocks.android.db.dao.UserDao;
-import de.njsm.stocks.android.db.dao.UserDeviceDao;
+import de.njsm.stocks.android.db.dao.*;
 import de.njsm.stocks.android.db.entities.Update;
 import de.njsm.stocks.android.network.server.ServerClient;
 import org.junit.Before;
@@ -22,6 +20,14 @@ public class SynchroniserTest {
 
     private UserDeviceDao userDeviceDao;
 
+    private LocationDao locationDao;
+
+    private FoodDao foodDao;
+
+    private FoodItemDao foodItemDao;
+
+    private EanNumberDao eanNumberDao;
+
     private UpdateDao updateDao;
 
     private Executor executor;
@@ -32,9 +38,13 @@ public class SynchroniserTest {
         userDao = Mockito.mock(UserDao.class);
         userDeviceDao = Mockito.mock(UserDeviceDao.class);
         updateDao = Mockito.mock(UpdateDao.class);
+        locationDao = Mockito.mock(LocationDao.class);
+        foodDao = Mockito.mock(FoodDao.class);
+        foodItemDao = Mockito.mock(FoodItemDao.class);
+        eanNumberDao = Mockito.mock(EanNumberDao.class);
         executor = Mockito.mock(Executor.class);
 
-        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, updateDao, executor);
+        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, updateDao, executor);
     }
 
     @Test

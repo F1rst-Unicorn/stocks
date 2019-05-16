@@ -3,21 +3,18 @@ package de.njsm.stocks.android.db;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
-import de.njsm.stocks.android.db.dao.LocationDao;
-import de.njsm.stocks.android.db.dao.UpdateDao;
-import de.njsm.stocks.android.db.dao.UserDao;
-import de.njsm.stocks.android.db.dao.UserDeviceDao;
-import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.db.entities.Update;
-import de.njsm.stocks.android.db.entities.User;
-import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.db.dao.*;
+import de.njsm.stocks.android.db.entities.*;
 
 @Database(entities = {
         User.class,
         UserDevice.class,
         Update.class,
         Location.class,
-}, version = 23)
+        Food.class,
+        FoodItem.class,
+        EanNumber.class,
+}, version = 24)
 @TypeConverters(de.njsm.stocks.android.db.TypeConverters.class)
 public abstract class StocksDatabase extends RoomDatabase {
 
@@ -28,4 +25,10 @@ public abstract class StocksDatabase extends RoomDatabase {
     public abstract LocationDao locationDao();
 
     public abstract UpdateDao updateDao();
+
+    public abstract FoodDao foodDao();
+
+    public abstract FoodItemDao foodItemDao();
+
+    public abstract EanNumberDao eanNumberDao();
 }

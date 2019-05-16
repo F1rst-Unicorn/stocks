@@ -10,6 +10,8 @@ import de.njsm.stocks.android.dagger.factories.ViewModelFactory;
 import de.njsm.stocks.android.frontend.crashlog.CrashLogViewModel;
 import de.njsm.stocks.android.frontend.device.SingleUserViewModel;
 import de.njsm.stocks.android.frontend.device.UserDeviceViewModel;
+import de.njsm.stocks.android.frontend.emptyfood.EmptyFoodViewModel;
+import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.frontend.user.UserViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
@@ -32,6 +34,23 @@ public class ViewModelModule {
     ViewModel provideUsersViewModel(UserRepository repo) {
         UserViewModel result = new UserViewModel(repo);
         result.init();
+        return result;
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(EmptyFoodViewModel.class)
+    ViewModel provideEmptyFoodViewModel(FoodRepository repo) {
+        EmptyFoodViewModel result = new EmptyFoodViewModel(repo);
+        result.init();
+        return result;
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(FoodViewModel.class)
+    ViewModel provideFoodViewModel(FoodRepository repo) {
+        FoodViewModel result = new FoodViewModel(repo);
         return result;
     }
 

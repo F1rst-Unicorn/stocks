@@ -90,7 +90,7 @@
     <string name="error_no_location_present">Please create a location first</string>
 
     <string name="text_show_qr_code_friend">Let your new device read this code:</string>
-    <string name="text_amount">Amount</string>
+    <string name="text_amount">Amount:</string>
     <string name="text_buyer">Buyer</string>
     <string name="text_eat_by_date">Date of expiry:</string>
     <string name="text_no_crash_logs">App is running stable.</string>
@@ -127,5 +127,7 @@
     <string name="error_location_foreign_key_violation">%1$s still contains food items. Do you want to delete all the items, too?</string>
     <string name="error_location_changed">The location was renamed from %1$s to %2$s. Do you still want to delete it?</string>
     <string name="error_location_changed_twice">The location with original name "%1$s" was renamed to "%2$s" by you and to "%3$s" by someone else. Do you want to apply your name?</string>
+    <string name="dialog_food_was_deleted">Food was deleted</string>
+    <string name="error_food_changed" >The food was renamed from %1$s to %2$s. Do you still want to delete it?</string>
 
 </resources>

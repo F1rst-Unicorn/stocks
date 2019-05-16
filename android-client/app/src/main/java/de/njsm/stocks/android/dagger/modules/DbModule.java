@@ -5,10 +5,7 @@ import androidx.room.Room;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.android.db.StocksDatabase;
-import de.njsm.stocks.android.db.dao.LocationDao;
-import de.njsm.stocks.android.db.dao.UpdateDao;
-import de.njsm.stocks.android.db.dao.UserDao;
-import de.njsm.stocks.android.db.dao.UserDeviceDao;
+import de.njsm.stocks.android.db.dao.*;
 
 import javax.inject.Singleton;
 
@@ -41,5 +38,20 @@ public abstract class DbModule {
     @Provides
     static UpdateDao provideUpdateDao(StocksDatabase database) {
         return database.updateDao();
+    }
+
+    @Provides
+    static FoodDao provideFoodDao(StocksDatabase database) {
+        return database.foodDao();
+    }
+
+    @Provides
+    static FoodItemDao provideFoodItemDao(StocksDatabase database) {
+        return database.foodItemDao();
+    }
+
+    @Provides
+    static EanNumberDao provideEanNumberDao(StocksDatabase database) {
+        return database.eanNumberDao();
     }
 }

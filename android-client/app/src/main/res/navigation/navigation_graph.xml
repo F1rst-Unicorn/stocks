@@ -14,12 +14,22 @@
         <action
             android:id="@+id/action_nav_fragment_outline_to_nav_fragment_startup"
             app:destination="@id/nav_fragment_startup" />
+        <action
+            android:id="@+id/action_nav_fragment_outline_to_nav_fragment_locations"
+            app:destination="@id/nav_fragment_locations" />
+        <action
+            android:id="@+id/action_nav_fragment_outline_to_nav_fragment_empty_food"
+            app:destination="@id/nav_fragment_empty_food"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_users"
         android:name="de.njsm.stocks.android.frontend.user.UserFragment"
         android:label="@string/action_users"
-        tools:layout="@layout/fragment_users">
+        tools:layout="@layout/template_swipe_list">
         <action
             android:id="@+id/action_nav_fragment_users_to_nav_fragment_devices"
             app:destination="@id/nav_fragment_devices" />
@@ -28,7 +38,7 @@
         android:id="@+id/nav_fragment_locations"
         android:name="de.njsm.stocks.android.frontend.locations.LocationFragment"
         android:label="@string/action_locations"
-        tools:layout="@layout/fragment_locations">
+        tools:layout="@layout/template_swipe_list">
     </fragment>
 
     <fragment
@@ -238,6 +248,11 @@
         <action
             android:id="@+id/action_nav_fragment_settings_to_nav_fragment_crashlogs"
             app:destination="@id/nav_fragment_crashlogs" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_empty_food"
+        android:name="de.njsm.stocks.android.frontend.emptyfood.EmptyFoodFragment"
+        android:label="@string/action_missing_food">
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_crashlogs"

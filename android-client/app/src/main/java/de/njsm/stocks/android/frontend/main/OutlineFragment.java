@@ -8,11 +8,13 @@ import android.view.*;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import com.google.android.material.navigation.NavigationView;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
@@ -61,6 +63,10 @@ public class OutlineFragment extends BaseFragment {
             view.setText(settings.getString(Config.DEVICE_NAME_CONFIG, ""));
             view = nav.getHeaderView(0).findViewById(R.id.drawer_server);
             view.setText(settings.getString(Config.SERVER_NAME_CONFIG, ""));
+
+            FoodViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
+            result.findViewById(R.id.fragment_outline_cardview2).setOnClickListener(this::goToEmptyFood);
+            result.findViewById(R.id.fragment_outline_fab).setOnClickListener(v -> this.addFood(viewModel));
         }
         return result;
     }
@@ -70,9 +76,14 @@ public class OutlineFragment extends BaseFragment {
         this.viewModelFactory = viewModelFactory;
     }
 
+    private void goToEmptyFood(View view) {
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                .navigate(R.id.action_nav_fragment_outline_to_nav_fragment_empty_food);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.action_bar_outline, menu);
 
         /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();

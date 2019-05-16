@@ -1,10 +1,7 @@
 package de.njsm.stocks.android.network.server;
 
 
-import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.db.entities.Update;
-import de.njsm.stocks.android.db.entities.User;
-import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.db.entities.*;
 import de.njsm.stocks.android.frontend.device.ServerTicket;
 import de.njsm.stocks.android.network.server.data.DataResponse;
 import de.njsm.stocks.android.network.server.data.ListResponse;
@@ -57,8 +54,6 @@ public interface ServerClient {
                                   @Query("version") int version,
                                   @Query("cascade") int cascade);
 
-/*
-
     @GET("/v2/food")
     Call<ListResponse<Food>> getFood();
 
@@ -71,7 +66,7 @@ public interface ServerClient {
                               @Query("new") String newName);
 
     @DELETE("/v2/food")
-    Call<Response> removeFood(@Query("id") int id,
+    Call<Response> deleteFood(@Query("id") int id,
                               @Query("version") int version);
 
 
@@ -102,6 +97,6 @@ public interface ServerClient {
 
     @DELETE("/v2/ean")
     Call<Response> deleteEanNumber(@Query("id") int id,
-                                   @Query("version") int version);*/
+                                   @Query("version") int version);
 
 }

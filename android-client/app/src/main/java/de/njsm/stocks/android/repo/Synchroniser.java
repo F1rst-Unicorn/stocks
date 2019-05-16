@@ -2,14 +2,8 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import de.njsm.stocks.android.db.dao.LocationDao;
-import de.njsm.stocks.android.db.dao.UpdateDao;
-import de.njsm.stocks.android.db.dao.UserDao;
-import de.njsm.stocks.android.db.dao.UserDeviceDao;
-import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.db.entities.Update;
-import de.njsm.stocks.android.db.entities.User;
-import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.db.dao.*;
+import de.njsm.stocks.android.db.entities.*;
 import de.njsm.stocks.android.error.StatusCodeException;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
@@ -33,6 +27,12 @@ public class Synchroniser {
 
     private LocationDao locationDao;
 
+    private FoodDao foodDao;
+
+    private FoodItemDao foodItemDao;
+
+    private EanNumberDao eanNumberDao;
+
     private UpdateDao updateDao;
 
     private Executor executor;
@@ -42,12 +42,18 @@ public class Synchroniser {
                  UserDao userDao,
                  UserDeviceDao userDeviceDao,
                  LocationDao locationDao,
+                 FoodDao foodDao,
+                 FoodItemDao foodItemDao,
+                 EanNumberDao eanNumberDao,
                  UpdateDao updateDao,
                  Executor executor) {
         this.serverClient = serverClient;
         this.userDao = userDao;
         this.userDeviceDao = userDeviceDao;
         this.locationDao = locationDao;
+        this.foodDao = foodDao;
+        this.foodItemDao = foodItemDao;
+        this.eanNumberDao = eanNumberDao;
         this.updateDao = updateDao;
         this.executor = executor;
     }
@@ -108,6 +114,9 @@ public class Synchroniser {
         refreshUsers();
         refreshUserDevices();
         refreshLocations();
+        refreshFood();
+        refreshFoodItems();
+        refreshEanNumbers();
     }
 
     void refreshOutdatedTables(Update[] serverUpdates, Update[] localUpdates) throws StatusCodeException {
@@ -127,6 +136,12 @@ public class Synchroniser {
             refreshUserDevices();
         } else if (table.equals("Location")) {
             refreshLocations();
+        } else if (table.equals("Food")) {
+            refreshFood();
+        } else if (table.equals("Food_item")) {
+            refreshFoodItems();
+        } else if (table.equals("Ean_number")) {
+            refreshEanNumbers();
         }
     }
 
@@ -143,6 +158,21 @@ public class Synchroniser {
     private void refreshUserDevices() throws StatusCodeException {
         UserDevice[] u = StatusCodeCallback.executeCall(serverClient.getDevices());
         userDeviceDao.synchronise(u);
+    }
+
+    private void refreshFood() throws StatusCodeException {
+        Food[] u = StatusCodeCallback.executeCall(serverClient.getFood());
+        foodDao.synchronise(u);
+    }
+
+    private void refreshFoodItems() throws StatusCodeException {
+        FoodItem[] u = StatusCodeCallback.executeCall(serverClient.getFoodItems());
+        foodItemDao.synchronise(u);
+    }
+
+    private void refreshEanNumbers() throws StatusCodeException {
+        EanNumber[] u = StatusCodeCallback.executeCall(serverClient.getEanNumbers());
+        eanNumberDao.synchronise(u);
     }
 
     private boolean isTableOutdated(Update[] localUpdates, Update update) {

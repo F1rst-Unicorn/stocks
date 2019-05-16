@@ -5,20 +5,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Location;
+import de.njsm.stocks.android.frontend.BaseAdapter;
 
 import java.util.List;
 
-public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder> {
-
-    private LiveData<List<Location>> data;
-
-    private Consumer<View> onClickListener;
+public class LocationAdapter extends BaseAdapter<Location, LocationAdapter.ViewHolder> {
 
     private Consumer<View> onLongClickListener;
 
@@ -37,10 +33,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     }
 
     LocationAdapter(LiveData<List<Location>> data,
-                    @Nullable Consumer<View> onClickListener,
-                    @Nullable Consumer<View> onLongClickListener) {
-        this.data = data;
-        this.onClickListener = onClickListener;
+                    Consumer<View> onClickListener,
+                    Consumer<View> onLongClickListener) {
+        super(data, onClickListener);
         this.onLongClickListener = onLongClickListener;
     }
 
@@ -57,33 +52,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        List<Location> list = data.getValue();
-        if (list != null) {
-            String locationname = list.get(i).name;
-            viewHolder.setText(locationname);
-        } else {
-            viewHolder.setText("");
-        }
+    protected void bindConcrete(ViewHolder holder, Location data) {
+        holder.setText(data.name);
     }
 
-    private void onClick(View view) {
-        if (onClickListener != null)
-            onClickListener.accept(view);
+    @Override
+    protected void bindVoid(ViewHolder holder) {
+        holder.setText("");
     }
 
     private boolean onLongClick(View view) {
         if (onLongClickListener != null)
             onLongClickListener.accept(view);
         return true;
-    }
-
-    @Override
-    public int getItemCount() {
-        List<Location> list = data.getValue();
-        if (list != null)
-            return list.size();
-        else
-            return 0;
     }
 }

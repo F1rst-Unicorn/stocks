@@ -10,14 +10,11 @@ import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.frontend.BaseAdapter;
 
 import java.util.List;
 
-public class CrashLogAdapter extends RecyclerView.Adapter<CrashLogAdapter.ViewHolder> {
-
-    private LiveData<List<CrashLog>> data;
-
-    private Consumer<View> onClickListener;
+public class CrashLogAdapter extends BaseAdapter<CrashLog, CrashLogAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -41,8 +38,7 @@ public class CrashLogAdapter extends RecyclerView.Adapter<CrashLogAdapter.ViewHo
     }
 
     CrashLogAdapter(LiveData<List<CrashLog>> data, Consumer<View> onClickListener) {
-        this.data = data;
-        this.onClickListener = onClickListener;
+        super(data, onClickListener);
     }
 
     @NonNull
@@ -56,29 +52,15 @@ public class CrashLogAdapter extends RecyclerView.Adapter<CrashLogAdapter.ViewHo
         return result;
     }
 
-    private void onClick(View view) {
-        onClickListener.accept(view);
+    @Override
+    protected void bindConcrete(ViewHolder holder, CrashLog data) {
+        holder.setDate(data.getDate());
+        holder.setName(data.getName());
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        List<CrashLog> list = data.getValue();
-        if (list != null) {
-            CrashLog item = list.get(i);
-            viewHolder.setDate(item.getDate());
-            viewHolder.setName(item.getName());
-        } else {
-            viewHolder.setDate("");
-            viewHolder.setName("");
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        List<CrashLog> list = data.getValue();
-        if (list != null)
-            return list.size();
-        else
-            return 0;
+    protected void bindVoid(ViewHolder holder) {
+        holder.setDate("");
+        holder.setName("");
     }
 }

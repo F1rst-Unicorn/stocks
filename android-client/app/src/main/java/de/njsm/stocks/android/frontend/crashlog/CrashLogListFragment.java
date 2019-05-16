@@ -3,7 +3,6 @@ package de.njsm.stocks.android.frontend.crashlog;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +11,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
-import de.njsm.stocks.android.frontend.util.SwipeCallback;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -58,12 +54,7 @@ public class CrashLogListFragment extends BaseFragment {
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CrashLogViewModel.class);
-        SwipeCallback<CrashLog> callback = new SwipeCallback<>(
-                viewModel.getData().getValue(),
-                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp), new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)), this::deleteCrashLog
-        );
-        viewModel.getData().observe(this, callback::setData);
-        new ItemTouchHelper(callback).attachToRecyclerView(list);
+        addSwipeToDelete(list, viewModel.getData(), this::deleteCrashLog);
 
         adapter = new CrashLogAdapter(viewModel.getData(), this::onListItemClick);
         viewModel.getData().observe(this, u -> adapter.notifyDataSetChanged());

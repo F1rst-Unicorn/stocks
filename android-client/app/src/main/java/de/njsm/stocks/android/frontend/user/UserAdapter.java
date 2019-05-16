@@ -10,14 +10,11 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.frontend.BaseAdapter;
 
 import java.util.List;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
-
-    private LiveData<List<User>> data;
-
-    private Consumer<View> onClickListener;
+public class UserAdapter extends BaseAdapter<User, UserAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -34,8 +31,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     UserAdapter(LiveData<List<User>> data, Consumer<View> onClickListener) {
-        this.data = data;
-        this.onClickListener = onClickListener;
+        super(data, onClickListener);
     }
 
     @NonNull
@@ -50,26 +46,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        List<User> list = data.getValue();
-        if (list != null) {
-            String username = list.get(i).name;
-            viewHolder.setText(username);
-        } else {
-            viewHolder.setText("");
-        }
-    }
-
-    private void onClick(View view) {
-        onClickListener.accept(view);
+    protected void bindConcrete(ViewHolder holder, User data) {
+        holder.setText(data.name);
     }
 
     @Override
-    public int getItemCount() {
-        List<User> list = data.getValue();
-        if (list != null)
-            return list.size();
-        else
-            return 0;
+    protected void bindVoid(ViewHolder holder) {
+        holder.setText("");
     }
 }

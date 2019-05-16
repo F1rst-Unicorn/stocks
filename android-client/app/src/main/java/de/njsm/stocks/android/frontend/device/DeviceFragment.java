@@ -2,7 +2,6 @@ package de.njsm.stocks.android.frontend.device;
 
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,33 +10,25 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.frontend.BaseFragment;
-import de.njsm.stocks.android.frontend.user.UserFragment;
 import de.njsm.stocks.android.frontend.util.NameValidator;
-import de.njsm.stocks.android.frontend.util.SwipeCallback;
+import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
-import de.njsm.stocks.android.util.Logger;
 import fj.data.Validation;
 
 import javax.inject.Inject;
 
 public class DeviceFragment extends BaseFragment {
-
-    static final Logger LOG = new Logger(UserFragment.class);
 
     private DeviceFragmentArgs input;
 
@@ -73,14 +64,7 @@ public class DeviceFragment extends BaseFragment {
         singleUserViewModel = ViewModelProviders.of(this, viewModelFactory).get(SingleUserViewModel.class);
         singleUserViewModel.init(input.getUserId());
 
-        SwipeCallback<UserDevice> callback = new SwipeCallback<>(
-                null,
-                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
-                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
-                this::initiateDeletion
-        );
-        viewModel.getDevices().observe(this, callback::setData);
-        new ItemTouchHelper(callback).attachToRecyclerView(list);
+        addSwipeToDelete(list, viewModel.getDevices(), this::initiateDeletion);
 
         adapter = new DeviceAdapter(viewModel.getDevices(), this::onListItemClick);
         viewModel.getDevices().observe(this, d -> adapter.notifyDataSetChanged());
@@ -93,35 +77,23 @@ public class DeviceFragment extends BaseFragment {
     }
 
     private void initiateDeletion(UserDevice d) {
-        Snackbar.make(list, R.string.dialog_device_was_deleted, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.action_undo, v -> {
-                })
-                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        switch (event) {
-                            case DISMISS_EVENT_ACTION:
-                                adapter.notifyDataSetChanged();
-                                LOG.d("Deletion cancelled");
-                                break;
-                            case DISMISS_EVENT_CONSECUTIVE:
-                            case DISMISS_EVENT_MANUAL:
-                            case DISMISS_EVENT_SWIPE:
-                            case DISMISS_EVENT_TIMEOUT:
-                                adapter.notifyDataSetChanged();
-                                LiveData<StatusCode> result = viewModel.deleteUserDevice(d);
-                                result.observe(DeviceFragment.this, DeviceFragment.this::maybeShowDeleteError);
-                                break;
-                        }
-                    }
-                })
-                .show();
+        showDeletionSnackbar(list, d, R.string.dialog_device_was_deleted,
+                v -> adapter.notifyDataSetChanged(),
+                this::performDeletion);
+    }
+
+    private void performDeletion(UserDevice d) {
+        adapter.notifyDataSetChanged();
+        LiveData<StatusCode> result = viewModel.deleteUserDevice(d);
+        result.observe(DeviceFragment.this, DeviceFragment.this::maybeShowDeleteError);
     }
 
     private void addDevice(View v) {
         EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
         textField.addTextChangedListener(
                 new NameValidator(e -> textField.setError(getResources().getString(e))));
+        textField.addTextChangedListener(
+                new NonEmptyValidator(textField, this::showEmptyInputError));
         textField.setHint(getResources().getString(R.string.hint_device_name));
         new AlertDialog.Builder(requireActivity())
                 .setTitle(getResources().getString(R.string.dialog_new_device))
@@ -156,8 +128,7 @@ public class DeviceFragment extends BaseFragment {
         }
     }
 
-    private void onListItemClick(View view) {
-    }
+    private void onListItemClick(View view) {}
 
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
