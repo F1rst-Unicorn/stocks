@@ -9,6 +9,7 @@
         style="@style/StocksTheme.EditText"
         android:id="@+id/server_url"
         android:hint="@string/hint_servername"
+        android:importantForAutofill="no"
         android:inputType="textUri"
         android:layout_alignParentTop="true"/>
 
@@ -32,6 +33,7 @@
             style="@style/StocksTheme.EditText"
             android:inputType="numberDecimal"
             android:hint="@string/hint_caport"
+            android:importantForAutofill="no"
             android:ems="10"
             android:id="@+id/ca_port" />
 
@@ -39,6 +41,7 @@
             style="@style/StocksTheme.EditText"
             android:inputType="numberDecimal"
             android:hint="@string/hint_ticket_port"
+            android:importantForAutofill="no"
             android:ems="10"
             android:id="@+id/sentry_port" />
 
@@ -47,6 +50,7 @@
             android:inputType="numberDecimal"
             android:ems="10"
             android:hint="@string/hint_server_port"
+            android:importantForAutofill="no"
             android:id="@+id/server_port" />
     </LinearLayout>
 

@@ -96,7 +96,7 @@
         android:id="@+id/item_food_item_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:layout_toEndOf="@id/item_food_item_date"
         style="@style/StocksTheme.TextLarge"
         android:layout_toStartOf="@id/item_food_item_location_icon"
         android:layout_gravity="start"

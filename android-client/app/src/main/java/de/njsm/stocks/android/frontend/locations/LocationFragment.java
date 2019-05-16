@@ -117,11 +117,24 @@ public class LocationFragment extends BaseFragment {
                         dialog.dismiss();
                         String name = textField.getText().toString().trim();
                         LiveData<StatusCode> result = viewModel.renameLocation(item, name);
-                        result.observe(this, this::maybeShowEditError);
+                        result.observe(this, code -> this.treatEditCases(code, item, name));
                     })
                     .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
                     .show();
         }
+    }
+
+    private void treatEditCases(StatusCode code, Location item, String name) {
+        if (code == StatusCode.INVALID_DATA_VERSION) {
+            LiveData<Location> newData = viewModel.getLocation(item.id);
+            newData.observe(this, newLocation -> {
+                if (newLocation != null && ! newLocation.equals(item)) {
+                    compareLocations(item, name, newLocation);
+                    newData.removeObservers(this);
+                }
+            });
+        } else
+            maybeShowEditError(code);
     }
 
     private void initiateDeletion(Location item) {
@@ -149,19 +162,34 @@ public class LocationFragment extends BaseFragment {
                 .show();
     }
 
-    private void treatDeletionCases(StatusCode code, Location item) {
+    void treatDeletionCases(StatusCode code, Location item) {
         if (code == StatusCode.INVALID_DATA_VERSION) {
             LiveData<Location> newData = viewModel.getLocation(item.id);
             newData.observe(this, newLocation -> {
-                if (newLocation != null) {
+                if (newLocation != null && ! newLocation.equals(item)) {
                     compareLocations(item, newLocation);
+                    newData.removeObservers(this);
                 }
-                newData.removeObservers(this);
             });
         } else if (code == StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION)
             offerCascadingDeletion(item);
         else
             maybeShowDeleteError(code);
+    }
+
+    private void compareLocations(Location item, String localNewName, Location upstreamItem) {
+        String message = requireContext().getString(R.string.error_location_changed_twice, item.name, localNewName, upstreamItem.name);
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(requireContext().getString(R.string.dialog_rename_location))
+                .setMessage(message)
+                .setIcon(R.drawable.ic_error_black_24dp)
+                .setPositiveButton(android.R.string.ok, (d, w) -> {
+                    LiveData<StatusCode> result = viewModel.renameLocation(upstreamItem, localNewName);
+                    result.observe(this, code -> this.treatEditCases(code, item, localNewName));
+                    d.dismiss();
+                })
+                .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
+                .show();
     }
 
     private void compareLocations(Location item, Location newLocation) {
@@ -172,7 +200,7 @@ public class LocationFragment extends BaseFragment {
                 .setIcon(R.drawable.ic_error_black_24dp)
                 .setPositiveButton(android.R.string.ok, (d, w) -> {
                     LiveData<StatusCode> result = viewModel.deleteLocation(newLocation, false);
-                    result.observe(LocationFragment.this, LocationFragment.this::maybeShowDeleteError);
+                    result.observe(this, this::maybeShowDeleteError);
                     d.dismiss();
                 })
                 .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
@@ -187,7 +215,7 @@ public class LocationFragment extends BaseFragment {
                 .setIcon(R.drawable.ic_error_black_24dp)
                 .setPositiveButton(android.R.string.ok, (d, w) -> {
                     LiveData<StatusCode> result = viewModel.deleteLocation(item, true);
-                    result.observe(LocationFragment.this, LocationFragment.this::maybeShowDeleteError);
+                    result.observe(this, this::maybeShowDeleteError);
                     d.dismiss();
                 })
                 .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())

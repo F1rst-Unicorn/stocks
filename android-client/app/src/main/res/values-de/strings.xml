@@ -128,6 +128,7 @@
     <string name="desc_location">Ortsicon</string>
     <string name="error_location_changed">Der Ort wurde von %1$s zu %2$s umbenannt. Möchtest du ihn immer noch löschen?</string>
     <string name="error_location_foreign_key_violation">%1$s enthält immer noch Lebensmittel. Möchtest du die auch alle löschen?</string>
+    <string name="error_location_changed_twice">Der Ort mit ursprünglichem Namen \"%1$s\" wurde von jemand anderem zu \"%2$s\" und von dir zu \"%3$s\" umbenannt. Möchtest du deinen Namen anwenden?</string>
 
 
 </resources>

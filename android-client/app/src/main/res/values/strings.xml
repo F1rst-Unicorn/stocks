@@ -126,5 +126,6 @@
     <string name="desc_location">Location icon</string>
     <string name="error_location_foreign_key_violation">%1$s still contains food items. Do you want to delete all the items, too?</string>
     <string name="error_location_changed">The location was renamed from %1$s to %2$s. Do you still want to delete it?</string>
+    <string name="error_location_changed_twice">The location with original name "%1$s" was renamed to "%2$s" by you and to "%3$s" by someone else. Do you want to apply your name?</string>
 
 </resources>
