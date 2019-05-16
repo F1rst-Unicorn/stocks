@@ -48,9 +48,9 @@ package() {
 
     install -D -m 644 deploy-server/config/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
 
-    install -D -m 444 README.md                                     $pkgdir/usr/share/doc/$pkgname/README.md
-    install -D -m 444 manual/server-admin/server-installation.md    $pkgdir/usr/share/doc/$pkgname/
-    install -D -m 444 manual/server-admin/maintainance.md           $pkgdir/usr/share/doc/$pkgname/
+    install -D -m 444 README.md                            $pkgdir/usr/share/doc/$pkgname/README.md
+    install -D -m 444 manual/server/server-installation.md $pkgdir/usr/share/doc/$pkgname/
+    install -D -m 444 manual/server/maintainance.md        $pkgdir/usr/share/doc/$pkgname/
 
     install -D -m 444 LICENSE.md                             $pkgdir/usr/share/licenses/$pkgname/LICENSE.md
 

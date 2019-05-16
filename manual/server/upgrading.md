@@ -14,7 +14,7 @@ installation.
 ## 3.0.0.0-1
 
 This version switches from MariaDB to PostgreSQL. To migrate your data perform
-the following steps: 
+the following steps:
 
 * Stop the tomcat application server
 * Perform the pacman upgrade
@@ -27,24 +27,23 @@ the following steps:
 
 ## 2.1.0.0-1
 
-Changes in the database model require a database migration. Shut down the
-tomcat server before upgrading. Then upgrade the stocks-server package.
-Before restarting tomcat execute the SQL script provided in
+Changes in the database model require a database migration. Shut down the tomcat
+server and do the pacman upgrade. Then execute the SQL script provided in
 /usr/share/stocks-server/db-migration.sql. Finally start up tomcat again.
 
 ## 2.0.0.0-0
 
-Changes in the database model require a database migration. Shut down the
-tomcat server before upgrading. Then execute the SQL script provided in
+Changes in the database model require a database migration. Shut down the tomcat
+server and do the pacman upgrade. Then execute the SQL script provided in
 /usr/share/stocks-server/db-migration.sql. This changes the date format of
 several columns
 
 ## 0.5.7
 
-Changes in the database model require a database migration. Shut down the
-tomcat server before upgrading. Then execute the SQL script provided in
-/usr/share/stocks-server/db-migration.sql. This adds new tables and triggers
-to the database. Once this is complete, start the new server.
+Changes in the database model require a database migration. Shut down the tomcat
+server and do the pacman upgrade. Then execute the SQL script provided in
+/usr/share/stocks-server/db-migration.sql. This adds new tables and triggers to
+the database. Once this is complete, start the new server.
 
 ## 0.5.6
 
