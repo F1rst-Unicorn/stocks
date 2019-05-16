@@ -97,12 +97,11 @@ public class UserFragment extends BaseFragment {
                 .setTitle(getResources().getString(R.string.dialog_new_user))
                 .setView(textField)
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
-                    dialog.dismiss();
                     String name = textField.getText().toString().trim();
                     LiveData<StatusCode> result = viewModel.addUser(name);
                     result.observe(this, this::maybeShowAddError);
                 })
-                .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
+                .setNegativeButton(getResources().getString(android.R.string.cancel), this::doNothing)
                 .show();
     }
 

@@ -57,4 +57,12 @@ public class FoodRepository {
                 .enqueue(new StatusCodeCallback(data, synchroniser));
         return data;
     }
+
+    public LiveData<StatusCode> renameFood(Food item, String name) {
+        LOG.d("renaming food " + item + " to " + name);
+        MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
+        webClient.renameFood(item.id, item.version, name)
+                .enqueue(new StatusCodeCallback(data, synchroniser));
+        return data;
+    }
 }

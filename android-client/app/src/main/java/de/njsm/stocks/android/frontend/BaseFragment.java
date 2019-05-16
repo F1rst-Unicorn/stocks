@@ -1,6 +1,7 @@
 package de.njsm.stocks.android.frontend;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.widget.EditText;
@@ -18,11 +19,15 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
-import de.njsm.stocks.android.frontend.util.*;
+import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
+import de.njsm.stocks.android.frontend.util.RefreshViewModel;
+import de.njsm.stocks.android.frontend.util.SwipeCallback;
+import de.njsm.stocks.android.frontend.util.SwipeSyncCallback;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class BaseFragment extends Fragment {
 
@@ -114,9 +119,42 @@ public class BaseFragment extends Fragment {
         return refreshViewModel;
     }
 
+    protected <T> void editInternally(View view, LiveData<List<T>> data, int messageId, BiConsumer<T, String> editer) {
+        RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) view.getTag();
+        int position = holder.getAdapterPosition();
+        List<T> list = data.getValue();
+        if (list != null) {
+            T item = list.get(position);
+            EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
+            textField.setHint(getResources().getString(R.string.hint_new_name));
+            new AlertDialog.Builder(requireActivity())
+                    .setTitle(getResources().getString(messageId))
+                    .setView(textField)
+                    .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
+                        dialog.dismiss();
+                        String name = textField.getText().toString().trim();
+                        editer.accept(item, name);
+                    })
+                    .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
+                    .show();
+        }
+    }
+
+    protected <T> void addSwipeToDelete(RecyclerView list, LiveData<List<T>> data, Consumer<T> deleter) {
+        SwipeCallback<T> callback = new SwipeCallback<>(
+                null,
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
+                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
+                deleter
+        );
+        data.observe(this, callback::setData);
+        new ItemTouchHelper(callback).attachToRecyclerView(list);
+    }
+
     protected <T> void showDeletionSnackbar(View view, T item,
                                             int messageId,
-                                            Consumer<T> deletionCancler, Consumer<T> deleter) {
+                                            Consumer<T> deletionCancler,
+                                            Consumer<T> deleter) {
         Snackbar.make(view, messageId, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.action_undo, v -> {})
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -139,14 +177,17 @@ public class BaseFragment extends Fragment {
                 .show();
     }
 
-    protected <T> void addSwipeToDelete(RecyclerView list, LiveData<List<T>> food, Consumer<T> deleter) {
-        SwipeCallback<T> callback = new SwipeCallback<>(
-                null,
-                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
-                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
-                deleter
-        );
-        food.observe(this, callback::setData);
-        new ItemTouchHelper(callback).attachToRecyclerView(list);
+    protected void showErrorDialog(int titleId, String message, DialogInterface.OnClickListener renamer) {
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(requireContext().getString(titleId))
+                .setMessage(message)
+                .setIcon(R.drawable.ic_error_black_24dp)
+                .setPositiveButton(android.R.string.ok, renamer)
+                .setNegativeButton(getResources().getString(android.R.string.cancel), this::doNothing)
+                .show();
     }
+
+    public void doNothing(DialogInterface dialogInterface, int i) {}
+
+    public void doNothing(View dialogInterface) {}
 }

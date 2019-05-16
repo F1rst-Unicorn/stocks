@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -50,7 +49,10 @@ public class EmptyFoodFragment extends BaseFragment {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EmptyFoodViewModel.class);
         addSwipeToDelete(list, viewModel.getFood(), this::initiateFoodDeletion);
 
-        adapter = new FoodAdapter(viewModel.getFood(), this::onListItemClicked);
+        adapter = new FoodAdapter(viewModel.getFood(),
+                this::onListItemClicked,
+                v -> editInternally(v, viewModel.getFood(), R.string.dialog_rename_food,
+                        this::observeRenaming));
         viewModel.getFood().observe(this, u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
@@ -71,14 +73,32 @@ public class EmptyFoodFragment extends BaseFragment {
     private void initiateFoodDeletion(Food food) {
         showDeletionSnackbar(list, food,
                 R.string.dialog_food_was_deleted,
-                f -> adapter.notifyDataSetChanged(), this::performDeletion
+                f -> adapter.notifyDataSetChanged(), this::observeDeletion
         );
     }
 
-    private void performDeletion(Food food) {
+    private void observeDeletion(Food food) {
         adapter.notifyDataSetChanged();
         LiveData<StatusCode> result = viewModel.deleteFood(food);
         result.observe(EmptyFoodFragment.this, c -> EmptyFoodFragment.this.treatDeletionCases(c, food));
+    }
+
+    private void observeRenaming(Food item, String name) {
+        LiveData<StatusCode> result = viewModel.renameFood(item, name);
+        result.observe(this, code -> this.treatRenamingCases(code, item, name));
+    }
+
+    private void treatRenamingCases(StatusCode code, Food item, String name) {
+        if (code == StatusCode.INVALID_DATA_VERSION) {
+            LiveData<Food> newData = viewModel.getFood(item.id);
+            newData.observe(this, newItem -> {
+                if (newItem != null && !newItem.equals(item)) {
+                    compareFood(item, name, newItem);
+                    newData.removeObservers(this);
+                }
+            });
+        } else
+            maybeShowEditError(code);
     }
 
     void treatDeletionCases(StatusCode code, Food item) {
@@ -94,18 +114,13 @@ public class EmptyFoodFragment extends BaseFragment {
             maybeShowDeleteError(code);
     }
 
+    private void compareFood(Food item, String localNewName, Food upstreamItem) {
+        String message = requireContext().getString(R.string.error_food_changed_twice, item.name, localNewName, upstreamItem.name);
+        showErrorDialog(R.string.dialog_rename_food, message, (d,w) -> observeRenaming(upstreamItem, localNewName));
+    }
+
     private void compareFood(Food item, Food upstreamItem) {
         String message = requireContext().getString(R.string.error_food_changed, item.name, upstreamItem.name);
-        new AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.title_delete_food)
-                .setMessage(message)
-                .setIcon(R.drawable.ic_error_black_24dp)
-                .setPositiveButton(android.R.string.ok, (d, w) -> {
-                    LiveData<StatusCode> result = viewModel.deleteFood(upstreamItem);
-                    result.observe(this, this::maybeShowDeleteError);
-                    d.dismiss();
-                })
-                .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
-                .show();
+        showErrorDialog(R.string.title_delete_food, message, (d, w) -> observeDeletion(upstreamItem));
     }
 }

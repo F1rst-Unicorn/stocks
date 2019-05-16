@@ -131,6 +131,8 @@
     <string name="error_location_changed_twice">Der Ort mit ursprünglichem Namen \"%1$s\" wurde von jemand anderem zu \"%2$s\" und von dir zu \"%3$s\" umbenannt. Möchtest du deinen Namen anwenden?</string>
     <string name="dialog_food_was_deleted">Lebensmittel wurde gelöscht</string>
     <string name="error_food_changed">Das Lebensmittel wurde von %1$s zu %2$s umbenannt. Möchtest du es immer noch löschen?</string>
+    <string name="dialog_rename_food">Lebensmittel umbenennen</string>
+    <string name="error_food_changed_twice">Das Lebensmittel mit ursprünglichem Namen \"%1$s\" wurde von jemand anderem zu \"%2$s\" und von dir zu \"%3$s\" umbenannt. Möchtest du deinen Namen anwenden?</string>
 
 
 </resources>

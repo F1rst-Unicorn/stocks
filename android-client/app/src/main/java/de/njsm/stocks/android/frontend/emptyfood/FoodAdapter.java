@@ -17,6 +17,8 @@ import java.util.List;
 
 public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
 
+    private Consumer<View> onLongClickListener;
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private RelativeLayout view;
@@ -34,8 +36,9 @@ public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
         }
     }
 
-    FoodAdapter(LiveData<List<Food>> data, Consumer<View> onClickListener) {
+    FoodAdapter(LiveData<List<Food>> data, Consumer<View> onClickListener, Consumer<View> onLongClickListener) {
         super(data, onClickListener);
+        this.onLongClickListener = onLongClickListener;
     }
 
     @NonNull
@@ -46,7 +49,13 @@ public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
         ViewHolder result =  new FoodAdapter.ViewHolder(v);
         v.setTag(result);
         v.setOnClickListener(this::onClick);
+        v.setOnLongClickListener(this::onLongClick);
         return result;
+    }
+
+    private boolean onLongClick(View view) {
+        this.onLongClickListener.accept(view);
+        return true;
     }
 
     @Override

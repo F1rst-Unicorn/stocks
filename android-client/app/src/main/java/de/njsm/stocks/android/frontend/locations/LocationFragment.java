@@ -23,7 +23,6 @@ import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class LocationFragment extends BaseFragment {
 
@@ -53,7 +52,9 @@ public class LocationFragment extends BaseFragment {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
         addSwipeToDelete(list, viewModel.getLocations(), this::initiateDeletion);
 
-        adapter = new LocationAdapter(viewModel.getLocations(), this::showContainedFood, this::edit);
+        adapter = new LocationAdapter(viewModel.getLocations(),
+                this::showContainedFood,
+                v -> this.editInternally(v, viewModel.getLocations(), R.string.dialog_rename_location, this::observeRenaming));
         viewModel.getLocations().observe(this, u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
@@ -76,12 +77,11 @@ public class LocationFragment extends BaseFragment {
                 .setTitle(getResources().getString(R.string.dialog_new_location))
                 .setView(textField)
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
-                    dialog.dismiss();
                     String name = textField.getText().toString().trim();
                     LiveData<StatusCode> result = viewModel.addLocation(name);
                     result.observe(this, this::maybeShowAddError);
                 })
-                .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
+                .setNegativeButton(getResources().getString(android.R.string.cancel), this::doNothing)
                 .show();
     }
 
@@ -89,29 +89,25 @@ public class LocationFragment extends BaseFragment {
 
     }
 
-    private void edit(View view) {
-        LocationAdapter.ViewHolder holder = (LocationAdapter.ViewHolder) view.getTag();
-        int position = holder.getAdapterPosition();
-        List<Location> list = viewModel.getLocations().getValue();
-        if (list != null) {
-            Location item = list.get(position);
-            EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
-            textField.setHint(getResources().getString(R.string.hint_new_name));
-            new AlertDialog.Builder(requireActivity())
-                    .setTitle(getResources().getString(R.string.dialog_rename_location))
-                    .setView(textField)
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
-                        dialog.dismiss();
-                        String name = textField.getText().toString().trim();
-                        LiveData<StatusCode> result = viewModel.renameLocation(item, name);
-                        result.observe(this, code -> this.treatEditCases(code, item, name));
-                    })
-                    .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
-                    .show();
-        }
+    private void initiateDeletion(Location item) {
+        showDeletionSnackbar(list, item,
+                R.string.dialog_location_was_deleted,
+                v -> adapter.notifyDataSetChanged(),
+                this::observeDeletion);
     }
 
-    private void treatEditCases(StatusCode code, Location item, String name) {
+    private void observeRenaming(Location item, String name) {
+        LiveData<StatusCode> result = viewModel.renameLocation(item, name);
+        result.observe(this, code -> this.treatRenamingCases(code, item, name));
+    }
+
+    private void observeDeletion(Location item) {
+        adapter.notifyDataSetChanged();
+        LiveData<StatusCode> result = viewModel.deleteLocation(item, false);
+        result.observe(LocationFragment.this, code -> LocationFragment.this.treatDeletionCases(code, item));
+    }
+
+    private void treatRenamingCases(StatusCode code, Location item, String name) {
         if (code == StatusCode.INVALID_DATA_VERSION) {
             LiveData<Location> newData = viewModel.getLocation(item.id);
             newData.observe(this, newLocation -> {
@@ -122,19 +118,6 @@ public class LocationFragment extends BaseFragment {
             });
         } else
             maybeShowEditError(code);
-    }
-
-    private void initiateDeletion(Location item) {
-        showDeletionSnackbar(list, item,
-                R.string.dialog_location_was_deleted,
-                v -> adapter.notifyDataSetChanged(),
-                this::performDeletion);
-    }
-
-    private void performDeletion(Location item) {
-        adapter.notifyDataSetChanged();
-        LiveData<StatusCode> result = viewModel.deleteLocation(item, false);
-        result.observe(LocationFragment.this, code -> LocationFragment.this.treatDeletionCases(code, item));
     }
 
     void treatDeletionCases(StatusCode code, Location item) {
@@ -154,46 +137,20 @@ public class LocationFragment extends BaseFragment {
 
     private void compareLocations(Location item, String localNewName, Location upstreamItem) {
         String message = requireContext().getString(R.string.error_location_changed_twice, item.name, localNewName, upstreamItem.name);
-        new AlertDialog.Builder(requireActivity())
-                .setTitle(requireContext().getString(R.string.dialog_rename_location))
-                .setMessage(message)
-                .setIcon(R.drawable.ic_error_black_24dp)
-                .setPositiveButton(android.R.string.ok, (d, w) -> {
-                    LiveData<StatusCode> result = viewModel.renameLocation(upstreamItem, localNewName);
-                    result.observe(this, code -> this.treatEditCases(code, item, localNewName));
-                    d.dismiss();
-                })
-                .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
-                .show();
+        showErrorDialog(R.string.dialog_rename_location, message,
+                (d, w) -> this.observeRenaming(upstreamItem, localNewName));
     }
 
     private void compareLocations(Location item, Location newLocation) {
         String message = requireContext().getString(R.string.error_location_changed, item.name, newLocation.name);
-        new AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.title_delete_location)
-                .setMessage(message)
-                .setIcon(R.drawable.ic_error_black_24dp)
-                .setPositiveButton(android.R.string.ok, (d, w) -> {
-                    LiveData<StatusCode> result = viewModel.deleteLocation(newLocation, false);
-                    result.observe(this, this::maybeShowDeleteError);
-                    d.dismiss();
-                })
-                .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
-                .show();
+        showErrorDialog(R.string.title_delete_location, message, (d, w) -> observeDeletion(newLocation));
     }
 
     private void offerCascadingDeletion(Location item) {
         String message = requireContext().getString(R.string.error_location_foreign_key_violation, item.name);
-        new AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.title_delete_location)
-                .setMessage(message)
-                .setIcon(R.drawable.ic_error_black_24dp)
-                .setPositiveButton(android.R.string.ok, (d, w) -> {
-                    LiveData<StatusCode> result = viewModel.deleteLocation(item, true);
-                    result.observe(this, this::maybeShowDeleteError);
-                    d.dismiss();
-                })
-                .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
-                .show();
+        showErrorDialog(R.string.title_delete_location, message, (d, w) -> {
+            LiveData<StatusCode> result = viewModel.deleteLocation(item, true);
+            result.observe(this, this::maybeShowDeleteError);
+        });
     }
 }

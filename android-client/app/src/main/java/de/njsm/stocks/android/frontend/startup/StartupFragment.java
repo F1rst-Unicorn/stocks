@@ -80,14 +80,11 @@ public class StartupFragment extends BaseFragment {
                     .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, which) -> {
                         getActivity().stopService(new Intent(getActivity(), SetupService.class));
                         goToMainActivity();
-                        dialog.dismiss();
                     });
         } else {
             builder.setPositiveButton(getResources().getString(R.string.dialog_retry), (dialog, which) -> {
-                dialog.dismiss();
                 startSetupByUser();
             }).setNegativeButton(getResources().getString(R.string.dialog_abort),(dialog, which) -> {
-                dialog.dismiss();
                 getActivity().stopService(new Intent(a, SetupService.class));
                 getActivity().finish();
             }).setIcon(R.drawable.ic_error_black_24dp);

@@ -129,5 +129,7 @@
     <string name="error_location_changed_twice">The location with original name "%1$s" was renamed to "%2$s" by you and to "%3$s" by someone else. Do you want to apply your name?</string>
     <string name="dialog_food_was_deleted">Food was deleted</string>
     <string name="error_food_changed" >The food was renamed from %1$s to %2$s. Do you still want to delete it?</string>
+    <string name="dialog_rename_food">Rename Food</string>
+    <string name="error_food_changed_twice" >The food was with original name %1$s was renamed to %2$s by you and to %3$s by someone else. Do you want to apply your name?</string>
 
 </resources>

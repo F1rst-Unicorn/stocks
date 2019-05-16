@@ -28,4 +28,8 @@ public class FoodViewModel extends ViewModel {
     protected LiveData<Food> getFood(int id) {
         return foodRepository.getFood(id);
     }
+
+    public LiveData<StatusCode> renameFood(Food item, String name) {
+        return foodRepository.renameFood(item, name);
+    }
 }

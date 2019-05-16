@@ -66,7 +66,7 @@ public class DeviceFragment extends BaseFragment {
 
         addSwipeToDelete(list, viewModel.getDevices(), this::initiateDeletion);
 
-        adapter = new DeviceAdapter(viewModel.getDevices(), this::onListItemClick);
+        adapter = new DeviceAdapter(viewModel.getDevices(), this::doNothing);
         viewModel.getDevices().observe(this, d -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
@@ -99,12 +99,11 @@ public class DeviceFragment extends BaseFragment {
                 .setTitle(getResources().getString(R.string.dialog_new_device))
                 .setView(textField)
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
-                    dialog.dismiss();
                     String name = textField.getText().toString().trim();
                     LiveData<Validation<StatusCode, ServerTicket>> result = viewModel.addUserDevice(name, input.getUserId());
                     result.observe(this, data -> this.handleDeviceCreation(data, name));
                 })
-                .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
+                .setNegativeButton(getResources().getString(android.R.string.cancel), this::doNothing)
                 .show();
     }
 
@@ -127,8 +126,6 @@ public class DeviceFragment extends BaseFragment {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(args);
         }
     }
-
-    private void onListItemClick(View view) {}
 
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
