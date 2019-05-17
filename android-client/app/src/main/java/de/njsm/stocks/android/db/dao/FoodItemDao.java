@@ -1,13 +1,35 @@
 package de.njsm.stocks.android.db.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 import de.njsm.stocks.android.db.entities.FoodItem;
+import de.njsm.stocks.android.db.views.FoodItemView;
+
+import java.util.List;
 
 @Dao
 public abstract class FoodItemDao {
+
+    @Query("SELECT i._id as _id, i.version as version, u.name as userName, " +
+            "d.name as deviceName, l.name as location, i.eat_by as eatByDate " +
+            "FROM FoodItem i " +
+            "INNER JOIN User u ON i.buys = u._id " +
+            "INNER JOIN User_device d ON i.registers = d._id " +
+            "INNER JOIN Location l ON i.stored_in = l._id " +
+            "WHERE i.of_type = :foodId")
+    public abstract LiveData<List<FoodItemView>> getItemsOfType(int foodId);
+
+    @Query("SELECT i._id as _id, i.version as version, u.name as userName, " +
+            "d.name as deviceName, l.name as location, i.eat_by as eatByDate " +
+            "FROM FoodItem i " +
+            "INNER JOIN User u ON i.buys = u._id " +
+            "INNER JOIN User_device d ON i.registers = d._id " +
+            "INNER JOIN Location l ON i.stored_in = l._id " +
+            "WHERE i._id = :id")
+    public abstract LiveData<FoodItemView> getItem(int id);
 
     @Transaction
     public void synchronise(FoodItem[] food) {

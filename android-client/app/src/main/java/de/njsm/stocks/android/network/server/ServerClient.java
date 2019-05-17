@@ -85,7 +85,7 @@ public interface ServerClient {
                                 @Query("storedIn") int storedIn);
 
     @DELETE("/v2/fooditem")
-    Call<Response> removeFoodItem(@Query("id") int id,
+    Call<Response> deleteFoodItem(@Query("id") int id,
                                   @Query("version") int version);
 
     @PUT("/v2/ean")

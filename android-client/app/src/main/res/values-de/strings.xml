@@ -133,6 +133,9 @@
     <string name="error_food_changed">Das Lebensmittel wurde von %1$s zu %2$s umbenannt. Möchtest du es immer noch löschen?</string>
     <string name="dialog_rename_food">Lebensmittel umbenennen</string>
     <string name="error_food_changed_twice">Das Lebensmittel mit ursprünglichem Namen \"%1$s\" wurde von jemand anderem zu \"%2$s\" und von dir zu \"%3$s\" umbenannt. Möchtest du deinen Namen anwenden?</string>
+    <string name="dialog_item_both_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt und das Haltbarkeitsdatum vom %3$s zum %4$s geändert. Möchtest du es immer noch essen?</string>
+    <string name="dialog_item_date_changed">Das Haltbarkeitsdatum wurde vom %1$s zum %2$s geändert. Möchtest du es immer noch essen?</string>
+    <string name="dialog_item_location_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt. Möchtest du es immer noch essen?</string>
 
 
 </resources>

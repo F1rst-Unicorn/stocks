@@ -5,6 +5,7 @@ import dagger.android.ContributesAndroidInjector;
 import de.njsm.stocks.android.frontend.crashlog.CrashLogListFragment;
 import de.njsm.stocks.android.frontend.device.DeviceFragment;
 import de.njsm.stocks.android.frontend.emptyfood.EmptyFoodFragment;
+import de.njsm.stocks.android.frontend.fooditem.FoodFragment;
 import de.njsm.stocks.android.frontend.locations.LocationFragment;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.frontend.main.OutlineFragment;
@@ -20,6 +21,9 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract EmptyFoodFragment contributeEmptyFoodFragment();
+
+    @ContributesAndroidInjector
+    abstract FoodFragment contributeFoodFragment();
 
     @ContributesAndroidInjector
     abstract LocationFragment contributeLocationFragment();

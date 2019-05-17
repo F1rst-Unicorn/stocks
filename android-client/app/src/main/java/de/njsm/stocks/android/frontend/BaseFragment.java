@@ -105,8 +105,7 @@ public class BaseFragment extends Fragment {
             editText.setError(null);
     }
 
-    protected void initialiseSwipeRefresh(View view,
-                                                      ViewModelProvider.Factory viewModelFactory) {
+    protected void initialiseSwipeRefresh(View view, ViewModelProvider.Factory viewModelFactory) {
         initialiseSwipeRefresh(view, R.id.template_swipe_list_swipe, viewModelFactory);
     }
 
@@ -177,12 +176,12 @@ public class BaseFragment extends Fragment {
                 .show();
     }
 
-    protected void showErrorDialog(int titleId, String message, DialogInterface.OnClickListener renamer) {
+    protected void showErrorDialog(int titleId, String message, DialogInterface.OnClickListener doer) {
         new AlertDialog.Builder(requireActivity())
                 .setTitle(requireContext().getString(titleId))
                 .setMessage(message)
                 .setIcon(R.drawable.ic_error_black_24dp)
-                .setPositiveButton(android.R.string.ok, renamer)
+                .setPositiveButton(android.R.string.ok, doer)
                 .setNegativeButton(getResources().getString(android.R.string.cancel), this::doNothing)
                 .show();
     }

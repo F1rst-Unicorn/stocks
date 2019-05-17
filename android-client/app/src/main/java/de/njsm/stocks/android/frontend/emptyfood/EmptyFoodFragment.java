@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
@@ -19,6 +20,7 @@ import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class EmptyFoodFragment extends BaseFragment {
 
@@ -67,7 +69,16 @@ public class EmptyFoodFragment extends BaseFragment {
     }
 
     private void onListItemClicked(View view) {
-
+        RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) view.getTag();
+        int position = holder.getAdapterPosition();
+        List<Food> data = viewModel.getFood().getValue();
+        if (data != null) {
+            int id = data.get(position).id;
+            EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentFood args =
+                    EmptyFoodFragmentDirections.actionNavFragmentEmptyFoodToNavFragmentFood(id);
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(args);
+        }
     }
 
     private void initiateFoodDeletion(Food food) {

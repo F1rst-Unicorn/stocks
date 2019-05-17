@@ -21,11 +21,11 @@ public class FoodViewModel extends ViewModel {
         return foodRepository.addFood(name);
     }
 
-    protected LiveData<StatusCode> deleteFood(Food item) {
+    public LiveData<StatusCode> deleteFood(Food item) {
         return foodRepository.deleteFood(item);
     }
 
-    protected LiveData<Food> getFood(int id) {
+    public LiveData<Food> getFood(int id) {
         return foodRepository.getFood(id);
     }
 

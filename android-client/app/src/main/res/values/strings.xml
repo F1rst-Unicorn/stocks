@@ -131,5 +131,8 @@
     <string name="error_food_changed" >The food was renamed from %1$s to %2$s. Do you still want to delete it?</string>
     <string name="dialog_rename_food">Rename Food</string>
     <string name="error_food_changed_twice" >The food was with original name %1$s was renamed to %2$s by you and to %3$s by someone else. Do you want to apply your name?</string>
+    <string name="dialog_item_location_changed" >The item was moved from %1$s to %2$s. Do you still want to eat it?</string>
+    <string name="dialog_item_date_changed" >The item\'s expiration date was changed from %1$s to %2$s. Do you still want to eat it?</string>
+    <string name="dialog_item_both_changed" >The item was moved from %1$s to %2$s and the expiration date was changed from %3s to %4$s. Do you still want to eat it?</string>
 
 </resources>

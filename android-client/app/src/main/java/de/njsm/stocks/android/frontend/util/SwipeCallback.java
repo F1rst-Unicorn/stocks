@@ -34,7 +34,7 @@ public class SwipeCallback<T> extends ItemTouchHelper.SimpleCallback {
         this.background = background;
     }
 
-    public void setData(List<T> data) {
+    public void setData(@Nullable List<T> data) {
         this.data = data;
     }
 
