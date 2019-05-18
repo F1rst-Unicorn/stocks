@@ -44,6 +44,9 @@ public class CrashLogRepository {
     }
 
     public void delete(CrashLog t) {
+        if (t.getFile() == null)
+            return;
+
         boolean result = t.getFile().delete();
         if (result) {
             LOG.i("Removed crash log " + t.getName());

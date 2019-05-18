@@ -15,8 +15,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
@@ -57,7 +55,7 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    protected void maybeShowDeleteError(StatusCode code) {
+    public void maybeShowDeleteError(StatusCode code) {
         if (code != StatusCode.SUCCESS) {
             showErrorMessage(requireActivity(), code.getDeleteErrorMessage());
         }
@@ -77,6 +75,16 @@ public class BaseFragment extends Fragment {
                 .setIcon(R.drawable.ic_error_black_24dp)
                 .setPositiveButton(a.getResources().getString(R.string.dialog_ok), (d, w) -> d.dismiss())
                 .create()
+                .show();
+    }
+
+    public void showErrorDialog(int titleId, String message, DialogInterface.OnClickListener doer) {
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(requireContext().getString(titleId))
+                .setMessage(message)
+                .setIcon(R.drawable.ic_error_black_24dp)
+                .setPositiveButton(android.R.string.ok, doer)
+                .setNegativeButton(getResources().getString(android.R.string.cancel), this::doNothing)
                 .show();
     }
 
@@ -148,42 +156,6 @@ public class BaseFragment extends Fragment {
         );
         data.observe(this, callback::setData);
         new ItemTouchHelper(callback).attachToRecyclerView(list);
-    }
-
-    protected <T> void showDeletionSnackbar(View view, T item,
-                                            int messageId,
-                                            Consumer<T> deletionCancler,
-                                            Consumer<T> deleter) {
-        Snackbar.make(view, messageId, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.action_undo, v -> {})
-                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        switch (event) {
-                            case DISMISS_EVENT_ACTION:
-                                LOG.d("Deletion cancelled");
-                                deletionCancler.accept(item);
-                                break;
-                            case DISMISS_EVENT_CONSECUTIVE:
-                            case DISMISS_EVENT_MANUAL:
-                            case DISMISS_EVENT_SWIPE:
-                            case DISMISS_EVENT_TIMEOUT:
-                                deleter.accept(item);
-                                break;
-                        }
-                    }
-                })
-                .show();
-    }
-
-    protected void showErrorDialog(int titleId, String message, DialogInterface.OnClickListener doer) {
-        new AlertDialog.Builder(requireActivity())
-                .setTitle(requireContext().getString(titleId))
-                .setMessage(message)
-                .setIcon(R.drawable.ic_error_black_24dp)
-                .setPositiveButton(android.R.string.ok, doer)
-                .setNegativeButton(getResources().getString(android.R.string.cancel), this::doNothing)
-                .show();
     }
 
     public void doNothing(DialogInterface dialogInterface, int i) {}

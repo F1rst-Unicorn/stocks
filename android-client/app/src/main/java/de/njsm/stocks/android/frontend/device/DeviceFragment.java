@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
-import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.interactor.DeviceDeletionInteractor;
 import de.njsm.stocks.android.frontend.util.NameValidator;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
@@ -38,8 +38,6 @@ public class DeviceFragment extends BaseFragment {
 
     private SingleUserViewModel singleUserViewModel;
 
-    private RecyclerView list;
-
     DeviceAdapter adapter;
 
     @Override
@@ -55,7 +53,7 @@ public class DeviceFragment extends BaseFragment {
         assert getArguments() != null;
         input = DeviceFragmentArgs.fromBundle(getArguments());
 
-        list = result.findViewById(R.id.user_detail_device_list);
+        RecyclerView list = result.findViewById(R.id.user_detail_device_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
         result.findViewById(R.id.devices_fab).setOnClickListener(this::addDevice);
 
@@ -64,28 +62,20 @@ public class DeviceFragment extends BaseFragment {
         singleUserViewModel = ViewModelProviders.of(this, viewModelFactory).get(SingleUserViewModel.class);
         singleUserViewModel.init(input.getUserId());
 
-        addSwipeToDelete(list, viewModel.getDevices(), this::initiateDeletion);
-
         adapter = new DeviceAdapter(viewModel.getDevices(), this::doNothing);
         viewModel.getDevices().observe(this, d -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
+
+        DeviceDeletionInteractor interactor = new DeviceDeletionInteractor(
+                this, list,
+                i -> adapter.notifyDataSetChanged(),
+                i -> viewModel.deleteUserDevice(i));
+        addSwipeToDelete(list, viewModel.getDevices(), interactor::initiateDeletion);
 
         initialiseSwipeRefresh(result, R.id.devices_swipe, viewModelFactory);
 
         singleUserViewModel.getUser().observe(this, u -> requireActivity().setTitle(u == null ? "" : u.name));
         return result;
-    }
-
-    private void initiateDeletion(UserDevice d) {
-        showDeletionSnackbar(list, d, R.string.dialog_device_was_deleted,
-                v -> adapter.notifyDataSetChanged(),
-                this::performDeletion);
-    }
-
-    private void performDeletion(UserDevice d) {
-        adapter.notifyDataSetChanged();
-        LiveData<StatusCode> result = viewModel.deleteUserDevice(d);
-        result.observe(DeviceFragment.this, DeviceFragment.this::maybeShowDeleteError);
     }
 
     private void addDevice(View v) {

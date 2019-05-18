@@ -17,6 +17,7 @@ import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
 import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
@@ -49,7 +50,6 @@ public class EmptyFoodFragment extends BaseFragment {
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EmptyFoodViewModel.class);
-        addSwipeToDelete(list, viewModel.getFood(), this::initiateFoodDeletion);
 
         adapter = new FoodAdapter(viewModel.getFood(),
                 this::onListItemClicked,
@@ -57,6 +57,12 @@ public class EmptyFoodFragment extends BaseFragment {
                         this::observeRenaming));
         viewModel.getFood().observe(this, u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
+
+        FoodDeletionInteractor deleter = new FoodDeletionInteractor(this, list,
+                f -> adapter.notifyDataSetChanged(),
+                i -> viewModel.deleteFood(i),
+                id -> viewModel.getFood(id));
+        addSwipeToDelete(list, viewModel.getFood(), deleter::initiateDeletion);
 
         initialiseSwipeRefresh(result, viewModelFactory);
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(v -> this.addFood(viewModel));
@@ -81,19 +87,6 @@ public class EmptyFoodFragment extends BaseFragment {
         }
     }
 
-    private void initiateFoodDeletion(Food food) {
-        showDeletionSnackbar(list, food,
-                R.string.dialog_food_was_deleted,
-                f -> adapter.notifyDataSetChanged(), this::observeDeletion
-        );
-    }
-
-    private void observeDeletion(Food food) {
-        adapter.notifyDataSetChanged();
-        LiveData<StatusCode> result = viewModel.deleteFood(food);
-        result.observe(EmptyFoodFragment.this, c -> EmptyFoodFragment.this.treatDeletionCases(c, food));
-    }
-
     private void observeRenaming(Food item, String name) {
         LiveData<StatusCode> result = viewModel.renameFood(item, name);
         result.observe(this, code -> this.treatRenamingCases(code, item, name));
@@ -112,26 +105,8 @@ public class EmptyFoodFragment extends BaseFragment {
             maybeShowEditError(code);
     }
 
-    void treatDeletionCases(StatusCode code, Food item) {
-        if (code == StatusCode.INVALID_DATA_VERSION) {
-            LiveData<Food> newData = viewModel.getFood(item.id);
-            newData.observe(this, newItem -> {
-                if (newItem != null && !newItem.equals(item)) {
-                    compareFood(item, newItem);
-                    newData.removeObservers(this);
-                }
-            });
-        } else
-            maybeShowDeleteError(code);
-    }
-
     private void compareFood(Food item, String localNewName, Food upstreamItem) {
         String message = requireContext().getString(R.string.error_food_changed_twice, item.name, localNewName, upstreamItem.name);
         showErrorDialog(R.string.dialog_rename_food, message, (d,w) -> observeRenaming(upstreamItem, localNewName));
-    }
-
-    private void compareFood(Food item, Food upstreamItem) {
-        String message = requireContext().getString(R.string.error_food_changed, item.name, upstreamItem.name);
-        showErrorDialog(R.string.title_delete_food, message, (d, w) -> observeDeletion(upstreamItem));
     }
 }

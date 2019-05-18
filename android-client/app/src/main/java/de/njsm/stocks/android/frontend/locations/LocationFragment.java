@@ -19,6 +19,7 @@ import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.interactor.LocationDeletionInteractor;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
@@ -50,13 +51,20 @@ public class LocationFragment extends BaseFragment {
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
-        addSwipeToDelete(list, viewModel.getLocations(), this::initiateDeletion);
 
         adapter = new LocationAdapter(viewModel.getLocations(),
                 this::showContainedFood,
                 v -> this.editInternally(v, viewModel.getLocations(), R.string.dialog_rename_location, this::observeRenaming));
         viewModel.getLocations().observe(this, u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
+
+        LocationDeletionInteractor interactor = new LocationDeletionInteractor(
+                this, list,
+                i -> adapter.notifyDataSetChanged(),
+                i -> viewModel.deleteLocation(i, false),
+                i -> viewModel.getLocation(i),
+                i -> viewModel.deleteLocation(i, true));
+        addSwipeToDelete(list, viewModel.getLocations(), interactor::initiateDeletion);
 
         initialiseSwipeRefresh(result, viewModelFactory);
 
@@ -89,22 +97,9 @@ public class LocationFragment extends BaseFragment {
 
     }
 
-    private void initiateDeletion(Location item) {
-        showDeletionSnackbar(list, item,
-                R.string.dialog_location_was_deleted,
-                v -> adapter.notifyDataSetChanged(),
-                this::observeDeletion);
-    }
-
     private void observeRenaming(Location item, String name) {
         LiveData<StatusCode> result = viewModel.renameLocation(item, name);
         result.observe(this, code -> this.treatRenamingCases(code, item, name));
-    }
-
-    private void observeDeletion(Location item) {
-        adapter.notifyDataSetChanged();
-        LiveData<StatusCode> result = viewModel.deleteLocation(item, false);
-        result.observe(LocationFragment.this, code -> LocationFragment.this.treatDeletionCases(code, item));
     }
 
     private void treatRenamingCases(StatusCode code, Location item, String name) {
@@ -120,37 +115,9 @@ public class LocationFragment extends BaseFragment {
             maybeShowEditError(code);
     }
 
-    void treatDeletionCases(StatusCode code, Location item) {
-        if (code == StatusCode.INVALID_DATA_VERSION) {
-            LiveData<Location> newData = viewModel.getLocation(item.id);
-            newData.observe(this, newLocation -> {
-                if (newLocation != null && ! newLocation.equals(item)) {
-                    compareLocations(item, newLocation);
-                    newData.removeObservers(this);
-                }
-            });
-        } else if (code == StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION)
-            offerCascadingDeletion(item);
-        else
-            maybeShowDeleteError(code);
-    }
-
     private void compareLocations(Location item, String localNewName, Location upstreamItem) {
         String message = requireContext().getString(R.string.error_location_changed_twice, item.name, localNewName, upstreamItem.name);
         showErrorDialog(R.string.dialog_rename_location, message,
                 (d, w) -> this.observeRenaming(upstreamItem, localNewName));
-    }
-
-    private void compareLocations(Location item, Location newLocation) {
-        String message = requireContext().getString(R.string.error_location_changed, item.name, newLocation.name);
-        showErrorDialog(R.string.title_delete_location, message, (d, w) -> observeDeletion(newLocation));
-    }
-
-    private void offerCascadingDeletion(Location item) {
-        String message = requireContext().getString(R.string.error_location_foreign_key_violation, item.name);
-        showErrorDialog(R.string.title_delete_location, message, (d, w) -> {
-            LiveData<StatusCode> result = viewModel.deleteLocation(item, true);
-            result.observe(this, this::maybeShowDeleteError);
-        });
     }
 }

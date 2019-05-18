@@ -54,7 +54,7 @@ public class CrashLogListFragment extends BaseFragment {
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CrashLogViewModel.class);
-        addSwipeToDelete(list, viewModel.getData(), this::deleteCrashLog);
+        addSwipeToDelete(list, viewModel.getData(), viewModel::delete);
 
         adapter = new CrashLogAdapter(viewModel.getData(), this::onListItemClick);
         viewModel.getData().observe(this, u -> adapter.notifyDataSetChanged());
@@ -83,12 +83,6 @@ public class CrashLogListFragment extends BaseFragment {
                 list.setVisibility(View.VISIBLE);
                 emptyListText.setVisibility(View.GONE);
             }
-        }
-    }
-
-    private void deleteCrashLog(CrashLog t) {
-        if (t.getFile() != null) {
-            viewModel.delete(t);
         }
     }
 

@@ -19,6 +19,7 @@ import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.interactor.UserDeletionInteractor;
 import de.njsm.stocks.android.frontend.util.NameValidator;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
@@ -51,11 +52,16 @@ public class UserFragment extends BaseFragment {
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
-        addSwipeToDelete(list, viewModel.getUsers(), this::initiateUserDeletion);
 
         adapter = new UserAdapter(viewModel.getUsers(), this::onListItemClick);
         viewModel.getUsers().observe(this, u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
+
+        UserDeletionInteractor interactor = new UserDeletionInteractor(
+                this, list,
+                i -> adapter.notifyDataSetChanged(),
+                i -> viewModel.deleteUser(i));
+        addSwipeToDelete(list, viewModel.getUsers(), interactor::initiateDeletion);
 
         initialiseSwipeRefresh(result, viewModelFactory);
 
@@ -105,16 +111,4 @@ public class UserFragment extends BaseFragment {
                 .show();
     }
 
-    private void initiateUserDeletion(User u) {
-        showDeletionSnackbar(list, u,
-                R.string.dialog_user_was_deleted,
-                v -> adapter.notifyDataSetChanged(), this::performDeletion
-        );
-    }
-
-    private void performDeletion(User u) {
-        adapter.notifyDataSetChanged();
-        LiveData<StatusCode> result = viewModel.deleteUser(u);
-        result.observe(UserFragment.this, UserFragment.this::maybeShowDeleteError);
-    }
 }
