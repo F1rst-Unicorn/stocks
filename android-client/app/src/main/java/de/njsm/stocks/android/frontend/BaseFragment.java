@@ -67,13 +67,13 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    public static void showErrorMessage(Activity a, int resourceId) {
+    private static void showErrorMessage(Activity a, int resourceId) {
         new AlertDialog.Builder(a)
                 .setTitle(R.string.title_error)
                 .setMessage(resourceId)
                 .setCancelable(true)
                 .setIcon(R.drawable.ic_error_black_24dp)
-                .setPositiveButton(a.getResources().getString(R.string.dialog_ok), (d, w) -> d.dismiss())
+                .setPositiveButton(a.getResources().getString(R.string.dialog_ok), (d, w) -> {})
                 .create()
                 .show();
     }
@@ -84,7 +84,7 @@ public class BaseFragment extends Fragment {
                 .setMessage(message)
                 .setIcon(R.drawable.ic_error_black_24dp)
                 .setPositiveButton(android.R.string.ok, doer)
-                .setNegativeButton(getResources().getString(android.R.string.cancel), this::doNothing)
+                .setNegativeButton(getString(android.R.string.cancel), this::doNothing)
                 .show();
     }
 
@@ -92,23 +92,22 @@ public class BaseFragment extends Fragment {
         EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
         textField.addTextChangedListener(
                 new NonEmptyValidator(textField, this::showEmptyInputError));
-        textField.setHint(getResources().getString(R.string.hint_food));
+        textField.setHint(getString(R.string.hint_food));
         new AlertDialog.Builder(requireActivity())
-                .setTitle(getResources().getString(R.string.dialog_new_food))
+                .setTitle(getString(R.string.dialog_new_food))
                 .setView(textField)
-                .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
-                    dialog.dismiss();
+                .setPositiveButton(getString(R.string.dialog_ok), (dialog, whichButton) -> {
                     String name = textField.getText().toString().trim();
                     LiveData<StatusCode> result = viewModel.addFood(name);
                     result.observe(this, this::maybeShowAddError);
                 })
-                .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
+                .setNegativeButton(getString(android.R.string.cancel), (d, b) -> {})
                 .show();
     }
 
     protected void showEmptyInputError(EditText editText, Boolean isEmpty) {
         if (isEmpty)
-            editText.setError(requireActivity().getString(R.string.error_may_not_be_empty));
+            editText.setError(getString(R.string.error_may_not_be_empty));
         else
             editText.setError(null);
     }
@@ -126,23 +125,25 @@ public class BaseFragment extends Fragment {
         return refreshViewModel;
     }
 
-    protected <T> void editInternally(View view, LiveData<List<T>> data, int messageId, BiConsumer<T, String> editer) {
+    protected <T> void editInternally(View view,
+                                      LiveData<List<T>> data,
+                                      int messageId,
+                                      BiConsumer<T, String> editer) {
         RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
         List<T> list = data.getValue();
         if (list != null) {
             T item = list.get(position);
             EditText textField = (EditText) getLayoutInflater().inflate(R.layout.text_field, null);
-            textField.setHint(getResources().getString(R.string.hint_new_name));
+            textField.setHint(getString(R.string.hint_new_name));
             new AlertDialog.Builder(requireActivity())
-                    .setTitle(getResources().getString(messageId))
+                    .setTitle(getString(messageId))
                     .setView(textField)
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
-                        dialog.dismiss();
+                    .setPositiveButton(getString(R.string.dialog_ok), (dialog, whichButton) -> {
                         String name = textField.getText().toString().trim();
                         editer.accept(item, name);
                     })
-                    .setNegativeButton(getResources().getString(android.R.string.cancel), (d, b) -> d.dismiss())
+                    .setNegativeButton(getString(android.R.string.cancel), this::doNothing)
                     .show();
         }
     }
@@ -162,7 +163,7 @@ public class BaseFragment extends Fragment {
         new ItemTouchHelper(callback).attachToRecyclerView(list);
     }
 
-    public void doNothing(DialogInterface dialogInterface, int i) {}
+    protected void doNothing(DialogInterface dialogInterface, int i) {}
 
-    public void doNothing(View dialogInterface) {}
+    protected void doNothing(View dialogInterface) {}
 }

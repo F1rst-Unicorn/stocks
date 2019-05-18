@@ -18,6 +18,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
+import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 
 import javax.inject.Inject;
@@ -64,8 +65,17 @@ public class FoodFragment extends BaseFragment {
             }
         }
 
-        FoodAdapter adapter = new FoodAdapter(data,
-                this::onClick, getResources(), requireActivity().getTheme());
+        FoodEditInteractor editor = new FoodEditInteractor(this,
+                (f, s) -> viewModel.renameFood(f, s),
+                viewModel::getFood);
+
+        FoodAdapter adapter = new FoodAdapter(
+                data,
+                this::onClick,
+                v -> editInternally(v, viewModel.getFoodToEat(), R.string.dialog_rename_food,
+                        (f,s) -> editor.observeEditing(f.mapToFood(), s)),
+                getResources(),
+                requireActivity().getTheme());
         data.observe(this, i -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 

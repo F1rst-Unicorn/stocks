@@ -27,11 +27,15 @@ public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
 
     private Resources.Theme theme;
 
+    private final Consumer<View> onLongClickListener;
+
     public FoodAdapter(LiveData<List<FoodView>> data,
                        Consumer<View> onClickListener,
+                       Consumer<View> onLongClickListener,
                        Resources resources,
                        Resources.Theme theme) {
         super(data, onClickListener);
+        this.onLongClickListener = onLongClickListener;
         this.resources = resources;
         this.theme = theme;
     }
@@ -79,7 +83,13 @@ public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
         ViewHolder result = new ViewHolder(v);
         v.setTag(result);
         v.setOnClickListener(this::onClick);
+        v.setOnLongClickListener(this::onLongClick);
         return result;
+    }
+
+    private boolean onLongClick(View view) {
+        onLongClickListener.accept(view);
+        return true;
     }
 
     @Override

@@ -21,6 +21,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.interactor.LocationDeletionInteractor;
+import de.njsm.stocks.android.frontend.interactor.LocationEditInteractor;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
@@ -54,9 +55,18 @@ public class LocationFragment extends BaseFragment {
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
 
+        LocationEditInteractor editor = new LocationEditInteractor(
+                this,
+                viewModel::renameLocation,
+                viewModel::getLocation
+        );
+
         adapter = new LocationAdapter(viewModel.getLocations(),
                 this::showContainedFood,
-                v -> this.editInternally(v, viewModel.getLocations(), R.string.dialog_rename_location, this::observeRenaming));
+                v -> this.editInternally(v,
+                        viewModel.getLocations(),
+                        R.string.dialog_rename_location,
+                        editor::observeEditing));
         viewModel.getLocations().observe(this, u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
@@ -107,29 +117,5 @@ public class LocationFragment extends BaseFragment {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
         }
-    }
-
-    private void observeRenaming(Location item, String name) {
-        LiveData<StatusCode> result = viewModel.renameLocation(item, name);
-        result.observe(this, code -> this.treatRenamingCases(code, item, name));
-    }
-
-    private void treatRenamingCases(StatusCode code, Location item, String name) {
-        if (code == StatusCode.INVALID_DATA_VERSION) {
-            LiveData<Location> newData = viewModel.getLocation(item.id);
-            newData.observe(this, newLocation -> {
-                if (newLocation != null && ! newLocation.equals(item)) {
-                    compareLocations(item, name, newLocation);
-                    newData.removeObservers(this);
-                }
-            });
-        } else
-            maybeShowEditError(code);
-    }
-
-    private void compareLocations(Location item, String localNewName, Location upstreamItem) {
-        String message = requireContext().getString(R.string.error_location_changed_twice, item.name, localNewName, upstreamItem.name);
-        showErrorDialog(R.string.dialog_rename_location, message,
-                (d, w) -> this.observeRenaming(upstreamItem, localNewName));
     }
 }

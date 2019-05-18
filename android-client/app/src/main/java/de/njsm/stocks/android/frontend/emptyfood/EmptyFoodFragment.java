@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
@@ -18,7 +17,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -51,10 +50,14 @@ public class EmptyFoodFragment extends BaseFragment {
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EmptyFoodViewModel.class);
 
-        adapter = new FoodAdapter(viewModel.getFood(),
+        FoodEditInteractor editor = new FoodEditInteractor(this,
+                (f, s) -> viewModel.renameFood(f, s),
+                viewModel::getFood);
+        adapter = new FoodAdapter(
+                viewModel.getFood(),
                 this::onListItemClicked,
                 v -> editInternally(v, viewModel.getFood(), R.string.dialog_rename_food,
-                        this::observeRenaming));
+                editor::observeEditing));
         viewModel.getFood().observe(this, u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
@@ -85,28 +88,5 @@ public class EmptyFoodFragment extends BaseFragment {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
         }
-    }
-
-    private void observeRenaming(Food item, String name) {
-        LiveData<StatusCode> result = viewModel.renameFood(item, name);
-        result.observe(this, code -> this.treatRenamingCases(code, item, name));
-    }
-
-    private void treatRenamingCases(StatusCode code, Food item, String name) {
-        if (code == StatusCode.INVALID_DATA_VERSION) {
-            LiveData<Food> newData = viewModel.getFood(item.id);
-            newData.observe(this, newItem -> {
-                if (newItem != null && !newItem.equals(item)) {
-                    compareFood(item, name, newItem);
-                    newData.removeObservers(this);
-                }
-            });
-        } else
-            maybeShowEditError(code);
-    }
-
-    private void compareFood(Food item, String localNewName, Food upstreamItem) {
-        String message = requireContext().getString(R.string.error_food_changed_twice, item.name, localNewName, upstreamItem.name);
-        showErrorDialog(R.string.dialog_rename_food, message, (d,w) -> observeRenaming(upstreamItem, localNewName));
     }
 }
