@@ -34,7 +34,7 @@ public class LocationViewModel extends ViewModel {
         return locations;
     }
 
-    LiveData<Location> getLocation(int id) {
+    public LiveData<Location> getLocation(int id) {
         return locationRepo.getLocation(id);
     }
 

@@ -120,6 +120,11 @@ public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.V
     }
 
     private Drawable computeIcon(Instant expiration, Instant now) {
+        return computeIcon(resources, theme, expiration, now);
+    }
+
+    public static Drawable computeIcon(Resources resources, Resources.Theme theme,
+                                        Instant expiration, Instant now) {
         Instant inFiveDays = now.plus(Duration.ofDays(5));
         Drawable result;
 

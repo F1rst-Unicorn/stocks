@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import de.njsm.stocks.android.db.dao.FoodDao;
 import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
@@ -64,5 +65,13 @@ public class FoodRepository {
         webClient.renameFood(item.id, item.version, name)
                 .enqueue(new StatusCodeCallback(data, synchroniser));
         return data;
+    }
+
+    public LiveData<List<FoodView>> getFoodToEat() {
+        return foodDao.getFoodToEat();
+    }
+
+    public LiveData<List<FoodView>> getFoodByLocation(int location) {
+        return foodDao.getFoodByLocation(location);
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
 
     android:orientation="vertical"
     android:paddingLeft="@dimen/list_item_padding"
@@ -27,26 +27,16 @@
         android:text="@string/text_amount" />
 
     <TextView
-        android:id="@+id/item_food_outline_colon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        style="@style/StocksTheme.TextSmall"
-        android:text=":"
-        android:layout_below="@id/item_food_outline_name"
-        android:layout_toEndOf="@id/item_food_outline_amount"
-        android:paddingTop="4dp"
-        android:paddingEnd="@dimen/list_item_padding" />
-
-    <TextView
         android:id="@+id/item_food_outline_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         style="@style/StocksTheme.TextSmall"
         android:layout_below="@id/item_food_outline_name"
-        android:layout_toEndOf="@id/item_food_outline_colon"
-        android:paddingTop="4dp" />
+        android:layout_toEndOf="@id/item_food_outline_amount"
+        android:paddingTop="4dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"/>
 
     <ImageView
         android:id="@+id/item_food_outline_icon"

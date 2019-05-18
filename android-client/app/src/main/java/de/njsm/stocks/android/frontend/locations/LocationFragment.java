@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
@@ -24,6 +25,7 @@ import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class LocationFragment extends BaseFragment {
 
@@ -94,7 +96,17 @@ public class LocationFragment extends BaseFragment {
     }
 
     private void showContainedFood(View view) {
-
+        LocationAdapter.ViewHolder holder = (LocationAdapter.ViewHolder) view.getTag();
+        int position = holder.getAdapterPosition();
+        List<Location> data = viewModel.getLocations().getValue();
+        if (data != null) {
+            int id = data.get(position).id;
+            LocationFragmentDirections.ActionNavFragmentLocationsToNavFragmentFood args =
+                    LocationFragmentDirections.actionNavFragmentLocationsToNavFragmentFood()
+                    .setLocation(id);
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(args);
+        }
     }
 
     private void observeRenaming(Location item, String name) {

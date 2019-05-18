@@ -19,7 +19,7 @@ import de.njsm.stocks.android.frontend.interactor.FoodItemDeletionInteractor;
 
 import javax.inject.Inject;
 
-public class FoodFragment extends BaseFragment {
+public class FoodItemFragment extends BaseFragment {
 
     private FoodItemViewModel viewModel;
 
@@ -39,7 +39,7 @@ public class FoodFragment extends BaseFragment {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
         assert getArguments() != null;
-        FoodFragmentArgs input = FoodFragmentArgs.fromBundle(getArguments());
+        FoodItemFragmentArgs input = FoodItemFragmentArgs.fromBundle(getArguments());
 
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(this::addItem);
         RecyclerView list = result.findViewById(R.id.template_swipe_list_list);

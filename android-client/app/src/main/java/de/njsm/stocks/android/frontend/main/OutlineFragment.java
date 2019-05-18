@@ -65,6 +65,7 @@ public class OutlineFragment extends BaseFragment {
             view.setText(settings.getString(Config.SERVER_NAME_CONFIG, ""));
 
             FoodViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
+            result.findViewById(R.id.fragment_outline_cardview).setOnClickListener(this::goToEatSoon);
             result.findViewById(R.id.fragment_outline_cardview2).setOnClickListener(this::goToEmptyFood);
             result.findViewById(R.id.fragment_outline_fab).setOnClickListener(v -> this.addFood(viewModel));
         }
@@ -74,6 +75,11 @@ public class OutlineFragment extends BaseFragment {
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         this.viewModelFactory = viewModelFactory;
+    }
+
+    private void goToEatSoon(View view) {
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                .navigate(R.id.action_nav_fragment_outline_to_nav_fragment_food);
     }
 
     private void goToEmptyFood(View view) {

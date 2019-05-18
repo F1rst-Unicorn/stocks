@@ -80,8 +80,8 @@ public class EmptyFoodFragment extends BaseFragment {
         List<Food> data = viewModel.getFood().getValue();
         if (data != null) {
             int id = data.get(position).id;
-            EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentFood args =
-                    EmptyFoodFragmentDirections.actionNavFragmentEmptyFoodToNavFragmentFood(id);
+            EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentFoodItem args =
+                    EmptyFoodFragmentDirections.actionNavFragmentEmptyFoodToNavFragmentFoodItem(id);
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
         }

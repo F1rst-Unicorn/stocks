@@ -3,10 +3,12 @@ package de.njsm.stocks.android.frontend.emptyfood;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.FoodRepository;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class FoodViewModel extends ViewModel {
 
@@ -31,5 +33,9 @@ public class FoodViewModel extends ViewModel {
 
     public LiveData<StatusCode> renameFood(Food item, String name) {
         return foodRepository.renameFood(item, name);
+    }
+
+    public LiveData<List<FoodView>> getFoodByLocation(int location) {
+        return foodRepository.getFoodByLocation(location);
     }
 }
