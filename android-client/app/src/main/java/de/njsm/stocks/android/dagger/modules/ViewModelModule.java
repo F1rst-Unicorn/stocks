@@ -10,7 +10,7 @@ import de.njsm.stocks.android.dagger.factories.ViewModelFactory;
 import de.njsm.stocks.android.frontend.crashlog.CrashLogViewModel;
 import de.njsm.stocks.android.frontend.device.SingleUserViewModel;
 import de.njsm.stocks.android.frontend.device.UserDeviceViewModel;
-import de.njsm.stocks.android.frontend.eatsoon.FoodToEatViewModel;
+import de.njsm.stocks.android.frontend.food.FoodToEatViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.EmptyFoodViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;

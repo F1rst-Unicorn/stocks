@@ -30,12 +30,16 @@ public class LocationViewModel extends ViewModel {
         }
     }
 
-    LiveData<List<Location>> getLocations() {
+    public LiveData<List<Location>> getLocations() {
         return locations;
     }
 
     public LiveData<Location> getLocation(int id) {
         return locationRepo.getLocation(id);
+    }
+
+    public LiveData<Location> getLocationWithMostItemsOfType(int food) {
+        return locationRepo.getLocationWithMostItemsOfType(food);
     }
 
     LiveData<StatusCode> addLocation(String name) {

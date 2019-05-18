@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.FoodItemRepository;
+import org.threeten.bp.Instant;
 
 import java.util.List;
 
@@ -34,5 +35,13 @@ public class FoodItemViewModel extends ViewModel {
 
     public LiveData<FoodItemView> getItem(int id) {
         return foodItemRepository.getItem(id);
+    }
+
+    public LiveData<StatusCode> addItem(int foodId, int locationId, Instant eatBy) {
+        return foodItemRepository.addItem(foodId, locationId, eatBy);
+    }
+
+    public LiveData<Instant> getLatestExpirationOf(int foodId) {
+        return foodItemRepository.getLatestExpirationOf(foodId);
     }
 }

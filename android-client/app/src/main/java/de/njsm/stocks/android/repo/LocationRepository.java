@@ -65,4 +65,9 @@ public class LocationRepository {
                 .enqueue(new StatusCodeCallback(data, synchroniser));
         return data;
     }
+
+    public LiveData<Location> getLocationWithMostItemsOfType(int food) {
+        LOG.d("Getting location with max items of " + food);
+        return locationDao.getLocationWithMostItemsOfType(food);
+    }
 }

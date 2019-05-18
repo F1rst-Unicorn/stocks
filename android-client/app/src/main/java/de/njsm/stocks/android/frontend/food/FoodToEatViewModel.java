@@ -1,4 +1,4 @@
-package de.njsm.stocks.android.frontend.eatsoon;
+package de.njsm.stocks.android.frontend.food;
 
 import androidx.lifecycle.LiveData;
 import de.njsm.stocks.android.db.views.FoodView;

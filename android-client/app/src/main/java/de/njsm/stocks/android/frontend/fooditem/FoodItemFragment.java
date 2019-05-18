@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
@@ -27,6 +28,8 @@ public class FoodItemFragment extends BaseFragment {
 
     private FoodItemAdapter adapter;
 
+    private FoodItemFragmentArgs input;
+
     @Override
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
@@ -39,7 +42,7 @@ public class FoodItemFragment extends BaseFragment {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
         assert getArguments() != null;
-        FoodItemFragmentArgs input = FoodItemFragmentArgs.fromBundle(getArguments());
+        input = FoodItemFragmentArgs.fromBundle(getArguments());
 
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(this::addItem);
         RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
@@ -61,7 +64,7 @@ public class FoodItemFragment extends BaseFragment {
                 i -> adapter.notifyDataSetChanged(),
                 i -> viewModel.deleteItem(i),
                 i -> viewModel.getItem(i));
-        addSwipeToDelete(list, viewModel.getFoodItems(), interactor::initiateDeletion);
+        addSwipeToDelete(list, viewModel.getFoodItems(), interactor::initiateDeletion, R.drawable.ic_local_dining_white_24dp);
 
         setHasOptionsMenu(true);
         initialiseSwipeRefresh(result, viewModelFactory);
@@ -74,7 +77,10 @@ public class FoodItemFragment extends BaseFragment {
     }
 
     private void addItem(View view) {
-
+        FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentAddFoodItem args =
+                FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentAddFoodItem(input.getFoodId());
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                .navigate(args);
     }
 
     private void editItem(View view) {

@@ -7,7 +7,9 @@ import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
+import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
+import org.threeten.bp.Instant;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -47,5 +49,18 @@ public class FoodItemRepository {
     public LiveData<FoodItemView> getItem(int id) {
         LOG.d("getting item with id " + id);
         return foodItemDao.getItem(id);
+    }
+
+    public LiveData<StatusCode> addItem(int foodId, int locationId, Instant eatBy) {
+        LOG.d("adding item of type " + foodId + ", location " + locationId + ", eat by " + eatBy);
+        MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
+        webClient.addFoodItem(Config.DATABASE_DATE_FORMAT.format(eatBy), locationId, foodId)
+                .enqueue(new StatusCodeCallback(result, synchroniser));
+        return result;
+    }
+
+    public LiveData<Instant> getLatestExpirationOf(int foodId) {
+        LOG.d("Getting latest expiration of " + foodId);
+        return foodItemDao.getLatestExpirationOf(foodId);
     }
 }

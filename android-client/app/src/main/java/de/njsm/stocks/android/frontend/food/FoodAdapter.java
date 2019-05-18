@@ -1,4 +1,4 @@
-package de.njsm.stocks.android.frontend.eatsoon;
+package de.njsm.stocks.android.frontend.food;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;

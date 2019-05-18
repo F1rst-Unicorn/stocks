@@ -29,4 +29,12 @@ public abstract class LocationDao {
 
     @Query("DELETE FROM Location")
     abstract void delete();
+
+    @Query("SELECT l._id, l.version, l.name, count(*) as amount FROM Location l " +
+            "INNER JOIN  FoodItem i on i.stored_in = l._id " +
+            "WHERE i.of_type = :food " +
+            "GROUP BY l._id " +
+            "ORDER BY amount DESC " +
+            "LIMIT 1")
+    public abstract LiveData<Location> getLocationWithMostItemsOfType(int food);
 }

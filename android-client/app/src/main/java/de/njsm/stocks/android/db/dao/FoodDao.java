@@ -39,7 +39,8 @@ public abstract class FoodDao {
                 "(SELECT i.of_type, count(*) as amount, i.eat_by as eatBy " +
                 "FROM FoodItem i GROUP BY i.of_type HAVING i.eat_by = MIN(i.eat_by)) " +
             "SELECT f._id, f.version, f.name as name, i.eatBy as eatBy, i.amount as amount FROM Food f " +
-            "INNER JOIN least_item i ON i.of_type = f._id")
+            "INNER JOIN least_item i ON i.of_type = f._id " +
+            "ORDER BY eatBy")
     public abstract LiveData<List<FoodView>> getFoodToEat();
 
 
@@ -47,6 +48,7 @@ public abstract class FoodDao {
             "(SELECT i.of_type, count(*) as amount, i.eat_by as eatBy " +
             "FROM FoodItem i WHERE i.stored_in = :location GROUP BY i.of_type HAVING i.eat_by = MIN(i.eat_by)) " +
             "SELECT f._id, f.version, f.name as name, i.eatBy as eatBy, i.amount as amount FROM Food f " +
-            "INNER JOIN least_item i ON i.of_type = f._id")
+            "INNER JOIN least_item i ON i.of_type = f._id " +
+            "ORDER BY eatBy")
     public abstract LiveData<List<FoodView>> getFoodByLocation(int location);
 }
