@@ -52,7 +52,7 @@ public abstract class FoodDao {
             "ORDER BY eatBy")
     public abstract LiveData<List<FoodView>> getFoodByLocation(int location);
 
-    @Query("SELECT * FROM Food f " +
+    @Query("SELECT f._id, f.version, f.name FROM Food f " +
             "INNER JOIN EanNumber n on n.identifies = f._id " +
             "WHERE n.number = :s " +
             "LIMIT 1")
