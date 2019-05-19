@@ -10,6 +10,7 @@ import de.njsm.stocks.android.dagger.factories.ViewModelFactory;
 import de.njsm.stocks.android.frontend.crashlog.CrashLogViewModel;
 import de.njsm.stocks.android.frontend.device.SingleUserViewModel;
 import de.njsm.stocks.android.frontend.device.UserDeviceViewModel;
+import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.food.FoodToEatViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.EmptyFoodViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
@@ -62,6 +63,13 @@ public class ViewModelModule {
     @ViewModelKey(FoodViewModel.class)
     ViewModel provideFoodViewModel(FoodRepository repo) {
         return new FoodViewModel(repo);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(EanNumberViewModel.class)
+    ViewModel provideEanNumberViewModel(EanNumberRepository repo) {
+        return new EanNumberViewModel(repo);
     }
 
     @Provides

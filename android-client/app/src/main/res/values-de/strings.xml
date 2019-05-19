@@ -136,6 +136,8 @@
     <string name="dialog_item_both_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt und das Haltbarkeitsdatum vom %3$s zum %4$s geändert. Möchtest du es immer noch essen?</string>
     <string name="dialog_item_date_changed">Das Haltbarkeitsdatum wurde vom %1$s zum %2$s geändert. Möchtest du es immer noch essen?</string>
     <string name="dialog_item_location_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt. Möchtest du es immer noch essen?</string>
+    <string name="dialog_ean_was_deleted">Barcode wurde gelöscht</string>
+    <string name="dialog_food_item_was_deleted">Lebensmittel wurde gegessen</string>
 
 
 </resources>

@@ -25,7 +25,7 @@ public class FoodItemDeletionInteractor extends DeletionInteractor<FoodItemView>
 
     @Override
     protected int getSnackbarMessageId() {
-        return R.string.dialog_food_was_deleted;
+        return R.string.dialog_food_item_was_deleted;
     }
 
     @Override

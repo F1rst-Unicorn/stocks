@@ -140,7 +140,7 @@ public class Synchroniser {
             refreshFood();
         } else if (table.equals("Food_item")) {
             refreshFoodItems();
-        } else if (table.equals("Ean_number")) {
+        } else if (table.equals("EAN_number")) {
             refreshEanNumbers();
         }
     }

@@ -37,6 +37,10 @@ public class EanNumber extends VersionedData {
         this.identifiesFood = identifiesFood;
     }
 
+    @Ignore
+    public EanNumber() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

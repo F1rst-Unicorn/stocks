@@ -87,6 +87,15 @@ public class FoodItemFragment extends BaseFragment {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentEanNumber args =
+                FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentEanNumber(input.getFoodId());
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                .navigate(args);
+        return true;
+    }
+
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         this.viewModelFactory = viewModelFactory;

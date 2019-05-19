@@ -322,11 +322,26 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_fragment_food_item_to_nav_fragment_ean_number"
+            app:destination="@id/nav_fragment_ean_number"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_add_food_item"
         android:name="de.njsm.stocks.android.frontend.additem.AddItemFragment"
         tools:layout="@layout/fragment_add_food_item">
+        <argument
+            android:name="foodId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_ean_number"
+        android:name="de.njsm.stocks.android.frontend.eannumber.EanNumberFragment"
+        tools:layout="@layout/template_swipe_list">
         <argument
             android:name="foodId"
             app:argType="integer" />
