@@ -70,8 +70,11 @@ public class ServerFragment extends BaseFragment {
 
         if (!input.getServerUrl().isEmpty()) {
             serverUrl.setText(input.getServerUrl());
+            next.setEnabled(true);
         } else {
-            next.setEnabled(false);
+            if (serverUrl.getText().toString().isEmpty()) {
+                next.setEnabled(false);
+            }
         }
         if (input.getCaPort() != 0) {
             caPort.setText(String.valueOf(input.getCaPort()));

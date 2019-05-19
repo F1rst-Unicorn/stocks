@@ -83,8 +83,10 @@ public class EanNumberFragment extends BaseFragment {
 
     private void startScanning(View dummy) {
         LOG.i("Starting QR code reader");
-        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-        integrator.initiateScan();
+        if (probeForCameraPermission()) {
+            IntentIntegrator integrator = new IntentIntegrator(getActivity());
+            integrator.initiateScan();
+        }
     }
 
     private void addEanNumber(String code) {

@@ -51,4 +51,10 @@ public abstract class FoodDao {
             "INNER JOIN least_item i ON i.of_type = f._id " +
             "ORDER BY eatBy")
     public abstract LiveData<List<FoodView>> getFoodByLocation(int location);
+
+    @Query("SELECT * FROM Food f " +
+            "INNER JOIN EanNumber n on n.identifies = f._id " +
+            "WHERE n.number = :s " +
+            "LIMIT 1")
+    public abstract LiveData<Food> getFoodByEanNumber(String s);
 }

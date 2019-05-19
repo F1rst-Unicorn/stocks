@@ -1,11 +1,14 @@
 package de.njsm.stocks.android.frontend;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
@@ -161,6 +164,33 @@ public class BaseFragment extends Fragment {
         );
         data.observe(this, callback::setData);
         new ItemTouchHelper(callback).attachToRecyclerView(list);
+    }
+
+    protected boolean probeForCameraPermission() {
+        return probeForCameraPermission(true);
+    }
+
+    protected boolean probeForCameraPermission(boolean showRationale) {
+        if (ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (showRationale && ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+                    Manifest.permission.CAMERA)) {
+                String message = getString(R.string.text_camera_explanation);
+                showErrorDialog(R.string.title_camera_permission,
+                        message,
+                        (d,w) -> this.probeForCameraPermission(false));
+                return false;
+            } else {
+                ActivityCompat.requestPermissions(requireActivity(),
+                        new String[]{Manifest.permission.CAMERA},
+                        0);
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
     protected void doNothing(DialogInterface dialogInterface, int i) {}

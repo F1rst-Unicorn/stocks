@@ -136,5 +136,7 @@
     <string name="dialog_item_both_changed" >The item was moved from %1$s to %2$s and the expiration date was changed from %3s to %4$s. Do you still want to eat it?</string>
     <string name="dialog_ean_was_deleted">Barcode was deleted</string>
     <string name="dialog_food_item_was_deleted">Food was eaten</string>
+    <string name="title_camera_permission">Camera Permission</string>
+    <string name="text_camera_explanation">Stocks needs the camera permission to scan bar codes of food. During setup it also reads the ticket from your friend. Both are convenient but not required for the app to work.</string>
 
 </resources>

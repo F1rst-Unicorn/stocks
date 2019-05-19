@@ -138,6 +138,8 @@
     <string name="dialog_item_location_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt. Möchtest du es immer noch essen?</string>
     <string name="dialog_ean_was_deleted">Barcode wurde gelöscht</string>
     <string name="dialog_food_item_was_deleted">Lebensmittel wurde gegessen</string>
+    <string name="title_camera_permission">Erlaubnis für Kamera</string>
+    <string name="text_camera_explanation">Stocks braucht die Erlaubnis für die Benutzung der Kamera um Barcodes von Lebensmitteln einzulesen. Während der Installation kann man so außerdem das Ticket leichter übertragen. Beides ist komfortabel, aber nicht zwingend für das Funktionieren der App nötig.</string>
 
 
 </resources>

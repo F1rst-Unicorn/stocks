@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -28,7 +27,7 @@ public class QrFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        LinearLayout view = new LinearLayout(getActivity());
+        View result = inflater.inflate(R.layout.fragment_qr_setup, container, false);
         assert getArguments() != null;
         input = QrFragmentArgs.fromBundle(getArguments());
 
@@ -52,16 +51,40 @@ public class QrFragment extends BaseFragment {
                     .setTicket(input.getTicket());
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(args);
         } else {
-            LOG.i("Starting QR code reader");
-            IntentIntegrator integrator = new IntentIntegrator(getActivity());
-            integrator.initiateScan();
+            if (probeForCameraPermission()) {
+                LOG.i("Starting QR code reader");
+                IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                integrator.initiateScan();
+            }
         }
         requireActivity().setTitle(R.string.title_qr_code_scan);
         getArguments().putString("username", null);
-        return view;
+        result.findViewById(R.id.qr_setup_button).setOnClickListener(this::goOnWithoutQrCode);
+        return result;
+    }
+
+    @Override
+    public void onDestroy() {
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiver);
+        super.onDestroy();
+    }
+
+    private void goOnWithoutQrCode(View view) {
+        QrFragmentDirections.ActionNavFragmentQrToNavFragmentPrincipals args =
+                QrFragmentDirections.actionNavFragmentQrToNavFragmentPrincipals(
+                        input.getServerUrl(),
+                        input.getCaPort(),
+                        input.getSentryPort(),
+                        input.getServerPort(),
+                        null);
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(args);
     }
 
     void getQrResult(@Nullable String content) {
+        if (getActivity() == null) {
+            return;
+        }
+
         QrFragmentDirections.ActionNavFragmentQrToNavFragmentPrincipals args =
                 QrFragmentDirections.actionNavFragmentQrToNavFragmentPrincipals(
                 input.getServerUrl(),
@@ -86,7 +109,7 @@ public class QrFragment extends BaseFragment {
             LOG.i("QR code was skipped");
         }
 
-        LocalBroadcastManager.getInstance(requireActivity()).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiver);
         Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(args);
     }
 }

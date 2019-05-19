@@ -2,17 +2,22 @@ package de.njsm.stocks.android.frontend.main;
 
 
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.Navigation;
 import com.google.android.material.navigation.NavigationView;
+import com.google.zxing.integration.android.IntentIntegrator;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
@@ -31,6 +36,10 @@ public class OutlineFragment extends BaseFragment {
     SharedPreferences settings;
 
     private boolean initialised = false;
+
+    private ScanBroadcaseReceiver receiver;
+
+    private FoodViewModel foodViewModel;
 
     @Override
     public void onAttach(Context context) {
@@ -68,6 +77,8 @@ public class OutlineFragment extends BaseFragment {
             result.findViewById(R.id.fragment_outline_cardview).setOnClickListener(this::goToEatSoon);
             result.findViewById(R.id.fragment_outline_cardview2).setOnClickListener(this::goToEmptyFood);
             result.findViewById(R.id.fragment_outline_fab).setOnClickListener(v -> this.addFood(viewModel));
+
+            foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
         }
         return result;
     }
@@ -96,5 +107,40 @@ public class OutlineFragment extends BaseFragment {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, SearchActivity.class)));
         searchView.setIconifiedByDefault(true);
         searchView.setSubmitButtonEnabled(true);*/
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_scan:
+                if (! probeForCameraPermission()) {
+                    return true;
+                }
+                if (receiver == null) {
+                    receiver = new ScanBroadcaseReceiver(this::goToScannedFood);
+                }
+                IntentFilter filter = new IntentFilter(MainActivity.ACTION_QR_CODE_SCANNED);
+                LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiver, filter);
+                LOG.i("Starting QR code reader");
+                IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                integrator.initiateScan();
+        }
+        return true;
+    }
+
+    private void goToScannedFood(String s) {
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiver);
+        LiveData<Food> scannedFood = foodViewModel.getFoodByEanNumber(s);
+        scannedFood.observe(this, f -> {
+            if (f != null) {
+                LOG.d("Found scanned food as " + f.name);
+                OutlineFragmentDirections.ActionNavFragmentOutlineToNavFragmentFoodItem args =
+                        OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentFoodItem(f.id);
+                Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                        .navigate(args);
+            } else {
+                LOG.d("No food found");
+            }
+        });
     }
 }

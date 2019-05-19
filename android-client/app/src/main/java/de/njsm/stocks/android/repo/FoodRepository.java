@@ -74,4 +74,8 @@ public class FoodRepository {
     public LiveData<List<FoodView>> getFoodByLocation(int location) {
         return foodDao.getFoodByLocation(location);
     }
+
+    public LiveData<Food> getFoodByEanNumber(String s) {
+        return foodDao.getFoodByEanNumber(s);
+    }
 }

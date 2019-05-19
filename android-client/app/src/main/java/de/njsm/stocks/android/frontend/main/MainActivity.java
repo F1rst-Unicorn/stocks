@@ -1,9 +1,12 @@
 package de.njsm.stocks.android.frontend.main;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -84,6 +87,17 @@ public class MainActivity extends AppCompatActivity {
     private boolean openDrawer() {
         drawerLayout.openDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 0
+                && permissions[0].equals(Manifest.permission.CAMERA)
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            LOG.i("Starting QR code reader");
+            IntentIntegrator integrator = new IntentIntegrator(this);
+            integrator.initiateScan();
+        }
     }
 
     @Override
