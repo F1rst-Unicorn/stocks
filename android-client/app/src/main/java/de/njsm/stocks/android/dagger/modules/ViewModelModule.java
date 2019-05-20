@@ -11,11 +11,12 @@ import de.njsm.stocks.android.frontend.crashlog.CrashLogViewModel;
 import de.njsm.stocks.android.frontend.device.SingleUserViewModel;
 import de.njsm.stocks.android.frontend.device.UserDeviceViewModel;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
-import de.njsm.stocks.android.frontend.food.FoodToEatViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.EmptyFoodViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
+import de.njsm.stocks.android.frontend.food.FoodToEatViewModel;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
+import de.njsm.stocks.android.frontend.search.SearchViewModel;
 import de.njsm.stocks.android.frontend.user.UserViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.repo.*;
@@ -63,6 +64,13 @@ public class ViewModelModule {
     @ViewModelKey(FoodViewModel.class)
     ViewModel provideFoodViewModel(FoodRepository repo) {
         return new FoodViewModel(repo);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(SearchViewModel.class)
+    ViewModel provideSearchViewModel(FoodRepository repo) {
+        return new SearchViewModel(repo);
     }
 
     @Provides

@@ -78,4 +78,9 @@ public class FoodRepository {
     public LiveData<Food> getFoodByEanNumber(String s) {
         return foodDao.getFoodByEanNumber(s);
     }
+
+    public LiveData<List<FoodView>> getFoodBySubString(String searchTerm) {
+        LOG.d("searching for %" + searchTerm + "%");
+        return foodDao.getFoodBySubString("%" + searchTerm + "%");
+    }
 }

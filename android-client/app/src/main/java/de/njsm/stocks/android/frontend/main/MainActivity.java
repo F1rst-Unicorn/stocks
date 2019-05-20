@@ -2,6 +2,7 @@ package de.njsm.stocks.android.frontend.main;
 
 
 import android.Manifest;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -50,6 +51,23 @@ public class MainActivity extends AppCompatActivity {
 
         navController = Navigation.findNavController(this, R.id.main_nav_host_fragment);
         NavigationUI.setupWithNavController(toolbar, navController, drawerLayout);
+
+        handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            OutlineFragmentDirections.ActionNavFragmentOutlineToNavFragmentSearch args =
+                    OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentSearch(query);
+            navController.navigate(args);
+        }
     }
 
     private boolean onNavigationItemSelected(MenuItem menuItem) {
