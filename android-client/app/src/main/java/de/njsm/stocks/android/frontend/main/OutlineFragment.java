@@ -15,6 +15,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -133,17 +134,23 @@ public class OutlineFragment extends BaseFragment {
 
     private void goToScannedFood(String s) {
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiver);
+        if (s == null)
+            return;
+
         LiveData<Food> scannedFood = foodViewModel.getFoodByEanNumber(s);
         scannedFood.observe(this, f -> {
+            scannedFood.removeObservers(this);
+            NavDirections args;
             if (f != null) {
                 LOG.d("Found scanned food as " + f.name);
-                OutlineFragmentDirections.ActionNavFragmentOutlineToNavFragmentFoodItem args =
-                        OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentFoodItem(f.id);
-                Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
-                        .navigate(args);
+                args = OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentFoodItem(f.id);
             } else {
                 LOG.d("No food found");
+                args = OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentAllFood(s);
             }
+
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(args);
         });
     }
 }

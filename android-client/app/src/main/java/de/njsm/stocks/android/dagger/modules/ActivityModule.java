@@ -3,6 +3,7 @@ package de.njsm.stocks.android.dagger.modules;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 import de.njsm.stocks.android.frontend.additem.AddItemFragment;
+import de.njsm.stocks.android.frontend.allfood.AllFoodFragment;
 import de.njsm.stocks.android.frontend.crashlog.CrashLogListFragment;
 import de.njsm.stocks.android.frontend.device.DeviceFragment;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberFragment;
@@ -49,6 +50,9 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract SearchFragment contributeSearchFragment();
+
+    @ContributesAndroidInjector
+    abstract AllFoodFragment contributeAllFoodFragment();
 
     @ContributesAndroidInjector
     abstract StartupFragment contributeStartupFragment();

@@ -54,18 +54,18 @@ public class EmptyFoodFragment extends BaseFragment {
                 (f, s) -> viewModel.renameFood(f, s),
                 viewModel::getFood);
         adapter = new FoodAdapter(
-                viewModel.getFood(),
+                viewModel.getEmptyFood(),
                 this::onListItemClicked,
-                v -> editInternally(v, viewModel.getFood(), R.string.dialog_rename_food,
+                v -> editInternally(v, viewModel.getEmptyFood(), R.string.dialog_rename_food,
                 editor::observeEditing));
-        viewModel.getFood().observe(this, u -> adapter.notifyDataSetChanged());
+        viewModel.getEmptyFood().observe(this, u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         FoodDeletionInteractor deleter = new FoodDeletionInteractor(this, list,
                 f -> adapter.notifyDataSetChanged(),
                 i -> viewModel.deleteFood(i),
-                id -> viewModel.getFood(id));
-        addSwipeToDelete(list, viewModel.getFood(), deleter::initiateDeletion);
+                viewModel::getFood);
+        addSwipeToDelete(list, viewModel.getEmptyFood(), deleter::initiateDeletion);
 
         initialiseSwipeRefresh(result, viewModelFactory);
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(v -> this.addFood(viewModel));
@@ -80,7 +80,7 @@ public class EmptyFoodFragment extends BaseFragment {
     private void onListItemClicked(View view) {
         RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<Food> data = viewModel.getFood().getValue();
+        List<Food> data = viewModel.getEmptyFood().getValue();
         if (data != null) {
             int id = data.get(position).id;
             EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentFoodItem args =

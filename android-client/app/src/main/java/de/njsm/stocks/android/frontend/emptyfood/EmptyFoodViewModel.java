@@ -26,7 +26,7 @@ public class EmptyFoodViewModel extends FoodViewModel {
         }
     }
 
-    LiveData<List<Food>> getFood() {
+    LiveData<List<Food>> getEmptyFood() {
         return food;
     }
 

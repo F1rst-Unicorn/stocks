@@ -19,6 +19,7 @@ public class ScanBroadcaseReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         LOG.d("Got action " + intent.getAction());
-        consumer.accept(intent.getStringExtra(MainActivity.PARAM_QR_CONTENT));
+        String eanCode = intent.getStringExtra(MainActivity.PARAM_QR_CONTENT);
+        consumer.accept(eanCode);
     }
 }

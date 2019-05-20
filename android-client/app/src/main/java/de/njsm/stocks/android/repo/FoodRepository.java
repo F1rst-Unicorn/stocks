@@ -83,4 +83,8 @@ public class FoodRepository {
         LOG.d("searching for %" + searchTerm + "%");
         return foodDao.getFoodBySubString("%" + searchTerm + "%");
     }
+
+    public LiveData<List<Food>> getFood() {
+        return foodDao.getFood();
+    }
 }

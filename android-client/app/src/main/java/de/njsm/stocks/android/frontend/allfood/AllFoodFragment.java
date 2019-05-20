@@ -1,4 +1,4 @@
-package de.njsm.stocks.android.frontend.search;
+package de.njsm.stocks.android.frontend.allfood;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,19 +15,25 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.StringListAdapter;
+import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 
 import javax.inject.Inject;
 import java.util.List;
 
-public class SearchFragment extends BaseFragment {
+public class AllFoodFragment extends BaseFragment {
 
     private ViewModelProvider.Factory viewModelFactory;
 
-    private SearchAdapter adapter;
+    private FoodViewModel viewModel;
 
-    private LiveData<List<FoodView>> data;
+    private FoodAdapter adapter;
+
+    private LiveData<List<Food>> data;
+
+    private AllFoodFragmentArgs input;
 
     @Override
     public void onAttach(Context context) {
@@ -40,30 +46,31 @@ public class SearchFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
         assert getArguments() != null;
-        SearchFragmentArgs input = SearchFragmentArgs.fromBundle(getArguments());
+        input = AllFoodFragmentArgs.fromBundle(getArguments());
 
         RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-        SearchViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel.class);
-        data = viewModel.search(input.getSearchTerm());
-        adapter = new SearchAdapter(data, this::onClick);
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
+        data = viewModel.getFood();
+
+        adapter = new FoodAdapter(data, this::onClick);
         data.observe(this, v -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         initialiseSwipeRefresh(result, viewModelFactory);
-        result.findViewById(R.id.template_swipe_list_fab).setVisibility(View.GONE);
         return result;
     }
 
     private void onClick(View view) {
-        SearchAdapter.ViewHolder holder = (SearchAdapter.ViewHolder) view.getTag();
+        StringListAdapter.ViewHolder holder = (StringListAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodView> list = data.getValue();
-        if (list != null) {
-            int id = list.get(position).id;
-            SearchFragmentDirections.ActionNavFragmentSearchToNavFragmentFoodItem args =
-                    SearchFragmentDirections.actionNavFragmentSearchToNavFragmentFoodItem(id);
+        List<Food> data = this.data.getValue();
+        if (data != null) {
+            int id = data.get(position).id;
+            AllFoodFragmentDirections.ActionNavFragmentAllFoodToNavFragmentFoodItem args =
+                    AllFoodFragmentDirections.actionNavFragmentAllFoodToNavFragmentFoodItem(id)
+                    .setEanNumber(input.getEanNumber());
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
         }

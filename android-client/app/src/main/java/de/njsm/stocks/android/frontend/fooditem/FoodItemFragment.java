@@ -15,6 +15,7 @@ import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.FoodItemDeletionInteractor;
 
@@ -23,6 +24,8 @@ import javax.inject.Inject;
 public class FoodItemFragment extends BaseFragment {
 
     private FoodItemViewModel viewModel;
+
+    private EanNumberViewModel eanNumberViewModel;
 
     private ViewModelProvider.Factory viewModelFactory;
 
@@ -49,6 +52,7 @@ public class FoodItemFragment extends BaseFragment {
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodItemViewModel.class);
+        eanNumberViewModel = ViewModelProviders.of(this, viewModelFactory).get(EanNumberViewModel.class);
         viewModel.init(input.getFoodId());
         FoodViewModel foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
         LiveData<Food> selfFood = foodViewModel.getFood(input.getFoodId());
@@ -68,12 +72,21 @@ public class FoodItemFragment extends BaseFragment {
 
         setHasOptionsMenu(true);
         initialiseSwipeRefresh(result, viewModelFactory);
+        maybeAddEanCode(input.getEanNumber());
         return result;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.activity_food_menu, menu);
+    }
+
+    private void maybeAddEanCode(String eanNumber) {
+        if (eanNumber != null && ! eanNumber.isEmpty()) {
+            eanNumberViewModel.addEanNumber(eanNumber, input.getFoodId())
+                    .observe(this, this::maybeShowAddError);
+        }
+        getArguments().remove("eanNumber");
     }
 
     private void addItem(View view) {

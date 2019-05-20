@@ -39,6 +39,10 @@ public class FoodViewModel extends ViewModel {
         return foodRepository.getFoodByLocation(location);
     }
 
+    public LiveData<List<Food>> getFood() {
+        return foodRepository.getFood();
+    }
+
     public LiveData<Food> getFoodByEanNumber(String s) {
         return foodRepository.getFoodByEanNumber(s);
     }

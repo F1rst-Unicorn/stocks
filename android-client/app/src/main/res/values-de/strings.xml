@@ -140,6 +140,7 @@
     <string name="dialog_food_item_was_deleted">Lebensmittel wurde gegessen</string>
     <string name="title_camera_permission">Erlaubnis für Kamera</string>
     <string name="text_camera_explanation">Stocks braucht die Erlaubnis für die Benutzung der Kamera um Barcodes von Lebensmitteln einzulesen. Während der Installation kann man so außerdem das Ticket leichter übertragen. Beides ist komfortabel, aber nicht zwingend für das Funktionieren der App nötig.</string>
+    <string name="title_new_barcode">Neuer Barcode für...</string>
 
 
 </resources>

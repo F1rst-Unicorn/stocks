@@ -67,4 +67,8 @@ public abstract class FoodDao {
             "FROM Food f " +
             "WHERE f.name LIKE :searchTerm AND f._id NOT IN (SELECT DISTINCT of_type FROM FoodItem)")
     public abstract LiveData<List<FoodView>> getFoodBySubString(String searchTerm);
+
+    @Query("SELECT * FROM Food ORDER BY name")
+    public abstract LiveData<List<Food>> getFood();
+
 }
