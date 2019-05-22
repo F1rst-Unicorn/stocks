@@ -1,68 +1,62 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     style="@style/StocksTheme.Activity"
-    tools:context="de.njsm.stocks.android.frontend.setup.ServerFragment">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <EditText
+        android:id="@+id/fragment_server_url"
         style="@style/StocksTheme.EditText"
-        android:id="@+id/server_url"
+        android:layout_alignParentTop="true"
         android:hint="@string/hint_servername"
-        android:importantForAutofill="no"
-        android:inputType="textUri"
-        android:layout_alignParentTop="true"/>
+        android:inputType="textUri" />
 
     <Switch
+        android:id="@+id/fragment_server_expert_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hint_expert"
-        android:id="@+id/expert_switch"
-        android:layout_below="@id/server_url"
-        android:layout_alignEnd="@id/server_url"/>
+        android:layout_below="@id/fragment_server_url"
+        android:layout_alignEnd="@id/fragment_server_url"
+        android:text="@string/hint_expert" />
 
     <LinearLayout
-        android:id="@+id/expert_options"
-        android:visibility="gone"
-        android:orientation="vertical"
+        android:id="@+id/fragment_server_expert_options"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/expert_switch">
+        android:layout_below="@id/fragment_server_expert_switch"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <EditText
+            android:id="@+id/fragment_server_ca_port"
             style="@style/StocksTheme.EditText"
-            android:inputType="numberDecimal"
+            android:ems="10"
             android:hint="@string/hint_caport"
-            android:importantForAutofill="no"
-            android:ems="10"
-            android:id="@+id/ca_port" />
+            android:inputType="numberDecimal" />
 
         <EditText
+            android:id="@+id/fragment_server_sentry_port"
             style="@style/StocksTheme.EditText"
-            android:inputType="numberDecimal"
+            android:ems="10"
             android:hint="@string/hint_ticket_port"
-            android:importantForAutofill="no"
-            android:ems="10"
-            android:id="@+id/sentry_port" />
+            android:inputType="numberDecimal" />
 
         <EditText
+            android:id="@+id/fragment_server_server_port"
             style="@style/StocksTheme.EditText"
-            android:inputType="numberDecimal"
             android:ems="10"
             android:hint="@string/hint_server_port"
-            android:importantForAutofill="no"
-            android:id="@+id/server_port" />
+            android:inputType="numberDecimal" />
     </LinearLayout>
 
     <Button
-        android:id="@+id/server_button"
+        android:id="@+id/fragment_server_server_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
-        android:text="@string/action_continue"
-        android:background="@color/colorAccent" />
+        android:background="@color/colorAccent"
+        android:text="@string/action_continue" />
 
 </RelativeLayout>

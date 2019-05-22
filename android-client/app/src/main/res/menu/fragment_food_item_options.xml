@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/activity_food_menu_ean"
-        android:orderInCategory="100"
+        android:id="@+id/fragment_food_item_options_ean"
         android:icon="@drawable/ic_photo_camera_white_24dp"
+        android:orderInCategory="100"
         android:title="@string/title_barcode"
         app:showAsAction="ifRoom" />
 

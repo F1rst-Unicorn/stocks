@@ -70,11 +70,11 @@ public class OutlineFragment extends BaseFragment {
             refresher.refresh();
             setHasOptionsMenu(true);
             NavigationView nav = requireActivity().findViewById(R.id.main_nav);
-            TextView view = nav.getHeaderView(0).findViewById(R.id.drawer_username);
+            TextView view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_username);
             view.setText(settings.getString(Config.USERNAME_CONFIG, ""));
-            view = nav.getHeaderView(0).findViewById(R.id.drawer_user_dev);
+            view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_dev);
             view.setText(settings.getString(Config.DEVICE_NAME_CONFIG, ""));
-            view = nav.getHeaderView(0).findViewById(R.id.drawer_server);
+            view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_server);
             view.setText(settings.getString(Config.SERVER_NAME_CONFIG, ""));
 
             FoodViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
@@ -104,10 +104,10 @@ public class OutlineFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.action_bar_outline, menu);
+        inflater.inflate(R.menu.fragment_outline_options, menu);
 
         SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.fragment_outline_options_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(requireContext(), MainActivity.class)));
         searchView.setIconifiedByDefault(true);
         searchView.setSubmitButtonEnabled(true);
@@ -116,7 +116,7 @@ public class OutlineFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_scan:
+            case R.id.fragment_outline_options_scan:
                 if (! probeForCameraPermission()) {
                     return true;
                 }
@@ -133,7 +133,11 @@ public class OutlineFragment extends BaseFragment {
     }
 
     private void goToScannedFood(String s) {
+        if (getContext() == null)
+            return;
+
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiver);
+
         if (s == null)
             return;
 

@@ -58,7 +58,7 @@ public class UserFragment extends BaseFragment {
         list.setAdapter(adapter);
 
         UserDeletionInteractor interactor = new UserDeletionInteractor(
-                this, list,
+                this, result,
                 i -> adapter.notifyDataSetChanged(),
                 i -> viewModel.deleteUser(i));
         addSwipeToDelete(list, viewModel.getUsers(), interactor::initiateDeletion);

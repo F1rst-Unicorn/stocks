@@ -64,7 +64,7 @@ public class FoodItemFragment extends BaseFragment {
         list.setAdapter(adapter);
 
         FoodItemDeletionInteractor interactor = new FoodItemDeletionInteractor(
-                this, list,
+                this, result,
                 i -> adapter.notifyDataSetChanged(),
                 i -> viewModel.deleteItem(i),
                 i -> viewModel.getItem(i));
@@ -78,7 +78,7 @@ public class FoodItemFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.activity_food_menu, menu);
+        inflater.inflate(R.menu.fragment_food_item_options, menu);
     }
 
     private void maybeAddEanCode(String eanNumber) {

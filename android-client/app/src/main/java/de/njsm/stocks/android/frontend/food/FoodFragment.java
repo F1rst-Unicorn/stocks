@@ -80,7 +80,7 @@ public class FoodFragment extends BaseFragment {
         list.setAdapter(adapter);
 
         FoodDeletionInteractor interactor = new FoodDeletionInteractor(
-                this, list,
+                this, result,
                 i -> adapter.notifyDataSetChanged(),
                 i -> viewModel.deleteFood(i),
                 i -> viewModel.getFood(i));

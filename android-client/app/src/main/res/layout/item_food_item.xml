@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingLeft="@dimen/list_item_padding"
-    android:paddingRight="@dimen/list_item_padding"
     android:paddingTop="@dimen/list_item_padding"
+    android:paddingRight="@dimen/list_item_padding"
     android:paddingBottom="@dimen/list_item_padding">
 
     <ImageView
@@ -13,69 +13,69 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:src="@drawable/ic_alarm_black_24dp"
-        android:contentDescription="@string/desc_expiration_state"
         android:layout_gravity="start"
+        android:contentDescription="@string/desc_expiration_state"
+        android:paddingTop="3dp"
         android:paddingEnd="@dimen/list_item_padding"
-        android:paddingTop="3dp" />
+        android:src="@drawable/ic_alarm_black_24dp" />
 
     <TextView
         android:id="@+id/item_food_item_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
         style="@style/StocksTheme.TextLarge"
-        android:layout_toEndOf="@id/item_food_item_icon"/>
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/item_food_item_icon" />
 
     <TextView
         android:id="@+id/item_food_item_buyer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
         style="@style/StocksTheme.TextSmall"
-        android:text="@string/text_buyer"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
         android:layout_below="@id/item_food_item_icon"
-        android:paddingTop="@dimen/list_item_padding" />
+        android:paddingTop="@dimen/list_item_padding"
+        android:text="@string/text_buyer" />
 
     <TextView
         android:id="@+id/item_food_item_colon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
         style="@style/StocksTheme.TextSmall"
-        android:text=":"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
         android:layout_below="@id/item_food_item_icon"
         android:layout_toEndOf="@id/item_food_item_buyer"
         android:paddingTop="@dimen/list_item_padding"
-        android:paddingEnd="@dimen/list_item_padding" />
+        android:paddingEnd="@dimen/list_item_padding"
+        android:text=":" />
 
     <TextView
         android:id="@+id/item_food_item_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
         style="@style/StocksTheme.TextSmall"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
         android:layout_below="@id/item_food_item_icon"
         android:layout_toEndOf="@id/item_food_item_colon"
         android:paddingTop="@dimen/list_item_padding" />
 
     <TextView
         android:id="@+id/item_food_item_comma"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
         style="@style/StocksTheme.TextSmall"
-        android:text=","
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
         android:layout_below="@id/item_food_item_icon"
         android:layout_toEndOf="@id/item_food_item_user"
         android:paddingTop="@dimen/list_item_padding"
-        android:paddingEnd="4dp" />
+        android:paddingEnd="4dp"
+        android:text="," />
 
     <TextView
         android:id="@+id/item_food_item_device"
+        style="@style/StocksTheme.TextSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/StocksTheme.TextSmall"
         android:layout_below="@id/item_food_item_icon"
         android:layout_toEndOf="@id/item_food_item_comma"
         android:paddingTop="@dimen/list_item_padding" />
@@ -85,36 +85,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:src="@drawable/ic_account_balance_wallet_black_24dp"
-        android:contentDescription="@string/desc_location"
-        android:paddingEnd="@dimen/list_item_padding"
-        android:paddingTop="3dp"
         android:layout_alignParentEnd="true"
-        />
+        android:contentDescription="@string/desc_location"
+        android:paddingTop="3dp"
+        android:paddingEnd="@dimen/list_item_padding"
+        android:src="@drawable/ic_account_balance_wallet_black_24dp" />
 
     <TextView
         android:id="@+id/item_food_item_location"
-        android:textAlignment="viewEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/item_food_item_date"
         style="@style/StocksTheme.TextLarge"
-        android:layout_toStartOf="@id/item_food_item_location_icon"
-        android:layout_gravity="end"
-        android:paddingEnd="@dimen/list_item_padding"
-        />
-
-    <Button
-        android:id="@+id/item_food_item_undo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_undo"
-        android:textAllCaps="true"
-        android:textColor="@android:color/white"
-        android:layout_gravity="end|center_vertical"
-        android:layout_alignParentEnd="true"
-        android:visibility="gone"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        />
+        android:layout_gravity="end"
+        android:layout_toStartOf="@id/item_food_item_location_icon"
+        android:layout_toEndOf="@id/item_food_item_date"
+        android:paddingEnd="@dimen/list_item_padding"
+        android:textAlignment="viewEnd" />
 
 </RelativeLayout>

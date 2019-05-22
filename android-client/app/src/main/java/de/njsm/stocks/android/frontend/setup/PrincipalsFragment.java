@@ -42,13 +42,13 @@ public class PrincipalsFragment extends BaseFragment {
         assert getArguments() != null;
         input = PrincipalsFragmentArgs.fromBundle(getArguments());
 
-        userName = root.findViewById(R.id.user_name);
-        userId = root.findViewById(R.id.user_id);
-        deviceName = root.findViewById(R.id.device_name);
-        deviceId = root.findViewById(R.id.device_id);
-        fingerprint = root.findViewById(R.id.fingerprint);
-        ticket = root.findViewById(R.id.ticket);
-        next = root.findViewById(R.id.principals_button);
+        userName = root.findViewById(R.id.fragment_principals_user_name);
+        userId = root.findViewById(R.id.fragment_principals_user_id);
+        deviceName = root.findViewById(R.id.fragment_principals_device_name);
+        deviceId = root.findViewById(R.id.fragment_principals_device_id);
+        fingerprint = root.findViewById(R.id.fragment_principals_fingerprint);
+        ticket = root.findViewById(R.id.fragment_principals_ticket);
+        next = root.findViewById(R.id.fragment_principals_button);
 
         if (input.getUsername() != null) {
             LOG.d("Got input from qr fragment");

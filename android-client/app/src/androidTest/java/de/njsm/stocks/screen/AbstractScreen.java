@@ -1,6 +1,7 @@
 package de.njsm.stocks.screen;
 
-import android.support.test.espresso.Espresso;
+
+import androidx.test.espresso.Espresso;
 
 public class AbstractScreen {
 

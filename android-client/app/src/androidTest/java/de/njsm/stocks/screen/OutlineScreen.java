@@ -1,30 +1,30 @@
 package de.njsm.stocks.screen;
 
-import android.support.test.espresso.ViewInteraction;
-import android.support.test.espresso.contrib.NavigationViewActions;
 import android.view.Gravity;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.contrib.NavigationViewActions;
 import de.njsm.stocks.R;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.contrib.DrawerActions.open;
-import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.*;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.DrawerActions.open;
+import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
+import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static org.hamcrest.Matchers.allOf;
 
-public class MainScreen extends AbstractScreen {
+public class OutlineScreen extends AbstractScreen {
 
     public SearchScreen search(String searchText) {
-        onView(withId(R.id.action_search)).perform(click());
+        onView(withId(R.id.fragment_outline_options_search)).perform(click());
         onView(withId(R.id.search_src_text)).perform(replaceText(searchText));
         onView(withId(R.id.search_go_btn)).perform(click());
 
         return new SearchScreen();
     }
 
-    public MainScreen addFoodType(String name) {
-        onView(withId(R.id.fab)).perform(click());
+    public OutlineScreen addFoodType(String name) {
+        onView(withId(R.id.fragment_outline_fab)).perform(click());
         onView(withHint(R.string.hint_food)).perform(replaceText(name));
         onView(withText("OK")).perform(click());
         return this;
@@ -36,18 +36,18 @@ public class MainScreen extends AbstractScreen {
     }
 
     public LocationScreen goToLocations() {
-        onView(withId(R.id.drawer_layout))
+        onView(withId(R.id.main_drawer_layout))
                 .check(matches(isClosed(Gravity.START)))
                 .perform(open());
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.locations));
+        onView(withId(R.id.main_nav)).perform(NavigationViewActions.navigateTo(R.id.activity_main_drawer_locations));
         return new LocationScreen();
     }
 
     public UserScreen goToUsers() {
-        onView(withId(R.id.drawer_layout))
+        onView(withId(R.id.main_drawer_layout))
                 .check(matches(isClosed(Gravity.START)))
                 .perform(open());
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.users));
+        onView(withId(R.id.main_nav)).perform(NavigationViewActions.navigateTo(R.id.activity_main_drawer_users));
         return new UserScreen();
     }
 
@@ -57,20 +57,22 @@ public class MainScreen extends AbstractScreen {
     }
 
     public FoodScreen scanSuccessful() {
-        onView(withId(R.id.action_scan)).perform(click());
+        onView(withId(R.id.fragment_outline_options_scan)).perform(click());
+        sleep(500);
         return new FoodScreen();
     }
 
     public AllFoodScreen scanFailing() {
-        onView(withId(R.id.action_scan)).perform(click());
+        onView(withId(R.id.fragment_outline_options_scan)).perform(click());
+        sleep(500);
         return new AllFoodScreen();
     }
 
-    public static MainScreen test() {
-        return new MainScreen();
+    public static OutlineScreen test() {
+        return new OutlineScreen();
     }
 
-    public MainScreen assertRegistrationSuccess() {
+    public OutlineScreen assertRegistrationSuccess() {
         onView(withId(android.R.id.message))
                 .check(matches(withText(R.string.dialog_finished)));
 

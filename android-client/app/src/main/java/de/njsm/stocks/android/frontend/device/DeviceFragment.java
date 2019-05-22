@@ -53,9 +53,9 @@ public class DeviceFragment extends BaseFragment {
         assert getArguments() != null;
         input = DeviceFragmentArgs.fromBundle(getArguments());
 
-        RecyclerView list = result.findViewById(R.id.user_detail_device_list);
+        RecyclerView list = result.findViewById(R.id.fragment_devices_device_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        result.findViewById(R.id.devices_fab).setOnClickListener(this::addDevice);
+        result.findViewById(R.id.fragment_devices_fab).setOnClickListener(this::addDevice);
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserDeviceViewModel.class);
         viewModel.init(input.getUserId());
@@ -67,12 +67,12 @@ public class DeviceFragment extends BaseFragment {
         list.setAdapter(adapter);
 
         DeviceDeletionInteractor interactor = new DeviceDeletionInteractor(
-                this, list,
+                this, result,
                 i -> adapter.notifyDataSetChanged(),
                 i -> viewModel.deleteUserDevice(i));
         addSwipeToDelete(list, viewModel.getDevices(), interactor::initiateDeletion);
 
-        initialiseSwipeRefresh(result, R.id.devices_swipe, viewModelFactory);
+        initialiseSwipeRefresh(result, R.id.fragment_devices_swipe, viewModelFactory);
 
         singleUserViewModel.getUser().observe(this, u -> requireActivity().setTitle(u == null ? "" : u.name));
         return result;
@@ -91,7 +91,10 @@ public class DeviceFragment extends BaseFragment {
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
                     String name = textField.getText().toString().trim();
                     LiveData<Validation<StatusCode, ServerTicket>> result = viewModel.addUserDevice(name, input.getUserId());
-                    result.observe(this, data -> this.handleDeviceCreation(data, name));
+                    result.observe(this, data -> {
+                        result.removeObservers(this);
+                        this.handleDeviceCreation(data, name);
+                    });
                 })
                 .setNegativeButton(getResources().getString(android.R.string.cancel), this::doNothing)
                 .show();

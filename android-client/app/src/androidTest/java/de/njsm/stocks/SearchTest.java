@@ -1,8 +1,9 @@
 package de.njsm.stocks;
 
-import android.support.test.rule.ActivityTestRule;
-import de.njsm.stocks.frontend.startup.StartupActivity;
-import de.njsm.stocks.screen.MainScreen;
+
+import androidx.test.rule.ActivityTestRule;
+import de.njsm.stocks.android.frontend.main.MainActivity;
+import de.njsm.stocks.screen.OutlineScreen;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -10,7 +11,7 @@ import org.junit.Test;
 public class SearchTest {
 
     @Rule
-    public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
     @After
     public void tearDown() throws Exception {
@@ -19,7 +20,7 @@ public class SearchTest {
 
     @Test
     public void searchWithoutResult() throws Exception {
-        MainScreen.test()
+        OutlineScreen.test()
                 .search("Meat")
                 .assertResultCount(0);
     }
@@ -27,7 +28,7 @@ public class SearchTest {
     @Test
     public void searchSingleResult() throws Exception {
         String searchText = "Beer";
-        MainScreen.test()
+        OutlineScreen.test()
                 .search("Beer")
                 .assertResultCount(1)
                 .assertItemContent(0, searchText, 2)
@@ -38,7 +39,7 @@ public class SearchTest {
     @Test
     public void searchMultipleResults() throws Exception {
         String searchText = "ee";
-        MainScreen.test()
+        OutlineScreen.test()
                 .search(searchText)
                 .assertResultCount(2);
     }

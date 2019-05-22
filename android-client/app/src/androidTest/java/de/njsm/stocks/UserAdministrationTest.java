@@ -1,15 +1,16 @@
 package de.njsm.stocks;
 
-import android.support.test.rule.ActivityTestRule;
-import de.njsm.stocks.frontend.startup.StartupActivity;
-import de.njsm.stocks.screen.MainScreen;
+
+import androidx.test.rule.ActivityTestRule;
+import de.njsm.stocks.android.frontend.main.MainActivity;
+import de.njsm.stocks.screen.OutlineScreen;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 
 public class UserAdministrationTest {
     @Rule
-    public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
     private String username = "Juliette";
 
@@ -22,7 +23,7 @@ public class UserAdministrationTest {
 
     @Test
     public void addNewUserAndDevice() throws Exception {
-        MainScreen.test()
+        OutlineScreen.test()
                 .goToUsers()
                 .addUser(username)
                 .assertUser(1, username)
@@ -34,6 +35,6 @@ public class UserAdministrationTest {
                 .assertEmptyList()
                 .pressBack()
                 .removeUser(1)
-                .assertNotContains(username);
+                .assertEmpty();
     }
 }

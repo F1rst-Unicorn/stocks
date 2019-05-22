@@ -1,25 +1,22 @@
 package de.njsm.stocks.screen;
 
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import de.njsm.stocks.R;
 
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.longClick;
-import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static org.hamcrest.CoreMatchers.anything;
-import static org.hamcrest.CoreMatchers.not;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.*;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static junit.framework.TestCase.assertEquals;
 
 public class DeviceScreen extends AbstractListPresentingScreen {
 
     public DeviceScreen() {
-        super(R.id.user_detail_device_list);
+        super(R.id.fragment_devices_device_list);
     }
 
     public DeviceQrScreen addDevice(String name) {
-        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.fragment_devices_fab)).perform(click());
         onView(withHint(R.string.hint_device_name)).perform(replaceText(name));
         onView(withText("OK")).perform(click());
         return new DeviceQrScreen();
@@ -34,24 +31,24 @@ public class DeviceScreen extends AbstractListPresentingScreen {
     public DeviceScreen assertDevice(int index, String name) {
         sleep(1000);
         checkIndex(index);
-        onData(anything()).inAdapterView(withId(R.id.user_detail_device_list))
-                .atPosition(index)
-                .check(matches(withText(name)));
+        onView(withId(R.id.fragment_devices_device_list))
+                .perform(RecyclerViewActions.scrollToPosition(index))
+                .check(matches(withChild(withText(name))));
         return this;
     }
 
     public DeviceScreen removeDevice(int index) {
         checkIndex(index);
-        onData(anything()).inAdapterView(withId(R.id.user_detail_device_list))
-                .atPosition(index)
-                .perform(longClick());
-        onView(withText("OK")).perform(click());
+        onView(withId(R.id.fragment_devices_device_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(index, swipeRight()));
+        onView(withText(R.string.action_undo))
+                .perform(swipeRight());
+        sleep(1000);
         return this;
     }
 
     public DeviceScreen assertEmptyList() {
-        onView(withId(R.id.user_detail_device_list))
-                .check(matches(not(isDisplayed())));
+        assertEquals(0, getListCount());
         return this;
     }
 }

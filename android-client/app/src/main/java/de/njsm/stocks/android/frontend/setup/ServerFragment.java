@@ -39,12 +39,12 @@ public class ServerFragment extends BaseFragment {
         View result = inflater.inflate(R.layout.fragment_server, container, false);
         assert getArguments() != null;
         input = ServerFragmentArgs.fromBundle(getArguments());
-        serverUrl = result.findViewById(R.id.server_url);
-        caPort = result.findViewById(R.id.ca_port);
-        sentryPort = result.findViewById(R.id.sentry_port);
-        serverPort = result.findViewById(R.id.server_port);
-        portDisplaySwitch = result.findViewById(R.id.expert_switch);
-        next = result.findViewById(R.id.server_button);
+        serverUrl = result.findViewById(R.id.fragment_server_url);
+        caPort = result.findViewById(R.id.fragment_server_ca_port);
+        sentryPort = result.findViewById(R.id.fragment_server_sentry_port);
+        serverPort = result.findViewById(R.id.fragment_server_server_port);
+        portDisplaySwitch = result.findViewById(R.id.fragment_server_expert_switch);
+        next = result.findViewById(R.id.fragment_server_server_button);
 
         serverUrl.addTextChangedListener(new NonEmptyValidator(serverUrl, this::invalidateButton));
         portDisplaySwitch.setOnClickListener(this::onExpertSwitch);
@@ -134,7 +134,7 @@ public class ServerFragment extends BaseFragment {
 
     private void onExpertSwitch(View view) {
         Switch s = (Switch) view;
-        LinearLayout l = getView().findViewById(R.id.expert_options);
+        LinearLayout l = getView().findViewById(R.id.fragment_server_expert_options);
         if (l == null) {
             return;
         }

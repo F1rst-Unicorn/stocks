@@ -20,7 +20,7 @@
         android:textSize="9pt" />
 
     <ImageView
-        android:id="@+id/qr_code_id"
+        android:id="@+id/fragment_qr_code_display_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

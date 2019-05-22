@@ -71,7 +71,7 @@ public class LocationFragment extends BaseFragment {
         list.setAdapter(adapter);
 
         LocationDeletionInteractor interactor = new LocationDeletionInteractor(
-                this, list,
+                this, result,
                 i -> adapter.notifyDataSetChanged(),
                 i -> viewModel.deleteLocation(i, false),
                 i -> viewModel.getLocation(i),

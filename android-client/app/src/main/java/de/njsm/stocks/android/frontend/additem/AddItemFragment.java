@@ -69,7 +69,7 @@ public class AddItemFragment extends BaseFragment {
         assert getArguments() != null;
         AddItemFragmentArgs input = AddItemFragmentArgs.fromBundle(getArguments());
 
-        date = result.findViewById(R.id.activity_add_food_item_date);
+        date = result.findViewById(R.id.fragment_add_food_item_date);
         LocalDate now = LocalDate.now();
         date.init(now.getYear(), now.getMonthValue() - 1, now.getDayOfMonth(), null);
 
@@ -77,7 +77,7 @@ public class AddItemFragment extends BaseFragment {
         foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
         locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
 
-        location = result.findViewById(R.id.activity_add_food_item_spinner);
+        location = result.findViewById(R.id.fragment_add_food_item_spinner);
         adapter = new ArrayAdapter<>(requireActivity(),
                 R.layout.item_location, R.id.item_location_name,
                 new ArrayList<>());
@@ -126,18 +126,18 @@ public class AddItemFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.activity_add_food_item_menu, menu);
+        inflater.inflate(R.menu.fragment_add_item_options, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.activity_add_food_item_done:
+            case R.id.fragment_add_item_options_done:
                 addItem();
                 Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                         .navigateUp();
                 break;
-            case R.id.activity_add_food_item_add_more:
+            case R.id.fragment_add_item_options_add_more:
                 addItem();
                 break;
         }

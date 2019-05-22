@@ -61,7 +61,7 @@ public class EmptyFoodFragment extends BaseFragment {
         viewModel.getEmptyFood().observe(this, u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
-        FoodDeletionInteractor deleter = new FoodDeletionInteractor(this, list,
+        FoodDeletionInteractor deleter = new FoodDeletionInteractor(this, result,
                 f -> adapter.notifyDataSetChanged(),
                 i -> viewModel.deleteFood(i),
                 viewModel::getFood);

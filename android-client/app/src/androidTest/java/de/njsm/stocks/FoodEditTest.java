@@ -1,8 +1,9 @@
 package de.njsm.stocks;
 
-import android.support.test.rule.ActivityTestRule;
-import de.njsm.stocks.frontend.startup.StartupActivity;
-import de.njsm.stocks.screen.MainScreen;
+
+import androidx.test.rule.ActivityTestRule;
+import de.njsm.stocks.android.frontend.main.MainActivity;
+import de.njsm.stocks.screen.OutlineScreen;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -10,7 +11,7 @@ import org.junit.Test;
 public class FoodEditTest {
 
     @Rule
-    public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
     @After
     public void tearDown() throws Exception {
@@ -19,7 +20,7 @@ public class FoodEditTest {
 
     @Test
     public void editLastItemInList() throws Exception {
-        MainScreen.test()
+        OutlineScreen.test()
                 .goToEatSoon()
                 .click(0)
                 .assertLastItem("Jack", "android-client", "31.12.00", "Basement")
@@ -39,7 +40,7 @@ public class FoodEditTest {
 
     @Test
     public void verifyMaximumLocationIsSelected() throws Exception {
-        MainScreen.test()
+        OutlineScreen.test()
                 .goToEatSoon()
                 .click(0)
                 .addItems()
@@ -48,7 +49,7 @@ public class FoodEditTest {
 
     @Test
     public void pretendEditingButPressBack() throws Exception {
-        MainScreen.test()
+        OutlineScreen.test()
                 .goToEatSoon()
                 .click(0)
                 .assertLastItem("Jack", "android-client", "31.12.00", "Basement")

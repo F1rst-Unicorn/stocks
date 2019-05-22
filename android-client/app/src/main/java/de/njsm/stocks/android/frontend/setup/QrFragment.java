@@ -59,7 +59,7 @@ public class QrFragment extends BaseFragment {
         }
         requireActivity().setTitle(R.string.title_qr_code_scan);
         getArguments().putString("username", null);
-        result.findViewById(R.id.qr_setup_button).setOnClickListener(this::goOnWithoutQrCode);
+        result.findViewById(R.id.fragment_qr_setup_button).setOnClickListener(this::goOnWithoutQrCode);
         return result;
     }
 

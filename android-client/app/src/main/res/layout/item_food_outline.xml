@@ -5,8 +5,8 @@
 
     android:orientation="vertical"
     android:paddingLeft="@dimen/list_item_padding"
-    android:paddingRight="@dimen/list_item_padding"
     android:paddingTop="@dimen/list_item_padding"
+    android:paddingRight="@dimen/list_item_padding"
     android:paddingBottom="@dimen/list_item_padding">
 
     <TextView
@@ -18,46 +18,46 @@
 
     <TextView
         android:id="@+id/item_food_outline_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
         style="@style/StocksTheme.TextSmall"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
         android:layout_below="@id/item_food_outline_name"
         android:paddingTop="4dp"
         android:text="@string/text_amount" />
 
     <TextView
         android:id="@+id/item_food_outline_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
         style="@style/StocksTheme.TextSmall"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
         android:layout_below="@id/item_food_outline_name"
         android:layout_toEndOf="@id/item_food_outline_amount"
-        android:paddingTop="4dp"
         android:paddingStart="4dp"
-        android:paddingEnd="4dp"/>
+        android:paddingTop="4dp"
+        android:paddingEnd="4dp" />
 
     <ImageView
         android:id="@+id/item_food_outline_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:src="@drawable/ic_alarm_black_24dp"
-        android:contentDescription="@string/desc_expiration_state"
-        android:layout_gravity="end"
+        android:layout_below="@id/item_food_outline_name"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/item_food_outline_name" />
+        android:layout_gravity="end"
+        android:contentDescription="@string/desc_expiration_state"
+        android:src="@drawable/ic_alarm_black_24dp" />
 
     <TextView
         android:id="@+id/item_food_outline_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_below="@id/item_food_outline_name"
+        android:layout_toStartOf="@id/item_food_outline_icon"
         android:paddingTop="4dp"
         android:paddingEnd="4dp"
-        android:layout_toStartOf="@id/item_food_outline_icon"/>
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

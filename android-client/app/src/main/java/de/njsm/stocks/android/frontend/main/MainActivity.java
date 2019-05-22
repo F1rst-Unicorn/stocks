@@ -73,13 +73,13 @@ public class MainActivity extends AppCompatActivity {
     private boolean onNavigationItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
         switch (id) {
-            case R.id.users:
+            case R.id.activity_main_drawer_users:
                 navController.navigate(R.id.action_global_nav_fragment_users);
                 break;
-            case R.id.locations:
+            case R.id.activity_main_drawer_locations:
                 navController.navigate(R.id.action_global_nav_fragment_locations);
                 break;
-            case R.id.settings:
+            case R.id.activity_main_drawer_settings:
                 navController.navigate(R.id.action_global_nav_fragment_settings);
                 break;
         }

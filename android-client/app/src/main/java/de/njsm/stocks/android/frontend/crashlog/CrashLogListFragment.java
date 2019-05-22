@@ -47,9 +47,9 @@ public class CrashLogListFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_crash_logs, container, false);
 
-        list = result.findViewById(R.id.crash_logs_list);
-        emptyListText = result.findViewById(R.id.crash_logs_empty_text);
-        progressBar = result.findViewById(R.id.crash_logs_progress);
+        list = result.findViewById(R.id.fragment_crash_logs_list);
+        emptyListText = result.findViewById(R.id.fragment_crash_logs_empty_text);
+        progressBar = result.findViewById(R.id.fragment_crash_logs_progress);
 
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 

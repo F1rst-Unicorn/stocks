@@ -65,7 +65,7 @@ public class QrCodeDisplayFragment extends BaseFragment {
             LOG.e("Image computation failed", e);
         }
 
-        ((ImageView) requireActivity().findViewById(R.id.qr_code_id)).setImageBitmap(image);
+        ((ImageView) requireActivity().findViewById(R.id.fragment_qr_code_display_image)).setImageBitmap(image);
     }
 
     private Bitmap generateQrCode(String myCodeText) throws WriterException {

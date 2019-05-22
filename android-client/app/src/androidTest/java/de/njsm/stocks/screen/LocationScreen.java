@@ -1,22 +1,21 @@
 package de.njsm.stocks.screen;
 
-import android.support.test.espresso.matcher.ViewMatchers;
-import android.widget.ListView;
+
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import de.njsm.stocks.R;
 
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertTrue;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static de.njsm.stocks.util.Matchers.atPosition;
+import static junit.framework.TestCase.assertTrue;
 
 public class LocationScreen extends AbstractListPresentingScreen {
 
     public LocationScreen addLocation(String name) {
-        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.template_swipe_list_fab)).perform(click());
         onView(withHint(R.string.hint_location)).perform(replaceText(name));
         onView(withText("OK")).perform(click());
         return this;
@@ -27,10 +26,9 @@ public class LocationScreen extends AbstractListPresentingScreen {
         assertTrue(itemCount >= 0);
 
         int position = itemCount - 1;
-        onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(position)
-                .onChildView(withId(R.id.item_location_name))
-                .check(matches(withText(text)));
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(RecyclerViewActions.scrollToPosition(position))
+                .check(matches(atPosition(position, withText(text))));
 
         return this;
     }
