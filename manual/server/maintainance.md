@@ -23,6 +23,8 @@ redeployment the webapp might be subject to downtime.
 
 The stocks config in /etc/stocks-server/stocks.properties can be adjusted at
 any time. A restart of the tomcat container is required to apply the changes.
+The recommended way of configuring stocks is via the official ansible role at
+https://gitlab.com/veenj/ansible-stocks.
 
 ## Stocks migration
 

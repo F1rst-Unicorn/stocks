@@ -1,16 +1,16 @@
 # Stocks
 
 Stocks is a service which keeps track of stored food and its freshness. It
-is responsible for keeping track of what food is it stock at what place, 
+is responsible for keeping track of what food is it stock at what place,
 in which amount, and when it should be consumed.
 
 ## Server
 
-See manual/admin/ for build and maintainance manuals. 
+See manual/server/ for build and maintainance manuals.
 
 ## Linux client
 
-See manual/client/README.md for a detailed description.
+See manual/client/ for build and maintainance manuals.
 
 ## Android app installation
 
