@@ -30,10 +30,10 @@ public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
     private final Consumer<View> onLongClickListener;
 
     public FoodAdapter(LiveData<List<FoodView>> data,
-                       Consumer<View> onClickListener,
-                       Consumer<View> onLongClickListener,
                        Resources resources,
-                       Resources.Theme theme) {
+                       Resources.Theme theme,
+                       Consumer<View> onClickListener,
+                       Consumer<View> onLongClickListener) {
         super(data, onClickListener);
         this.onLongClickListener = onLongClickListener;
         this.resources = resources;

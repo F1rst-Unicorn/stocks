@@ -1,40 +1,25 @@
 <resources>
     <string name="app_name">Stocks</string>
 
-    <string name="navigation_drawer_open">Navigationsleiste öffnen</string>
-    <string name="navigation_drawer_close">Navigationsleiste schließen</string>
-
-    <string name="title_connection_setup">Verbindung einrichten</string>
-    <string name="title_activity_location">LocationActivity</string>
-    <string name="title_delete_user">Benutzer entfernen</string>
-    <string name="title_delete_device">Gerät entfernen</string>
     <string name="title_delete_location">Ort entfernen</string>
-    <string name="title_ticket_activity">Tickettransfer</string>
     <string name="title_add_item">%s hinzufügen</string>
     <string name="title_edit_item">%s bearbeiten</string>
     <string name="title_consume">Konsumieren</string>
     <string name="title_delete_food">Essen entfernen?</string>
     <string name="title_new_sync">Vollständig neu synchronisieren</string>
-    <string name="title_move">Verschieben</string>
     <string name="title_crash_logs">Absturzberichte</string>
     <string name="title_remove">Entfernen</string>
     <string name="title_barcode">Barcodes</string>
-    <string name="title_barcode_activity">Barcodes für %s</string>
+    <string name="title_barcode_fragment">Barcodes für %s</string>
     <string name="title_delete_barcode">Barcode entfernen</string>
-    <string name="title_assign_code">Neuen Code zuweisen</string>
 
-    <string name="action_outline">Übersicht</string>
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>
     <string name="action_settings">Einstellungen</string>
-    <string name="action_help">Hilfe</string>
-    <string name="action_info">Über Stocks</string>
     <string name="action_refresh">Aktualisieren</string>
     <string name="action_search">Suchen</string>
     <string name="action_save">Speichern</string>
     <string name="action_add_more">Speichern und weiter</string>
-    <string name="action_add">Hinzufügen</string>
-    <string name="action_remove">Entfernen</string>
     <string name="action_missing_food">Fehlende Lebensmittel</string>
     <string name="action_eat_next">Was bald abläuft</string>
     <string name="action_scan">Barcode scannen</string>
@@ -128,11 +113,11 @@
     <string name="desc_location">Ortsicon</string>
     <string name="error_location_changed">Der Ort wurde von %1$s zu %2$s umbenannt. Möchtest du ihn immer noch löschen?</string>
     <string name="error_location_foreign_key_violation">%1$s enthält immer noch Lebensmittel. Möchtest du die auch alle löschen?</string>
-    <string name="error_location_changed_twice">Der Ort mit ursprünglichem Namen \"%1$s\" wurde von jemand anderem zu \"%2$s\" und von dir zu \"%3$s\" umbenannt. Möchtest du deinen Namen anwenden?</string>
+    <string name="error_location_changed_twice">Der Ort mit ursprünglichem Namen %1$s wurde von jemand anderem zu %2$s und von dir zu %3$s umbenannt. Möchtest du deinen Namen anwenden?</string>
     <string name="dialog_food_was_deleted">Lebensmittel wurde gelöscht</string>
     <string name="error_food_changed">Das Lebensmittel wurde von %1$s zu %2$s umbenannt. Möchtest du es immer noch löschen?</string>
     <string name="dialog_rename_food">Lebensmittel umbenennen</string>
-    <string name="error_food_changed_twice">Das Lebensmittel mit ursprünglichem Namen \"%1$s\" wurde von jemand anderem zu \"%2$s\" und von dir zu \"%3$s\" umbenannt. Möchtest du deinen Namen anwenden?</string>
+    <string name="error_food_changed_twice">Das Lebensmittel mit ursprünglichem Namen %1$s wurde von jemand anderem zu %2$s und von dir zu %3$s umbenannt. Möchtest du deinen Namen anwenden?</string>
     <string name="dialog_item_both_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt und das Haltbarkeitsdatum vom %3$s zum %4$s geändert. Möchtest du es immer noch essen?</string>
     <string name="dialog_item_date_changed">Das Haltbarkeitsdatum wurde vom %1$s zum %2$s geändert. Möchtest du es immer noch essen?</string>
     <string name="dialog_item_location_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt. Möchtest du es immer noch essen?</string>
@@ -140,7 +125,7 @@
     <string name="dialog_food_item_was_deleted">Lebensmittel wurde gegessen</string>
     <string name="title_camera_permission">Erlaubnis für Kamera</string>
     <string name="text_camera_explanation">Stocks braucht die Erlaubnis für die Benutzung der Kamera um Barcodes von Lebensmitteln einzulesen. Während der Installation kann man so außerdem das Ticket leichter übertragen. Beides ist komfortabel, aber nicht zwingend für das Funktionieren der App nötig.</string>
-    <string name="title_new_barcode">Neuer Barcode für...</string>
+    <string name="title_new_barcode">Neuer Barcode für&#8230;</string>
 
 
 </resources>

@@ -152,10 +152,10 @@ public class BaseFragment extends Fragment {
     }
 
     protected <T> void addSwipeToDelete(RecyclerView list, LiveData<List<T>> data, Consumer<T> deleter) {
-        addSwipeToDelete(list, data, deleter, R.drawable.ic_delete_white_24dp);
+        addSwipeToDelete(list, data, R.drawable.ic_delete_white_24dp, deleter);
     }
 
-    protected <T> void addSwipeToDelete(RecyclerView list, LiveData<List<T>> data, Consumer<T> deleter, int icon) {
+    protected <T> void addSwipeToDelete(RecyclerView list, LiveData<List<T>> data, int icon, Consumer<T> deleter) {
         SwipeCallback<T> callback = new SwipeCallback<>(
                 null,
                 ContextCompat.getDrawable(requireActivity(), icon),

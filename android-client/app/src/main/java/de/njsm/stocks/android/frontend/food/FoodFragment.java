@@ -71,11 +71,10 @@ public class FoodFragment extends BaseFragment {
 
         FoodAdapter adapter = new FoodAdapter(
                 data,
-                this::onClick,
+                getResources(), requireActivity().getTheme(), this::onClick,
                 v -> editInternally(v, viewModel.getFoodToEat(), R.string.dialog_rename_food,
-                        (f,s) -> editor.observeEditing(f.mapToFood(), s)),
-                getResources(),
-                requireActivity().getTheme());
+                        (f,s) -> editor.observeEditing(f.mapToFood(), s))
+        );
         data.observe(this, i -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 

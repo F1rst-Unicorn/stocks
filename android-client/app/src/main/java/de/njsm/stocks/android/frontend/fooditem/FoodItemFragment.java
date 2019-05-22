@@ -70,7 +70,7 @@ public class FoodItemFragment extends BaseFragment {
                 i -> adapter.notifyDataSetChanged(),
                 i -> viewModel.deleteItem(i),
                 i -> viewModel.getItem(i));
-        addSwipeToDelete(list, viewModel.getFoodItems(), interactor::initiateDeletion, R.drawable.ic_local_dining_white_24dp);
+        addSwipeToDelete(list, viewModel.getFoodItems(), R.drawable.ic_local_dining_white_24dp, interactor::initiateDeletion);
 
         setHasOptionsMenu(true);
         initialiseSwipeRefresh(result, viewModelFactory);

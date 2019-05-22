@@ -18,6 +18,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.EanNumberDeletionInteractor;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.network.server.StatusCode;
@@ -32,6 +33,8 @@ public class EanNumberFragment extends BaseFragment {
     private ViewModelProvider.Factory viewModelFactory;
 
     private EanNumberViewModel viewModel;
+
+    private FoodViewModel foodViewModel;
 
     private RecyclerView list;
 
@@ -59,7 +62,12 @@ public class EanNumberFragment extends BaseFragment {
         input = EanNumberFragmentArgs.fromBundle(getArguments());
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EanNumberViewModel.class);
+        foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
         viewModel.init(input.getFoodId());
+        foodViewModel.getFood(input.getFoodId()).observe(this, f -> {
+            String title = getString(R.string.title_barcode_fragment, f.name);
+            requireActivity().setTitle(title);
+        });
 
         adapter = new EanNumberAdapter(viewModel.getData(), this::doNothing);
         viewModel.getData().observe(this, v -> adapter.notifyDataSetChanged());
