@@ -172,12 +172,12 @@ object Build : BuildType({
         vcs {
         }
         schedule {
-            enabled = false
+            enabled = true
             schedulingPolicy = cron {
                 minutes = "4,14,24,34,44,54"
                 dayOfWeek = "*"
             }
-            branchFilter = "+:STOCKS-67"
+            branchFilter = "+:STOCKS-63"
             triggerBuild = always()
             withPendingChangesOnly = false
             param("hour", "1")
