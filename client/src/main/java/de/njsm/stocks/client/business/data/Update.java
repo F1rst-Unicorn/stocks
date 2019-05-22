@@ -1,7 +1,7 @@
 package de.njsm.stocks.client.business.data;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.client.business.data.visitor.AbstractVisitor;
@@ -11,12 +11,12 @@ import de.njsm.stocks.client.business.json.InstantSerialiser;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.Instant;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @XmlRootElement
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Update extends Data {
 
     public String table;
