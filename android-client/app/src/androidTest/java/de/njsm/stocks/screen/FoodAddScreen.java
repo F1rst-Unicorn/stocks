@@ -51,6 +51,11 @@ public class FoodAddScreen extends AbstractScreen {
         return this;
     }
 
+    public FoodScreen editItem() {
+        onView(withId(R.id.fragment_edit_item_options_done)).perform(click());
+        return new FoodScreen();
+    }
+
     @Override
     public FoodScreen pressBack() {
         super.pressBack();

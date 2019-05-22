@@ -63,4 +63,12 @@ public class FoodItemRepository {
         LOG.d("Getting latest expiration of " + foodId);
         return foodItemDao.getLatestExpirationOf(foodId);
     }
+
+    public LiveData<StatusCode> editItem(int id, int version, int locationId, Instant eatBy) {
+        LOG.d("editing item " + id);
+        MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
+        webClient.editFoodItem(id, version, Config.DATABASE_DATE_FORMAT.format(eatBy), locationId)
+                .enqueue(new StatusCodeCallback(result, synchroniser));
+        return result;
+    }
 }

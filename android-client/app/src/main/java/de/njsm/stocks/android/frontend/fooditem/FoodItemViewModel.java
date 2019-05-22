@@ -44,4 +44,8 @@ public class FoodItemViewModel extends ViewModel {
     public LiveData<Instant> getLatestExpirationOf(int foodId) {
         return foodItemRepository.getLatestExpirationOf(foodId);
     }
+
+    public LiveData<StatusCode> editItem(int id, int version, int locationId, Instant eatBy) {
+        return foodItemRepository.editItem(id, version, locationId, eatBy);
+    }
 }

@@ -1,7 +1,6 @@
 package de.njsm.stocks.screen;
 
 
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
@@ -13,7 +12,6 @@ import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.Locale;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
@@ -21,8 +19,6 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static de.njsm.stocks.util.Matchers.atPosition;
 import static junit.framework.TestCase.fail;
-import static org.hamcrest.CoreMatchers.anything;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.AllOf.allOf;
 
 public class FoodScreen extends AbstractListPresentingScreen {
@@ -40,9 +36,8 @@ public class FoodScreen extends AbstractListPresentingScreen {
 
     public FoodAddScreen longClick(int index) {
         checkIndex(index);
-        onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(RecyclerView.class)))
-                .atPosition(getListCount()-1)
-                .perform(ViewActions.longClick());
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(index, ViewActions.longClick()));
         return new FoodAddScreen();
     }
 

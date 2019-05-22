@@ -13,13 +13,19 @@ public class FoodItemView extends VersionedData {
 
     private String location;
 
+    private int ofType;
+
+    private int storedIn;
+
     public FoodItemView(int id,
                         int version,
-                        String userName,
+                        int ofType, int storedIn, String userName,
                         String deviceName,
                         Instant eatByDate,
                         String location) {
         super(id, version);
+        this.ofType = ofType;
+        this.storedIn = storedIn;
         this.userName = userName;
         this.deviceName = deviceName;
         this.eatByDate = eatByDate;
@@ -40,6 +46,14 @@ public class FoodItemView extends VersionedData {
 
     public String getLocation() {
         return location;
+    }
+
+    public int getOfType() {
+        return ofType;
+    }
+
+    public int getStoredIn() {
+        return storedIn;
     }
 
     @Override

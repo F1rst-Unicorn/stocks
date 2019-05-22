@@ -15,7 +15,8 @@ import java.util.List;
 public abstract class FoodItemDao {
 
     @Query("SELECT i._id as _id, i.version as version, u.name as userName, " +
-            "d.name as deviceName, l.name as location, i.eat_by as eatByDate " +
+            "d.name as deviceName, l.name as location, i.eat_by as eatByDate, " +
+            "i.of_type as ofType, i.stored_in as storedIn " +
             "FROM FoodItem i " +
             "INNER JOIN User u ON i.buys = u._id " +
             "INNER JOIN User_device d ON i.registers = d._id " +
@@ -25,7 +26,8 @@ public abstract class FoodItemDao {
     public abstract LiveData<List<FoodItemView>> getItemsOfType(int foodId);
 
     @Query("SELECT i._id as _id, i.version as version, u.name as userName, " +
-            "d.name as deviceName, l.name as location, i.eat_by as eatByDate " +
+            "d.name as deviceName, l.name as location, i.eat_by as eatByDate, " +
+            "i.of_type as ofType, i.stored_in as storedIn " +
             "FROM FoodItem i " +
             "INNER JOIN User u ON i.buys = u._id " +
             "INNER JOIN User_device d ON i.registers = d._id " +

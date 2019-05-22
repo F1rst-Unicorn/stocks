@@ -28,13 +28,13 @@ public class FoodEditTest {
                 .assertLocation("Basement")
                 .assertDate(2100, 12, 31)
                 .selectDate(2099, 12, 31)
-                .addAndFinish()
+                .editItem()
                 .assertLastItem("Jack", "android-client", "31.12.99", "Basement")
                 .longClickLast()
                 .assertLocation("Basement")
                 .assertDate(2099, 12, 31)
                 .selectDate(2100, 12, 31)
-                .addAndFinish()
+                .editItem()
                 .assertLastItem("Jack", "android-client", "31.12.00", "Basement");
     }
 

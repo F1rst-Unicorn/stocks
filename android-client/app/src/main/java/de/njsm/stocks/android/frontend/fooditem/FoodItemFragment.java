@@ -14,12 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.FoodItemDeletionInteractor;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class FoodItemFragment extends BaseFragment {
 
@@ -97,7 +99,17 @@ public class FoodItemFragment extends BaseFragment {
     }
 
     private void editItem(View view) {
+        FoodItemAdapter.ViewHolder holder = (FoodItemAdapter.ViewHolder) view.getTag();
+        int position = holder.getAdapterPosition();
+        List<FoodItemView> data = viewModel.getFoodItems().getValue();
+        if (data != null) {
+            int id = data.get(position).id;
 
+            FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentEditFoodItem args =
+                    FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentEditFoodItem(id);
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(args);
+        }
     }
 
     @Override
