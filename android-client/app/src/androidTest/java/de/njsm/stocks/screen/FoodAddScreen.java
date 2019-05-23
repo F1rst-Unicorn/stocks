@@ -38,6 +38,8 @@ public class FoodAddScreen extends AbstractScreen {
     public FoodAddScreen assertDate(int year, int month, int day) {
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .check(matches(matchesDate(year, month, day)));
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .check(matches(matchesDate(year, month, day)));
         return this;
     }
 
