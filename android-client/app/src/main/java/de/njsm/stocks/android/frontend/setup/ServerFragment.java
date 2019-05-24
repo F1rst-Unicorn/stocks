@@ -80,10 +80,10 @@ public class ServerFragment extends BaseFragment {
             caPort.setText(String.valueOf(input.getCaPort()));
         }
         if (input.getSentryPort() != 0) {
-            caPort.setText(String.valueOf(input.getSentryPort()));
+            sentryPort.setText(String.valueOf(input.getSentryPort()));
         }
         if (input.getServerPort() != 0) {
-            caPort.setText(String.valueOf(input.getServerPort()));
+            serverPort.setText(String.valueOf(input.getServerPort()));
         }
     }
 

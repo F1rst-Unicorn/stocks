@@ -10,7 +10,6 @@ import android.os.Looper;
 import android.os.Message;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.util.Principals;
 import de.njsm.stocks.android.dagger.modules.WebModule;
 import de.njsm.stocks.android.error.TextResourceException;
 import de.njsm.stocks.android.network.sentry.SentryClient;
@@ -18,11 +17,13 @@ import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.ExceptionHandler;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.Principals;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.StringBuilderWriter;
-import org.bouncycastle.jce.PKCS10CertificationRequest;
-import org.bouncycastle.openssl.PEMReader;
-import org.bouncycastle.openssl.PEMWriter;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -30,12 +31,12 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import javax.security.auth.x500.X500Principal;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.util.Locale;
 
 public class SetupHandler extends Handler {
@@ -73,7 +74,7 @@ public class SetupHandler extends Handler {
 
     @Override
     public void handleMessage(Message msg) {
-        if (! (Thread.getDefaultUncaughtExceptionHandler() instanceof ExceptionHandler))
+        if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof ExceptionHandler))
             Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(c.getFilesDir(),
                     Thread.getDefaultUncaughtExceptionHandler()));
         LOG.d("Received message " + msg.what);
@@ -169,12 +170,12 @@ public class SetupHandler extends Handler {
             buf.append(hexDigits[aDigest & 0x0f]);
             buf.append(":");
         }
-        buf.delete(buf.length()-1, buf.length());
+        buf.delete(buf.length() - 1, buf.length());
 
         String actualFpr = buf.toString();
         String expectedFpr = extras.getString(Config.FPR_CONFIG, "");
 
-        if (! expectedFpr.equals(actualFpr)) {
+        if (!expectedFpr.equals(actualFpr)) {
             throw new TextResourceException(R.string.dialog_wrong_fpr);
         }
     }
@@ -185,13 +186,13 @@ public class SetupHandler extends Handler {
         String sigAlgName = "SHA256WithRSA";
         X500Principal principals = new X500Principal("CN=" + user);
         PKCS10CertificationRequest request =
-                new PKCS10CertificationRequest(sigAlgName,
+                new JcaPKCS10CertificationRequestBuilder(
                         principals,
-                        clientKeys.getPublic(),
-                        null,
-                        clientKeys.getPrivate());
+                        clientKeys.getPublic())
+                        .build(new JcaContentSignerBuilder(sigAlgName).build(clientKeys.getPrivate()));
+
         StringBuilder buf = new StringBuilder();
-        PEMWriter writer = new PEMWriter(new StringBuilderWriter(buf));
+        JcaPEMWriter writer = new JcaPEMWriter(new StringBuilderWriter(buf));
         writer.writeObject(request);
         writer.flush();
         writer.close();
@@ -286,14 +287,9 @@ public class SetupHandler extends Handler {
                 .apply();
     }
 
-    private Certificate convertToCertificate(String pemString) throws IOException, TextResourceException {
-        PEMReader reader = new PEMReader(new InputStreamReader(IOUtils.toInputStream(pemString, StandardCharsets.UTF_8)));
-        Object rawCert = reader.readObject();
-        if (rawCert instanceof java.security.cert.Certificate) {
-            return (Certificate) rawCert;
-        } else {
-            throw new TextResourceException(R.string.dialog_cert_unreadable);
-        }
+    private Certificate convertToCertificate(String pemString) throws CertificateException {
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+        return factory.generateCertificate(IOUtils.toInputStream(pemString, StandardCharsets.UTF_8));
     }
 
 }
