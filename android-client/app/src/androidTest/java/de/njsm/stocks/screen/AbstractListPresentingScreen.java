@@ -1,17 +1,19 @@
 package de.njsm.stocks.screen;
 
+
+import de.njsm.stocks.R;
 import de.njsm.stocks.util.StealCountAction;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static org.junit.Assert.fail;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static junit.framework.TestCase.fail;
 
 public class AbstractListPresentingScreen extends AbstractScreen {
 
     private int listId;
 
     public AbstractListPresentingScreen() {
-        this(android.R.id.list);
+        this(R.id.template_swipe_list_list);
     }
 
     public AbstractListPresentingScreen(int listId) {
@@ -26,6 +28,10 @@ public class AbstractListPresentingScreen extends AbstractScreen {
     }
 
     protected int getListCount() {
+        return getListCount(listId);
+    }
+
+    protected int getListCount(int listId) {
         StealCountAction stealCountAction = new StealCountAction();
         onView(withId(listId)).perform(stealCountAction);
         return stealCountAction.getCount();

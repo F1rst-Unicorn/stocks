@@ -1,53 +1,53 @@
 package de.njsm.stocks.screen;
 
-import android.widget.ListView;
+
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import de.njsm.stocks.R;
 
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static org.hamcrest.CoreMatchers.*;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.*;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static de.njsm.stocks.util.Matchers.atPosition;
+import static junit.framework.TestCase.assertEquals;
 
 public class UserScreen extends AbstractListPresentingScreen {
 
     public UserScreen addUser(String name) {
-        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.template_swipe_list_fab)).perform(click());
         onView(withHint(R.string.hint_username)).perform(replaceText(name));
         onView(withText("OK")).perform(click());
+        sleep(100);
         return this;
     }
 
     public UserScreen assertUser(int index, String name) {
         checkIndex(index);
-        onData(anything()).inAdapterView(allOf(withEffectiveVisibility(Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(index)
-                .onChildView(withId(R.id.item_user_name))
-                .check(matches(withText(name)));
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(RecyclerViewActions.scrollToPosition(index))
+                .check(matches(atPosition(index, withText(name))));
+
         return this;
     }
 
     public DeviceScreen selectUser(int index) {
         checkIndex(index);
-        onData(anything()).inAdapterView(allOf(withEffectiveVisibility(Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(index)
-                .perform(click());
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(index, click()));
         return new DeviceScreen();
     }
 
     public UserScreen removeUser(int index) {
         checkIndex(index);
-        onData(anything()).inAdapterView(allOf(withEffectiveVisibility(Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(index)
-                .perform(longClick());
-        onView(withText("OK")).perform(click());
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(index, swipeRight()));
+        onView(withText(R.string.action_undo))
+                .perform(swipeRight());
+        sleep(1000);
         return this;
     }
 
-    public UserScreen assertNotContains(String name) {
-        onData(anything()).inAdapterView(allOf(withEffectiveVisibility(Visibility.VISIBLE), instanceOf(ListView.class)))
-                .check(matches(not(withChild(withText(name)))));
-        return this;
+    public void assertEmpty() {
+        assertEquals(1, getListCount());
     }
 }

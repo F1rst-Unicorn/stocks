@@ -1,9 +1,10 @@
 package de.njsm.stocks;
 
-import android.support.test.rule.ActivityTestRule;
-import de.njsm.stocks.frontend.StartupActivity;
+
+import androidx.test.rule.ActivityTestRule;
+import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.screen.FoodScreen;
-import de.njsm.stocks.screen.MainScreen;
+import de.njsm.stocks.screen.OutlineScreen;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,7 +13,7 @@ import org.threeten.bp.LocalDate;
 public class FoodItemAddTest {
 
     @Rule
-    public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
     @After
     public void tearDown() throws Exception {
@@ -22,7 +23,7 @@ public class FoodItemAddTest {
     @Test
     public void addFoodItems() throws Exception {
         int numberOfItems = 1;
-        FoodScreen finalScreen = MainScreen.test()
+        FoodScreen finalScreen = OutlineScreen.test()
                 .goToEmptyFood()
                 .click(0)
                 .addItems()

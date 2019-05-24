@@ -1,98 +1,104 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/list_item_padding"
-    android:orientation="vertical"
-    tools:context="de.njsm.stocks.frontend.main.OutlineFragment">
+    android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/fragment_outline_cardview"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/fragment_outline_swipe"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content">
 
-        card_view:cardCornerRadius="4dp"
-        android:focusable="true"
-        android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:layout_gravity="center"
-        android:onClick="showAllFood"
-        card_view:cardUseCompatPadding="true">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
+        <!-- This nesting stops cards from filling screen -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/fragment_outline_cardview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
 
-                android:background="#55000000"
-                android:orientation="horizontal">
-                <ImageView
-                    android:id="@+id/fragment_outline_icon"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardUseCompatPadding="true">
+
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom">
 
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_local_dining_black_24dp"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:background="#55000000"
+                        android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/fragment_outline_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/desc_cutlery"
+                            android:padding="@dimen/activity_horizontal_margin"
+                            android:src="@drawable/ic_local_dining_black_24dp" />
 
-                    style="@style/StocksTheme.TextLarge"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="@string/action_eat_next"/>
-            </LinearLayout>
+                        <TextView
+                            style="@style/StocksTheme.TextLarge"
+                            android:layout_width="wrap_content"
 
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/activity_horizontal_margin"
+                            android:text="@string/action_eat_next" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/fragment_outline_cardview2"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-
-        card_view:cardCornerRadius="4dp"
-        android:focusable="true"
-        android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:layout_gravity="center"
-        android:onClick="showMissingFood"
-        card_view:cardUseCompatPadding="true">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom">
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/fragment_outline_cardview2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
 
-                android:background="#55000000"
-                android:orientation="horizontal">
-                <ImageView
-                    android:id="@+id/fragment_outline_icon2"
-                    android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="#55000000"
+                    android:orientation="horizontal">
 
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:src="@drawable/ic_store_black_24dp" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/desc_supermarket"
+                        android:padding="@dimen/activity_horizontal_margin"
+                        android:src="@drawable/ic_store_black_24dp" />
 
-                <TextView
-                    android:id="@+id/fragment_outline_text2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    <TextView
+                        style="@style/StocksTheme.TextLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/activity_horizontal_margin"
+                        android:text="@string/action_missing_food" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-                    style="@style/StocksTheme.TextLarge"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:text="@string/action_missing_food"/>
-            </LinearLayout>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
-</LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fragment_outline_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_white_24dp" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

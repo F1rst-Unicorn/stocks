@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: "androidx.navigation.safeargs"
 
 android {
 
@@ -9,10 +10,17 @@ android {
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
-        versionName "2.0.1.6"
+        versionName "3.0.0.0"
         multiDexEnabled true
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         debug {
@@ -34,8 +42,9 @@ android {
         unitTests.returnDefaultValues = true
     }
     lintOptions {
-        warning 'InvalidPackage'
+        checkAllWarnings true
         abortOnError false
+        lintConfig file("lint.xml")
     }
     dexOptions {
         javaMaxHeapSize "4g"
@@ -43,6 +52,8 @@ android {
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/LICENSE-notice.md'
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
@@ -57,35 +68,61 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support:cardview-v7:28.0.0'
-    implementation 'com.github.fcannizzaro:material-stepper:1.1.8'
-    implementation 'com.google.zxing:core:3.2.1'
-    implementation 'commons-io:commons-io:2.6'
-    implementation 'org.bouncycastle:bcprov-jdk16:1.46'
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
+    def room_version = '2.0.0'
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    testImplementation "androidx.room:room-testing:$room_version"
+
+    def lifecycle_version = "2.0.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+    testImplementation "androidx.arch.core:core-testing:$lifecycle_version"
+
+    def nav_version = "2.0.0"
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+
+    def appcompat_version = "1.0.2"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+
+    implementation 'javax.inject:javax.inject:1'
+
+    def functionaljava_version = "4.8.1"
+    implementation "org.functionaljava:functionaljava_1.8:$functionaljava_version"
+    implementation "org.functionaljava:functionaljava-java8:$functionaljava_version"
+    implementation "org.functionaljava:functionaljava-quickcheck_1.8:$functionaljava_version"
+    implementation "org.functionaljava:functionaljava-java-core_1.8:$functionaljava_version"
+
+    def dagger_version = '2.22.1'
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
+
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.preference:preference:1.0.0'
+    implementation "com.google.android.material:material:1.0.0"
+
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout-solver:1.1.3'
+    implementation 'com.google.zxing:core:3.4.0'
     implementation 'com.journeyapps:zxing-android-embedded:2.0.1@aar'
     implementation 'com.journeyapps:zxing-android-legacy:2.0.1@aar'
     implementation 'com.journeyapps:zxing-android-integration:2.0.1@aar'
-    implementation ('de.njsm.stocks:common:1.0') {
-        exclude group: 'org.threeten', module: 'threetenbp'
-        exclude group: 'javax.inject', module: 'javax.inject'
-    }
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.2'
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
+    implementation 'org.bouncycastle:bcprov-jdk16:1.46'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-all:2.0.2-beta'
+    testImplementation 'org.mockito:mockito-core:2.27.0'
 
     androidTestImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
-    androidTestImplementation 'com.android.support:support-annotations:28.0.0'
-    androidTestImplementation 'com.android.support:support-v4:28.0.0'
-    androidTestImplementation 'com.android.support:design:28.0.0'
-    androidTestImplementation 'com.android.support:recyclerview-v7:28.0.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
 }

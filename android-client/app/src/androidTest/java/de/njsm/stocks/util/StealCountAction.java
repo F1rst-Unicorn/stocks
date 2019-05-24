@@ -1,12 +1,12 @@
 package de.njsm.stocks.util;
 
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
-import android.view.View;
-import android.widget.AdapterView;
-import org.hamcrest.Matcher;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
+import android.view.View;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
 
 public class StealCountAction implements ViewAction {
 
@@ -14,7 +14,7 @@ public class StealCountAction implements ViewAction {
 
     @Override
     public Matcher<View> getConstraints() {
-        return instanceOf(AdapterView.class);
+        return CoreMatchers.instanceOf(RecyclerView.class);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class StealCountAction implements ViewAction {
 
     @Override
     public void perform(UiController uiController, View view) {
-        count = ((AdapterView) view).getCount();
+        count = ((RecyclerView) view).getAdapter().getItemCount();
     }
 
     public int getCount() {

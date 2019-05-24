@@ -1,24 +1,28 @@
 package de.njsm.stocks;
 
+
+import android.Manifest;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.support.test.espresso.intent.Intents;
-import android.support.test.rule.ActivityTestRule;
-import de.njsm.stocks.frontend.StartupActivity;
-import de.njsm.stocks.screen.MainScreen;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.matcher.IntentMatchers;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
+import de.njsm.stocks.android.frontend.main.MainActivity;
+import de.njsm.stocks.screen.OutlineScreen;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static android.support.test.espresso.intent.Intents.intending;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
-
 public class EanScanTest {
 
     @Rule
-    public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
+    public GrantPermissionRule cameraPermission = GrantPermissionRule.grant(Manifest.permission.CAMERA);
+
+    @Rule
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
     @Before
     public void setup() throws Exception {
@@ -35,7 +39,7 @@ public class EanScanTest {
     public void testSuccessfulScan() throws Exception {
         setupScanResult("1234567891234");
 
-        MainScreen.test()
+        OutlineScreen.test()
                 .scanSuccessful()
                 .assertTitle("Beer");
     }
@@ -44,7 +48,7 @@ public class EanScanTest {
     public void testSelectionOnUnknownCode() {
         setupScanResult("0000000000000");
 
-        MainScreen.test()
+        OutlineScreen.test()
                 .scanFailing()
                 .click(1)
                 .assertTitle("Bread")
@@ -56,6 +60,6 @@ public class EanScanTest {
         Intent data = new Intent();
         data.putExtra("SCAN_RESULT", code);
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, data);
-        intending(toPackage("com.google.zxing.client.android")).respondWith(result);
+        Intents.intending(IntentMatchers.hasAction("com.google.zxing.client.android.SCAN")).respondWith(result);
     }
 }

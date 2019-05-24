@@ -1,20 +1,17 @@
 package de.njsm.stocks;
 
-import android.support.test.rule.ActivityTestRule;
-import de.njsm.stocks.frontend.StartupActivity;
-import de.njsm.stocks.screen.MainScreen;
+
+import androidx.test.rule.ActivityTestRule;
+import de.njsm.stocks.android.frontend.main.MainActivity;
+import de.njsm.stocks.screen.OutlineScreen;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
-import java.util.Arrays;
 
 public class LocationAddTest {
 
     @Rule
-    public ActivityTestRule<StartupActivity> mActivityRule = new ActivityTestRule<>(StartupActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
     @After
     public void tearDown() throws Exception {
@@ -23,7 +20,7 @@ public class LocationAddTest {
 
     @Test
     public void addLocation() throws Exception {
-        MainScreen.test()
+        OutlineScreen.test()
                 .goToLocations()
                 .addLocation("Ground")
                 .assertLastItemIsNamed("Ground");

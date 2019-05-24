@@ -1,23 +1,21 @@
 package de.njsm.stocks.screen;
 
-import android.support.test.espresso.action.ViewActions;
-import android.support.test.espresso.matcher.ViewMatchers;
-import android.widget.ListView;
 
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.core.IsAnything.anything;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import de.njsm.stocks.R;
+
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 public class EatSoonScreen extends AbstractListPresentingScreen {
 
     public FoodScreen click(int index) {
         checkIndex(index);
 
-        onData(anything()).inAdapterView(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), instanceOf(ListView.class)))
-                .atPosition(index)
-                .perform(ViewActions.click());
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(index, ViewActions.click()));
+
         return new FoodScreen();
     }
 }

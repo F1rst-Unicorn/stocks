@@ -1,0 +1,59 @@
+package de.njsm.stocks.android.db.entities;
+
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.Objects;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        creatorVisibility = JsonAutoDetect.Visibility.NONE)
+@Entity
+public class Location extends VersionedData {
+
+    @ColumnInfo(name = "name")
+    public String name;
+
+    public Location(int id, int version, String name) {
+        super(id, version);
+        this.name = name;
+    }
+
+    @Ignore
+    public Location(String name) {
+        this.name = name;
+    }
+
+    @Ignore
+    public Location() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Location other = (Location) o;
+        return id == other.id &&
+                version == other.version &&
+                Objects.equals(name, other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, version);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Location (" + id + ", " + name + ", " + version + ")";
+    }
+}

@@ -51,7 +51,7 @@ adb -s $DEVICE reverse tcp:10911 tcp:10911
 adb -s $DEVICE reverse tcp:10912 tcp:10912
 adb uninstall de.njsm.stocks || true
 adb uninstall de.njsm.stocks.test || true
-adb logcat | grep --line-buffered 'de.njsm.stocks' > $LOGCAT &
+adb logcat | grep --line-buffered ' [VDIWEF] de\.njsm\.stocks\.' > $LOGCAT &
 LOGCAT_PID=$!
 
 sed -i "s/deviceId = 0/deviceId = $DEVICE_ID/g; \
