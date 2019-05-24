@@ -30,14 +30,16 @@ public class FoodAddScreen extends AbstractScreen {
     }
 
     public FoodAddScreen selectDate(int year, int month, int day) {
+        sleep(100);
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(year, month, day));
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(year, month, day));
+        sleep(100);
         return this;
     }
 
     public FoodAddScreen assertDate(int year, int month, int day) {
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .check(matches(matchesDate(year, month, day)));
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .check(matches(matchesDate(year, month, day)));
         return this;
