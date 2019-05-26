@@ -19,8 +19,6 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.util.ConsumerWithExceptions;
-import de.njsm.stocks.common.util.FunctionWithExceptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,17 +40,6 @@ public abstract class BaseSqlDatabaseHandler {
             LOG.error("DB driver not present", e);
         }
     }
-
-    @Deprecated
-    public void runSqlOperation(ConsumerWithExceptions<Connection, SQLException> client) {
-        runSqlOperation(con -> {
-            client.accept(con);
-            return null;
-        });
-    }
-
-    @Deprecated
-    public abstract <R> R runSqlOperation(FunctionWithExceptions<Connection, R, SQLException> client);
 
     protected Connection getConnection() throws SQLException {
         return connection;

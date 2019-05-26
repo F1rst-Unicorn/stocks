@@ -36,6 +36,7 @@ import org.bouncycastle.util.io.pem.PemWriter;
 
 import javax.security.auth.x500.X500Principal;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -214,7 +215,7 @@ public class KeyStoreHandlerImpl implements KeystoreHandler {
 
     private Certificate convertToCertificate(String pemFile) throws CertificateException {
         StringReader reader = new StringReader(pemFile);
-        ReaderInputStream stream = new ReaderInputStream(reader);
+        ReaderInputStream stream = new ReaderInputStream(reader, StandardCharsets.UTF_8);
         CertificateFactory factory = CertificateFactory.getInstance("X.509");
         return factory.generateCertificate(stream);
     }

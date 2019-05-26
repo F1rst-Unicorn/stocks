@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.*;
 
@@ -59,7 +60,7 @@ public class KeyStoreHandlerImplTest {
 
     @Test
     public void testFingerprintReading() throws IOException, CryptoException {
-        String pemFile = IOUtils.toString(ClassLoader.getSystemResourceAsStream("example-cert.crt.pem"));
+        String pemFile = IOUtils.toString(ClassLoader.getSystemResourceAsStream("example-cert.crt.pem"), StandardCharsets.UTF_8);
 
         String fpr = uut.getFingerPrintFromPem(pemFile);
 

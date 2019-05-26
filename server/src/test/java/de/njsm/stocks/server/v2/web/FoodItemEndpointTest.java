@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v1.endpoints.BaseTestEndpoint;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
@@ -70,7 +69,7 @@ public class FoodItemEndpointTest {
     @Test
     public void insertInvalidLocationIdIsReported() throws IOException {
 
-        Response result = uut.putItem(BaseTestEndpoint.createMockRequest(), DATE, 0, 2);
+        Response result = uut.putItem(Util.createMockRequest(), DATE, 0, 2);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -78,7 +77,7 @@ public class FoodItemEndpointTest {
     @Test
     public void insertInvalidTypeIdIsReported() throws IOException {
 
-        Response result = uut.putItem(BaseTestEndpoint.createMockRequest(), DATE, 2, 0);
+        Response result = uut.putItem(Util.createMockRequest(), DATE, 2, 0);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -86,7 +85,7 @@ public class FoodItemEndpointTest {
     @Test
     public void insertInvalidExpirationIdIsReported() throws IOException {
 
-        Response result = uut.putItem(BaseTestEndpoint.createMockRequest(), "invalid date", 2, 0);
+        Response result = uut.putItem(Util.createMockRequest(), "invalid date", 2, 0);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -98,7 +97,7 @@ public class FoodItemEndpointTest {
                 PrincipalFilterTest.TEST_USER.getUid());
         Mockito.when(manager.add(expected)).thenReturn(Validation.success(5));
 
-        Response result = uut.putItem(BaseTestEndpoint.createMockRequest(), DATE, expected.storedIn, expected.ofType);
+        Response result = uut.putItem(Util.createMockRequest(), DATE, expected.storedIn, expected.ofType);
 
         assertEquals(StatusCode.SUCCESS, result.status);
         Mockito.verify(manager).add(expected);
@@ -107,7 +106,7 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidIdIsReported() throws IOException {
 
-        Response result = uut.editItem(BaseTestEndpoint.createMockRequest(), 0, 2, DATE, 2);
+        Response result = uut.editItem(Util.createMockRequest(), 0, 2, DATE, 2);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -115,7 +114,7 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidVersionIdIsReported() throws IOException {
 
-        Response result = uut.editItem(BaseTestEndpoint.createMockRequest(), 1, -1, DATE, 2);
+        Response result = uut.editItem(Util.createMockRequest(), 1, -1, DATE, 2);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -123,7 +122,7 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidDateIsReported() throws IOException {
 
-        Response result = uut.editItem(BaseTestEndpoint.createMockRequest(), 2, 2, "invalid", 2);
+        Response result = uut.editItem(Util.createMockRequest(), 2, 2, "invalid", 2);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -131,7 +130,7 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidLocationIsReported() throws IOException {
 
-        Response result = uut.editItem(BaseTestEndpoint.createMockRequest(), 2, 2, DATE, 0);
+        Response result = uut.editItem(Util.createMockRequest(), 2, 2, DATE, 0);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -143,7 +142,7 @@ public class FoodItemEndpointTest {
                 PrincipalFilterTest.TEST_USER.getUid());
         Mockito.when(manager.edit(expected)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.editItem(BaseTestEndpoint.createMockRequest(),
+        Response result = uut.editItem(Util.createMockRequest(),
                 expected.id, expected.version, DATE, expected.storedIn);
 
         assertEquals(StatusCode.SUCCESS, result.status);

@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v1.endpoints.BaseTestEndpoint;
 import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
@@ -111,7 +110,7 @@ public class DeviceEndpointTest {
         int id = 4;
         int version = 3;
 
-        Response result = uut.deleteDevice(BaseTestEndpoint.createMockRequest(),
+        Response result = uut.deleteDevice(Util.createMockRequest(),
                 id, version);
 
         assertEquals(StatusCode.SUCCESS, result.status);
@@ -126,7 +125,7 @@ public class DeviceEndpointTest {
         int id = 0;
         int version = 3;
 
-        Response result = uut.deleteDevice(BaseTestEndpoint.createMockRequest(),
+        Response result = uut.deleteDevice(Util.createMockRequest(),
                 id, version);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
@@ -137,7 +136,7 @@ public class DeviceEndpointTest {
         int id = 3;
         int version = -1;
 
-        Response result = uut.deleteDevice(BaseTestEndpoint.createMockRequest(),
+        Response result = uut.deleteDevice(Util.createMockRequest(),
                 id, version);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
@@ -149,7 +148,7 @@ public class DeviceEndpointTest {
         int id = 4;
         int version = 3;
 
-        Response result = uut.revokeDevice(BaseTestEndpoint.createMockRequest(),
+        Response result = uut.revokeDevice(Util.createMockRequest(),
                 id, version);
 
         assertEquals(StatusCode.SUCCESS, result.status);
@@ -165,7 +164,7 @@ public class DeviceEndpointTest {
         int id = 0;
         int version = 3;
 
-        Response result = uut.revokeDevice(BaseTestEndpoint.createMockRequest(),
+        Response result = uut.revokeDevice(Util.createMockRequest(),
                 id, version);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
@@ -176,7 +175,7 @@ public class DeviceEndpointTest {
         int id = 3;
         int version = -1;
 
-        Response result = uut.revokeDevice(BaseTestEndpoint.createMockRequest(),
+        Response result = uut.revokeDevice(Util.createMockRequest(),
                 id, version);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);

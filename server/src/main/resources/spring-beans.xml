@@ -25,7 +25,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
        default-lazy-init="true">
 
-    <import resource="v1-beans.xml" />
     <import resource="v2-beans.xml" />
 
 </beans>

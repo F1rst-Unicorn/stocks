@@ -17,27 +17,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.common.data.visitor;
+package de.njsm.stocks.server.v2.web;
 
-public class VisitorException extends RuntimeException {
+import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
+import org.mockito.Mockito;
 
-    public VisitorException() {
-        super();
-    }
+import javax.servlet.http.HttpServletRequest;
 
-    public VisitorException(String message) {
-        super(message);
-    }
+public class Util {
 
-    public VisitorException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    public static HttpServletRequest createMockRequest() {
+        HttpServletRequest result = Mockito.mock(HttpServletRequest.class);
 
-    public VisitorException(Throwable cause) {
-        super(cause);
-    }
+        Mockito.when(result.getHeader(PrincipalFilter.SSL_CLIENT_KEY))
+                .thenReturn(PrincipalFilterTest.USER_STRING);
+        Mockito.when(result.getAttribute(PrincipalFilter.STOCKS_PRINCIPAL))
+                .thenReturn(PrincipalFilterTest.TEST_USER);
 
-    protected VisitorException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+        return result;
     }
 }

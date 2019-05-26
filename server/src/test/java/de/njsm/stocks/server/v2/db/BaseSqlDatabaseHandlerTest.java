@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +28,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class BaseSqlDatabaseHandlerTest extends DbTestCase {
 
@@ -43,12 +41,12 @@ public class BaseSqlDatabaseHandlerTest extends DbTestCase {
 
 
     @Test
-    public void exceptionReturnsNull() {
-        Object result = uut.runSqlOperation((FunctionWithExceptions<Connection, Object, SQLException>) con -> {
+    public void exceptionReturnsErrorCode() {
+        StatusCode result = uut.runCommand(con -> {
             throw new SQLException("test");
         });
 
-        assertNull(result);
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
     }
 
     @Test

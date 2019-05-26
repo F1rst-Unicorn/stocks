@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.util.ConsumerWithExceptions;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
@@ -50,11 +49,11 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
     @Test
     public void openCircuitBreaker() throws InterruptedException {
-        ConsumerWithExceptions<Connection, SQLException> input = (con) -> {
+        FunctionWithExceptions<DSLContext, StatusCode, SQLException> input = (con) -> {
             throw new SQLException("test");
         };
 
-        uut.runSqlOperation(input);
+        uut.runCommand(input);
         Thread.sleep(500);      // hystrix window has to shift
 
         Assert.assertTrue(uut.isCircuitBreakerOpen());
@@ -62,11 +61,11 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
     @Test
     public void openCircuitBreakerWithUncheckedException() throws InterruptedException {
-        ConsumerWithExceptions<Connection, SQLException> input = (con) -> {
+        FunctionWithExceptions<DSLContext, StatusCode, SQLException> input = (con) -> {
             throw new RuntimeException("test");
         };
 
-        uut.runSqlOperation(input);
+        uut.runCommand(input);
         Thread.sleep(500);      // hystrix window has to shift
 
         Assert.assertTrue(uut.isCircuitBreakerOpen());

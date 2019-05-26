@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class NetworkHandlerImpl implements NetworkHandler {
 
@@ -44,7 +45,7 @@ public class NetworkHandlerImpl implements NetworkHandler {
         try {
             LOG.info("Downloading certificate from " + url);
             URL website = new URL(url);
-            return IOUtils.toString(website.openStream());
+            return IOUtils.toString(website.openStream(), StandardCharsets.UTF_8);
         } catch (MalformedURLException e) {
             LOG.error(url + " is not a valid URL", e);
             throw new InitialisationException(url + " is invalid");

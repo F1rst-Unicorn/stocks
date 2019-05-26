@@ -27,6 +27,7 @@ import org.junit.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -88,7 +89,7 @@ public class X509AuthAdminTest {
     @Test
     public void testParsingInvalidCsr() throws Exception {
         File invalidCsr = new File(caDirectory.getPath() + "/intermediate/csr/user_-1.csr.pem");
-        IOUtils.write("invalid csr", new FileOutputStream(invalidCsr));
+        IOUtils.write("invalid csr", new FileOutputStream(invalidCsr), StandardCharsets.UTF_8);
 
         Validation<StatusCode, Principals> result = uut.getPrincipals(-1);
         Assert.assertFalse(result.isSuccess());
@@ -102,7 +103,9 @@ public class X509AuthAdminTest {
         uut.saveCsr(deviceCounter+1, content);
         deviceCounter++;
 
-        String savedContent = IOUtils.toString(new FileInputStream(caDirectory.getAbsoluteFile() + "/intermediate/csr/user_" + deviceCounter + ".csr.pem"));
+        String savedContent = IOUtils.toString(
+                new FileInputStream(caDirectory.getAbsoluteFile() + "/intermediate/csr/user_" + deviceCounter + ".csr.pem"),
+                StandardCharsets.UTF_8);
         assertEquals(content, savedContent);
     }
 
@@ -176,7 +179,8 @@ public class X509AuthAdminTest {
         pr = Runtime.getRuntime().exec(command);
         pr.waitFor();
         return IOUtils.toString(new FileInputStream(
-                caDirectory.getAbsoluteFile() + "/intermediate/csr/user_" + p.getDid() + ".csr.pem"));
+                caDirectory.getAbsoluteFile() + "/intermediate/csr/user_" + p.getDid() + ".csr.pem"),
+                StandardCharsets.UTF_8);
     }
 
     private Principals getFreshPrincipals() {

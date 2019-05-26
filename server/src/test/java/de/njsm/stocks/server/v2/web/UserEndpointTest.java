@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v1.endpoints.BaseTestEndpoint;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.UserManager;
 import de.njsm.stocks.server.v2.business.data.User;
@@ -87,7 +86,7 @@ public class UserEndpointTest {
     @Test
     public void deletingInvalidVersionIsRejected() {
 
-        Response result = uut.deleteUser(BaseTestEndpoint.createMockRequest(),
+        Response result = uut.deleteUser(Util.createMockRequest(),
                 1, -1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
@@ -96,7 +95,7 @@ public class UserEndpointTest {
     @Test
     public void deletingInvalidIdIsRejected() {
 
-        Response result = uut.deleteUser(BaseTestEndpoint.createMockRequest(),
+        Response result = uut.deleteUser(Util.createMockRequest(),
                 0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
@@ -106,7 +105,7 @@ public class UserEndpointTest {
     public void validDeletingIsSuccessful() {
         Mockito.when(userManager.deleteUser(any(), any())).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.deleteUser(BaseTestEndpoint.createMockRequest(), 1, 2);
+        Response result = uut.deleteUser(Util.createMockRequest(), 1, 2);
 
         assertEquals(StatusCode.SUCCESS, result.status);
         Mockito.verify(userManager).deleteUser(new User(1, 2), PrincipalFilterTest.TEST_USER);

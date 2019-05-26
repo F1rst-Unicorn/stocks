@@ -25,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -131,7 +132,7 @@ public class DatabaseHelper {
 
     private void sourceSchema() throws IOException, SQLException {
         FileInputStream is = new FileInputStream(DB_SCHEMA);
-        String file = IOUtils.toString(is);
+        String file = IOUtils.toString(is, StandardCharsets.UTF_8);
         is.close();
 
         String[] commands = file.split(";");
