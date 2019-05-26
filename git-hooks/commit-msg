@@ -1,0 +1,16 @@
+#!/bin/bash
+
+BRANCH=$(git branch | egrep '^\*.*' | sed -r 's/^\* (.*)$/\1/g')
+
+if [ $BRANCH = "master" -o \
+        $BRANCH = "dev-server" -o \
+        $BRANCH = "dev-client" -o \
+        $BRANCH = "dev-android" ] ; then
+        exit 0
+else
+        # First line must carry ticket name in front
+        cat $1 | head -n 1 | egrep "^$STOCKS-[0-9]*: .*\$" >/dev/null
+
+        # Second line must be empty
+        cat $1 | head -n 2 | tail -n 1 | egrep '^$' >/dev/null
+fi

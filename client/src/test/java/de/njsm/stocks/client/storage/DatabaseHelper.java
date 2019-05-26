@@ -1,3 +1,22 @@
+/* stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2019  The stocks developers
+ *
+ * This file is part of the stocks program suite.
+ *
+ * stocks is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * stocks is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package de.njsm.stocks.client.storage;
 
 import de.njsm.stocks.client.config.Configuration;
@@ -10,6 +29,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -114,8 +134,8 @@ public class DatabaseHelper {
         String file = IOUtils.toString(is);
         is.close();
 
-        List<String> script = Arrays.asList(file.split(";"));
-        script.set(script.size() - 1, "DELETE FROM Food");
+        String[] commands = file.split(";");
+        List<String> script = new ArrayList<>(Arrays.asList(commands).subList(2, commands.length));
         runSqlScript(script);
         dbConnection.close();
     }
