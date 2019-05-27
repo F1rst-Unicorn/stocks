@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 
+import static de.njsm.stocks.server.v2.db.DbTestCase.CIRCUIT_BREAKER_TIMEOUT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -54,14 +55,15 @@ public class X509AuthAdminTest {
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         uut = new X509AuthAdmin(caDirectory.getAbsolutePath(),
                 "touch " + caDirectory + "/reload-nginx",
-                "ca");
+                "ca",
+                CIRCUIT_BREAKER_TIMEOUT);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         deviceCounter++;
     }
 
@@ -142,8 +144,8 @@ public class X509AuthAdminTest {
 
         uut.wipeDeviceCredentials(input.getDid());
 
-        assertTrue(! new File(caDirectory.getPath() + "/intermediate/csr/user_" + input.getDid() + ".csr.pem").exists());
-        assertTrue(! new File(caDirectory.getPath() + "/intermediate/cert/user_" + input.getDid() + ".cert.pem").exists());
+        assertFalse(new File(caDirectory.getPath() + "/intermediate/csr/user_" + input.getDid() + ".csr.pem").exists());
+        assertFalse(new File(caDirectory.getPath() + "/intermediate/cert/user_" + input.getDid() + ".cert.pem").exists());
     }
 
     @Test

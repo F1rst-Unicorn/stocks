@@ -40,7 +40,8 @@ public class UpdateBackendTest extends DbTestCase {
 
         Config c = new Config(System.getProperties());
         uut = new UpdateBackend(getConnection(),
-                getNewResourceIdentifier());
+                getNewResourceIdentifier(),
+                CIRCUIT_BREAKER_TIMEOUT);
     }
 
     @Test

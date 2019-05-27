@@ -44,6 +44,7 @@ public class LocationHandlerTest extends DbTestCase {
 
         uut = new LocationHandler(getConnection(),
                 getNewResourceIdentifier(),
+                CIRCUIT_BREAKER_TIMEOUT,
                 new InsertVisitor<>(),
                 foodItemHandler);
     }

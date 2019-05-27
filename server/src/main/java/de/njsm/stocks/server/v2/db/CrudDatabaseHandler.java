@@ -40,8 +40,9 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
 
     public CrudDatabaseHandler(Connection connection,
                                String resourceIdentifier,
+                               int timeout,
                                InsertVisitor<T> visitor) {
-        super(connection, resourceIdentifier);
+        super(connection, resourceIdentifier, timeout);
         this.visitor = visitor;
     }
 

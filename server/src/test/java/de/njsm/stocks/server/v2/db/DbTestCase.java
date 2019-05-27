@@ -37,6 +37,8 @@ public abstract class DbTestCase {
 
     private static Connection connection;
 
+    public static final int CIRCUIT_BREAKER_TIMEOUT = 1000;
+
     @Before
     public void resetDatabase() throws SQLException {
         connection = createConnection();

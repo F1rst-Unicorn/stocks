@@ -41,6 +41,7 @@ public class UserHandlerTest extends DbTestCase {
     public void setup() {
         uut = new UserHandler(getConnection(),
                 getNewResourceIdentifier(),
+                CIRCUIT_BREAKER_TIMEOUT,
                 new InsertVisitor<>());
     }
 

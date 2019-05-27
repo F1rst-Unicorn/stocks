@@ -50,10 +50,11 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
 
     public FoodItemHandler(Connection connection,
                            String resourceIdentifier,
+                           int timeout,
                            InsertVisitor<FoodItemRecord> visitor,
                            PresenceChecker<UserDevice> userDeviceChecker,
                            PresenceChecker<User> userChecker) {
-        super(connection, resourceIdentifier, visitor);
+        super(connection, resourceIdentifier, timeout, visitor);
         this.userDeviceChecker = userDeviceChecker;
         this.userChecker = userChecker;
     }

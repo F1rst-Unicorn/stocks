@@ -39,8 +39,9 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
 
     public UserDeviceHandler(Connection connection,
                              String resourceIdentifier,
+                             int timeout,
                              InsertVisitor<UserDeviceRecord> visitor) {
-        super(connection, resourceIdentifier, visitor);
+        super(connection, resourceIdentifier, timeout, visitor);
     }
 
     public Validation<StatusCode, List<UserDevice>> getDevicesOfUser(User user) {

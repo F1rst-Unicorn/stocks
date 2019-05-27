@@ -35,8 +35,9 @@ public class FoodHandler extends CrudRenameDatabaseHandler<FoodRecord, Food> {
 
     public FoodHandler(Connection connection,
                        String resourceIdentifier,
+                       int timeout,
                        InsertVisitor<FoodRecord> visitor) {
-        super(connection, resourceIdentifier, visitor);
+        super(connection, resourceIdentifier, timeout, visitor);
     }
 
     @Override

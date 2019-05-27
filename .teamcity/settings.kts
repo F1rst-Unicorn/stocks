@@ -106,7 +106,10 @@ object Build : BuildType({
             mavenVersion = auto()
             coverageEngine = idea {
                 includeClasses = "de.njsm.stocks.*"
-                excludeClasses = "de.njsm.*.*Test"
+                excludeClasses = "de.njsm.*.*Test\n" +
+                        "de.njsm.stocks.server.v2.db.jooq.*\n" +
+                        "de.njsm.stocks.client.storage.jooq.*\n" +
+                        ""
             }
         }
         gradle {
@@ -130,8 +133,6 @@ object Build : BuildType({
                 includeClasses = "de.njsm.*"
                 excludeClasses = "*Test"
             }
-            param("teamcity.coverage.jacoco.classpath", "+:*")
-            param("teamcity.coverage.jacoco.patterns", "+:de.njsm.stocks.*")
         }
         exec {
             name = "Package server"

@@ -35,8 +35,9 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
 
     public EanNumberHandler(Connection connection,
                             String resourceIdentifier,
+                            int timeout,
                             InsertVisitor<EanNumberRecord> visitor) {
-        super(connection, resourceIdentifier, visitor);
+        super(connection, resourceIdentifier, timeout, visitor);
     }
 
     @Override

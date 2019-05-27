@@ -31,8 +31,9 @@ public abstract class CrudRenameDatabaseHandler<T extends UpdatableRecord<T>, R 
 
     public CrudRenameDatabaseHandler(Connection connection,
                                      String resourceIdentifier,
+                                     int timeout,
                                      InsertVisitor<T> visitor) {
-        super(connection, resourceIdentifier, visitor);
+        super(connection, resourceIdentifier, timeout, visitor);
     }
 
     public StatusCode rename(R item, String newName) {

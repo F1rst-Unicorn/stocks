@@ -37,6 +37,7 @@ public class ConfigTest {
         p.put(DB_ADDRESS_KEY, "localhost");
         p.put(DB_PORT_KEY, "1234");
         p.put(DB_NAME_KEY, "name");
+        p.put(DB_CIRCUIT_BREAKER_TIMEOUT_KEY, "2000");
         p.put(DB_VALIDITY_KEY, "10");
         p.put(POSTGRESQL_CONFIG_PREFIX + "user", "user");
         p.put(POSTGRESQL_CONFIG_PREFIX + "password", "password");

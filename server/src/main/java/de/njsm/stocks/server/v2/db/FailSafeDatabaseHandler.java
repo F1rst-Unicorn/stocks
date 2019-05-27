@@ -40,47 +40,41 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
 
     private String resourceIdentifier;
 
+    private final int timeout;
+
     public FailSafeDatabaseHandler(Connection connection,
-                                   String resourceIdentifier) {
+                                   String resourceIdentifier,
+                                   int timeout) {
         super(connection);
         this.resourceIdentifier = resourceIdentifier;
+        this.timeout = timeout;
     }
 
     boolean isCircuitBreakerOpen() {
-        return new HystrixProducer<>(resourceIdentifier, null, null)
+        return new HystrixProducer<>(resourceIdentifier, 1000, null, null)
                 .isCircuitBreakerOpen();
     }
 
     public StatusCode commit() {
-        try {
-            return new ConnectionHandler(resourceIdentifier, getConnection()).commit();
-        } catch (SQLException e) {
-            LOG.error("This should not happen", e);
-            return getDefaultErrorCode();
-        }
+        return new ConnectionHandler(resourceIdentifier, getConnection(), timeout).commit();
     }
 
     public StatusCode rollback() {
-        try {
-            return new ConnectionHandler(resourceIdentifier, getConnection()).rollback();
-        } catch (SQLException e) {
-            LOG.error("This should not happen", e);
-            return getDefaultErrorCode();
-        }
+        return new ConnectionHandler(resourceIdentifier, getConnection(), timeout).rollback();
     }
 
     public StatusCode setReadOnly() {
-        try {
-            return new ConnectionHandler(resourceIdentifier, getConnection()).setReadOnly();
-        } catch (SQLException e) {
-            LOG.error("This should not happen", e);
-            return getDefaultErrorCode();
-        }
+        return new ConnectionHandler(resourceIdentifier, getConnection(), timeout).setReadOnly();
     }
 
     @Override
     public String getResourceIdentifier() {
         return resourceIdentifier;
+    }
+
+    @Override
+    public int getCircuitBreakerTimeout() {
+        return timeout;
     }
 
     @Override

@@ -11,6 +11,17 @@ If the instruction is to simply perform an upgrade via the distribution's
 package manager this means that the tomcat container has to be restarted after
 installation.
 
+## 4.0.0.0-1
+
+A new config option was added. Perform the following steps:
+
+* Perform the pacman upgrade
+* Merge the configuration with `pacdiff`
+* Restart the tomcat application server
+
+Note that clients will have to upgrade to the latest version according to the
+compatibility matrix.
+
 ## 3.0.0.0-1
 
 This version switches from MariaDB to PostgreSQL. To migrate your data perform

@@ -37,9 +37,14 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
 
     private Connection connection;
 
-    public ConnectionHandler(String resourceIdentifier, Connection connection) {
+    private int timeout;
+
+    public ConnectionHandler(String resourceIdentifier,
+                             Connection connection,
+                             int timeout) {
         this.resourceIdentifier = resourceIdentifier;
         this.connection = connection;
+        this.timeout = timeout;
     }
 
     public StatusCode commit() {
@@ -70,6 +75,11 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
     @Override
     public String getResourceIdentifier() {
         return resourceIdentifier;
+    }
+
+    @Override
+    public int getCircuitBreakerTimeout() {
+        return timeout;
     }
 
     @Override

@@ -49,6 +49,7 @@ public interface HystrixWrapper<I, E extends Exception> {
 
     default <O> Validation<StatusCode, O> runFunction(FunctionWithExceptions<I, Validation<StatusCode, O>, E> function) {
         HystrixProducer<I, Validation<StatusCode, O>, E> producer = new HystrixProducer<>(getResourceIdentifier(),
+                getCircuitBreakerTimeout(),
                 this::wrap,
                 function);
 
@@ -60,6 +61,8 @@ public interface HystrixWrapper<I, E extends Exception> {
     }
 
     String getResourceIdentifier();
+
+    int getCircuitBreakerTimeout();
 
     StatusCode getDefaultErrorCode();
 

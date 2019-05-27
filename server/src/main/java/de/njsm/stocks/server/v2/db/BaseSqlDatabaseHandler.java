@@ -23,7 +23,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public abstract class BaseSqlDatabaseHandler {
 
@@ -41,28 +40,7 @@ public abstract class BaseSqlDatabaseHandler {
         }
     }
 
-    protected Connection getConnection() throws SQLException {
+    protected Connection getConnection() {
         return connection;
     }
-
-    protected void close(Connection con) {
-        if (con != null) {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                LOG.error("Error closing connection", e);
-            }
-        }
-    }
-
-    void rollback(Connection con) {
-        if (con != null) {
-            try {
-                con.rollback();
-            } catch (SQLException e1) {
-                LOG.error("Error while rollback", e1);
-            }
-        }
-    }
-
 }

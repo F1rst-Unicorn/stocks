@@ -45,8 +45,9 @@ public class TicketBackend extends FailSafeDatabaseHandler {
     private static final Logger LOG = LogManager.getLogger(TicketBackend.class);
 
     public TicketBackend(Connection connection,
-                         String resourceIdentifier) {
-        super(connection, resourceIdentifier);
+                         String resourceIdentifier,
+                         int timeout) {
+        super(connection, resourceIdentifier, timeout);
     }
 
     public StatusCode addTicket(UserDevice device, String ticket) {

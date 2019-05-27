@@ -49,14 +49,18 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
 
     private String resourceIdentifier;
 
+    private int timeout;
+
     public X509AuthAdmin(String caRootDirectory,
                          String reloadCommand,
-                         String resourceIdentifier) {
+                         String resourceIdentifier,
+                         int timeout) {
         this.caRootDirectory = caRootDirectory;
         this.csrFormatString = caRootDirectory + "/intermediate/csr/%s.csr.pem";
         this.certFormatString = caRootDirectory + "/intermediate/certs/%s.cert.pem";
         this.reloadCommand = reloadCommand;
         this.resourceIdentifier = resourceIdentifier;
+        this.timeout = timeout;
     }
 
     @Override
@@ -144,6 +148,11 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
     @Override
     public String getResourceIdentifier() {
         return resourceIdentifier;
+    }
+
+    @Override
+    public int getCircuitBreakerTimeout() {
+        return timeout;
     }
 
     @Override

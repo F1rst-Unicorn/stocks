@@ -32,8 +32,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 
 public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
@@ -44,7 +43,8 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         Connection c = getConnection();
         c.setAutoCommit(false);
         uut = new FailSafeDatabaseHandler(getConnection(),
-                getNewResourceIdentifier());
+                getNewResourceIdentifier(),
+                CIRCUIT_BREAKER_TIMEOUT);
     }
 
     @Test
@@ -63,6 +63,28 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
     public void openCircuitBreakerWithUncheckedException() throws InterruptedException {
         FunctionWithExceptions<DSLContext, StatusCode, SQLException> input = (con) -> {
             throw new RuntimeException("test");
+        };
+
+        uut.runCommand(input);
+        Thread.sleep(500);      // hystrix window has to shift
+
+        Assert.assertTrue(uut.isCircuitBreakerOpen());
+    }
+
+    @Test
+    public void openCircuitBreakerWithTimeout() throws InterruptedException {
+        int timeout = 100;
+        FailSafeDatabaseHandler uut = new FailSafeDatabaseHandler(getConnection(),
+                getNewResourceIdentifier(),
+                timeout);
+
+        FunctionWithExceptions<DSLContext, StatusCode, SQLException> input = (con) -> {
+            try {
+                Thread.sleep(timeout * 2);
+            } catch (InterruptedException e) {
+                fail();
+            }
+            return StatusCode.SUCCESS;
         };
 
         uut.runCommand(input);

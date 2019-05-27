@@ -34,8 +34,9 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
 
     public UserHandler(Connection connection,
                        String resourceIdentifier,
+                       int timeout,
                        InsertVisitor<UserRecord> visitor) {
-        super(connection, resourceIdentifier, visitor);
+        super(connection, resourceIdentifier, timeout, visitor);
     }
 
     @Override

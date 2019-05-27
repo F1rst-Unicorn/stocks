@@ -62,6 +62,7 @@
         <constructor-arg index="0" ref="certificateAuthorityPath"/>
         <constructor-arg index="1" ref="nginxReloadCommand"/>
         <constructor-arg index="2" ref="circuitBreakerCertificateAuthority"/>
+        <constructor-arg index="3" ref="circuitBreakerTimeout"/>
     </bean>
 
     <bean name="dbAddress" factory-bean="config" factory-method="getDbAddress"/>
@@ -69,6 +70,8 @@
     <bean name="dbPort" factory-bean="config" factory-method="getDbPort"/>
 
     <bean name="dbName" factory-bean="config" factory-method="getDbName"/>
+
+    <bean name="circuitBreakerTimeout" factory-bean="config" factory-method="getCircuitBreakerTimeout"/>
 
     <bean name="dbConfig" factory-bean="config" factory-method="getDbProperties"/>
 

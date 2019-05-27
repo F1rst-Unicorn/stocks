@@ -37,9 +37,10 @@ public class HystrixProducer<I, O, E extends Exception> extends HystrixCommand<O
     private FunctionWithExceptions<FunctionWithExceptions<I, O, E>, ProducerWithExceptions<O, E>, E> wrapper;
 
     public HystrixProducer(String resourceIdentifier,
+                           int timeout,
                            FunctionWithExceptions<FunctionWithExceptions<I, O, E>, ProducerWithExceptions<O, E>, E> wrapper,
                            FunctionWithExceptions<I, O, E> client) {
-        super(getHystrixConfig(resourceIdentifier));
+        super(getHystrixConfig(resourceIdentifier, timeout));
         this.client = client;
         this.wrapper = wrapper;
         logState();
@@ -59,12 +60,13 @@ public class HystrixProducer<I, O, E extends Exception> extends HystrixCommand<O
         return wrapper.apply(client).accept();
     }
 
-    private static Setter getHystrixConfig(String identifier) {
+    private static Setter getHystrixConfig(String identifier, int timeout) {
         return Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(identifier))
                 .andCommandKey(HystrixCommandKey.Factory.asKey(identifier))
                 .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
                         .withCircuitBreakerRequestVolumeThreshold(1)
                         .withCircuitBreakerErrorThresholdPercentage(1)
-                        .withMetricsHealthSnapshotIntervalInMilliseconds(100));
+                        .withMetricsHealthSnapshotIntervalInMilliseconds(100)
+                        .withExecutionTimeoutInMilliseconds(timeout));
     }
 }

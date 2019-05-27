@@ -55,6 +55,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         uut = new FoodItemHandler(getConnection(),
                 getNewResourceIdentifier(),
+                CIRCUIT_BREAKER_TIMEOUT,
                 new InsertVisitor<>(),
                 userDevicePresenceChecker,
                 userPresenceChecker);

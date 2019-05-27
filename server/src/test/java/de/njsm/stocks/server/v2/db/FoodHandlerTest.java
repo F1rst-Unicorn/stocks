@@ -38,6 +38,7 @@ public class FoodHandlerTest extends DbTestCase {
     public void setup() {
         uut = new FoodHandler(getConnection(),
                 getNewResourceIdentifier(),
+                CIRCUIT_BREAKER_TIMEOUT,
                 new InsertVisitor<>());
     }
 
