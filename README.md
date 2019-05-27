@@ -15,6 +15,7 @@ See manual/client/ for build and maintainance manuals.
 ## Android app installation
 
 Build the app with the integrated gradle script and deploy it to your device.
+See manual/android/ for the changelog.
 
 ## Contributing
 
