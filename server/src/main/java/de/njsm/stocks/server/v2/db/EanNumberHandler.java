@@ -24,7 +24,6 @@ import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import org.jooq.Table;
 import org.jooq.TableField;
 
-import java.sql.Connection;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.EAN_NUMBER;
@@ -33,11 +32,11 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.EAN_NUMBER;
 public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNumber> {
 
 
-    public EanNumberHandler(Connection connection,
+    public EanNumberHandler(ConnectionFactory connectionFactory,
                             String resourceIdentifier,
                             int timeout,
                             InsertVisitor<EanNumberRecord> visitor) {
-        super(connection, resourceIdentifier, timeout, visitor);
+        super(connectionFactory, resourceIdentifier, timeout, visitor);
     }
 
     @Override

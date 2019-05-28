@@ -24,7 +24,6 @@ import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
 import org.jooq.Table;
 import org.jooq.TableField;
 
-import java.sql.Connection;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
@@ -32,11 +31,11 @@ import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
 public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
 
 
-    public UserHandler(Connection connection,
+    public UserHandler(ConnectionFactory connectionFactory,
                        String resourceIdentifier,
                        int timeout,
                        InsertVisitor<UserRecord> visitor) {
-        super(connection, resourceIdentifier, timeout, visitor);
+        super(connectionFactory, resourceIdentifier, timeout, visitor);
     }
 
     @Override

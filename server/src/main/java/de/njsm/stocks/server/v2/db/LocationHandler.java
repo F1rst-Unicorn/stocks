@@ -26,7 +26,6 @@ import org.jooq.DSLContext;
 import org.jooq.Table;
 import org.jooq.TableField;
 
-import java.sql.Connection;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.LOCATION;
@@ -36,12 +35,12 @@ public class LocationHandler extends CrudRenameDatabaseHandler<LocationRecord, L
 
     private FoodItemHandler foodItemHandler;
 
-    public LocationHandler(Connection connection,
+    public LocationHandler(ConnectionFactory connectionFactory,
                            String resourceIdentifier,
                            int timeout,
                            InsertVisitor<LocationRecord> visitor,
                            FoodItemHandler foodItemHandler) {
-        super(connection, resourceIdentifier, timeout, visitor);
+        super(connectionFactory, resourceIdentifier, timeout, visitor);
         this.foodItemHandler = foodItemHandler;
     }
 

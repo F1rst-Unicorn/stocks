@@ -24,16 +24,14 @@ import de.njsm.stocks.server.v2.business.data.VersionedData;
 import org.jooq.TableField;
 import org.jooq.UpdatableRecord;
 
-import java.sql.Connection;
-
 public abstract class CrudRenameDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData> extends CrudDatabaseHandler<T, R> {
 
 
-    public CrudRenameDatabaseHandler(Connection connection,
+    public CrudRenameDatabaseHandler(ConnectionFactory connectionFactory,
                                      String resourceIdentifier,
                                      int timeout,
                                      InsertVisitor<T> visitor) {
-        super(connection, resourceIdentifier, timeout, visitor);
+        super(connectionFactory, resourceIdentifier, timeout, visitor);
     }
 
     public StatusCode rename(R item, String newName) {

@@ -39,7 +39,7 @@ public class TicketBackendTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new TicketBackend(getConnection(),
+        uut = new TicketBackend(getConnectionFactory(),
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT);
     }

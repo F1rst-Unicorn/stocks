@@ -35,15 +35,15 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
 
     private String resourceIdentifier;
 
-    private Connection connection;
+    private ConnectionFactory connectionFactory;
 
     private int timeout;
 
     public ConnectionHandler(String resourceIdentifier,
-                             Connection connection,
+                             ConnectionFactory connectionFactory,
                              int timeout) {
         this.resourceIdentifier = resourceIdentifier;
-        this.connection = connection;
+        this.connectionFactory = connectionFactory;
         this.timeout = timeout;
     }
 
@@ -90,7 +90,7 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
     @Override
     public <O> ProducerWithExceptions<Validation<StatusCode, O>, SQLException> wrap(FunctionWithExceptions<Connection, Validation<StatusCode, O>, SQLException> client) {
         return () -> {
-            Connection con = connection;
+            Connection con = connectionFactory.getConnection();
             return client.apply(con);
         };
     }

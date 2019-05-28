@@ -36,7 +36,7 @@ public class EanNumberHandlerTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new EanNumberHandler(getConnection(),
+        uut = new EanNumberHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT,
                 new InsertVisitor<>());

@@ -31,7 +31,6 @@ import org.apache.logging.log4j.Logger;
 import org.jooq.Record4;
 import org.jooq.Result;
 
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
@@ -44,10 +43,10 @@ public class TicketBackend extends FailSafeDatabaseHandler {
 
     private static final Logger LOG = LogManager.getLogger(TicketBackend.class);
 
-    public TicketBackend(Connection connection,
+    public TicketBackend(ConnectionFactory connectionFactory,
                          String resourceIdentifier,
                          int timeout) {
-        super(connection, resourceIdentifier, timeout);
+        super(connectionFactory, resourceIdentifier, timeout);
     }
 
     public StatusCode addTicket(UserDevice device, String ticket) {

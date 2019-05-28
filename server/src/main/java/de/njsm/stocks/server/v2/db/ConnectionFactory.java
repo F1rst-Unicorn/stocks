@@ -23,15 +23,23 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties;
 
-public abstract class BaseSqlDatabaseHandler {
+public class ConnectionFactory {
 
-    private static final Logger LOG = LogManager.getLogger(BaseSqlDatabaseHandler.class);
+    private static final Logger LOG = LogManager.getLogger(ConnectionFactory.class);
 
-    private final Connection connection;
+    private String dbUrl;
 
-    public BaseSqlDatabaseHandler(Connection connection) {
-        this.connection = connection;
+    private Properties properties;
+
+    private Connection connection;
+
+    public ConnectionFactory(String dbUrl, Properties properties) {
+        this.dbUrl = dbUrl;
+        this.properties = properties;
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -40,7 +48,19 @@ public abstract class BaseSqlDatabaseHandler {
         }
     }
 
-    protected Connection getConnection() {
+    /**
+     * Opens a new connection only on first call
+     */
+    public Connection getConnection() throws SQLException {
+        if (connection == null)
+            connection = DriverManager.getConnection(dbUrl, properties);
+
+        return connection;
+    }
+
+    Connection getSafeConnection() {
+        if (connection == null)
+            throw new RuntimeException("No connection created yet");
         return connection;
     }
 }

@@ -87,10 +87,4 @@
             </util:list>
         </constructor-arg>
     </bean>
-
-    <bean name="requestConnection" class="java.sql.DriverManager" factory-method="getConnection" scope="request">
-        <constructor-arg index="0" ref="dbUrl"/>
-        <constructor-arg index="1" ref="dbConfig"/>
-    </bean>
-
 </beans>

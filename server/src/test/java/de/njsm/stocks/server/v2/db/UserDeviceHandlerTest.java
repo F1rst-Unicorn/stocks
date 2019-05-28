@@ -40,7 +40,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new UserDeviceHandler(getConnection(),
+        uut = new UserDeviceHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT,
                 new InsertVisitor<>());

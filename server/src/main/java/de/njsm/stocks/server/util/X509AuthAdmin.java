@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
 
 public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception> {
 
@@ -67,7 +68,7 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
     public synchronized StatusCode saveCsr(int deviceId, String content) {
         return runCommand(dummy -> {
             FileOutputStream csrFile = new FileOutputStream(getCsrFileName(deviceId));
-            IOUtils.write(content, csrFile);
+            IOUtils.write(content, csrFile, StandardCharsets.UTF_8);
             csrFile.close();
             return StatusCode.SUCCESS;
         });
@@ -104,7 +105,7 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
     public synchronized Validation<StatusCode, String> getCertificate(int deviceId) {
         return runFunction(dummy -> {
             FileInputStream input = new FileInputStream(getCertificateFileName(deviceId));
-            String result = IOUtils.toString(input);
+            String result = IOUtils.toString(input, StandardCharsets.UTF_8);
             input.close();
             return Validation.success(result);
         });

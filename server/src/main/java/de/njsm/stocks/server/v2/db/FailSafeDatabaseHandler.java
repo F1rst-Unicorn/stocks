@@ -34,7 +34,7 @@ import org.jooq.impl.DSL;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements HystrixWrapper<DSLContext, SQLException> {
+public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLException> {
 
     private static final Logger LOG = LogManager.getLogger(FailSafeDatabaseHandler.class);
 
@@ -42,12 +42,14 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
 
     private final int timeout;
 
-    public FailSafeDatabaseHandler(Connection connection,
+    private ConnectionFactory connectionFactory;
+
+    public FailSafeDatabaseHandler(ConnectionFactory connectionFactory,
                                    String resourceIdentifier,
                                    int timeout) {
-        super(connection);
         this.resourceIdentifier = resourceIdentifier;
         this.timeout = timeout;
+        this.connectionFactory = connectionFactory;
     }
 
     boolean isCircuitBreakerOpen() {
@@ -56,15 +58,15 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
     }
 
     public StatusCode commit() {
-        return new ConnectionHandler(resourceIdentifier, getConnection(), timeout).commit();
+        return new ConnectionHandler(resourceIdentifier, connectionFactory, timeout).commit();
     }
 
     public StatusCode rollback() {
-        return new ConnectionHandler(resourceIdentifier, getConnection(), timeout).rollback();
+        return new ConnectionHandler(resourceIdentifier, connectionFactory, timeout).rollback();
     }
 
     public StatusCode setReadOnly() {
-        return new ConnectionHandler(resourceIdentifier, getConnection(), timeout).setReadOnly();
+        return new ConnectionHandler(resourceIdentifier, connectionFactory, timeout).setReadOnly();
     }
 
     @Override
@@ -86,7 +88,7 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
     public <O> ProducerWithExceptions<Validation<StatusCode, O>, SQLException>
     wrap(FunctionWithExceptions<DSLContext, Validation<StatusCode, O>, SQLException> client) {
         return () -> {
-            Connection con = getConnection();
+            Connection con = connectionFactory.getConnection();
             con.setAutoCommit(false);
             if (con.getTransactionIsolation() != Connection.TRANSACTION_SERIALIZABLE)
                 con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
@@ -94,4 +96,6 @@ public class FailSafeDatabaseHandler extends BaseSqlDatabaseHandler implements H
             return client.apply(context);
         };
     }
+
+
 }

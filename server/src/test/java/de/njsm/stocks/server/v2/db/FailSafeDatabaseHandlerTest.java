@@ -33,6 +33,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static junit.framework.TestCase.*;
+import static org.junit.Assert.assertEquals;
 
 public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
@@ -40,12 +41,31 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
     @Before
     public void setup() throws SQLException {
-        Connection c = getConnection();
+        Connection c = getConnectionFactory().getConnection();
         c.setAutoCommit(false);
-        uut = new FailSafeDatabaseHandler(getConnection(),
+        uut = new FailSafeDatabaseHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT);
     }
+
+    @Test
+    public void exceptionReturnsErrorCode() {
+        StatusCode result = uut.runCommand(con -> {
+            throw new SQLException("test");
+        });
+
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+    }
+
+    @Test
+    public void commandErrorCodesArePropagated() {
+        StatusCode expected = StatusCode.INVALID_DATA_VERSION;
+
+        StatusCode actual = uut.runCommand(context -> expected);
+
+        assertEquals(expected, actual);
+    }
+
 
     @Test
     public void openCircuitBreaker() throws InterruptedException {
@@ -74,7 +94,7 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
     @Test
     public void openCircuitBreakerWithTimeout() throws InterruptedException {
         int timeout = 100;
-        FailSafeDatabaseHandler uut = new FailSafeDatabaseHandler(getConnection(),
+        FailSafeDatabaseHandler uut = new FailSafeDatabaseHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
                 timeout);
 
@@ -111,7 +131,7 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         StatusCode result = uut.commit();
 
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(getConnection().isClosed());
+        assertTrue(getConnectionFactory().getConnection().isClosed());
     }
 
     @Test
@@ -120,9 +140,12 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         StatusCode result = uut.rollback();
 
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(getConnection().isClosed());
+        assertTrue(getConnectionFactory().getConnection().isClosed());
     }
 
+    /**
+     * Example taken from https://www.postgresql.org/docs/11/transaction-iso.html#XACT-SERIALIZABLE
+     */
     @Test
     public void serialisationErrorIsNoted() throws SQLException {
         Connection concurrentConnection = DbTestCase.createConnection();

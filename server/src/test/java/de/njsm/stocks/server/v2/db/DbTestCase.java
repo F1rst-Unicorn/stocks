@@ -35,13 +35,16 @@ public abstract class DbTestCase {
 
     private static int resourceCounter = 0;
 
+    private static ConnectionFactory factory;
+
     private static Connection connection;
 
     public static final int CIRCUIT_BREAKER_TIMEOUT = 1000;
 
     @Before
     public void resetDatabase() throws SQLException {
-        connection = createConnection();
+        factory = new ConnectionFactory(getUrl(), getPostgresqlProperties(System.getProperties()));
+        connection = factory.getConnection();
         SampleData.insertSampleData(connection);
 
         resourceCounter++;
@@ -52,8 +55,8 @@ public abstract class DbTestCase {
         connection.close();
     }
 
-    protected Connection getConnection() {
-        return connection;
+    protected ConnectionFactory getConnectionFactory() {
+        return factory;
     }
 
     protected DSLContext getDSLContext() {
@@ -61,7 +64,7 @@ public abstract class DbTestCase {
     }
 
     protected String getNewResourceIdentifier() {
-        return "hystrix group " + String.valueOf(resourceCounter);
+        return "hystrix group " + resourceCounter;
     }
 
     static Connection createConnection() throws SQLException {

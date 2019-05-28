@@ -32,7 +32,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
 
-import java.sql.Connection;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.function.Function;
@@ -48,13 +47,13 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
 
     private PresenceChecker<User> userChecker;
 
-    public FoodItemHandler(Connection connection,
+    public FoodItemHandler(ConnectionFactory connectionFactory,
                            String resourceIdentifier,
                            int timeout,
                            InsertVisitor<FoodItemRecord> visitor,
                            PresenceChecker<UserDevice> userDeviceChecker,
                            PresenceChecker<User> userChecker) {
-        super(connection, resourceIdentifier, timeout, visitor);
+        super(connectionFactory, resourceIdentifier, timeout, visitor);
         this.userDeviceChecker = userDeviceChecker;
         this.userChecker = userChecker;
     }

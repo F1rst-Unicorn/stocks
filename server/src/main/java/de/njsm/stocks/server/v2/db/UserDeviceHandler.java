@@ -27,7 +27,6 @@ import fj.data.Validation;
 import org.jooq.Table;
 import org.jooq.TableField;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,11 +36,11 @@ import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
 public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, UserDevice> {
 
 
-    public UserDeviceHandler(Connection connection,
+    public UserDeviceHandler(ConnectionFactory connectionFactory,
                              String resourceIdentifier,
                              int timeout,
                              InsertVisitor<UserDeviceRecord> visitor) {
-        super(connection, resourceIdentifier, timeout, visitor);
+        super(connectionFactory, resourceIdentifier, timeout, visitor);
     }
 
     public Validation<StatusCode, List<UserDevice>> getDevicesOfUser(User user) {
