@@ -40,7 +40,7 @@ if git tag | grep "server-$VERSION-$RELEASE" >/dev/null ; then
 fi
 
 echo Patching version number
-sed "0,/version/{s$<version>.*</version>$<version>$MAVEN_VERSION</version>$}" \
+sed "0,/<version>/{s$<version>.*</version>$<version>$MAVEN_VERSION</version>$}" \
         -i "$STOCKS_ROOT"/server/pom.xml
 sed -i "s/pkgver=.*/pkgver=$VERSION/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
 sed -i "s/pkgrel=.*/pkgrel=$RELEASE/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
