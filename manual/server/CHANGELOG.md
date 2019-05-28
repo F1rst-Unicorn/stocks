@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## Release [4.0.0.0-1]
+
 ### Removed
 
 * STOCKS-81: v1 API endpoints are gone
@@ -9,6 +11,10 @@
 ### Added
 
 * STOCKS-78: New configuration option for circuit breaker timeout
+
+### Fixed
+
+* STOCKS-77: Circuit breaker ignores errors when DB is unreachable
 
 ## Release [3.1.0.2-1]
 
