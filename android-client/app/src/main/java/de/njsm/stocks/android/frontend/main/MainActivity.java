@@ -95,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.activity_main_drawer_users:
                 navController.navigate(R.id.action_global_nav_fragment_users);
                 break;
+            case R.id.activity_main_drawer_shopping_list:
+                navController.navigate(R.id.action_global_nav_fragment_shopping_list);
+                break;
             case R.id.activity_main_drawer_locations:
                 navController.navigate(R.id.action_global_nav_fragment_locations);
                 break;

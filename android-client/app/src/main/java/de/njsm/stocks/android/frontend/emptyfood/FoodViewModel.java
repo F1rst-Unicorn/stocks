@@ -54,6 +54,10 @@ public class FoodViewModel extends ViewModel {
         return foodRepository.renameFood(item, name);
     }
 
+    public LiveData<StatusCode> setToBuyStatus(Food item, boolean status) {
+        return foodRepository.editToBuyStatus(item, status);
+    }
+
     public LiveData<List<FoodView>> getFoodByLocation(int location) {
         return foodRepository.getFoodByLocation(location);
     }

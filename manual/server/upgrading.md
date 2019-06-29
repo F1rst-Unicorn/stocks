@@ -11,7 +11,7 @@ If the instruction is to simply perform an upgrade via the distribution's
 package manager this means that the tomcat container has to be restarted after
 installation.
 
-## 4.1.0.0-0
+## 4.1.0.0-1
 
 Changes in the database model require a database migration. Shut down the tomcat
 server and do the pacman upgrade. Then execute the SQL script provided in

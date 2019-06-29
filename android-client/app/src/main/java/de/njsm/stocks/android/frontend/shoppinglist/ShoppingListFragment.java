@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.search;
+package de.njsm.stocks.android.frontend.shoppinglist;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -36,17 +36,24 @@ import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
+import de.njsm.stocks.android.frontend.locations.LocationViewModel;
+import de.njsm.stocks.android.frontend.search.AmountAdapter;
 
 import javax.inject.Inject;
 import java.util.List;
 
-public class SearchFragment extends BaseFragment {
+public class ShoppingListFragment extends BaseFragment {
+
+    private RecyclerView list;
 
     private ViewModelProvider.Factory viewModelFactory;
 
-    private AmountAdapter adapter;
+    private FoodToBuyViewModel viewModel;
 
     private LiveData<List<FoodView>> data;
+
+    private LocationViewModel locationViewModel;
 
     @Override
     public void onAttach(Context context) {
@@ -58,31 +65,41 @@ public class SearchFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
-        assert getArguments() != null;
-        SearchFragmentArgs input = SearchFragmentArgs.fromBundle(getArguments());
 
-        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
-        list.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        list = result.findViewById(R.id.template_swipe_list_list);
+        list.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        SearchViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel.class);
-        data = viewModel.search(input.getSearchTerm());
-        adapter = new AmountAdapter(data, this::onClick);
-        data.observe(this, v -> adapter.notifyDataSetChanged());
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodToBuyViewModel.class);
+        locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
+        data = viewModel.getFoodToBuy();
+
+        AmountAdapter adapter = new AmountAdapter(
+                data,
+                this::onClick);
+        data.observe(this, i -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
-        initialiseSwipeRefresh(result, viewModelFactory);
+        FoodDeletionInteractor interactor = new FoodDeletionInteractor(
+                this, result,
+                R.string.dialog_food_was_removed_from_shopping_list,
+                i -> adapter.notifyDataSetChanged(),
+                i -> viewModel.setToBuyStatus(i, false),
+                i -> viewModel.getFood(i));
+        addSwipeToDelete(list, data, R.drawable.ic_remove_shopping_cart_white_24, v -> interactor.initiateDeletion(v.mapToFood()));
+
         result.findViewById(R.id.template_swipe_list_fab).setVisibility(View.GONE);
+        initialiseSwipeRefresh(result, viewModelFactory);
         return result;
     }
 
     private void onClick(View view) {
         AmountAdapter.ViewHolder holder = (AmountAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodView> list = data.getValue();
-        if (list != null) {
-            int id = list.get(position).id;
-            SearchFragmentDirections.ActionNavFragmentSearchToNavFragmentFoodItem args =
-                    SearchFragmentDirections.actionNavFragmentSearchToNavFragmentFoodItem(id);
+        List<FoodView> data = this.data.getValue();
+        if (data != null) {
+            int id = data.get(position).id;
+            ShoppingListFragmentDirections.ActionNavFragmentShoppingListToNavFragmentFoodItem args =
+                    ShoppingListFragmentDirections.actionNavFragmentShoppingListToNavFragmentFoodItem(id);
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
         }

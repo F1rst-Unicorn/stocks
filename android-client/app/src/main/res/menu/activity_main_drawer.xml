@@ -24,6 +24,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/activity_main_drawer_shopping_list"
+            android:icon="@drawable/ic_shopping_cart_black_24"
+            android:title="@string/action_shopping_list" />
+        <item
             android:id="@+id/activity_main_drawer_locations"
             android:icon="@drawable/ic_account_balance_wallet_black_24dp"
             android:title="@string/action_locations" />

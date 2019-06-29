@@ -57,7 +57,7 @@ public abstract class FoodDao {
     @Query("WITH least_item AS " +
                 "(SELECT i.of_type, count(*) AS amount, i.eat_by AS eatBy " +
                 "FROM FoodItem i GROUP BY i.of_type HAVING i.eat_by = MIN(i.eat_by)) " +
-            "SELECT f._id, f.version, f.name AS name, i.eatBy AS eatBy, i.amount AS amount FROM Food f " +
+            "SELECT f._id, f.version, f.name AS name, f.to_buy AS toBuy, i.eatBy AS eatBy, i.amount AS amount FROM Food f " +
             "INNER JOIN least_item i ON i.of_type = f._id " +
             "ORDER BY eatBy")
     public abstract LiveData<List<FoodView>> getFoodToEat();
@@ -66,23 +66,23 @@ public abstract class FoodDao {
     @Query("WITH least_item AS " +
             "(SELECT i.of_type, count(*) AS amount, i.eat_by AS eatBy " +
             "FROM FoodItem i WHERE i.stored_in = :location GROUP BY i.of_type HAVING i.eat_by = MIN(i.eat_by)) " +
-            "SELECT f._id, f.version, f.name AS name, i.eatBy AS eatBy, i.amount AS amount FROM Food f " +
+            "SELECT f._id, f.version, f.name AS name, f.to_buy AS toBuy, i.eatBy AS eatBy, i.amount AS amount FROM Food f " +
             "INNER JOIN least_item i ON i.of_type = f._id " +
             "ORDER BY eatBy")
     public abstract LiveData<List<FoodView>> getFoodByLocation(int location);
 
-    @Query("SELECT f._id, f.version, f.name FROM Food f " +
+    @Query("SELECT f._id, f.version, f.name, f.to_buy FROM Food f " +
             "INNER JOIN EanNumber n ON n.identifies = f._id " +
             "WHERE n.number = :s " +
             "LIMIT 1")
     public abstract LiveData<Food> getFoodByEanNumber(String s);
 
-    @Query("SELECT f._id AS _id, f.version AS version, f.name AS name, count(*) AS amount " +
+    @Query("SELECT f._id AS _id, f.version AS version, f.name AS name, f.to_buy AS toBuy, count(*) AS amount " +
             "FROM Food f INNER JOIN FoodItem i ON f._id = i.of_type " +
             "WHERE f.name like :searchTerm " +
             "GROUP BY f.name " +
             "UNION " +
-            "SELECT f._id AS _id, f.version AS version, f.name AS name, 0 AS amount " +
+            "SELECT f._id AS _id, f.version AS version, f.name AS name, f.to_buy AS toBuy, 0 AS amount " +
             "FROM Food f " +
             "WHERE f.name LIKE :searchTerm AND f._id NOT IN (SELECT DISTINCT of_type FROM FoodItem)")
     public abstract LiveData<List<FoodView>> getFoodBySubString(String searchTerm);
@@ -90,4 +90,13 @@ public abstract class FoodDao {
     @Query("SELECT * FROM Food ORDER BY name")
     public abstract LiveData<List<Food>> getFood();
 
+    @Query("SELECT f._id AS _id, f.version AS version, f.name AS name, f.to_buy AS toBuy, count(*) AS amount " +
+            "FROM Food f INNER JOIN FoodItem i ON f._id = i.of_type " +
+            "WHERE f.to_buy " +
+            "GROUP BY f.name " +
+            "UNION " +
+            "SELECT f._id AS _id, f.version AS version, f.name AS name, f.to_buy AS toBuy, 0 AS amount " +
+            "FROM Food f " +
+            "WHERE f.to_buy AND f._id NOT IN (SELECT DISTINCT of_type FROM FoodItem)")
+    public abstract LiveData<List<FoodView>> getFoodToBuy();
 }

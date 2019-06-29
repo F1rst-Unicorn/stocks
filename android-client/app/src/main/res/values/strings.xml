@@ -145,5 +145,8 @@
     <string name="title_camera_permission">Camera Permission</string>
     <string name="text_camera_explanation">Stocks needs the camera permission to scan bar codes of food. During setup it also reads the ticket from your friend. Both are convenient but not required for the app to work.</string>
     <string name="title_new_barcode">New barcode for&#8230;</string>
+    <string name="title_shopping_list">Shopping List</string>
+    <string name="dialog_food_was_removed_from_shopping_list">Food was removed from shopping list</string>
+    <string name="action_shopping_list">Shopping List</string>
 
 </resources>

@@ -27,8 +27,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.Objects;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -41,14 +39,19 @@ public class Food extends VersionedData {
     @ColumnInfo(name = "name")
     public String name;
 
-    public Food(int id, int version, String name) {
+    @ColumnInfo(name = "to_buy")
+    public boolean toBuy;
+
+    public Food(int id, int version, String name, boolean toBuy) {
         super(id, version);
         this.name = name;
+        this.toBuy = toBuy;
     }
 
     @Ignore
-    public Food(String name) {
+    public Food(String name, boolean toBuy) {
         this.name = name;
+        this.toBuy = toBuy;
     }
 
     @Ignore
@@ -59,19 +62,27 @@ public class Food extends VersionedData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Food food = (Food) o;
-        return id == food.id &&
-                version == food.version &&
-                Objects.equals(name, food.name);
+
+        if (toBuy != food.toBuy) return false;
+        return name.equals(food.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, version);
+        int result = name.hashCode();
+        result = 31 * result + (toBuy ? 1 : 0);
+        return result;
     }
 
     @Override
     public String toString() {
-        return "Food (" + id + ", " + name + ", " + version + ")";
+        return "Food{" +
+                "name='" + name + '\'' +
+                ", toBuy=" + toBuy +
+                ", version=" + version +
+                ", id=" + id +
+                '}';
     }
 }

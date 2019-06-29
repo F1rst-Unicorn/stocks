@@ -33,7 +33,7 @@ import de.njsm.stocks.android.frontend.BaseAdapter;
 
 import java.util.List;
 
-public class SearchAdapter extends BaseAdapter<FoodView, SearchAdapter.ViewHolder> {
+public class AmountAdapter extends BaseAdapter<FoodView, AmountAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -56,7 +56,7 @@ public class SearchAdapter extends BaseAdapter<FoodView, SearchAdapter.ViewHolde
         }
     }
 
-    SearchAdapter(LiveData<List<FoodView>> data,
+    public AmountAdapter(LiveData<List<FoodView>> data,
                   Consumer<View> onClickListener) {
         super(data, onClickListener);
     }
@@ -66,7 +66,7 @@ public class SearchAdapter extends BaseAdapter<FoodView, SearchAdapter.ViewHolde
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_food_amount, viewGroup, false);
-        ViewHolder result =  new SearchAdapter.ViewHolder(v);
+        ViewHolder result =  new AmountAdapter.ViewHolder(v);
         v.setTag(result);
         v.setOnClickListener(this::onClick);
         return result;

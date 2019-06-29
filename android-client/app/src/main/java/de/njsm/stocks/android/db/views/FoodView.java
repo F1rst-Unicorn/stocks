@@ -31,15 +31,18 @@ public class FoodView extends VersionedData {
 
     private String name;
 
-    public FoodView(int id, int version, int amount, Instant eatBy, String name) {
+    private boolean toBuy;
+
+    public FoodView(int id, int version, int amount, Instant eatBy, String name, boolean toBuy) {
         super(id, version);
         this.amount = amount;
         this.eatBy = eatBy;
         this.name = name;
+        this.toBuy = toBuy;
     }
 
     public Food mapToFood() {
-        return new Food(id, version, name);
+        return new Food(id, version, name, toBuy);
     }
 
     public int getAmount() {
@@ -52,6 +55,10 @@ public class FoodView extends VersionedData {
 
     public String getName() {
         return name;
+    }
+
+    public boolean getToBuy() {
+        return toBuy;
     }
 
     @Override

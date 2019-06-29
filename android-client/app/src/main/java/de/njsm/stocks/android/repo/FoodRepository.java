@@ -81,8 +81,18 @@ public class FoodRepository {
     public LiveData<StatusCode> renameFood(Food item, String name) {
         LOG.d("renaming food " + item + " to " + name);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
-        webClient.renameFood(item.id, item.version, name)
+        webClient.renameFood(item.id, item.version, name, item.toBuy ? 1 : 0)
                 .enqueue(new StatusCodeCallback(data, synchroniser));
+        return data;
+    }
+
+    public LiveData<StatusCode> editToBuyStatus(Food item, boolean toBuy) {
+        MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
+        if (item.toBuy != toBuy) {
+            LOG.d("setting " + item.name + "'s buy status to " + toBuy);
+            webClient.renameFood(item.id, item.version, item.name, toBuy ? 1 : 0)
+                    .enqueue(new StatusCodeCallback(data, synchroniser));
+        }
         return data;
     }
 
@@ -96,6 +106,10 @@ public class FoodRepository {
 
     public LiveData<Food> getFoodByEanNumber(String s) {
         return foodDao.getFoodByEanNumber(s);
+    }
+
+    public LiveData<List<FoodView>> getFoodToBuy() {
+        return foodDao.getFoodToBuy();
     }
 
     public LiveData<List<FoodView>> getFoodBySubString(String searchTerm) {

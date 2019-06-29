@@ -36,6 +36,7 @@ import de.njsm.stocks.android.frontend.food.FoodToEatViewModel;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.frontend.search.SearchViewModel;
+import de.njsm.stocks.android.frontend.shoppinglist.FoodToBuyViewModel;
 import de.njsm.stocks.android.frontend.user.UserViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.repo.*;
@@ -74,6 +75,15 @@ public class ViewModelModule {
     @ViewModelKey(FoodToEatViewModel.class)
     ViewModel provideFoodToEatViewModel(FoodRepository repo) {
         FoodToEatViewModel result = new FoodToEatViewModel(repo);
+        result.init();
+        return result;
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(FoodToBuyViewModel.class)
+    ViewModel provideFoodToBuyViewModel(FoodRepository repo) {
+        FoodToBuyViewModel result = new FoodToBuyViewModel(repo);
         result.init();
         return result;
     }

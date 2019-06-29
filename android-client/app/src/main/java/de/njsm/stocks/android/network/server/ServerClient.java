@@ -82,7 +82,8 @@ public interface ServerClient {
     @PUT("/v2/food/rename")
     Call<Response> renameFood(@Query("id") int id,
                               @Query("version") int version,
-                              @Query("new") String newName);
+                              @Query("new") String newName,
+                              @Query("buy") int toBuy);
 
     @DELETE("/v2/food")
     Call<Response> deleteFood(@Query("id") int id,

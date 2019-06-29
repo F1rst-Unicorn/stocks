@@ -35,6 +35,7 @@ import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.frontend.main.OutlineFragment;
 import de.njsm.stocks.android.frontend.search.SearchFragment;
 import de.njsm.stocks.android.frontend.settings.SettingsFragment;
+import de.njsm.stocks.android.frontend.shoppinglist.ShoppingListFragment;
 import de.njsm.stocks.android.frontend.startup.StartupFragment;
 import de.njsm.stocks.android.frontend.user.UserFragment;
 
@@ -85,6 +86,9 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract CrashLogListFragment contributeCrashLogFragment();
+
+    @ContributesAndroidInjector
+    abstract ShoppingListFragment contributeShoppingListFragment();
 
     @ContributesAndroidInjector
     abstract MainActivity contributeMainActivity();

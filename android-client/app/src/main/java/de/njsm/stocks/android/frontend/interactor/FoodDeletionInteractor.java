@@ -32,18 +32,30 @@ public class FoodDeletionInteractor extends DeletionInteractor<Food> {
 
     private Function<Integer, LiveData<Food>> updater;
 
+    private int snackBarMessageId;
+
     public FoodDeletionInteractor(BaseFragment owner,
                                   View snackbarParent,
                                   Consumer<Food> deletionCancler,
                                   Function<Food, LiveData<StatusCode>> deleter,
                                   Function<Integer, LiveData<Food>> updater) {
+        this(owner, snackbarParent, R.string.dialog_food_was_deleted, deletionCancler, deleter, updater);
+    }
+
+    public FoodDeletionInteractor(BaseFragment owner,
+                                  View snackbarParent,
+                                  int snackBarMessageId,
+                                  Consumer<Food> deletionCancler,
+                                  Function<Food, LiveData<StatusCode>> deleter,
+                                  Function<Integer, LiveData<Food>> updater) {
         super(owner, snackbarParent, deletionCancler, deleter);
         this.updater = updater;
+        this.snackBarMessageId = snackBarMessageId;
     }
 
     @Override
     protected int getSnackbarMessageId() {
-        return R.string.dialog_food_was_deleted;
+        return snackBarMessageId;
     }
 
     @Override
