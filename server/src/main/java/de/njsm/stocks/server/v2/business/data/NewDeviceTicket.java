@@ -22,6 +22,8 @@ package de.njsm.stocks.server.v2.business.data;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.Objects;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -49,7 +51,7 @@ public class NewDeviceTicket {
         NewDeviceTicket that = (NewDeviceTicket) o;
 
         if (deviceId != that.deviceId) return false;
-        return ticket != null ? ticket.equals(that.ticket) : that.ticket == null;
+        return Objects.equals(ticket, that.ticket);
 
     }
 

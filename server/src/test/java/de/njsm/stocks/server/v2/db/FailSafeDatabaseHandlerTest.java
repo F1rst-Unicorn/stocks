@@ -143,6 +143,15 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         assertTrue(getConnectionFactory().getConnection().isClosed());
     }
 
+    @Test
+    public void testSettingReadOnly() throws SQLException {
+
+        StatusCode result = uut.setReadOnly();
+
+        assertEquals(StatusCode.SUCCESS, result);
+        assertTrue(getConnectionFactory().getConnection().isReadOnly());
+    }
+
     /**
      * Example taken from https://www.postgresql.org/docs/11/transaction-iso.html#XACT-SERIALIZABLE
      */

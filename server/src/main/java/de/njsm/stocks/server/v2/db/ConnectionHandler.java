@@ -99,8 +99,9 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
     public <O> Validation<StatusCode, O> handleException(HystrixRuntimeException e) {
         if (e.getCause() instanceof SQLException) {
             SQLException cause = (SQLException) e.getCause();
+            String sqlState = cause.getSQLState();
 
-            if (cause.getSQLState().equals(SERIALISATION_FAILURE_SQL_STATE)) {
+            if (sqlState != null && sqlState.equals(SERIALISATION_FAILURE_SQL_STATE)) {
                 LOG.warn("Serialisation error, transaction was rolled back");
                 return Validation.fail(StatusCode.SERIALISATION_CONFLICT);
             } else {

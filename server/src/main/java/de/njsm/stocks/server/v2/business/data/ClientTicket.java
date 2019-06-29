@@ -33,11 +33,6 @@ public class ClientTicket {
     public ClientTicket() {
     }
 
-    public ClientTicket(int deviceId, String ticket) {
-        this.deviceId = deviceId;
-        this.ticket = ticket;
-    }
-
     public ClientTicket(int deviceId, String ticket, String pemFile) {
         this.deviceId = deviceId;
         this.ticket = ticket;

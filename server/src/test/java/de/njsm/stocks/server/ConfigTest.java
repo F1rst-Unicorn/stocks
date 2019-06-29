@@ -50,14 +50,22 @@ public class ConfigTest {
         assertEquals("localhost", uut.getDbAddress());
         assertEquals("1234", uut.getDbPort());
         assertEquals("name", uut.getDbName());
+        assertEquals(2000, uut.getCircuitBreakerTimeout());
         assertEquals("user", uut.getDbProperties().getProperty("user"));
         assertEquals("password", uut.getDbProperties().getProperty("password"));
         assertEquals(10, uut.getTicketValidity());
     }
 
     @Test(expected = NumberFormatException.class)
-    public void testInvalidNumberFormat() {
+    public void testInvalidNumberInTicketValidity() {
         p.put(DB_VALIDITY_KEY, "invalidNumber");
+
+        new Config(p);
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testInvalidNumberInCircuitBreakerTimeout() {
+        p.put(DB_CIRCUIT_BREAKER_TIMEOUT_KEY, "invalidNumber");
 
         new Config(p);
     }

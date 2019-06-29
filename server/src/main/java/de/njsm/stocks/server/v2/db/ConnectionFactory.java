@@ -57,10 +57,4 @@ public class ConnectionFactory {
 
         return connection;
     }
-
-    Connection getSafeConnection() {
-        if (connection == null)
-            throw new RuntimeException("No connection created yet");
-        return connection;
-    }
 }
