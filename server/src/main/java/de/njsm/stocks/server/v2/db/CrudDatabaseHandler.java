@@ -35,7 +35,7 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
         extends FailSafeDatabaseHandler
         implements PresenceChecker<R> {
 
-    private InsertVisitor<T> visitor;
+    protected InsertVisitor<T> visitor;
 
     public CrudDatabaseHandler(ConnectionFactory connectionFactory,
                                String resourceIdentifier,

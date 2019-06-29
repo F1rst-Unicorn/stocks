@@ -39,16 +39,17 @@ public class FoodTest {
     }
 
     @Test
-    public void renameFood() {
+    public void editFood() {
         String name = "Cake";
         String newName = "Cabal";
         int id = createNewFoodType(name);
 
-        assertOnRename(id, 0, newName)
+        assertOnEdit(id, 0, newName, true)
                 .body("status", equalTo(0));
 
         assertOnFood()
-                .body("data.name", hasItem(newName));
+                .body("data.name", hasItem(newName))
+                .body("data.toBuy", hasItem(true));
     }
 
     @Test
@@ -57,7 +58,7 @@ public class FoodTest {
         String newName = "Cabal";
         int id = createNewFoodType(name);
 
-        assertOnRename(id, 99, newName)
+        assertOnEdit(id, 99, newName, false)
                 .body("status", equalTo(3));
     }
 
@@ -65,7 +66,7 @@ public class FoodTest {
     public void renamingUnknownIdIsReported() {
         String newName = "Cabal";
 
-        assertOnRename(9999, 0, newName)
+        assertOnEdit(9999, 0, newName, false)
                 .body("status", equalTo(2));
     }
 
@@ -133,13 +134,14 @@ public class FoodTest {
 
     }
 
-    private ValidatableResponse assertOnRename(int id, int version, String newName) {
+    private ValidatableResponse assertOnEdit(int id, int version, String newName, boolean toBuy) {
         return
         given()
                 .log().ifValidationFails()
                 .queryParam("id", id)
                 .queryParam("version", version)
-                .queryParam("new", newName).
+                .queryParam("new", newName)
+                .queryParam("buy", toBuy ? 1 : 0).
         when()
                 .put(TestSuite.DOMAIN + "/v2/food/rename").
         then()

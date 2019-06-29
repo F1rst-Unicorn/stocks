@@ -62,12 +62,14 @@ public class FoodEndpoint extends Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response renameFood(@QueryParam("id") int id,
                                @QueryParam("version") int version,
-                               @QueryParam("new") String newName) {
+                               @QueryParam("new") String newName,
+                               @QueryParam("buy") int toBuyParameter) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
 
-            StatusCode status = manager.rename(new Food(id, "", version), newName);
+            boolean toBuy = toBuyParameter == 1;
+            StatusCode status = manager.edit(new Food(id, newName, version, toBuy));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -81,7 +83,7 @@ public class FoodEndpoint extends Endpoint {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-            StatusCode status = manager.delete(new Food(id, "", version));
+            StatusCode status = manager.delete(new Food(id, "", version, false));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

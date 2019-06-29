@@ -31,7 +31,7 @@ import java.util.function.Function;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.LOCATION;
 
 
-public class LocationHandler extends CrudRenameDatabaseHandler<LocationRecord, Location> {
+public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Location> {
 
     private FoodItemHandler foodItemHandler;
 
@@ -53,6 +53,27 @@ public class LocationHandler extends CrudRenameDatabaseHandler<LocationRecord, L
                 return checkResult;
 
             return deleteInternally(item, context);
+        });
+    }
+
+    public StatusCode rename(Location item)  {
+        return runCommand(context -> {
+            if (isMissing(item, context))
+                return StatusCode.NOT_FOUND;
+
+            int changedItems = context.update(getTable())
+                    .set(LOCATION.NAME, item.name)
+                    .set(getVersionField(), getVersionField().add(1))
+                    .where(getIdField().eq(item.id)
+                            .and(getVersionField().eq(item.version)))
+                    .and(getVersionField().eq(item.version))
+                    .execute();
+
+            if (changedItems == 1)
+                return StatusCode.SUCCESS;
+            else
+                return StatusCode.INVALID_DATA_VERSION;
+
         });
     }
 
@@ -93,11 +114,6 @@ public class LocationHandler extends CrudRenameDatabaseHandler<LocationRecord, L
     @Override
     protected TableField<LocationRecord, Integer> getVersionField() {
         return LOCATION.VERSION;
-    }
-
-    @Override
-    protected TableField<LocationRecord, String> getNameColumn() {
-        return LOCATION.NAME;
     }
 
     @Override

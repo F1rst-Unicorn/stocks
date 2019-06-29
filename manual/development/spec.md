@@ -324,7 +324,7 @@ Food {
     name: String
 }
 ```
-`PUT /v2/food/rename`: Rename an existing food type.
+`PUT /v2/food/rename`: Edit an existing food type.
 
 Query parameters:
 
@@ -333,6 +333,8 @@ Query parameters:
 * `version: int`: The version of the food type
 
 * `new: String`: The name to which the food type shall be renamed
+
+* `buy: int`: Set to 1 if the food is on the shopping list, 0 otherwise.
 
 Result: `application/json`, `Response`
 

@@ -40,10 +40,10 @@ class SampleData {
             "ALTER SEQUENCE \"Ticket_ID_seq\" RESTART",
             "ALTER SEQUENCE \"EAN_number_ID_seq\" RESTART",
 
-            "INSERT INTO \"Food\" (\"name\") VALUES " +
-                    "('Carrot'), " +
-                    "('Beer'), " +
-                    "('Cheese')",
+            "INSERT INTO \"Food\" (\"name\", \"to_buy\") VALUES " +
+                    "('Carrot', false), " +
+                    "('Beer', true), " +
+                    "('Cheese', false)",
             "INSERT INTO \"Location\" (\"name\") VALUES " +
                     "('Fridge'), " +
                     "('Cupboard')",

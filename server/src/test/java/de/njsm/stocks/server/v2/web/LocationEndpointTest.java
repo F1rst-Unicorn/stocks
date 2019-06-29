@@ -136,14 +136,14 @@ public class LocationEndpointTest {
 
     @Test
     public void renameLocationWorks() {
-        Location data = new Location(1, "", 2);
         String newName = "Bread";
-        when(businessLayer.rename(data, newName)).thenReturn(SUCCESS);
+        Location data = new Location(1, newName, 2);
+        when(businessLayer.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.renameLocation(data.id, data.version, newName);
 
         assertEquals(SUCCESS, response.status);
-        verify(businessLayer).rename(data, newName);
+        verify(businessLayer).rename(data);
     }
 
     @Test

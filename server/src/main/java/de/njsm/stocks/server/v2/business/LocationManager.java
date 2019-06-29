@@ -51,8 +51,8 @@ public class LocationManager extends BusinessObject {
         });
     }
 
-    public StatusCode rename(Location item, String newName) {
-        return runOperation(() -> locationHandler.rename(item, newName));
+    public StatusCode rename(Location item) {
+        return runOperation(() -> locationHandler.rename(item));
     }
 
     public StatusCode delete(Location l, boolean cascadeOnFoodItems) {

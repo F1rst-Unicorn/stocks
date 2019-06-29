@@ -44,7 +44,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void addAFood() {
-        Food data = new Food(7, "Banana", 1);
+        Food data = new Food(7, "Banana", 1, false);
 
         Validation<StatusCode, Integer> code = uut.add(data);
 
@@ -58,10 +58,10 @@ public class FoodHandlerTest extends DbTestCase {
     }
 
     @Test
-    public void renameAFood() {
-        Food data = new Food(2, "Beer", 0);
+    public void editAFood() {
+        Food data = new Food(2, "Wine", 0, true);
 
-        StatusCode result = uut.rename(data, "Wine");
+        StatusCode result = uut.rename(data);
 
         assertEquals(StatusCode.SUCCESS, result);
 
@@ -69,30 +69,31 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().stream().map(f -> f.name).anyMatch(name -> name.equals("Wine")));
+        assertTrue(dbData.success().stream().anyMatch(f -> f.name.equals("Wine") &&
+                f.toBuy));
     }
 
     @Test
     public void wrongVersionIsNotRenamed() {
-        Food data = new Food(2, "Beer", 100);
+        Food data = new Food(2, "Wine", 100, true);
 
-        StatusCode result = uut.rename(data, "Wine");
+        StatusCode result = uut.rename(data);
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
     }
 
     @Test
     public void unknownIsReported() {
-        Food data = new Food(100, "Beer", 1);
+        Food data = new Food(100, "Wine", 1, true);
 
-        StatusCode result = uut.rename(data, "Wine");
+        StatusCode result = uut.rename(data);
 
         assertEquals(StatusCode.NOT_FOUND, result);
     }
 
     @Test
     public void deleteAFood() {
-        Food data = new Food(2, "Beer", 0);
+        Food data = new Food(2, "Beer", 0, true);
 
         StatusCode result = uut.delete(data);
 
@@ -108,7 +109,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void invalidDataVersionIsRejected() {
-        Food data = new Food(2, "Beer", 100);
+        Food data = new Food(2, "Beer", 100, true);
 
         StatusCode result = uut.delete(data);
 
@@ -123,7 +124,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void unknownDeletionsAreReported() {
-        Food data = new Food(100, "Beer", 1);
+        Food data = new Food(100, "Beer", 1, true);
 
         StatusCode result = uut.delete(data);
 

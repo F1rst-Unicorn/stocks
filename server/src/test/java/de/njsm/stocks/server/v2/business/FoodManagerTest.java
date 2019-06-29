@@ -65,7 +65,7 @@ public class FoodManagerTest {
 
     @Test
     public void testAddingItem() {
-        Food data = new Food(1, "Cheese", 2);
+        Food data = new Food(1, "Cheese", 2, true);
         Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
 
         Validation<StatusCode, Integer> result = uut.add(data);
@@ -76,19 +76,19 @@ public class FoodManagerTest {
 
     @Test
     public void testRenamingItem() {
-        Food data = new Food(1, "Cheese", 2);
         String newName = "Sausage";
-        Mockito.when(backend.rename(data, newName)).thenReturn(StatusCode.SUCCESS);
+        Food data = new Food(1, newName, 2, true);
+        Mockito.when(backend.rename(data)).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.rename(data, newName);
+        StatusCode result = uut.edit(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Mockito.verify(backend).rename(data, newName);
+        Mockito.verify(backend).rename(data);
     }
 
     @Test
     public void testDeletingItem() {
-        Food data = new Food(1, "Cheese", 2);
+        Food data = new Food(1, "Cheese", 2, true);
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);

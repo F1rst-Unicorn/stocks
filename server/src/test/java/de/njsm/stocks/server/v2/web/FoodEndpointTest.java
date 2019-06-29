@@ -74,7 +74,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidIdIsInvalid() {
 
-        Response result = uut.renameFood(0, 1, "fdsa");
+        Response result = uut.renameFood(0, 1, "fdsa", 0);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -82,7 +82,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidVersionIsInvalid() {
 
-        Response result = uut.renameFood(1, -1, "fdsa");
+        Response result = uut.renameFood(1, -1, "fdsa", 0);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -90,7 +90,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingToInvalidNameIsInvalid() {
 
-        Response result = uut.renameFood(1, 1, "");
+        Response result = uut.renameFood(1, 1, "", 0);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -113,7 +113,7 @@ public class FoodEndpointTest {
 
     @Test
     public void foodIsAdded() {
-        Food data = new Food(0, "Banana", 0);
+        Food data = new Food(0, "Banana", 0, false);
         when(manager.add(data)).thenReturn(Validation.success(5));
 
         Response response = uut.putFood(data.name);
@@ -124,7 +124,7 @@ public class FoodEndpointTest {
 
     @Test
     public void getFoodReturnsList() {
-        List<Food> data = Collections.singletonList(new Food(2, "Banana", 2));
+        List<Food> data = Collections.singletonList(new Food(2, "Banana", 2, true));
         when(manager.get()).thenReturn(Validation.success(data));
 
         ListResponse<Food> response = uut.getFood();
@@ -136,19 +136,19 @@ public class FoodEndpointTest {
 
     @Test
     public void renameFoodWorks() {
-        Food data = new Food(1, "", 2);
         String newName = "Bread";
-        when(manager.rename(data, newName)).thenReturn(SUCCESS);
+        Food data = new Food(1, newName, 2, true);
+        when(manager.edit(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameFood(data.id, data.version, newName);
+        Response response = uut.renameFood(data.id, data.version, newName, 1);
 
         assertEquals(SUCCESS, response.status);
-        verify(manager).rename(data, newName);
+        verify(manager).edit(data);
     }
 
     @Test
     public void deleteFoodWorks() {
-        Food data = new Food(1, "", 2);
+        Food data = new Food(1, "", 2, false);
         when(manager.delete(data)).thenReturn(SUCCESS);
 
         Response response = uut.deleteFood(data.id, data.version);

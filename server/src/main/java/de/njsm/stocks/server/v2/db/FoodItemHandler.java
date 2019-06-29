@@ -25,6 +25,7 @@ import de.njsm.stocks.server.v2.business.data.Location;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
+import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
@@ -36,6 +37,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.function.Function;
 
+import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD_ITEM;
 
 
@@ -56,6 +58,23 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
         super(connectionFactory, resourceIdentifier, timeout, visitor);
         this.userDeviceChecker = userDeviceChecker;
         this.userChecker = userChecker;
+    }
+
+    @Override
+    public Validation<StatusCode, Integer> add(FoodItem item) {
+            return runFunction(context -> {
+                int lastInsertId = visitor.visit(item, context.insertInto(getTable()))
+                        .returning(getIdField())
+                        .fetch()
+                        .getValue(0, getIdField());
+
+                context.update(FOOD)
+                        .set(FOOD.TO_BUY, false)
+                        .execute();
+
+                return Validation.success(lastInsertId);
+            });
+
     }
 
     public StatusCode edit(FoodItem item) {

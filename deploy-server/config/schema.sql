@@ -22,6 +22,7 @@ CREATE TABLE "Food" (
   "ID" SERIAL NOT NULL UNIQUE,
   "name" TEXT NOT NULL,
   "version" INT NOT NULL DEFAULT 0,
+  "to_buy" BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY ("ID")
 );
 

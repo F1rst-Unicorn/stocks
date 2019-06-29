@@ -24,6 +24,7 @@ import de.njsm.stocks.server.v2.business.data.FoodItem;
 import de.njsm.stocks.server.v2.business.data.Location;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Assert;
@@ -34,6 +35,7 @@ import org.mockito.Mockito;
 import java.time.Instant;
 import java.util.List;
 
+import static de.njsm.stocks.server.v2.db.jooq.tables.Food.FOOD;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -149,6 +151,23 @@ public class FoodItemHandlerTest extends DbTestCase {
         StatusCode result = uut.edit(item);
 
         assertEquals(StatusCode.NOT_FOUND, result);
+    }
+
+    @Test
+    public void addingItemRemovesFromShoppingList() {
+        FoodItem beer = new FoodItem(0, 0, Instant.EPOCH, 2, 1, 3, 2);
+        FoodRecord foodType = getDSLContext().selectFrom(FOOD)
+                .where(FOOD.ID.eq(2))
+                .fetchOne();
+        assertTrue(foodType.getToBuy());   // precondition to make test useful
+
+        Validation<StatusCode, Integer> result = uut.add(beer);
+
+        assertTrue(result.isSuccess());
+        foodType = getDSLContext().selectFrom(FOOD)
+                .where(FOOD.ID.eq(2))
+                .fetchOne();
+        assertFalse(foodType.getToBuy());
     }
 
     @Test
