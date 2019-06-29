@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## Release [3.0.0.1-1]
+
+### Changed
+
+* STOCKS-74: Make forward compatible to future server versions
+
 ## Release [3.0.0.0-1]
 
 ### Changed
