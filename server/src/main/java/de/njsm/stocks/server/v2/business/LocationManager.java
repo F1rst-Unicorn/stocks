@@ -52,7 +52,7 @@ public class LocationManager extends BusinessObject {
     }
 
     public StatusCode rename(Location item) {
-        return runOperation(() -> locationHandler.rename(item));
+        return runOperation(() -> locationHandler.rename(item, item.name));
     }
 
     public StatusCode delete(Location l, boolean cascadeOnFoodItems) {

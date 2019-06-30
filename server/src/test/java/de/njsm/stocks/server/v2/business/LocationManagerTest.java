@@ -87,13 +87,13 @@ public class LocationManagerTest {
     public void renamingIsDelegated() {
         String newName = "newName";
         Location input = new Location(1, newName, 2);
-        Mockito.when(dbLayer.rename(input)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(dbLayer.rename(input, newName)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.rename(input);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Mockito.verify(dbLayer).rename(input);
+        Mockito.verify(dbLayer).rename(input, newName);
         Mockito.verify(dbLayer).commit();
 
     }

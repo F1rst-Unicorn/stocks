@@ -39,17 +39,30 @@ public class FoodTest {
     }
 
     @Test
-    public void editFood() {
+    public void renameFood() {
         String name = "Cake";
         String newName = "Cabal";
         int id = createNewFoodType(name);
 
-        assertOnEdit(id, 0, newName, true)
+        assertOnRename(id, 0, newName)
                 .body("status", equalTo(0));
 
         assertOnFood()
-                .body("data.name", hasItem(newName))
+                .body("data.name", hasItem(newName));
+    }
+
+    @Test
+    public void setBuyStatus() {
+        String name = "Cake";
+        int id = createNewFoodType(name);
+
+        assertOnSetBuyStatus(id, 0, true)
+                .body("status", equalTo(0));
+
+        assertOnFood()
+                .body("data.name", hasItem(name))
                 .body("data.toBuy", hasItem(true));
+
     }
 
     @Test
@@ -58,7 +71,7 @@ public class FoodTest {
         String newName = "Cabal";
         int id = createNewFoodType(name);
 
-        assertOnEdit(id, 99, newName, false)
+        assertOnRename(id, 99, newName)
                 .body("status", equalTo(3));
     }
 
@@ -66,7 +79,7 @@ public class FoodTest {
     public void renamingUnknownIdIsReported() {
         String newName = "Cabal";
 
-        assertOnEdit(9999, 0, newName, false)
+        assertOnRename(9999, 0, newName)
                 .body("status", equalTo(2));
     }
 
@@ -134,16 +147,30 @@ public class FoodTest {
 
     }
 
-    private ValidatableResponse assertOnEdit(int id, int version, String newName, boolean toBuy) {
+    private ValidatableResponse assertOnRename(int id, int version, String newName) {
         return
         given()
                 .log().ifValidationFails()
                 .queryParam("id", id)
                 .queryParam("version", version)
-                .queryParam("new", newName)
-                .queryParam("buy", toBuy ? 1 : 0).
+                .queryParam("new", newName).
         when()
                 .put(TestSuite.DOMAIN + "/v2/food/rename").
+        then()
+                .log().ifValidationFails()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+    }
+
+    private ValidatableResponse assertOnSetBuyStatus(int id, int version, boolean toBuy) {
+        return
+        given()
+                .log().ifValidationFails()
+                .queryParam("id", id)
+                .queryParam("version", version)
+                .queryParam("buy", toBuy ? 1 : 0).
+        when()
+                .put(TestSuite.DOMAIN + "/v2/food/buy").
         then()
                 .log().ifValidationFails()
                 .statusCode(200)

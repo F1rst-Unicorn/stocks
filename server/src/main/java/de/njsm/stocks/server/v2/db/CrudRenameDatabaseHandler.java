@@ -20,73 +20,40 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Food;
-import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
-import org.jooq.Table;
+import de.njsm.stocks.server.v2.business.data.VersionedData;
 import org.jooq.TableField;
+import org.jooq.UpdatableRecord;
 
-import java.util.function.Function;
-
-import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
-
-
-public class FoodHandler extends CrudRenameDatabaseHandler<FoodRecord, Food> {
+public abstract class CrudRenameDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData> extends CrudDatabaseHandler<T, R> {
 
 
-    public FoodHandler(ConnectionFactory connectionFactory,
-                       String resourceIdentifier,
-                       int timeout,
-                       InsertVisitor<FoodRecord> visitor) {
+    public CrudRenameDatabaseHandler(ConnectionFactory connectionFactory,
+                                     String resourceIdentifier,
+                                     int timeout,
+                                     InsertVisitor<T> visitor) {
         super(connectionFactory, resourceIdentifier, timeout, visitor);
     }
 
-    public StatusCode setToBuyStatus(Food item) {
+    public StatusCode rename(R item, String newName) {
         return runCommand(context -> {
             if (isMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
             int changedItems = context.update(getTable())
-                    .set(FOOD.TO_BUY, item.toBuy)
+                    .set(getNameColumn(), newName)
                     .set(getVersionField(), getVersionField().add(1))
                     .where(getIdField().eq(item.id)
                             .and(getVersionField().eq(item.version)))
-                    .and(getVersionField().eq(item.version))
+                            .and(getVersionField().eq(item.version))
                     .execute();
 
             if (changedItems == 1)
                 return StatusCode.SUCCESS;
             else
                 return StatusCode.INVALID_DATA_VERSION;
+
         });
     }
 
-    @Override
-    protected Table<FoodRecord> getTable() {
-        return FOOD;
-    }
-
-    @Override
-    protected TableField<FoodRecord, Integer> getIdField() {
-        return FOOD.ID;
-    }
-
-    @Override
-    protected TableField<FoodRecord, Integer> getVersionField() {
-        return FOOD.VERSION;
-    }
-
-    @Override
-    protected TableField<FoodRecord, String> getNameColumn() {
-        return FOOD.NAME;
-    }
-
-    @Override
-    protected Function<FoodRecord, Food> getDtoMap() {
-        return cursor -> new Food(
-                cursor.getId(),
-                cursor.getName(),
-                cursor.getVersion(),
-                cursor.getToBuy()
-        );
-    }
+    protected abstract TableField<T, String> getNameColumn();
 }

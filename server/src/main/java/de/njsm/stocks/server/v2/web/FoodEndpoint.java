@@ -62,14 +62,29 @@ public class FoodEndpoint extends Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response renameFood(@QueryParam("id") int id,
                                @QueryParam("version") int version,
-                               @QueryParam("new") String newName,
-                               @QueryParam("buy") int toBuyParameter) {
+                               @QueryParam("new") String newName) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
 
+            StatusCode status = manager.rename(new Food(id, newName, version, false));
+            return new Response(status);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
+    }
+
+    @PUT
+    @Path("buy")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setToBuyStatus(@QueryParam("id") int id,
+                                   @QueryParam("version") int version,
+                                   @QueryParam("buy") int toBuyParameter) {
+        if (isValid(id, "id") &&
+                isValidVersion(version, "version")) {
+
             boolean toBuy = toBuyParameter == 1;
-            StatusCode status = manager.edit(new Food(id, newName, version, toBuy));
+            StatusCode status = manager.setToBuyStatus(new Food(id, "", version, toBuy));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

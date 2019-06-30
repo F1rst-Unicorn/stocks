@@ -78,12 +78,24 @@ public class FoodManagerTest {
     public void testRenamingItem() {
         String newName = "Sausage";
         Food data = new Food(1, newName, 2, true);
-        Mockito.when(backend.rename(data)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(backend.rename(data, newName)).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.edit(data);
+        StatusCode result = uut.rename(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Mockito.verify(backend).rename(data);
+        Mockito.verify(backend).rename(data, newName);
+    }
+
+    @Test
+    public void testSettingBuyStatusItem() {
+        String newName = "Sausage";
+        Food data = new Food(1, newName, 2, true);
+        Mockito.when(backend.setToBuyStatus(data)).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.setToBuyStatus(data);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        Mockito.verify(backend).setToBuyStatus(data);
     }
 
     @Test

@@ -68,7 +68,7 @@ public class LocationHandlerTest extends DbTestCase {
     public void renameALocation() {
         Location data = new Location(2, "Basement", 0);
 
-        StatusCode result = uut.rename(data);
+        StatusCode result = uut.rename(data, data.name);
 
         assertEquals(StatusCode.SUCCESS, result);
 
@@ -83,7 +83,7 @@ public class LocationHandlerTest extends DbTestCase {
     public void wrongVersionIsNotRenamed() {
         Location data = new Location(2, "Basement", 100);
 
-        StatusCode result = uut.rename(data);
+        StatusCode result = uut.rename(data, data.name);
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
     }
@@ -92,7 +92,7 @@ public class LocationHandlerTest extends DbTestCase {
     public void unknownIsReported() {
         Location data = new Location(100, "Cupboard", 1);
 
-        StatusCode result = uut.rename(data);
+        StatusCode result = uut.rename(data, data.name);
 
         assertEquals(StatusCode.NOT_FOUND, result);
     }

@@ -74,7 +74,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidIdIsInvalid() {
 
-        Response result = uut.renameFood(0, 1, "fdsa", 0);
+        Response result = uut.renameFood(0, 1, "fdsa");
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -82,7 +82,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidVersionIsInvalid() {
 
-        Response result = uut.renameFood(1, -1, "fdsa", 0);
+        Response result = uut.renameFood(1, -1, "fdsa");
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -90,7 +90,23 @@ public class FoodEndpointTest {
     @Test
     public void renamingToInvalidNameIsInvalid() {
 
-        Response result = uut.renameFood(1, 1, "", 0);
+        Response result = uut.renameFood(1, 1, "");
+
+        assertEquals(INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
+    public void settingBuyStatusInvalidIdIsInvalid() {
+
+        Response result = uut.setToBuyStatus(0, 1, 1);
+
+        assertEquals(INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
+    public void settingBuyStatusInvalidVersionIsInvalid() {
+
+        Response result = uut.setToBuyStatus(1, -1, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -137,13 +153,24 @@ public class FoodEndpointTest {
     @Test
     public void renameFoodWorks() {
         String newName = "Bread";
-        Food data = new Food(1, newName, 2, true);
-        when(manager.edit(data)).thenReturn(SUCCESS);
+        Food data = new Food(1, newName, 2, false);
+        when(manager.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameFood(data.id, data.version, newName, 1);
+        Response response = uut.renameFood(data.id, data.version, newName);
 
         assertEquals(SUCCESS, response.status);
-        verify(manager).edit(data);
+        verify(manager).rename(data);
+    }
+
+    @Test
+    public void settingBuyStatusWorks() {
+        Food data = new Food(1, "", 2, true);
+        when(manager.setToBuyStatus(data)).thenReturn(SUCCESS);
+
+        Response response = uut.setToBuyStatus(data.id, data.version, 1);
+
+        assertEquals(SUCCESS, response.status);
+        verify(manager).setToBuyStatus(data);
     }
 
     @Test

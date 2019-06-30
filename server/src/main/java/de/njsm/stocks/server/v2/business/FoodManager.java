@@ -45,8 +45,12 @@ public class FoodManager extends BusinessObject {
         });
     }
 
-    public StatusCode edit(Food item) {
-        return runOperation(() -> dbHandler.rename(item));
+    public StatusCode rename(Food item) {
+        return runOperation(() -> dbHandler.rename(item, item.name));
+    }
+
+    public StatusCode setToBuyStatus(Food food) {
+        return runOperation(() -> dbHandler.setToBuyStatus(food));
     }
 
     public StatusCode delete(Food item) {

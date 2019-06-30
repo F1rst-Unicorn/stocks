@@ -59,9 +59,10 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void editAFood() {
-        Food data = new Food(2, "Wine", 0, true);
+        String newName = "Wine";
+        Food data = new Food(2, "Beer", 0, true);
 
-        StatusCode result = uut.rename(data);
+        StatusCode result = uut.rename(data, newName);
 
         assertEquals(StatusCode.SUCCESS, result);
 
@@ -69,24 +70,26 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().stream().anyMatch(f -> f.name.equals("Wine") &&
+        assertTrue(dbData.success().stream().anyMatch(f -> f.name.equals(newName) &&
                 f.toBuy));
     }
 
     @Test
     public void wrongVersionIsNotRenamed() {
-        Food data = new Food(2, "Wine", 100, true);
+        String newName = "Wine";
+        Food data = new Food(2, "Beer", 100, true);
 
-        StatusCode result = uut.rename(data);
+        StatusCode result = uut.rename(data, newName);
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
     }
 
     @Test
     public void unknownIsReported() {
-        Food data = new Food(100, "Wine", 1, true);
+        String newName = "Wine";
+        Food data = new Food(100, "Beer", 1, true);
 
-        StatusCode result = uut.rename(data);
+        StatusCode result = uut.rename(data, newName);
 
         assertEquals(StatusCode.NOT_FOUND, result);
     }
