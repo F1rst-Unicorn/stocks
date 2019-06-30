@@ -48,6 +48,13 @@ public class Food extends VersionedData {
         this.toBuy = toBuy;
     }
 
+    public Food(int id, int version, String name, boolean toBuy, int position) {
+        super(id, version);
+        this.name = name;
+        this.toBuy = toBuy;
+        setPosition(position);
+    }
+
     @Ignore
     public Food(String name, boolean toBuy) {
         this.name = name;

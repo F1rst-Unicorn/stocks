@@ -37,6 +37,7 @@ import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
+import de.njsm.stocks.android.frontend.interactor.FoodToBuyInteractor;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -81,10 +82,20 @@ public class EmptyFoodFragment extends BaseFragment {
         list.setAdapter(adapter);
 
         FoodDeletionInteractor deleter = new FoodDeletionInteractor(this, result,
-                f -> adapter.notifyDataSetChanged(),
+                i -> adapter.notifyItemChanged(i.getPosition()),
                 i -> viewModel.deleteFood(i),
                 viewModel::getFood);
-        addSwipeToDelete(list, viewModel.getEmptyFood(), deleter::initiateDeletion);
+
+        FoodToBuyInteractor buyInteractor = new FoodToBuyInteractor(this,
+                (f, s) -> {
+                    adapter.notifyItemChanged(f.getPosition());
+                    return viewModel.setToBuyStatus(f, s);
+                },
+                viewModel::getFood);
+
+        addBidirectionalSwiper(list, viewModel.getEmptyFood(), R.drawable.ic_add_shopping_cart_white_24,
+                deleter::initiateDeletion,
+                v -> buyInteractor.observeEditing(v, true));
 
         initialiseSwipeRefresh(result, viewModelFactory);
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(v -> this.addFood(viewModel));

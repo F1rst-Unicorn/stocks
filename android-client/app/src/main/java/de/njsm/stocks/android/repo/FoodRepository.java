@@ -81,7 +81,7 @@ public class FoodRepository {
     public LiveData<StatusCode> renameFood(Food item, String name) {
         LOG.d("renaming food " + item + " to " + name);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
-        webClient.renameFood(item.id, item.version, name, item.toBuy ? 1 : 0)
+        webClient.renameFood(item.id, item.version, name)
                 .enqueue(new StatusCodeCallback(data, synchroniser));
         return data;
     }
@@ -90,8 +90,10 @@ public class FoodRepository {
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         if (item.toBuy != toBuy) {
             LOG.d("setting " + item.name + "'s buy status to " + toBuy);
-            webClient.renameFood(item.id, item.version, item.name, toBuy ? 1 : 0)
+            webClient.setToBuyStatus(item.id, item.version, toBuy ? 1 : 0)
                     .enqueue(new StatusCodeCallback(data, synchroniser));
+        } else {
+            data.setValue(StatusCode.SUCCESS);
         }
         return data;
     }

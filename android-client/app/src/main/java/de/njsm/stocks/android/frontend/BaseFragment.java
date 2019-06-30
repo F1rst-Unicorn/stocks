@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.Positionable;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
@@ -170,16 +171,29 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    protected <T> void addSwipeToDelete(RecyclerView list, LiveData<List<T>> data, Consumer<T> deleter) {
+    protected <T extends Positionable> void addSwipeToDelete(RecyclerView list, LiveData<List<T>> data, Consumer<T> deleter) {
         addSwipeToDelete(list, data, R.drawable.ic_delete_white_24dp, deleter);
     }
 
-    protected <T> void addSwipeToDelete(RecyclerView list, LiveData<List<T>> data, int icon, Consumer<T> deleter) {
+    protected <T extends Positionable> void addSwipeToDelete(RecyclerView list, LiveData<List<T>> data, int icon, Consumer<T> deleter) {
         SwipeCallback<T> callback = new SwipeCallback<>(
                 null,
                 ContextCompat.getDrawable(requireActivity(), icon),
                 new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
                 deleter
+        );
+        data.observe(this, callback::setData);
+        new ItemTouchHelper(callback).attachToRecyclerView(list);
+    }
+
+    protected <T extends Positionable> void addBidirectionalSwiper(RecyclerView list, LiveData<List<T>> data, int icon, Consumer<T> deleter, Consumer<T> leftSwiper) {
+        SwipeCallback<T> callback = new SwipeCallback<>(
+                null,
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
+                ContextCompat.getDrawable(requireActivity(), icon),
+                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
+                deleter,
+                leftSwiper
         );
         data.observe(this, callback::setData);
         new ItemTouchHelper(callback).attachToRecyclerView(list);

@@ -37,7 +37,6 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
-import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.frontend.search.AmountAdapter;
 
 import javax.inject.Inject;
@@ -45,15 +44,11 @@ import java.util.List;
 
 public class ShoppingListFragment extends BaseFragment {
 
-    private RecyclerView list;
-
     private ViewModelProvider.Factory viewModelFactory;
 
     private FoodToBuyViewModel viewModel;
 
     private LiveData<List<FoodView>> data;
-
-    private LocationViewModel locationViewModel;
 
     @Override
     public void onAttach(Context context) {
@@ -66,11 +61,10 @@ public class ShoppingListFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
-        list = result.findViewById(R.id.template_swipe_list_list);
+        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodToBuyViewModel.class);
-        locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
         data = viewModel.getFoodToBuy();
 
         AmountAdapter adapter = new AmountAdapter(
@@ -82,7 +76,7 @@ public class ShoppingListFragment extends BaseFragment {
         FoodDeletionInteractor interactor = new FoodDeletionInteractor(
                 this, result,
                 R.string.dialog_food_was_removed_from_shopping_list,
-                i -> adapter.notifyDataSetChanged(),
+                i -> adapter.notifyItemChanged(i.getPosition()),
                 i -> viewModel.setToBuyStatus(i, false),
                 i -> viewModel.getFood(i));
         addSwipeToDelete(list, data, R.drawable.ic_remove_shopping_cart_white_24, v -> interactor.initiateDeletion(v.mapToFood()));

@@ -33,7 +33,8 @@
             android:id="@+id/template_swipe_list_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:layoutAnimation="@anim/recycler_view_items"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

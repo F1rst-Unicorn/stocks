@@ -28,17 +28,22 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import de.njsm.stocks.android.db.entities.Positionable;
 
 import java.util.List;
 
-public class SwipeCallback<T> extends ItemTouchHelper.SimpleCallback {
+public class SwipeCallback<T extends Positionable> extends ItemTouchHelper.SimpleCallback {
 
     @Nullable
     private List<T> data;
 
     private Consumer<T> deleteCallback;
 
+    private Consumer<T> leftCallback;
+
     private Drawable icon;
+
+    private Drawable leftIcon;
 
     private ColorDrawable background;
 
@@ -46,10 +51,25 @@ public class SwipeCallback<T> extends ItemTouchHelper.SimpleCallback {
                          Drawable icon,
                          ColorDrawable background,
                          Consumer<T> deleteCallback) {
-        super(0, ItemTouchHelper.RIGHT);
+        super(0, ItemTouchHelper.END);
         this.data = data;
         this.deleteCallback = deleteCallback;
         this.icon = icon;
+        this.background = background;
+    }
+
+    public SwipeCallback(@Nullable List<T> data,
+                         Drawable icon,
+                         Drawable leftIcon,
+                         ColorDrawable background,
+                         Consumer<T> deleteCallback,
+                         Consumer<T> leftCallback) {
+        super(0, ItemTouchHelper.END | ItemTouchHelper.START);
+        this.data = data;
+        this.deleteCallback = deleteCallback;
+        this.leftCallback = leftCallback;
+        this.icon = icon;
+        this.leftIcon = leftIcon;
         this.background = background;
     }
 
@@ -69,7 +89,11 @@ public class SwipeCallback<T> extends ItemTouchHelper.SimpleCallback {
         int position = viewHolder.getAdapterPosition();
         if (data != null) {
             T item = data.get(position);
-            deleteCallback.accept(item);
+            item.setPosition(position);
+            if (direction == ItemTouchHelper.END)
+                deleteCallback.accept(item);
+            else if (direction == ItemTouchHelper.START)
+                leftCallback.accept(item);
         }
     }
 
@@ -96,6 +120,21 @@ public class SwipeCallback<T> extends ItemTouchHelper.SimpleCallback {
                     itemView.getBottom());
             background.draw(c);
             icon.draw(c);
+        } else if (dX < 0) {
+            int iconMargin = (itemView.getHeight() - leftIcon.getIntrinsicHeight()) / 2;
+            int iconTop = itemView.getTop() + (itemView.getHeight() - leftIcon.getIntrinsicHeight()) / 2;
+            int iconBottom = iconTop + leftIcon.getIntrinsicHeight();
+            int iconLeft = itemView.getRight() - iconMargin - leftIcon.getIntrinsicWidth();
+            int iconRight = itemView.getRight() - iconMargin;
+            leftIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+            background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
+                    itemView.getTop(),
+                    itemView.getRight(),
+                    itemView.getBottom());
+            background.draw(c);
+            leftIcon.draw(c);
+
         }
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }

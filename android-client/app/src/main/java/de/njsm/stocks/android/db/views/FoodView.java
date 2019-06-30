@@ -42,7 +42,7 @@ public class FoodView extends VersionedData {
     }
 
     public Food mapToFood() {
-        return new Food(id, version, name, toBuy);
+        return new Food(id, version, name, toBuy, getPosition());
     }
 
     public int getAmount() {

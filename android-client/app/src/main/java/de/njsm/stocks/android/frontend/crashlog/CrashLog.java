@@ -19,9 +19,11 @@
 
 package de.njsm.stocks.android.frontend.crashlog;
 
+import de.njsm.stocks.android.db.entities.Positionable;
+
 import java.io.File;
 
-public class CrashLog {
+public class CrashLog implements Positionable {
 
     private String name;
 
@@ -30,6 +32,8 @@ public class CrashLog {
     private String content;
 
     private File file;
+
+    private int position;
 
     public CrashLog(String name, String date, String content, File file) {
         this.name = name;
@@ -56,5 +60,15 @@ public class CrashLog {
 
     public File getFile() {
         return file;
+    }
+
+    @Override
+    public void setPosition(int i) {
+        position = i;
+    }
+
+    @Override
+    public int getPosition() {
+        return position;
     }
 }
