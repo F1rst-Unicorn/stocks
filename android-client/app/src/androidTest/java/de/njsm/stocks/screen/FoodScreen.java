@@ -69,6 +69,11 @@ public class FoodScreen extends AbstractListPresentingScreen {
         return new BarcodeScreen();
     }
 
+    public FoodScreen toggleShoppingList() {
+        onView(withId(R.id.fragment_food_item_options_shopping)).perform(click());
+        return this;
+    }
+
     public FoodScreen eatAllButOne() {
         int counter = 0;
         while (getListCount() > 1) {

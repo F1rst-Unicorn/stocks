@@ -44,7 +44,7 @@ public class FoodEditInteractor extends EditInteractor<Food, String> {
         if (code == StatusCode.INVALID_DATA_VERSION) {
             LiveData<Food> newData = updater.apply(item.id);
             newData.observe(owner, newItem -> {
-                if (newItem != null && !newItem.equals(item)) {
+                if (newItem != null && !newItem.equals(item) && ! newItem.name.equals(item.name)) {
                     compareFood(item, editedData, newItem);
                     newData.removeObservers(owner);
                 }

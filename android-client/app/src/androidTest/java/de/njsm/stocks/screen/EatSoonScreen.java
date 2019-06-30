@@ -37,4 +37,12 @@ public class EatSoonScreen extends AbstractListPresentingScreen {
 
         return new FoodScreen();
     }
+
+    public EatSoonScreen swipeToShoppingList(int itemIndex) {
+        checkIndex(itemIndex);
+
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(itemIndex, ViewActions.swipeLeft()));
+        return this;
+    }
 }

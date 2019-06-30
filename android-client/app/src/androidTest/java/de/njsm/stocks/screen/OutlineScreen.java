@@ -70,6 +70,14 @@ public class OutlineScreen extends AbstractScreen {
         return new UserScreen();
     }
 
+    public ShoppingListScreen goToShoppingList() {
+        onView(withId(R.id.main_drawer_layout))
+                .check(matches(isClosed(Gravity.START)))
+                .perform(open());
+        onView(withId(R.id.main_nav)).perform(NavigationViewActions.navigateTo(R.id.activity_main_drawer_shopping_list));
+        return new ShoppingListScreen();
+    }
+
     public EatSoonScreen goToEatSoon() {
         onView(withId(R.id.fragment_outline_cardview)).perform(click());
         return new EatSoonScreen();

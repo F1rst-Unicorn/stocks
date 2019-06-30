@@ -29,6 +29,7 @@ import org.junit.runners.Suite;
         FoodItemAddTest.class,
         EanAdminTest.class,
         SearchTest.class,
+        ShoppingListTest.class,
         EanScanTest.class,
         UserAdministrationTest.class,
         FoodEditTest.class,

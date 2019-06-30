@@ -113,10 +113,13 @@ public class FoodItemFragment extends BaseFragment {
         MenuItem item = menu.findItem(R.id.fragment_food_item_options_shopping);
         Food f = selfFood.getValue();
         if (f != null) {
-            if (f.toBuy)
+            if (f.toBuy) {
                 item.setIcon(R.drawable.ic_remove_shopping_cart_white_24);
-            else
+                item.setTitle(R.string.title_remove_from_cart);
+            } else {
                 item.setIcon(R.drawable.ic_add_shopping_cart_white_24);
+                item.setTitle(R.string.title_add_to_cart);
+            }
         }
     }
 

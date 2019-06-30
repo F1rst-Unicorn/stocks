@@ -25,6 +25,7 @@ import de.njsm.stocks.util.StealCountAction;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 
 public class AbstractListPresentingScreen extends AbstractScreen {
@@ -37,6 +38,10 @@ public class AbstractListPresentingScreen extends AbstractScreen {
 
     public AbstractListPresentingScreen(int listId) {
         this.listId = listId;
+    }
+
+    public void assertLength(int expectedLength) {
+        assertEquals(expectedLength, getListCount());
     }
 
     protected void checkIndex(int itemIndex) {
