@@ -70,6 +70,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
 
                 context.update(FOOD)
                         .set(FOOD.TO_BUY, false)
+                        .set(FOOD.VERSION, FOOD.VERSION.add(1))
+                        .where(FOOD.ID.eq(item.ofType))
                         .execute();
 
                 return Validation.success(lastInsertId);
