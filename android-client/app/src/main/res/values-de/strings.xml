@@ -150,6 +150,7 @@
     <string name="title_shopping_list">Einkaufsliste</string>
     <string name="dialog_food_was_removed_from_shopping_list">Lebensmittel vom Einkaufszettel entfernt</string>
     <string name="action_shopping_list">Einkaufsliste</string>
+    <string name="title_add_to_cart">Auf Einkaufsliste schreiben</string>
 
 
 </resources>

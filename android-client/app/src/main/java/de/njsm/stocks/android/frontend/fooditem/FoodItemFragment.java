@@ -38,6 +38,7 @@ import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.FoodItemDeletionInteractor;
+import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -46,6 +47,8 @@ public class FoodItemFragment extends BaseFragment {
 
     private FoodItemViewModel viewModel;
 
+    private FoodViewModel foodViewModel;
+
     private EanNumberViewModel eanNumberViewModel;
 
     private ViewModelProvider.Factory viewModelFactory;
@@ -53,6 +56,8 @@ public class FoodItemFragment extends BaseFragment {
     private FoodItemAdapter adapter;
 
     private FoodItemFragmentArgs input;
+
+    private LiveData<Food> selfFood;
 
     @Override
     public void onAttach(Context context) {
@@ -75,9 +80,10 @@ public class FoodItemFragment extends BaseFragment {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodItemViewModel.class);
         eanNumberViewModel = ViewModelProviders.of(this, viewModelFactory).get(EanNumberViewModel.class);
         viewModel.init(input.getFoodId());
-        FoodViewModel foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-        LiveData<Food> selfFood = foodViewModel.getFood(input.getFoodId());
+        foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
+        selfFood = foodViewModel.getFood(input.getFoodId());
         selfFood.observe(this, u -> requireActivity().setTitle(u == null ? "" : u.name));
+        selfFood.observe(this, u -> requireActivity().invalidateOptionsMenu());
 
         adapter = new FoodItemAdapter(getResources(), requireActivity().getTheme(),
                 viewModel.getFoodItems(), this::editItem);
@@ -100,6 +106,18 @@ public class FoodItemFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_food_item_options, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.fragment_food_item_options_shopping);
+        Food f = selfFood.getValue();
+        if (f != null) {
+            if (f.toBuy)
+                item.setIcon(R.drawable.ic_remove_shopping_cart_white_24);
+            else
+                item.setIcon(R.drawable.ic_add_shopping_cart_white_24);
+        }
     }
 
     private void maybeAddEanCode(String eanNumber) {
@@ -133,10 +151,24 @@ public class FoodItemFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentEanNumber args =
-                FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentEanNumber(input.getFoodId());
-        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
-                .navigate(args);
+        switch (item.getItemId()) {
+            case R.id.fragment_food_item_options_ean:
+                FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentEanNumber args =
+                        FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentEanNumber(input.getFoodId());
+                Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                        .navigate(args);
+                break;
+            case R.id.fragment_food_item_options_shopping:
+                Food f = selfFood.getValue();
+                if (f != null) {
+                    LiveData<StatusCode> code = foodViewModel.setToBuyStatus(f, ! f.toBuy);
+                    code.observe(this, c -> {
+                        code.removeObservers(this);
+                        requireActivity().invalidateOptionsMenu();
+                    });
+                }
+                break;
+        }
         return true;
     }
 
