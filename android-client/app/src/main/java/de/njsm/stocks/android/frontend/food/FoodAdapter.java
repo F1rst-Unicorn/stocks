@@ -40,6 +40,8 @@ import org.threeten.bp.Instant;
 
 import java.util.List;
 
+import static android.view.View.GONE;
+
 public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
 
     private Resources resources;
@@ -69,12 +71,15 @@ public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
 
         private ImageView icon;
 
+        private ImageView shoppingCart;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.item_food_outline_name);
             date = itemView.findViewById(R.id.item_food_outline_date);
             amount = itemView.findViewById(R.id.item_food_outline_count);
             icon = itemView.findViewById(R.id.item_food_outline_icon);
+            shoppingCart = itemView.findViewById(R.id.item_food_outline_shopping_flag);
         }
 
         public void setName(CharSequence content) {
@@ -91,6 +96,13 @@ public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
 
         public void setIcon(Drawable content) {
             icon.setImageDrawable(content);
+        }
+
+        public void setBuyStatus(boolean toBuy) {
+            if (! toBuy)
+                shoppingCart.setVisibility(GONE);
+            else
+                shoppingCart.setVisibility(View.VISIBLE);
         }
     }
 
@@ -117,6 +129,7 @@ public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
         holder.setDate(mapToRelativeDate(data.getEatBy()));
         holder.setName(data.getName());
         holder.setIcon(FoodItemAdapter.computeIcon(resources, theme, data.getEatBy(), Instant.now()));
+        holder.setBuyStatus(data.getToBuy());
     }
 
     @Override
@@ -124,6 +137,7 @@ public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
         holder.setAmount("");
         holder.setDate("");
         holder.setName("");
+        holder.setBuyStatus(false);
     }
 
     private CharSequence mapToRelativeDate(Instant date) {

@@ -22,6 +22,7 @@ package de.njsm.stocks.android.frontend.search;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
@@ -33,6 +34,8 @@ import de.njsm.stocks.android.frontend.BaseAdapter;
 
 import java.util.List;
 
+import static android.view.View.GONE;
+
 public class AmountAdapter extends BaseAdapter<FoodView, AmountAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -41,10 +44,13 @@ public class AmountAdapter extends BaseAdapter<FoodView, AmountAdapter.ViewHolde
 
         private TextView amount;
 
+        private ImageView shoppingCart;
+
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.item_food_amount_name);
             amount = itemView.findViewById(R.id.item_food_amount_amout);
+            shoppingCart = itemView.findViewById(R.id.item_food_amount_shopping_flag);
         }
 
         public void setName(CharSequence content) {
@@ -53,6 +59,13 @@ public class AmountAdapter extends BaseAdapter<FoodView, AmountAdapter.ViewHolde
 
         public void setAmount(CharSequence content) {
             amount.setText(content);
+        }
+
+        public void setBuyStatus(boolean toBuy) {
+            if (! toBuy)
+                shoppingCart.setVisibility(GONE);
+            else
+                shoppingCart.setVisibility(View.VISIBLE);
         }
     }
 
@@ -76,11 +89,13 @@ public class AmountAdapter extends BaseAdapter<FoodView, AmountAdapter.ViewHolde
     protected void bindConcrete(ViewHolder holder, FoodView data) {
         holder.setName(data.getName());
         holder.setAmount(String.valueOf(data.getAmount()));
+        holder.setBuyStatus(data.getToBuy());
     }
 
     @Override
     protected void bindVoid(ViewHolder holder) {
         holder.setName("");
         holder.setAmount("");
+        holder.setBuyStatus(false);
     }
 }

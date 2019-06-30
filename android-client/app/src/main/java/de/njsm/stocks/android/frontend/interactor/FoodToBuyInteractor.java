@@ -43,7 +43,7 @@ public class FoodToBuyInteractor extends EditInteractor<Food, Boolean> {
         if (code == StatusCode.INVALID_DATA_VERSION) {
             LiveData<Food> newData = updater.apply(item.id);
             newData.observe(owner, newItem -> {
-                if (newItem != null && !newItem.equals(item) && !newItem.toBuy) {
+                if (newItem != null && !newItem.equals(item) && item.toBuy != newItem.toBuy) {
                     observeEditing(newItem, editedData);
                     newData.removeObservers(owner);
                 }

@@ -81,4 +81,13 @@
         android:paddingEnd="4dp"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
+    <ImageView
+        android:id="@+id/item_food_outline_shopping_flag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_shopping_cart_black_24"
+        android:layout_gravity="end"
+        android:layout_alignParentEnd="true"/>
+
+
 </RelativeLayout>

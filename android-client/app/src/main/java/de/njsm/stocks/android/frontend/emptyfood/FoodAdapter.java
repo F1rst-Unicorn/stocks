@@ -22,6 +22,7 @@ package de.njsm.stocks.android.frontend.emptyfood;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -34,6 +35,8 @@ import de.njsm.stocks.android.frontend.BaseAdapter;
 
 import java.util.List;
 
+import static android.view.View.GONE;
+
 public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
 
     private Consumer<View> onLongClickListener;
@@ -44,14 +47,24 @@ public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
 
         private TextView textView;
 
+        private ImageView shoppingCart;
+
         ViewHolder(@NonNull RelativeLayout itemView) {
             super(itemView);
             view = itemView;
             textView = view.findViewById(R.id.item_empty_food_outline_name);
+            shoppingCart = view.findViewById(R.id.item_empty_food_outline_shopping_flag);
         }
 
         public void setText(CharSequence c) {
             textView.setText(c);
+        }
+
+        public void setBuyStatus(boolean toBuy) {
+            if (! toBuy)
+                shoppingCart.setVisibility(GONE);
+            else
+                shoppingCart.setVisibility(View.VISIBLE);
         }
     }
 
@@ -80,10 +93,12 @@ public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
     @Override
     protected void bindConcrete(ViewHolder holder, Food data) {
         holder.setText(data.name);
+        holder.setBuyStatus(data.toBuy);
     }
 
     @Override
     protected void bindVoid(ViewHolder holder) {
         holder.setText("");
+        holder.setBuyStatus(false);
     }
 }

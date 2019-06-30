@@ -36,7 +36,7 @@ import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.frontend.BaseFragment;
-import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
+import de.njsm.stocks.android.frontend.interactor.FoodToBuyInteractor;
 import de.njsm.stocks.android.frontend.search.AmountAdapter;
 
 import javax.inject.Inject;
@@ -73,13 +73,13 @@ public class ShoppingListFragment extends BaseFragment {
         data.observe(this, i -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
-        FoodDeletionInteractor interactor = new FoodDeletionInteractor(
-                this, result,
-                R.string.dialog_food_was_removed_from_shopping_list,
-                i -> adapter.notifyItemChanged(i.getPosition()),
-                i -> viewModel.setToBuyStatus(i, false),
-                i -> viewModel.getFood(i));
-        addSwipeToDelete(list, data, R.drawable.ic_remove_shopping_cart_white_24, v -> interactor.initiateDeletion(v.mapToFood()));
+        FoodToBuyInteractor buyInteractor = new FoodToBuyInteractor(this,
+                (f, s) -> {
+                    adapter.notifyItemRemoved(f.getPosition());
+                    return viewModel.setToBuyStatus(f, s);
+                },
+                viewModel::getFood);
+        addSwipeToDelete(list, data, R.drawable.ic_remove_shopping_cart_white_24, v -> buyInteractor.observeEditing(v.mapToFood(), false));
 
         result.findViewById(R.id.template_swipe_list_fab).setVisibility(View.GONE);
         initialiseSwipeRefresh(result, viewModelFactory);
