@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+* STOCKS-83: Add shopping list feature
+
 ## Release [4.0.0.0-1]
 
 ### Removed

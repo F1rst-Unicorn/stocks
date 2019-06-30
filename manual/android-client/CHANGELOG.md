@@ -2,13 +2,9 @@
 
 ## [Unreleased]
 
-### Removed
-
-* STOCKS-81: v1 API endpoints are gone
-
 ### Added
 
-* STOCKS-78: New configuration option for circuit breaker timeout
+* STOCKS-83: Add shopping list feature
 
 ## Release [3.0.0.2]
 
