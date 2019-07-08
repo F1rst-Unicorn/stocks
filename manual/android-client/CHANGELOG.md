@@ -1,6 +1,12 @@
 # Change Log
 
-## [Unreleased]
+## [3.2.0.0]
+
+### Added
+
+* STOCKS-84: Allow editing of settings for server hostname and ports
+
+## [3.1.0.0]
 
 ### Added
 
