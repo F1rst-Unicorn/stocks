@@ -32,6 +32,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.dagger.modules.WebModule;
 import de.njsm.stocks.android.error.TextResourceException;
 import de.njsm.stocks.android.network.sentry.SentryClient;
+import de.njsm.stocks.android.network.server.HostnameInterceptor;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.ExceptionHandler;
@@ -236,7 +237,9 @@ public class SetupHandler extends Handler {
 
         SentryClient backend = new Retrofit.Builder()
                 .baseUrl(url)
-                .client(WebModule.getClient(c.openFileInput(Config.KEYSTORE_FILE)))
+                .client(WebModule.getClient(c.openFileInput(Config.KEYSTORE_FILE),
+                        new HostnameInterceptor(extras.getString(Config.SERVER_NAME_CONFIG),
+                                extras.getInt(Config.SENTRY_PORT_CONFIG))))
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build()
                 .create(SentryClient.class);

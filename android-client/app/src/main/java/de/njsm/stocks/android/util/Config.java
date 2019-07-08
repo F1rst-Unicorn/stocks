@@ -19,8 +19,11 @@
 
 package de.njsm.stocks.android.util;
 
+import android.content.SharedPreferences;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatter;
+
+import java.util.Locale;
 
 public class Config {
 
@@ -44,4 +47,14 @@ public class Config {
     public static final DateTimeFormatter DATABASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSS-Z").withZone(ZoneId.of("UTC"));
     public static final DateTimeFormatter PRETTY_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yy").withZone(ZoneId.systemDefault());
 
+    public static String formatServerUrl(SharedPreferences prefs) {
+        return formatServerUrl(prefs.getString(Config.SERVER_NAME_CONFIG, ""),
+                prefs.getInt(Config.SERVER_PORT_CONFIG, 0));
+    }
+
+    public static String formatServerUrl(String hostname, int port) {
+        return String.format(Locale.US, "https://%s:%d/",
+                hostname,
+                port);
+    }
 }

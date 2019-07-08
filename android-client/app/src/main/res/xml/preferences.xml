@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
     stocks is client-server program to manage a household's food stock
     Copyright (C) 2019  The stocks developers
 
@@ -20,16 +19,44 @@
 -->
 
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference
-        android:key="pref_full_sync"
-        android:summary="@string/dialog_new_sync"
-        android:title="@string/title_new_sync" />
+    <PreferenceCategory
+        app:key="pref_cat_connection"
+        app:title="@string/title_connection">
 
-    <Preference
-        android:key="pref_crash_logs"
-        android:title="@string/title_crash_logs" />
+        <EditTextPreference
+            app:key="pref_server"
+            app:title="@string/title_hostname"/>
+
+        <EditTextPreference
+            app:key="pref_ca_port"
+            app:title="@string/title_caport"/>
+
+        <EditTextPreference
+            app:key="pref_registration_port"
+            app:title="@string/title_registration_port"/>
+
+        <EditTextPreference
+            app:key="pref_server_port"
+            app:title="@string/title_server_port"/>
 
 
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="pref_cat_troubleshooting"
+        app:title="@string/title_troubleshooting">
+
+        <Preference
+            android:key="pref_full_sync"
+            android:summary="@string/dialog_new_sync"
+            android:title="@string/title_new_sync" />
+
+        <Preference
+            android:key="pref_crash_logs"
+            android:title="@string/title_crash_logs" />
+
+    </PreferenceCategory>
 </PreferenceScreen>

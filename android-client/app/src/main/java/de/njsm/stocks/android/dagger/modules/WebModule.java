@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.android.network.server.HostnameInterceptor;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
@@ -40,7 +41,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.util.Locale;
 
 
 @Module
@@ -64,7 +64,14 @@ public class WebModule {
     }
 
     @Provides
-    public static OkHttpClient getClient(InputStream keystoreStream) {
+    @Singleton
+    public static HostnameInterceptor getInterceptor(SharedPreferences prefs) {
+        return new HostnameInterceptor(prefs.getString(Config.SERVER_NAME_CONFIG, ""),
+                prefs.getInt(Config.SERVER_PORT_CONFIG, 0));
+    }
+
+    @Provides
+    public static OkHttpClient getClient(InputStream keystoreStream, HostnameInterceptor interceptor) {
 
         try {
             KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -84,6 +91,7 @@ public class WebModule {
             return new OkHttpClient.Builder()
                     .sslSocketFactory(context.getSocketFactory(), (X509TrustManager) tmf.getTrustManagers()[0])
                     .hostnameVerifier((s, sslSession) -> true)
+                    .addInterceptor(interceptor)
                     .build();
         } catch (Exception e) {
             LOG.e("Error creating http client", e);
@@ -96,9 +104,7 @@ public class WebModule {
     @Singleton
     static ServerClient provideServerClient(SharedPreferences prefs, OkHttpClient httpClient) {
         try {
-            String url = String.format(Locale.US, "https://%s:%d/",
-                    prefs.getString(Config.SERVER_NAME_CONFIG, ""),
-                    prefs.getInt(Config.SERVER_PORT_CONFIG, 0));
+            String url = Config.formatServerUrl(prefs);
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(url)

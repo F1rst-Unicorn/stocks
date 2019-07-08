@@ -21,11 +21,13 @@ package de.njsm.stocks.android.frontend.settings;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
+import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import dagger.android.support.AndroidSupportInjection;
@@ -33,6 +35,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.android.util.Config;
 
 import javax.inject.Inject;
 
@@ -41,6 +44,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private ViewModelProvider.Factory viewModelFactory;
 
     private RefreshViewModel refreshViewModel;
+
+    private SettingsUpdaterViewModel updaterViewModel;
+
+    private SharedPreferences backend;
 
     @Override
     public void onAttach(Context context) {
@@ -53,14 +60,53 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
         refreshViewModel = ViewModelProviders.of(this, viewModelFactory).get(RefreshViewModel.class);
+        updaterViewModel = ViewModelProviders.of(this, viewModelFactory).get(SettingsUpdaterViewModel.class);
 
-        Preference pref = getPreferenceManager().findPreference("pref_full_sync");
-        if (pref != null)
-                pref.setOnPreferenceClickListener(this::full_sync);
+        backend = requireActivity().getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);
 
-        pref = getPreferenceManager().findPreference("pref_crash_logs");
+        Preference pref = findPreference("pref_full_sync");
         if (pref != null)
-                pref.setOnPreferenceClickListener(this::goToCrashLogs);
+            pref.setOnPreferenceClickListener(this::full_sync);
+
+        pref = findPreference("pref_crash_logs");
+        if (pref != null)
+            pref.setOnPreferenceClickListener(this::goToCrashLogs);
+
+        pref = findPreference("pref_server");
+        if (pref != null) {
+            pref.setOnPreferenceChangeListener(new PreferenceChangeListener<>(
+                    Config.SERVER_NAME_CONFIG,
+                    (k, v) -> {
+                        backend.edit().putString(k, v).apply();
+                        updaterViewModel.setHost(v);
+                    }, k -> k));
+            pref.setSummary(backend.getString(Config.SERVER_NAME_CONFIG, ""));
+        }
+
+        configurePortPreference("pref_ca_port", Config.CA_PORT_CONFIG);
+        configurePortPreference("pref_registration_port", Config.SENTRY_PORT_CONFIG);
+        pref = configurePortPreference("pref_server_port", Config.SERVER_PORT_CONFIG);
+        pref.setOnPreferenceChangeListener(new PreferenceChangeListener<>(
+                Config.SERVER_PORT_CONFIG,
+                (k, v) -> {
+                    backend.edit().putInt(k, v).apply();
+                    updaterViewModel.setPort(v);
+                }, Integer::parseInt));
+
+    }
+
+    private EditTextPreference configurePortPreference(String prefKey, String backendKey) {
+        EditTextPreference pref = (EditTextPreference) findPreference(prefKey);
+        if (pref != null) {
+            pref.setOnPreferenceChangeListener(new PreferenceChangeListener<>(
+                    backendKey,
+                    (k, v) -> backend.edit()
+                            .putInt(k, v)
+                            .apply(), Integer::parseInt));
+            pref.setText(String.valueOf(backend.getInt(backendKey, 0)));
+            pref.setSummary(String.valueOf(backend.getInt(backendKey, 0)));
+        }
+        return pref;
     }
 
     @Inject

@@ -150,5 +150,11 @@
     <string name="action_shopping_list">Shopping List</string>
     <string name="title_add_to_cart">Add to shopping list</string>
     <string name="title_remove_from_cart">Remove from shopping list</string>
+    <string name="title_hostname">Hostname</string>
+    <string name="title_caport">CA Port</string>
+    <string name="title_registration_port">Registration Port</string>
+    <string name="title_server_port">Main Port</string>
+    <string name="title_connection">Connection</string>
+    <string name="title_troubleshooting">Troubleshooting</string>
 
 </resources>

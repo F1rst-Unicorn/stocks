@@ -36,9 +36,11 @@ import de.njsm.stocks.android.frontend.food.FoodToEatViewModel;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.frontend.search.SearchViewModel;
+import de.njsm.stocks.android.frontend.settings.SettingsUpdaterViewModel;
 import de.njsm.stocks.android.frontend.shoppinglist.FoodToBuyViewModel;
 import de.njsm.stocks.android.frontend.user.UserViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
+import de.njsm.stocks.android.network.server.HostnameInterceptor;
 import de.njsm.stocks.android.repo.*;
 
 import javax.inject.Provider;
@@ -144,6 +146,13 @@ public class ViewModelModule {
     @ViewModelKey(RefreshViewModel.class)
     ViewModel provideRefreshViewModel(RefreshRepository repo) {
         return new RefreshViewModel(repo);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(SettingsUpdaterViewModel.class)
+    ViewModel provideSettingsUpdaterViewModel(HostnameInterceptor repo) {
+        return new SettingsUpdaterViewModel(repo);
     }
 
     @Provides

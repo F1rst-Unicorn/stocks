@@ -152,6 +152,12 @@
     <string name="action_shopping_list">Einkaufsliste</string>
     <string name="title_add_to_cart">Auf Einkaufsliste schreiben</string>
     <string name="title_remove_from_cart">Von Einkaufsliste löschen</string>
+    <string name="title_hostname">Hostname</string>
+    <string name="title_caport">CA Port</string>
+    <string name="title_registration_port">Registrierungsport</string>
+    <string name="title_server_port">Hauptport</string>
+    <string name="title_connection">Verbindung</string>
+    <string name="title_troubleshooting">Fehlerbehebung</string>
 
 
 </resources>
