@@ -88,12 +88,22 @@ public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLEx
     public <O> ProducerWithExceptions<Validation<StatusCode, O>, SQLException>
     wrap(FunctionWithExceptions<DSLContext, Validation<StatusCode, O>, SQLException> client) {
         return () -> {
-            Connection con = connectionFactory.getConnection();
-            con.setAutoCommit(false);
-            if (con.getTransactionIsolation() != Connection.TRANSACTION_SERIALIZABLE)
-                con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-            DSLContext context = DSL.using(con, SQLDialect.POSTGRES);
-            return client.apply(context);
+            try {
+                Connection con = connectionFactory.getConnection();
+                con.setAutoCommit(false);
+                if (con.getTransactionIsolation() != Connection.TRANSACTION_SERIALIZABLE)
+                    con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+                DSLContext context = DSL.using(con, SQLDialect.POSTGRES);
+                return client.apply(context);
+            } catch (RuntimeException e) {
+                return ConnectionHandler.lookForSqlException(e);
+            } catch (SQLException e) {
+                if (ConnectionHandler.isSerialisationConflict(e))
+                    return Validation.fail(StatusCode.SERIALISATION_CONFLICT);
+                else
+                    throw e;
+            }
+
         };
     }
 

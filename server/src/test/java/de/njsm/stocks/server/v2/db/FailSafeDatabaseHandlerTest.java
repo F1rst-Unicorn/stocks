@@ -20,6 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.util.FunctionWithExceptions;
+import de.njsm.stocks.server.util.HystrixProducer;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 import org.jooq.DSLContext;
@@ -32,8 +33,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
@@ -156,12 +159,13 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
      * Example taken from https://www.postgresql.org/docs/11/transaction-iso.html#XACT-SERIALIZABLE
      */
     @Test
-    public void serialisationErrorIsNoted() throws SQLException {
+    public void serialisationErrorIsNoted() throws Exception {
         Connection concurrentConnection = DbTestCase.createConnection();
         concurrentConnection.setAutoCommit(false);
         concurrentConnection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
         Statement statement = concurrentConnection.createStatement();
+        statement.execute("drop table if exists concurrency_test");
         statement.execute("create table concurrency_test (class int not null, value int not null);" +
                 "insert into concurrency_test (class, value) values (1, 10);" +
                 "insert into concurrency_test (class, value) values (1, 20);" +
@@ -187,5 +191,7 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, commandCode);
         assertEquals(StatusCode.SERIALISATION_CONFLICT, commitStatusCode);
+        Thread.sleep(500);      // hystrix window has to shift
+        assertFalse(new HystrixProducer<>(getNewResourceIdentifier(), CIRCUIT_BREAKER_TIMEOUT, null, null).isCircuitBreakerOpen());
     }
 }

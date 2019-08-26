@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import com.netflix.hystrix.exception.HystrixRuntimeException;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
 import de.njsm.stocks.server.util.HystrixWrapper;
@@ -90,27 +89,40 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
     @Override
     public <O> ProducerWithExceptions<Validation<StatusCode, O>, SQLException> wrap(FunctionWithExceptions<Connection, Validation<StatusCode, O>, SQLException> client) {
         return () -> {
-            Connection con = connectionFactory.getConnection();
-            return client.apply(con);
+            try {
+                Connection con = connectionFactory.getConnection();
+                return client.apply(con);
+            } catch (RuntimeException e) {
+                return lookForSqlException(e);
+            } catch (SQLException e) {
+                if (isSerialisationConflict(e))
+                    return Validation.fail(StatusCode.SERIALISATION_CONFLICT);
+                else
+                    throw e;
+            }
         };
     }
 
-    @Override
-    public <O> Validation<StatusCode, O> handleException(HystrixRuntimeException e) {
-        if (e.getCause() instanceof SQLException) {
-            SQLException cause = (SQLException) e.getCause();
-            String sqlState = cause.getSQLState();
-
-            if (sqlState != null && sqlState.equals(SERIALISATION_FAILURE_SQL_STATE)) {
-                LOG.warn("Serialisation error, transaction was rolled back");
-                return Validation.fail(StatusCode.SERIALISATION_CONFLICT);
-            } else {
-                return HystrixWrapper.super.handleException(e);
+    static <O> Validation<StatusCode, O> lookForSqlException(RuntimeException e) throws RuntimeException {
+        Throwable cause = e;
+        while (cause != null) {
+            if (cause instanceof SQLException) {
+                if (isSerialisationConflict((SQLException) cause))
+                    return Validation.fail(StatusCode.SERIALISATION_CONFLICT);
             }
-        } else {
-            return HystrixWrapper.super.handleException(e);
+            cause = cause.getCause();
         }
+        throw e;
     }
 
+    static <O> boolean isSerialisationConflict(SQLException cause) {
+        String sqlState = cause.getSQLState();
 
+        if (sqlState != null && sqlState.equals(SERIALISATION_FAILURE_SQL_STATE)) {
+            LOG.warn("Serialisation error, transaction was rolled back");
+            return true;
+        }
+
+        return false;
+    }
 }
