@@ -95,6 +95,26 @@ public class DeviceEndpointTest {
     }
 
     @Test
+    public void addDeviceContainingDollarIsRejected() {
+        String name = "John$1";
+        int belongsUser = 2;
+
+        DataResponse<NewDeviceTicket> result = uut.putDevice(name, belongsUser);
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
+    public void addDeviceContainingEqualSignIsRejected() {
+        String name = "John=1";
+        int belongsUser = 2;
+
+        DataResponse<NewDeviceTicket> result = uut.putDevice(name, belongsUser);
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
     public void addDeviceInvalidUserIsRejected() {
         String name = "test";
         int belongsUser = 0;

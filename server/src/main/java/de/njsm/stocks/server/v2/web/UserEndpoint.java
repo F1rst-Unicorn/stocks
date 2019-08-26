@@ -45,7 +45,7 @@ public class UserEndpoint extends Endpoint {
     @Produces("application/json")
     public Response putUser(@QueryParam("name") String name) {
 
-        if (isValid(name, "name")) {
+        if (isValidName(name, "name")) {
             StatusCode result = userManager.addUser(new User(name));
             return new Response(result);
 

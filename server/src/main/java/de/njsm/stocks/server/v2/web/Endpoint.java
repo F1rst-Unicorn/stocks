@@ -58,6 +58,12 @@ public class Endpoint {
         return false;
     }
 
+    protected boolean isValidName(String value, String name) {
+        LOG.debug("Checking parameter " + name);
+
+        return isValid(value, name) && Principals.isNameValid(value);
+    }
+
     protected boolean isValidVersion(int parameter, String name) {
         LOG.debug("Checking parameter " + name);
 

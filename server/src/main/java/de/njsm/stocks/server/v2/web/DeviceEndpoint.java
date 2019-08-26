@@ -47,7 +47,7 @@ public class DeviceEndpoint extends Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public DataResponse<NewDeviceTicket> putDevice(@QueryParam("name") String name,
                                                 @QueryParam("belongsTo") int userId) {
-        if (isValid(name, "name") &&
+        if (isValidName(name, "name") &&
                 isValid(userId, "userId")) {
 
             Validation<StatusCode, NewDeviceTicket> result = deviceManager.addDevice(new UserDevice(name, userId));

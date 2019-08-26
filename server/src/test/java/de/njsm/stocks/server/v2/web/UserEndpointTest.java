@@ -73,6 +73,26 @@ public class UserEndpointTest {
     }
 
     @Test
+    public void addUserContainingDollarIsRejected() {
+        String name = "John$1";
+        int belongsUser = 2;
+
+        Response result = uut.putUser(name);
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
+    public void addUserContainingEqualSignIsRejected() {
+        String name = "John=1";
+        int belongsUser = 2;
+
+        Response result = uut.putUser(name);
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+    }
+
+    @Test
     public void validAddingIsSuccessful() {
         String name = "user";
         Mockito.when(userManager.addUser(any())).thenReturn(StatusCode.SUCCESS);
