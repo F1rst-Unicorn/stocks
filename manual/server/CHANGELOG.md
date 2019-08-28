@@ -1,6 +1,18 @@
 # Change Log
 
-## [Unreleased]
+## Unreleased
+
+## [4.1.0.1-1]
+
+### Fixed
+
+* STOCKS-85: Handle concurrent item changes without triggering the circuit
+  breaker.
+
+* STOCKS-76: Reject creation of users with names containing `$` or `=` which are
+  forbidden.
+
+## [4.1.0.0-1]
 
 ### Added
 
