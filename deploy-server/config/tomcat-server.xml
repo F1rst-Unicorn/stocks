@@ -40,6 +40,8 @@
 
     <Connector address="127.0.0.1" port="10915" protocol="HTTP/1.1"
                connectionTimeout="20000" />
+    <Connector address="::1" port="10915" protocol="HTTP/1.1"
+               connectionTimeout="20000" />
 
 
     <Engine name="Catalina" defaultHost="localhost">
