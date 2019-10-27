@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+* STOCKS-87: IPv6 Support
+
 ## [4.1.0.1-1]
 
 ### Fixed
