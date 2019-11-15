@@ -24,10 +24,17 @@ import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
+import io.prometheus.client.Counter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public interface HystrixWrapper<I, E extends Exception> {
+
+    static final Counter CIRCUIT_BREAKER_EVENTS = Counter.build()
+            .name("stocks_circuit_breaker_trigger")
+            .labelNames("resource")
+            .help("Number of circuit breaker open events")
+            .register();
 
     Logger LOG = LogManager.getLogger(HystrixWrapper.class);
 
@@ -57,6 +64,7 @@ public interface HystrixWrapper<I, E extends Exception> {
             return producer.execute();
         } catch (HystrixRuntimeException e) {
             LOG.error("circuit breaker error", e);
+            CIRCUIT_BREAKER_EVENTS.labels(getResourceIdentifier()).inc();
             return Validation.fail(getDefaultErrorCode());
         }
     }

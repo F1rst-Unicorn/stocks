@@ -21,9 +21,15 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
 import fj.data.Validation;
+import io.prometheus.client.Summary;
 import org.glassfish.jersey.internal.util.Producer;
 
 public class BusinessObject {
+
+    private static final Summary OPERATION_REPETITIONS = Summary.build()
+            .name("stocks_operation_repetitions")
+            .help("Count number of repetitions for operation due to serialisation")
+            .register();
 
     private FailSafeDatabaseHandler dbHandler;
 
@@ -33,17 +39,23 @@ public class BusinessObject {
 
     <O> Validation<StatusCode, O> runFunction(Producer<Validation<StatusCode, O>> operation) {
         Validation<StatusCode, O> result;
+        int repetitions = 0;
         do {
             result = operation.call();
+            repetitions++;
         } while (result.isFail() && result.fail() == StatusCode.SERIALISATION_CONFLICT);
+        OPERATION_REPETITIONS.observe(repetitions);
         return finishTransaction(result);
     }
 
     StatusCode runOperation(Producer<StatusCode> operation) {
         StatusCode result;
+        int repetitions = 0;
         do {
             result = operation.call();
+            repetitions++;
         } while (result == StatusCode.SERIALISATION_CONFLICT);
+        OPERATION_REPETITIONS.observe(repetitions);
         return finishTransaction(result);
     }
 
@@ -66,12 +78,7 @@ public class BusinessObject {
             dbHandler.rollback();
             return carry;
         } else {
-            StatusCode next = dbHandler.commit();
-            if (next == StatusCode.SUCCESS) {
-                return StatusCode.SUCCESS;
-            } else {
-                return next;
-            }
+            return dbHandler.commit();
         }
     }
 
