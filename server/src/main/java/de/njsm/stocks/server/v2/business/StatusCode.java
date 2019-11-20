@@ -19,26 +19,79 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import javax.ws.rs.core.Response;
+
 public enum StatusCode {
 
-    SUCCESS,
+    SUCCESS {
+        @Override
+        public Response.Status toHttpStatus() {
+            return Response.Status.OK;
+        }
+    },
 
-    GENERAL_ERROR,
+    GENERAL_ERROR {
+        @Override
+        public Response.Status toHttpStatus() {
+            return Response.Status.INTERNAL_SERVER_ERROR;
+        }
+    },
 
-    NOT_FOUND,
+    NOT_FOUND {
+        @Override
+        public Response.Status toHttpStatus() {
+            return Response.Status.NOT_FOUND;
+        }
+    },
 
-    INVALID_DATA_VERSION,
+    INVALID_DATA_VERSION {
+        @Override
+        public Response.Status toHttpStatus() {
+            return Response.Status.BAD_REQUEST;
+        }
+    },
 
-    FOREIGN_KEY_CONSTRAINT_VIOLATION,
+    FOREIGN_KEY_CONSTRAINT_VIOLATION {
+        @Override
+        public Response.Status toHttpStatus() {
+            return Response.Status.BAD_REQUEST;
+        }
+    },
 
-    DATABASE_UNREACHABLE,
+    DATABASE_UNREACHABLE {
+        @Override
+        public Response.Status toHttpStatus() {
+            return Response.Status.INTERNAL_SERVER_ERROR;
+        }
+    },
 
-    ACCESS_DENIED,
+    ACCESS_DENIED {
+        @Override
+        public Response.Status toHttpStatus() {
+            return Response.Status.UNAUTHORIZED;
+        }
+    },
 
-    INVALID_ARGUMENT,
+    INVALID_ARGUMENT {
+        @Override
+        public Response.Status toHttpStatus() {
+            return Response.Status.BAD_REQUEST;
+        }
+    },
 
-    CA_UNREACHABLE,
+    CA_UNREACHABLE {
+        @Override
+        public Response.Status toHttpStatus() {
+            return Response.Status.INTERNAL_SERVER_ERROR;
+        }
+    },
 
-    SERIALISATION_CONFLICT,
+    SERIALISATION_CONFLICT {
+        @Override
+        public Response.Status toHttpStatus() {
+            return Response.Status.INTERNAL_SERVER_ERROR;
+        }
+    };
 
+    public abstract Response.Status toHttpStatus();
 }

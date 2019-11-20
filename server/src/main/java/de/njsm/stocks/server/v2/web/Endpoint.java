@@ -30,7 +30,7 @@ import java.io.IOException;
 
 public class Endpoint {
 
-    private static final Logger LOG = LogManager.getLogger(RegistrationEndpoint.class);
+    private static final Logger LOG = LogManager.getLogger(Endpoint.class);
 
     protected Principals getPrincipals(HttpServletRequest request) {
         return (Principals) request.getAttribute(PrincipalFilter.STOCKS_PRINCIPAL);

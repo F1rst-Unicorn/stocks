@@ -45,6 +45,7 @@ public class FoodTest {
         int id = createNewFoodType(name);
 
         assertOnRename(id, 0, newName)
+                .statusCode(200)
                 .body("status", equalTo(0));
 
         assertOnFood()
@@ -72,6 +73,7 @@ public class FoodTest {
         int id = createNewFoodType(name);
 
         assertOnRename(id, 99, newName)
+                .statusCode(400)
                 .body("status", equalTo(3));
     }
 
@@ -80,6 +82,7 @@ public class FoodTest {
         String newName = "Cabal";
 
         assertOnRename(9999, 0, newName)
+                .statusCode(404)
                 .body("status", equalTo(2));
     }
 
@@ -89,6 +92,7 @@ public class FoodTest {
         int id = createNewFoodType(name);
 
         assertOnDelete(id, 0)
+                .statusCode(200)
                 .body("status", equalTo(0));
     }
 
@@ -98,12 +102,14 @@ public class FoodTest {
         int id = createNewFoodType(name);
 
         assertOnDelete(id, 99)
+                .statusCode(400)
                 .body("status", equalTo(3));
     }
 
     @Test
     public void deletingUnknownIdIsReported() {
         assertOnDelete(9999, 0)
+                .statusCode(404)
                 .body("status", equalTo(2));
     }
 
@@ -117,7 +123,6 @@ public class FoodTest {
                 .delete(TestSuite.DOMAIN + "/v2/food").
         then()
                 .log().ifValidationFails()
-                .statusCode(200)
                 .contentType(ContentType.JSON);
     }
 
@@ -158,7 +163,6 @@ public class FoodTest {
                 .put(TestSuite.DOMAIN + "/v2/food/rename").
         then()
                 .log().ifValidationFails()
-                .statusCode(200)
                 .contentType(ContentType.JSON);
     }
 

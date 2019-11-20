@@ -65,6 +65,7 @@ public class FoodItemTest {
         int id = createNewItem(date, locationId, foodId);
 
         assertOnEdit(id, 0, editedDate, movedLocation)
+                .statusCode(200)
                 .body("status", equalTo(0));
 
         int version = assertOnItems()
@@ -87,6 +88,7 @@ public class FoodItemTest {
         int id = createNewItem(date, locationId, foodId);
 
         assertOnEdit(id, 99, editedDate, movedLocation)
+                .statusCode(400)
                 .body("status", equalTo(3));
     }
 
@@ -95,6 +97,7 @@ public class FoodItemTest {
         Instant editedDate = Instant.ofEpochMilli(15);
 
         assertOnEdit(99999, 0, editedDate, 1)
+                .statusCode(404)
                 .body("status", equalTo(2));
     }
 
@@ -106,6 +109,7 @@ public class FoodItemTest {
         int id = createNewItem(date, locationId, foodId);
 
         assertOnDelete(id, 0)
+                .statusCode(200)
                 .body("status", equalTo(0));
     }
 
@@ -117,12 +121,14 @@ public class FoodItemTest {
         int id = createNewItem(date, locationId, foodId);
 
         assertOnDelete(id, 99)
+                .statusCode(400)
                 .body("status", equalTo(3));
     }
 
     @Test
     public void deletingUnknownIdIsReported() {
         assertOnDelete(999, 0)
+                .statusCode(404)
                 .body("status", equalTo(2));
     }
 
@@ -135,7 +141,6 @@ public class FoodItemTest {
                 .delete(TestSuite.DOMAIN + "/v2/fooditem").
         then()
                 .log().ifValidationFails()
-                .statusCode(200)
                 .contentType(ContentType.JSON);
     }
 
@@ -177,7 +182,6 @@ public class FoodItemTest {
                 .put(TestSuite.DOMAIN + "/v2/fooditem/edit").
         then()
                 .log().ifValidationFails()
-                .statusCode(200)
                 .contentType(ContentType.JSON);
     }
 

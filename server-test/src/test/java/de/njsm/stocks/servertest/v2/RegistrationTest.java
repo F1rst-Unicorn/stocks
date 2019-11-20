@@ -135,11 +135,13 @@ public class RegistrationTest {
     private void tryFailingRegistration(int deviceId, String ticket, String commonName) throws Exception {
         register(deviceId, ticket, commonName)
                 .body("status", equalTo(6))
-                .body("data", isEmptyOrNullString());
+                .body("data", isEmptyOrNullString())
+                .statusCode(401);
     }
 
     private String registerSuccessfully(int deviceId, String ticket, String commonName) throws Exception {
         return register(deviceId, ticket, commonName)
+                .statusCode(200)
                 .body("status", equalTo(0))
                 .body("data", not(isEmptyOrNullString()))
                 .extract()
@@ -159,7 +161,6 @@ public class RegistrationTest {
                 .post("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/v2/auth/newuser").
         then()
                 .log().ifValidationFails()
-                .statusCode(200)
                 .contentType(ContentType.JSON);
 
     }

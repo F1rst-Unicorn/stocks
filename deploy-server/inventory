@@ -17,5 +17,5 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 [stocks-server]
-dp-server  ansible_python_interpreter=/usr/bin/python2
+dp-server
 

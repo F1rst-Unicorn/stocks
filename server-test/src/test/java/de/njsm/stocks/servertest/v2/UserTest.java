@@ -43,18 +43,21 @@ public class UserTest {
     @Test
     public void addInvalidName() {
         assertOnAdd("")
+                .statusCode(400)
                 .body("status", equalTo(7));
     }
 
     @Test
     public void deleteInvalidVersion() {
         assertOnDelete(1, -1)
+                .statusCode(400)
                 .body("status", equalTo(7));
     }
 
     @Test
     public void deleteInvalidId() {
         assertOnDelete(0, 1)
+                .statusCode(400)
                 .body("status", equalTo(7));
     }
 
@@ -89,7 +92,6 @@ public class UserTest {
         when()
                 .delete(TestSuite.DOMAIN + "/v2/user").
         then()
-                .statusCode(200)
                 .contentType(ContentType.JSON);
     }
 
@@ -100,7 +102,6 @@ public class UserTest {
         when()
                 .put(TestSuite.DOMAIN + "/v2/user").
         then()
-                .statusCode(200)
                 .contentType(ContentType.JSON);
     }
 

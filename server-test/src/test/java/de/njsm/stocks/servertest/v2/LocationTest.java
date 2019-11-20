@@ -49,6 +49,7 @@ public class LocationTest {
         int id = createNewLocationType(name);
 
         assertOnRename(id, 0, newName)
+                .statusCode(200)
                 .body("status", equalTo(0));
 
         assertOnLocation()
@@ -62,6 +63,7 @@ public class LocationTest {
         int id = createNewLocationType(name);
 
         assertOnRename(id, 99, newName)
+                .statusCode(400)
                 .body("status", equalTo(3));
     }
 
@@ -70,6 +72,7 @@ public class LocationTest {
         String newName = "Location2";
 
         assertOnRename(9999, 0, newName)
+                .statusCode(404)
                 .body("status", equalTo(2));
     }
 
@@ -79,6 +82,7 @@ public class LocationTest {
         int id = createNewLocationType(name);
 
         assertOnDelete(id, 0, false)
+                .statusCode(200)
                 .body("status", equalTo(0));
     }
 
@@ -88,12 +92,14 @@ public class LocationTest {
         int id = createNewLocationType(name);
 
         assertOnDelete(id, 99, false)
+                .statusCode(400)
                 .body("status", equalTo(3));
     }
 
     @Test
     public void deletingUnknownIdIsReported() {
         assertOnDelete(99999, 0, false)
+                .statusCode(404)
                 .body("status", equalTo(2));
     }
 
@@ -121,7 +127,6 @@ public class LocationTest {
                 .delete(TestSuite.DOMAIN + "/v2/location").
         then()
                 .log().ifValidationFails()
-                .statusCode(200)
                 .contentType(ContentType.JSON);
     }
 
@@ -162,7 +167,6 @@ public class LocationTest {
                 .put(TestSuite.DOMAIN + "/v2/location/rename").
         then()
                 .log().ifValidationFails()
-                .statusCode(200)
                 .contentType(ContentType.JSON);
     }
 
