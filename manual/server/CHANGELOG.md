@@ -6,6 +6,12 @@
 
 * STOCKS-87: IPv6 Support
 
+* STOCKS-88: Prometheus metrics
+
+### Fixed
+
+* STOCKS-89: Set HTTP status codes correctly
+
 ## [4.1.0.1-1]
 
 ### Fixed

@@ -151,6 +151,12 @@ Response {
 }
 ```
 
+### Prometheus
+
+Tomcat exposes Prometheus metrics on the path `/server/metrics`. It gives
+information about request durations, circuit breaker events and command retries
+due to serialisation conflicts.
+
 ### Sentry
 
 Endpoints listed here are only reachable via the sentry port.
