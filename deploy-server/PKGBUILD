@@ -42,6 +42,10 @@ build() {
         MVN_ARGS="-P teamcity"
     fi
 
+    cd common
+    mvn $MVN_ARGS -Dmaven.test.skip=true install
+    cd ..
+
     cd server
     mvn $MVN_ARGS -Dmaven.test.skip=true clean package
     cd ..
