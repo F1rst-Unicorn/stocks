@@ -114,6 +114,11 @@ changeBuildType(RelativeId("Build")) {
             path = "makepkg"
             arguments = "-cf"
         }
+        update<ExecBuildStep>(4) {
+            workingDir = "deploy-client"
+            path = "makepkg"
+            arguments = "-cf"
+        }
     }
 
     triggers {
