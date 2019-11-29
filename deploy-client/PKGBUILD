@@ -23,15 +23,13 @@ pkgrel=1
 pkgdesc="Manages a household's stocks client"
 arch=('any')
 url="https://github.com/F1rst-Unicorn/stocks"
-license=('MIT')
+license=('GPL3')
 depends=('jre8-openjdk'
          'java-environment'
          'sqlite'
          )
 makedepends=('git'
 			 'maven')
-source=("http://do.not.use.com/stocks.tar")
-sha512sums=('SKIP')
 install=stocks.install
 
 build() {

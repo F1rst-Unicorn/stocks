@@ -62,26 +62,10 @@ sed -i "s/.*db\.version.*/    ('db.version', '$SQL_VERSION')/g" \
 sed -i "s/stocks_version: .*/stocks_version: $VERSION-$RELEASE/" \
         "$STOCKS_ROOT"/deploy-client/install.yml
 
-echo Building release
-export NO_SIGNATURE=""
-"$STOCKS_ROOT"/deploy-client/bin/package.sh
-
 echo Tagging release
 git add -A
 git commit -m "Increment client version to $VERSION-$RELEASE"
 git tag -a "client-$VERSION-$RELEASE" -m \
-        "Tagging client version $VERSION-$RELEASE"        
+        "Tagging client version $VERSION-$RELEASE"
 git push --all
 git push --tags
-
-echo Archive release
-mkdir -p ~/Software/stocks/
-cp "$STOCKS_ROOT"/deploy-client/target/stocks-$VERSION-$RELEASE-any.* \
-        ~/Software/stocks/
-chmod a-wx ~/Software/stocks/*
-
-echo Publish release
-scp "$STOCKS_ROOT"/deploy-client/target/stocks-$VERSION-$RELEASE-any.* \
-        web-1.j.njsm.de:/tmp/
-ssh -t web-1.j.njsm.de sudo /root/bin/publish-stocks
-

@@ -17,31 +17,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ## arg 1:  the new package version
-pre_install() {
-	echo -n ""
-}
-
-## arg 1:  the new package version
 post_install() {
     echo ".read /usr/share/stocks/schema.sql" | sqlite3 /usr/share/stocks/proto.db
     echo "Copy the file /usr/share/stocks/proto.db to your HOME/.stocks/stocks.db before starting"
-}
-
-## arg 1:  the new package version
-## arg 2:  the old package version
-pre_upgrade() {
-	echo -n ""
-}
-
-## arg 1:  the new package version
-## arg 2:  the old package version
-post_upgrade() {
-	echo -n ""
-}
-
-## arg 1:  the old package version
-pre_remove() {
-	echo -n ""
 }
 
 ## arg 1:  the old package version

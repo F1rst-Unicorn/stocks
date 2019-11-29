@@ -23,7 +23,7 @@ pkgrel=1
 pkgdesc="Manages a household's stocks"
 arch=('any')
 url="https://github.com/F1rst-Unicorn/stocks"
-license=('MIT')
+license=('GPL3')
 depends=('jre8-openjdk'
          'java-environment'
          'nginx'
@@ -31,9 +31,7 @@ depends=('jre8-openjdk'
          'tomcat8')
 makedepends=('git'
              'maven')
-source=("http://www.do.not.use.com/stocks.tar")
 install=stocks-server.install
-sha512sums=('SKIP')
 backup=("etc/$pkgname/stocks.properties"
 	"usr/lib/$pkgname/setup-ca")
 
