@@ -17,24 +17,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.util;
+package de.njsm.stocks.servertest.v2;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import fj.data.Validation;
+import de.njsm.stocks.servertest.TestSuite;
+import io.restassured.http.ContentType;
+import org.junit.Test;
 
-public interface AuthAdmin {
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
-    StatusCode saveCsr(int deviceId, String content);
+public class HealthTest {
 
-    Validation<StatusCode, String> getCertificate(int deviceId);
-
-    void wipeDeviceCredentials(int deviceId);
-
-    StatusCode generateCertificate(int deviceId);
-
-    Validation<StatusCode, Principals> getPrincipals(int deviceId);
-
-    StatusCode revokeCertificate(int id);
-
-    StatusCode getHealth();
+    @Test
+    public void testHealth() {
+        given()
+                .log().ifValidationFails().
+        when()
+                .get(TestSuite.DOMAIN + "/health").
+        then()
+                .log().ifValidationFails()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(0))
+                .body("data.database", equalTo(true))
+                .body("data.ca", equalTo(true));
+    }
 }

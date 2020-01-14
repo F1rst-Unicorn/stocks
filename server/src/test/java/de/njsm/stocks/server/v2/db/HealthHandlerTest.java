@@ -17,24 +17,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.util;
+package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import fj.data.Validation;
+import org.junit.Before;
+import org.junit.Test;
 
-public interface AuthAdmin {
+import static org.junit.Assert.assertEquals;
 
-    StatusCode saveCsr(int deviceId, String content);
+public class HealthHandlerTest extends DbTestCase {
 
-    Validation<StatusCode, String> getCertificate(int deviceId);
+    private HealthHandler uut;
 
-    void wipeDeviceCredentials(int deviceId);
+    @Before
+    public void setup() {
+        uut = new HealthHandler(getConnectionFactory(),
+                getNewResourceIdentifier(),
+                CIRCUIT_BREAKER_TIMEOUT);
+    }
 
-    StatusCode generateCertificate(int deviceId);
+    @Test
+    public void testGettingHealth() {
+        StatusCode result = uut.get();
 
-    Validation<StatusCode, Principals> getPrincipals(int deviceId);
-
-    StatusCode revokeCertificate(int id);
-
-    StatusCode getHealth();
+        assertEquals(StatusCode.SUCCESS, result);
+    }
 }

@@ -161,6 +161,13 @@ public class X509AuthAdminTest {
         assertTrue(new File(caDirectory.getPath() + "/intermediate/crl/intermediate.crl.pem").exists());
     }
 
+    @Test
+    public void testHealthCheck() {
+        StatusCode result = uut.getHealth();
+
+        assertEquals(StatusCode.SUCCESS, result);
+    }
+
     private String generateCsr(Principals p) throws Exception {
         Process pr;
         pr = Runtime.getRuntime().exec(String.format("openssl genrsa -out %s/%s/user_%d.key.pem 1024",

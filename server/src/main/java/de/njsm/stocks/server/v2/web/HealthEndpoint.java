@@ -19,6 +19,12 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.server.v2.business.HealthManager;
+import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.server.v2.business.data.Health;
+import de.njsm.stocks.server.v2.web.data.DataResponse;
+import fj.data.Validation;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -27,9 +33,23 @@ import javax.ws.rs.core.MediaType;
 @Path("/health")
 public class HealthEndpoint {
 
+    private HealthManager healthManager;
+
+    public HealthEndpoint(HealthManager healthManager) {
+        this.healthManager = healthManager;
+    }
+
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getStatus() {
-        return "System is healthy\n\n";
+    @Produces(MediaType.APPLICATION_JSON)
+    public DataResponse<Health> getStatus() {
+        Validation<StatusCode, Health> health = healthManager.get();
+
+        if (health.isFail()) {
+            return new DataResponse<>(health);
+        } else {
+            DataResponse<Health> result = new DataResponse<>(health.success().toValidation());
+            result.data = health.success();
+            return result;
+        }
     }
 }
