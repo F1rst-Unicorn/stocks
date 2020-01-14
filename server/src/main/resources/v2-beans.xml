@@ -139,7 +139,7 @@
         <constructor-arg index="0" ref="foodItemBackend"/>
     </bean>
 
-    <bean name="HealthManager" class="de.njsm.stocks.server.v2.business.HealthManager" scope="request">
+    <bean name="healthManager" class="de.njsm.stocks.server.v2.business.HealthManager" scope="request">
         <constructor-arg index="0" ref="healthBackend" />
         <constructor-arg index="1" ref="authAdmin" />
     </bean>
