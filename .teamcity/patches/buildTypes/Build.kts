@@ -1,6 +1,11 @@
 package patches.buildTypes
 
 import jetbrains.buildServer.configs.kotlin.v2018_2.*
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.ExecBuildStep
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.MavenBuildStep
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.exec
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.ScheduleTrigger
 import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.schedule
 import jetbrains.buildServer.configs.kotlin.v2018_2.ui.*
@@ -11,6 +16,111 @@ To apply the patch, change the buildType with id = 'Build'
 accordingly, and delete the patch script.
 */
 changeBuildType(RelativeId("Build")) {
+    expectSteps {
+        maven {
+            name = "Compile & Unit Test"
+            goals = "clean install"
+            runnerArgs = "-P teamcity"
+            mavenVersion = auto()
+            localRepoScope = MavenBuildStep.RepositoryScope.MAVEN_DEFAULT
+            coverageEngine = idea {
+                includeClasses = "de.njsm.stocks.*"
+                excludeClasses = """
+                    de.njsm.*.*Test
+                    de.njsm.stocks.server.v2.db.jooq.*
+                    de.njsm.stocks.client.storage.jooq.*
+                """.trimIndent()
+            }
+        }
+        gradle {
+            name = "Build android client"
+            tasks = "build"
+            buildFile = "android-client/build.gradle"
+            gradleHome = "/usr/bin/gradle"
+            gradleWrapperPath = "android-client"
+            coverageEngine = idea {
+                includeClasses = "de.njsm.*"
+                excludeClasses = "*Test"
+            }
+        }
+        gradle {
+            name = "Test Android client local"
+            tasks = "test"
+            buildFile = "android-client/build.gradle"
+            gradleWrapperPath = "android-client"
+            enableStacktrace = true
+            coverageEngine = idea {
+                includeClasses = "de.njsm.*"
+                excludeClasses = "*Test"
+            }
+        }
+        exec {
+            name = "Package server"
+            path = "deploy-server/bin/package.sh"
+        }
+        exec {
+            name = "Package client"
+            path = "deploy-client/bin/package.sh"
+        }
+        gradle {
+            name = "Package Android App"
+            tasks = "assemble"
+            buildFile = "android-client/build.gradle"
+            gradleWrapperPath = "android-client"
+            coverageEngine = idea {
+                includeClasses = "de.njsm.*"
+                excludeClasses = "*Test"
+            }
+        }
+        exec {
+            name = "Clean server"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            path = "server-test/bin/clean-up.sh"
+        }
+        exec {
+            name = "Server Installation"
+            path = "server-test/bin/vm-deployment-test.sh"
+        }
+        maven {
+            name = "Server System Test"
+            goals = "test"
+            pomLocation = "server-test/pom.xml"
+            runnerArgs = "-Dtest=TestSuite"
+            mavenVersion = auto()
+            localRepoScope = MavenBuildStep.RepositoryScope.MAVEN_DEFAULT
+        }
+        exec {
+            name = "Server Log collection"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            path = "server-test/bin/collect-log.sh"
+        }
+        exec {
+            name = "Clean client"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            path = "client/src/test/system/bin/clean-up.sh"
+        }
+        exec {
+            name = "Client Deployment test"
+            path = "client/src/test/system/bin/vm-deployment-test.sh"
+        }
+        exec {
+            name = "Android Deployment test"
+            path = "android-client/app/src/test/system/bin/vm-deployment-test.sh"
+        }
+    }
+    steps {
+        update<ExecBuildStep>(3) {
+            workingDir = "deploy-server"
+            path = "makepkg"
+            arguments = "-cf"
+        }
+        update<ExecBuildStep>(4) {
+            workingDir = "deploy-client"
+            path = "makepkg"
+            arguments = "-cf"
+        }
+    }
+
     triggers {
         val trigger1 = find<ScheduleTrigger> {
             schedule {

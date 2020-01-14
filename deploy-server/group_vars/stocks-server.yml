@@ -18,7 +18,7 @@
 
 ---
 stocks_assume_repo_installed: False
-stocks_package_directory: "target"
+stocks_package_directory: "{{ playbook_dir }}"
 
 stocks_mysql_admin_password: ""
 stocks_mysql_stocks_password: "linux"
