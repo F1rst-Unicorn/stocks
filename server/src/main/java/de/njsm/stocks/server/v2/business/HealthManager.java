@@ -42,11 +42,9 @@ public class HealthManager extends BusinessObject {
     }
 
     public Validation<StatusCode, Health> get() {
-        return runFunction(() -> {
-            StatusCode db = dbBackend.get();
-            StatusCode ca = caBackend.getHealth();
+        StatusCode db = dbBackend.get();
+        StatusCode ca = caBackend.getHealth();
 
-            return Validation.success(new Health(db == StatusCode.SUCCESS, ca == StatusCode.SUCCESS));
-        });
+        return Validation.success(new Health(db == StatusCode.SUCCESS, ca == StatusCode.SUCCESS));
     }
 }
