@@ -28,6 +28,7 @@ import org.junit.runners.Suite;
                      InvalidAccessTest.class,
                      InitialServerTest.class,
                      UpdateChangeTest.class,
+                     HealthTest.class,
                      LocationTest.class,
                      UserTest.class,
                      FoodTest.class,

@@ -17,24 +17,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.util;
+package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import fj.data.Validation;
+import org.jooq.impl.DSL;
 
-public interface AuthAdmin {
+public class HealthHandler extends FailSafeDatabaseHandler {
 
-    StatusCode saveCsr(int deviceId, String content);
 
-    Validation<StatusCode, String> getCertificate(int deviceId);
+    public HealthHandler(ConnectionFactory connectionFactory, String resourceIdentifier, int timeout) {
+        super(connectionFactory, resourceIdentifier, timeout);
+    }
 
-    void wipeDeviceCredentials(int deviceId);
+    public StatusCode get() {
+        return runCommand(context -> {
+            context.select(DSL.inline(1))
+                    .fetch();
 
-    StatusCode generateCertificate(int deviceId);
-
-    Validation<StatusCode, Principals> getPrincipals(int deviceId);
-
-    StatusCode revokeCertificate(int id);
-
-    StatusCode getHealth();
+            return StatusCode.SUCCESS;
+        });
+    }
 }

@@ -92,6 +92,12 @@
         <constructor-arg index="3" ref="dbInsertVisitor" />
     </bean>
 
+    <bean name="healthBackend" class="de.njsm.stocks.server.v2.db.HealthHandler" scope="request">
+        <constructor-arg index="0" ref="connectionFactory" />
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+    </bean>
+
     <!-- Business Layer -->
     <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" scope="request">
         <constructor-arg index="0" ref="authAdmin"/>
@@ -133,6 +139,11 @@
         <constructor-arg index="0" ref="foodItemBackend"/>
     </bean>
 
+    <bean name="HealthManager" class="de.njsm.stocks.server.v2.business.HealthManager" scope="request">
+        <constructor-arg index="0" ref="healthBackend" />
+        <constructor-arg index="1" ref="authAdmin" />
+    </bean>
+
     <!-- Web Layer -->
     <bean name="updateEndpoint" class="de.njsm.stocks.server.v2.web.UpdateEndpoint" scope="request">
         <constructor-arg index="0" ref="updateManager" />
@@ -164,5 +175,9 @@
 
     <bean name="userEndpoint" class="de.njsm.stocks.server.v2.web.UserEndpoint" scope="request">
         <constructor-arg index="0" ref="userManager" />
+    </bean>
+
+    <bean name="healthEndpoint" class="de.njsm.stocks.server.v2.web.HealthEndpoint" scope="request">
+        <constructor-arg index="0" ref="healthManager" />
     </bean>
 </beans>

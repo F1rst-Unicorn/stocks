@@ -147,6 +147,19 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
     }
 
     @Override
+    public StatusCode getHealth() {
+        return runCommand(dummy -> {
+            // Assume that the certificate for the first device always exists
+            Validation<StatusCode, String> probe = getCertificate(1);
+            if (probe.isFail()) {
+                return probe.fail();
+            } else {
+                return StatusCode.SUCCESS;
+            }
+        });
+    }
+
+    @Override
     public String getResourceIdentifier() {
         return resourceIdentifier;
     }
