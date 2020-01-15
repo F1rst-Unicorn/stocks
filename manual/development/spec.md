@@ -159,7 +159,30 @@ due to serialisation conflicts.
 
 ### Sentry
 
-Endpoints listed here are only reachable via the sentry port.
+Endpoints listed here are only reachable via the sentry port. No client
+certificate has to be presented here.
+
+#### Health
+
+`GET /health`: Inform about server health
+
+It performs one test for DB connectivity and one for CA availability.
+
+Result: `application/json`
+
+```
+{
+    status: StatusCode
+    data: Health
+}
+
+Health {
+    database: boolean
+    ca: boolean
+}
+```
+
+#### User registration
 
 `POST /v2/auth/newuser`: Register new device
 

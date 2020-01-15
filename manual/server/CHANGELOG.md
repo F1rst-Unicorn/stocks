@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## [4.3.0.0-1]
+
+### Added
+
+* STOCKS-90: Add health check endpoint
+
+## [4.2.0.0-1]
+
 ### Added
 
 * STOCKS-87: IPv6 Support
