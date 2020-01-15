@@ -21,7 +21,13 @@ package de.njsm.stocks.server.v2.business.data;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
+import de.njsm.stocks.server.v2.business.json.PeriodDeserialiser;
+import de.njsm.stocks.server.v2.business.json.PeriodSerialiser;
+
+import java.time.Period;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -34,19 +40,25 @@ public class Food extends VersionedData {
 
     public boolean toBuy;
 
+    @JsonSerialize(using = PeriodSerialiser.class)
+    @JsonDeserialize(using = PeriodDeserialiser.class)
+    public Period expirationOffset;
+
     public Food(int id, int version) {
         super(id, version);
     }
 
-    public Food(int id, String name, int version, boolean toBuy) {
+    public Food(int id, String name, int version, boolean toBuy, Period expirationOffset) {
         super(id, version);
         this.name = name;
         this.toBuy = toBuy;
+        this.expirationOffset = expirationOffset;
     }
 
     public Food(String name) {
         this.name = name;
         this.toBuy = false;
+        expirationOffset = Period.ZERO;
     }
 
     @Override
@@ -62,13 +74,15 @@ public class Food extends VersionedData {
         Food food = (Food) o;
 
         if (toBuy != food.toBuy) return false;
-        return name.equals(food.name);
+        if (!name.equals(food.name)) return false;
+        return expirationOffset.equals(food.expirationOffset);
     }
 
     @Override
     public int hashCode() {
         int result = name.hashCode();
         result = 31 * result + (toBuy ? 1 : 0);
+        result = 31 * result + expirationOffset.hashCode();
         return result;
     }
 

@@ -349,6 +349,13 @@
                                     <value>POSTGRES</value>
                                 </property>
                             </properties>
+                            <forcedTypes>
+                                <forcedType>
+                                    <userType>java.time.Period</userType>
+                                    <binding>de.njsm.stocks.server.v2.db.jooq.IntervalBinding</binding>
+                                    <types>INTERVAL</types>
+                                </forcedType>
+                            </forcedTypes>
                         </database>
                         <target>
                             <packageName>de.njsm.stocks.server.v2.db.jooq</packageName>

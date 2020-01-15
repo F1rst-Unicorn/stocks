@@ -12,6 +12,8 @@
 
 ### Added
 
+* STOCKS-59: Add food default expiration offsets
+
 * STOCKS-87: IPv6 Support
 
 * STOCKS-88: Prometheus metrics

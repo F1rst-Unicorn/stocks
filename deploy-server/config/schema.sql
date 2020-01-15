@@ -23,6 +23,7 @@ CREATE TABLE "Food" (
   "name" TEXT NOT NULL,
   "version" INT NOT NULL DEFAULT 0,
   "to_buy" BOOLEAN NOT NULL DEFAULT false,
+  "expiration_offset" INTERVAL DAY NOT NULL DEFAULT INTERVAL '0' SECOND,
   PRIMARY KEY ("ID")
 );
 

@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.time.Period;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class FoodManagerTest {
 
     @Test
     public void testAddingItem() {
-        Food data = new Food(1, "Cheese", 2, true);
+        Food data = new Food(1, "Cheese", 2, true, Period.ZERO);
         Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
 
         Validation<StatusCode, Integer> result = uut.add(data);
@@ -77,19 +78,19 @@ public class FoodManagerTest {
     @Test
     public void testRenamingItem() {
         String newName = "Sausage";
-        Food data = new Food(1, newName, 2, true);
-        Mockito.when(backend.rename(data, newName)).thenReturn(StatusCode.SUCCESS);
+        Food data = new Food(1, newName, 2, true, Period.ZERO);
+        Mockito.when(backend.edit(data, newName, Period.ZERO)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.rename(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Mockito.verify(backend).rename(data, newName);
+        Mockito.verify(backend).edit(data, newName, Period.ZERO);
     }
 
     @Test
     public void testSettingBuyStatusItem() {
         String newName = "Sausage";
-        Food data = new Food(1, newName, 2, true);
+        Food data = new Food(1, newName, 2, true, Period.ZERO);
         Mockito.when(backend.setToBuyStatus(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.setToBuyStatus(data);
@@ -100,7 +101,7 @@ public class FoodManagerTest {
 
     @Test
     public void testDeletingItem() {
-        Food data = new Food(1, "Cheese", 2, true);
+        Food data = new Food(1, "Cheese", 2, true, Period.ZERO);
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);

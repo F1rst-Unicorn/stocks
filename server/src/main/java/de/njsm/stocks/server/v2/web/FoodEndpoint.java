@@ -28,6 +28,7 @@ import fj.data.Validation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.time.Period;
 import java.util.List;
 
 @Path("v2/food")
@@ -62,12 +63,13 @@ public class FoodEndpoint extends Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response renameFood(@QueryParam("id") int id,
                                @QueryParam("version") int version,
-                               @QueryParam("new") String newName) {
+                               @QueryParam("new") String newName,
+                               @QueryParam("expirationoffset") int expirationOffset) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
 
-            StatusCode status = manager.rename(new Food(id, newName, version, false));
+            StatusCode status = manager.rename(new Food(id, newName, version, false, Period.ofDays(expirationOffset)));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -84,7 +86,7 @@ public class FoodEndpoint extends Endpoint {
                 isValidVersion(version, "version")) {
 
             boolean toBuy = toBuyParameter == 1;
-            StatusCode status = manager.setToBuyStatus(new Food(id, "", version, toBuy));
+            StatusCode status = manager.setToBuyStatus(new Food(id, "", version, toBuy, Period.ZERO));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -98,7 +100,7 @@ public class FoodEndpoint extends Endpoint {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-            StatusCode status = manager.delete(new Food(id, "", version, false));
+            StatusCode status = manager.delete(new Food(id, "", version, false, Period.ZERO));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

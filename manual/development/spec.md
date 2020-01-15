@@ -351,9 +351,11 @@ Food {
     id: int
     version: int
     name: String
+    toBuy: boolean
+    expirationOffset: int
 }
 ```
-`PUT /v2/food/rename`: Rename an existing food type.
+`PUT /v2/food/rename`: Edit an existing food type.
 
 Query parameters:
 
@@ -362,6 +364,9 @@ Query parameters:
 * `version: int`: The version of the food type
 
 * `new: String`: The name to which the food type shall be renamed
+
+* `expirationoffset: int`: The number of days to use as default offset for
+  the expiration date of new items.
 
 Result: `application/json`, `Response`
 

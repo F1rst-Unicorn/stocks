@@ -17,4 +17,4 @@
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ALTER TABLE "Food"
-ADD COLUMN "to_buy" BOOLEAN NOT NULL DEFAULT false;
+ADD COLUMN "expiration_offset" INTERVAL DAY NOT NULL DEFAULT INTERVAL '0' SECOND;
