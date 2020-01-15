@@ -34,8 +34,8 @@ public class InsertVisitor<T extends Record> extends BaseVisitor<InsertSetStep<T
 
     @Override
     public InsertOnDuplicateStep<T> food(Food f, InsertSetStep<T> arg) {
-        return arg.columns(FOOD.NAME, FOOD.VERSION)
-                .values(f.name, f.version);
+        return arg.columns(FOOD.NAME, FOOD.VERSION, FOOD.EXPIRATION_OFFSET)
+                .values(f.name, f.version, f.expirationOffset);
     }
 
     @Override

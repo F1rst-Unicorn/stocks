@@ -25,12 +25,13 @@ import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import org.jooq.Table;
 import org.jooq.TableField;
 
+import java.time.Period;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
 
 
-public class FoodHandler extends CrudRenameDatabaseHandler<FoodRecord, Food> {
+public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
 
 
     public FoodHandler(ConnectionFactory connectionFactory,
@@ -60,6 +61,28 @@ public class FoodHandler extends CrudRenameDatabaseHandler<FoodRecord, Food> {
         });
     }
 
+    public StatusCode edit(Food item, String newName, Period expirationOffset) {
+        return runCommand(context -> {
+            if (isMissing(item, context))
+                return StatusCode.NOT_FOUND;
+
+            int changedItems = context.update(getTable())
+                    .set(FOOD.NAME, newName)
+                    .set(FOOD.EXPIRATION_OFFSET, expirationOffset)
+                    .set(getVersionField(), getVersionField().add(1))
+                    .where(getIdField().eq(item.id)
+                            .and(getVersionField().eq(item.version)))
+                    .and(getVersionField().eq(item.version))
+                    .execute();
+
+            if (changedItems == 1)
+                return StatusCode.SUCCESS;
+            else
+                return StatusCode.INVALID_DATA_VERSION;
+
+        });
+    }
+
     @Override
     protected Table<FoodRecord> getTable() {
         return FOOD;
@@ -76,17 +99,13 @@ public class FoodHandler extends CrudRenameDatabaseHandler<FoodRecord, Food> {
     }
 
     @Override
-    protected TableField<FoodRecord, String> getNameColumn() {
-        return FOOD.NAME;
-    }
-
-    @Override
     protected Function<FoodRecord, Food> getDtoMap() {
         return cursor -> new Food(
                 cursor.getId(),
                 cursor.getName(),
                 cursor.getVersion(),
-                cursor.getToBuy()
+                cursor.getToBuy(),
+                cursor.getExpirationOffset()
         );
     }
 }

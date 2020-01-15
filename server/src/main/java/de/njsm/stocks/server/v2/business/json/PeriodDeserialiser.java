@@ -17,27 +17,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.business.data;
+package de.njsm.stocks.server.v2.business.json;
 
-import org.junit.Test;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
+import java.io.IOException;
 import java.time.Period;
 
-import static org.junit.Assert.assertEquals;
+public class PeriodDeserialiser extends StdDeserializer<Period> {
 
-public class FoodTest {
 
-    @Test
-    public void testHashCode() {
-        Food data = new Food(1, "Bread", 2, true, Period.ZERO);
-
-        assertEquals(1805685495, data.hashCode());
+    protected PeriodDeserialiser() {
+        this(null);
     }
 
-    @Test
-    public void testToString() {
-        Food data = new Food(1, "Bread", 2, true, Period.ZERO);
+    public PeriodDeserialiser(Class<?> vc) {
+        super(vc);
+    }
 
-        assertEquals("Food (1, Bread, 2, true)", data.toString());
+    @Override
+    public Period deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        return Period.ZERO.plusDays(((JsonNode) p.getCodec().readTree(p)).asInt());
     }
 }
