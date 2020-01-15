@@ -20,22 +20,33 @@
 package de.njsm.stocks.screen;
 
 
+import android.view.View;
+import android.widget.NumberPicker;
+
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
-import de.njsm.stocks.R;
-import de.njsm.stocks.SystemTestSuite;
+
+import org.hamcrest.Matcher;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.Locale;
 
+import de.njsm.stocks.R;
+import de.njsm.stocks.SystemTestSuite;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.espresso.matcher.ViewMatchers.withChild;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static de.njsm.stocks.util.Matchers.atPosition;
 import static junit.framework.TestCase.fail;
 import static org.hamcrest.core.AllOf.allOf;
@@ -71,6 +82,20 @@ public class FoodScreen extends AbstractListPresentingScreen {
 
     public FoodScreen toggleShoppingList() {
         onView(withId(R.id.fragment_food_item_options_shopping)).perform(click());
+        return this;
+    }
+
+    public FoodScreen assertExpirationOffset(int offset) {
+        onView(withId(R.id.fragment_food_item_options_expiration_offset)).perform(click());
+        onView(withId(R.id.number_picker_picker)).check(matches(withChild(withText(String.valueOf(offset)))));
+        onView(withText("CANCEL")).perform(click());
+        return this;
+    }
+
+    public FoodScreen setExpirationOffset(int offset) {
+        onView(withId(R.id.fragment_food_item_options_expiration_offset)).perform(click());
+        onView(withId(R.id.number_picker_picker)).perform(setNumber(offset));
+        onView(withText("OK")).perform(click());
         return this;
     }
 
@@ -114,5 +139,25 @@ public class FoodScreen extends AbstractListPresentingScreen {
     public FoodScreen assertLastItem(String user, String device, String date, String location) {
         assertItem(getListCount()-1, user, device, date, location);
         return this;
+    }
+
+    public static ViewAction setNumber(final int num) {
+        return new ViewAction() {
+            @Override
+            public void perform(UiController uiController, View view) {
+                NumberPicker np = (NumberPicker) view;
+                np.setValue(num);
+            }
+
+            @Override
+            public String getDescription() {
+                return "Set the passed number into the NumberPicker";
+            }
+
+            @Override
+            public Matcher<View> getConstraints() {
+                return ViewMatchers.isAssignableFrom(NumberPicker.class);
+            }
+        };
     }
 }

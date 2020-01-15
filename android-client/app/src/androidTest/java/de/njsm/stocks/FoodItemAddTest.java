@@ -21,13 +21,15 @@ package de.njsm.stocks;
 
 
 import androidx.test.rule.ActivityTestRule;
-import de.njsm.stocks.android.frontend.main.MainActivity;
-import de.njsm.stocks.screen.FoodScreen;
-import de.njsm.stocks.screen.OutlineScreen;
+
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.threeten.bp.LocalDate;
+
+import de.njsm.stocks.android.frontend.main.MainActivity;
+import de.njsm.stocks.screen.FoodScreen;
+import de.njsm.stocks.screen.OutlineScreen;
 
 public class FoodItemAddTest {
 
@@ -57,6 +59,18 @@ public class FoodItemAddTest {
         }
 
         finalScreen.assertItem(numberOfItems, "Jack", "android-client", "31.12.00", "Basement");
+    }
 
+    @Test
+    public void addFromDefaultExpiration() {
+        int offset = 42;
+        LocalDate expected = LocalDate.now().plusDays(offset);
+        OutlineScreen.test()
+                .goToEmptyFood()
+                .click(0)
+                .setExpirationOffset(offset)
+                .assertExpirationOffset(offset)
+                .addItems()
+                .assertDate(expected.getYear(), expected.getMonthValue(), expected.getDayOfMonth());
     }
 }
