@@ -21,15 +21,28 @@ package de.njsm.stocks.android.frontend.fooditem;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.NumberPicker;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
@@ -39,9 +52,6 @@ import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.FoodItemDeletionInteractor;
 import de.njsm.stocks.android.network.server.StatusCode;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class FoodItemFragment extends BaseFragment {
 
@@ -171,8 +181,37 @@ public class FoodItemFragment extends BaseFragment {
                     });
                 }
                 break;
+            case R.id.fragment_food_item_options_expiration_offset:
+                editExpirationDate();
+                break;
         }
         return true;
+    }
+
+    private void editExpirationDate() {
+        NumberPicker view = (NumberPicker) getLayoutInflater().inflate(R.layout.number_picker, null);
+        view.setMinValue(0);
+        view.setMaxValue(Integer.MAX_VALUE);
+        view.setWrapSelectorWheel(false);
+        Food f = selfFood.getValue();
+        if (f != null) {
+            view.setValue(f.expirationOffset);
+        } else {
+            view.setValue(0);
+        }
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(getString(R.string.dialog_default_expiration_offset))
+                .setView(view)
+                .setPositiveButton(getString(R.string.dialog_ok), (dialog, whichButton) -> {
+                    Food food = selfFood.getValue();
+                    int newOffset = view.getValue();
+                    if (food != null && food.expirationOffset != newOffset) {
+                        LiveData<StatusCode> result = foodViewModel.setFoodExpirationOffset(food, newOffset);
+                        result.observe(this, this::maybeShowEditError);
+                    }
+                })
+                .setNegativeButton(getString(android.R.string.cancel), (d, b) -> {})
+                .show();
     }
 
     @Inject

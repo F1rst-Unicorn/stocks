@@ -21,10 +21,16 @@ package de.njsm.stocks.android.frontend.additem;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -32,6 +38,18 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
+
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.Period;
+import org.threeten.bp.ZoneId;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
@@ -42,14 +60,6 @@ import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZoneId;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class AddItemFragment extends BaseFragment {
@@ -90,7 +100,7 @@ public class AddItemFragment extends BaseFragment {
 
         date = result.findViewById(R.id.fragment_add_food_item_date);
         LocalDate now = LocalDate.now();
-        date.init(now.getYear(), now.getMonthValue() - 1, now.getDayOfMonth(), null);
+        initialiseDatePicker(now);
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodItemViewModel.class);
         foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
@@ -115,24 +125,35 @@ public class AddItemFragment extends BaseFragment {
                     });
         });
 
-        LiveData<Instant> latestExpiration = viewModel.getLatestExpirationOf(input.getFoodId());
-        latestExpiration.observe(this, i -> {
-                    if (i != null) {
-                        LocalDate date = LocalDate.from(i.atZone(ZoneId.systemDefault()));
-                        this.date.init(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(), null);
-                        latestExpiration.removeObservers(this);
-                    }
-                });
-
         food = foodViewModel.getFood(input.getFoodId());
         food.observe(this, f -> {
             String title = getString(R.string.title_add_item, f.name);
             requireActivity().setTitle(title);
+            if (f.expirationOffset != 0) {
+                initialiseDatePicker(now.plus(Period.ofDays(f.expirationOffset)));
+            } else {
+                initialiseDatePickerFromExistingFood(input);
+            }
             food.removeObservers(this);
         });
 
         setHasOptionsMenu(true);
         return result;
+    }
+
+    private void initialiseDatePickerFromExistingFood(AddItemFragmentArgs input) {
+        LiveData<Instant> latestExpiration = viewModel.getLatestExpirationOf(input.getFoodId());
+        latestExpiration.observe(this, i -> {
+            if (i != null) {
+                LocalDate date = LocalDate.from(i.atZone(ZoneId.systemDefault()));
+                initialiseDatePicker(date);
+                latestExpiration.removeObservers(this);
+            }
+        });
+    }
+
+    private void initialiseDatePicker(LocalDate date) {
+        this.date.init(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(), null);
     }
 
     private void setDefaultLocation(Location l) {

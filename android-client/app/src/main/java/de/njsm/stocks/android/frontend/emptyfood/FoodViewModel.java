@@ -21,13 +21,15 @@ package de.njsm.stocks.android.frontend.emptyfood;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.FoodRepository;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class FoodViewModel extends ViewModel {
 
@@ -68,5 +70,9 @@ public class FoodViewModel extends ViewModel {
 
     public LiveData<Food> getFoodByEanNumber(String s) {
         return foodRepository.getFoodByEanNumber(s);
+    }
+
+    public LiveData<StatusCode> setFoodExpirationOffset(Food food, int newOffset) {
+        return foodRepository.setFoodExpirationOffset(food, newOffset);
     }
 }

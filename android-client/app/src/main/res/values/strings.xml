@@ -156,5 +156,7 @@
     <string name="title_server_port">Main Port</string>
     <string name="title_connection">Connection</string>
     <string name="title_troubleshooting">Troubleshooting</string>
+    <string name="title_expiration_offset">Standard expiration period</string>
+    <string name="dialog_default_expiration_offset">Set default expiration days</string>
 
 </resources>

@@ -158,6 +158,8 @@
     <string name="title_server_port">Hauptport</string>
     <string name="title_connection">Verbindung</string>
     <string name="title_troubleshooting">Fehlerbehebung</string>
+    <string name="title_expiration_offset">Standardhaltbarkeit</string>
+    <string name="dialog_default_expiration_offset">Standardablaufdauer setzen</string>
 
 
 </resources>

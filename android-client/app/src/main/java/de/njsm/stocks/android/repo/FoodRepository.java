@@ -21,6 +21,11 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import de.njsm.stocks.android.db.dao.FoodDao;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.views.FoodView;
@@ -28,9 +33,6 @@ import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class FoodRepository {
 
@@ -81,7 +83,7 @@ public class FoodRepository {
     public LiveData<StatusCode> renameFood(Food item, String name) {
         LOG.d("renaming food " + item + " to " + name);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
-        webClient.renameFood(item.id, item.version, name)
+        webClient.renameFood(item.id, item.version, name, item.expirationOffset)
                 .enqueue(new StatusCodeCallback(data, synchroniser));
         return data;
     }
@@ -96,6 +98,15 @@ public class FoodRepository {
             data.setValue(StatusCode.SUCCESS);
         }
         return data;
+    }
+
+    public LiveData<StatusCode> setFoodExpirationOffset(Food item, int newOffset) {
+        LOG.d("setting food expiration offset of " + item + " to " + newOffset);
+        MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
+        webClient.renameFood(item.id, item.version, item.name, newOffset)
+                .enqueue(new StatusCodeCallback(data, synchroniser));
+        return data;
+
     }
 
     public LiveData<List<FoodView>> getFoodToEat() {

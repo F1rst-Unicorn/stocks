@@ -21,12 +21,14 @@ package de.njsm.stocks.android.frontend.fooditem;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import de.njsm.stocks.android.db.views.FoodItemView;
-import de.njsm.stocks.android.network.server.StatusCode;
-import de.njsm.stocks.android.repo.FoodItemRepository;
+
 import org.threeten.bp.Instant;
 
 import java.util.List;
+
+import de.njsm.stocks.android.db.views.FoodItemView;
+import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.android.repo.FoodItemRepository;
 
 public class FoodItemViewModel extends ViewModel {
 

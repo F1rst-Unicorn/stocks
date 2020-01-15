@@ -36,5 +36,11 @@
         android:orderInCategory="100"
         android:title="@string/title_barcode"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/fragment_food_item_options_expiration_offset"
+        android:icon="@drawable/ic_timelapse_white_24"
+        android:orderInCategory="100"
+        android:title="@string/title_expiration_offset"
+        app:showAsAction="ifRoom" />
 
 </menu>

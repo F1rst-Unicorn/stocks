@@ -42,23 +42,24 @@ public class Food extends VersionedData {
     @ColumnInfo(name = "to_buy")
     public boolean toBuy;
 
-    public Food(int id, int version, String name, boolean toBuy) {
+    @ColumnInfo(name = "expiration_offset")
+    public int expirationOffset;
+
+    public Food(int id, int version, String name, boolean toBuy, int expirationOffset) {
         super(id, version);
         this.name = name;
         this.toBuy = toBuy;
+        this.expirationOffset = expirationOffset;
     }
 
-    public Food(int id, int version, String name, boolean toBuy, int position) {
-        super(id, version);
-        this.name = name;
-        this.toBuy = toBuy;
+    public Food(int id, int version, String name, boolean toBuy, int expirationOffset, int position) {
+        this(id, version, name, toBuy, expirationOffset);
         setPosition(position);
     }
 
     @Ignore
-    public Food(String name, boolean toBuy) {
-        this.name = name;
-        this.toBuy = toBuy;
+    public Food(String name, boolean toBuy, int expirationOffset) {
+        this(0, 0, name, toBuy, expirationOffset);
     }
 
     @Ignore
@@ -73,6 +74,7 @@ public class Food extends VersionedData {
         Food food = (Food) o;
 
         if (toBuy != food.toBuy) return false;
+        if (expirationOffset != food.expirationOffset) return false;
         return name.equals(food.name);
     }
 
@@ -80,6 +82,7 @@ public class Food extends VersionedData {
     public int hashCode() {
         int result = name.hashCode();
         result = 31 * result + (toBuy ? 1 : 0);
+        result = 31 * result + expirationOffset;
         return result;
     }
 
@@ -88,6 +91,7 @@ public class Food extends VersionedData {
         return "Food{" +
                 "name='" + name + '\'' +
                 ", toBuy=" + toBuy +
+                ", expirationOffset=" + expirationOffset +
                 ", version=" + version +
                 ", id=" + id +
                 '}';

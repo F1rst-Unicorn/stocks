@@ -24,10 +24,11 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
-import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.db.views.FoodView;
 
 import java.util.List;
+
+import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.views.FoodView;
 
 @Dao
 public abstract class FoodDao {
@@ -71,7 +72,7 @@ public abstract class FoodDao {
             "ORDER BY eatBy")
     public abstract LiveData<List<FoodView>> getFoodByLocation(int location);
 
-    @Query("SELECT f._id, f.version, f.name, f.to_buy FROM Food f " +
+    @Query("SELECT f._id, f.version, f.name, f.to_buy, f.expiration_offset FROM Food f " +
             "INNER JOIN EanNumber n ON n.identifies = f._id " +
             "WHERE n.number = :s " +
             "LIMIT 1")
