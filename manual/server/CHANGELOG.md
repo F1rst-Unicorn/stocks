@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [4.4.0.0-1]
+
+### Added
+
+* STOCKS-59: Add food default expiration offsets
+
 ## [4.3.0.0-1]
 
 ### Added
@@ -11,8 +17,6 @@
 ## [4.2.0.0-1]
 
 ### Added
-
-* STOCKS-59: Add food default expiration offsets
 
 * STOCKS-87: IPv6 Support
 
