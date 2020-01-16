@@ -1,5 +1,17 @@
 # Change Log
 
+## [3.3.0.1]
+
+### Fixed
+
+* Startup crash when upgrading an existing app version
+
+## [3.3.0.0]
+
+### Added
+
+* STOCKS-59: Support for expiration offsets for food
+
 ## [3.2.0.0]
 
 ### Added
