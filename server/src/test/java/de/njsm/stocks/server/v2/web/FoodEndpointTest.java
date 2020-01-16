@@ -75,7 +75,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidIdIsInvalid() {
 
-        Response result = uut.renameFood(0, 1, "fdsa", 0);
+        Response result = uut.renameFood(0, 1, "fdsa", 0, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -83,7 +83,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidVersionIsInvalid() {
 
-        Response result = uut.renameFood(1, -1, "fdsa", 0);
+        Response result = uut.renameFood(1, -1, "fdsa", 0, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -91,7 +91,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingToInvalidNameIsInvalid() {
 
-        Response result = uut.renameFood(1, 1, "", 0);
+        Response result = uut.renameFood(1, 1, "", 0, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -130,7 +130,7 @@ public class FoodEndpointTest {
 
     @Test
     public void foodIsAdded() {
-        Food data = new Food(0, "Banana", 0, false, Period.ZERO);
+        Food data = new Food(0, "Banana", 0, false, Period.ZERO, null);
         when(manager.add(data)).thenReturn(Validation.success(5));
 
         Response response = uut.putFood(data.name);
@@ -141,7 +141,7 @@ public class FoodEndpointTest {
 
     @Test
     public void getFoodReturnsList() {
-        List<Food> data = Collections.singletonList(new Food(2, "Banana", 2, true, Period.ZERO));
+        List<Food> data = Collections.singletonList(new Food(2, "Banana", 2, true, Period.ZERO, 1));
         when(manager.get()).thenReturn(Validation.success(data));
 
         ListResponse<Food> response = uut.getFood();
@@ -154,10 +154,22 @@ public class FoodEndpointTest {
     @Test
     public void renameFoodWorks() {
         String newName = "Bread";
-        Food data = new Food(1, newName, 2, false, Period.ZERO.plusDays(3));
+        Food data = new Food(1, newName, 2, false, Period.ZERO.plusDays(3), 1);
         when(manager.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameFood(data.id, data.version, newName, 3);
+        Response response = uut.renameFood(data.id, data.version, newName, 3, 1);
+
+        assertEquals(SUCCESS, response.status);
+        verify(manager).rename(data);
+    }
+
+    @Test
+    public void renameFoodWithoutLocationYieldsNullAndWorks() {
+        String newName = "Bread";
+        Food data = new Food(1, newName, 2, false, Period.ZERO.plusDays(3), null);
+        when(manager.rename(data)).thenReturn(SUCCESS);
+
+        Response response = uut.renameFood(data.id, data.version, newName, 3, 0);
 
         assertEquals(SUCCESS, response.status);
         verify(manager).rename(data);
@@ -165,7 +177,7 @@ public class FoodEndpointTest {
 
     @Test
     public void settingBuyStatusWorks() {
-        Food data = new Food(1, "", 2, true, Period.ZERO);
+        Food data = new Food(1, "", 2, true, Period.ZERO, 0);
         when(manager.setToBuyStatus(data)).thenReturn(SUCCESS);
 
         Response response = uut.setToBuyStatus(data.id, data.version, 1);
@@ -176,7 +188,7 @@ public class FoodEndpointTest {
 
     @Test
     public void deleteFoodWorks() {
-        Food data = new Food(1, "", 2, false, Period.ZERO);
+        Food data = new Food(1, "", 2, false, Period.ZERO, 0);
         when(manager.delete(data)).thenReturn(SUCCESS);
 
         Response response = uut.deleteFood(data.id, data.version);

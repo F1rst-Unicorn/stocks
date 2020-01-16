@@ -61,7 +61,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
         });
     }
 
-    public StatusCode edit(Food item, String newName, Period expirationOffset) {
+    public StatusCode edit(Food item, String newName, Period expirationOffset, Integer location) {
         return runCommand(context -> {
             if (isMissing(item, context))
                 return StatusCode.NOT_FOUND;
@@ -69,6 +69,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
             int changedItems = context.update(getTable())
                     .set(FOOD.NAME, newName)
                     .set(FOOD.EXPIRATION_OFFSET, expirationOffset)
+                    .set(FOOD.LOCATION, location)
                     .set(getVersionField(), getVersionField().add(1))
                     .where(getIdField().eq(item.id)
                             .and(getVersionField().eq(item.version)))
@@ -105,7 +106,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                 cursor.getName(),
                 cursor.getVersion(),
                 cursor.getToBuy(),
-                cursor.getExpirationOffset()
+                cursor.getExpirationOffset(),
+                cursor.getLocation()
         );
     }
 }

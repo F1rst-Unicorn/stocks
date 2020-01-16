@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [4.5.0.0-1]
+
+### Added
+
+* STOCKS-69: Support default store location for food
+
 ## [4.4.0.0-1]
 
 ### Added

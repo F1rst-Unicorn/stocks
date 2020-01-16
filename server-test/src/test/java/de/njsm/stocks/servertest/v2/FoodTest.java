@@ -43,14 +43,16 @@ public class FoodTest {
         String name = "Cake";
         String newName = "Cabal";
         int id = createNewFoodType(name);
+        int locationId = LocationTest.createNewLocationType("renamefood");
 
-        assertOnRename(id, 0, newName, 42)
+        assertOnRename(id, 0, newName, 42, locationId)
                 .statusCode(200)
                 .body("status", equalTo(0));
 
         assertOnFood()
                 .body("data.name", hasItem(newName))
-                .body("data.expirationOffset", hasItem(42));
+                .body("data.expirationOffset", hasItem(42))
+                .body("data.location", hasItem(locationId));
     }
 
     @Test
@@ -73,7 +75,7 @@ public class FoodTest {
         String newName = "Cabal";
         int id = createNewFoodType(name);
 
-        assertOnRename(id, 99, newName, 0)
+        assertOnRename(id, 99, newName, 0, 0)
                 .statusCode(400)
                 .body("status", equalTo(3));
     }
@@ -82,7 +84,7 @@ public class FoodTest {
     public void renamingUnknownIdIsReported() {
         String newName = "Cabal";
 
-        assertOnRename(9999, 0, newName, 0)
+        assertOnRename(9999, 0, newName, 0, 0)
                 .statusCode(404)
                 .body("status", equalTo(2));
     }
@@ -153,14 +155,15 @@ public class FoodTest {
 
     }
 
-    private ValidatableResponse assertOnRename(int id, int version, String newName, int expirationOffset) {
+    private ValidatableResponse assertOnRename(int id, int version, String newName, int expirationOffset, int location) {
         return
         given()
                 .log().ifValidationFails()
                 .queryParam("id", id)
                 .queryParam("version", version)
                 .queryParam("new", newName)
-                .queryParam("expirationoffset", expirationOffset).
+                .queryParam("expirationoffset", expirationOffset)
+                .queryParam("location", location).
         when()
                 .put(TestSuite.DOMAIN + "/v2/food/rename").
         then()

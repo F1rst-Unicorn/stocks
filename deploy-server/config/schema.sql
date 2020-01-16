@@ -16,17 +16,6 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-DROP TABLE IF EXISTS "Food" CASCADE;
-
-CREATE TABLE "Food" (
-  "ID" SERIAL NOT NULL UNIQUE,
-  "name" TEXT NOT NULL,
-  "version" INT NOT NULL DEFAULT 0,
-  "to_buy" BOOLEAN NOT NULL DEFAULT false,
-  "expiration_offset" INTERVAL DAY NOT NULL DEFAULT INTERVAL '0' SECOND,
-  PRIMARY KEY ("ID")
-);
-
 DROP TABLE IF EXISTS "User" CASCADE;
 
 CREATE TABLE "User" (
@@ -43,6 +32,19 @@ CREATE TABLE "Location" (
     "name" TEXT NOT NULL,
     "version" INT NOT NULL DEFAULT 0,
     PRIMARY KEY ("ID")
+);
+
+DROP TABLE IF EXISTS "Food" CASCADE;
+
+CREATE TABLE "Food" (
+    "ID" SERIAL NOT NULL UNIQUE,
+    "name" TEXT NOT NULL,
+    "version" INT NOT NULL DEFAULT 0,
+    "to_buy" BOOLEAN NOT NULL DEFAULT false,
+    "expiration_offset" INTERVAL DAY NOT NULL DEFAULT INTERVAL '0' SECOND,
+    "location" INT DEFAULT NULL,
+    PRIMARY KEY ("ID"),
+    FOREIGN KEY ("location") REFERENCES "Location"("ID") ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 DROP TABLE IF EXISTS "User_device" CASCADE;

@@ -46,7 +46,7 @@ public class FoodManager extends BusinessObject {
     }
 
     public StatusCode rename(Food item) {
-        return runOperation(() -> dbHandler.edit(item, item.name, item.expirationOffset));
+        return runOperation(() -> dbHandler.edit(item, item.name, item.expirationOffset, item.location));
     }
 
     public StatusCode setToBuyStatus(Food food) {

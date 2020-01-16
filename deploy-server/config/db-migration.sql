@@ -17,4 +17,7 @@
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ALTER TABLE "Food"
-ADD COLUMN "expiration_offset" INTERVAL DAY NOT NULL DEFAULT INTERVAL '0' SECOND;
+ADD COLUMN "location" INT DEFAULT NULL;
+
+ALTER TABLE "Food"
+ADD FOREIGN KEY (location) REFERENCES "Location"("ID") ON UPDATE CASCADE ON DELETE SET NULL;

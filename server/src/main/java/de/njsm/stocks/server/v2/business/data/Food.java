@@ -44,20 +44,22 @@ public class Food extends VersionedData {
     @JsonDeserialize(using = PeriodDeserialiser.class)
     public Period expirationOffset;
 
+    public Integer location;
+
     public Food(int id, int version) {
         super(id, version);
     }
 
-    public Food(int id, String name, int version, boolean toBuy, Period expirationOffset) {
+    public Food(int id, String name, int version, boolean toBuy, Period expirationOffset, Integer location) {
         super(id, version);
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;
+        this.location = location;
     }
 
     public Food(String name) {
         this.name = name;
-        this.toBuy = false;
         expirationOffset = Period.ZERO;
     }
 
@@ -75,6 +77,7 @@ public class Food extends VersionedData {
 
         if (toBuy != food.toBuy) return false;
         if (!name.equals(food.name)) return false;
+        if (location != food.location) return false;
         return expirationOffset.equals(food.expirationOffset);
     }
 
@@ -83,11 +86,12 @@ public class Food extends VersionedData {
         int result = name.hashCode();
         result = 31 * result + (toBuy ? 1 : 0);
         result = 31 * result + expirationOffset.hashCode();
+        result = 31 * result + location;
         return result;
     }
 
     @Override
     public String toString() {
-        return "Food (" + id + ", " + name + ", " + version + ", " + toBuy + ")";
+        return "Food (" + id + ", " + name + ", " + version + ", " + toBuy + ", " + location + ")";
     }
 }

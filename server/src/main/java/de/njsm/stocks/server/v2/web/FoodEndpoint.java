@@ -64,12 +64,13 @@ public class FoodEndpoint extends Endpoint {
     public Response renameFood(@QueryParam("id") int id,
                                @QueryParam("version") int version,
                                @QueryParam("new") String newName,
-                               @QueryParam("expirationoffset") int expirationOffset) {
+                               @QueryParam("expirationoffset") int expirationOffset,
+                               @QueryParam("location") int location) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
 
-            StatusCode status = manager.rename(new Food(id, newName, version, false, Period.ofDays(expirationOffset)));
+            StatusCode status = manager.rename(new Food(id, newName, version, false, Period.ofDays(expirationOffset), location == 0 ? null : location));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -86,7 +87,7 @@ public class FoodEndpoint extends Endpoint {
                 isValidVersion(version, "version")) {
 
             boolean toBuy = toBuyParameter == 1;
-            StatusCode status = manager.setToBuyStatus(new Food(id, "", version, toBuy, Period.ZERO));
+            StatusCode status = manager.setToBuyStatus(new Food(id, "", version, toBuy, Period.ZERO, 0));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -100,7 +101,7 @@ public class FoodEndpoint extends Endpoint {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-            StatusCode status = manager.delete(new Food(id, "", version, false, Period.ZERO));
+            StatusCode status = manager.delete(new Food(id, "", version, false, Period.ZERO, 0));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
