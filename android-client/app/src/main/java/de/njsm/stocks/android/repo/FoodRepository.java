@@ -83,7 +83,7 @@ public class FoodRepository {
     public LiveData<StatusCode> renameFood(Food item, String name) {
         LOG.d("renaming food " + item + " to " + name);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
-        webClient.renameFood(item.id, item.version, name, item.expirationOffset)
+        webClient.renameFood(item.id, item.version, name, item.expirationOffset, item.location)
                 .enqueue(new StatusCodeCallback(data, synchroniser));
         return data;
     }
@@ -103,7 +103,16 @@ public class FoodRepository {
     public LiveData<StatusCode> setFoodExpirationOffset(Food item, int newOffset) {
         LOG.d("setting food expiration offset of " + item + " to " + newOffset);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
-        webClient.renameFood(item.id, item.version, item.name, newOffset)
+        webClient.renameFood(item.id, item.version, item.name, newOffset, item.location)
+                .enqueue(new StatusCodeCallback(data, synchroniser));
+        return data;
+
+    }
+
+    public LiveData<StatusCode> setFoodDefaultLocation(Food item, int location) {
+        LOG.d("setting food default of " + item + " to " + location);
+        MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
+        webClient.renameFood(item.id, item.version, item.name, item.expirationOffset, location)
                 .enqueue(new StatusCodeCallback(data, synchroniser));
         return data;
 

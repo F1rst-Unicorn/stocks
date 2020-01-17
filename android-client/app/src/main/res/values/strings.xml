@@ -75,6 +75,7 @@
     <string name="dialog_retry">RETRY</string>
     <string name="dialog_abort">ABORT</string>
     <string name="dialog_ok">OK</string>
+    <string name="dialog_remove">REMOVE</string>
     <string name="dialog_store_settings">Saving settings</string>
     <string name="dialog_new_device">Create new device</string>
     <string name="dialog_new_user">Create new user</string>
@@ -156,7 +157,9 @@
     <string name="title_server_port">Main Port</string>
     <string name="title_connection">Connection</string>
     <string name="title_troubleshooting">Troubleshooting</string>
-    <string name="title_expiration_offset">Standard expiration period</string>
+    <string name="title_expiration_offset">Default expiration period</string>
     <string name="dialog_default_expiration_offset">Set default expiration days</string>
+    <string name="title_location">Default Location</string>
+    <string name="dialog_default_location">Set default location</string>
 
 </resources>

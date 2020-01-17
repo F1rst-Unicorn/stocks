@@ -27,7 +27,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,18 +41,22 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.FoodItemDeletionInteractor;
+import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.network.server.StatusCode;
 
 public class FoodItemFragment extends BaseFragment {
@@ -184,8 +190,62 @@ public class FoodItemFragment extends BaseFragment {
             case R.id.fragment_food_item_options_expiration_offset:
                 editExpirationDate();
                 break;
+            case R.id.fragment_food_item_options_location:
+                editDefaultLocation();
+                break;
         }
         return true;
+    }
+
+    private void editDefaultLocation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        LocationViewModel locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
+        LiveData<List<Location>> locationData = locationViewModel.getLocations();
+        Spinner spinner = (Spinner) getLayoutInflater().inflate(R.layout.spinner, null);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(),
+                R.layout.item_location, R.id.item_location_name,
+                new ArrayList<>());
+        spinner.setAdapter(adapter);
+
+        locationData.observe(this, l -> {
+            List<String> data = l.stream().map(i -> i.name).collect(Collectors.toList());
+            adapter.clear();
+            adapter.addAll(data);
+            adapter.notifyDataSetChanged();
+
+            Food food = selfFood.getValue();
+            if (food != null && food.location != 0) {
+                LiveData<Location> liveData = locationViewModel.getLocation(food.location);
+                liveData.observe(this, loc -> {
+                    int position = l.indexOf(loc);
+                    if (position != -1)
+                        spinner.setSelection(position);
+                    liveData.removeObservers(this);
+                });
+            }
+        });
+
+        builder
+                .setTitle(getString(R.string.dialog_default_location))
+                .setView(spinner)
+                .setPositiveButton(R.string.dialog_ok, (dialog, whichButton) -> {
+                    Food food = selfFood.getValue();
+                    List<Location> locations = locationData.getValue();
+                    int position = spinner.getSelectedItemPosition();
+                    if (food != null && locations != null && position >= 0 && position < locations.size()) {
+                        LiveData<StatusCode> result = foodViewModel.setFoodDefaultLocation(food, locations.get(position).id);
+                        result.observe(this, this::maybeShowEditError);
+                    }
+                })
+                .setNeutralButton(R.string.dialog_remove, (dialog, whichButton) -> {
+                    Food food = selfFood.getValue();
+                    if (food != null) {
+                        LiveData<StatusCode> result = foodViewModel.setFoodDefaultLocation(food, 0);
+                        result.observe(this, this::maybeShowEditError);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, (d, b) -> {})
+                .show();
     }
 
     private void editExpirationDate() {
@@ -202,7 +262,7 @@ public class FoodItemFragment extends BaseFragment {
         new AlertDialog.Builder(requireActivity())
                 .setTitle(getString(R.string.dialog_default_expiration_offset))
                 .setView(view)
-                .setPositiveButton(getString(R.string.dialog_ok), (dialog, whichButton) -> {
+                .setPositiveButton(R.string.dialog_ok, (dialog, whichButton) -> {
                     Food food = selfFood.getValue();
                     int newOffset = view.getValue();
                     if (food != null && food.expirationOffset != newOffset) {
@@ -210,7 +270,7 @@ public class FoodItemFragment extends BaseFragment {
                         result.observe(this, this::maybeShowEditError);
                     }
                 })
-                .setNegativeButton(getString(android.R.string.cancel), (d, b) -> {})
+                .setNegativeButton(android.R.string.cancel, (d, b) -> {})
                 .show();
     }
 

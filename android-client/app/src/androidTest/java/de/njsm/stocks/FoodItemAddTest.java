@@ -62,7 +62,7 @@ public class FoodItemAddTest {
     }
 
     @Test
-    public void addFromDefaultExpiration() {
+    public void addFromExplicitDefaults() {
         int offset = 42;
         LocalDate expected = LocalDate.now().plusDays(offset);
         OutlineScreen.test()
@@ -70,7 +70,10 @@ public class FoodItemAddTest {
                 .click(0)
                 .setExpirationOffset(offset)
                 .assertExpirationOffset(offset)
+                .setDefaultLocation(4)
+                .assertDefaultLocation("Ground")
                 .addItems()
-                .assertDate(expected.getYear(), expected.getMonthValue(), expected.getDayOfMonth());
+                .assertDate(expected.getYear(), expected.getMonthValue(), expected.getDayOfMonth())
+                .assertLocation("Ground");
     }
 }

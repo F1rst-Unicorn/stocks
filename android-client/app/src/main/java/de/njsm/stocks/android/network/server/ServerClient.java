@@ -83,7 +83,8 @@ public interface ServerClient {
     Call<Response> renameFood(@Query("id") int id,
                               @Query("version") int version,
                               @Query("new") String newName,
-                              @Query("expirationoffset") int expirationOffset);
+                              @Query("expirationoffset") int expirationOffset,
+                              @Query("location") int location);
 
     @PUT("/v2/food/buy")
     Call<Response> setToBuyStatus(@Query("id") int id,

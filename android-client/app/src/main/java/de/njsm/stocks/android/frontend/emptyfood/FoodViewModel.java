@@ -75,4 +75,8 @@ public class FoodViewModel extends ViewModel {
     public LiveData<StatusCode> setFoodExpirationOffset(Food food, int newOffset) {
         return foodRepository.setFoodExpirationOffset(food, newOffset);
     }
+
+    public LiveData<StatusCode> setFoodDefaultLocation(Food food, int location) {
+        return foodRepository.setFoodDefaultLocation(food, location);
+    }
 }

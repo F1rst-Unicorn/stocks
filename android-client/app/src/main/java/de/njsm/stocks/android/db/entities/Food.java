@@ -45,21 +45,25 @@ public class Food extends VersionedData {
     @ColumnInfo(name = "expiration_offset")
     public int expirationOffset;
 
-    public Food(int id, int version, String name, boolean toBuy, int expirationOffset) {
+    @ColumnInfo(name = "location")
+    public int location;
+
+    public Food(int id, int version, String name, boolean toBuy, int expirationOffset, int location) {
         super(id, version);
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;
+        this.location = location;
     }
 
-    public Food(int id, int version, String name, boolean toBuy, int expirationOffset, int position) {
-        this(id, version, name, toBuy, expirationOffset);
+    public Food(int id, int version, String name, boolean toBuy, int expirationOffset, int position, int location) {
+        this(id, version, name, toBuy, expirationOffset, location);
         setPosition(position);
     }
 
     @Ignore
-    public Food(String name, boolean toBuy, int expirationOffset) {
-        this(0, 0, name, toBuy, expirationOffset);
+    public Food(String name, boolean toBuy, int expirationOffset, int location) {
+        this(0, 0, name, toBuy, expirationOffset, location);
     }
 
     @Ignore
@@ -75,6 +79,7 @@ public class Food extends VersionedData {
 
         if (toBuy != food.toBuy) return false;
         if (expirationOffset != food.expirationOffset) return false;
+        if (location != food.location) return false;
         return name.equals(food.name);
     }
 
@@ -83,6 +88,7 @@ public class Food extends VersionedData {
         int result = name.hashCode();
         result = 31 * result + (toBuy ? 1 : 0);
         result = 31 * result + expirationOffset;
+        result = 31 * result + location;
         return result;
     }
 
@@ -92,6 +98,7 @@ public class Food extends VersionedData {
                 "name='" + name + '\'' +
                 ", toBuy=" + toBuy +
                 ", expirationOffset=" + expirationOffset +
+                ", location=" + location +
                 ", version=" + version +
                 ", id=" + id +
                 '}';

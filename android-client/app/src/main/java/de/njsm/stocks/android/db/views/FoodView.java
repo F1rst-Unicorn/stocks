@@ -19,9 +19,10 @@
 
 package de.njsm.stocks.android.db.views;
 
+import org.threeten.bp.Instant;
+
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.VersionedData;
-import org.threeten.bp.Instant;
 
 public class FoodView extends VersionedData {
 
@@ -33,16 +34,22 @@ public class FoodView extends VersionedData {
 
     private boolean toBuy;
 
-    public FoodView(int id, int version, int amount, Instant eatBy, String name, boolean toBuy) {
+    private int expirationOffset;
+
+    private int location;
+
+    public FoodView(int id, int version, int amount, Instant eatBy, String name, boolean toBuy, int expirationOffset, int location) {
         super(id, version);
         this.amount = amount;
         this.eatBy = eatBy;
         this.name = name;
         this.toBuy = toBuy;
+        this.expirationOffset = expirationOffset;
+        this.location = location;
     }
 
     public Food mapToFood() {
-        return new Food(id, version, name, toBuy, getPosition());
+        return new Food(id, version, name, toBuy, expirationOffset, getPosition(), location);
     }
 
     public int getAmount() {
@@ -59,6 +66,14 @@ public class FoodView extends VersionedData {
 
     public boolean getToBuy() {
         return toBuy;
+    }
+
+    public int getExpirationOffset() {
+        return expirationOffset;
+    }
+
+    public int getLocation() {
+        return location;
     }
 
     @Override

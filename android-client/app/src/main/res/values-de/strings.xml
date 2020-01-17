@@ -75,6 +75,7 @@
     <string name="dialog_retry">WIEDERHOLEN</string>
     <string name="dialog_abort">ABBRECHEN</string>
     <string name="dialog_ok">OK</string>
+    <string name="dialog_remove">LÖSCHEN</string>
     <string name="dialog_store_settings">Speichere Einstellungen</string>
     <string name="dialog_new_device">Neues Gerät erstellen</string>
     <string name="dialog_new_user">Neuen Nutzer erstellen</string>
@@ -160,6 +161,8 @@
     <string name="title_troubleshooting">Fehlerbehebung</string>
     <string name="title_expiration_offset">Standardhaltbarkeit</string>
     <string name="dialog_default_expiration_offset">Standardablaufdauer setzen</string>
+    <string name="title_location">Standardort</string>
+    <string name="dialog_default_location">Standardort setzen</string>
 
 
 </resources>

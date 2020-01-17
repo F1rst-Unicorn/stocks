@@ -21,8 +21,11 @@ package de.njsm.stocks.screen;
 
 
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.NumberPicker;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
@@ -30,7 +33,9 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
 
@@ -39,16 +44,21 @@ import java.util.Locale;
 import de.njsm.stocks.R;
 import de.njsm.stocks.SystemTestSuite;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withChild;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static de.njsm.stocks.util.Matchers.atPosition;
 import static junit.framework.TestCase.fail;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.core.AllOf.allOf;
 
 public class FoodScreen extends AbstractListPresentingScreen {
@@ -76,7 +86,8 @@ public class FoodScreen extends AbstractListPresentingScreen {
     }
 
     public BarcodeScreen goToBarCodes() {
-        onView(withId(R.id.fragment_food_item_options_ean)).perform(click());
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
+        onView(withText(R.string.title_barcode)).perform(click());
         return new BarcodeScreen();
     }
 
@@ -86,15 +97,48 @@ public class FoodScreen extends AbstractListPresentingScreen {
     }
 
     public FoodScreen assertExpirationOffset(int offset) {
-        onView(withId(R.id.fragment_food_item_options_expiration_offset)).perform(click());
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
+        onView(withText(R.string.title_expiration_offset)).perform(click());
         onView(withId(R.id.number_picker_picker)).check(matches(withChild(withText(String.valueOf(offset)))));
         onView(withText("CANCEL")).perform(click());
         return this;
     }
 
     public FoodScreen setExpirationOffset(int offset) {
-        onView(withId(R.id.fragment_food_item_options_expiration_offset)).perform(click());
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
+        onView(withText(R.string.title_expiration_offset)).perform(click());
         onView(withId(R.id.number_picker_picker)).perform(setNumber(offset));
+        onView(withText("OK")).perform(click());
+        return this;
+    }
+
+    public FoodScreen assertDefaultLocation(String location) {
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
+        onView(allOf(withId(R.id.title), withText("Default Location"))).perform(click());
+        onView(allOf(withId(R.id.spinner_spinner),
+                childAtPosition(
+                        allOf(withId(R.id.custom),
+                                childAtPosition(
+                                        withId(R.id.customPanel),
+                                        0)),
+                        0),
+                isDisplayed())).check(matches(withChild(withText(location))));
+        onView(withText("CANCEL")).perform(click());
+        return this;
+    }
+
+    public FoodScreen setDefaultLocation(int index) {
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
+        onView(allOf(withId(R.id.title), withText("Default Location"))).perform(click());
+        onView(allOf(withId(R.id.spinner_spinner),
+                        childAtPosition(
+                                allOf(withId(R.id.custom),
+                                        childAtPosition(
+                                                withId(R.id.customPanel),
+                                                0)),
+                                0),
+                        isDisplayed())).perform(click());
+        onData(anything()).inRoot(isPlatformPopup()).atPosition(index).perform(click());
         onView(withText("OK")).perform(click());
         return this;
     }
@@ -160,4 +204,24 @@ public class FoodScreen extends AbstractListPresentingScreen {
             }
         };
     }
+
+    private static Matcher<View> childAtPosition(
+            final Matcher<View> parentMatcher, final int position) {
+
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Child at position " + position + " in parent ");
+                parentMatcher.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                ViewParent parent = view.getParent();
+                return parent instanceof ViewGroup && parentMatcher.matches(parent)
+                        && view.equals(((ViewGroup) parent).getChildAt(position));
+            }
+        };
+    }
+
 }

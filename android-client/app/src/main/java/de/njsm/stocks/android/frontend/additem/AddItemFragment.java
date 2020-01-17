@@ -113,20 +113,23 @@ public class AddItemFragment extends BaseFragment {
         location.setAdapter(adapter);
 
         locations = locationViewModel.getLocations();
-        locations.observe(this, l -> {
-            List<String> data = l.stream().map(i -> i.name).collect(Collectors.toList());
-            adapter.clear();
-            adapter.addAll(data);
-            adapter.notifyDataSetChanged();
-            LiveData<Location> topLocation = locationViewModel.getLocationWithMostItemsOfType(input.getFoodId());
-            topLocation.observe(this, i -> {
-                        setDefaultLocation(i);
-                        topLocation.removeObservers(this);
-                    });
-        });
-
         food = foodViewModel.getFood(input.getFoodId());
         food.observe(this, f -> {
+            locations.observe(this, l -> {
+                Food food = this.food.getValue();
+                LiveData<Location> defaultLocation;
+                if (food != null && food.location != 0) {
+                    defaultLocation = locationViewModel.getLocation(food.location);
+                } else {
+                    defaultLocation = locationViewModel.getLocationWithMostItemsOfType(input.getFoodId());
+                }
+                defaultLocation.observe(this, this::setDefaultLocation);
+                List<String> data = l.stream().map(i -> i.name).collect(Collectors.toList());
+                adapter.clear();
+                adapter.addAll(data);
+                adapter.notifyDataSetChanged();
+
+            });
             String title = getString(R.string.title_add_item, f.name);
             requireActivity().setTitle(title);
             if (f.expirationOffset != 0) {
