@@ -1,5 +1,11 @@
 # Change Log
 
+## [3.4.0.0]
+
+### Added
+
+* STOCKS-69: Support default locations
+
 ## [3.3.0.1]
 
 ### Fixed
