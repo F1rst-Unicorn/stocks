@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## [4.6.0.0-1]
+
+### Fixed
+
+* DB Connection leak in health check
+
+### Added
+
+* STOCKS-66: Add background job to check for data inconsistency on users
+
 ## [4.5.0.0-1]
 
 ### Added
