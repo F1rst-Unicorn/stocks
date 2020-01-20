@@ -35,6 +35,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
 
 public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception> {
 
@@ -147,6 +149,24 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
     }
 
     @Override
+    public Validation<StatusCode, Set<Principals>> getValidPrincipals() {
+        return runFunction(dummy -> {
+            Set<Principals> result = new HashSet<>();
+
+            FileInputStream input = new FileInputStream(caRootDirectory + "/intermediate/index.txt");
+            String[] content = IOUtils.toString(input, StandardCharsets.UTF_8).split("\n");
+
+            for (String line : content) {
+                Principals p = parseIndexLine(line);
+                if (p != null)
+                    result.add(p);
+            }
+
+            return Validation.success(result);
+        });
+    }
+
+    @Override
     public StatusCode getHealth() {
         return runCommand(dummy -> {
             // Assume that the certificate for the first device always exists
@@ -180,6 +200,22 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
         return () -> {
             return client.apply(null);
         };
+    }
+
+    // Parsed according to https://pki-tutorial.readthedocs.io/en/latest/cadb.html
+    Principals parseIndexLine(String line) {
+        String[] fields = line.split("\t");
+        if (fields.length != 6)
+            return null;
+
+        if (! fields[0].equals("V"))
+            return null;
+
+        if (line.matches("^(.*/)?CN=stocks server(/.*)?$"))
+            return null;
+
+        Validation<StatusCode, Principals> result = PrincipalFilter.parseSubjectName(fields[5]);
+        return result.isSuccess() ? result.success() : null;
     }
 
     private void refreshCrl() {

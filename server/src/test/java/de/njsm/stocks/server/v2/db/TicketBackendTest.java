@@ -46,7 +46,7 @@ public class TicketBackendTest extends DbTestCase {
 
     @Test
     public void successfulTicketRetrival() {
-        ClientTicket ticket = new ClientTicket(3, "AAAA", "csr");
+        ClientTicket ticket = new ClientTicket(4, "AAAA", "csr");
 
         Validation<StatusCode, ServerTicket> result = uut.getTicket(ticket);
 
@@ -95,7 +95,7 @@ public class TicketBackendTest extends DbTestCase {
 
     @Test
     public void retrievePrincipalsSuccessfully() {
-        Principals expected = new Principals("Alice", "laptop", 2, 3);
+        Principals expected = new Principals("Alice", "pending_device", 2, 4);
 
         Validation<StatusCode, Principals> result = uut.getPrincipalsForTicket("AAAA");
 

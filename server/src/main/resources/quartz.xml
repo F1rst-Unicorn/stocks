@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <bean name="quartzProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:quartz.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean name="prototypedConnectionFactory" class="de.njsm.stocks.server.v2.db.ConnectionFactory" scope="prototype">
+        <constructor-arg index="0" ref="dbUrl" />
+        <constructor-arg index="1" ref="dbConfig" />
+    </bean>
+
+    <bean name="prototypedDeviceBackend" class="de.njsm.stocks.server.v2.db.UserDeviceHandler" scope="prototype">
+        <constructor-arg index="0" ref="prototypedConnectionFactory" />
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+        <constructor-arg index="3" ref="dbInsertVisitor" />
+    </bean>
+
+    <bean name="principalsDbHandler" class="de.njsm.stocks.server.v2.db.PrincipalsHandler">
+        <constructor-arg index="0" ref="prototypedConnectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+    </bean>
+
+    <bean id="caConsistencyCheck" class="de.njsm.stocks.server.v2.business.CaConsistencyCheckJob">
+        <constructor-arg index="0" ref="authAdmin" />
+        <constructor-arg index="1" ref="principalsDbHandler" />
+        <constructor-arg index="2" ref="prototypedDeviceBackend" />
+    </bean>
+
+    <bean id="job" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="caConsistencyCheck"/>
+        <property name="targetMethod" value="run"/>
+    </bean>
+
+    <bean id="trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="job"/>
+        <property name="cronExpression" value="0 0 * * * ? *"/>
+    </bean>
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="quartzProperties" ref="quartzProperties" />
+        <property name="jobDetails">
+            <list>
+                <ref bean="job"/>
+            </list>
+        </property>
+        <property name="triggers">
+            <list>
+                <ref bean="trigger"/>
+            </list>
+        </property>
+    </bean>
+</beans>

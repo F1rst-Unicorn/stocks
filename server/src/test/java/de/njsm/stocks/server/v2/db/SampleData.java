@@ -61,7 +61,7 @@ class SampleData {
                     "('1970-01-01 00:00:00+00', 3, 2, 1, 2)," +
                     "('1970-01-01 00:00:00+00', 3, 2, 1, 2)",
             "INSERT INTO \"Ticket\" (\"ticket\", \"belongs_device\") VALUES " +
-                    "('AAAA', 3)",
+                    "('AAAA', 4)",
             "INSERT INTO \"EAN_number\" (\"number\", \"identifies\") VALUES " +
                     "('EAN BEER', 2)",
     };

@@ -28,11 +28,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 import static de.njsm.stocks.server.v2.db.DbTestCase.CIRCUIT_BREAKER_TIMEOUT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.TestCase.assertNull;
+import static org.junit.Assert.*;
 
 public class X509AuthAdminTest {
 
@@ -166,6 +166,28 @@ public class X509AuthAdminTest {
         StatusCode result = uut.getHealth();
 
         assertEquals(StatusCode.SUCCESS, result);
+    }
+
+    @Test
+    public void testFetchingValidPrincipals() {
+
+        Validation<StatusCode, Set<Principals>> output = uut.getValidPrincipals();
+
+        assertTrue(output.isSuccess());
+        assertFalse(output.success().isEmpty());
+        assertTrue(output.success().contains(new Principals("Jack", "Device", 1, 1)));
+    }
+
+    @Test
+    public void parsingIndexLineWorks() {
+        assertEquals(new Principals("Jack", "Device", 1, 1), uut.parseIndexLine("V\t30190519221020Z\t\t1001\tunknown\t/O=stocks/OU=User/CN=Jack$1$Device$1"));
+        assertEquals(new Principals("Jack", "cli-client", 1, 6), uut.parseIndexLine("V\t30190519221049Z\t\t1003\tunknown\t/O=stocks/OU=User/CN=Jack$1$cli-client$6"));
+        assertEquals(new Principals("Jack", "android-client", 1, 7), uut.parseIndexLine("V\t30190519221125Z\t\t1004\tunknown\t/CN=Jack$1$android-client$7"));
+
+        assertNull(uut.parseIndexLine("V\t30190519221008Z\t\t1000\tunknown\t/C=CH/ST=Zurich/L=Zurich/O=stocks/CN=stocks server"));
+        assertNull(uut.parseIndexLine("R\t30190519221031Z\t200116221031Z\t1002\tunknown\t/O=stocks/OU=User/CN=Jon$5$Laptop$5"));
+        assertNull(uut.parseIndexLine("E\t20190519221125Z\t\t1004\tunknown\t/CN=Jack$1$android-client$7"));
+        assertNull(uut.parseIndexLine("V\t30190519221125Z\t1004\tunknown\t/CN=Jack$1$android-client$7"));
     }
 
     private String generateCsr(Principals p) throws Exception {
