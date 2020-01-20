@@ -23,12 +23,8 @@ import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.v2.business.data.Health;
 import de.njsm.stocks.server.v2.db.HealthHandler;
 import fj.data.Validation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class HealthManager extends BusinessObject {
-
-    private static final Logger LOG = LogManager.getLogger(HealthManager.class);
 
     private HealthHandler dbBackend;
 
@@ -42,9 +38,15 @@ public class HealthManager extends BusinessObject {
     }
 
     public Validation<StatusCode, Health> get() {
+        dbBackend.setReadOnly();
+
         StatusCode db = dbBackend.get();
         StatusCode ca = caBackend.getHealth();
 
-        return Validation.success(new Health(db == StatusCode.SUCCESS, ca == StatusCode.SUCCESS));
+        StatusCode dbCommit = dbBackend.commit();
+
+        return Validation.success(
+                new Health(db == StatusCode.SUCCESS && dbCommit == StatusCode.SUCCESS,
+                        ca == StatusCode.SUCCESS));
     }
 }
