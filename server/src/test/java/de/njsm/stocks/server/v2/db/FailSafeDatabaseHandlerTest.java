@@ -130,20 +130,22 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
     @Test
     public void testCommitting() throws SQLException {
+        Connection con = getConnectionFactory().getConnection();
 
         StatusCode result = uut.commit();
 
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(getConnectionFactory().getConnection().isClosed());
+        assertTrue(con.isClosed());
     }
 
     @Test
     public void testRollingBack() throws SQLException {
+        Connection con = getConnectionFactory().getConnection();
 
         StatusCode result = uut.rollback();
 
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(getConnectionFactory().getConnection().isClosed());
+        assertTrue(con.isClosed());
     }
 
     @Test

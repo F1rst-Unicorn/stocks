@@ -57,4 +57,8 @@ public class ConnectionFactory {
 
         return connection;
     }
+
+    public void reset() {
+        connection = null;
+    }
 }

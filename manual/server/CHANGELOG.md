@@ -1,6 +1,10 @@
 # Change Log
 
-## Unreleased
+## [4.6.0.1-1]
+
+### Fixed
+
+* DB Connection failure in background job
 
 ## [4.6.0.0-1]
 

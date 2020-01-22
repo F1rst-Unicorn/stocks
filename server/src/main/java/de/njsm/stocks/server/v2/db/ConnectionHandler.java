@@ -51,6 +51,7 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
             con.setAutoCommit(false);
             con.commit();
             con.close();
+            connectionFactory.reset();
             return StatusCode.SUCCESS;
         });
     }
@@ -60,6 +61,7 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
             con.setAutoCommit(false);
             con.rollback();
             con.close();
+            connectionFactory.reset();
             return StatusCode.SUCCESS;
         });
     }
