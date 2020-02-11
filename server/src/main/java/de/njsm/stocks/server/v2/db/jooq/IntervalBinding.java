@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Types;
 import java.time.Period;
+import java.util.Locale;
 
 /**
  * Only supports `INTERVAL YEAR MONTH DAY` type
@@ -64,7 +65,10 @@ public class IntervalBinding implements Binding<Object, Period> {
 
     @Override
     public void set(BindingSetStatementContext<Period> ctx) throws SQLException {
+        Locale def = Locale.getDefault();
+        Locale.setDefault(Locale.US);
         ctx.statement().setObject(ctx.index(), ctx.convert(converter()).value());
+        Locale.setDefault(def);
     }
 
     @Override

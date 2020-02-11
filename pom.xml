@@ -38,10 +38,4 @@
         <module>client</module>
         <module>server</module>
     </modules>
-
-    <dependencies>
-
-    </dependencies>
-
-
 </project>

@@ -6,6 +6,10 @@
 
 * Stream entities when getting them. Leads to lower memory footprint
 
+### Maintenance
+
+* Update library dependencies
+
 ## [4.6.0.1-1]
 
 ### Fixed
