@@ -60,7 +60,7 @@ public abstract class DbTestCase {
     }
 
     protected DSLContext getDSLContext() {
-        return DSL.using(connection, SQLDialect.POSTGRES_10);
+        return DSL.using(connection, SQLDialect.POSTGRES);
     }
 
     protected String getNewResourceIdentifier() {

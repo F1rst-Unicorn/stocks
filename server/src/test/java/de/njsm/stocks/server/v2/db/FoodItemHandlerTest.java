@@ -34,6 +34,8 @@ import org.mockito.Mockito;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.Food.FOOD;
 import static junit.framework.TestCase.assertTrue;
@@ -74,22 +76,23 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.add(item);
 
-        Validation<StatusCode, List<FoodItem>> items = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get();
         Assert.assertTrue(result.isSuccess());
         assertTrue(items.isSuccess());
-        assertEquals(4, items.success().size());
+        assertEquals(4, items.success().count());
     }
 
     @Test
     public void testGettingItems() {
 
-        Validation<StatusCode, List<FoodItem>> result = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> result = uut.get();
 
         assertTrue(result.isSuccess());
-        assertEquals(3, result.success().size());
-        assertEquals(new FoodItem(1, 0, Instant.EPOCH, 2, 1, 3, 2), result.success().get(0));
-        assertEquals(new FoodItem(2, 0, Instant.EPOCH, 2, 1, 3, 2), result.success().get(1));
-        assertEquals(new FoodItem(3, 0, Instant.EPOCH, 2, 1, 3, 2), result.success().get(2));
+        List<FoodItem> list = result.success().collect(Collectors.toList());
+        assertEquals(3, list.size());
+        assertEquals(new FoodItem(1, 0, Instant.EPOCH, 2, 1, 3, 2), list.get(0));
+        assertEquals(new FoodItem(2, 0, Instant.EPOCH, 2, 1, 3, 2), list.get(1));
+        assertEquals(new FoodItem(3, 0, Instant.EPOCH, 2, 1, 3, 2), list.get(2));
     }
 
     @Test
@@ -114,10 +117,10 @@ public class FoodItemHandlerTest extends DbTestCase {
         StatusCode result = uut.delete(new FoodItem(1, 0));
 
         assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, List<FoodItem>> items = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get();
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.isSuccess());
-        assertEquals(2, items.success().size());
+        assertEquals(2, items.success().count());
     }
 
     @Test
@@ -127,12 +130,13 @@ public class FoodItemHandlerTest extends DbTestCase {
         StatusCode result = uut.edit(item);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, List<FoodItem>> items = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get();
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.isSuccess());
-        assertEquals(3, items.success().size());
+        List<FoodItem> list = items.success().collect(Collectors.toList());
+        assertEquals(3, list.size());
         item.version++;
-        assertTrue(items.success().contains(item));
+        assertTrue(list.contains(item));
     }
 
     @Test
@@ -206,9 +210,9 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         StatusCode result = uut.transferFoodItems(from, to);
 
-        List<FoodItem> items = uut.get().success();
+        Stream<FoodItem> items = uut.get().success();
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.stream().allMatch(item -> (item.version == 1) == (item.registers == to.id)));
+        assertTrue(items.allMatch(item -> (item.version == 1) == (item.registers == to.id)));
         Mockito.verify(userDevicePresenceChecker).isMissing(eq(from), any());
         Mockito.verify(userDevicePresenceChecker).isMissing(eq(to), any());
     }
@@ -248,9 +252,9 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         StatusCode result = uut.transferFoodItems(from, to);
 
-        List<FoodItem> items = uut.get().success();
+        Stream<FoodItem> items = uut.get().success();
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.stream().allMatch(item -> (item.version == 1) == (item.registers == to.id)));
+        assertTrue(items.allMatch(item -> (item.version == 1) == (item.registers == to.id)));
         Mockito.verify(userPresenceChecker).isMissing(eq(from), any());
         Mockito.verify(userPresenceChecker).isMissing(eq(to), any());
     }
@@ -261,11 +265,11 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         StatusCode deleteResult = uut.deleteItemsStoredIn(input);
 
-        Validation<StatusCode, List<FoodItem>> items = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get();
 
         assertEquals(StatusCode.SUCCESS, deleteResult);
         assertTrue(items.isSuccess());
-        assertEquals(0, items.success().size());
+        assertEquals(0, items.success().count());
     }
 
     @Test

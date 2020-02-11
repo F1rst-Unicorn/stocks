@@ -27,8 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Collections;
-import java.util.List;
+import javax.ws.rs.container.AsyncResponse;
+import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -51,14 +51,14 @@ public class UpdateManagerTest {
 
     @Test
     public void gettingUpdatesWorks() {
-        Mockito.when(backend.getUpdates()).thenReturn(Validation.success(Collections.emptyList()));
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        Mockito.when(backend.get()).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, List<Update>> result = uut.getUpdates();
+        Validation<StatusCode, Stream<Update>> result = uut.getUpdates(r);
 
         assertTrue(result.isSuccess());
-        Mockito.verify(backend).getUpdates();
-        Mockito.verify(backend).commit();
+        Mockito.verify(backend).get();
         Mockito.verify(backend).setReadOnly();
     }
 

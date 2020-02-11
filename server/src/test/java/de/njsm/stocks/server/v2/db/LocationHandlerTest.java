@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -57,11 +57,11 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertTrue(code.isSuccess());
 
-        Validation<StatusCode, List<Location>> dbData = uut.get();
+        Validation<StatusCode, Stream<Location>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().stream().map(f -> f.name).anyMatch(name -> name.equals("Fridge")));
+        assertTrue(dbData.success().map(f -> f.name).anyMatch(name -> name.equals("Fridge")));
     }
 
     @Test
@@ -72,11 +72,11 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, List<Location>> dbData = uut.get();
+        Validation<StatusCode, Stream<Location>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().stream().map(f -> f.name).anyMatch(name -> name.equals("Basement")));
+        assertTrue(dbData.success().map(f -> f.name).anyMatch(name -> name.equals("Basement")));
     }
 
     @Test
@@ -105,12 +105,11 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, List<Location>> dbData = uut.get();
+        Validation<StatusCode, Stream<Location>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertEquals(1, dbData.success().size());
-        assertTrue(dbData.success().stream().map(f -> f.name).noneMatch(name -> name.equals("Cupboard")));
+        assertTrue(dbData.success().map(f -> f.name).noneMatch(name -> name.equals("Cupboard")));
     }
 
     @Test
@@ -131,11 +130,11 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
 
-        Validation<StatusCode, List<Location>> dbData = uut.get();
+        Validation<StatusCode, Stream<Location>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertEquals(2, dbData.success().size());
+        assertEquals(2, dbData.success().count());
     }
 
     @Test

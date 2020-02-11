@@ -24,23 +24,25 @@ import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
+import java.util.stream.Stream;
 
 @Path("v2/device")
 public class DeviceEndpoint extends Endpoint {
 
-    private DeviceManager deviceManager;
+    private DeviceManager manager;
 
-    public DeviceEndpoint(DeviceManager deviceManager) {
-        this.deviceManager = deviceManager;
+    public DeviceEndpoint(DeviceManager manager) {
+        this.manager = manager;
     }
 
     @PUT
@@ -50,7 +52,7 @@ public class DeviceEndpoint extends Endpoint {
         if (isValidName(name, "name") &&
                 isValid(userId, "userId")) {
 
-            Validation<StatusCode, NewDeviceTicket> result = deviceManager.addDevice(new UserDevice(name, userId));
+            Validation<StatusCode, NewDeviceTicket> result = manager.addDevice(new UserDevice(name, userId));
             return new DataResponse<>(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
@@ -59,9 +61,9 @@ public class DeviceEndpoint extends Endpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ListResponse<UserDevice> getDevices() {
-        Validation<StatusCode, List<UserDevice>> result = deviceManager.get();
-        return new ListResponse<>(result);
+    public void get(@Suspended AsyncResponse response) {
+        Validation<StatusCode, Stream<UserDevice>> result = manager.get(response);
+        response.resume(new StreamResponse<>(result));
     }
 
     @DELETE
@@ -72,7 +74,7 @@ public class DeviceEndpoint extends Endpoint {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
-            StatusCode result = deviceManager.removeDevice(new UserDevice(id, version), getPrincipals(request));
+            StatusCode result = manager.removeDevice(new UserDevice(id, version), getPrincipals(request));
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
@@ -88,7 +90,7 @@ public class DeviceEndpoint extends Endpoint {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
-            StatusCode result = deviceManager.revokeDevice(new UserDevice(id, version));
+            StatusCode result = manager.revokeDevice(new UserDevice(id, version));
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));

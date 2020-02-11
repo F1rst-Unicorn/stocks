@@ -28,7 +28,9 @@ import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.ws.rs.container.AsyncResponse;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class UserManager extends BusinessObject {
 
@@ -54,8 +56,8 @@ public class UserManager extends BusinessObject {
                 .toEither().left().orValue(StatusCode.SUCCESS));
     }
 
-    public Validation<StatusCode, List<User>> get() {
-        return runFunction(() -> {
+    public Validation<StatusCode, Stream<User>> get(AsyncResponse r) {
+        return runFunction(r, () -> {
             dbHandler.setReadOnly();
             return dbHandler.get();
         });

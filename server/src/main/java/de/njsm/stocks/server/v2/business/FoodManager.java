@@ -23,7 +23,8 @@ import de.njsm.stocks.server.v2.business.data.Food;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import fj.data.Validation;
 
-import java.util.List;
+import javax.ws.rs.container.AsyncResponse;
+import java.util.stream.Stream;
 
 public class FoodManager extends BusinessObject {
 
@@ -38,8 +39,8 @@ public class FoodManager extends BusinessObject {
         return runFunction(() -> dbHandler.add(item));
     }
 
-    public Validation<StatusCode, List<Food>> get() {
-        return runFunction(() -> {
+    public Validation<StatusCode, Stream<Food>> get(AsyncResponse r) {
+        return runFunction(r, () -> {
             dbHandler.setReadOnly();
             return dbHandler.get();
         });

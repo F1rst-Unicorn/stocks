@@ -27,9 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import javax.ws.rs.container.AsyncResponse;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
+import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -49,15 +49,15 @@ public class FoodItemManagerTest {
 
     @After
     public void tearDown() {
-        Mockito.verify(backend).commit();
         Mockito.verifyNoMoreInteractions(backend);
     }
 
     @Test
     public void gettingItemsIsForwarded() {
-        Mockito.when(backend.get()).thenReturn(Validation.success(Collections.emptyList()));
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        Mockito.when(backend.get()).thenReturn(Validation.success(Stream.empty()));
 
-        Validation<StatusCode, List<FoodItem>> result = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> result = uut.get(r);
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).get();
@@ -73,6 +73,7 @@ public class FoodItemManagerTest {
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).add(data);
+        Mockito.verify(backend).commit();
     }
 
     @Test
@@ -84,6 +85,7 @@ public class FoodItemManagerTest {
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(backend).edit(data);
+        Mockito.verify(backend).commit();
     }
 
     @Test
@@ -95,5 +97,6 @@ public class FoodItemManagerTest {
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(backend).delete(data);
+        Mockito.verify(backend).commit();
     }
 }

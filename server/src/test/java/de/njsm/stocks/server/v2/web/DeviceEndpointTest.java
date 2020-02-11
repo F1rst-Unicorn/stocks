@@ -24,8 +24,8 @@ import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
@@ -33,12 +33,13 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import java.util.Collections;
+import javax.ws.rs.container.AsyncResponse;
+import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 public class DeviceEndpointTest {
 
@@ -60,13 +61,16 @@ public class DeviceEndpointTest {
 
     @Test
     public void getDevices() {
-        Mockito.when(businessObject.get()).thenReturn(Validation.success(Collections.emptyList()));
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        Mockito.when(businessObject.get(r)).thenReturn(Validation.success(Stream.empty()));
 
-        ListResponse<UserDevice> result = uut.getDevices();
+        uut.get(r);
 
-        assertEquals(StatusCode.SUCCESS, result.status);
-        assertTrue(result.data.isEmpty());
-        Mockito.verify(businessObject).get();
+        ArgumentCaptor<StreamResponse<UserDevice>> c = ArgumentCaptor.forClass(StreamResponse.class);
+        verify(r).resume(c.capture());
+        assertEquals(StatusCode.SUCCESS, c.getValue().status);
+        assertEquals(0, c.getValue().data.count());
+        Mockito.verify(businessObject).get(r);
     }
 
     @Test

@@ -26,6 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -48,13 +50,14 @@ public class UserHandlerTest extends DbTestCase {
     @Test
     public void gettingUsersWorks() {
 
-        Validation<StatusCode, List<User>> result = uut.get();
+        Validation<StatusCode, Stream<User>> result = uut.get();
 
         assertTrue(result.isSuccess());
-        assertEquals(3, result.success().size());
-        assertThat(result.success(), hasItem(new User(1, 0, "Bob")));
-        assertThat(result.success(), hasItem(new User(2, 0, "Alice")));
-        assertThat(result.success(), hasItem(new User(3, 0, "Jack")));
+        List<User> list = result.success().collect(Collectors.toList());
+        assertEquals(3, list.size());
+        assertThat(list, hasItem(new User(1, 0, "Bob")));
+        assertThat(list, hasItem(new User(2, 0, "Alice")));
+        assertThat(list, hasItem(new User(3, 0, "Jack")));
     }
 
     @Test
@@ -63,13 +66,14 @@ public class UserHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.add(input);
 
-        Validation<StatusCode, List<User>> users = uut.get();
+        Validation<StatusCode, Stream<User>> users = uut.get();
         assertTrue(result.isSuccess());
+        List<User> list = users.success().collect(Collectors.toList());
         assertEquals(new Integer(4), result.success());
         assertTrue(users.isSuccess());
-        assertEquals(4, users.success().size());
+        assertEquals(4, list.size());
         input.id = 4;
-        assertThat(users.success(), hasItem(input));
+        assertThat(list, hasItem(input));
     }
 
     @Test
@@ -94,11 +98,12 @@ public class UserHandlerTest extends DbTestCase {
 
         StatusCode result = uut.delete(input);
 
-        Validation<StatusCode, List<User>> users = uut.get();
+        Validation<StatusCode, Stream<User>> users = uut.get();
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(users.isSuccess());
-        assertEquals(2, users.success().size());
-        assertThat(users.success(), not(hasItem(input)));
+        List<User> list = users.success().collect(Collectors.toList());
+        assertEquals(2, list.size());
+        assertThat(list, not(hasItem(input)));
     }
 
 }

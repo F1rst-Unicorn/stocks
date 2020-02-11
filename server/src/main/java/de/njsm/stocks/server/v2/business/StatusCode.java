@@ -94,4 +94,8 @@ public enum StatusCode {
     };
 
     public abstract Response.Status toHttpStatus();
+
+    public boolean isFail() {
+        return this != SUCCESS;
+    }
 }

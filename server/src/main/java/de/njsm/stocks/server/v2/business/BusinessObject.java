@@ -24,6 +24,9 @@ import fj.data.Validation;
 import io.prometheus.client.Summary;
 import org.glassfish.jersey.internal.util.Producer;
 
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.CompletionCallback;
+
 public class BusinessObject {
 
     private static final Summary OPERATION_REPETITIONS = Summary.build()
@@ -38,6 +41,16 @@ public class BusinessObject {
     }
 
     <O> Validation<StatusCode, O> runFunction(Producer<Validation<StatusCode, O>> operation) {
+        Validation<StatusCode, O> result = getOs(operation);
+        return finishTransaction(result);
+    }
+
+    <O> Validation<StatusCode, O> runFunction(AsyncResponse r, Producer<Validation<StatusCode, O>> operation) {
+        r.register((CompletionCallback) t -> finishTransaction(StatusCode.SUCCESS));
+        return getOs(operation);
+    }
+
+    private <O> Validation<StatusCode, O> getOs(Producer<Validation<StatusCode, O>> operation) {
         Validation<StatusCode, O> result;
         int repetitions = 0;
         do {
@@ -45,7 +58,7 @@ public class BusinessObject {
             repetitions++;
         } while (result.isFail() && result.fail() == StatusCode.SERIALISATION_CONFLICT);
         OPERATION_REPETITIONS.observe(repetitions);
-        return finishTransaction(result);
+        return result;
     }
 
     StatusCode runOperation(Producer<StatusCode> operation) {
@@ -65,16 +78,16 @@ public class BusinessObject {
             return carry;
         } else {
             StatusCode next = dbHandler.commit();
-            if (next == StatusCode.SUCCESS) {
-                return carry;
-            } else {
+            if (next.isFail()) {
                 return Validation.fail(next);
+            } else {
+                return carry;
             }
         }
     }
 
     StatusCode finishTransaction(StatusCode carry) {
-        if (carry != StatusCode.SUCCESS) {
+        if (carry.isFail()) {
             dbHandler.rollback();
             return carry;
         } else {

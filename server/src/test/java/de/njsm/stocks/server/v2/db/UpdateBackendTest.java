@@ -26,7 +26,7 @@ import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -46,9 +46,9 @@ public class UpdateBackendTest extends DbTestCase {
 
     @Test
     public void getUpdates() {
-        Validation<StatusCode, List<Update>> result = uut.getUpdates();
+        Validation<StatusCode, Stream<Update>> result = uut.get();
 
         assertTrue(result.isSuccess());
-        assertEquals(6, result.success().size());
+        assertEquals(6, result.success().count());
     }
 }

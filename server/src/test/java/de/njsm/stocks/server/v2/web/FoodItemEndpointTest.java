@@ -22,19 +22,22 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import javax.ws.rs.container.AsyncResponse;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.LinkedList;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 public class FoodItemEndpointTest {
 
@@ -57,13 +60,16 @@ public class FoodItemEndpointTest {
 
     @Test
     public void testGettingItems() {
-        Mockito.when(manager.get()).thenReturn(Validation.success(new LinkedList<>()));
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        Mockito.when(manager.get(r)).thenReturn(Validation.success(Stream.of()));
 
-        ListResponse<FoodItem> result = uut.getItems();
+        uut.get(r);
 
-        assertEquals(StatusCode.SUCCESS, result.status);
-        assertEquals(0, result.data.size());
-        Mockito.verify(manager).get();
+        ArgumentCaptor<StreamResponse<FoodItem>> c = ArgumentCaptor.forClass(StreamResponse.class);
+        verify(r).resume(c.capture());
+        assertEquals(StatusCode.SUCCESS, c.getValue().status);
+        assertEquals(0, c.getValue().data.count());
+        Mockito.verify(manager).get(r);
     }
 
     @Test

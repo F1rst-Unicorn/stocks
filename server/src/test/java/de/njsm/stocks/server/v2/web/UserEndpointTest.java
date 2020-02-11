@@ -22,18 +22,21 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.UserManager;
 import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import java.util.Collections;
+import javax.ws.rs.container.AsyncResponse;
+import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 
 public class UserEndpointTest {
 
@@ -55,13 +58,16 @@ public class UserEndpointTest {
 
     @Test
     public void getUsers() {
-        Mockito.when(userManager.get()).thenReturn(Validation.success(Collections.emptyList()));
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        Mockito.when(userManager.get(r)).thenReturn(Validation.success(Stream.empty()));
 
-        ListResponse<User> result = uut.getUsers();
+        uut.get(r);
 
-        assertEquals(StatusCode.SUCCESS, result.status);
-        assertEquals(Collections.emptyList(), result.data);
-        Mockito.verify(userManager).get();
+        ArgumentCaptor<StreamResponse<User>> c = ArgumentCaptor.forClass(StreamResponse.class);
+        verify(r).resume(c.capture());
+        assertEquals(StatusCode.SUCCESS, c.getValue().status);
+        assertEquals(0, c.getValue().data.count());
+        Mockito.verify(userManager).get(r);
     }
 
     @Test

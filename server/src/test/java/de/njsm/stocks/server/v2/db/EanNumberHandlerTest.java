@@ -25,7 +25,7 @@ import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -50,11 +50,11 @@ public class EanNumberHandlerTest extends DbTestCase {
 
         assertTrue(code.isSuccess());
 
-        Validation<StatusCode, List<EanNumber>> dbData = uut.get();
+        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().stream().map(f -> f.eanCode).anyMatch(name -> name.equals(data.eanCode)));
+        assertTrue(dbData.success().map(f -> f.eanCode).anyMatch(name -> name.equals(data.eanCode)));
     }
 
     @Test
@@ -65,11 +65,11 @@ public class EanNumberHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, List<EanNumber>> dbData = uut.get();
+        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertEquals(0, dbData.success().size());
+        assertEquals(0, dbData.success().count());
     }
 
     @Test
@@ -80,11 +80,11 @@ public class EanNumberHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
 
-        Validation<StatusCode, List<EanNumber>> dbData = uut.get();
+        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertEquals(1, dbData.success().size());
+        assertEquals(1, dbData.success().count());
     }
 
     @Test

@@ -24,7 +24,8 @@ import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
 import fj.data.Validation;
 
-import java.util.List;
+import javax.ws.rs.container.AsyncResponse;
+import java.util.stream.Stream;
 
 public class LocationManager extends BusinessObject {
 
@@ -44,8 +45,8 @@ public class LocationManager extends BusinessObject {
                 .toEither().left().orValue(StatusCode.SUCCESS));
     }
 
-    public Validation<StatusCode, List<Location>> get() {
-        return runFunction(() -> {
+    public Validation<StatusCode, Stream<Location>> get(AsyncResponse r) {
+        return runFunction(r, () -> {
             locationHandler.setReadOnly();
             return locationHandler.get();
         });

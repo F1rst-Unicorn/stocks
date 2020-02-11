@@ -22,14 +22,16 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.business.FoodManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Food;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import java.time.Period;
-import java.util.List;
+import java.util.stream.Stream;
 
 @Path("v2/food")
 public class FoodEndpoint extends Endpoint {
@@ -53,9 +55,9 @@ public class FoodEndpoint extends Endpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ListResponse<Food> getFood() {
-        Validation<StatusCode, List<Food>> result = manager.get();
-        return new ListResponse<>(result);
+    public void get(@Suspended AsyncResponse response) {
+        Validation<StatusCode, Stream<Food>> result = manager.get(response);
+        response.resume(new StreamResponse<>(result));
     }
 
     @PUT

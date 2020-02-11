@@ -31,8 +31,10 @@ import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.ws.rs.container.AsyncResponse;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class DeviceManager extends BusinessObject {
 
@@ -78,8 +80,8 @@ public class DeviceManager extends BusinessObject {
         });
     }
 
-    public Validation<StatusCode, List<UserDevice>> get() {
-        return runFunction(() -> {
+    public Validation<StatusCode, Stream<UserDevice>> get(AsyncResponse r) {
+        return runFunction(r, () -> {
             deviceBackend.setReadOnly();
             return deviceBackend.get();
         });

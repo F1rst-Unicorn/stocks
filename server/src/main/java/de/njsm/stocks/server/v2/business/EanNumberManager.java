@@ -23,7 +23,8 @@ import de.njsm.stocks.server.v2.business.data.EanNumber;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import fj.data.Validation;
 
-import java.util.List;
+import javax.ws.rs.container.AsyncResponse;
+import java.util.stream.Stream;
 
 public class EanNumberManager extends BusinessObject {
 
@@ -38,8 +39,8 @@ public class EanNumberManager extends BusinessObject {
         return runFunction(() -> eanNumberHandler.add(item));
     }
 
-    public Validation<StatusCode, List<EanNumber>> get() {
-        return runFunction(() -> {
+    public Validation<StatusCode, Stream<EanNumber>> get(AsyncResponse r) {
+        return runFunction(r, () -> {
             eanNumberHandler.setReadOnly();
             return eanNumberHandler.get();
         });

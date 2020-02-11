@@ -17,28 +17,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.business;
+package de.njsm.stocks.server.v2.web.servlet;
 
-import de.njsm.stocks.server.v2.business.data.Update;
-import de.njsm.stocks.server.v2.db.UpdateBackend;
-import fj.data.Validation;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
-import javax.ws.rs.container.AsyncResponse;
-import java.util.stream.Stream;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.Provider;
 
-public class UpdateManager extends BusinessObject {
+@Provider
+@Produces(MediaType.APPLICATION_JSON)
+public class JsonProvider extends JacksonJaxbJsonProvider {
 
-    private UpdateBackend updateBackend;
-
-    public UpdateManager(UpdateBackend updateBackend) {
-        super(updateBackend);
-        this.updateBackend = updateBackend;
-    }
-
-    public Validation<StatusCode, Stream<Update>> getUpdates(AsyncResponse r) {
-        return runFunction(r, () -> {
-            updateBackend.setReadOnly();
-            return updateBackend.get();
-        });
+    public JsonProvider() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new Jdk8Module());
+        setMapper(mapper);
     }
 }

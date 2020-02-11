@@ -17,34 +17,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.db;
+package de.njsm.stocks.server.v2.web.data;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Update;
 import fj.data.Validation;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.db.jooq.Tables.UPDATES;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        creatorVisibility = JsonAutoDetect.Visibility.NONE)
+@XmlRootElement
+public class StreamResponse<T> extends DataResponse<Stream<T>> {
 
-public class UpdateBackend extends FailSafeDatabaseHandler {
-
-    public UpdateBackend(ConnectionFactory connectionFactory,
-                         String resourceIdentifier,
-                         int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
-    }
-
-    public Validation<StatusCode, Stream<Update>> get() {
-        return runFunction(context -> {
-            Stream<Update> dbResult = Stream.of(1).flatMap(
-                    i -> context
-                    .selectFrom(UPDATES)
-                    .stream()
-                    .map(record -> new Update(
-                            record.getTableName(),
-                            record.getLastUpdate().toInstant())));
-            return Validation.success(dbResult);
-        });
+    public StreamResponse(Validation<StatusCode, Stream<T>> option) {
+        super(option);
     }
 }

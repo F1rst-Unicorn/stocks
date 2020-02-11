@@ -27,8 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Collections;
-import java.util.List;
+import javax.ws.rs.container.AsyncResponse;
+import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -48,15 +48,15 @@ public class EanNumberManagerTest {
 
     @After
     public void tearDown() {
-        Mockito.verify(backend).commit();
         Mockito.verifyNoMoreInteractions(backend);
     }
 
     @Test
     public void gettingItemsIsForwarded() {
-        Mockito.when(backend.get()).thenReturn(Validation.success(Collections.emptyList()));
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        Mockito.when(backend.get()).thenReturn(Validation.success(Stream.empty()));
 
-        Validation<StatusCode, List<EanNumber>> result = uut.get();
+        Validation<StatusCode, Stream<EanNumber>> result = uut.get(r);
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).get();
@@ -72,6 +72,7 @@ public class EanNumberManagerTest {
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).add(data);
+        Mockito.verify(backend).commit();
     }
 
     @Test
@@ -83,5 +84,6 @@ public class EanNumberManagerTest {
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(backend).delete(data);
+        Mockito.verify(backend).commit();
     }
 }

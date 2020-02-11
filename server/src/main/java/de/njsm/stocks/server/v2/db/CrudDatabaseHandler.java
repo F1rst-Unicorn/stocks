@@ -27,9 +27,8 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UpdatableRecord;
 
-import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData>
         extends FailSafeDatabaseHandler
@@ -56,14 +55,14 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
 
     }
 
-    public Validation<StatusCode, List<R>> get() {
+    public Validation<StatusCode, Stream<R>> get() {
         return runFunction(context -> {
-            List<R> result = context
-                    .selectFrom(getTable())
-                    .fetch()
-                    .stream()
-                    .map(getDtoMap())
-                    .collect(Collectors.toList());
+            Stream<R> result = Stream.of(1).flatMap(
+                    i -> context
+                            .selectFrom(getTable())
+                            .fetchSize(1024)
+                            .stream()
+                            .map(getDtoMap()));
 
             return Validation.success(result);
         });

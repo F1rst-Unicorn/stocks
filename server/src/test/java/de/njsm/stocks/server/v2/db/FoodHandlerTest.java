@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Period;
-import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -52,12 +52,11 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertTrue(code.isSuccess());
 
-        Validation<StatusCode, List<Food>> dbData = uut.get();
+        Validation<StatusCode, Stream<Food>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().stream().map(f -> f.name).anyMatch(name -> name.equals("Banana")));
-        assertTrue(dbData.success().stream().map(f -> f.expirationOffset).anyMatch(d -> d.equals(expirationOffset)));
+        assertTrue(dbData.success().anyMatch(f -> f.name.equals("Banana") && f.expirationOffset.equals(expirationOffset)));
     }
 
     @Test
@@ -71,11 +70,11 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, List<Food>> dbData = uut.get();
+        Validation<StatusCode, Stream<Food>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().stream()
+        assertTrue(dbData.success()
                 .anyMatch(f -> f.name.equals(newName)
                         && f.toBuy
                         && f.expirationOffset.equals(expirationOffset)
@@ -110,12 +109,11 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, List<Food>> dbData = uut.get();
+        Validation<StatusCode, Stream<Food>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertEquals(2, dbData.success().size());
-        assertTrue(dbData.success().stream().map(f -> f.name).noneMatch(name -> name.equals("Beer")));
+        assertTrue(dbData.success().map(f -> f.name).noneMatch(name -> name.equals("Beer")));
     }
 
     @Test
@@ -126,11 +124,11 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
 
-        Validation<StatusCode, List<Food>> dbData = uut.get();
+        Validation<StatusCode, Stream<Food>> dbData = uut.get();
 
         assertTrue(dbData.isSuccess());
 
-        assertEquals(3, dbData.success().size());
+        assertEquals(3, dbData.success().count());
     }
 
     @Test

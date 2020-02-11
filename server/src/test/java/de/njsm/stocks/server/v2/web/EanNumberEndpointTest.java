@@ -21,16 +21,19 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v2.business.EanNumberManager;
 import de.njsm.stocks.server.v2.business.data.EanNumber;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import javax.ws.rs.container.AsyncResponse;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.njsm.stocks.server.v2.business.StatusCode.INVALID_ARGUMENT;
 import static de.njsm.stocks.server.v2.business.StatusCode.SUCCESS;
@@ -108,14 +111,17 @@ public class EanNumberEndpointTest {
 
     @Test
     public void getEanNumberReturnsList() {
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
         List<EanNumber> data = Collections.singletonList(new EanNumber("CODE", 2));
-        when(manager.get()).thenReturn(Validation.success(data));
+        when(manager.get(r)).thenReturn(Validation.success(data.stream()));
 
-        ListResponse<EanNumber> response = uut.getEanNumbers();
+        uut.get(r);
 
-        assertEquals(SUCCESS, response.status);
-        assertEquals(data, response.data);
-        verify(manager).get();
+        ArgumentCaptor<StreamResponse<EanNumber>> c = ArgumentCaptor.forClass(StreamResponse.class);
+        verify(r).resume(c.capture());
+        assertEquals(SUCCESS, c.getValue().status);
+        assertEquals(data, c.getValue().data.collect(Collectors.toList()));
+        verify(manager).get(r);
     }
 
     @Test

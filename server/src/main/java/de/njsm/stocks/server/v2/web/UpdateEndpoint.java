@@ -22,13 +22,15 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.UpdateManager;
 import de.njsm.stocks.server.v2.business.data.Update;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import java.util.List;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import java.util.stream.Stream;
 
 @Path("/v2/update")
 public class UpdateEndpoint {
@@ -41,8 +43,8 @@ public class UpdateEndpoint {
 
     @GET
     @Produces("application/json")
-    public ListResponse<Update> getUpdates() {
-        Validation<StatusCode, List<Update>> result = handler.getUpdates();
-        return new ListResponse<>(result);
+    public void getUpdates(@Suspended AsyncResponse r) {
+        Validation<StatusCode, Stream<Update>> result = handler.getUpdates(r);
+        r.resume(new StreamResponse<>(result));
     }
 }

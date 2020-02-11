@@ -24,17 +24,19 @@ import de.njsm.stocks.server.v2.business.FoodItemManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
 import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.List;
+import java.util.stream.Stream;
 
 @Path("v2/fooditem")
 public class FoodItemEndpoint extends Endpoint {
@@ -69,9 +71,9 @@ public class FoodItemEndpoint extends Endpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ListResponse<FoodItem> getItems() {
-        Validation<StatusCode, List<FoodItem>> result = manager.get();
-        return new ListResponse<>(result);
+    public void get(@Suspended AsyncResponse response) {
+        Validation<StatusCode, Stream<FoodItem>> result = manager.get(response);
+        response.resume(new StreamResponse<>(result));
     }
 
     @PUT

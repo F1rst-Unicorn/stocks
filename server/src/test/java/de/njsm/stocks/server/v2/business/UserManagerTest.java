@@ -30,9 +30,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Collections;
+import javax.ws.rs.container.AsyncResponse;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -66,14 +67,14 @@ public class UserManagerTest {
 
     @Test
     public void getUsersWorks() {
-        Mockito.when(userDbHandler.get()).thenReturn(Validation.success(Collections.emptyList()));
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        Mockito.when(userDbHandler.get()).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, List<User>> result = uut.get();
+        Validation<StatusCode, Stream<User>> result = uut.get(r);
 
         assertTrue(result.isSuccess());
         Mockito.verify(userDbHandler).get();
-        Mockito.verify(userDbHandler).commit();
         Mockito.verify(userDbHandler).setReadOnly();
     }
 

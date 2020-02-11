@@ -1,5 +1,11 @@
 # Change Log
 
+## Unreleased
+
+### Fixed
+
+* Stream entities when getting them. Leads to lower memory footprint
+
 ## [4.6.0.1-1]
 
 ### Fixed

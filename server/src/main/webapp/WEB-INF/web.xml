@@ -55,7 +55,12 @@
             <param-name>jersey.config.server.provider.scanning.recursive</param-name>
             <param-value>true</param-value>
         </init-param>
+        <init-param>
+            <param-name>jersey.config.server.contentLength.buffer</param-name>
+            <param-value>0</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
     </servlet>
     <servlet-mapping>
         <servlet-name>prometheus</servlet-name>
@@ -86,6 +91,7 @@
             <param-name>path-components</param-name>
             <param-value>0</param-value>
         </init-param>
+        <async-supported>true</async-supported>
     </filter>
 
     <filter-mapping>

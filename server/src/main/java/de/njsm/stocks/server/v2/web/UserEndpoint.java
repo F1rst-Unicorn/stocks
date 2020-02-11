@@ -23,22 +23,24 @@ import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.UserManager;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
-import java.util.List;
+import java.util.stream.Stream;
 
 @Path("/v2/user")
 public class UserEndpoint extends Endpoint {
 
-    private UserManager userManager;
+    private UserManager manager;
 
-    public UserEndpoint(UserManager userManager) {
-        this.userManager = userManager;
+    public UserEndpoint(UserManager manager) {
+        this.manager = manager;
     }
 
     @PUT
@@ -46,7 +48,7 @@ public class UserEndpoint extends Endpoint {
     public Response putUser(@QueryParam("name") String name) {
 
         if (isValidName(name, "name")) {
-            StatusCode result = userManager.addUser(new User(name));
+            StatusCode result = manager.addUser(new User(name));
             return new Response(result);
 
         } else {
@@ -56,9 +58,9 @@ public class UserEndpoint extends Endpoint {
 
     @GET
     @Produces("application/json")
-    public ListResponse<User> getUsers() {
-        Validation<StatusCode, List<User>> list = userManager.get();
-        return new ListResponse<>(list);
+    public void get(@Suspended AsyncResponse response) {
+        Validation<StatusCode, Stream<User>> result = manager.get(response);
+        response.resume(new StreamResponse<>(result));
     }
 
     @DELETE
@@ -69,7 +71,7 @@ public class UserEndpoint extends Endpoint {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-            StatusCode result = userManager.deleteUser(new User(id, version), getPrincipals(request));
+            StatusCode result = manager.deleteUser(new User(id, version), getPrincipals(request));
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));

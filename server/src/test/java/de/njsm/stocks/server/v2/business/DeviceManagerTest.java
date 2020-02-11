@@ -34,8 +34,10 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import javax.ws.rs.container.AsyncResponse;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -122,14 +124,14 @@ public class DeviceManagerTest {
 
     @Test
     public void gettingDevicesWorks() {
-        Mockito.when(dbHandler.get()).thenReturn(Validation.success(Collections.emptyList()));
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        Mockito.when(dbHandler.get()).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, List<UserDevice>> result = uut.get();
+        Validation<StatusCode, Stream<UserDevice>> result = uut.get(r);
 
         assertTrue(result.isSuccess());
         Mockito.verify(dbHandler).get();
-        Mockito.verify(dbHandler).commit();
         Mockito.verify(dbHandler).setReadOnly();
     }
 

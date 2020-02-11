@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -50,14 +52,15 @@ public class UserDeviceHandlerTest extends DbTestCase {
     @Test
     public void getDevicesWorks() {
 
-        Validation<StatusCode, List<UserDevice>> devices = uut.get();
+        Validation<StatusCode, Stream<UserDevice>> devices = uut.get();
 
         assertTrue(devices.isSuccess());
-        assertEquals(4, devices.success().size());
-        assertThat(devices.success(), hasItem(new UserDevice(1, 0, "mobile", 1)));
-        assertThat(devices.success(), hasItem(new UserDevice(2, 0, "mobile2", 1)));
-        assertThat(devices.success(), hasItem(new UserDevice(3, 0, "laptop", 2)));
-        assertThat(devices.success(), hasItem(new UserDevice(4, 0, "pending_device", 2)));
+        List<UserDevice> list = devices.success().collect(Collectors.toList());
+        assertEquals(4, list.size());
+        assertThat(list, hasItem(new UserDevice(1, 0, "mobile", 1)));
+        assertThat(list, hasItem(new UserDevice(2, 0, "mobile2", 1)));
+        assertThat(list, hasItem(new UserDevice(3, 0, "laptop", 2)));
+        assertThat(list, hasItem(new UserDevice(4, 0, "pending_device", 2)));
     }
 
     @Test
@@ -67,13 +70,14 @@ public class UserDeviceHandlerTest extends DbTestCase {
         Validation<StatusCode, Integer> result = uut.add(device);
 
 
-        Validation<StatusCode, List<UserDevice>> devices = uut.get();
+        Validation<StatusCode, Stream<UserDevice>> devices = uut.get();
         assertTrue(result.isSuccess());
         assertEquals(new Integer(5), result.success());
         assertTrue(devices.isSuccess());
-        assertEquals(5, devices.success().size());
+        List<UserDevice> list = devices.success().collect(Collectors.toList());
+        assertEquals(5, list.size());
         device.id = 5;
-        assertThat(devices.success(), hasItem(device));
+        assertThat(list, hasItem(device));
     }
 
     @Test
@@ -98,11 +102,12 @@ public class UserDeviceHandlerTest extends DbTestCase {
 
         StatusCode result = uut.delete(device);
 
-        Validation<StatusCode, List<UserDevice>> devices = uut.get();
+        Validation<StatusCode, Stream<UserDevice>> devices = uut.get();
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(devices.isSuccess());
-        assertEquals(3, devices.success().size());
-        assertThat(devices.success(), not(hasItem(device)));
+        List<UserDevice> list = devices.success().collect(Collectors.toList());
+        assertEquals(3, list.size());
+        assertThat(list, not(hasItem(device)));
     }
 
     @Test

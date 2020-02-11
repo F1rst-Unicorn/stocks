@@ -22,16 +22,19 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.UpdateManager;
 import de.njsm.stocks.server.v2.business.data.Update;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import java.util.LinkedList;
+import javax.ws.rs.container.AsyncResponse;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.TestCase.assertEquals;
+import static org.mockito.Mockito.verify;
 
 public class UpdateEndpointTest {
 
@@ -52,14 +55,17 @@ public class UpdateEndpointTest {
 
     @Test
     public void getUpdates() {
-        Mockito.when(dbLayer.getUpdates())
-                .thenReturn(Validation.success(new LinkedList<>()));
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        Mockito.when(dbLayer.getUpdates(r))
+                .thenReturn(Validation.success(Stream.of()));
 
-        ListResponse<Update> result = uut.getUpdates();
+        uut.getUpdates(r);
 
-        assertEquals(StatusCode.SUCCESS, result.status);
-        assertEquals(0, result.data.size());
-        Mockito.verify(dbLayer).getUpdates();
+        ArgumentCaptor<StreamResponse<Update>> c = ArgumentCaptor.forClass(StreamResponse.class);
+        verify(r).resume(c.capture());
+        assertEquals(StatusCode.SUCCESS, c.getValue().status);
+        assertEquals(0, c.getValue().data.count());
+        Mockito.verify(dbLayer).getUpdates(r);
     }
 
 

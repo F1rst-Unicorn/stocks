@@ -22,21 +22,23 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.EanNumber;
-import de.njsm.stocks.server.v2.web.data.ListResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
+import java.util.stream.Stream;
 
 @Path("v2/ean")
 public class EanNumberEndpoint extends Endpoint {
 
-    private EanNumberManager businessManager;
+    private EanNumberManager manager;
 
-    public EanNumberEndpoint(EanNumberManager businessManager) {
-        this.businessManager = businessManager;
+    public EanNumberEndpoint(EanNumberManager manager) {
+        this.manager = manager;
     }
 
     @PUT
@@ -46,7 +48,7 @@ public class EanNumberEndpoint extends Endpoint {
         if (isValid(code, "code") &&
                 isValid(foodId, "foodId")) {
 
-            Validation<StatusCode, Integer> status = businessManager.add(new EanNumber(code, foodId));
+            Validation<StatusCode, Integer> status = manager.add(new EanNumber(code, foodId));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -55,9 +57,9 @@ public class EanNumberEndpoint extends Endpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ListResponse<EanNumber> getEanNumbers() {
-        Validation<StatusCode, List<EanNumber>> result = businessManager.get();
-        return new ListResponse<>(result);
+    public void get(@Suspended AsyncResponse response) {
+        Validation<StatusCode, Stream<EanNumber>> result = manager.get(response);
+        response.resume(new StreamResponse<>(result));
     }
 
     @DELETE
@@ -68,7 +70,7 @@ public class EanNumberEndpoint extends Endpoint {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
-            StatusCode status = businessManager.delete(new EanNumber(id, version, "", 0));
+            StatusCode status = manager.delete(new EanNumber(id, version, "", 0));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
