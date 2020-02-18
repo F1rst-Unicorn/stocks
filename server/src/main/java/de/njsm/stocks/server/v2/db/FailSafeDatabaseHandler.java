@@ -58,11 +58,11 @@ public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLEx
     }
 
     public StatusCode commit() {
-        return new ConnectionHandler(resourceIdentifier, connectionFactory, timeout).commit();
+        return new ConnectionHandler(resourceIdentifier + "-cleanup", connectionFactory, 10000).commit();
     }
 
     public StatusCode rollback() {
-        return new ConnectionHandler(resourceIdentifier, connectionFactory, timeout).rollback();
+        return new ConnectionHandler(resourceIdentifier + "-cleanup", connectionFactory, 10000).rollback();
     }
 
     public StatusCode setReadOnly() {

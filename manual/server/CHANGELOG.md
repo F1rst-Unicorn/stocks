@@ -2,9 +2,15 @@
 
 ## Unreleased
 
+### Added
+
+* Use DB connection pool
+
 ### Fixed
 
 * Stream entities when getting them. Leads to lower memory footprint
+
+* Shutdown properly by closing all libraries' threads
 
 ### Maintenance
 

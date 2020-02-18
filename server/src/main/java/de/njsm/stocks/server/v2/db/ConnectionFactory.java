@@ -22,30 +22,20 @@ package de.njsm.stocks.server.v2.db;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class ConnectionFactory {
 
     private static final Logger LOG = LogManager.getLogger(ConnectionFactory.class);
 
-    private String dbUrl;
-
-    private Properties properties;
+    private DataSource pool;
 
     private Connection connection;
 
-    public ConnectionFactory(String dbUrl, Properties properties) {
-        this.dbUrl = dbUrl;
-        this.properties = properties;
-
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            LOG.error("DB driver not present", e);
-        }
+    public ConnectionFactory(DataSource pool) {
+        this.pool = pool;
     }
 
     /**
@@ -53,7 +43,7 @@ public class ConnectionFactory {
      */
     public Connection getConnection() throws SQLException {
         if (connection == null)
-            connection = DriverManager.getConnection(dbUrl, properties);
+            connection = pool.getConnection();
 
         return connection;
     }

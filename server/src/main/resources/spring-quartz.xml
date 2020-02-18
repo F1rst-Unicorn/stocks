@@ -14,8 +14,7 @@
     </bean>
 
     <bean name="prototypedConnectionFactory" class="de.njsm.stocks.server.v2.db.ConnectionFactory" scope="prototype">
-        <constructor-arg index="0" ref="dbUrl" />
-        <constructor-arg index="1" ref="dbConfig" />
+        <constructor-arg index="0" ref="datasource" />
     </bean>
 
     <bean name="prototypedDeviceBackend" class="de.njsm.stocks.server.v2.db.UserDeviceHandler" scope="prototype">
@@ -47,7 +46,7 @@
         <property name="cronExpression" value="0 0 * * * ? *"/>
     </bean>
 
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <bean name="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="quartzProperties" ref="quartzProperties" />
         <property name="jobDetails">
             <list>

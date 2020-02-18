@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -43,7 +44,10 @@ public abstract class DbTestCase {
 
     @Before
     public void resetDatabase() throws SQLException {
-        factory = new ConnectionFactory(getUrl(), getPostgresqlProperties(System.getProperties()));
+        ComboPooledDataSource ds = new ComboPooledDataSource();
+        ds.setJdbcUrl(getUrl());
+        ds.setProperties(getPostgresqlProperties(System.getProperties()));
+        factory = new ConnectionFactory(ds);
         connection = factory.getConnection();
         SampleData.insertSampleData(connection);
 

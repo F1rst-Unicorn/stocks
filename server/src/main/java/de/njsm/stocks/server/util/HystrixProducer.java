@@ -43,16 +43,6 @@ public class HystrixProducer<I, O, E extends Exception> extends HystrixCommand<O
         super(getHystrixConfig(resourceIdentifier, timeout));
         this.client = client;
         this.wrapper = wrapper;
-        logState();
-    }
-
-    private void logState() {
-        LOG.debug("health counts: " + getMetrics().getHealthCounts().toString());
-        if (isCircuitBreakerOpen()) {
-            LOG.warn("Circuit breaker open, returning immediately");
-        } else {
-            LOG.debug("Circuit breaker closed");
-        }
     }
 
     @Override

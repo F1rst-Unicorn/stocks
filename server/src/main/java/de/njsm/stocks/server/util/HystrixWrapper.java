@@ -39,19 +39,8 @@ public interface HystrixWrapper<I, E extends Exception> {
     Logger LOG = LogManager.getLogger(HystrixWrapper.class);
 
     default StatusCode runCommand(FunctionWithExceptions<I, StatusCode, E> client) {
-        Validation<StatusCode, StatusCode> result = runFunction(input -> {
-            StatusCode code = client.apply(input);
-            if (code == StatusCode.SUCCESS) {
-                return Validation.success(code);
-            } else {
-                return Validation.fail(code);
-            }
-        });
-        if (result.isFail()) {
-            return result.fail();
-        } else {
-            return result.success();
-        }
+        Validation<StatusCode, StatusCode> result = runFunction(input -> Validation.fail(client.apply(input)));
+        return result.fail();
     }
 
     default <O> Validation<StatusCode, O> runFunction(FunctionWithExceptions<I, Validation<StatusCode, O>, E> function) {
@@ -63,7 +52,14 @@ public interface HystrixWrapper<I, E extends Exception> {
         try {
             return producer.execute();
         } catch (HystrixRuntimeException e) {
-            LOG.error("circuit breaker error", e);
+            LOG.error("circuit breaker '{}' has error: {}", getResourceIdentifier(), e.getFailureType());
+
+            if (e.getFailureType() == HystrixRuntimeException.FailureType.COMMAND_EXCEPTION ||
+                    e.getFailureType() == HystrixRuntimeException.FailureType.BAD_REQUEST_EXCEPTION)
+                LOG.error("", e);
+            else
+                LOG.debug("", e);
+
             CIRCUIT_BREAKER_EVENTS.labels(getResourceIdentifier()).inc();
             return Validation.fail(getDefaultErrorCode());
         }

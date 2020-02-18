@@ -27,14 +27,20 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:spring-beans.xml</param-value>
+        <param-value>classpath:spring.xml</param-value>
     </context-param>
 
+    <listener>
+        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+    </listener>
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>de.njsm.stocks.server.util.ServletCleaner</listener-class>
     </listener>
 
     <servlet>
