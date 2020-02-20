@@ -46,7 +46,7 @@ public class LocationManager extends BusinessObject {
     }
 
     public Validation<StatusCode, Stream<Location>> get(AsyncResponse r) {
-        return runFunction(r, () -> {
+        return runAsynchronously(r, () -> {
             locationHandler.setReadOnly();
             return locationHandler.get();
         });

@@ -28,6 +28,7 @@ import org.mockito.Mockito;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.Mockito.times;
 
 public class BusinessObjectTest {
 
@@ -44,6 +45,81 @@ public class BusinessObjectTest {
     @After
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(backend);
+    }
+
+    @Test
+    public void successfulTransactionIsCommitted() {
+        Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
+        int[] integerBox = new int[1];
+
+        StatusCode result = uut.runOperation(() -> {
+            integerBox[0]++;
+            return StatusCode.SUCCESS;
+        });
+
+        assertEquals(StatusCode.SUCCESS, result);
+        assertEquals(1, integerBox[0]);
+        Mockito.verify(backend).commit();
+    }
+
+    @Test
+    public void failingTransactionIsRunOnce() {
+        Mockito.when(backend.rollback()).thenReturn(StatusCode.SUCCESS);
+        int[] integerBox = new int[1];
+
+        StatusCode result = uut.runOperation(() -> {
+            integerBox[0]++;
+            return StatusCode.DATABASE_UNREACHABLE;
+        });
+
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        assertEquals(1, integerBox[0]);
+        Mockito.verify(backend).rollback();
+    }
+
+    @Test
+    public void failureDuringCommitIsReported() {
+        Mockito.when(backend.commit()).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+        int[] integerBox = new int[1];
+
+        StatusCode result = uut.runOperation(() -> {
+            integerBox[0]++;
+            return StatusCode.SUCCESS;
+        });
+
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        assertEquals(1, integerBox[0]);
+        Mockito.verify(backend).commit();
+    }
+
+    @Test
+    public void repeatUnserialisableFunction() {
+        Mockito.when(backend.commit()).thenReturn(StatusCode.SERIALISATION_CONFLICT, StatusCode.SUCCESS);
+        int[] integerBox = new int[1];
+
+        Validation<StatusCode, Object> result = uut.runFunction(() -> {
+            integerBox[0]++;
+            return Validation.success(null);
+        });
+
+        assertTrue(result.isSuccess());
+        assertEquals(2, integerBox[0]);
+        Mockito.verify(backend, times(2)).commit();
+    }
+
+    @Test
+    public void repeatUnserialisableOperation() {
+        Mockito.when(backend.commit()).thenReturn(StatusCode.SERIALISATION_CONFLICT, StatusCode.SUCCESS);
+        int[] integerBox = new int[1];
+
+        StatusCode result = uut.runOperation(() -> {
+            integerBox[0]++;
+            return StatusCode.SUCCESS;
+        });
+
+        assertEquals(StatusCode.SUCCESS, result);
+        assertEquals(2, integerBox[0]);
+        Mockito.verify(backend, times(2)).commit();
     }
 
     @Test

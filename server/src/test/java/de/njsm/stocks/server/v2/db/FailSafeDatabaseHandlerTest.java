@@ -193,7 +193,6 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, commandCode);
         assertEquals(StatusCode.SERIALISATION_CONFLICT, commitStatusCode);
-        Thread.sleep(500);      // hystrix window has to shift
-        assertFalse(new HystrixProducer<>(getNewResourceIdentifier(), CIRCUIT_BREAKER_TIMEOUT, null, null).isCircuitBreakerOpen());
+        assertFalse(new HystrixProducer<>(uut.getResourceIdentifier(), CIRCUIT_BREAKER_TIMEOUT, null, null).isCircuitBreakerOpen());
     }
 }

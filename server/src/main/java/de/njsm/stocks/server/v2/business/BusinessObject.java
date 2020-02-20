@@ -41,35 +41,34 @@ public class BusinessObject {
     }
 
     <O> Validation<StatusCode, O> runFunction(Producer<Validation<StatusCode, O>> operation) {
-        Validation<StatusCode, O> result = getOs(operation);
-        return finishTransaction(result);
+        return runTransactionUntilSerialisable(operation);
     }
 
-    <O> Validation<StatusCode, O> runFunction(AsyncResponse r, Producer<Validation<StatusCode, O>> operation) {
-        r.register((CompletionCallback) t -> finishTransaction(StatusCode.SUCCESS));
-        return getOs(operation);
+    StatusCode runOperation(Producer<StatusCode> operation) {
+        Validation<StatusCode, StatusCode> r = runTransactionUntilSerialisable(() -> operation.call().toValidation());
+        return StatusCode.toCode(r);
     }
 
-    private <O> Validation<StatusCode, O> getOs(Producer<Validation<StatusCode, O>> operation) {
+    private <O> Validation<StatusCode, O> runTransactionUntilSerialisable(Producer<Validation<StatusCode, O>> operation) {
         Validation<StatusCode, O> result;
         int repetitions = 0;
         do {
             result = operation.call();
             repetitions++;
+            result = finishTransaction(result);
         } while (result.isFail() && result.fail() == StatusCode.SERIALISATION_CONFLICT);
         OPERATION_REPETITIONS.observe(repetitions);
         return result;
     }
 
-    StatusCode runOperation(Producer<StatusCode> operation) {
-        StatusCode result;
-        int repetitions = 0;
-        do {
-            result = operation.call();
-            repetitions++;
-        } while (result == StatusCode.SERIALISATION_CONFLICT);
-        OPERATION_REPETITIONS.observe(repetitions);
-        return finishTransaction(result);
+    /*
+     * Asynchronous operations cannot be repeated as the result is only
+     * committed once the request has finished. Then the result has already been
+     * reported to the client and there is no point in repeating it.
+     */
+    <O> Validation<StatusCode, O> runAsynchronously(AsyncResponse r, Producer<Validation<StatusCode, O>> operation) {
+        r.register((CompletionCallback) t -> finishTransaction(StatusCode.SUCCESS));
+        return operation.call();
     }
 
     <O> Validation<StatusCode, O> finishTransaction(Validation<StatusCode, O> carry) {

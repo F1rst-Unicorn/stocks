@@ -57,7 +57,7 @@ public class UserManager extends BusinessObject {
     }
 
     public Validation<StatusCode, Stream<User>> get(AsyncResponse r) {
-        return runFunction(r, () -> {
+        return runAsynchronously(r, () -> {
             dbHandler.setReadOnly();
             return dbHandler.get();
         });

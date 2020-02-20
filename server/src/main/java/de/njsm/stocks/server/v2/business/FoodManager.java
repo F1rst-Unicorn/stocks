@@ -40,7 +40,7 @@ public class FoodManager extends BusinessObject {
     }
 
     public Validation<StatusCode, Stream<Food>> get(AsyncResponse r) {
-        return runFunction(r, () -> {
+        return runAsynchronously(r, () -> {
             dbHandler.setReadOnly();
             return dbHandler.get();
         });

@@ -81,7 +81,7 @@ public class DeviceManager extends BusinessObject {
     }
 
     public Validation<StatusCode, Stream<UserDevice>> get(AsyncResponse r) {
-        return runFunction(r, () -> {
+        return runAsynchronously(r, () -> {
             deviceBackend.setReadOnly();
             return deviceBackend.get();
         });

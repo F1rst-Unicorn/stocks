@@ -36,7 +36,7 @@ public class UpdateManager extends BusinessObject {
     }
 
     public Validation<StatusCode, Stream<Update>> getUpdates(AsyncResponse r) {
-        return runFunction(r, () -> {
+        return runAsynchronously(r, () -> {
             updateBackend.setReadOnly();
             return updateBackend.get();
         });

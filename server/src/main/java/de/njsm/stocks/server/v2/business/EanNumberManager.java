@@ -40,7 +40,7 @@ public class EanNumberManager extends BusinessObject {
     }
 
     public Validation<StatusCode, Stream<EanNumber>> get(AsyncResponse r) {
-        return runFunction(r, () -> {
+        return runAsynchronously(r, () -> {
             eanNumberHandler.setReadOnly();
             return eanNumberHandler.get();
         });
