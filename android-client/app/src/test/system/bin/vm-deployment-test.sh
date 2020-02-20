@@ -91,7 +91,7 @@ kill $SSH_2_PID
 kill $SSH_3_PID
 killall adb
 
-scp dp-server:/var/log/stocks-server/stocks.log \
+scp dp-server:/var/log/tomcat8/stocks.log \
     $STOCKS_ROOT/android-client/app/build/android-server.log
 
 exit $RC

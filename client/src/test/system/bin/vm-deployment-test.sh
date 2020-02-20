@@ -48,7 +48,7 @@ echo "##teamcity[testFinished name='Initialisation']"
 python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
         `find $STOCKS_ROOT/client/src/test/system/usecases -type f | sort`
 
-scp dp-server:/var/log/stocks-server/stocks.log \
+scp dp-server:/var/log/tomcat8/stocks.log \
         $STOCKS_ROOT/client/target/client-server.log
 scp dp-client:\~/.stocks/stocks.log $STOCKS_ROOT/client/target/client-client.log
 

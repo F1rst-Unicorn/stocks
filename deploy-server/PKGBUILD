@@ -74,6 +74,4 @@ package() {
     install -D -m 444 manual/server/maintainance.md        $pkgdir/usr/share/doc/$pkgname/
 
     install -D -m 444 LICENSE.md                             $pkgdir/usr/share/licenses/$pkgname/LICENSE.md
-
-    mkdir -p $pkgdir/var/log/$pkgname
 }

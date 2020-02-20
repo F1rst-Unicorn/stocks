@@ -22,7 +22,6 @@ post_install() {
     mkdir -p /usr/share/stocks-server/root/nginx
 
     chown -R tomcat8:tomcat8 /usr/share/stocks-server/root
-    chown -R tomcat8:tomcat8 /var/log/stocks-server
 
     echo "See /usr/share/doc/stocks-server/server-installation.md for setup instructions"
 }
@@ -31,7 +30,6 @@ post_install() {
 ## arg 2:  the old package version
 post_upgrade() {
     chown -R tomcat8:tomcat8 /usr/share/stocks-server/root
-    chown -R tomcat8:tomcat8 /var/log/stocks-server
 }
 
 ## arg 1:  the old package version
