@@ -21,23 +21,24 @@ package de.njsm.stocks.server.util;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.netflix.hystrix.Hystrix;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.internal.guava.Preconditions;
 import org.quartz.SchedulerException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import rx.schedulers.Schedulers;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.lang.reflect.Field;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
 public class ServletCleaner implements ServletContextListener {
-
-    private static final Logger LOG = LogManager.getLogger(ServletCleaner.class);
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {}
@@ -45,7 +46,20 @@ public class ServletCleaner implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         closeConnectionPool(sce);
-        closeHystrix();
+        closeHystrix(sce);
+        closeQuartzThreadPool(sce);
+        closePgDriver(sce);
+    }
+
+    private void closePgDriver(ServletContextEvent sce) {
+        Enumeration<Driver> e = DriverManager.getDrivers();
+        while (e.hasMoreElements()) {
+            try {
+                DriverManager.deregisterDriver(e.nextElement());
+            } catch (SQLException ex) {
+                sce.getServletContext().log("Failed to unload JDBC driver", ex);
+            }
+        }
     }
 
     private void closeConnectionPool(ServletContextEvent sce) {
@@ -63,19 +77,17 @@ public class ServletCleaner implements ServletContextListener {
             try {
                 ds.getScheduler().shutdown(true);
             } catch (SchedulerException e) {
-                LOG.error("Quartz shutdown failed", e);
+                sce.getServletContext().log("Quartz shutdown failed", e);
             }
         }
     }
 
     // https://github.com/Netflix/Hystrix/issues/816
     // https://stackoverflow.com/questions/37009425/fixing-the-web-application-root-created-a-threadlocal-with-key-of-type-com-n
-    private void closeHystrix() {
+    private void closeHystrix(ServletContextEvent sce) {
         Hystrix.reset(30, TimeUnit.SECONDS);
 
         try {
-            LOG.info("Cleaning up ThreadLocals ...");
-
             Field currentCommandField = ReflectionUtils.findField(Hystrix.class, "currentCommand");
             Preconditions.checkNotNull(currentCommandField);
 
@@ -85,11 +97,9 @@ public class ServletCleaner implements ServletContextListener {
             ThreadLocal currentCommand = (ThreadLocal) currentCommandField.get(null);
             Preconditions.checkNotNull(currentCommand);
             currentCommand.remove();
-
-            LOG.info("Forcibly removed Hystrix 'currentCommand' ThreadLocal");
         } catch(Exception e) {
-            LOG.warn("Failed to clean hystrix thread-locals", e);
+            sce.getServletContext().log("Failed to clean hystrix thread-locals", e);
         }
-
+        Schedulers.shutdown();
     }
 }
