@@ -258,9 +258,9 @@
                 <de.njsm.stocks.server.v2.db.postgres.password>linux</de.njsm.stocks.server.v2.db.postgres.password>
                 <de.njsm.stocks.server.v2.db.postgres.ssl>false</de.njsm.stocks.server.v2.db.postgres.ssl>
                 <de.njsm.stocks.server.v2.db.postgres.sslmode>disable</de.njsm.stocks.server.v2.db.postgres.sslmode>
-                <de.njsm.stocks.server.v2.db.postgres.sslcert>${user.home}/ssl/stocks@rivendell.j.njsm.de.crt</de.njsm.stocks.server.v2.db.postgres.sslcert>
-                <de.njsm.stocks.server.v2.db.postgres.sslkey>${user.home}/ssl/stocks@rivendell.j.njsm.de.pk8</de.njsm.stocks.server.v2.db.postgres.sslkey>
-                <de.njsm.stocks.server.v2.db.postgres.sslrootcert>${user.home}/ssl/ca.crt</de.njsm.stocks.server.v2.db.postgres.sslrootcert>
+                <de.njsm.stocks.server.v2.db.postgres.sslcert>dummy</de.njsm.stocks.server.v2.db.postgres.sslcert>
+                <de.njsm.stocks.server.v2.db.postgres.sslkey>dummy</de.njsm.stocks.server.v2.db.postgres.sslkey>
+                <de.njsm.stocks.server.v2.db.postgres.sslrootcert>dummy</de.njsm.stocks.server.v2.db.postgres.sslrootcert>
                 <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
             </properties>
         </profile>
@@ -275,8 +275,8 @@
                 <de.njsm.stocks.server.v2.db.postgres.password>linux</de.njsm.stocks.server.v2.db.postgres.password>
                 <de.njsm.stocks.server.v2.db.postgres.ssl>true</de.njsm.stocks.server.v2.db.postgres.ssl>
                 <de.njsm.stocks.server.v2.db.postgres.sslmode>verify-ca</de.njsm.stocks.server.v2.db.postgres.sslmode>
-                <de.njsm.stocks.server.v2.db.postgres.sslcert>${user.home}/ssl/stocks@rivendell.j.njsm.de.crt</de.njsm.stocks.server.v2.db.postgres.sslcert>
-                <de.njsm.stocks.server.v2.db.postgres.sslkey>${user.home}/ssl/stocks@rivendell.j.njsm.de.pk8</de.njsm.stocks.server.v2.db.postgres.sslkey>
+                <de.njsm.stocks.server.v2.db.postgres.sslcert>${user.home}/ssl/db.j.njsm.de.crt</de.njsm.stocks.server.v2.db.postgres.sslcert>
+                <de.njsm.stocks.server.v2.db.postgres.sslkey>${user.home}/ssl/db.j.njsm.de.pk8</de.njsm.stocks.server.v2.db.postgres.sslkey>
                 <de.njsm.stocks.server.v2.db.postgres.sslrootcert>${user.home}/ssl/ca.crt</de.njsm.stocks.server.v2.db.postgres.sslrootcert>
                 <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
             </properties>
