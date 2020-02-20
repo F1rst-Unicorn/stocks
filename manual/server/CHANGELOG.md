@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.7.0.0-1]
+
 ### Added
 
 * Use DB connection pool
