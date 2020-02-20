@@ -6,7 +6,14 @@
 
 * Use DB connection pool
 
+### Modified
+
+* Logs are now stored in `/var/log/tomcat8` to simplify file permission
+  management
+
 ### Fixed
+
+* Repeat business transactions correctly
 
 * Stream entities when getting them. Leads to lower memory footprint
 
