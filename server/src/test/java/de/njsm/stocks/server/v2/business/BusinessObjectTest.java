@@ -26,6 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.CompletionCallback;
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.times;
@@ -60,6 +63,17 @@ public class BusinessObjectTest {
         assertEquals(StatusCode.SUCCESS, result);
         assertEquals(1, integerBox[0]);
         Mockito.verify(backend).commit();
+    }
+
+    @Test
+    public void asyncRequestIsUsedCorrectly() {
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+
+        Validation<StatusCode, StatusCode> result = uut.runAsynchronously(r, () -> Validation.success(StatusCode.SUCCESS));
+
+        assertEquals(StatusCode.SUCCESS, result.success());
+        Mockito.verify(r).register(Mockito.any(CompletionCallback.class));
+        Mockito.verifyNoMoreInteractions(r);
     }
 
     @Test

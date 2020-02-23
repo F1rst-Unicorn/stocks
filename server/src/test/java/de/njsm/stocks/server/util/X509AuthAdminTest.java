@@ -38,7 +38,7 @@ public class X509AuthAdminTest {
 
     private static File caDirectory;
 
-    private static int deviceCounter;
+    private static int testCounter;
 
     private X509AuthAdmin uut;
 
@@ -51,20 +51,20 @@ public class X509AuthAdminTest {
                 caDirectory.getAbsolutePath() +
                 "/../../../../../deploy-server/config");
         p.waitFor();
-        deviceCounter = 0;
+        testCounter = 0;
     }
 
     @Before
     public void setup() {
         uut = new X509AuthAdmin(caDirectory.getAbsolutePath(),
                 "touch " + caDirectory + "/reload-nginx",
-                "ca",
+                "ca" + testCounter,
                 CIRCUIT_BREAKER_TIMEOUT);
     }
 
     @After
     public void tearDown() {
-        deviceCounter++;
+        testCounter++;
     }
 
     @AfterClass
@@ -82,7 +82,7 @@ public class X509AuthAdminTest {
         Principals input = getFreshPrincipals();
         generateCsr(input);
 
-        Validation<StatusCode, Principals> p = uut.getPrincipals(deviceCounter);
+        Validation<StatusCode, Principals> p = uut.getPrincipals(testCounter);
 
         Assert.assertTrue(p.isSuccess());
         assertEquals(input, p.success());
@@ -102,11 +102,11 @@ public class X509AuthAdminTest {
         Principals input = getFreshPrincipals();
         String content = generateCsr(input);
 
-        uut.saveCsr(deviceCounter+1, content);
-        deviceCounter++;
+        uut.saveCsr(testCounter +1, content);
+        testCounter++;
 
         String savedContent = IOUtils.toString(
-                new FileInputStream(caDirectory.getAbsoluteFile() + "/intermediate/csr/user_" + deviceCounter + ".csr.pem"),
+                new FileInputStream(caDirectory.getAbsoluteFile() + "/intermediate/csr/user_" + testCounter + ".csr.pem"),
                 StandardCharsets.UTF_8);
         assertEquals(content, savedContent);
     }
@@ -169,6 +169,18 @@ public class X509AuthAdminTest {
     }
 
     @Test
+    public void testFailingHealth() {
+        File f = new File(caDirectory.getAbsolutePath() + "/intermediate/certs/user_1.cert.pem");
+        File tmp = new File(caDirectory.getAbsolutePath() + "/intermediate/certs/user.cert.pem");
+        assertTrue(f.renameTo(tmp));
+
+        StatusCode result = uut.getHealth();
+
+        assertEquals(StatusCode.CA_UNREACHABLE, result);
+        assertTrue(tmp.renameTo(f));
+    }
+
+    @Test
     public void testFetchingValidPrincipals() {
 
         Validation<StatusCode, Set<Principals>> output = uut.getValidPrincipals();
@@ -215,6 +227,6 @@ public class X509AuthAdminTest {
     }
 
     private Principals getFreshPrincipals() {
-        return new Principals("Jack", "Device", 1, ++deviceCounter);
+        return new Principals("Jack", "Device", 1, ++testCounter);
     }
 }

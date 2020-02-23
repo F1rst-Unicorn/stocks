@@ -37,13 +37,12 @@ public class UpdateBackend extends FailSafeDatabaseHandler {
 
     public Validation<StatusCode, Stream<Update>> get() {
         return runFunction(context -> {
-            Stream<Update> dbResult = Stream.of(1).flatMap(
-                    i -> context
+            Stream<Update> dbResult = context
                     .selectFrom(UPDATES)
                     .stream()
                     .map(record -> new Update(
                             record.getTableName(),
-                            record.getLastUpdate().toInstant())));
+                            record.getLastUpdate().toInstant()));
             return Validation.success(dbResult);
         });
     }

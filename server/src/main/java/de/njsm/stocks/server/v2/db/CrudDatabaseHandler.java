@@ -57,12 +57,11 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
 
     public Validation<StatusCode, Stream<R>> get() {
         return runFunction(context -> {
-            Stream<R> result = Stream.of(1).flatMap(
-                    i -> context
+            Stream<R> result = context
                             .selectFrom(getTable())
                             .fetchSize(1024)
                             .stream()
-                            .map(getDtoMap()));
+                            .map(getDtoMap());
 
             return Validation.success(result);
         });

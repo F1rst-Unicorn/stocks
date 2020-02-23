@@ -139,4 +139,31 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.NOT_FOUND, result);
     }
+
+    @Test
+    public void foodToBuyIsMarked() {
+        Food data = new Food(1, "Carrot", 0, true, Period.ZERO, 1);
+
+        StatusCode result = uut.setToBuyStatus(data);
+
+        assertEquals(StatusCode.SUCCESS, result);
+    }
+
+    @Test
+    public void foodToBuyWithInvalidVersionIsNotMarked() {
+        Food data = new Food(1, "Carrot", 2, true, Period.ZERO, 1);
+
+        StatusCode result = uut.setToBuyStatus(data);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
+
+    @Test
+    public void missingFoodToBuyIsReported() {
+        Food data = new Food(100, "Beer", 1, true, Period.ZERO, 1);
+
+        StatusCode result = uut.setToBuyStatus(data);
+
+        assertEquals(StatusCode.NOT_FOUND, result);
+    }
 }

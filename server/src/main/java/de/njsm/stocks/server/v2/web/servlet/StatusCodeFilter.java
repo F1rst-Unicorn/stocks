@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.web.servlet;
 
-import de.njsm.stocks.server.v2.web.Endpoint;
 import de.njsm.stocks.server.v2.web.data.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +32,7 @@ import java.io.IOException;
 @Provider
 public class StatusCodeFilter implements ContainerResponseFilter {
 
-    private static final Logger LOG = LogManager.getLogger(Endpoint.class);
+    private static final Logger LOG = LogManager.getLogger(StatusCodeFilter.class);
 
     @Override
     public void filter(ContainerRequestContext crc,

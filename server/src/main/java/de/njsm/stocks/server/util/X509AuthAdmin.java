@@ -168,15 +168,13 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
 
     @Override
     public StatusCode getHealth() {
-        return runCommand(dummy -> {
-            // Assume that the certificate for the first device always exists
-            Validation<StatusCode, String> probe = getCertificate(1);
-            if (probe.isFail()) {
-                return probe.fail();
-            } else {
-                return StatusCode.SUCCESS;
-            }
-        });
+        // Assume that the certificate for the first device always exists
+        Validation<StatusCode, String> probe = getCertificate(1);
+        if (probe.isFail()) {
+            return probe.fail();
+        } else {
+            return StatusCode.SUCCESS;
+        }
     }
 
     @Override
@@ -208,7 +206,7 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
         if (fields.length != 6)
             return null;
 
-        if (! fields[0].equals("V"))
+        if (!fields[0].equals("V"))
             return null;
 
         if (line.matches("^(.*/)?CN=stocks server(/.*)?$"))

@@ -24,7 +24,9 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -42,11 +44,24 @@ public abstract class DbTestCase {
 
     public static final int CIRCUIT_BREAKER_TIMEOUT = 1000;
 
-    @Before
-    public void resetDatabase() throws SQLException {
-        ComboPooledDataSource ds = new ComboPooledDataSource();
+    private static ComboPooledDataSource ds;
+
+    @BeforeClass
+    public static void beforeClass() {
+        ds = new ComboPooledDataSource();
         ds.setJdbcUrl(getUrl());
         ds.setProperties(getPostgresqlProperties(System.getProperties()));
+        ds.setMaxPoolSize(1);
+        ds.setMinPoolSize(1);
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        ds.close();
+    }
+
+    @Before
+    public void resetDatabase() throws SQLException {
         factory = new ConnectionFactory(ds);
         connection = factory.getConnection();
         SampleData.insertSampleData(connection);
