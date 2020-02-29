@@ -21,9 +21,8 @@ package de.njsm.stocks.server.util;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.netflix.hystrix.Hystrix;
-import org.quartz.SchedulerException;
+import org.quartz.impl.StdScheduler;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import rx.schedulers.Schedulers;
@@ -72,12 +71,8 @@ public class ServletCleaner implements ServletContextListener {
     private void closeQuartzThreadPool(ServletContextEvent sce) {
         ApplicationContext springContext = WebApplicationContextUtils.getWebApplicationContext(sce.getServletContext());
         if (springContext != null) {
-            SchedulerFactoryBean ds = springContext.getBean("scheduler", SchedulerFactoryBean.class);
-            try {
-                ds.getScheduler().shutdown(true);
-            } catch (SchedulerException e) {
-                sce.getServletContext().log("Quartz shutdown failed", e);
-            }
+            StdScheduler ds = springContext.getBean("scheduler", StdScheduler.class);
+            ds.shutdown(true);
         }
     }
 
