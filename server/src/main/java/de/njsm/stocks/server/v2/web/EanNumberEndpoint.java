@@ -26,6 +26,7 @@ import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
@@ -37,6 +38,7 @@ public class EanNumberEndpoint extends Endpoint {
 
     private EanNumberManager manager;
 
+    @Inject
     public EanNumberEndpoint(EanNumberManager manager) {
         this.manager = manager;
     }

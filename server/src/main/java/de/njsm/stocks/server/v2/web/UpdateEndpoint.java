@@ -25,6 +25,7 @@ import de.njsm.stocks.server.v2.business.data.Update;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -37,6 +38,7 @@ public class UpdateEndpoint {
 
     private UpdateManager handler;
 
+    @Inject
     public UpdateEndpoint(UpdateManager handler) {
         this.handler = handler;
     }

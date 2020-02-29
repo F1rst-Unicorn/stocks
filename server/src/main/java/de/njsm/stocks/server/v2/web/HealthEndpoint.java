@@ -25,6 +25,7 @@ import de.njsm.stocks.server.v2.business.data.Health;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
 import fj.data.Validation;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -35,6 +36,7 @@ public class HealthEndpoint {
 
     private HealthManager healthManager;
 
+    @Inject
     public HealthEndpoint(HealthManager healthManager) {
         this.healthManager = healthManager;
     }

@@ -26,6 +26,7 @@ import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
@@ -38,6 +39,7 @@ public class FoodEndpoint extends Endpoint {
 
     private FoodManager manager;
 
+    @Inject
     public FoodEndpoint(FoodManager manager) {
         this.manager = manager;
     }

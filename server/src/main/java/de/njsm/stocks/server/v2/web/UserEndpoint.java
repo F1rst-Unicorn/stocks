@@ -27,6 +27,7 @@ import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
@@ -39,6 +40,7 @@ public class UserEndpoint extends Endpoint {
 
     private UserManager manager;
 
+    @Inject
     public UserEndpoint(UserManager manager) {
         this.manager = manager;
     }

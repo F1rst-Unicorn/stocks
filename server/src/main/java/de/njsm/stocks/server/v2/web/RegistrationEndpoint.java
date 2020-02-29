@@ -27,6 +27,7 @@ import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -37,6 +38,7 @@ public class RegistrationEndpoint extends de.njsm.stocks.server.v2.web.Endpoint 
 
     private TicketAuthoriser authoriser;
 
+    @Inject
     public RegistrationEndpoint(TicketAuthoriser authoriser) {
         this.authoriser = authoriser;
     }
