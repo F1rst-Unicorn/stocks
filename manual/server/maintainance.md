@@ -9,7 +9,7 @@ Both tomcat and nginx write their own log files. All of the files are found in
 
 ## Stocks server log
 
-The log file of the stocks server is at /var/log/stocks-server/stocks.log.
+The log file of the stocks server is at /var/log/tomcat8/stocks.log.
 The used library is log4j2. If the default tomcat server.xml is used the
 log config is stored in /usr/share/tomcat8/webapps/server/WEB-INF/classes/
 log4j2.xml. The server refreshes the config every 30 seconds
@@ -46,6 +46,7 @@ whole state of the stocks server is transferred.
 
 ATTENTION: The stocks CA contains sensitive key material which should be
 handled with care. Make sure to erase the old keys as well as any temporary copy
+to prevent giving access to adversaries.
 
 ## License
 
@@ -57,5 +58,3 @@ or any later version published by the Free Software Foundation;
 with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 A copy of the license is included in the section entitled "GNU
 Free Documentation License".
-
-to prevent giving access to adversaries.

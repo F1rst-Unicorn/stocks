@@ -17,7 +17,7 @@ parts of the system in isolation.
 To run the tests you need a PostgreSQL stocks instance. It can be created by
 importing the `deploy-server/config/schema.sql` script into a newly created
 database. No data imports are needed. Then configure your profile for running
-inside the server pom.xml, or adapt your setup to match an existing
+inside the server `pom.xml`, or adapt your setup to match an existing
 environment. Then run the tests via `mvn test` or from inside your IDE.
 
 ### System Tests
@@ -29,15 +29,13 @@ local environment. The following assumes you use the developer's libvirt VMs.
 
 #### Building a New Package
 
-To create an Arch Linux package from the sources, run the `deploy-server/bin/
-package.sh` script. This will also sign the package with your default GPG key.
-To prevent signing the package, `export NO_SIGNATURE=1`.
-The package will be located in `deploy-server/target`.
+To create an Arch Linux package from the sources, run `makepkg` inside
+`deploy-server`.
 
 #### Testing New Server Creation
 
-After the package has been built all you need to do is running the `server/src/
-test/system/bin/vm-deployment-test.sh` script. It will locate the package you
+After the package has been built all you need to do is running the `server-test/
+bin/vm-deployment-test.sh` script. It will locate the package you
 built depending on the version number.
 After successful setup the server will be tested from a mock client which calls
 on all the available endpoints and verifies the answers from the server. It
@@ -66,10 +64,8 @@ Moreover you need a second VM set up to deploy the client on as described in
 
 #### Building a New Package
 
-To create an Arch Linux package from the sources, run the `deploy-client/bin/
-package.sh` script. This will also sign the package with your default GPG key
-unless you `export NO_SIGNATURE=1`.
-The package will be located in `deploy-client/target`.
+To create an Arch Linux package from the sources, run `makepkg` inside
+`deploy-client`.
 
 #### Testing New Clients
 
@@ -98,4 +94,3 @@ or any later version published by the Free Software Foundation;
 with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 A copy of the license is included in the section entitled "GNU
 Free Documentation License".
-
