@@ -25,8 +25,6 @@ import de.njsm.stocks.server.util.HystrixProducer;
 import de.njsm.stocks.server.util.HystrixWrapper;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -35,8 +33,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLException> {
-
-    private static final Logger LOG = LogManager.getLogger(FailSafeDatabaseHandler.class);
 
     private String resourceIdentifier;
 
@@ -103,9 +99,6 @@ public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLEx
                 else
                     throw e;
             }
-
         };
     }
-
-
 }

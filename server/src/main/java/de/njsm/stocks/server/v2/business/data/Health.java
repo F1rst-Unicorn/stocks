@@ -35,15 +35,9 @@ public class Health {
 
     public boolean ca;
 
-    public Health() {}
-
     public Health(boolean database, boolean ca) {
         this.database = database;
         this.ca = ca;
-    }
-
-    public static Health allFail() {
-        return new Health(false, false);
     }
 
     public Validation<StatusCode, Health> toValidation() {

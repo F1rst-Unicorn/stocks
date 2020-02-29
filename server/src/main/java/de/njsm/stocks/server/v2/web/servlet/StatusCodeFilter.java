@@ -42,7 +42,7 @@ public class StatusCodeFilter implements ContainerResponseFilter {
             Response r = (Response) entity;
             javax.ws.rs.core.Response.Status code = r.status.toHttpStatus();
             if (code.getStatusCode() != responseContext.getStatus()) {
-                LOG.debug("HTTP status set from {} to {}", responseContext.getStatusInfo().getReasonPhrase(), code);
+                LOG.debug("HTTP status set from {} to {}", responseContext.getStatus(), code);
             }
             responseContext.setStatus(code.getStatusCode());
         }

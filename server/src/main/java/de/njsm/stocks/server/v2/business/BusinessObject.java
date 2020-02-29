@@ -67,7 +67,7 @@ public class BusinessObject {
      * reported to the client and there is no point in repeating it.
      */
     <O> Validation<StatusCode, O> runAsynchronously(AsyncResponse r, Producer<Validation<StatusCode, O>> operation) {
-        r.register((CompletionCallback) t -> finishTransaction(StatusCode.SUCCESS));
+        r.register((CompletionCallback) this::finishTransaction);
         return operation.call();
     }
 
@@ -85,14 +85,10 @@ public class BusinessObject {
         }
     }
 
-    StatusCode finishTransaction(StatusCode carry) {
-        if (carry.isFail()) {
+    void finishTransaction(Throwable t) {
+        if (t != null)
             dbHandler.rollback();
-            return carry;
-        } else {
-            return dbHandler.commit();
-        }
+        else
+            dbHandler.commit();
     }
-
-
 }

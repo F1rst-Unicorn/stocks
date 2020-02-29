@@ -108,10 +108,10 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
     static <O> Validation<StatusCode, O> lookForSqlException(RuntimeException e) throws RuntimeException {
         Throwable cause = e;
         while (cause != null) {
-            if (cause instanceof SQLException) {
+            if (cause instanceof SQLException)
                 if (isSerialisationConflict((SQLException) cause))
                     return Validation.fail(StatusCode.SERIALISATION_CONFLICT);
-            }
+
             cause = cause.getCause();
         }
         throw e;

@@ -140,9 +140,9 @@ public class BusinessObjectTest {
     public void committingWorks() {
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.finishTransaction(StatusCode.SUCCESS);
+        Validation<StatusCode, StatusCode> result = uut.finishTransaction(StatusCode.SUCCESS.toValidation());
 
-        assertEquals(StatusCode.SUCCESS, result);
+        assertEquals(StatusCode.SUCCESS, result.success());
         Mockito.verify(backend).commit();
     }
 
@@ -150,9 +150,9 @@ public class BusinessObjectTest {
     public void failingCommitIsPropagated() {
         Mockito.when(backend.commit()).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        StatusCode result = uut.finishTransaction(StatusCode.SUCCESS);
+        Validation<StatusCode, StatusCode> result = uut.finishTransaction(StatusCode.SUCCESS.toValidation());
 
-        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
         Mockito.verify(backend).commit();
     }
 
@@ -160,9 +160,9 @@ public class BusinessObjectTest {
     public void rollingBackWorks() {
         Mockito.when(backend.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.finishTransaction(StatusCode.DATABASE_UNREACHABLE);
+        Validation<StatusCode, StatusCode> result = uut.finishTransaction(StatusCode.DATABASE_UNREACHABLE.toValidation());
 
-        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
         Mockito.verify(backend).rollback();
     }
 
@@ -198,4 +198,19 @@ public class BusinessObjectTest {
         Mockito.verify(backend).rollback();
     }
 
+    @Test
+    public void noThrowableLeadsToCommit() {
+
+        uut.finishTransaction((Throwable) null);
+
+        Mockito.verify(backend).commit();
+    }
+
+    @Test
+    public void throwableLeadsToRollback() {
+
+        uut.finishTransaction(new Exception("test"));
+
+        Mockito.verify(backend).rollback();
+    }
 }

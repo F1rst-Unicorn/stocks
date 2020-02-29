@@ -157,6 +157,24 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         assertTrue(getConnectionFactory().getConnection().isReadOnly());
     }
 
+    @Test
+    public void nestedSqlExceptionIsForwarded() {
+        StatusCode result = uut.runCommand(c -> {
+            throw new RuntimeException("", new SQLException("", "40001", null));
+        });
+
+        assertEquals(StatusCode.SERIALISATION_CONFLICT, result);
+    }
+
+    @Test
+    public void sqlExceptionIsForwarded() {
+        StatusCode result = uut.runCommand(c -> {
+            throw new SQLException("", "40001", null);
+        });
+
+        assertEquals(StatusCode.SERIALISATION_CONFLICT, result);
+    }
+
     /**
      * Example taken from https://www.postgresql.org/docs/11/transaction-iso.html#XACT-SERIALIZABLE
      */

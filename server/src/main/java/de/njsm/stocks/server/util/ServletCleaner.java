@@ -21,7 +21,6 @@ package de.njsm.stocks.server.util;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.netflix.hystrix.Hystrix;
-import org.glassfish.jersey.internal.guava.Preconditions;
 import org.quartz.SchedulerException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
@@ -89,13 +88,10 @@ public class ServletCleaner implements ServletContextListener {
 
         try {
             Field currentCommandField = ReflectionUtils.findField(Hystrix.class, "currentCommand");
-            Preconditions.checkNotNull(currentCommandField);
-
             ReflectionUtils.makeAccessible(currentCommandField);
 
             @SuppressWarnings("rawtypes")
             ThreadLocal currentCommand = (ThreadLocal) currentCommandField.get(null);
-            Preconditions.checkNotNull(currentCommand);
             currentCommand.remove();
         } catch(Exception e) {
             sce.getServletContext().log("Failed to clean hystrix thread-locals", e);
