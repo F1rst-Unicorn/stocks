@@ -39,7 +39,9 @@ import java.util.concurrent.TimeUnit;
 public class ServletCleaner implements ServletContextListener {
 
     @Override
-    public void contextInitialized(ServletContextEvent sce) {}
+    public void contextInitialized(ServletContextEvent sce) {
+        System.getProperties().setProperty("org.jooq.no-logo", "true");
+    }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
