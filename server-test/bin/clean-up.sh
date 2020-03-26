@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-ssh dp-server "sudo systemctl stop tomcat8;
+ssh dp-server "sudo rm -rf /var/lib/tomcat8/webapp/stocks.war;
+        while [ -d /usr/share/tomcat8/webapp/stocks ] ; do sleep 1 ; done;
         sudo pacman -Rsn stocks-server --noconfirm;
         sudo rm -rf /usr/share/stocks-server;
         sudo -u postgres dropdb stocks;

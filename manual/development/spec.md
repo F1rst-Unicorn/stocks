@@ -164,7 +164,7 @@ certificate has to be presented here.
 
 #### Health
 
-`GET /health`: Inform about server health
+`GET /stocks/health`: Inform about server health
 
 It performs one test for DB connectivity and one for CA availability.
 

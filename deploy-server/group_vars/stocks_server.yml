@@ -17,13 +17,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ---
-stocks_assume_repo_installed: False
+stocks_use_official_repo: False
 stocks_package_directory: "{{ playbook_dir }}"
 
-stocks_mysql_admin_password: ""
-stocks_mysql_stocks_password: "linux"
+stocks_nginx_managed: False
+stocks_nginx_enable_site: True
 
-stocks_postgresql_ansible_host: "dp-server"
+stocks_tomcat_root: "/usr/share/tomcat8/webapp"
+
 stocks_postgresql_options:
   user: stocks
   password: linux

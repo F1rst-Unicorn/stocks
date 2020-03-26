@@ -33,7 +33,7 @@ public class HealthTest {
         given()
                 .log().ifValidationFails().
         when()
-                .get(TestSuite.DOMAIN + "/health").
+                .get(TestSuite.DOMAIN + "/stocks/health").
         then()
                 .log().ifValidationFails()
                 .statusCode(200)

@@ -18,11 +18,8 @@
 
 ## arg 1:  the new package version
 post_install() {
-
     mkdir -p /usr/share/stocks-server/root/nginx
-
     chown -R tomcat8:tomcat8 /usr/share/stocks-server/root
-
     echo "See /usr/share/doc/stocks-server/server-installation.md for setup instructions"
 }
 
