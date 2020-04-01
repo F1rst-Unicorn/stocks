@@ -139,4 +139,10 @@ changeBuildType(RelativeId("Build")) {
             enabled = false
         }
     }
+
+    requirements {
+        remove {
+            exists("env.ANDROID_HOME")
+        }
+    }
 }
