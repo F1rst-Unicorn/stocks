@@ -21,6 +21,7 @@
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
 SERVER="dp-server"
+DEVICE=emulator-5554
 
 DEVICE_ID=$(cat $STOCKS_ROOT/server-test/target/02_id)
 TICKET_VALUE=$(cat $STOCKS_ROOT/server-test/target/02_ticket)
@@ -45,11 +46,6 @@ if [[ -z $ANDROID_HOME ]] ; then
         exit 1
 fi
 
-cd $ANDROID_HOME/tools
-emulator $EMULATOR_ARGS -use-system-libs -avd dp-android &
-DEVICE=emulator-5554
-cd -
-
 ssh -L 10910:dp-server:10910 -N -o GatewayPorts=yes localhost &
 SSH_1_PID=$!
 ssh -L 10911:dp-server:10911 -N -o GatewayPorts=yes localhost &
@@ -67,9 +63,9 @@ done
 adb -s $DEVICE reverse tcp:10910 tcp:10910
 adb -s $DEVICE reverse tcp:10911 tcp:10911
 adb -s $DEVICE reverse tcp:10912 tcp:10912
-adb uninstall de.njsm.stocks || true
-adb uninstall de.njsm.stocks.test || true
-adb logcat | grep --line-buffered ' [VDIWEF] de\.njsm\.stocks\.' > $LOGCAT &
+adb -s $DEVICE uninstall de.njsm.stocks || true
+adb -s $DEVICE uninstall de.njsm.stocks.test || true
+adb -s $DEVICE logcat | grep --line-buffered ' [VDIWEF] de\.njsm\.stocks\.' > $LOGCAT &
 LOGCAT_PID=$!
 
 sed -i "s/deviceId = 0/deviceId = $DEVICE_ID/g; \
