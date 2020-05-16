@@ -20,7 +20,6 @@
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
-SERVER="dp-server"
 
 DEVICE_ID=$(cat $STOCKS_ROOT/server-test/target/01_id)
 TICKET_VALUE=$(cat $STOCKS_ROOT/server-test/target/01_ticket)
@@ -30,7 +29,9 @@ set -e
 rm -rf $STOCKS_ROOT/client/target/client-server.log
 rm -rf $STOCKS_ROOT/client/target/client-client.log
 
+cd "$STOCKS_ROOT/deploy-client"
 ansible-playbook $STOCKS_ROOT/deploy-client/install.yml
+cd -
 
 echo "##teamcity[testSuiteStarted name='Client System Test']"
 

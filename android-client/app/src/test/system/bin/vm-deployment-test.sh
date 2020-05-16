@@ -41,8 +41,8 @@ else
         EMULATOR_ARGS="-no-window"
 fi
 
-if [[ -z $ANDROID_HOME ]] ; then
-        echo "ANDROID_HOME is not set!"
+if [[ -z $ANDROID_SDK_ROOT ]] ; then
+        echo "ANDROID_SDK_ROOT is not set!"
         exit 1
 fi
 
