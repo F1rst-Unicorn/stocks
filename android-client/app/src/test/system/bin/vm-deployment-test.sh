@@ -20,7 +20,7 @@
 
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
-SERVER="dp-server"
+SERVER="${SERVER:-dp-server-ci.j.njsm.de}"
 DEVICE=emulator-5554
 
 DEVICE_ID=$(cat $STOCKS_ROOT/server-test/target/02_id)
@@ -46,13 +46,6 @@ if [[ -z $ANDROID_SDK_ROOT ]] ; then
         exit 1
 fi
 
-ssh -L 10910:dp-server:10910 -N -o GatewayPorts=yes localhost &
-SSH_1_PID=$!
-ssh -L 10911:dp-server:10911 -N -o GatewayPorts=yes localhost &
-SSH_2_PID=$!
-ssh -L 10912:dp-server:10912 -N -o GatewayPorts=yes localhost &
-SSH_3_PID=$!
-
 adb -s $DEVICE wait-for-device
 BOOTED=$(adb -s $DEVICE shell getprop sys.boot_completed | tr -d '\r')
 while [ "$BOOTED" != "1" ]; do
@@ -60,9 +53,6 @@ while [ "$BOOTED" != "1" ]; do
         BOOTED=$(adb -s $DEVICE shell getprop sys.boot_completed | tr -d '\r')
 done
 
-adb -s $DEVICE reverse tcp:10910 tcp:10910
-adb -s $DEVICE reverse tcp:10911 tcp:10911
-adb -s $DEVICE reverse tcp:10912 tcp:10912
 adb -s $DEVICE uninstall de.njsm.stocks || true
 adb -s $DEVICE uninstall de.njsm.stocks.test || true
 adb -s $DEVICE logcat | grep --line-buffered ' [VDIWEF] de\.njsm\.stocks\.' > $LOGCAT &
@@ -70,6 +60,7 @@ LOGCAT_PID=$!
 
 sed -i "s/deviceId = 0/deviceId = $DEVICE_ID/g; \
     s/ticket = \"\"/ticket = \"$TICKET_VALUE\"/g; \
+    s/server = \"\"/server = \"$SERVER\"/g; \
     s/fingerprint = \"\"/fingerprint = \"$FINGERPRINT\"/g" \
     $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java
 
@@ -82,9 +73,6 @@ RC=$?
 git checkout $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java
 
 kill $LOGCAT_PID
-kill $SSH_1_PID
-kill $SSH_2_PID
-kill $SSH_3_PID
 killall adb
 
 scp dp-server:/var/log/tomcat8/stocks.log \

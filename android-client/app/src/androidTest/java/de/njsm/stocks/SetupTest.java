@@ -77,7 +77,7 @@ public class SetupTest {
     @Test
     public void testRegistration() {
         ServerInputScreen.test()
-                .enterServerName("10.0.2.2")
+                .enterServerName(Properties.server)
                 .next()
                 .next()
                 .assertUser("Jack")
