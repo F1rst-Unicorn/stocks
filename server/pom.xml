@@ -235,6 +235,24 @@
         </dependency>
 
         <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>3.8.7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mattbertolini</groupId>
+            <artifactId>liquibase-slf4j</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13</version>
@@ -285,6 +303,7 @@
                 <de.njsm.stocks.server.v2.db.postgres.sslkey>${user.home}/ssl/db.j.njsm.de.pk8</de.njsm.stocks.server.v2.db.postgres.sslkey>
                 <de.njsm.stocks.server.v2.db.postgres.sslrootcert>${user.home}/ssl/ca.crt</de.njsm.stocks.server.v2.db.postgres.sslrootcert>
                 <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
+                <liquibase.promptOnNonLocalDatabase>false</liquibase.promptOnNonLocalDatabase>
             </properties>
         </profile>
     </profiles>
@@ -323,7 +342,45 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.jooq</groupId>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.8.7</version>
+                <configuration>
+                    <changeLogFile>${basedir}/src/main/resources/migrations/master.xml</changeLogFile>
+                    <driver>org.postgresql.Driver</driver>
+                    <url>
+                        jdbc:postgresql://${de.njsm.stocks.server.v2.db.host}:${de.njsm.stocks.server.v2.db.port}/${de.njsm.stocks.server.v2.db.name}?user=${de.njsm.stocks.server.v2.db.postgres.user}&amp;password=${de.njsm.stocks.server.v2.db.postgres.password}&amp;ssl=${de.njsm.stocks.server.v2.db.postgres.ssl}&amp;sslmode=${de.njsm.stocks.server.v2.db.postgres.sslmode}&amp;sslcert=${de.njsm.stocks.server.v2.db.postgres.sslcert}&amp;sslkey=${de.njsm.stocks.server.v2.db.postgres.sslkey}&amp;sslrootcert=${de.njsm.stocks.server.v2.db.postgres.sslrootcert}&amp;
+                    </url>
+                    <referenceDriver>org.postgresql.Driver</referenceDriver>
+                    <referenceUrl>
+                        jdbc:postgresql://${de.njsm.stocks.server.v2.db.host}:${de.njsm.stocks.server.v2.db.port}/${de.njsm.stocks.server.v2.db.name}?user=${de.njsm.stocks.server.v2.db.postgres.user}&amp;password=${de.njsm.stocks.server.v2.db.postgres.password}&amp;ssl=${de.njsm.stocks.server.v2.db.postgres.ssl}&amp;sslmode=${de.njsm.stocks.server.v2.db.postgres.sslmode}&amp;sslcert=${de.njsm.stocks.server.v2.db.postgres.sslcert}&amp;sslkey=${de.njsm.stocks.server.v2.db.postgres.sslkey}&amp;sslrootcert=${de.njsm.stocks.server.v2.db.postgres.sslrootcert}&amp;
+                    </referenceUrl>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>setup-schema</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>dropAll</goal>
+                            <goal>status</goal>
+                            <goal>update</goal>
+                            <goal>status</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>setup-test-data</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>dropAll</goal>
+                            <goal>status</goal>
+                            <goal>update</goal>
+                            <goal>status</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+            <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
                 <version>3.11.3</version>
                 <executions>
@@ -398,15 +455,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.19.1</version>
-            </plugin>
-        </plugins>
-    </reporting>
-
 </project>

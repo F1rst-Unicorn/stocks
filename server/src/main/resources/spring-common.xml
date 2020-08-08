@@ -104,4 +104,10 @@
         <property name="privilegeSpawnedThreads" value="true" />
         <property name="unreturnedConnectionTimeout" value="15" />
     </bean>
+
+    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase" lazy-init="false">
+        <property name="dataSource" ref="datasource" />
+        <property name="changeLog" value="classpath:migrations/master.xml" />
+        <property name="contexts" value="production" />
+    </bean>
 </beans>

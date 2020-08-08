@@ -10,6 +10,7 @@ build
 # Archlinux packaging
 pkg
 *.pkg.tar.xz
+*.pkg.tar.zst
 
 # IntelliJ files
 .idea

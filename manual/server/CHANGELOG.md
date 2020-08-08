@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Use DB migration framework liquibase so this will be the last time to
+  install DB changes manually
+
 ## [4.7.0.0-1]
 
 ### Added

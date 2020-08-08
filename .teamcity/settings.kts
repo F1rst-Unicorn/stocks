@@ -78,8 +78,8 @@ object Build : BuildType({
     name = "Full Build"
 
     artifactRules = """
-        deploy-server/target/stocks-server-*-any.pkg.tar.xz
-        deploy-client/target/stocks-*-any.pkg.tar.xz
+        deploy-server/target/stocks-server-*-any.pkg.tar.zst
+        deploy-client/target/stocks-*-any.pkg.tar.zst
         android-client/app/build/outputs/apk/app-release-unsigned.apk
         server/target/server.log
         client/target/client-client.log

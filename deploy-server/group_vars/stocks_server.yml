@@ -24,6 +24,7 @@ stocks_nginx_managed: False
 stocks_nginx_enable_site: True
 
 stocks_tomcat_root: "/usr/share/tomcat8/webapp"
+stocks_circuit_breaker_timeout: 5000
 
 stocks_postgresql_options:
   user: stocks

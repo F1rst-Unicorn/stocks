@@ -22,7 +22,7 @@
       remote_pkg_dir: /tmp
       stocks_pkg_dir: "{{ playbook_dir }}"
       stocks_version: 3.0.0.1-1
-      stocks_pkg: stocks-{{ stocks_version }}-any.pkg.tar.xz
+      stocks_pkg: stocks-{{ stocks_version }}-any.pkg.tar.zst
 
 
   remote_user: root
@@ -33,6 +33,4 @@
         dest: "{{ remote_pkg_dir }}"
 
   - name: Install stocks package
-    pacman:
-      name: "{{ remote_pkg_dir }}/{{ stocks_pkg }}"
-      state: present
+    command: "pacman -U --noconfirm {{ remote_pkg_dir }}/{{ stocks_pkg }}"

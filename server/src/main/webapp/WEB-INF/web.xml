@@ -31,6 +31,9 @@
     </context-param>
 
     <listener>
+        <listener-class>de.njsm.stocks.server.util.LiquibaseFixer</listener-class>
+    </listener>
+    <listener>
         <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
     </listener>
     <listener>
