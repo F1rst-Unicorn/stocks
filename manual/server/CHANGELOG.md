@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.8.0.0-1]
+
 ### Added
 
 * Use DB migration framework liquibase so this will be the last time to
