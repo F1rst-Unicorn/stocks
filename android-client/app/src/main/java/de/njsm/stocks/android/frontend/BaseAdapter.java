@@ -33,14 +33,30 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
 
     private Consumer<View> onClickListener;
 
+    private Consumer<View> onLongClickListener;
+
     public BaseAdapter(LiveData<List<T>> data,
                        Consumer<View> onClickListener) {
         this.data = data;
         this.onClickListener = onClickListener;
     }
 
+    public BaseAdapter(LiveData<List<T>> data, Consumer<View> onClickListener, Consumer<View> onLongClickListener) {
+        this.data = data;
+        this.onClickListener = onClickListener;
+        this.onLongClickListener = onLongClickListener;
+    }
+
     protected void onClick(View v) {
         onClickListener.accept(v);
+    }
+
+    protected boolean onLongClick(View v) {
+        if (onLongClickListener != null) {
+            onLongClickListener.accept(v);
+            return true;
+        } else
+            return false;
     }
 
     @Override

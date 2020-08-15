@@ -202,6 +202,7 @@ public class AddItemFragment extends BaseFragment {
                     .setPositiveButton(R.string.dialog_ok, this::doNothing)
                     .create()
                     .show();
+            return;
         }
 
         sendItem(finalDate, locId);

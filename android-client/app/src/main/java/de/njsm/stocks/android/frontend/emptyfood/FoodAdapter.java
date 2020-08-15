@@ -25,21 +25,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.BaseAdapter;
 
-import java.util.List;
-
 import static android.view.View.GONE;
 
 public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
-
-    private Consumer<View> onLongClickListener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -69,8 +69,7 @@ public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
     }
 
     FoodAdapter(LiveData<List<Food>> data, Consumer<View> onClickListener, Consumer<View> onLongClickListener) {
-        super(data, onClickListener);
-        this.onLongClickListener = onLongClickListener;
+        super(data, onClickListener, onLongClickListener);
     }
 
     @NonNull
@@ -83,11 +82,6 @@ public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
         v.setOnClickListener(this::onClick);
         v.setOnLongClickListener(this::onLongClick);
         return result;
-    }
-
-    private boolean onLongClick(View view) {
-        this.onLongClickListener.accept(view);
-        return true;
     }
 
     @Override

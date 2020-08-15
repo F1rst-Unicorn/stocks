@@ -20,11 +20,12 @@
 package de.njsm.stocks.android.frontend.food;
 
 import androidx.lifecycle.LiveData;
+
+import java.util.List;
+
 import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.repo.FoodRepository;
-
-import java.util.List;
 
 public class FoodToEatViewModel extends FoodViewModel {
 

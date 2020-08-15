@@ -23,6 +23,7 @@ package de.njsm.stocks.android.frontend.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -30,14 +31,15 @@ import androidx.navigation.Navigation;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Config;
-
-import javax.inject.Inject;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
@@ -81,6 +83,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         updaterViewModel.setHost(v);
                     }, k -> k));
             pref.setSummary(backend.getString(Config.SERVER_NAME_CONFIG, ""));
+            EditTextPreference textPreference = (EditTextPreference) pref;
+            textPreference.setText(backend.getString(Config.SERVER_NAME_CONFIG, ""));
         }
 
         configurePortPreference("pref_ca_port", Config.CA_PORT_CONFIG);

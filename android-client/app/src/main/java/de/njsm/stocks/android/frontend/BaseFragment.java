@@ -26,6 +26,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.widget.EditText;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -37,6 +38,10 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import java.util.List;
+import java.util.function.BiConsumer;
+
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Positionable;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
@@ -46,9 +51,6 @@ import de.njsm.stocks.android.frontend.util.SwipeCallback;
 import de.njsm.stocks.android.frontend.util.SwipeSyncCallback;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
-
-import java.util.List;
-import java.util.function.BiConsumer;
 
 public class BaseFragment extends Fragment {
 

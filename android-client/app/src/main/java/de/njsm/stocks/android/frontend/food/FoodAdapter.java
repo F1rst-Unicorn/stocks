@@ -28,17 +28,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.threeten.bp.Instant;
+
+import java.util.List;
+
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.frontend.BaseAdapter;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemAdapter;
-import org.threeten.bp.Instant;
-
-import java.util.List;
 
 import static android.view.View.GONE;
 
@@ -48,15 +51,12 @@ public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
 
     private Resources.Theme theme;
 
-    private final Consumer<View> onLongClickListener;
-
     public FoodAdapter(LiveData<List<FoodView>> data,
                        Resources resources,
                        Resources.Theme theme,
                        Consumer<View> onClickListener,
                        Consumer<View> onLongClickListener) {
-        super(data, onClickListener);
-        this.onLongClickListener = onLongClickListener;
+        super(data, onClickListener, onLongClickListener);
         this.resources = resources;
         this.theme = theme;
     }
@@ -116,11 +116,6 @@ public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
         v.setOnClickListener(this::onClick);
         v.setOnLongClickListener(this::onLongClick);
         return result;
-    }
-
-    private boolean onLongClick(View view) {
-        onLongClickListener.accept(view);
-        return true;
     }
 
     @Override

@@ -41,7 +41,15 @@ public class PreferenceChangeListener<T> implements Preference.OnPreferenceChang
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (newValue instanceof String) {
-            callback.accept(key, transformer.apply((String) newValue));
+            T value;
+
+            try {
+                value = transformer.apply((String) newValue);
+            } catch (NumberFormatException e) {
+                return false;
+            }
+
+            callback.accept(key, value);
             preference.setSummary(String.valueOf(newValue));
         }
         return true;

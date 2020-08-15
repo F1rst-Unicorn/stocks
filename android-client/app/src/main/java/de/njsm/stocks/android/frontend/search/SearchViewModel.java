@@ -20,20 +20,20 @@
 package de.njsm.stocks.android.frontend.search;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
-import de.njsm.stocks.android.db.views.FoodView;
-import de.njsm.stocks.android.repo.FoodRepository;
 
-import javax.inject.Inject;
 import java.util.List;
 
-public class SearchViewModel extends ViewModel {
+import javax.inject.Inject;
 
-    private FoodRepository foodRepository;
+import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
+import de.njsm.stocks.android.repo.FoodRepository;
+
+public class SearchViewModel extends FoodViewModel {
 
     @Inject
     public SearchViewModel(FoodRepository foodRepository) {
-        this.foodRepository = foodRepository;
+        super(foodRepository);
     }
 
     public LiveData<List<FoodView>> search(String searchTerm) {

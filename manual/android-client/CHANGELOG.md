@@ -1,5 +1,12 @@
 # Change Log
 
+## Unreleased
+
+* STOCKS-99: Allow renaming, deleting and mark-for-shopping on all screens
+  showing food types
+
+* STOCKS-99: Improve input validation in settings
+
 ## [3.4.0.0]
 
 ### Added

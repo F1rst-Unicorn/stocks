@@ -24,15 +24,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.frontend.BaseAdapter;
-
-import java.util.List;
 
 import static android.view.View.GONE;
 
@@ -69,9 +71,8 @@ public class AmountAdapter extends BaseAdapter<FoodView, AmountAdapter.ViewHolde
         }
     }
 
-    public AmountAdapter(LiveData<List<FoodView>> data,
-                  Consumer<View> onClickListener) {
-        super(data, onClickListener);
+    public AmountAdapter(LiveData<List<FoodView>> data, Consumer<View> onClickListener, Consumer<View> onLongClickListener) {
+        super(data, onClickListener, onLongClickListener);
     }
 
     @NonNull
@@ -82,6 +83,7 @@ public class AmountAdapter extends BaseAdapter<FoodView, AmountAdapter.ViewHolde
         ViewHolder result =  new AmountAdapter.ViewHolder(v);
         v.setTag(result);
         v.setOnClickListener(this::onClick);
+        v.setOnLongClickListener(this::onLongClick);
         return result;
     }
 

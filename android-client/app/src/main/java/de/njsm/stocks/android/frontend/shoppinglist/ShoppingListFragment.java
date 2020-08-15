@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -32,15 +33,18 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodView;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodToBuyInteractor;
 import de.njsm.stocks.android.frontend.search.AmountAdapter;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class ShoppingListFragment extends BaseFragment {
 
@@ -67,9 +71,13 @@ public class ShoppingListFragment extends BaseFragment {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodToBuyViewModel.class);
         data = viewModel.getFoodToBuy();
 
+        FoodEditInteractor editor = new FoodEditInteractor(this,
+                viewModel::renameFood,
+                viewModel::getFood);
         AmountAdapter adapter = new AmountAdapter(
                 data,
-                this::onClick);
+                this::onClick,
+                v -> editInternally(v, viewModel.getFoodToBuy(), R.string.dialog_rename_food, (f,s) -> editor.observeEditing(f.mapToFood(), s)));
         data.observe(this, i -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
