@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+* STOCKS-49: Add search suggestions in dropdown while searching
+
 * STOCKS-99: Allow renaming, deleting and mark-for-shopping on all screens
   showing food types
 
