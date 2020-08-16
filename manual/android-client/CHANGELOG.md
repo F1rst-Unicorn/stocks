@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.5.0.0]
+
 ### Added
 
 * STOCKS-49: Add search suggestions in dropdown while searching

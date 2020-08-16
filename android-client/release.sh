@@ -54,6 +54,9 @@ echo Patching version number
 sed -i "s/versionName .*/versionName \"$VERSION\"/g" \
         "$STOCKS_ROOT"/android-client/app/build.gradle
 
+sed -i -e "/## Unreleased/a ## [$VERSION]" -e "/## Unreleased/G" \
+        "$STOCKS_ROOT/manual/android-client/CHANGELOG.md"
+
 echo Building release
 set -e
 
@@ -67,16 +70,11 @@ set -e
 echo Tagging release
 git add -A
 git commit -m "Increment android client version to $VERSION"
+zsh
 git tag -a "android-client-$VERSION" -m \
         "Tagging android client version $VERSION"
 git push --all
 git push --tags
-
-echo Archive release
-mkdir -p ~/Software/stocks/
-cp "$STOCKS_ROOT"/android-client/app/build/outputs/apk/release/app-release.apk \
-        ~/Software/stocks/stocks-android-"$VERSION".apk
-chmod a-wx ~/Software/stocks/*
 
 echo Publish release
 scp ~/Software/stocks/stocks-android-"$VERSION".apk \
