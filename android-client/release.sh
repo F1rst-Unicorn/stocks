@@ -77,7 +77,8 @@ git push --all
 git push --tags
 
 echo Publish release
-scp ~/Software/stocks/stocks-android-"$VERSION".apk \
+scp "$STOCKS_ROOT"/android-client/app/build/outputs/apk/release/app-release.apk \
         web-1.j.njsm.de:/tmp/
-ssh -t web-1.j.njsm.de sudo /root/bin/publish-stocks
+ssh -t web-1.j.njsm.de "sudo rm /srv/http/www/stocks/android/* ;
+        sudo mv /tmp/app-release.apk /srv/http/www/stocks/android/stocks-android-$VERSION.apk"
 
