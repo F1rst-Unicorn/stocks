@@ -58,5 +58,9 @@
             android:key="pref_crash_logs"
             android:title="@string/title_crash_logs" />
 
+        <Preference
+            android:key="pref_clear_search_history"
+            android:title="@string/title_clear_search_history" />
+
     </PreferenceCategory>
 </PreferenceScreen>

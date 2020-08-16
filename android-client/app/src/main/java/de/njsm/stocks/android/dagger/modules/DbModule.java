@@ -20,13 +20,23 @@
 package de.njsm.stocks.android.dagger.modules;
 
 import android.app.Application;
+
 import androidx.room.Room;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.android.db.StocksDatabase;
-import de.njsm.stocks.android.db.dao.*;
-
-import javax.inject.Singleton;
+import de.njsm.stocks.android.db.dao.EanNumberDao;
+import de.njsm.stocks.android.db.dao.FoodDao;
+import de.njsm.stocks.android.db.dao.FoodItemDao;
+import de.njsm.stocks.android.db.dao.LocationDao;
+import de.njsm.stocks.android.db.dao.SearchSuggestionDao;
+import de.njsm.stocks.android.db.dao.UpdateDao;
+import de.njsm.stocks.android.db.dao.UserDao;
+import de.njsm.stocks.android.db.dao.UserDeviceDao;
+import de.njsm.stocks.android.db.migrations.Migration_27_28;
 
 @Module
 public abstract class DbModule {
@@ -35,7 +45,9 @@ public abstract class DbModule {
     @Singleton
     static StocksDatabase provideDatabase(Application context) {
         return Room.databaseBuilder(context, StocksDatabase.class, "stocks.db")
-                .fallbackToDestructiveMigration()
+                .addMigrations(
+                        new Migration_27_28()
+                )
                 .build();
     }
 
@@ -72,5 +84,10 @@ public abstract class DbModule {
     @Provides
     static EanNumberDao provideEanNumberDao(StocksDatabase database) {
         return database.eanNumberDao();
+    }
+
+    @Provides
+    static SearchSuggestionDao provideSearchSuggestionDao(StocksDatabase database) {
+        return database.searchSuggestionDao();
     }
 }

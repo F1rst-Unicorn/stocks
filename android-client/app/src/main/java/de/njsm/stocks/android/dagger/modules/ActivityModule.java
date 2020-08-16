@@ -21,6 +21,7 @@ package de.njsm.stocks.android.dagger.modules;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
+import de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider;
 import de.njsm.stocks.android.frontend.additem.AddItemFragment;
 import de.njsm.stocks.android.frontend.additem.EditItemFragment;
 import de.njsm.stocks.android.frontend.allfood.AllFoodFragment;
@@ -92,4 +93,7 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract MainActivity contributeMainActivity();
+
+    @ContributesAndroidInjector
+    abstract RecentSearchSuggestionsProvider contributeRecentSearchSuggestionsProvider();
 }

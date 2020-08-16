@@ -20,25 +20,32 @@
 package de.njsm.stocks.android;
 
 import android.app.Activity;
+import android.content.ContentProvider;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
 import com.jakewharton.threetenabp.AndroidThreeTen;
+
+import javax.inject.Inject;
+
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
+import dagger.android.HasContentProviderInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import de.njsm.stocks.android.dagger.DaggerRootComponent;
 import de.njsm.stocks.android.util.ExceptionHandler;
 
-import javax.inject.Inject;
-
 public class Application
         extends android.app.Application
-        implements HasActivityInjector, HasSupportFragmentInjector {
+        implements HasActivityInjector, HasSupportFragmentInjector, HasContentProviderInjector {
 
     private DispatchingAndroidInjector<Activity> injector;
 
     private DispatchingAndroidInjector<Fragment> fragmentInjector;
+
+    private DispatchingAndroidInjector<ContentProvider> contentProviderInjector;
 
     @Override public void onCreate() {
         super.onCreate();
@@ -64,6 +71,11 @@ public class Application
         this.fragmentInjector = fragmentInjector;
     }
 
+    @Inject
+    public void setContentProviderInjector(@NonNull DispatchingAndroidInjector<ContentProvider> contentProviderInjector) {
+        this.contentProviderInjector = contentProviderInjector;
+    }
+
     @NonNull
     @Override
     public AndroidInjector<Activity> activityInjector() {
@@ -74,5 +86,11 @@ public class Application
     @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentInjector;
+    }
+
+    @NonNull
+    @Override
+    public AndroidInjector<ContentProvider> contentProviderInjector() {
+        return contentProviderInjector;
     }
 }

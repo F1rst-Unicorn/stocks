@@ -32,10 +32,13 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.network.server.StatusCode;
@@ -50,6 +53,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private SettingsUpdaterViewModel updaterViewModel;
 
     private SharedPreferences backend;
+
+    private Executor executor;
 
     @Override
     public void onAttach(Context context) {
@@ -73,6 +78,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         pref = findPreference("pref_crash_logs");
         if (pref != null)
             pref.setOnPreferenceClickListener(this::goToCrashLogs);
+
+        pref = findPreference("pref_clear_search_history");
+        if (pref != null)
+            pref.setOnPreferenceClickListener(this::clearSearchHistory);
 
         pref = findPreference("pref_server");
         if (pref != null) {
@@ -118,6 +127,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         this.viewModelFactory = viewModelFactory;
     }
 
+    @Inject
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
+    }
+
     private boolean full_sync(Preference preference) {
         LiveData<StatusCode> result = refreshViewModel.refreshComplete();
         result.observe(requireActivity(), data ->
@@ -131,4 +145,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         return true;
     }
 
+    private boolean clearSearchHistory(Preference preference) {
+        executor.execute(() -> {
+            RecentSearchSuggestionsProvider.clearSearchHistory(requireContext());
+        });
+        return true;
+    }
 }

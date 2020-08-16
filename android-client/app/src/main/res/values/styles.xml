@@ -26,6 +26,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="textAppearanceSearchResultTitle">@style/StocksTheme.AutoCompleteTextView</item>
+        <item name="autoCompleteTextViewStyle">@style/StocksTheme.SearchDropdownBackground</item>
     </style>
 
     <style name="StocksTheme.NoActionBar">
@@ -80,4 +82,11 @@
 
     <style name="StocksTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="StocksTheme.AutoCompleteTextView" parent="TextAppearance.AppCompat.SearchResult.Title">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="StocksTheme.SearchDropdownBackground" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:popupBackground">#ffffff</item>
+    </style>
 </resources>

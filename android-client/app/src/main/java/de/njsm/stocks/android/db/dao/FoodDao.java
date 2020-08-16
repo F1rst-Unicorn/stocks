@@ -19,6 +19,12 @@
 
 package de.njsm.stocks.android.db.dao;
 
+import android.app.SearchManager;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.database.Cursor;
+import android.provider.BaseColumns;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;

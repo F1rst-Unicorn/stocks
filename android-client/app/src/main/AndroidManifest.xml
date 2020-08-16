@@ -62,6 +62,10 @@
         <service
             android:name=".android.service.SetupService"
             android:exported="false" />
+        <provider
+            android:name=".android.contentprovider.RecentSearchSuggestionsProvider"
+            android:authorities="de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

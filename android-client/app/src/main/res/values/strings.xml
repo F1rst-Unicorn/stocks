@@ -158,8 +158,9 @@
     <string name="title_connection">Connection</string>
     <string name="title_troubleshooting">Troubleshooting</string>
     <string name="title_expiration_offset">Default expiration period</string>
-    <string name="dialog_default_expiration_offset">Set default expiration days</string>
+    <string name="title_clear_search_history">Clear Search History</string>
     <string name="title_location">Default Location</string>
+    <string name="dialog_default_expiration_offset">Set default expiration days</string>
     <string name="dialog_default_location">Set default location</string>
 
 </resources>

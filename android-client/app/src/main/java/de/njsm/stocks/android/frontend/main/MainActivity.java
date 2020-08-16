@@ -24,8 +24,10 @@ import android.Manifest;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,11 +37,18 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import java.util.concurrent.Executor;
+
+import javax.inject.Inject;
+
 import dagger.android.AndroidInjection;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider;
 import de.njsm.stocks.android.util.Logger;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
 
     private DrawerLayout drawerLayout;
+
+    private Executor executor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +94,28 @@ public class MainActivity extends AppCompatActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            executor.execute(() -> {
+                RecentSearchSuggestionsProvider.saveSearchTerm(this, query);
+            });
             OutlineFragmentDirections.ActionNavFragmentOutlineToNavFragmentSearch args =
                     OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentSearch(query);
             navController.navigate(args);
+        }
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            Uri data = intent.getData();
+            if (data == null) {
+                return;
+            }
+
+            String rawFoodId = data.getLastPathSegment();
+            try {
+                int id = Integer.parseInt(rawFoodId);
+                OutlineFragmentDirections.ActionNavFragmentOutlineToNavFragmentFoodItem args =
+                        OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentFoodItem(id);
+                navController.navigate(args);
+            } catch (NumberFormatException e) {
+                LOG.e("Received invalid data to view from URI " + data, e);
+            }
         }
     }
 
@@ -154,5 +184,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             LOG.d("Got invalid result from activity");
         }
+    }
+
+    @Inject
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
     }
 }

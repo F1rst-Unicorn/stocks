@@ -22,4 +22,6 @@
 
 <searchable xmlns:android="http://schemas.android.com/apk/res/android"
     android:hint="@string/search_hint"
-    android:label="@string/app_name" />
+    android:label="@string/app_name"
+    android:searchSuggestAuthority="de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider"
+    android:searchSuggestIntentData="content://de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider/food" />
