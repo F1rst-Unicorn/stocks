@@ -97,7 +97,7 @@
         <property name="maxPoolSize" value="16" />
         <property name="minPoolSize" value="2" />
         <property name="maxIdleTimeExcessConnections" value="900" />
-        <property name="checkoutTimeout" value="1000" />
+        <property name="checkoutTimeout" ref="circuitBreakerTimeout" />
         <property name="jdbcUrl" ref="dbUrl" />
         <property name="properties" ref="dbConfig" />
         <property name="contextClassLoaderSource" value="library" />
