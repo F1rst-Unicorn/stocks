@@ -27,4 +27,5 @@
          http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd">
 
     <include file="0001-schema.sql" relativeToChangelogFile="true"/>
+    <include file="0002-temporal-data.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

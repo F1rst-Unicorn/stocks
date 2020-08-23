@@ -1,0 +1,1028 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        context="production">
+
+    <changeSet id="1" author="admin">
+        <sql endDelimiter=";;">
+            alter table "User" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "User" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
+            alter table "User" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "User" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
+
+            create or replace function user_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+            as
+            $$
+            declare
+                violating_row_count int;
+            begin
+                select count(*)
+                into violating_row_count
+                from "User" as u1
+                where u1."ID" is null
+                   or 1 &lt; (
+                    select count(*)
+                    from "User" as u2
+                    where u1."ID" = u2."ID"
+                      and u1.valid_time_start &lt; u2.valid_time_end
+                      and u2.valid_time_start &lt; u1.valid_time_end
+                      and u1.transaction_time_end = 'infinity'
+                      and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            alter table "User" drop constraint "User_pkey" cascade;;
+            create index user_pkey on "User" ("ID");;
+            create constraint trigger "user_bitemporal_primary_key"
+                after insert or update or delete
+                on "User"
+                deferrable initially deferred
+                for each row
+            execute function user_bitemporal_primary_key();;
+
+            create or replace function user_contiguous_primary_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select count(*)
+                into count
+                from "User" u1,
+                     "User" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                  and u1."ID" = u2."ID"
+                  and u1.transaction_time_end = 'infinity'
+                  and u2.transaction_time_end = 'infinity'
+                  and not exists(
+                        select *
+                        from "User" u3
+                        where u3."ID" = u1."ID"
+                          and u3.transaction_time_end = 'infinity'
+                          and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                            and (u1.valid_time_end &lt; u3.valid_time_end))
+                            or ((u3.valid_time_start &lt; u2.valid_time_start)
+                                and
+                                u2.valid_time_start &lt;= u3.valid_time_end))
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            create constraint trigger "user_contiguous_primary_key"
+                after insert or update or delete
+                on "User"
+                deferrable initially deferred
+                for each row
+            execute function user_contiguous_primary_key();;
+        </sql>
+        <rollback>
+            drop index user_pkey;
+            drop function user_bitemporal_primary_key cascade;
+            drop function user_contiguous_primary_key cascade;
+            delete
+            from "User"
+            where transaction_time_end != 'infinity';
+            alter table "User" add constraint "User_pkey" primary key ("ID");
+            alter table "User_device" add constraint device_points_to_user foreign key (belongs_to) references "User" ("ID") on update cascade on delete cascade;
+            alter table "Food_item" add constraint "Food_item_buys_fkey" foreign key (buys) references "User" ("ID") on update cascade on delete restrict;
+            alter table "User" drop column transaction_time_end;
+            alter table "User" drop column transaction_time_start;
+            alter table "User" drop column valid_time_end;
+            alter table "User" drop column valid_time_start;
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="admin">
+        <sql endDelimiter=";;">
+            alter table "Location" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "Location" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
+            alter table "Location" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "Location" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
+
+            create or replace function location_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+            AS
+            $$
+            declare
+                violating_row_count int;
+            begin
+                select count(*)
+                into violating_row_count
+                from "Location" as u1
+                where u1."ID" is null
+                   or 1 &lt; (
+                    select count(*)
+                    from "Location" as u2
+                    where u1."ID" = u2."ID"
+                      and u1.valid_time_start &lt; u2.valid_time_end
+                      and u2.valid_time_start &lt; u1.valid_time_end
+                      and u1.transaction_time_end = 'infinity'
+                      and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            alter table "Location" drop constraint "Location_pkey" cascade;;
+            create index location_pkey on "Location" ("ID");;
+            create constraint trigger "location_bitemporal_primary_key"
+                after insert or update or delete
+                on "Location"
+                deferrable initially deferred
+                for each row
+            execute function location_bitemporal_primary_key();;
+
+            create or replace function location_contiguous_primary_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select count(*)
+                into count
+                from "Location" u1,
+                     "Location" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                  and u1."ID" = u2."ID"
+                  and u1.transaction_time_end = 'infinity'
+                  and u2.transaction_time_end = 'infinity'
+                  and not exists(
+                        select *
+                        from "Location" u3
+                        where u3."ID" = u1."ID"
+                          and u3.transaction_time_end = 'infinity'
+                          and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                            and (u1.valid_time_end &lt; u3.valid_time_end))
+                            or ((u3.valid_time_start &lt; u2.valid_time_start)
+                                and
+                                u2.valid_time_start &lt;= u3.valid_time_end))
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            create constraint trigger "location_contiguous_primary_key"
+                after insert or update or delete
+                on "Location"
+                deferrable initially deferred
+                for each row
+            execute function location_contiguous_primary_key();;
+        </sql>
+        <rollback>
+            drop index location_pkey;
+            drop function location_bitemporal_primary_key cascade;
+            drop function location_contiguous_primary_key cascade;
+            delete
+            from "Location"
+            where transaction_time_end != 'infinity';
+            alter table "Location" add constraint "Location_pkey" primary key ("ID");
+            alter table "Food" add constraint "Food_location_fkey" foreign key (location) references "Location" ("ID") on update cascade on delete set null;
+            alter table "Food_item" add constraint "Food_item_stored_in_fkey" foreign key (stored_in) references "Location" ("ID") on update cascade on delete restrict;
+            alter table "Location" drop column transaction_time_end;
+            alter table "Location" drop column transaction_time_start;
+            alter table "Location" drop column valid_time_end;
+            alter table "Location" drop column valid_time_start;
+        </rollback>
+    </changeSet>
+    <changeSet id="3" author="admin">
+        <sql endDelimiter=";;">
+            alter table "Food" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "Food" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
+            alter table "Food" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "Food" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
+
+            create or replace function food_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+            AS
+            $$
+            declare
+                violating_row_count int;
+            begin
+                select count(*)
+                into violating_row_count
+                from "Food" as u1
+                where u1."ID" is null
+                   or 1 &lt; (
+                    select count(*)
+                    from "Food" as u2
+                    where u1."ID" = u2."ID"
+                      and u1.valid_time_start &lt; u2.valid_time_end
+                      and u2.valid_time_start &lt; u1.valid_time_end
+                      and u1.transaction_time_end = 'infinity'
+                      and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            alter table "Food" drop constraint "Food_pkey" cascade;;
+            create index food_pkey on "Food" ("ID");;
+            create constraint trigger "food_bitemporal_primary_key"
+                after insert or update or delete
+                on "Food"
+                deferrable initially deferred
+                for each row
+            execute function food_bitemporal_primary_key();;
+
+            create or replace function food_contiguous_primary_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select count(*)
+                into count
+                from "Food" u1,
+                     "Food" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                  and u1."ID" = u2."ID"
+                  and u1.transaction_time_end = 'infinity'
+                  and u2.transaction_time_end = 'infinity'
+                  and not exists(
+                        select *
+                        from "Food" u3
+                        where u3."ID" = u1."ID"
+                          and u3.transaction_time_end = 'infinity'
+                          and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                            and (u1.valid_time_end &lt; u3.valid_time_end))
+                            or ((u3.valid_time_start &lt; u2.valid_time_start)
+                                and
+                                u2.valid_time_start &lt;= u3.valid_time_end))
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            create constraint trigger "food_contiguous_primary_key"
+                after insert or update or delete
+                on "Food"
+                deferrable initially deferred
+                for each row
+            execute function food_contiguous_primary_key();;
+        </sql>
+        <rollback>
+            drop index food_pkey;
+            drop function food_bitemporal_primary_key cascade;
+            drop function food_contiguous_primary_key cascade;
+            delete
+            from "Food"
+            where transaction_time_end != 'infinity';
+            alter table "Food" add constraint "Food_pkey" primary key ("ID");
+            alter table "EAN_number" add constraint "EAN_number_identifies_fkey" foreign key (identifies) references "Food" ("ID") on update cascade on delete cascade;
+            alter table "Food_item" add constraint "Food_item_of_type_fkey" foreign key (of_type) references "Food" ("ID") on update cascade on delete cascade;
+            alter table "Food" drop column transaction_time_end;
+            alter table "Food" drop column transaction_time_start;
+            alter table "Food" drop column valid_time_end;
+            alter table "Food" drop column valid_time_start;
+        </rollback>
+    </changeSet>
+    <changeSet id="4" author="admin">
+        <sql endDelimiter=";;">
+            alter table "User_device" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "User_device" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
+            alter table "User_device" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "User_device" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
+
+            create or replace function user_device_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+            AS
+            $$
+            declare
+                violating_row_count int;
+            begin
+                select count(*)
+                into violating_row_count
+                from "User_device" as u1
+                where u1."ID" is null
+                   or 1 &lt; (
+                    select count(*)
+                    from "User_device" as u2
+                    where u1."ID" = u2."ID"
+                      and u1.valid_time_start &lt; u2.valid_time_end
+                      and u2.valid_time_start &lt; u1.valid_time_end
+                      and u1.transaction_time_end = 'infinity'
+                      and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            alter table "User_device" drop constraint "User_device_pkey" cascade;;
+            create index user_device_pkey on "User_device" ("ID");;
+            create constraint trigger "user_device_bitemporal_primary_key"
+                after insert or update or delete
+                on "User_device"
+                deferrable initially deferred
+                for each row
+            execute function user_device_bitemporal_primary_key();;
+
+            create or replace function user_device_contiguous_primary_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select count(*)
+                into count
+                from "User_device" u1,
+                     "User_device" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                  and u1."ID" = u2."ID"
+                  and u1.transaction_time_end = 'infinity'
+                  and u2.transaction_time_end = 'infinity'
+                  and not exists(
+                        select *
+                        from "User_device" u3
+                        where u3."ID" = u1."ID"
+                          and u3.transaction_time_end = 'infinity'
+                          and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                            and (u1.valid_time_end &lt; u3.valid_time_end))
+                            or ((u3.valid_time_start &lt; u2.valid_time_start)
+                                and
+                                u2.valid_time_start &lt;= u3.valid_time_end))
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            create constraint trigger "user_device_contiguous_primary_key"
+                after insert or update or delete
+                on "User_device"
+                deferrable initially deferred
+                for each row
+            execute function user_device_contiguous_primary_key();;
+        </sql>
+        <rollback>
+            drop index user_device_pkey;
+            drop function user_device_bitemporal_primary_key cascade;
+            drop function user_device_contiguous_primary_key cascade;
+            delete
+            from "User_device"
+            where transaction_time_end != 'infinity';
+            alter table "User_device" add constraint "User_device_pkey" primary key ("ID");
+            alter table "Ticket" add constraint "Ticket_belongs_device_fkey" foreign key (belongs_device) references "User_device" ("ID") on update cascade on delete cascade;
+            alter table "Food_item" add constraint "Food_item_registers_fkey" foreign key (registers) references "User_device" ("ID") on update cascade on delete restrict;
+            alter table "User_device" drop column transaction_time_end;
+            alter table "User_device" drop column transaction_time_start;
+            alter table "User_device" drop column valid_time_end;
+            alter table "User_device" drop column valid_time_start;
+        </rollback>
+    </changeSet>
+    <changeSet id="5" author="admin">
+        <sql endDelimiter=";;">
+            alter table "Food_item" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "Food_item" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
+            alter table "Food_item" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "Food_item" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
+
+            create or replace function food_item_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+            AS
+            $$
+            declare
+                violating_row_count int;
+            begin
+                select count(*)
+                into violating_row_count
+                from "Food_item" as u1
+                where u1."ID" is null
+                   or 1 &lt; (
+                    select count(*)
+                    from "Food_item" as u2
+                    where u1."ID" = u2."ID"
+                      and u1.valid_time_start &lt; u2.valid_time_end
+                      and u2.valid_time_start &lt; u1.valid_time_end
+                      and u1.transaction_time_end = 'infinity'
+                      and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            alter table "Food_item" drop constraint "Food_item_pkey" cascade;;
+            create index food_item_pkey on "Food_item" ("ID");;
+            create constraint trigger "food_item_bitemporal_primary_key"
+                after insert or update or delete
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+            execute function food_item_bitemporal_primary_key();;
+
+            create or replace function food_item_contiguous_primary_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select count(*)
+                into count
+                from "Food_item" u1,
+                     "Food_item" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                  and u1."ID" = u2."ID"
+                  and u1.transaction_time_end = 'infinity'
+                  and u2.transaction_time_end = 'infinity'
+                  and not exists(
+                        select *
+                        from "Food_item" u3
+                        where u3."ID" = u1."ID"
+                          and u3.transaction_time_end = 'infinity'
+                          and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                            and (u1.valid_time_end &lt; u3.valid_time_end))
+                            or ((u3.valid_time_start &lt; u2.valid_time_start)
+                                and
+                                u2.valid_time_start &lt;= u3.valid_time_end))
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            create constraint trigger "food_item_contiguous_primary_key"
+                after insert or update or delete
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+            execute function food_item_contiguous_primary_key();;
+        </sql>
+        <rollback>
+            drop index food_item_pkey;
+            drop function food_item_bitemporal_primary_key cascade;
+            drop function food_item_contiguous_primary_key cascade;
+            delete
+            from "Food_item"
+            where transaction_time_end != 'infinity';
+            alter table "Food_item" add constraint "Food_item_pkey" primary key ("ID");
+            alter table "Food_item" drop column transaction_time_end;
+            alter table "Food_item" drop column transaction_time_start;
+            alter table "Food_item" drop column valid_time_end;
+            alter table "Food_item" drop column valid_time_start;
+        </rollback>
+    </changeSet>
+    <changeSet id="6" author="admin">
+        <sql endDelimiter=";;">
+            alter table "EAN_number" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "EAN_number" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
+            alter table "EAN_number" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "EAN_number" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
+
+            create or replace function ean_number_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+            AS
+            $$
+            declare
+                violating_row_count int;
+            begin
+                select count(*)
+                into violating_row_count
+                from "EAN_number" as u1
+                where u1."ID" is null
+                   or 1 &lt; (
+                    select count(*)
+                    from "EAN_number" as u2
+                    where u1."ID" = u2."ID"
+                      and u1.valid_time_start &lt; u2.valid_time_end
+                      and u2.valid_time_start &lt; u1.valid_time_end
+                      and u1.transaction_time_end = 'infinity'
+                      and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            alter table "EAN_number" drop constraint "EAN_number_pkey" cascade;;
+            create index ean_number_pkey on "EAN_number" ("ID");;
+            create constraint trigger "ean_number_bitemporal_primary_key"
+                after insert or update or delete
+                on "EAN_number"
+                deferrable initially deferred
+                for each row
+            execute function ean_number_bitemporal_primary_key();;
+
+            create or replace function ean_number_contiguous_primary_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select count(*)
+                into count
+                from "EAN_number" u1,
+                     "EAN_number" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                  and u1."ID" = u2."ID"
+                  and u1.transaction_time_end = 'infinity'
+                  and u2.transaction_time_end = 'infinity'
+                  and not exists(
+                        select *
+                        from "EAN_number" u3
+                        where u3."ID" = u1."ID"
+                          and u3.transaction_time_end = 'infinity'
+                          and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                            and (u1.valid_time_end &lt; u3.valid_time_end))
+                            or ((u3.valid_time_start &lt; u2.valid_time_start)
+                                and
+                                u2.valid_time_start &lt;= u3.valid_time_end))
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            create constraint trigger "ean_number_contiguous_primary_key"
+                after insert or update or delete
+                on "EAN_number"
+                deferrable initially deferred
+                for each row
+            execute function ean_number_contiguous_primary_key();;
+        </sql>
+        <rollback>
+            drop index ean_number_pkey;
+            drop function ean_number_bitemporal_primary_key cascade;
+            drop function ean_number_contiguous_primary_key cascade;
+            delete
+            from "EAN_number"
+            where transaction_time_end != 'infinity';
+            alter table "EAN_number" add constraint "EAN_number_pkey" primary key ("ID");
+            alter table "EAN_number" drop column transaction_time_end;
+            alter table "EAN_number" drop column transaction_time_start;
+            alter table "EAN_number" drop column valid_time_end;
+            alter table "EAN_number" drop column valid_time_start;
+        </rollback>
+    </changeSet>
+    <changeSet id="7" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function ticket_belongs_device_ref_user_device() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select count(*)
+                into count
+                from "Ticket" as f
+                where not exists(
+                        select *
+                        from "User_device" as p
+                        where p."ID" = f.belongs_device
+                          and p.valid_time_end = 'infinity'
+                          and p.transaction_time_end = 'infinity'
+                    );
+
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+            create constraint trigger ticket_belongs_device_ref_user_device
+                after insert or update
+                on "Ticket"
+                deferrable initially deferred
+                for each row
+            execute function ticket_belongs_device_ref_user_device();;
+
+            create constraint trigger ticket_belongs_device_ref_user_device
+                after update or delete
+                on "User_device"
+                deferrable initially deferred
+                for each row
+            execute function ticket_belongs_device_ref_user_device();;
+
+        </sql>
+        <rollback>
+            drop function ticket_belongs_device_ref_user_device cascade;
+        </rollback>
+    </changeSet>
+    <changeSet id="8" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function user_device_belongs_to_ref_user() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select *
+                into count
+                from "User_device" f
+                where f.transaction_time_end = 'infinity'
+                    and not exists(
+                            select *
+                            from "User" p
+                            where f.belongs_to = p."ID"
+                              and p.transaction_time_end = 'infinity'
+                              and p.valid_time_start &lt;= f.valid_time_start
+                              and f.valid_time_start &lt; p.valid_time_end
+                        )
+                   or not exists(
+                        select *
+                        from "User" p
+                        where f.belongs_to = p."ID"
+                          and p.transaction_time_end = 'infinity'
+                          and p.valid_time_start &lt;= f.valid_time_end
+                          and f.valid_time_end &lt; p.valid_time_end
+
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;
+            create constraint trigger user_device_belongs_to_ref_user
+                after update or delete
+                on "User"
+                deferrable initially deferred
+                for each row
+            execute function user_device_belongs_to_ref_user();
+            create constraint trigger user_device_belongs_to_ref_user
+                after insert or update
+                on "User_device"
+                deferrable initially deferred
+                for each row
+            execute function user_device_belongs_to_ref_user();
+        </sql>
+        <rollback>
+            drop function user_device_belongs_to_ref_user cascade;
+        </rollback>
+    </changeSet>
+    <changeSet id="9" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function ean_number_identifies_ref_food() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select *
+                into count
+                from "EAN_number" f
+                where f.transaction_time_end = 'infinity'
+                    and not exists(
+                            select *
+                            from "Food" p
+                            where f.identifies = p."ID"
+                              and p.transaction_time_end = 'infinity'
+                              and p.valid_time_start &lt;= f.valid_time_start
+                              and f.valid_time_start &lt; p.valid_time_end
+                        )
+                   or not exists(
+                        select *
+                        from "Food" p
+                        where f.identifies = p."ID"
+                          and p.transaction_time_end = 'infinity'
+                          and p.valid_time_start &lt;= f.valid_time_end
+                          and f.valid_time_end &lt; p.valid_time_end
+
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;
+            create constraint trigger ean_number_identifies_ref_food
+                after update or delete
+                on "Food"
+                deferrable initially deferred
+                for each row
+            execute function ean_number_identifies_ref_food();
+            create constraint trigger ean_number_identifies_ref_food
+                after insert or update
+                on "EAN_number"
+                deferrable initially deferred
+                for each row
+            execute function ean_number_identifies_ref_food();
+        </sql>
+        <rollback>
+            drop function ean_number_identifies_ref_food() cascade;
+        </rollback>
+    </changeSet>
+    <changeSet id="10" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function food_item_buys_ref_user() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select *
+                into count
+                from "Food_item" f
+                where f.transaction_time_end = 'infinity'
+                    and not exists(
+                            select *
+                            from "User" p
+                            where f.buys = p."ID"
+                              and p.transaction_time_end = 'infinity'
+                              and p.valid_time_start &lt;= f.valid_time_start
+                              and f.valid_time_start &lt; p.valid_time_end
+                        )
+                   or not exists(
+                        select *
+                        from "User" p
+                        where f.buys = p."ID"
+                          and p.transaction_time_end = 'infinity'
+                          and p.valid_time_start &lt;= f.valid_time_end
+                          and f.valid_time_end &lt; p.valid_time_end
+
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;
+            create constraint trigger food_item_buys_ref_user
+                after update or delete
+                on "User"
+                deferrable initially deferred
+                for each row
+            execute function food_item_buys_ref_user();
+            create constraint trigger food_item_buys_ref_user
+                after insert or update
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+            execute function food_item_buys_ref_user();
+        </sql>
+        <rollback>
+            drop function food_item_buys_ref_user cascade;
+        </rollback>
+    </changeSet>
+    <changeSet id="11" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function food_item_of_type_ref_food() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select *
+                into count
+                from "Food_item" f
+                where f.transaction_time_end = 'infinity'
+                    and not exists(
+                            select *
+                            from "Food" p
+                            where f.of_type = p."ID"
+                              and p.transaction_time_end = 'infinity'
+                              and p.valid_time_start &lt;= f.valid_time_start
+                              and f.valid_time_start &lt; p.valid_time_end
+                        )
+                   or not exists(
+                        select *
+                        from "Food" p
+                        where f.of_type = p."ID"
+                          and p.transaction_time_end = 'infinity'
+                          and p.valid_time_start &lt;= f.valid_time_end
+                          and f.valid_time_end &lt; p.valid_time_end
+
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;
+            create constraint trigger food_item_of_type_ref_food
+                after update or delete
+                on "Food"
+                deferrable initially deferred
+                for each row
+            execute function food_item_of_type_ref_food();
+            create constraint trigger food_item_of_type_ref_food
+                after insert or update
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+            execute function food_item_of_type_ref_food();
+        </sql>
+        <rollback>
+            drop function food_item_of_type_ref_food cascade;
+        </rollback>
+    </changeSet>
+    <changeSet id="12" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function food_item_registers_ref_user_device() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select *
+                into count
+                from "Food_item" f
+                where f.transaction_time_end = 'infinity'
+                    and not exists(
+                            select *
+                            from "User_device" p
+                            where f.registers = p."ID"
+                              and p.transaction_time_end = 'infinity'
+                              and p.valid_time_start &lt;= f.valid_time_start
+                              and f.valid_time_start &lt; p.valid_time_end
+                        )
+                   or not exists(
+                        select *
+                        from "User_device" u
+                        where f.registers = u."ID"
+                          and u.transaction_time_end = 'infinity'
+                          and u.valid_time_start &lt;= f.valid_time_end
+                          and f.valid_time_end &lt; u.valid_time_end
+
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;
+            create constraint trigger food_item_registers_ref_user_device
+                after update or delete
+                on "User_device"
+                deferrable initially deferred
+                for each row
+            execute function food_item_registers_ref_user_device();
+            create constraint trigger food_item_registers_ref_user_device
+                after insert or update
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+            execute function food_item_registers_ref_user_device();
+        </sql>
+        <rollback>
+            drop function food_item_registers_ref_user_device cascade;
+        </rollback>
+    </changeSet>
+    <changeSet id="13" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function food_item_stored_in_ref_location() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select *
+                into count
+                from "Food_item" f
+                where f.transaction_time_end = 'infinity'
+                    and not exists(
+                            select *
+                            from "Location" p
+                            where f.stored_in = p."ID"
+                              and p.transaction_time_end = 'infinity'
+                              and p.valid_time_start &lt;= f.valid_time_start
+                              and f.valid_time_start &lt; p.valid_time_end
+                        )
+                   or not exists(
+                        select *
+                        from "Location" p
+                        where f.stored_in = p."ID"
+                          and p.transaction_time_end = 'infinity'
+                          and p.valid_time_start &lt;= f.valid_time_end
+                          and f.valid_time_end &lt; p.valid_time_end
+
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;
+            create constraint trigger food_item_stored_in_ref_location
+                after update or delete
+                on "Location"
+                deferrable initially deferred
+                for each row
+            execute function food_item_stored_in_ref_location();
+            create constraint trigger food_item_stored_in_ref_location
+                after insert or update
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+            execute function food_item_stored_in_ref_location();
+        </sql>
+        <rollback>
+            drop function food_item_stored_in_ref_location cascade;
+        </rollback>
+    </changeSet>
+    <changeSet id="14" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function food_location_ref_location() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select *
+                into count
+                from "Food" f
+                where f.transaction_time_end = 'infinity'
+                    and f.location is not null
+                    and not exists(
+                            select *
+                            from "Location" p
+                            where f.location = p."ID"
+                              and p.transaction_time_end = 'infinity'
+                              and p.valid_time_start &lt;= f.valid_time_start
+                              and f.valid_time_start &lt; p.valid_time_end
+                        )
+                   or not exists(
+                        select *
+                        from "Location" p
+                        where f.location = p."ID"
+                          and p.transaction_time_end = 'infinity'
+                          and p.valid_time_start &lt;= f.valid_time_end
+                          and f.valid_time_end &lt; p.valid_time_end
+
+                    );
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;
+            create constraint trigger food_location_ref_location
+                after update or delete
+                on "Location"
+                deferrable initially deferred
+                for each row
+            execute function food_location_ref_location();
+            create constraint trigger food_location_ref_location
+                after insert or update
+                on "Food"
+                deferrable initially deferred
+                for each row
+            execute function food_location_ref_location();
+        </sql>
+        <rollback>
+            drop function food_location_ref_location cascade;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
