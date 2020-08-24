@@ -129,15 +129,15 @@ public class LocationEndpointTest {
     public void getLocationReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
         List<Location> data = Collections.singletonList(new Location(2, "Banana", 2));
-        when(businessLayer.get(r)).thenReturn(Validation.success(data.stream()));
+        when(businessLayer.get(r, false)).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r);
+        uut.get(r, 0);
 
         ArgumentCaptor<StreamResponse<Location>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().status);
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(businessLayer).get(r);
+        verify(businessLayer).get(r, false);
     }
 
     @Test

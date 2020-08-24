@@ -20,6 +20,7 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.FoodItem;
+import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
 import org.junit.After;
@@ -33,6 +34,8 @@ import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 public class FoodItemManagerTest {
 
@@ -40,27 +43,31 @@ public class FoodItemManagerTest {
 
     private FoodItemHandler backend;
 
+    private FoodHandler foodHandler;
+
     @Before
     public void setup() {
         backend = Mockito.mock(FoodItemHandler.class);
+        foodHandler = Mockito.mock(FoodHandler.class);
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
-        uut = new FoodItemManager(backend);
+        uut = new FoodItemManager(backend, foodHandler);
     }
 
     @After
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(backend);
+        Mockito.verifyNoMoreInteractions(foodHandler);
     }
 
     @Test
     public void gettingItemsIsForwarded() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(backend.get()).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(backend.get(false)).thenReturn(Validation.success(Stream.empty()));
 
-        Validation<StatusCode, Stream<FoodItem>> result = uut.get(r);
+        Validation<StatusCode, Stream<FoodItem>> result = uut.get(r, false);
 
         assertTrue(result.isSuccess());
-        Mockito.verify(backend).get();
+        Mockito.verify(backend).get(false);
         Mockito.verify(backend).setReadOnly();
     }
 
@@ -68,12 +75,14 @@ public class FoodItemManagerTest {
     public void testAddingItem() {
         FoodItem data = new FoodItem(1, 2, Instant.now(), 2, 2, 3, 3);
         Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
+        Mockito.when(foodHandler.setToBuyStatus(any(), eq(false))).thenReturn(StatusCode.SUCCESS);
 
         Validation<StatusCode, Integer> result = uut.add(data);
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).add(data);
         Mockito.verify(backend).commit();
+        Mockito.verify(foodHandler).setToBuyStatus(any(), eq(false));
     }
 
     @Test

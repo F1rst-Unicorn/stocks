@@ -34,11 +34,11 @@ import java.sql.SQLException;
 
 public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLException> {
 
-    private String resourceIdentifier;
+    private final String resourceIdentifier;
 
     private final int timeout;
 
-    private ConnectionFactory connectionFactory;
+    private final ConnectionFactory connectionFactory;
 
     public FailSafeDatabaseHandler(ConnectionFactory connectionFactory,
                                    String resourceIdentifier,

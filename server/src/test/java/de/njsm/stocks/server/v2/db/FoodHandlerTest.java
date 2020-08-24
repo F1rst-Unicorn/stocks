@@ -52,7 +52,7 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertTrue(code.isSuccess());
 
-        Validation<StatusCode, Stream<Food>> dbData = uut.get();
+        Validation<StatusCode, Stream<Food>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 
@@ -70,7 +70,7 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, Stream<Food>> dbData = uut.get();
+        Validation<StatusCode, Stream<Food>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 
@@ -109,7 +109,7 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, Stream<Food>> dbData = uut.get();
+        Validation<StatusCode, Stream<Food>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 
@@ -124,7 +124,7 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
 
-        Validation<StatusCode, Stream<Food>> dbData = uut.get();
+        Validation<StatusCode, Stream<Food>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 

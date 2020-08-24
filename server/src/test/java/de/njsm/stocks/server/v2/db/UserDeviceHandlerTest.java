@@ -52,7 +52,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
     @Test
     public void getDevicesWorks() {
 
-        Validation<StatusCode, Stream<UserDevice>> devices = uut.get();
+        Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false);
 
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
@@ -70,7 +70,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
         Validation<StatusCode, Integer> result = uut.add(device);
 
 
-        Validation<StatusCode, Stream<UserDevice>> devices = uut.get();
+        Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false);
         assertTrue(result.isSuccess());
         assertEquals(new Integer(5), result.success());
         assertTrue(devices.isSuccess());
@@ -102,7 +102,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
 
         StatusCode result = uut.delete(device);
 
-        Validation<StatusCode, Stream<UserDevice>> devices = uut.get();
+        Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false);
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());

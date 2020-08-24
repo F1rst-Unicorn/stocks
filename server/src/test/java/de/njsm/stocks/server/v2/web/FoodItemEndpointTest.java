@@ -61,15 +61,15 @@ public class FoodItemEndpointTest {
     @Test
     public void testGettingItems() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(manager.get(r)).thenReturn(Validation.success(Stream.of()));
+        Mockito.when(manager.get(r, false)).thenReturn(Validation.success(Stream.of()));
 
-        uut.get(r);
+        uut.get(r, 0);
 
         ArgumentCaptor<StreamResponse<FoodItem>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(StatusCode.SUCCESS, c.getValue().status);
         assertEquals(0, c.getValue().data.count());
-        Mockito.verify(manager).get(r);
+        Mockito.verify(manager).get(r, false);
     }
 
     @Test

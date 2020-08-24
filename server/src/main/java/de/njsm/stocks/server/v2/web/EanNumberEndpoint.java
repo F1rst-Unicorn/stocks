@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 @Path("v2/ean")
 public class EanNumberEndpoint extends Endpoint {
 
-    private EanNumberManager manager;
+    private final EanNumberManager manager;
 
     @Inject
     public EanNumberEndpoint(EanNumberManager manager) {
@@ -59,8 +59,9 @@ public class EanNumberEndpoint extends Endpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public void get(@Suspended AsyncResponse response) {
-        Validation<StatusCode, Stream<EanNumber>> result = manager.get(response);
+    public void get(@Suspended AsyncResponse response, @QueryParam("bitemporal") int bitemporalParameter) {
+        boolean bitemporal = bitemporalParameter == 1;
+        Validation<StatusCode, Stream<EanNumber>> result = manager.get(response, bitemporal);
         response.resume(new StreamResponse<>(result));
     }
 

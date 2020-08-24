@@ -54,7 +54,7 @@
         <constructor-arg index="4" ref="foodItemBackend" />
     </bean>
 
-    <bean name="ticketBackend" class="de.njsm.stocks.server.v2.db.TicketBackend" scope="request">
+    <bean name="ticketHandler" class="de.njsm.stocks.server.v2.db.TicketHandler" scope="request">
         <constructor-arg index="0" ref="connectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
@@ -98,14 +98,14 @@
     <!-- Business Layer -->
     <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" scope="request">
         <constructor-arg index="0" ref="authAdmin"/>
-        <constructor-arg index="1" ref="ticketBackend"/>
+        <constructor-arg index="1" ref="ticketHandler"/>
         <constructor-arg index="2" ref="ticketValidity"/>
     </bean>
 
     <bean name="deviceManager" class="de.njsm.stocks.server.v2.business.DeviceManager" scope="request">
         <constructor-arg index="0" ref="deviceBackend" />
         <constructor-arg index="1" ref="foodItemBackend" />
-        <constructor-arg index="2" ref="ticketBackend" />
+        <constructor-arg index="2" ref="ticketHandler" />
         <constructor-arg index="3" ref="authAdmin" />
     </bean>
 
@@ -134,6 +134,7 @@
 
     <bean name="foodItemManager" class="de.njsm.stocks.server.v2.business.FoodItemManager" scope="request">
         <constructor-arg index="0" ref="foodItemBackend"/>
+        <constructor-arg index="1" ref="foodDbHandler"/>
     </bean>
 
     <bean name="healthManager" class="de.njsm.stocks.server.v2.business.HealthManager" scope="request">

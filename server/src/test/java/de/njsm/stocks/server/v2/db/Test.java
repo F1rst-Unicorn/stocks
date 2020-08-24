@@ -17,28 +17,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.business;
+package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.data.Update;
-import de.njsm.stocks.server.v2.db.UpdateBackend;
+import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.server.v2.business.data.User;
 import fj.data.Validation;
+import org.junit.Before;
 
-import javax.ws.rs.container.AsyncResponse;
 import java.util.stream.Stream;
 
-public class UpdateManager extends BusinessObject {
+public class Test extends DbTestCase {
 
-    private final UpdateBackend updateBackend;
+    private UserHandler uut;
 
-    public UpdateManager(UpdateBackend updateBackend) {
-        super(updateBackend);
-        this.updateBackend = updateBackend;
+    @Before
+    public void setup() {
+        uut = new UserHandler(getConnectionFactory(),
+                getNewResourceIdentifier(),
+                CIRCUIT_BREAKER_TIMEOUT,
+                new InsertVisitor<>());
     }
 
-    public Validation<StatusCode, Stream<Update>> getUpdates(AsyncResponse r) {
-        return runAsynchronously(r, () -> {
-            updateBackend.setReadOnly();
-            return updateBackend.get();
+    @org.junit.Test
+    public void test() {
+        Validation<StatusCode, Stream<User>> result = uut.get(true);
+        result.success().forEach(u -> {
+            String user = u.toString();
         });
     }
 }

@@ -22,10 +22,14 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Food;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
+import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 
 import java.time.Period;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
@@ -43,44 +47,53 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
 
     public StatusCode setToBuyStatus(Food item) {
         return runCommand(context -> {
-            if (isMissing(item, context))
+            if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            int changedItems = context.update(getTable())
-                    .set(FOOD.TO_BUY, item.toBuy)
-                    .set(getVersionField(), getVersionField().add(1))
-                    .where(getIdField().eq(item.id)
-                            .and(getVersionField().eq(item.version)))
-                    .and(getVersionField().eq(item.version))
-                    .execute();
+            StatusCode result = currentUpdate(Arrays.asList(
+                    FOOD.ID,
+                    FOOD.NAME,
+                    FOOD.VERSION.add(1),
+                    DSL.inline(item.toBuy),
+                    FOOD.EXPIRATION_OFFSET,
+                    FOOD.LOCATION
+                    ),
+                    getIdField().eq(item.id)
+                            .and(getVersionField().eq(item.version)));
 
-            if (changedItems == 1)
-                return StatusCode.SUCCESS;
-            else
-                return StatusCode.INVALID_DATA_VERSION;
+            return notFoundMeansInvalidVersion(result);
         });
+    }
+
+    public StatusCode setToBuyStatus(Food item, boolean value) {
+        return runCommand(context -> currentUpdate(Arrays.asList(
+                FOOD.ID,
+                FOOD.NAME,
+                FOOD.VERSION.add(1),
+                DSL.inline(value),
+                FOOD.EXPIRATION_OFFSET,
+                FOOD.LOCATION
+                ),
+                getIdField().eq(item.id)));
     }
 
     public StatusCode edit(Food item, String newName, Period expirationOffset, Integer location) {
         return runCommand(context -> {
-            if (isMissing(item, context))
+            if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            int changedItems = context.update(getTable())
-                    .set(FOOD.NAME, newName)
-                    .set(FOOD.EXPIRATION_OFFSET, expirationOffset)
-                    .set(FOOD.LOCATION, location)
-                    .set(getVersionField(), getVersionField().add(1))
-                    .where(getIdField().eq(item.id)
-                            .and(getVersionField().eq(item.version)))
-                    .and(getVersionField().eq(item.version))
-                    .execute();
+            StatusCode result = currentUpdate(Arrays.asList(
+                    FOOD.ID,
+                    DSL.inline(newName),
+                    FOOD.VERSION.add(1),
+                    FOOD.TO_BUY,
+                    DSL.inline(expirationOffset),
+                    DSL.inline(location)
+                    ),
+                    getIdField().eq(item.id)
+                            .and(getVersionField().eq(item.version)));
 
-            if (changedItems == 1)
-                return StatusCode.SUCCESS;
-            else
-                return StatusCode.INVALID_DATA_VERSION;
-
+            return notFoundMeansInvalidVersion(result);
         });
     }
 
@@ -108,6 +121,18 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                 cursor.getToBuy(),
                 cursor.getExpirationOffset(),
                 cursor.getLocation()
+        );
+    }
+
+    @Override
+    protected List<Field<?>> getNontemporalFields() {
+        return Arrays.asList(
+                FOOD.ID,
+                FOOD.NAME,
+                FOOD.VERSION,
+                FOOD.TO_BUY,
+                FOOD.EXPIRATION_OFFSET,
+                FOOD.LOCATION
         );
     }
 }

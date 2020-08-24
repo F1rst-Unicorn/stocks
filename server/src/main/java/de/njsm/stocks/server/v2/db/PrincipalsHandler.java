@@ -3,7 +3,10 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
+import org.jooq.Field;
+import org.jooq.impl.DSL;
 
+import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,11 +22,19 @@ public class PrincipalsHandler extends FailSafeDatabaseHandler {
 
     public Validation<StatusCode, Set<Principals>> getPrincipals() {
         return runFunction(context -> {
+            Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
             Set<Principals> result = context
                     .selectFrom(USER.join(USER_DEVICE)
                             .on(USER.ID.eq(USER_DEVICE.BELONGS_TO)))
                     .where(USER_DEVICE.ID.notIn(context.select(TICKET.BELONGS_DEVICE)
-                                                .from(TICKET)))
+                                                .from(TICKET))
+                            .and(USER.VALID_TIME_START.lessOrEqual(now))
+                            .and(now.lessThan(USER.VALID_TIME_END))
+                            .and(USER.TRANSACTION_TIME_END.eq(CrudDatabaseHandler.INFINITY))
+                            .and(USER_DEVICE.VALID_TIME_START.lessOrEqual(now))
+                            .and(now.lessThan(USER_DEVICE.VALID_TIME_END))
+                            .and(USER_DEVICE.TRANSACTION_TIME_END.eq(CrudDatabaseHandler.INFINITY))
+                    )
                     .fetch()
                     .stream()
                     .map(record -> new Principals(

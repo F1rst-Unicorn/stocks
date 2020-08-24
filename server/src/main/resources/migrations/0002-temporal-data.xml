@@ -666,22 +666,23 @@
                 into count
                 from "User_device" f
                 where f.transaction_time_end = 'infinity'
-                    and not exists(
+                  and (
+                        not exists(
+                                select *
+                                from "User" p
+                                where f.belongs_to = p."ID"
+                                  and p.transaction_time_end = 'infinity'
+                                  and p.valid_time_start &lt;= f.valid_time_start
+                                  and f.valid_time_start &lt; p.valid_time_end
+                            )
+                        or not exists(
                             select *
                             from "User" p
                             where f.belongs_to = p."ID"
                               and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt;= f.valid_time_start
-                              and f.valid_time_start &lt; p.valid_time_end
+                              and p.valid_time_start &lt; f.valid_time_end
+                              and f.valid_time_end &lt;= p.valid_time_end
                         )
-                   or not exists(
-                        select *
-                        from "User" p
-                        where f.belongs_to = p."ID"
-                          and p.transaction_time_end = 'infinity'
-                          and p.valid_time_start &lt;= f.valid_time_end
-                          and f.valid_time_end &lt; p.valid_time_end
-
                     );
                 if count != 0 then
                     raise check_violation;
@@ -719,22 +720,23 @@
                 into count
                 from "EAN_number" f
                 where f.transaction_time_end = 'infinity'
-                    and not exists(
+                  and (
+                        not exists(
+                                select *
+                                from "Food" p
+                                where f.identifies = p."ID"
+                                  and p.transaction_time_end = 'infinity'
+                                  and p.valid_time_start &lt;= f.valid_time_start
+                                  and f.valid_time_start &lt; p.valid_time_end
+                            )
+                        or not exists(
                             select *
                             from "Food" p
                             where f.identifies = p."ID"
                               and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt;= f.valid_time_start
-                              and f.valid_time_start &lt; p.valid_time_end
+                              and p.valid_time_start &lt; f.valid_time_end
+                              and f.valid_time_end &lt;= p.valid_time_end
                         )
-                   or not exists(
-                        select *
-                        from "Food" p
-                        where f.identifies = p."ID"
-                          and p.transaction_time_end = 'infinity'
-                          and p.valid_time_start &lt;= f.valid_time_end
-                          and f.valid_time_end &lt; p.valid_time_end
-
                     );
                 if count != 0 then
                     raise check_violation;
@@ -772,22 +774,23 @@
                 into count
                 from "Food_item" f
                 where f.transaction_time_end = 'infinity'
-                    and not exists(
+                  and (
+                        not exists(
+                                select *
+                                from "User" p
+                                where f.buys = p."ID"
+                                  and p.transaction_time_end = 'infinity'
+                                  and p.valid_time_start &lt;= f.valid_time_start
+                                  and f.valid_time_start &lt; p.valid_time_end
+                            )
+                        or not exists(
                             select *
                             from "User" p
                             where f.buys = p."ID"
                               and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt;= f.valid_time_start
-                              and f.valid_time_start &lt; p.valid_time_end
+                              and p.valid_time_start &lt; f.valid_time_end
+                              and f.valid_time_end &lt;= p.valid_time_end
                         )
-                   or not exists(
-                        select *
-                        from "User" p
-                        where f.buys = p."ID"
-                          and p.transaction_time_end = 'infinity'
-                          and p.valid_time_start &lt;= f.valid_time_end
-                          and f.valid_time_end &lt; p.valid_time_end
-
                     );
                 if count != 0 then
                     raise check_violation;
@@ -825,22 +828,23 @@
                 into count
                 from "Food_item" f
                 where f.transaction_time_end = 'infinity'
-                    and not exists(
+                  and (
+                        not exists(
+                                select *
+                                from "Food" p
+                                where f.of_type = p."ID"
+                                  and p.transaction_time_end = 'infinity'
+                                  and p.valid_time_start &lt;= f.valid_time_start
+                                  and f.valid_time_start &lt; p.valid_time_end
+                            )
+                        or not exists(
                             select *
                             from "Food" p
                             where f.of_type = p."ID"
                               and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt;= f.valid_time_start
-                              and f.valid_time_start &lt; p.valid_time_end
+                              and p.valid_time_start &lt; f.valid_time_end
+                              and f.valid_time_end &lt;= p.valid_time_end
                         )
-                   or not exists(
-                        select *
-                        from "Food" p
-                        where f.of_type = p."ID"
-                          and p.transaction_time_end = 'infinity'
-                          and p.valid_time_start &lt;= f.valid_time_end
-                          and f.valid_time_end &lt; p.valid_time_end
-
                     );
                 if count != 0 then
                     raise check_violation;
@@ -878,22 +882,23 @@
                 into count
                 from "Food_item" f
                 where f.transaction_time_end = 'infinity'
-                    and not exists(
+                  and (
+                        not exists(
+                                select *
+                                from "User_device" p
+                                where f.registers = p."ID"
+                                  and p.transaction_time_end = 'infinity'
+                                  and p.valid_time_start &lt;= f.valid_time_start
+                                  and f.valid_time_start &lt; p.valid_time_end
+                            )
+                        or not exists(
                             select *
-                            from "User_device" p
-                            where f.registers = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt;= f.valid_time_start
-                              and f.valid_time_start &lt; p.valid_time_end
+                            from "User_device" u
+                            where f.registers = u."ID"
+                              and u.transaction_time_end = 'infinity'
+                              and u.valid_time_start &lt; f.valid_time_end
+                              and f.valid_time_end &lt;= u.valid_time_end
                         )
-                   or not exists(
-                        select *
-                        from "User_device" u
-                        where f.registers = u."ID"
-                          and u.transaction_time_end = 'infinity'
-                          and u.valid_time_start &lt;= f.valid_time_end
-                          and f.valid_time_end &lt; u.valid_time_end
-
                     );
                 if count != 0 then
                     raise check_violation;
@@ -931,22 +936,23 @@
                 into count
                 from "Food_item" f
                 where f.transaction_time_end = 'infinity'
-                    and not exists(
+                  and (
+                        not exists(
+                                select *
+                                from "Location" p
+                                where f.stored_in = p."ID"
+                                  and p.transaction_time_end = 'infinity'
+                                  and p.valid_time_start &lt;= f.valid_time_start
+                                  and f.valid_time_start &lt; p.valid_time_end
+                            )
+                        or not exists(
                             select *
                             from "Location" p
                             where f.stored_in = p."ID"
                               and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt;= f.valid_time_start
-                              and f.valid_time_start &lt; p.valid_time_end
+                              and p.valid_time_start &lt; f.valid_time_end
+                              and f.valid_time_end &lt;= p.valid_time_end
                         )
-                   or not exists(
-                        select *
-                        from "Location" p
-                        where f.stored_in = p."ID"
-                          and p.transaction_time_end = 'infinity'
-                          and p.valid_time_start &lt;= f.valid_time_end
-                          and f.valid_time_end &lt; p.valid_time_end
-
                     );
                 if count != 0 then
                     raise check_violation;
@@ -984,23 +990,24 @@
                 into count
                 from "Food" f
                 where f.transaction_time_end = 'infinity'
-                    and f.location is not null
-                    and not exists(
+                  and f.location is not null
+                  and (
+                        not exists(
+                                select *
+                                from "Location" p
+                                where f.location = p."ID"
+                                  and p.transaction_time_end = 'infinity'
+                                  and p.valid_time_start &lt;= f.valid_time_start
+                                  and f.valid_time_start &lt; p.valid_time_end
+                            )
+                        or not exists(
                             select *
                             from "Location" p
                             where f.location = p."ID"
                               and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt;= f.valid_time_start
-                              and f.valid_time_start &lt; p.valid_time_end
+                              and p.valid_time_start &lt; f.valid_time_end
+                              and f.valid_time_end &lt;= p.valid_time_end
                         )
-                   or not exists(
-                        select *
-                        from "Location" p
-                        where f.location = p."ID"
-                          and p.transaction_time_end = 'infinity'
-                          and p.valid_time_start &lt;= f.valid_time_end
-                          and f.valid_time_end &lt; p.valid_time_end
-
                     );
                 if count != 0 then
                     raise check_violation;

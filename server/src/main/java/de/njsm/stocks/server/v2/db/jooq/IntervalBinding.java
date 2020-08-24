@@ -55,7 +55,13 @@ public class IntervalBinding implements Binding<Object, Period> {
 
     @Override
     public void sql(BindingSQLContext<Period> ctx) throws SQLException {
-        ctx.render().sql("?");
+        if (ctx.render().paramType().value().equals("INLINED")) {
+            Locale def = Locale.getDefault();
+            Locale.setDefault(Locale.US);
+            ctx.render().sql("interval '" + ctx.convert(converter()).value().toString() + "'");
+            Locale.setDefault(def);
+        } else
+            ctx.render().sql("?");
     }
 
     @Override

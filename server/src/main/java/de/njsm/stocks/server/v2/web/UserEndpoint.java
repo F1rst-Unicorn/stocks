@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 @Path("/v2/user")
 public class UserEndpoint extends Endpoint {
 
-    private UserManager manager;
+    private final UserManager manager;
 
     @Inject
     public UserEndpoint(UserManager manager) {
@@ -60,8 +60,9 @@ public class UserEndpoint extends Endpoint {
 
     @GET
     @Produces("application/json")
-    public void get(@Suspended AsyncResponse response) {
-        Validation<StatusCode, Stream<User>> result = manager.get(response);
+    public void get(@Suspended AsyncResponse response, @QueryParam("bitemporal") int bitemporalParameter) {
+        boolean bitemporal = bitemporalParameter == 1;
+        Validation<StatusCode, Stream<User>> result = manager.get(response, bitemporal);
         response.resume(new StreamResponse<>(result));
     }
 

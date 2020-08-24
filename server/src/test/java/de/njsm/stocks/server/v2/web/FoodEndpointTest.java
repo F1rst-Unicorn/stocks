@@ -40,6 +40,7 @@ import static de.njsm.stocks.server.v2.business.StatusCode.INVALID_ARGUMENT;
 import static de.njsm.stocks.server.v2.business.StatusCode.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -147,15 +148,15 @@ public class FoodEndpointTest {
     public void getFoodReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
         List<Food> data = Collections.singletonList(new Food(2, "Banana", 2, true, Period.ZERO, 1));
-        when(manager.get(any())).thenReturn(Validation.success(data.stream()));
+        when(manager.get(any(), eq(false))).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r);
+        uut.get(r, 0);
 
         ArgumentCaptor<StreamResponse<Food>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().status);
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(manager).get(r);
+        verify(manager).get(r, false);
     }
 
     @Test

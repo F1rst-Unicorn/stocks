@@ -21,9 +21,12 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.data.EanNumber;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
+import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.EAN_NUMBER;
@@ -64,4 +67,13 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
                 );
     }
 
+    @Override
+    protected List<Field<?>> getNontemporalFields() {
+        return Arrays.asList(
+                EAN_NUMBER.ID,
+                EAN_NUMBER.VERSION,
+                EAN_NUMBER.NUMBER,
+                EAN_NUMBER.IDENTIFIES
+        );
+    }
 }

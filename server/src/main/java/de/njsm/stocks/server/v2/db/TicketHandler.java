@@ -28,22 +28,25 @@ import de.njsm.stocks.server.v2.db.jooq.tables.records.TicketRecord;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.Ticket.TICKET;
 import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
 import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
 
-public class TicketBackend extends FailSafeDatabaseHandler {
+public class TicketHandler extends FailSafeDatabaseHandler {
 
-    private static final Logger LOG = LogManager.getLogger(TicketBackend.class);
+    private static final Logger LOG = LogManager.getLogger(TicketHandler.class);
 
-    public TicketBackend(ConnectionFactory connectionFactory,
+    public TicketHandler(ConnectionFactory connectionFactory,
                          String resourceIdentifier,
                          int timeout) {
         super(connectionFactory, resourceIdentifier, timeout);
@@ -98,10 +101,21 @@ public class TicketBackend extends FailSafeDatabaseHandler {
 
     public Validation<StatusCode, Principals> getPrincipalsForTicket(String token) {
         return runFunction(context -> {
+            Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+
             Result<Record4<Integer, String, Integer, String>> dbResult = context.select(USER_DEVICE.ID, USER_DEVICE.NAME, USER.ID, USER.NAME)
                     .from(TICKET.join(USER_DEVICE
-                                        .join(USER).on(USER.ID.eq(USER_DEVICE.BELONGS_TO)))
-                                .on(TICKET.BELONGS_DEVICE.eq(USER_DEVICE.ID)))
+                            .join(USER).on(USER.ID.eq(USER_DEVICE.BELONGS_TO)
+                                    .and(USER.VALID_TIME_START.lessOrEqual(now))
+                                    .and(now.lessThan(USER.VALID_TIME_END))
+                                    .and(USER.TRANSACTION_TIME_END.eq(CrudDatabaseHandler.INFINITY))
+                            ))
+                            .on(TICKET.BELONGS_DEVICE.eq(USER_DEVICE.ID)
+                                    .and(USER_DEVICE.VALID_TIME_START.lessOrEqual(now))
+                                    .and(now.lessThan(USER_DEVICE.VALID_TIME_END))
+                                    .and(USER_DEVICE.TRANSACTION_TIME_END.eq(CrudDatabaseHandler.INFINITY))
+                            )
+                    )
                     .where(TICKET.TICKET_.eq(token))
                     .limit(1)
                     .fetch();

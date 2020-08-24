@@ -36,11 +36,11 @@ public class UserManager extends BusinessObject {
 
     private static final Logger LOG = LogManager.getLogger(UserManager.class);
 
-    private UserHandler dbHandler;
+    private final UserHandler dbHandler;
 
-    private DeviceManager deviceManager;
+    private final DeviceManager deviceManager;
 
-    private FoodItemHandler foodItemHandler;
+    private final FoodItemHandler foodItemHandler;
 
     public UserManager(UserHandler dbHandler,
                        DeviceManager deviceManager,
@@ -56,10 +56,10 @@ public class UserManager extends BusinessObject {
                 .toEither().left().orValue(StatusCode.SUCCESS));
     }
 
-    public Validation<StatusCode, Stream<User>> get(AsyncResponse r) {
+    public Validation<StatusCode, Stream<User>> get(AsyncResponse r, boolean bitemporal) {
         return runAsynchronously(r, () -> {
             dbHandler.setReadOnly();
-            return dbHandler.get();
+            return dbHandler.get(bitemporal);
         });
     }
 

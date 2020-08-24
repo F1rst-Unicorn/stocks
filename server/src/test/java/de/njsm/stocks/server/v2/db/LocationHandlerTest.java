@@ -57,7 +57,7 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertTrue(code.isSuccess());
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get();
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 
@@ -72,7 +72,7 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get();
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 
@@ -105,7 +105,7 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get();
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 
@@ -130,7 +130,7 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get();
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 

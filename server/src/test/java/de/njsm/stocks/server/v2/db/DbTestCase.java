@@ -42,7 +42,7 @@ public abstract class DbTestCase {
 
     private static Connection connection;
 
-    public static final int CIRCUIT_BREAKER_TIMEOUT = 1000;
+    public static final int CIRCUIT_BREAKER_TIMEOUT = 5000;
 
     private static ComboPooledDataSource ds;
 

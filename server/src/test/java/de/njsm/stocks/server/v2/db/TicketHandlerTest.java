@@ -33,13 +33,13 @@ import java.util.Date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TicketBackendTest extends DbTestCase {
+public class TicketHandlerTest extends DbTestCase {
 
-    private TicketBackend uut;
+    private TicketHandler uut;
 
     @Before
     public void setup() {
-        uut = new TicketBackend(getConnectionFactory(),
+        uut = new TicketHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT);
     }

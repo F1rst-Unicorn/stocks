@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 
 public class EanNumberManager extends BusinessObject {
 
-    private EanNumberHandler eanNumberHandler;
+    private final EanNumberHandler eanNumberHandler;
 
     public EanNumberManager(EanNumberHandler eanNumberHandler) {
         super(eanNumberHandler);
@@ -39,10 +39,10 @@ public class EanNumberManager extends BusinessObject {
         return runFunction(() -> eanNumberHandler.add(item));
     }
 
-    public Validation<StatusCode, Stream<EanNumber>> get(AsyncResponse r) {
+    public Validation<StatusCode, Stream<EanNumber>> get(AsyncResponse r, boolean bitemporal) {
         return runAsynchronously(r, () -> {
             eanNumberHandler.setReadOnly();
-            return eanNumberHandler.get();
+            return eanNumberHandler.get(bitemporal);
         });
     }
 

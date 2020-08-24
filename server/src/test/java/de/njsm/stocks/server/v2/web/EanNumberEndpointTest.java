@@ -113,15 +113,15 @@ public class EanNumberEndpointTest {
     public void getEanNumberReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
         List<EanNumber> data = Collections.singletonList(new EanNumber("CODE", 2));
-        when(manager.get(r)).thenReturn(Validation.success(data.stream()));
+        when(manager.get(r, false)).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r);
+        uut.get(r, 0);
 
         ArgumentCaptor<StreamResponse<EanNumber>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().status);
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(manager).get(r);
+        verify(manager).get(r, false);
     }
 
     @Test

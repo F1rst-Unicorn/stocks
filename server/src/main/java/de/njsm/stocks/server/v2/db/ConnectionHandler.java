@@ -32,11 +32,11 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
 
     private static final String SERIALISATION_FAILURE_SQL_STATE = "40001";
 
-    private String resourceIdentifier;
+    private final String resourceIdentifier;
 
-    private ConnectionFactory connectionFactory;
+    private final ConnectionFactory connectionFactory;
 
-    private int timeout;
+    private final int timeout;
 
     public ConnectionHandler(String resourceIdentifier,
                              ConnectionFactory connectionFactory,
@@ -117,7 +117,7 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
         throw e;
     }
 
-    static <O> boolean isSerialisationConflict(SQLException cause) {
+    static boolean isSerialisationConflict(SQLException cause) {
         String sqlState = cause.getSQLState();
 
         if (sqlState != null && sqlState.equals(SERIALISATION_FAILURE_SQL_STATE)) {

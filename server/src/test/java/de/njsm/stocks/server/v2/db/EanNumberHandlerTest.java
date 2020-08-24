@@ -50,7 +50,7 @@ public class EanNumberHandlerTest extends DbTestCase {
 
         assertTrue(code.isSuccess());
 
-        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get();
+        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 
@@ -65,7 +65,7 @@ public class EanNumberHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get();
+        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 
@@ -80,7 +80,7 @@ public class EanNumberHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
 
-        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get();
+        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get(false);
 
         assertTrue(dbData.isSuccess());
 

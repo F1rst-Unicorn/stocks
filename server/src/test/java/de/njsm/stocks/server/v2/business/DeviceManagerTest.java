@@ -25,7 +25,7 @@ import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
-import de.njsm.stocks.server.v2.db.TicketBackend;
+import de.njsm.stocks.server.v2.db.TicketHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import fj.data.Validation;
 import org.junit.After;
@@ -50,7 +50,7 @@ public class DeviceManagerTest {
 
     private FoodItemHandler foodDbHandler;
 
-    private TicketBackend ticketDbHandler;
+    private TicketHandler ticketDbHandler;
 
     private AuthAdmin authAdmin;
 
@@ -62,7 +62,7 @@ public class DeviceManagerTest {
     public void setup() {
         dbHandler = Mockito.mock(UserDeviceHandler.class);
         foodDbHandler = Mockito.mock(FoodItemHandler.class);
-        ticketDbHandler = Mockito.mock(TicketBackend.class);
+        ticketDbHandler = Mockito.mock(TicketHandler.class);
         authAdmin = Mockito.mock(AuthAdmin.class);
 
         device = new UserDevice(2, 42, "testdevice", 3);
@@ -125,13 +125,13 @@ public class DeviceManagerTest {
     @Test
     public void gettingDevicesWorks() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(dbHandler.get()).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(dbHandler.get(false)).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<UserDevice>> result = uut.get(r);
+        Validation<StatusCode, Stream<UserDevice>> result = uut.get(r, false);
 
         assertTrue(result.isSuccess());
-        Mockito.verify(dbHandler).get();
+        Mockito.verify(dbHandler).get(false);
         Mockito.verify(dbHandler).setReadOnly();
     }
 

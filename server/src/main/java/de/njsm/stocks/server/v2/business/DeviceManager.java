@@ -25,7 +25,7 @@ import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
-import de.njsm.stocks.server.v2.db.TicketBackend;
+import de.njsm.stocks.server.v2.db.TicketHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
@@ -42,36 +42,36 @@ public class DeviceManager extends BusinessObject {
 
     private static final int TICKET_LENGTH = 64;
 
-    private UserDeviceHandler deviceBackend;
+    private final UserDeviceHandler userDeviceHandler;
 
-    private FoodItemHandler foodItemHandler;
+    private final FoodItemHandler foodItemHandler;
 
-    private TicketBackend ticketBackend;
+    private final TicketHandler ticketHandler;
 
-    private AuthAdmin authAdmin;
+    private final AuthAdmin authAdmin;
 
-    public DeviceManager(UserDeviceHandler deviceBackend,
+    public DeviceManager(UserDeviceHandler userDeviceHandler,
                          FoodItemHandler foodItemHandler,
-                         TicketBackend ticketBackend,
+                         TicketHandler ticketHandler,
                          AuthAdmin authAdmin) {
-        super(deviceBackend);
-        this.deviceBackend = deviceBackend;
+        super(userDeviceHandler);
+        this.userDeviceHandler = userDeviceHandler;
         this.foodItemHandler = foodItemHandler;
-        this.ticketBackend = ticketBackend;
+        this.ticketHandler = ticketHandler;
         this.authAdmin = authAdmin;
     }
 
     public Validation<StatusCode, NewDeviceTicket> addDevice(UserDevice device) {
         return runFunction(() -> {
 
-            Validation<StatusCode, Integer> deviceAddResult = deviceBackend.add(device);
+            Validation<StatusCode, Integer> deviceAddResult = userDeviceHandler.add(device);
             if (deviceAddResult.isFail())
                 return Validation.fail(deviceAddResult.fail());
 
             device.id = deviceAddResult.success();
             String ticket = generateTicket();
 
-            StatusCode ticketAddResult = ticketBackend.addTicket(device, ticket);
+            StatusCode ticketAddResult = ticketHandler.addTicket(device, ticket);
             if (ticketAddResult != StatusCode.SUCCESS)
                 return Validation.fail(ticketAddResult);
 
@@ -80,10 +80,10 @@ public class DeviceManager extends BusinessObject {
         });
     }
 
-    public Validation<StatusCode, Stream<UserDevice>> get(AsyncResponse r) {
+    public Validation<StatusCode, Stream<UserDevice>> get(AsyncResponse r, boolean bitemporal) {
         return runAsynchronously(r, () -> {
-            deviceBackend.setReadOnly();
-            return deviceBackend.get();
+            userDeviceHandler.setReadOnly();
+            return userDeviceHandler.get(bitemporal);
         });
     }
 
@@ -93,13 +93,13 @@ public class DeviceManager extends BusinessObject {
 
     public StatusCode revokeDevice(UserDevice device) {
         return runOperation(() -> {
-            deviceBackend.setReadOnly();
+            userDeviceHandler.setReadOnly();
             return authAdmin.revokeCertificate(device.id);
         });
     }
 
     Validation<StatusCode, List<UserDevice>> getDevicesBelonging(User u) {
-        return deviceBackend.getDevicesOfUser(u);
+        return userDeviceHandler.getDevicesOfUser(u);
     }
 
     StatusCode removeDeviceInternally(UserDevice device, Principals currentUser) {
@@ -108,7 +108,7 @@ public class DeviceManager extends BusinessObject {
         if (transferResult != StatusCode.SUCCESS)
             return transferResult;
 
-        StatusCode deleteResult = deviceBackend.delete(device);
+        StatusCode deleteResult = userDeviceHandler.delete(device);
         if (deleteResult != StatusCode.SUCCESS)
             return deleteResult;
 

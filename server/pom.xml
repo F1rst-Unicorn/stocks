@@ -189,19 +189,19 @@
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
-            <version>3.13.1</version>
+            <version>3.13.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-meta</artifactId>
-            <version>3.13.1</version>
+            <version>3.13.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-codegen</artifactId>
-            <version>3.13.1</version>
+            <version>3.13.4</version>
         </dependency>
 
         <dependency>
@@ -443,6 +443,12 @@
                                     <userType>java.time.Period</userType>
                                     <binding>de.njsm.stocks.server.v2.db.jooq.IntervalBinding</binding>
                                     <types>INTERVAL</types>
+                                </forcedType>
+                                <forcedType>
+                                    <userType>java.time.OffsetDateTime</userType>
+                                    <binding>org.jooq.impl.OffsetDateTimeBinding</binding>
+                                    <expression>valid_time_start|valid_time_end|transaction_time_start|transaction_time_end</expression>
+                                    <types>.*timestamp.*</types>
                                 </forcedType>
                             </forcedTypes>
                         </database>

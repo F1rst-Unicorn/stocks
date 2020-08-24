@@ -24,9 +24,11 @@ import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
+import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,7 +49,8 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
         return runFunction(context -> {
             List<UserDevice> result = context
                     .selectFrom(USER_DEVICE)
-                    .where(USER_DEVICE.BELONGS_TO.eq(user.id))
+                    .where(USER_DEVICE.BELONGS_TO.eq(user.id)
+                        .and(nowAsBestKnown()))
                     .fetch()
                     .stream()
                     .map(getDtoMap())
@@ -81,5 +84,15 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
     @Override
     protected TableField<UserDeviceRecord, Integer> getVersionField() {
         return USER_DEVICE.VERSION;
+    }
+
+    @Override
+    protected List<Field<?>> getNontemporalFields() {
+        return Arrays.asList(
+                USER_DEVICE.ID,
+                USER_DEVICE.VERSION,
+                USER_DEVICE.NAME,
+                USER_DEVICE.BELONGS_TO
+        );
     }
 }

@@ -22,17 +22,25 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.VersionedData;
 import fj.data.Validation;
-import org.jooq.DSLContext;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UpdatableRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.postgresql.PGStatement;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extends VersionedData>
+public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends VersionedData>
         extends FailSafeDatabaseHandler
         implements PresenceChecker<R> {
+
+    public static final OffsetDateTime INFINITY = OffsetDateTime.ofInstant(Instant.ofEpochMilli(PGStatement.DATE_POSITIVE_INFINITY), ZoneId.of("UTC"));
+
+    public static final OffsetDateTime NEGATIVE_INFINITY = OffsetDateTime.ofInstant(Instant.ofEpochMilli(PGStatement.DATE_NEGATIVE_INFINITY), ZoneId.of("UTC"));
 
     protected InsertVisitor<T> visitor;
 
@@ -44,6 +52,9 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
         this.visitor = visitor;
     }
 
+    /**
+     * CF 10.4
+     */
     public Validation<StatusCode, Integer> add(R item) {
         return runFunction(context -> {
             int lastInsertId = visitor.visit(item, context.insertInto(getTable()))
@@ -52,48 +63,187 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
                     .getValue(0, getIdField());
             return Validation.success(lastInsertId);
         });
-
     }
 
-    public Validation<StatusCode, Stream<R>> get() {
+    /**
+     * CF 10.23
+     */
+    public Validation<StatusCode, Stream<R>> get(boolean bitemporal) {
         return runFunction(context -> {
+
+            Condition bitemporalSelector;
+            if (bitemporal)
+                bitemporalSelector = DSL.trueCondition();
+            else
+                bitemporalSelector = nowAsBestKnown();
+
             Stream<R> result = context
-                            .selectFrom(getTable())
-                            .fetchSize(1024)
-                            .stream()
-                            .map(getDtoMap());
+                    .selectFrom(getTable())
+                    .where(bitemporalSelector)
+                    .fetchSize(1024)
+                    .stream()
+                    .map(getDtoMap());
 
             return Validation.success(result);
         });
     }
 
+    /**
+     * CF 10.11
+     */
     public StatusCode delete(R item) {
         return runCommand(context -> {
-            if (isMissing(item, context))
+            if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            int changedItems = context.deleteFrom(getTable())
-                    .where(getIdField().eq(item.id)
-                            .and(getVersionField().eq(item.version)))
+            return currentDelete(getIdField().eq(item.id)
+                    .and(getVersionField().eq(item.version)));
+        });
+    }
+
+    /**
+     * CF 10.11
+     */
+    public StatusCode currentDelete(Condition condition) {
+        return runCommand(context -> {
+            Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+            List<Field<?>> fields = getNontemporalFields();
+            List<Field<?>> fieldsWithTime = getFieldsWithTime(fields);
+
+            int changedItems = context.insertInto(getTable())
+                    .columns(fieldsWithTime)
+                    .select(
+                            context.select(fields)
+                                    .select(getValidTimeStartField(),
+                                            now,
+                                            now,
+                                            DSL.inline(CrudDatabaseHandler.INFINITY))
+                                    .from(getTable())
+                                    .where(condition
+                                    .and(getValidTimeStartField().lessThan(now))
+                                    .and(getValidTimeEndField().greaterThan(now))
+                                    .and(getTransactionTimeEndField().eq(CrudDatabaseHandler.INFINITY))))
+                    .execute();
+
+            context.update(getTable())
+                    .set(getTransactionTimeEndField(), now)
+                    .where(condition
+                    .and(getValidTimeEndField().greaterThan(now))
+                    .and(getTransactionTimeEndField().eq(CrudDatabaseHandler.INFINITY)))
+                    .execute();
+
+            if (0 < changedItems)
+                return StatusCode.SUCCESS;
+            else
+                return StatusCode.INVALID_DATA_VERSION;
+
+        });
+    }
+
+    /**
+     * CF 10.7
+     */
+    public StatusCode currentUpdate(List<Field<?>> valuesToUpdate, Condition condition) {
+        return runCommand(context -> {
+
+            Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+            List<Field<?>> fields = getNontemporalFields();
+            List<Field<?>> fieldsWithTime = getFieldsWithTime(fields);
+
+            int changedItems = context.insertInto(getTable())
+                    .columns(fieldsWithTime)
+                    .select(
+                            context.select(valuesToUpdate)
+                                    .select(
+                                            now,
+                                            getValidTimeEndField(),
+                                            now,
+                                            DSL.inline(CrudDatabaseHandler.INFINITY))
+                                    .from(getTable())
+                                    .where(condition
+                                            .and(getValidTimeStartField().lessOrEqual(now))
+                                            .and(getValidTimeEndField().greaterThan(now))
+                                            .and(getTransactionTimeEndField().eq(INFINITY))
+                                    ))
+                    .execute();
+
+            context.insertInto(getTable())
+                    .columns(fieldsWithTime)
+                    .select(
+                            context.select(fields)
+                                    .select(
+                                            getValidTimeStartField(),
+                                            now,
+                                            now,
+                                            DSL.inline(INFINITY)
+                                    ).from(getTable())
+                                    .where(condition
+                                            .and(getValidTimeStartField().lessThan(now))
+                                            .and(getValidTimeEndField().greaterThan(now))
+                                            .and(getTransactionTimeEndField().eq(INFINITY))
+                                    )
+                    )
+                    .execute();
+
+            context.update(getTable())
+                    .set(getTransactionTimeEndField(), now)
+                    .where(condition
+                            .and(getValidTimeStartField().lessThan(now))
+                            .and(getValidTimeEndField().greaterThan(now))
+                            .and(getTransactionTimeEndField().eq(INFINITY))
+                    )
+                    .execute();
+
+            context.insertInto(getTable())
+                    .columns(fieldsWithTime)
+                    .select(
+                            context.select(valuesToUpdate)
+                                    .select(
+                                            getValidTimeStartField(),
+                                            getValidTimeEndField(),
+                                            now,
+                                            DSL.inline(CrudDatabaseHandler.INFINITY))
+                                    .from(getTable())
+                                    .where(condition
+                                            .and(getValidTimeStartField().greaterThan(now))
+                                            .and(getTransactionTimeEndField().eq(INFINITY))
+                                    )
+                    ).execute();
+
+            context.update(getTable())
+                    .set(getTransactionTimeEndField(), now)
+                    .where(condition
+                            .and(getValidTimeStartField().greaterThan(now))
+                            .and(getTransactionTimeEndField().eq(INFINITY))
+                    )
                     .execute();
 
             if (changedItems == 1)
                 return StatusCode.SUCCESS;
             else
-                return StatusCode.INVALID_DATA_VERSION;
+                return StatusCode.NOT_FOUND;
         });
     }
 
     @Override
-    public boolean isMissing(R item, DSLContext context) {
+    public boolean isCurrentlyMissing(R item, DSLContext context) {
         int count = context.selectCount()
                 .from(getTable())
-                .where(getIdField().eq(item.id))
+                .where(getIdField().eq(item.id).and(nowAsBestKnown()))
                 .fetch()
                 .get(0)
                 .value1();
 
         return count == 0;
+    }
+
+    protected List<Field<?>> getFieldsWithTime(List<Field<?>> fields) {
+        List<Field<?>> fieldsWithTime = new ArrayList<>(fields);
+        fieldsWithTime.add(getValidTimeStartField());
+        fieldsWithTime.add(getValidTimeEndField());
+        fieldsWithTime.add(getTransactionTimeStartField());
+        fieldsWithTime.add(getTransactionTimeEndField());
+        return fieldsWithTime;
     }
 
     protected abstract Table<T> getTable();
@@ -103,4 +253,35 @@ public abstract class CrudDatabaseHandler<T extends UpdatableRecord<T>, R extend
     protected abstract TableField<T, Integer> getIdField();
 
     protected abstract TableField<T, Integer> getVersionField();
+
+    protected abstract List<Field<?>> getNontemporalFields();
+
+    protected Field<OffsetDateTime> getValidTimeStartField() {
+        return getTable().field("valid_time_start", OffsetDateTime.class);
+    }
+
+    protected Field<OffsetDateTime> getValidTimeEndField() {
+        return getTable().field("valid_time_end", OffsetDateTime.class);
+    }
+
+    protected Field<OffsetDateTime> getTransactionTimeStartField() {
+        return getTable().field("transaction_time_start", OffsetDateTime.class);
+    }
+
+    protected Field<OffsetDateTime> getTransactionTimeEndField() {
+        return getTable().field("transaction_time_end", OffsetDateTime.class);
+    }
+
+    protected Condition nowAsBestKnown() {
+        return getValidTimeStartField().lessOrEqual(DSL.currentOffsetDateTime())
+                .and(DSL.currentOffsetDateTime().lessThan(getValidTimeEndField()))
+                .and(getTransactionTimeEndField().eq(INFINITY));
+    }
+
+    protected StatusCode notFoundMeansInvalidVersion(StatusCode code) {
+        if (code == StatusCode.NOT_FOUND)
+            return StatusCode.INVALID_DATA_VERSION;
+        else
+            return code;
+    }
 }

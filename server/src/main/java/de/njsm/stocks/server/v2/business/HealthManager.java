@@ -26,9 +26,9 @@ import fj.data.Validation;
 
 public class HealthManager extends BusinessObject {
 
-    private HealthHandler dbBackend;
+    private final HealthHandler dbBackend;
 
-    private AuthAdmin caBackend;
+    private final AuthAdmin caBackend;
 
     public HealthManager(HealthHandler dbBackend,
                          AuthAdmin caBackend) {

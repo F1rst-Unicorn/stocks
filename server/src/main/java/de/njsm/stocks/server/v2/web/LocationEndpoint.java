@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 @Path("v2/location")
 public class LocationEndpoint extends Endpoint {
 
-    private LocationManager manager;
+    private final LocationManager manager;
 
     @Inject
     public LocationEndpoint(LocationManager manager) {
@@ -56,8 +56,9 @@ public class LocationEndpoint extends Endpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public void get(@Suspended AsyncResponse response) {
-        Validation<StatusCode, Stream<Location>> result = manager.get(response);
+    public void get(@Suspended AsyncResponse response, @QueryParam("bitemporal") int bitemporalParameter) {
+        boolean bitemporal = bitemporalParameter == 1;
+        Validation<StatusCode, Stream<Location>> result = manager.get(response, bitemporal);
         response.resume(new StreamResponse<>(result));
     }
 

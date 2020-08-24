@@ -40,7 +40,7 @@ import java.util.stream.Stream;
 @Path("v2/device")
 public class DeviceEndpoint extends Endpoint {
 
-    private DeviceManager manager;
+    private final DeviceManager manager;
 
     @Inject
     public DeviceEndpoint(DeviceManager manager) {
@@ -63,8 +63,9 @@ public class DeviceEndpoint extends Endpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public void get(@Suspended AsyncResponse response) {
-        Validation<StatusCode, Stream<UserDevice>> result = manager.get(response);
+    public void get(@Suspended AsyncResponse response, @QueryParam("bitemporal") int bitemporalParameter) {
+        boolean bitemporal = bitemporalParameter == 1;
+        Validation<StatusCode, Stream<UserDevice>> result = manager.get(response, bitemporal);
         response.resume(new StreamResponse<>(result));
     }
 

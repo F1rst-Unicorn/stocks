@@ -29,9 +29,9 @@ import java.util.stream.Stream;
 
 public class LocationManager extends BusinessObject {
 
-    private LocationHandler locationHandler;
+    private final LocationHandler locationHandler;
 
-    private FoodItemHandler foodItemHandler;
+    private final FoodItemHandler foodItemHandler;
 
     public LocationManager(LocationHandler locationHandler,
                            FoodItemHandler foodItemHandler) {
@@ -45,10 +45,10 @@ public class LocationManager extends BusinessObject {
                 .toEither().left().orValue(StatusCode.SUCCESS));
     }
 
-    public Validation<StatusCode, Stream<Location>> get(AsyncResponse r) {
+    public Validation<StatusCode, Stream<Location>> get(AsyncResponse r, boolean bitemporal) {
         return runAsynchronously(r, () -> {
             locationHandler.setReadOnly();
-            return locationHandler.get();
+            return locationHandler.get(bitemporal);
         });
     }
 

@@ -15,11 +15,11 @@ public class CaConsistencyCheckJob {
 
     private static final Logger LOG = LogManager.getLogger(CaConsistencyCheckJob.class);
 
-    private AuthAdmin authAdmin;
+    private final AuthAdmin authAdmin;
 
-    private PrincipalsHandler dbHandler;
+    private final PrincipalsHandler dbHandler;
 
-    private UserDeviceHandler deviceHandler;
+    private final UserDeviceHandler deviceHandler;
 
     public CaConsistencyCheckJob(AuthAdmin authAdmin, PrincipalsHandler dbHandler, UserDeviceHandler deviceHandler) {
         this.authAdmin = authAdmin;

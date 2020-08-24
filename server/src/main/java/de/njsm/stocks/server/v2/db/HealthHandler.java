@@ -24,7 +24,6 @@ import org.jooq.impl.DSL;
 
 public class HealthHandler extends FailSafeDatabaseHandler {
 
-
     public HealthHandler(ConnectionFactory connectionFactory, String resourceIdentifier, int timeout) {
         super(connectionFactory, resourceIdentifier, timeout);
     }

@@ -24,7 +24,6 @@ import de.njsm.stocks.server.v2.business.data.FoodItem;
 import de.njsm.stocks.server.v2.business.data.Location;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
-import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Assert;
@@ -37,7 +36,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.db.jooq.tables.Food.FOOD;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -76,7 +74,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.add(item);
 
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false);
         Assert.assertTrue(result.isSuccess());
         assertTrue(items.isSuccess());
         assertEquals(4, items.success().count());
@@ -85,7 +83,7 @@ public class FoodItemHandlerTest extends DbTestCase {
     @Test
     public void testGettingItems() {
 
-        Validation<StatusCode, Stream<FoodItem>> result = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> result = uut.get(false);
 
         assertTrue(result.isSuccess());
         List<FoodItem> list = result.success().collect(Collectors.toList());
@@ -117,7 +115,7 @@ public class FoodItemHandlerTest extends DbTestCase {
         StatusCode result = uut.delete(new FoodItem(1, 0));
 
         assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false);
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.isSuccess());
         assertEquals(2, items.success().count());
@@ -130,7 +128,7 @@ public class FoodItemHandlerTest extends DbTestCase {
         StatusCode result = uut.edit(item);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false);
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.isSuccess());
         List<FoodItem> list = items.success().collect(Collectors.toList());
@@ -158,105 +156,88 @@ public class FoodItemHandlerTest extends DbTestCase {
     }
 
     @Test
-    public void addingItemRemovesFromShoppingList() {
-        FoodItem beer = new FoodItem(0, 0, Instant.EPOCH, 2, 1, 3, 2);
-        FoodRecord foodType = getDSLContext().selectFrom(FOOD)
-                .where(FOOD.ID.eq(2))
-                .fetchOne();
-        assertTrue(foodType.getToBuy());   // precondition to make test useful
-
-        Validation<StatusCode, Integer> result = uut.add(beer);
-
-        assertTrue(result.isSuccess());
-        foodType = getDSLContext().selectFrom(FOOD)
-                .where(FOOD.ID.eq(2))
-                .fetchOne();
-        assertFalse(foodType.getToBuy());
-    }
-
-    @Test
     public void movingFromUnknownDeviceIsReported() {
         UserDevice from = new UserDevice(1, 0, "fdsa", 1);
         UserDevice to = new UserDevice(3, 0, "fdsa", 2);
-        Mockito.when(userDevicePresenceChecker.isMissing(eq(from), any())).thenReturn(true);
-        Mockito.when(userDevicePresenceChecker.isMissing(eq(to), any())).thenReturn(false);
+        Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(true);
+        Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
         StatusCode result = uut.transferFoodItems(from, to);
 
         assertEquals(StatusCode.NOT_FOUND, result);
-        Mockito.verify(userDevicePresenceChecker).isMissing(eq(from), any());
+        Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(from), any());
     }
 
     @Test
     public void movingToUnknownDeviceIsReported() {
         UserDevice from = new UserDevice(1, 0, "fdsa", 1);
         UserDevice to = new UserDevice(3, 0, "fdsa", 2);
-        Mockito.when(userDevicePresenceChecker.isMissing(eq(from), any())).thenReturn(false);
-        Mockito.when(userDevicePresenceChecker.isMissing(eq(to), any())).thenReturn(true);
+        Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
+        Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(true);
 
         StatusCode result = uut.transferFoodItems(from, to);
 
         assertEquals(StatusCode.NOT_FOUND, result);
-        Mockito.verify(userDevicePresenceChecker).isMissing(eq(from), any());
-        Mockito.verify(userDevicePresenceChecker).isMissing(eq(to), any());
+        Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(from), any());
+        Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(to), any());
     }
 
     @Test
     public void successfulTransfer() {
         UserDevice from = new UserDevice(3, 0, "fdsa", 2);
         UserDevice to = new UserDevice(1, 0, "fdsa", 1);
-        Mockito.when(userDevicePresenceChecker.isMissing(eq(from), any())).thenReturn(false);
-        Mockito.when(userDevicePresenceChecker.isMissing(eq(to), any())).thenReturn(false);
+        Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
+        Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
         StatusCode result = uut.transferFoodItems(from, to);
 
-        Stream<FoodItem> items = uut.get().success();
+        Stream<FoodItem> items = uut.get(false).success();
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.allMatch(item -> (item.version == 1) == (item.registers == to.id)));
-        Mockito.verify(userDevicePresenceChecker).isMissing(eq(from), any());
-        Mockito.verify(userDevicePresenceChecker).isMissing(eq(to), any());
+        Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(from), any());
+        Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(to), any());
     }
 
     @Test
     public void movingFromUnknownUserIsReported() {
         User from = new User(1, 0, "fdsa");
         User to = new User(3, 0, "fdsa");
-        Mockito.when(userPresenceChecker.isMissing(eq(from), any())).thenReturn(true);
-        Mockito.when(userPresenceChecker.isMissing(eq(to), any())).thenReturn(false);
+        Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(true);
+        Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
         StatusCode result = uut.transferFoodItems(from, to);
 
         assertEquals(StatusCode.NOT_FOUND, result);
-        Mockito.verify(userPresenceChecker).isMissing(eq(from), any());
+        Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(from), any());
     }
 
     @Test
     public void movingToUnknownUserIsReported() {
         User from = new User(1, 0, "fdsa");
         User to = new User(3, 0, "fdsa");
-        Mockito.when(userPresenceChecker.isMissing(eq(from), any())).thenReturn(false);
-        Mockito.when(userPresenceChecker.isMissing(eq(to), any())).thenReturn(true);
+        Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
+        Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(true);
 
         StatusCode result = uut.transferFoodItems(from, to);
 
         assertEquals(StatusCode.NOT_FOUND, result);
-        Mockito.verify(userPresenceChecker).isMissing(eq(from), any());
+        Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(from), any());
     }
 
     @Test
     public void moveUserSuccessfully() {
         User from = new User(3, 0, "fdsa");
         User to = new User(1, 0, "fdsa");
-        Mockito.when(userPresenceChecker.isMissing(eq(from), any())).thenReturn(false);
-        Mockito.when(userPresenceChecker.isMissing(eq(to), any())).thenReturn(false);
+        Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
+        Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
         StatusCode result = uut.transferFoodItems(from, to);
 
-        Stream<FoodItem> items = uut.get().success();
+        Stream<FoodItem> items = uut.get(false).success();
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.allMatch(item -> (item.version == 1) == (item.registers == to.id)));
-        Mockito.verify(userPresenceChecker).isMissing(eq(from), any());
-        Mockito.verify(userPresenceChecker).isMissing(eq(to), any());
+        Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(from), any());
+        Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(to), any());
     }
 
     @Test
@@ -265,7 +246,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         StatusCode deleteResult = uut.deleteItemsStoredIn(input);
 
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get();
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false);
 
         assertEquals(StatusCode.SUCCESS, deleteResult);
         assertTrue(items.isSuccess());

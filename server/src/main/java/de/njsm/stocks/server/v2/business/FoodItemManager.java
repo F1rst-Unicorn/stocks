@@ -19,7 +19,9 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.server.v2.business.data.Food;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
+import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
 
@@ -28,21 +30,28 @@ import java.util.stream.Stream;
 
 public class FoodItemManager extends BusinessObject {
 
-    private FoodItemHandler dbHandler;
+    private final FoodItemHandler dbHandler;
 
-    public FoodItemManager(FoodItemHandler dbHandler) {
+    private final FoodHandler foodHandler;
+
+    public FoodItemManager(FoodItemHandler dbHandler, FoodHandler foodHandler) {
         super(dbHandler);
         this.dbHandler = dbHandler;
+        this.foodHandler = foodHandler;
     }
 
     public Validation<StatusCode, Integer> add(FoodItem item) {
-        return runFunction(() -> dbHandler.add(item));
+        return runFunction(() -> {
+            Validation<StatusCode, Integer> result = dbHandler.add(item);
+            return result.bind(v -> foodHandler.setToBuyStatus(new Food(item.ofType, -1), false)
+                    .toValidation().map((__) -> v));
+        });
     }
 
-    public Validation<StatusCode, Stream<FoodItem>> get(AsyncResponse r) {
+    public Validation<StatusCode, Stream<FoodItem>> get(AsyncResponse r, boolean bitemporal) {
         return runAsynchronously(r, () -> {
             dbHandler.setReadOnly();
-            return dbHandler.get();
+            return dbHandler.get(bitemporal);
         });
     }
 

@@ -24,5 +24,5 @@ import org.jooq.DSLContext;
 
 public interface PresenceChecker<R extends VersionedData> {
 
-    boolean isMissing(R item, DSLContext context);
+    boolean isCurrentlyMissing(R item, DSLContext context);
 }

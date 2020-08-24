@@ -34,7 +34,7 @@ public class BusinessObject {
             .help("Count number of repetitions for operation due to serialisation")
             .register();
 
-    private FailSafeDatabaseHandler dbHandler;
+    private final FailSafeDatabaseHandler dbHandler;
 
     public BusinessObject(FailSafeDatabaseHandler dbHandler) {
         this.dbHandler = dbHandler;

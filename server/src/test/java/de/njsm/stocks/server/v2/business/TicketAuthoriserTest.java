@@ -23,7 +23,7 @@ import de.njsm.stocks.server.v2.business.data.ServerTicket;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
-import de.njsm.stocks.server.v2.db.TicketBackend;
+import de.njsm.stocks.server.v2.db.TicketHandler;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Assert;
@@ -44,14 +44,14 @@ public class TicketAuthoriserTest {
 
     private AuthAdmin authAdmin;
 
-    private TicketBackend databaseHandler;
+    private TicketHandler databaseHandler;
 
     private int validityTime = 10 * 60 * 1000;
 
     @Before
     public void setup() {
         authAdmin = Mockito.mock(AuthAdmin.class);
-        databaseHandler = Mockito.mock(TicketBackend.class);
+        databaseHandler = Mockito.mock(TicketHandler.class);
         uut = new TicketAuthoriser(authAdmin, databaseHandler, validityTime / (60 * 1000));
     }
 

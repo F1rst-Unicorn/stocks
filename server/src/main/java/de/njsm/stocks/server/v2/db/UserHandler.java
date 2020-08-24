@@ -21,9 +21,12 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
+import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
@@ -60,5 +63,14 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
     @Override
     protected TableField<UserRecord, Integer> getVersionField() {
         return USER.VERSION;
+    }
+
+    @Override
+    protected List<Field<?>> getNontemporalFields() {
+        return Arrays.asList(
+                USER.ID,
+                USER.VERSION,
+                USER.NAME
+        );
     }
 }

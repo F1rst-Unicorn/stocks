@@ -25,19 +25,20 @@ import de.njsm.stocks.server.v2.business.data.Location;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
-import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
-import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD_ITEM;
 
 
@@ -45,9 +46,9 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
 
     private static final Logger LOG = LogManager.getLogger(FoodItemHandler.class);
 
-    private PresenceChecker<UserDevice> userDeviceChecker;
+    private final PresenceChecker<UserDevice> userDeviceChecker;
 
-    private PresenceChecker<User> userChecker;
+    private final PresenceChecker<User> userChecker;
 
     public FoodItemHandler(ConnectionFactory connectionFactory,
                            String resourceIdentifier,
@@ -60,107 +61,110 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
         this.userChecker = userChecker;
     }
 
-    @Override
-    public Validation<StatusCode, Integer> add(FoodItem item) {
-            return runFunction(context -> {
-                int lastInsertId = visitor.visit(item, context.insertInto(getTable()))
-                        .returning(getIdField())
-                        .fetch()
-                        .getValue(0, getIdField());
-
-                context.update(FOOD)
-                        .set(FOOD.TO_BUY, false)
-                        .set(FOOD.VERSION, FOOD.VERSION.add(1))
-                        .where(FOOD.ID.eq(item.ofType))
-                        .execute();
-
-                return Validation.success(lastInsertId);
-            });
-
-    }
-
     public StatusCode edit(FoodItem item) {
         return runCommand(context -> {
-            if (isMissing(item, context)) {
+            if (isCurrentlyMissing(item, context)) {
                 return StatusCode.NOT_FOUND;
             }
 
-            int changedItems = context.update(FOOD_ITEM)
-                    .set(FOOD_ITEM.EAT_BY, OffsetDateTime.from(item.eatByDate.atOffset(ZoneOffset.UTC)))
-                    .set(FOOD_ITEM.STORED_IN, item.storedIn)
-                    .set(FOOD_ITEM.VERSION, FOOD_ITEM.VERSION.add(1))
-                    .where(FOOD_ITEM.ID.eq(item.id)
-                            .and(FOOD_ITEM.VERSION.eq(item.version)))
-                    .execute();
+            StatusCode result = currentUpdate(Arrays.asList(
+                    FOOD_ITEM.ID,
+                    DSL.inline(OffsetDateTime.from(item.eatByDate.atOffset(ZoneOffset.UTC))),
+                    FOOD_ITEM.OF_TYPE,
+                    DSL.inline(item.storedIn),
+                    FOOD_ITEM.REGISTERS,
+                    FOOD_ITEM.BUYS,
+                    FOOD_ITEM.VERSION.add(1)
+                    ),
+                    FOOD_ITEM.ID.eq(item.id)
+                            .and(FOOD_ITEM.VERSION.eq(item.version)));
 
-            if (changedItems == 1) {
-                return StatusCode.SUCCESS;
-            } else {
-                return StatusCode.INVALID_DATA_VERSION;
-            }
+            return notFoundMeansInvalidVersion(result);
         });
     }
 
     public StatusCode transferFoodItems(UserDevice from, UserDevice to) {
         return runCommand(context -> {
-            if (userDeviceChecker.isMissing(from, context)) {
+            if (userDeviceChecker.isCurrentlyMissing(from, context)) {
                 LOG.warn("Origin ID " + from + " not found");
                 return StatusCode.NOT_FOUND;
             }
 
-            if (userDeviceChecker.isMissing(to, context)) {
+            if (userDeviceChecker.isCurrentlyMissing(to, context)) {
                 LOG.warn("Target ID " + from + " not found");
                 return StatusCode.NOT_FOUND;
             }
+            StatusCode result = currentUpdate(Arrays.asList(
+                    FOOD_ITEM.ID,
+                    FOOD_ITEM.EAT_BY,
+                    FOOD_ITEM.OF_TYPE,
+                    FOOD_ITEM.STORED_IN,
+                    DSL.inline(to.id),
+                    FOOD_ITEM.BUYS,
+                    FOOD_ITEM.VERSION.add(1)
+                    ),
+                    FOOD_ITEM.REGISTERS.eq(from.id));
 
-            context.update(FOOD_ITEM)
-                    .set(FOOD_ITEM.REGISTERS, to.id)
-                    .set(FOOD_ITEM.VERSION, FOOD_ITEM.VERSION.add(1))
-                    .where(FOOD_ITEM.REGISTERS.eq(from.id))
-                    .execute();
-
-            return StatusCode.SUCCESS;
+            // we don't care if the device owned no items
+            if (result == StatusCode.NOT_FOUND) {
+                result = StatusCode.SUCCESS;
+            }
+            return result;
         });
     }
 
+    /**
+     * CF 10.7
+     */
     public StatusCode transferFoodItems(User from, User to) {
         return runCommand(context -> {
-            if (userChecker.isMissing(from, context)) {
+            if (userChecker.isCurrentlyMissing(from, context)) {
                 LOG.warn("Origin ID " + from + " not found");
                 return StatusCode.NOT_FOUND;
             }
 
-            if (userChecker.isMissing(to, context)) {
+            if (userChecker.isCurrentlyMissing(to, context)) {
                 LOG.warn("Target ID " + to + " not found");
                 return StatusCode.NOT_FOUND;
             }
 
-            context.update(FOOD_ITEM)
-                    .set(FOOD_ITEM.BUYS, to.id)
-                    .set(FOOD_ITEM.VERSION, FOOD_ITEM.VERSION.add(1))
-                    .where(FOOD_ITEM.BUYS.eq(from.id))
-                    .execute();
+            StatusCode result = currentUpdate(Arrays.asList(
+                    FOOD_ITEM.ID,
+                    FOOD_ITEM.EAT_BY,
+                    FOOD_ITEM.OF_TYPE,
+                    FOOD_ITEM.STORED_IN,
+                    FOOD_ITEM.REGISTERS,
+                    DSL.inline(to.id),
+                    FOOD_ITEM.VERSION.add(1)
+                    ),
+                    FOOD_ITEM.BUYS.eq(from.id));
 
-            return StatusCode.SUCCESS;
+            // we don't care if the device owned no items
+            if (result == StatusCode.NOT_FOUND) {
+                result = StatusCode.SUCCESS;
+            }
+            return result;
         });
     }
 
     public StatusCode deleteItemsStoredIn(Location location) {
         return runCommand(context -> {
-
-            context.deleteFrom(FOOD_ITEM)
-                    .where(FOOD_ITEM.STORED_IN.eq(location.id))
-                    .execute();
-
+            currentDelete(FOOD_ITEM.STORED_IN.eq(location.id));
             return StatusCode.SUCCESS;
         });
     }
 
     boolean areItemsStoredIn(Location location, DSLContext context) {
+        Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+
         int result = context.select(DSL.count())
-                    .from(FOOD_ITEM)
-                    .where(FOOD_ITEM.STORED_IN.eq(location.id))
-                    .fetchOne(0, int.class);
+                .from(FOOD_ITEM)
+                .where(FOOD_ITEM.STORED_IN.eq(location.id)
+                        .and(getValidTimeStartField().lessOrEqual(now))
+                        .and(now.lessThan(getValidTimeEndField()))
+                        .and(getTransactionTimeEndField().eq(INFINITY))
+                )
+                .fetchOne(0, int.class);
 
         return result != 0;
     }
@@ -193,4 +197,16 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
         );
     }
 
+    @Override
+    protected List<Field<?>> getNontemporalFields() {
+        return Arrays.asList(
+                FOOD_ITEM.ID,
+                FOOD_ITEM.EAT_BY,
+                FOOD_ITEM.OF_TYPE,
+                FOOD_ITEM.STORED_IN,
+                FOOD_ITEM.REGISTERS,
+                FOOD_ITEM.BUYS,
+                FOOD_ITEM.VERSION
+        );
+    }
 }

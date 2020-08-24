@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 
 public class FoodManager extends BusinessObject {
 
-    private FoodHandler dbHandler;
+    private final FoodHandler dbHandler;
 
     public FoodManager(FoodHandler dbHandler) {
         super(dbHandler);
@@ -39,10 +39,10 @@ public class FoodManager extends BusinessObject {
         return runFunction(() -> dbHandler.add(item));
     }
 
-    public Validation<StatusCode, Stream<Food>> get(AsyncResponse r) {
+    public Validation<StatusCode, Stream<Food>> get(AsyncResponse r, boolean bitemporal) {
         return runAsynchronously(r, () -> {
             dbHandler.setReadOnly();
-            return dbHandler.get();
+            return dbHandler.get(bitemporal);
         });
     }
 

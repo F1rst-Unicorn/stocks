@@ -23,7 +23,7 @@ import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
 import de.njsm.stocks.server.v2.business.data.ServerTicket;
-import de.njsm.stocks.server.v2.db.TicketBackend;
+import de.njsm.stocks.server.v2.db.TicketHandler;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,13 +34,13 @@ public class TicketAuthoriser extends BusinessObject {
 
     private static final Logger LOG = LogManager.getLogger(TicketAuthoriser.class);
 
-    private TicketBackend databaseHandler;
+    private TicketHandler databaseHandler;
 
     private AuthAdmin authAdmin;
 
     private int validityTime;
 
-    public TicketAuthoriser(AuthAdmin authAdmin, TicketBackend databaseHandler, int validityTime) {
+    public TicketAuthoriser(AuthAdmin authAdmin, TicketHandler databaseHandler, int validityTime) {
         super(databaseHandler);
         this.authAdmin = authAdmin;
         this.databaseHandler = databaseHandler;

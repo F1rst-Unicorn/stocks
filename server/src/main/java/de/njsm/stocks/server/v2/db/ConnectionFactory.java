@@ -30,7 +30,7 @@ public class ConnectionFactory {
 
     private static final Logger LOG = LogManager.getLogger(ConnectionFactory.class);
 
-    private DataSource pool;
+    private final DataSource pool;
 
     private Connection connection;
 
@@ -42,8 +42,11 @@ public class ConnectionFactory {
      * Opens a new connection only on first call
      */
     public Connection getConnection() throws SQLException {
-        if (connection == null)
+        if (connection == null) {
+            LOG.debug("Checking out new connection");
             connection = pool.getConnection();
+            LOG.debug("Checked out new connection");
+        }
 
         return connection;
     }

@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 @Path("v2/fooditem")
 public class FoodItemEndpoint extends Endpoint {
 
-    private FoodItemManager manager;
+    private final FoodItemManager manager;
 
     @Inject
     public FoodItemEndpoint(FoodItemManager manager) {
@@ -73,8 +73,9 @@ public class FoodItemEndpoint extends Endpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public void get(@Suspended AsyncResponse response) {
-        Validation<StatusCode, Stream<FoodItem>> result = manager.get(response);
+    public void get(@Suspended AsyncResponse response, @QueryParam("bitemporal") int bitemporalParameter) {
+        boolean bitemporal = bitemporalParameter == 1;
+        Validation<StatusCode, Stream<FoodItem>> result = manager.get(response, bitemporal);
         response.resume(new StreamResponse<>(result));
     }
 

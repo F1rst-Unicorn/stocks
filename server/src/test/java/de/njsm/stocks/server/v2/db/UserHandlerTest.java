@@ -50,7 +50,7 @@ public class UserHandlerTest extends DbTestCase {
     @Test
     public void gettingUsersWorks() {
 
-        Validation<StatusCode, Stream<User>> result = uut.get();
+        Validation<StatusCode, Stream<User>> result = uut.get(false);
 
         assertTrue(result.isSuccess());
         List<User> list = result.success().collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class UserHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.add(input);
 
-        Validation<StatusCode, Stream<User>> users = uut.get();
+        Validation<StatusCode, Stream<User>> users = uut.get(false);
         assertTrue(result.isSuccess());
         List<User> list = users.success().collect(Collectors.toList());
         assertEquals(new Integer(4), result.success());
@@ -98,7 +98,7 @@ public class UserHandlerTest extends DbTestCase {
 
         StatusCode result = uut.delete(input);
 
-        Validation<StatusCode, Stream<User>> users = uut.get();
+        Validation<StatusCode, Stream<User>> users = uut.get(false);
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(users.isSuccess());
         List<User> list = users.success().collect(Collectors.toList());
