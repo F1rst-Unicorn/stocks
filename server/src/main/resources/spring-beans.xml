@@ -117,7 +117,8 @@
 
     <bean name="locationManager" class="de.njsm.stocks.server.v2.business.LocationManager" scope="request">
         <constructor-arg index="0" ref="locationDbHandler" />
-        <constructor-arg index="1" ref="foodItemBackend" />
+        <constructor-arg index="1" ref="foodDbHandler" />
+        <constructor-arg index="2" ref="foodItemBackend" />
     </bean>
 
     <bean name="updateManager" class="de.njsm.stocks.server.v2.business.UpdateManager" scope="request">
