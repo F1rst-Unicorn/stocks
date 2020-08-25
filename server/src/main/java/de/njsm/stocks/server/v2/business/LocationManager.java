@@ -20,6 +20,7 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.Location;
+import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
 import fj.data.Validation;
@@ -33,10 +34,13 @@ public class LocationManager extends BusinessObject {
 
     private final FoodItemHandler foodItemHandler;
 
+    private final FoodHandler foodHandler;
+
     public LocationManager(LocationHandler locationHandler,
-                           FoodItemHandler foodItemHandler) {
+                           FoodHandler foodHandler, FoodItemHandler foodItemHandler) {
         super(locationHandler);
         this.locationHandler = locationHandler;
+        this.foodHandler = foodHandler;
         this.foodItemHandler = foodItemHandler;
     }
 
@@ -65,7 +69,8 @@ public class LocationManager extends BusinessObject {
                     return deleteFoodResult;
             }
 
-            return locationHandler.delete(l);
+            return foodHandler.unregisterDefaultLocation(l)
+                    .bind(() -> locationHandler.delete(l));
         });
     }
 }

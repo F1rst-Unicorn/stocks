@@ -19,7 +19,9 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.EanNumber;
+import de.njsm.stocks.server.v2.business.data.Food;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -34,12 +36,19 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.EAN_NUMBER;
 
 public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNumber> {
 
-
     public EanNumberHandler(ConnectionFactory connectionFactory,
                             String resourceIdentifier,
                             int timeout,
                             InsertVisitor<EanNumberRecord> visitor) {
         super(connectionFactory, resourceIdentifier, timeout, visitor);
+    }
+
+    public StatusCode deleteOwnedByFood(Food food) {
+        StatusCode result = currentDelete(EAN_NUMBER.IDENTIFIES.eq(food.id));
+        if (result == StatusCode.NOT_FOUND) {
+            return StatusCode.SUCCESS;
+        }
+        return result;
     }
 
     @Override

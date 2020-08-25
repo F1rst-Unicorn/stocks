@@ -22,6 +22,7 @@ package de.njsm.stocks.server.v2.business;
 import fj.data.Validation;
 
 import javax.ws.rs.core.Response;
+import java.util.function.Supplier;
 
 public enum StatusCode {
 
@@ -115,5 +116,12 @@ public enum StatusCode {
             return v.fail();
         else
             throw new IllegalStateException("Validation and StatusCode contradict: " +  v);
+    }
+
+    public StatusCode bind(Supplier<StatusCode> next) {
+        if (isFail())
+            return this;
+        else
+            return next.get();
     }
 }

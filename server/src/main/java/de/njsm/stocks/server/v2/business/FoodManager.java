@@ -20,7 +20,9 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.FoodHandler;
+import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
 
 import javax.ws.rs.container.AsyncResponse;
@@ -30,9 +32,15 @@ public class FoodManager extends BusinessObject {
 
     private final FoodHandler dbHandler;
 
-    public FoodManager(FoodHandler dbHandler) {
+    private final EanNumberHandler eanNumberHandler;
+
+    private final FoodItemHandler foodItemHandler;
+
+    public FoodManager(FoodHandler dbHandler, FoodItemHandler foodItemHandler, EanNumberHandler eanNumberHandler) {
         super(dbHandler);
         this.dbHandler = dbHandler;
+        this.foodItemHandler = foodItemHandler;
+        this.eanNumberHandler = eanNumberHandler;
     }
 
     public Validation<StatusCode, Integer> add(Food item) {
@@ -55,6 +63,8 @@ public class FoodManager extends BusinessObject {
     }
 
     public StatusCode delete(Food item) {
-        return runOperation(() -> dbHandler.delete(item));
+        return runOperation(() -> eanNumberHandler.deleteOwnedByFood(item)
+                .bind(() -> foodItemHandler.deleteItemsOfType(item))
+                .bind(() -> dbHandler.delete(item)));
     }
 }

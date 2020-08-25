@@ -152,6 +152,7 @@ public class DeviceManagerTest {
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(authAdmin.revokeCertificate(device.id)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(ticketDbHandler.removeTicketOfDevice(device)).thenReturn(StatusCode.SUCCESS);
         Principals currentUser = new Principals("Jack", "Device", 1, 1);
 
         StatusCode result = uut.removeDevice(device, currentUser);
@@ -160,6 +161,7 @@ public class DeviceManagerTest {
         ArgumentCaptor<UserDevice> captor = ArgumentCaptor.forClass(UserDevice.class);
         Mockito.verify(dbHandler).delete(device);
         Mockito.verify(dbHandler).commit();
+        Mockito.verify(ticketDbHandler).removeTicketOfDevice(eq(device));
         Mockito.verify(foodDbHandler).transferFoodItems(eq(device), captor.capture());
         assertEquals(currentUser.getDid(), captor.getValue().id);
         Mockito.verify(authAdmin).revokeCertificate(device.id);
@@ -181,6 +183,7 @@ public class DeviceManagerTest {
     @Test
     public void deletingErrorIsPropagated() {
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDevice.class), any(UserDevice.class))).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(ticketDbHandler.removeTicketOfDevice(device)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         Principals currentUser = new Principals("Jack", "Device", 1, 1);
 
@@ -191,6 +194,7 @@ public class DeviceManagerTest {
         Mockito.verify(dbHandler).delete(device);
         Mockito.verify(dbHandler).rollback();
         Mockito.verify(foodDbHandler).transferFoodItems(eq(device), captor.capture());
+        Mockito.verify(ticketDbHandler).removeTicketOfDevice(eq(device));
         assertEquals(currentUser.getDid(), captor.getValue().id);
     }
 

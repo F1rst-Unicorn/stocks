@@ -20,6 +20,7 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.Location;
+import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
 import fj.data.Validation;
@@ -40,19 +41,23 @@ public class LocationManagerTest {
 
     private LocationHandler dbLayer;
 
+    private FoodHandler foodHandler;
+
     private FoodItemHandler foodItemDbLayer;
 
     @Before
     public void setup() {
         dbLayer = Mockito.mock(LocationHandler.class);
         foodItemDbLayer = Mockito.mock(FoodItemHandler.class);
+        foodHandler = Mockito.mock(FoodHandler.class);
 
-        uut = new LocationManager(dbLayer, foodItemDbLayer);
+        uut = new LocationManager(dbLayer, foodHandler, foodItemDbLayer);
     }
 
     @After
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(dbLayer);
+        Mockito.verifyNoMoreInteractions(foodHandler);
         Mockito.verifyNoMoreInteractions(foodItemDbLayer);
     }
 
@@ -103,12 +108,14 @@ public class LocationManagerTest {
         Location input = new Location(1, "test", 2);
         Mockito.when(dbLayer.delete(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(foodHandler.unregisterDefaultLocation(input)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(input, false);
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(dbLayer).delete(input);
         Mockito.verify(dbLayer).commit();
+        Mockito.verify(foodHandler).unregisterDefaultLocation(input);
     }
 
     @Test
@@ -117,6 +124,7 @@ public class LocationManagerTest {
         Mockito.when(foodItemDbLayer.deleteItemsStoredIn(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.delete(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(foodHandler.unregisterDefaultLocation(input)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(input, true);
 
@@ -124,6 +132,7 @@ public class LocationManagerTest {
         Mockito.verify(foodItemDbLayer).deleteItemsStoredIn(input);
         Mockito.verify(dbLayer).delete(input);
         Mockito.verify(dbLayer).commit();
+        Mockito.verify(foodHandler).unregisterDefaultLocation(input);
     }
 
     @Test

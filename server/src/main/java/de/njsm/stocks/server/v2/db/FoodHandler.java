@@ -21,6 +21,7 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.business.data.Location;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -95,6 +96,22 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
 
             return notFoundMeansInvalidVersion(result);
         });
+    }
+
+    public StatusCode unregisterDefaultLocation(Location l) {
+        StatusCode result = currentUpdate(Arrays.asList(
+                FOOD.ID,
+                FOOD.NAME,
+                FOOD.VERSION.add(1),
+                FOOD.TO_BUY,
+                FOOD.EXPIRATION_OFFSET,
+                DSL.inline((Integer) null)),
+                FOOD.LOCATION.eq(l.id));
+
+        if (result == StatusCode.NOT_FOUND) {
+            return StatusCode.SUCCESS;
+        }
+        return result;
     }
 
     @Override

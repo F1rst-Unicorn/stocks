@@ -99,6 +99,16 @@ public class TicketHandler extends FailSafeDatabaseHandler {
         });
     }
 
+    public StatusCode removeTicketOfDevice(UserDevice device) {
+        return runCommand(context -> {
+            context.deleteFrom(TICKET)
+                    .where(TICKET.BELONGS_DEVICE.eq(device.id))
+                    .execute();
+
+            return StatusCode.SUCCESS;
+        });
+    }
+
     public Validation<StatusCode, Principals> getPrincipalsForTicket(String token) {
         return runFunction(context -> {
             Field<OffsetDateTime> now = DSL.currentOffsetDateTime();

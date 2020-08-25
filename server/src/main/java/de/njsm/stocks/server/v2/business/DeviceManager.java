@@ -103,16 +103,10 @@ public class DeviceManager extends BusinessObject {
     }
 
     StatusCode removeDeviceInternally(UserDevice device, Principals currentUser) {
-
-        StatusCode transferResult = foodItemHandler.transferFoodItems(device, currentUser.toDevice());
-        if (transferResult != StatusCode.SUCCESS)
-            return transferResult;
-
-        StatusCode deleteResult = userDeviceHandler.delete(device);
-        if (deleteResult != StatusCode.SUCCESS)
-            return deleteResult;
-
-        return authAdmin.revokeCertificate(device.id);
+        return foodItemHandler.transferFoodItems(device, currentUser.toDevice())
+                .bind(() -> ticketHandler.removeTicketOfDevice(device))
+                .bind(() -> userDeviceHandler.delete(device))
+                .bind(() -> authAdmin.revokeCertificate(device.id));
     }
 
     private static String generateTicket() {

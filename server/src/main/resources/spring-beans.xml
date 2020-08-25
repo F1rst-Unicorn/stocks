@@ -130,6 +130,8 @@
 
     <bean name="foodManager" class="de.njsm.stocks.server.v2.business.FoodManager" scope="request">
         <constructor-arg index="0" ref="foodDbHandler"/>
+        <constructor-arg index="1" ref="foodItemBackend"/>
+        <constructor-arg index="2" ref="eanNumberDbHandler"/>
     </bean>
 
     <bean name="foodItemManager" class="de.njsm.stocks.server.v2.business.FoodItemManager" scope="request">

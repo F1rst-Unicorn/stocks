@@ -20,7 +20,9 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.FoodHandler;
+import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
@@ -40,16 +42,24 @@ public class FoodManagerTest {
 
     private FoodHandler backend;
 
+    private FoodItemHandler foodItemHandler;
+
+    private EanNumberHandler eanNumberHandler;
+
     @Before
     public void setup() {
         backend = Mockito.mock(FoodHandler.class);
+        foodItemHandler = Mockito.mock(FoodItemHandler.class);
+        eanNumberHandler = Mockito.mock(EanNumberHandler.class);
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
-        uut = new FoodManager(backend);
+        uut = new FoodManager(backend, foodItemHandler, eanNumberHandler);
     }
 
     @After
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(backend);
+        Mockito.verifyNoMoreInteractions(foodItemHandler);
+        Mockito.verifyNoMoreInteractions(eanNumberHandler);
     }
 
     @Test
@@ -106,11 +116,15 @@ public class FoodManagerTest {
     public void testDeletingItem() {
         Food data = new Food(1, "Cheese", 2, true, Period.ZERO, 1);
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(foodItemHandler.deleteItemsOfType(data)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(eanNumberHandler.deleteOwnedByFood(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(backend).delete(data);
         Mockito.verify(backend).commit();
+        Mockito.verify(foodItemHandler).deleteItemsOfType(data);
+        Mockito.verify(eanNumberHandler).deleteOwnedByFood(data);
     }
 }

@@ -20,10 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.business.data.Location;
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -147,10 +144,23 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
         });
     }
 
+    public StatusCode deleteItemsOfType(Food item) {
+        return runCommand(context -> {
+            StatusCode result = currentDelete(FOOD_ITEM.OF_TYPE.eq(item.id));
+            if (result == StatusCode.NOT_FOUND) {
+                return StatusCode.SUCCESS;
+            }
+            return result;
+        });
+    }
+
     public StatusCode deleteItemsStoredIn(Location location) {
         return runCommand(context -> {
-            currentDelete(FOOD_ITEM.STORED_IN.eq(location.id));
-            return StatusCode.SUCCESS;
+            StatusCode result = currentDelete(FOOD_ITEM.STORED_IN.eq(location.id));
+            if (result == StatusCode.NOT_FOUND) {
+                return StatusCode.SUCCESS;
+            }
+            return result;
         });
     }
 
