@@ -19,9 +19,19 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
+import java.time.OffsetDateTime;
+
 public abstract class VersionedData extends Data {
 
     public int version;
+
+    public OffsetDateTime validTimeStart;
+
+    public OffsetDateTime validTimeEnd;
+
+    public OffsetDateTime transactionTimeStart;
+
+    public OffsetDateTime transactionTimeEnd;
 
     public VersionedData() {
     }
@@ -31,4 +41,12 @@ public abstract class VersionedData extends Data {
         this.version = version;
     }
 
+    public VersionedData(int id, int version, OffsetDateTime validTimeStart, OffsetDateTime validTimeEnd, OffsetDateTime transactionTimeStart, OffsetDateTime transactionTimeEnd) {
+        super(id);
+        this.version = version;
+        this.validTimeStart = validTimeStart;
+        this.validTimeEnd = validTimeEnd;
+        this.transactionTimeStart = transactionTimeStart;
+        this.transactionTimeEnd = transactionTimeEnd;
+    }
 }

@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -48,6 +49,11 @@ public class User extends VersionedData {
 
     public User(int id, int version) {
         super(id, version);
+    }
+
+    public User(int id, int version, OffsetDateTime validTimeStart, OffsetDateTime validTimeEnd, OffsetDateTime transactionTimeStart, OffsetDateTime transactionTimeEnd, String name) {
+        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd);
+        this.name = name;
     }
 
     @Override

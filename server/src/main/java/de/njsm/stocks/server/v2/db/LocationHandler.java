@@ -102,12 +102,23 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
     }
 
     @Override
-    protected Function<LocationRecord, Location> getDtoMap() {
-        return cursor -> new Location(
-                cursor.getId(),
-                cursor.getName(),
-                cursor.getVersion()
-        );
+    protected Function<LocationRecord, Location> getDtoMap(boolean bitemporal) {
+        if (bitemporal)
+            return cursor -> new Location(
+                    cursor.getId(),
+                    cursor.getVersion(),
+                    cursor.getValidTimeStart(),
+                    cursor.getValidTimeEnd(),
+                    cursor.getTransactionTimeStart(),
+                    cursor.getTransactionTimeEnd(),
+                    cursor.getName()
+            );
+        else
+            return cursor -> new Location(
+                    cursor.getId(),
+                    cursor.getName(),
+                    cursor.getVersion()
+            );
     }
 
     @Override
@@ -116,6 +127,6 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                 LOCATION.ID,
                 LOCATION.NAME,
                 LOCATION.VERSION
-                );
+        );
     }
 }

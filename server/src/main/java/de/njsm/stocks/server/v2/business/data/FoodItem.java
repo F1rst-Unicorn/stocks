@@ -28,6 +28,7 @@ import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
 import de.njsm.stocks.server.v2.business.json.InstantSerialiser;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -69,6 +70,15 @@ public class FoodItem extends VersionedData {
                     int storedIn,
                     int registers,
                     int buys) {
+        this.eatByDate = eatByDate;
+        this.ofType = ofType;
+        this.storedIn = storedIn;
+        this.registers = registers;
+        this.buys = buys;
+    }
+
+    public FoodItem(int id, int version, OffsetDateTime validTimeStart, OffsetDateTime validTimeEnd, OffsetDateTime transactionTimeStart, OffsetDateTime transactionTimeEnd, Instant eatByDate, int ofType, int storedIn, int registers, int buys) {
+        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd);
         this.eatByDate = eatByDate;
         this.ofType = ofType;
         this.storedIn = storedIn;

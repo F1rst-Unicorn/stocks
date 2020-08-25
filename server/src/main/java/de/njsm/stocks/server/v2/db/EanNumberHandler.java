@@ -67,13 +67,25 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
     }
 
     @Override
-    protected Function<EanNumberRecord, EanNumber> getDtoMap() {
-        return cursor -> new EanNumber(
-                cursor.getId(),
-                cursor.getVersion(),
-                cursor.getNumber(),
-                cursor.getIdentifies()
-                );
+    protected Function<EanNumberRecord, EanNumber> getDtoMap(boolean bitemporal) {
+        if (bitemporal)
+            return cursor -> new EanNumber(
+                    cursor.getId(),
+                    cursor.getVersion(),
+                    cursor.getValidTimeStart(),
+                    cursor.getValidTimeEnd(),
+                    cursor.getTransactionTimeStart(),
+                    cursor.getTransactionTimeEnd(),
+                    cursor.getNumber(),
+                    cursor.getIdentifies()
+            );
+        else
+            return cursor -> new EanNumber(
+                    cursor.getId(),
+                    cursor.getVersion(),
+                    cursor.getNumber(),
+                    cursor.getIdentifies()
+            );
     }
 
     @Override

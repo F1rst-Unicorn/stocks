@@ -195,16 +195,31 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
     }
 
     @Override
-    protected Function<FoodItemRecord, FoodItem> getDtoMap() {
-        return cursor -> new FoodItem(
-                cursor.getId(),
-                cursor.getVersion(),
-                cursor.getEatBy().toInstant(),
-                cursor.getOfType(),
-                cursor.getStoredIn(),
-                cursor.getRegisters(),
-                cursor.getBuys()
-        );
+    protected Function<FoodItemRecord, FoodItem> getDtoMap(boolean bitemporal) {
+        if (bitemporal)
+            return cursor -> new FoodItem(
+                    cursor.getId(),
+                    cursor.getVersion(),
+                    cursor.getValidTimeStart(),
+                    cursor.getValidTimeEnd(),
+                    cursor.getTransactionTimeStart(),
+                    cursor.getTransactionTimeEnd(),
+                    cursor.getEatBy().toInstant(),
+                    cursor.getOfType(),
+                    cursor.getStoredIn(),
+                    cursor.getRegisters(),
+                    cursor.getBuys()
+            );
+        else
+            return cursor -> new FoodItem(
+                    cursor.getId(),
+                    cursor.getVersion(),
+                    cursor.getEatBy().toInstant(),
+                    cursor.getOfType(),
+                    cursor.getStoredIn(),
+                    cursor.getRegisters(),
+                    cursor.getBuys()
+            );
     }
 
     @Override

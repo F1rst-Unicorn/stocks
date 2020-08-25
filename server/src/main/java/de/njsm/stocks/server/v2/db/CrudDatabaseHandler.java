@@ -82,7 +82,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                     .where(bitemporalSelector)
                     .fetchSize(1024)
                     .stream()
-                    .map(getDtoMap());
+                    .map(getDtoMap(bitemporal));
 
             return Validation.success(result);
         });
@@ -250,7 +250,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
 
     protected abstract Table<T> getTable();
 
-    protected abstract Function<T, R> getDtoMap();
+    protected abstract Function<T, R> getDtoMap(boolean bitemporal);
 
     protected abstract TableField<T, Integer> getIdField();
 

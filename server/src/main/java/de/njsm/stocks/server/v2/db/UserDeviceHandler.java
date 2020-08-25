@@ -53,7 +53,7 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
                         .and(nowAsBestKnown()))
                     .fetch()
                     .stream()
-                    .map(getDtoMap())
+                    .map(getDtoMap(false))
                     .collect(Collectors.toList());
 
             return Validation.success(result);
@@ -67,12 +67,25 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
     }
 
     @Override
-    protected Function<UserDeviceRecord, UserDevice> getDtoMap() {
-        return record -> new UserDevice(
-                record.getId(),
-                record.getVersion(),
-                record.getName(),
-                record.getBelongsTo()
+    protected Function<UserDeviceRecord, UserDevice> getDtoMap(boolean bitemporal) {
+        if (bitemporal)
+            return cursor -> new UserDevice(
+                    cursor.getId(),
+                    cursor.getVersion(),
+                    cursor.getValidTimeStart(),
+                    cursor.getValidTimeEnd(),
+                    cursor.getTransactionTimeStart(),
+                    cursor.getTransactionTimeEnd(),
+                    cursor.getName(),
+                    cursor.getBelongsTo()
+            );
+
+        else
+        return cursor -> new UserDevice(
+                cursor.getId(),
+                cursor.getVersion(),
+                cursor.getName(),
+                cursor.getBelongsTo()
         );
     }
 

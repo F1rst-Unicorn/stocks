@@ -47,12 +47,23 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
     }
 
     @Override
-    protected Function<UserRecord, User> getDtoMap() {
-        return record -> new User(
-                record.getId(),
-                record.getVersion(),
-                record.getName()
-        );
+    protected Function<UserRecord, User> getDtoMap(boolean bitemporal) {
+        if (bitemporal)
+            return record -> new User(
+                    record.getId(),
+                    record.getVersion(),
+                    record.getValidTimeStart(),
+                    record.getValidTimeEnd(),
+                    record.getTransactionTimeStart(),
+                    record.getTransactionTimeEnd(),
+                    record.getName()
+            );
+        else
+            return record -> new User(
+                    record.getId(),
+                    record.getVersion(),
+                    record.getName()
+            );
     }
 
     @Override

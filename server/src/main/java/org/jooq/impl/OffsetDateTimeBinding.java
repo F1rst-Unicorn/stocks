@@ -37,6 +37,11 @@ import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.NEGATIVE_INFINITY;
 import static java.time.temporal.ChronoField.*;
 import static org.jooq.SQLDialect.POSTGRES;
 
+/**
+ * Needed as long as
+ * https://github.com/jOOQ/jOOQ/issues/10517
+ * is not resolved
+ */
 public class OffsetDateTimeBinding implements Binding<OffsetDateTime, OffsetDateTime> {
 
     private static final DateTimeFormatter ERA = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnnnnZZZZZ G", Locale.US);

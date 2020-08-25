@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
 
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -43,6 +44,12 @@ public class EanNumber extends VersionedData {
     }
 
     public EanNumber(String eanCode, int identifiesFood) {
+        this.eanCode = eanCode;
+        this.identifiesFood = identifiesFood;
+    }
+
+    public EanNumber(int id, int version, OffsetDateTime validTimeStart, OffsetDateTime validTimeEnd, OffsetDateTime transactionTimeStart, OffsetDateTime transactionTimeEnd, String eanCode, int identifiesFood) {
+        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd);
         this.eanCode = eanCode;
         this.identifiesFood = identifiesFood;
     }

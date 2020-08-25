@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.time.OffsetDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -48,6 +49,12 @@ public class UserDevice extends VersionedData {
 
     public UserDevice(int id, int version, String name, int userId) {
         super(id, version);
+        this.name = name;
+        this.userId = userId;
+    }
+
+    public UserDevice(int id, int version, OffsetDateTime validTimeStart, OffsetDateTime validTimeEnd, OffsetDateTime transactionTimeStart, OffsetDateTime transactionTimeEnd, String name, int userId) {
+        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd);
         this.name = name;
         this.userId = userId;
     }
