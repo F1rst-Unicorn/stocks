@@ -27,7 +27,8 @@ import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
 import de.njsm.stocks.server.v2.business.json.PeriodDeserialiser;
 import de.njsm.stocks.server.v2.business.json.PeriodSerialiser;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
+import java.time.Instant;
 import java.time.Period;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -59,7 +60,7 @@ public class Food extends VersionedData {
         this.location = location;
     }
 
-    public Food(int id, int version, OffsetDateTime validTimeStart, OffsetDateTime validTimeEnd, OffsetDateTime transactionTimeStart, OffsetDateTime transactionTimeEnd, String name, boolean toBuy, Period expirationOffset, Integer location) {
+    public Food(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, boolean toBuy, Period expirationOffset, Integer location) {
         super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd);
         this.name = name;
         this.toBuy = toBuy;

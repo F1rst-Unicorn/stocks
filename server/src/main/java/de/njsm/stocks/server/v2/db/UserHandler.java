@@ -49,14 +49,14 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
     @Override
     protected Function<UserRecord, User> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return record -> new User(
-                    record.getId(),
-                    record.getVersion(),
-                    record.getValidTimeStart(),
-                    record.getValidTimeEnd(),
-                    record.getTransactionTimeStart(),
-                    record.getTransactionTimeEnd(),
-                    record.getName()
+            return cursor -> new User(
+                    cursor.getId(),
+                    cursor.getVersion(),
+                    cursor.getValidTimeStart().toInstant(),
+                    cursor.getValidTimeEnd().toInstant(),
+                    cursor.getTransactionTimeStart().toInstant(),
+                    cursor.getTransactionTimeEnd().toInstant(),
+                    cursor.getName()
             );
         else
             return record -> new User(

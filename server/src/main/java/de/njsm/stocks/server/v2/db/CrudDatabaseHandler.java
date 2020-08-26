@@ -52,9 +52,6 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
         this.visitor = visitor;
     }
 
-    /**
-     * CF 10.4
-     */
     public Validation<StatusCode, Integer> add(R item) {
         return runFunction(context -> {
             int lastInsertId = visitor.visit(item, context.insertInto(getTable()))
@@ -88,9 +85,6 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
         });
     }
 
-    /**
-     * CF 10.11
-     */
     public StatusCode delete(R item) {
         return runCommand(context -> {
             if (isCurrentlyMissing(item, context))

@@ -19,19 +19,32 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import java.time.OffsetDateTime;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
+import de.njsm.stocks.server.v2.business.json.InstantSerialiser;
+
+import java.time.Instant;
 
 public abstract class VersionedData extends Data {
 
     public int version;
 
-    public OffsetDateTime validTimeStart;
+    @JsonSerialize(using = InstantSerialiser.class)
+    @JsonDeserialize(using = InstantDeserialiser.class)
+    public Instant validTimeStart;
 
-    public OffsetDateTime validTimeEnd;
+    @JsonSerialize(using = InstantSerialiser.class)
+    @JsonDeserialize(using = InstantDeserialiser.class)
+    public Instant validTimeEnd;
 
-    public OffsetDateTime transactionTimeStart;
+    @JsonSerialize(using = InstantSerialiser.class)
+    @JsonDeserialize(using = InstantDeserialiser.class)
+    public Instant transactionTimeStart;
 
-    public OffsetDateTime transactionTimeEnd;
+    @JsonSerialize(using = InstantSerialiser.class)
+    @JsonDeserialize(using = InstantDeserialiser.class)
+    public Instant transactionTimeEnd;
 
     public VersionedData() {
     }
@@ -41,7 +54,7 @@ public abstract class VersionedData extends Data {
         this.version = version;
     }
 
-    public VersionedData(int id, int version, OffsetDateTime validTimeStart, OffsetDateTime validTimeEnd, OffsetDateTime transactionTimeStart, OffsetDateTime transactionTimeEnd) {
+    public VersionedData(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd) {
         super(id);
         this.version = version;
         this.validTimeStart = validTimeStart;

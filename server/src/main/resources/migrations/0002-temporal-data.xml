@@ -26,9 +26,9 @@
 
     <changeSet id="1" author="admin">
         <sql endDelimiter=";;">
-            alter table "User" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "User" add column valid_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "User" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
-            alter table "User" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "User" add column transaction_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "User" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
 
             create or replace function user_bitemporal_primary_key() returns trigger
@@ -124,9 +124,9 @@
     </changeSet>
     <changeSet id="2" author="admin">
         <sql endDelimiter=";;">
-            alter table "Location" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "Location" add column valid_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "Location" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
-            alter table "Location" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "Location" add column transaction_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "Location" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
 
             create or replace function location_bitemporal_primary_key() returns trigger
@@ -222,9 +222,9 @@
     </changeSet>
     <changeSet id="3" author="admin">
         <sql endDelimiter=";;">
-            alter table "Food" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "Food" add column valid_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "Food" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
-            alter table "Food" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "Food" add column transaction_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "Food" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
 
             create or replace function food_bitemporal_primary_key() returns trigger
@@ -320,9 +320,9 @@
     </changeSet>
     <changeSet id="4" author="admin">
         <sql endDelimiter=";;">
-            alter table "User_device" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "User_device" add column valid_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "User_device" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
-            alter table "User_device" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "User_device" add column transaction_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "User_device" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
 
             create or replace function user_device_bitemporal_primary_key() returns trigger
@@ -418,9 +418,9 @@
     </changeSet>
     <changeSet id="5" author="admin">
         <sql endDelimiter=";;">
-            alter table "Food_item" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "Food_item" add column valid_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "Food_item" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
-            alter table "Food_item" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "Food_item" add column transaction_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "Food_item" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
 
             create or replace function food_item_bitemporal_primary_key() returns trigger
@@ -514,9 +514,9 @@
     </changeSet>
     <changeSet id="6" author="admin">
         <sql endDelimiter=";;">
-            alter table "EAN_number" add column valid_time_start timestamp(6) with time zone not null default now();;
+            alter table "EAN_number" add column valid_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "EAN_number" add column valid_time_end timestamp(6) with time zone not null default 'infinity';;
-            alter table "EAN_number" add column transaction_time_start timestamp(6) with time zone not null default now();;
+            alter table "EAN_number" add column transaction_time_start timestamp(6) with time zone not null default current_timestamp;;
             alter table "EAN_number" add column transaction_time_end timestamp(6) with time zone not null default 'infinity';;
 
             create or replace function ean_number_bitemporal_primary_key() returns trigger
@@ -1030,6 +1030,109 @@
         </sql>
         <rollback>
             drop function food_location_ref_location cascade;
+        </rollback>
+    </changeSet>
+    <changeSet id="15" author="admin">
+        <sql endDelimiter=";;">
+            drop table "Updates";
+            drop function update_timestamp cascade;
+
+            create view "Updates" ("ID", table_name, last_update) as
+            select 1,
+                   'Location',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "Location"
+            union
+            select 2,
+                   'User',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "User"
+            union
+            select 3,
+                   'User_device',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "User_device"
+            union
+            select 4,
+                   'Food',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "Food"
+            union
+            select 5,
+                   'Food_item',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "Food_item"
+            union
+            select 6,
+                   'EAN_number',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "EAN_number";
+        </sql>
+        <rollback>
+            drop view "Updates";
+            CREATE TABLE "Updates"
+            (
+                "ID"          SERIAL                   NOT NULL,
+                "table_name"  TEXT                     NOT NULL,
+                "last_update" TIMESTAMP WITH TIME ZONE NOT NULL,
+                PRIMARY KEY ("ID")
+            );
+
+            INSERT INTO "Updates" ("table_name", "last_update")
+            VALUES ('Location', NOW()),
+                   ('User', NOW()),
+                   ('User_device', NOW()),
+                   ('Food', NOW()),
+                   ('Food_item', NOW()),
+                   ('EAN_number', NOW());
+
+            CREATE OR REPLACE FUNCTION update_timestamp() RETURNS TRIGGER
+                LANGUAGE PLPGSQL
+            AS
+            '
+            BEGIN
+                UPDATE "Updates"
+                SET "last_update" = NOW()
+                WHERE "table_name" = TG_ARGV[0];
+                RETURN NEW;
+            END;
+            ';
+
+            CREATE TRIGGER Location_timestamp_update
+                AFTER INSERT OR UPDATE OR DELETE
+                ON "Location"
+                FOR EACH STATEMENT
+            EXECUTE PROCEDURE update_timestamp('Location');
+
+            CREATE TRIGGER Food_timestamp_update
+                AFTER INSERT OR UPDATE OR DELETE
+                ON "Food"
+                FOR EACH STATEMENT
+            EXECUTE PROCEDURE update_timestamp('Food');
+
+            CREATE TRIGGER User_timestamp_update
+                AFTER INSERT OR UPDATE OR DELETE
+                ON "User"
+                FOR EACH STATEMENT
+            EXECUTE PROCEDURE update_timestamp('User');
+
+            CREATE TRIGGER User_device_timestamp_update
+                AFTER INSERT OR UPDATE OR DELETE
+                ON "User_device"
+                FOR EACH STATEMENT
+            EXECUTE PROCEDURE update_timestamp('User_device');
+
+            CREATE TRIGGER Food_item_timestamp_update
+                AFTER INSERT OR UPDATE OR DELETE
+                ON "Food_item"
+                FOR EACH STATEMENT
+            EXECUTE PROCEDURE update_timestamp('Food_item');
+
+            CREATE TRIGGER EAN_number_timestamp_update
+                AFTER INSERT OR UPDATE OR DELETE
+                ON "EAN_number"
+                FOR EACH STATEMENT
+            EXECUTE PROCEDURE update_timestamp('EAN_number');
         </rollback>
     </changeSet>
 </databaseChangeLog>

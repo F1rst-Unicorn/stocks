@@ -107,10 +107,10 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
             return cursor -> new Location(
                     cursor.getId(),
                     cursor.getVersion(),
-                    cursor.getValidTimeStart(),
-                    cursor.getValidTimeEnd(),
-                    cursor.getTransactionTimeStart(),
-                    cursor.getTransactionTimeEnd(),
+                    cursor.getValidTimeStart().toInstant(),
+                    cursor.getValidTimeEnd().toInstant(),
+                    cursor.getTransactionTimeStart().toInstant(),
+                    cursor.getTransactionTimeEnd().toInstant(),
                     cursor.getName()
             );
         else
