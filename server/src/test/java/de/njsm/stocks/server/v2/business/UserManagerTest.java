@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -68,13 +69,13 @@ public class UserManagerTest {
     @Test
     public void getUsersWorks() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(userDbHandler.get(false)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(userDbHandler.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<User>> result = uut.get(r, false);
+        Validation<StatusCode, Stream<User>> result = uut.get(r, false, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
-        Mockito.verify(userDbHandler).get(false);
+        Mockito.verify(userDbHandler).get(false, Instant.EPOCH);
         Mockito.verify(userDbHandler).setReadOnly();
     }
 

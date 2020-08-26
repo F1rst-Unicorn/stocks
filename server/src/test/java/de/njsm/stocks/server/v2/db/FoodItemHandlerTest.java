@@ -74,7 +74,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.add(item);
 
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false);
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
         Assert.assertTrue(result.isSuccess());
         assertTrue(items.isSuccess());
         assertEquals(4, items.success().count());
@@ -83,7 +83,7 @@ public class FoodItemHandlerTest extends DbTestCase {
     @Test
     public void testGettingItems() {
 
-        Validation<StatusCode, Stream<FoodItem>> result = uut.get(false);
+        Validation<StatusCode, Stream<FoodItem>> result = uut.get(false, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         List<FoodItem> list = result.success().collect(Collectors.toList());
@@ -115,7 +115,7 @@ public class FoodItemHandlerTest extends DbTestCase {
         StatusCode result = uut.delete(new FoodItem(1, 0));
 
         assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false);
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.isSuccess());
         assertEquals(2, items.success().count());
@@ -128,7 +128,7 @@ public class FoodItemHandlerTest extends DbTestCase {
         StatusCode result = uut.edit(item);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false);
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.isSuccess());
         List<FoodItem> list = items.success().collect(Collectors.toList());
@@ -191,7 +191,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         StatusCode result = uut.transferFoodItems(from, to);
 
-        Stream<FoodItem> items = uut.get(false).success();
+        Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.allMatch(item -> (item.version == 1) == (item.registers == to.id)));
         Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(from), any());
@@ -233,7 +233,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         StatusCode result = uut.transferFoodItems(from, to);
 
-        Stream<FoodItem> items = uut.get(false).success();
+        Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.allMatch(item -> (item.version == 1) == (item.registers == to.id)));
         Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(from), any());
@@ -246,7 +246,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         StatusCode deleteResult = uut.deleteItemsStoredIn(input);
 
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false);
+        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
 
         assertEquals(StatusCode.SUCCESS, deleteResult);
         assertTrue(items.isSuccess());

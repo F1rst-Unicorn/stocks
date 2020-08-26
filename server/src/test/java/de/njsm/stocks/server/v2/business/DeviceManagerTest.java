@@ -35,6 +35,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -125,13 +126,13 @@ public class DeviceManagerTest {
     @Test
     public void gettingDevicesWorks() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(dbHandler.get(false)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(dbHandler.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<UserDevice>> result = uut.get(r, false);
+        Validation<StatusCode, Stream<UserDevice>> result = uut.get(r, false, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
-        Mockito.verify(dbHandler).get(false);
+        Mockito.verify(dbHandler).get(false, Instant.EPOCH);
         Mockito.verify(dbHandler).setReadOnly();
     }
 

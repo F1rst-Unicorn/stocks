@@ -31,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
+import java.time.Instant;
 import java.time.Period;
 import java.util.Collections;
 import java.util.List;
@@ -148,15 +149,15 @@ public class FoodEndpointTest {
     public void getFoodReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
         List<Food> data = Collections.singletonList(new Food(2, "Banana", 2, true, Period.ZERO, 1));
-        when(manager.get(any(), eq(false))).thenReturn(Validation.success(data.stream()));
+        when(manager.get(any(), eq(false), eq(Instant.EPOCH))).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r, 0);
+        uut.get(r, 0, null);
 
         ArgumentCaptor<StreamResponse<Food>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().status);
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(manager).get(r, false);
+        verify(manager).get(r, false, Instant.EPOCH);
     }
 
     @Test

@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.time.Instant;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
@@ -57,7 +58,7 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertTrue(code.isSuccess());
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(false);
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
 
         assertTrue(dbData.isSuccess());
 
@@ -72,7 +73,7 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(false);
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
 
         assertTrue(dbData.isSuccess());
 
@@ -105,7 +106,7 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(false);
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
 
         assertTrue(dbData.isSuccess());
 
@@ -130,7 +131,7 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(false);
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
 
         assertTrue(dbData.isSuccess());
 

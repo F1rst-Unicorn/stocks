@@ -26,6 +26,7 @@ import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
 
 import javax.ws.rs.container.AsyncResponse;
+import java.time.Instant;
 import java.util.stream.Stream;
 
 public class FoodManager extends BusinessObject {
@@ -47,10 +48,10 @@ public class FoodManager extends BusinessObject {
         return runFunction(() -> dbHandler.add(item));
     }
 
-    public Validation<StatusCode, Stream<Food>> get(AsyncResponse r, boolean bitemporal) {
+    public Validation<StatusCode, Stream<Food>> get(AsyncResponse r, boolean bitemporal, Instant startingFrom) {
         return runAsynchronously(r, () -> {
             dbHandler.setReadOnly();
-            return dbHandler.get(bitemporal);
+            return dbHandler.get(bitemporal, startingFrom);
         });
     }
 

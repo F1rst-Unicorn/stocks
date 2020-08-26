@@ -29,6 +29,7 @@ import org.postgresql.PGStatement;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -65,7 +66,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
     /**
      * CF 10.23
      */
-    public Validation<StatusCode, Stream<R>> get(boolean bitemporal) {
+    public Validation<StatusCode, Stream<R>> get(boolean bitemporal, Instant startingFrom) {
         return runFunction(context -> {
 
             Condition bitemporalSelector;
@@ -73,6 +74,9 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                 bitemporalSelector = DSL.trueCondition();
             else
                 bitemporalSelector = nowAsBestKnown();
+
+            OffsetDateTime startingFromWithOffset = OffsetDateTime.from(startingFrom.atOffset(ZoneOffset.UTC));
+            bitemporalSelector = bitemporalSelector.and(getTransactionTimeStartField().greaterThan(startingFromWithOffset));
 
             Stream<R> result = context
                     .selectFrom(getTable())

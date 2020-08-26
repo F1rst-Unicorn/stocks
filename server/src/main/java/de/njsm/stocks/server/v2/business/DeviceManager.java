@@ -33,6 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.ws.rs.container.AsyncResponse;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -80,10 +81,10 @@ public class DeviceManager extends BusinessObject {
         });
     }
 
-    public Validation<StatusCode, Stream<UserDevice>> get(AsyncResponse r, boolean bitemporal) {
+    public Validation<StatusCode, Stream<UserDevice>> get(AsyncResponse r, boolean bitemporal, Instant startingFrom) {
         return runAsynchronously(r, () -> {
             userDeviceHandler.setReadOnly();
-            return userDeviceHandler.get(bitemporal);
+            return userDeviceHandler.get(bitemporal, startingFrom);
         });
     }
 

@@ -32,6 +32,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
+import java.time.Instant;
 import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
@@ -59,15 +60,15 @@ public class UserEndpointTest {
     @Test
     public void getUsers() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(userManager.get(r, false)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(userManager.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
 
-        uut.get(r, 0);
+        uut.get(r, 0, null);
 
         ArgumentCaptor<StreamResponse<User>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(StatusCode.SUCCESS, c.getValue().status);
         assertEquals(0, c.getValue().data.count());
-        Mockito.verify(userManager).get(r, false);
+        Mockito.verify(userManager).get(r, false, Instant.EPOCH);
     }
 
     @Test

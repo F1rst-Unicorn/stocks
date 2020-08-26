@@ -24,6 +24,7 @@ import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import fj.data.Validation;
 
 import javax.ws.rs.container.AsyncResponse;
+import java.time.Instant;
 import java.util.stream.Stream;
 
 public class EanNumberManager extends BusinessObject {
@@ -39,10 +40,10 @@ public class EanNumberManager extends BusinessObject {
         return runFunction(() -> eanNumberHandler.add(item));
     }
 
-    public Validation<StatusCode, Stream<EanNumber>> get(AsyncResponse r, boolean bitemporal) {
+    public Validation<StatusCode, Stream<EanNumber>> get(AsyncResponse r, boolean bitemporal, Instant startingFrom) {
         return runAsynchronously(r, () -> {
             eanNumberHandler.setReadOnly();
-            return eanNumberHandler.get(bitemporal);
+            return eanNumberHandler.get(bitemporal, startingFrom);
         });
     }
 

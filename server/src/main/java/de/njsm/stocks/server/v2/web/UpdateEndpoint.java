@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 @Path("/v2/update")
 public class UpdateEndpoint {
 
-    private UpdateManager handler;
+    private final UpdateManager handler;
 
     @Inject
     public UpdateEndpoint(UpdateManager handler) {

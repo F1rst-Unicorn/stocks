@@ -37,6 +37,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Path("v2/fooditem")
@@ -73,10 +74,15 @@ public class FoodItemEndpoint extends Endpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public void get(@Suspended AsyncResponse response, @QueryParam("bitemporal") int bitemporalParameter) {
+    public void get(@Suspended AsyncResponse response, @QueryParam("bitemporal") int bitemporalParameter, @QueryParam("startingFrom") String startingFromParameter) {
         boolean bitemporal = bitemporalParameter == 1;
-        Validation<StatusCode, Stream<FoodItem>> result = manager.get(response, bitemporal);
-        response.resume(new StreamResponse<>(result));
+        Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
+        if (startingFrom.isPresent()) {
+            Validation<StatusCode, Stream<FoodItem>> result = manager.get(response, bitemporal, startingFrom.get());
+            response.resume(new StreamResponse<>(result));
+        } else {
+            response.resume(new Response(StatusCode.INVALID_ARGUMENT));
+        }
     }
 
     @PUT

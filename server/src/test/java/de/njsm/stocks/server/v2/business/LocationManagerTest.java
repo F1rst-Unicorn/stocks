@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
+import java.time.Instant;
 import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
@@ -77,14 +78,14 @@ public class LocationManagerTest {
     @Test
     public void gettingIsDelegated() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(dbLayer.get(false)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(dbLayer.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(r, false);
+        Validation<StatusCode, Stream<Location>> result = uut.get(r, false, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         assertEquals(0, result.success().count());
-        Mockito.verify(dbLayer).get(false);
+        Mockito.verify(dbLayer).get(false, Instant.EPOCH);
         Mockito.verify(dbLayer).setReadOnly();
     }
 

@@ -31,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -129,15 +130,15 @@ public class LocationEndpointTest {
     public void getLocationReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
         List<Location> data = Collections.singletonList(new Location(2, "Banana", 2));
-        when(businessLayer.get(r, false)).thenReturn(Validation.success(data.stream()));
+        when(businessLayer.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r, 0);
+        uut.get(r, 0, null);
 
         ArgumentCaptor<StreamResponse<Location>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().status);
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(businessLayer).get(r, false);
+        verify(businessLayer).get(r, false, Instant.EPOCH);
     }
 
     @Test

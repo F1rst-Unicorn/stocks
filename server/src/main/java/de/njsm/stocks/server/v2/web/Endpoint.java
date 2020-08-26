@@ -27,6 +27,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.Optional;
 
 public class Endpoint {
 
@@ -84,6 +86,20 @@ public class Endpoint {
         } catch (IOException e) {
             LOG.info("Request is invalid as " + name + " has value '" + rawInstant + "'");
             return false;
+        }
+    }
+
+    protected Optional<Instant> parseToInstant(String rawInstant, String name) {
+        if (rawInstant == null || rawInstant.isEmpty()) {
+            LOG.debug("Defaulting missing instant to epoch");
+            return Optional.of(Instant.EPOCH);
+        }
+
+        try {
+            return Optional.of(InstantDeserialiser.parseString(rawInstant));
+        } catch (IOException e) {
+            LOG.info("Request is invalid as " + name + " has value '" + rawInstant + "'");
+            return Optional.empty();
         }
     }
 }

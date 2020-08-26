@@ -33,6 +33,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
+import java.time.Instant;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Path("/v2/user")
@@ -60,10 +62,15 @@ public class UserEndpoint extends Endpoint {
 
     @GET
     @Produces("application/json")
-    public void get(@Suspended AsyncResponse response, @QueryParam("bitemporal") int bitemporalParameter) {
+    public void get(@Suspended AsyncResponse response, @QueryParam("bitemporal") int bitemporalParameter, @QueryParam("startingFrom") String startingFromParameter) {
         boolean bitemporal = bitemporalParameter == 1;
-        Validation<StatusCode, Stream<User>> result = manager.get(response, bitemporal);
-        response.resume(new StreamResponse<>(result));
+        Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
+        if (startingFrom.isPresent()) {
+            Validation<StatusCode, Stream<User>> result = manager.get(response, bitemporal, startingFrom.get());
+            response.resume(new StreamResponse<>(result));
+        } else {
+            response.resume(new Response(StatusCode.INVALID_ARGUMENT));
+        }
     }
 
     @DELETE

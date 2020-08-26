@@ -25,6 +25,7 @@ import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,7 +51,7 @@ public class UserHandlerTest extends DbTestCase {
     @Test
     public void gettingUsersWorks() {
 
-        Validation<StatusCode, Stream<User>> result = uut.get(false);
+        Validation<StatusCode, Stream<User>> result = uut.get(false, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         List<User> list = result.success().collect(Collectors.toList());
@@ -66,7 +67,7 @@ public class UserHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.add(input);
 
-        Validation<StatusCode, Stream<User>> users = uut.get(false);
+        Validation<StatusCode, Stream<User>> users = uut.get(false, Instant.EPOCH);
         assertTrue(result.isSuccess());
         List<User> list = users.success().collect(Collectors.toList());
         assertEquals(new Integer(4), result.success());
@@ -98,7 +99,7 @@ public class UserHandlerTest extends DbTestCase {
 
         StatusCode result = uut.delete(input);
 
-        Validation<StatusCode, Stream<User>> users = uut.get(false);
+        Validation<StatusCode, Stream<User>> users = uut.get(false, Instant.EPOCH);
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(users.isSuccess());
         List<User> list = users.success().collect(Collectors.toList());
