@@ -60,7 +60,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     FOOD.LOCATION
                     ),
                     getIdField().eq(item.id)
-                            .and(getVersionField().eq(item.version)));
+                            .and(getVersionField().eq(item.version))
+                            .and(FOOD.TO_BUY.ne(item.toBuy)));
 
             return notFoundMeansInvalidVersion(result);
         });
@@ -75,7 +76,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                 FOOD.EXPIRATION_OFFSET,
                 FOOD.LOCATION
                 ),
-                getIdField().eq(item.id)));
+                getIdField().eq(item.id)
+                        .and(FOOD.TO_BUY.ne(value))));
     }
 
     public StatusCode edit(Food item, String newName, Period expirationOffset, Integer location) {
@@ -92,7 +94,12 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     DSL.inline(location)
                     ),
                     getIdField().eq(item.id)
-                            .and(getVersionField().eq(item.version)));
+                            .and(getVersionField().eq(item.version)
+                                    .and(FOOD.NAME.ne(newName)
+                                            .or(FOOD.EXPIRATION_OFFSET.ne(expirationOffset))
+                                            .or(FOOD.LOCATION.ne(location)))
+                            )
+            );
 
             return notFoundMeansInvalidVersion(result);
         });

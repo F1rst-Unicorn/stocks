@@ -64,9 +64,11 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                 return StatusCode.NOT_FOUND;
             }
 
+            OffsetDateTime newEatByDate = item.eatByDate.atOffset(ZoneOffset.UTC);
+
             StatusCode result = currentUpdate(Arrays.asList(
                     FOOD_ITEM.ID,
-                    DSL.inline(OffsetDateTime.from(item.eatByDate.atOffset(ZoneOffset.UTC))),
+                    DSL.inline(OffsetDateTime.from(newEatByDate)),
                     FOOD_ITEM.OF_TYPE,
                     DSL.inline(item.storedIn),
                     FOOD_ITEM.REGISTERS,
@@ -74,7 +76,11 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.VERSION.add(1)
                     ),
                     FOOD_ITEM.ID.eq(item.id)
-                            .and(FOOD_ITEM.VERSION.eq(item.version)));
+                            .and(FOOD_ITEM.VERSION.eq(item.version))
+                            .and(FOOD_ITEM.EAT_BY.ne(newEatByDate)
+                                    .or(FOOD_ITEM.STORED_IN.ne(item.storedIn))
+                            )
+            );
 
             return notFoundMeansInvalidVersion(result);
         });
