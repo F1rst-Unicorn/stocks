@@ -75,6 +75,17 @@ public class DeviceEndpointTest {
     }
 
     @Test
+    public void getDevicesFromInvalidStartingPoint() {
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+
+        uut.get(r, 1, "invalid");
+
+        ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
+        verify(r).resume(c.capture());
+        assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().status);
+    }
+
+    @Test
     public void addDevice() {
         Mockito.when(businessObject.addDevice(any())).thenReturn(Validation.success(new NewDeviceTicket()));
         String name = "test";

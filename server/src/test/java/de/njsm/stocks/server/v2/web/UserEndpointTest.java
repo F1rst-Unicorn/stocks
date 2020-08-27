@@ -72,6 +72,17 @@ public class UserEndpointTest {
     }
 
     @Test
+    public void getUsersFromInvalidStartingPoint() {
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+
+        uut.get(r, 1, "invalid");
+
+        ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
+        verify(r).resume(c.capture());
+        assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().status);
+    }
+
+    @Test
     public void addingInvalidNameIsRejected() {
 
         Response result = uut.putUser(null);

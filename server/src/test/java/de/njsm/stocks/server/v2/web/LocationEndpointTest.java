@@ -20,10 +20,12 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v2.business.LocationManager;
+import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Location;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
+import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -139,6 +141,17 @@ public class LocationEndpointTest {
         assertEquals(SUCCESS, c.getValue().status);
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
         verify(businessLayer).get(r, false, Instant.EPOCH);
+    }
+
+    @Test
+    public void getLocationsFromInvalidStartingPoint() {
+        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+
+        uut.get(r, 1, "invalid");
+
+        ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
+        verify(r).resume(c.capture());
+        TestCase.assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().status);
     }
 
     @Test

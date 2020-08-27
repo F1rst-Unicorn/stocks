@@ -74,7 +74,9 @@ public class FoodItemEndpoint extends Endpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public void get(@Suspended AsyncResponse response, @QueryParam("bitemporal") int bitemporalParameter, @QueryParam("startingFrom") String startingFromParameter) {
+    public void get(@Suspended AsyncResponse response,
+                    @QueryParam("bitemporal") int bitemporalParameter,
+                    @QueryParam("startingFrom") String startingFromParameter) {
         boolean bitemporal = bitemporalParameter == 1;
         Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
         if (startingFrom.isPresent()) {
