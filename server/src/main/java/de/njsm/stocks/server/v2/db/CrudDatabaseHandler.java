@@ -284,4 +284,11 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
         else
             return code;
     }
+
+    protected StatusCode notFoundIsOk(StatusCode code) {
+        if (code == StatusCode.NOT_FOUND)
+            return StatusCode.SUCCESS;
+        else
+            return code;
+    }
 }

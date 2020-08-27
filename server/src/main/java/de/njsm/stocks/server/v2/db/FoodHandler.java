@@ -68,16 +68,20 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
     }
 
     public StatusCode setToBuyStatus(Food item, boolean value) {
-        return runCommand(context -> currentUpdate(Arrays.asList(
-                FOOD.ID,
-                FOOD.NAME,
-                FOOD.VERSION.add(1),
-                DSL.inline(value),
-                FOOD.EXPIRATION_OFFSET,
-                FOOD.LOCATION
-                ),
-                getIdField().eq(item.id)
-                        .and(FOOD.TO_BUY.ne(value))));
+        return runCommand(context -> {
+            StatusCode result = currentUpdate(Arrays.asList(
+                    FOOD.ID,
+                    FOOD.NAME,
+                    FOOD.VERSION.add(1),
+                    DSL.inline(value),
+                    FOOD.EXPIRATION_OFFSET,
+                    FOOD.LOCATION
+                    ),
+                    getIdField().eq(item.id)
+                            .and(FOOD.TO_BUY.ne(value)));
+
+            return notFoundIsOk(result);
+        });
     }
 
     public StatusCode edit(Food item, String newName, Period expirationOffset, Integer location) {
