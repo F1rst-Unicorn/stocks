@@ -112,7 +112,9 @@
             drop function user_contiguous_primary_key cascade;
             delete
             from "User"
-            where transaction_time_end != 'infinity';
+            where not(transaction_time_end = 'infinity'
+                    and valid_time_start &lt;= current_timestamp
+                    and current_timestamp &lt; valid_time_end);
             alter table "User" add constraint "User_pkey" primary key ("ID");
             alter table "User_device" add constraint device_points_to_user foreign key (belongs_to) references "User" ("ID") on update cascade on delete cascade;
             alter table "Food_item" add constraint "Food_item_buys_fkey" foreign key (buys) references "User" ("ID") on update cascade on delete restrict;
@@ -210,7 +212,9 @@
             drop function location_contiguous_primary_key cascade;
             delete
             from "Location"
-            where transaction_time_end != 'infinity';
+            where not(transaction_time_end = 'infinity'
+                and valid_time_start &lt;= current_timestamp
+                and current_timestamp &lt; valid_time_end);
             alter table "Location" add constraint "Location_pkey" primary key ("ID");
             alter table "Food" add constraint "Food_location_fkey" foreign key (location) references "Location" ("ID") on update cascade on delete set null;
             alter table "Food_item" add constraint "Food_item_stored_in_fkey" foreign key (stored_in) references "Location" ("ID") on update cascade on delete restrict;
@@ -308,7 +312,9 @@
             drop function food_contiguous_primary_key cascade;
             delete
             from "Food"
-            where transaction_time_end != 'infinity';
+            where not(transaction_time_end = 'infinity'
+                and valid_time_start &lt;= current_timestamp
+                and current_timestamp &lt; valid_time_end);
             alter table "Food" add constraint "Food_pkey" primary key ("ID");
             alter table "EAN_number" add constraint "EAN_number_identifies_fkey" foreign key (identifies) references "Food" ("ID") on update cascade on delete cascade;
             alter table "Food_item" add constraint "Food_item_of_type_fkey" foreign key (of_type) references "Food" ("ID") on update cascade on delete cascade;
@@ -406,7 +412,9 @@
             drop function user_device_contiguous_primary_key cascade;
             delete
             from "User_device"
-            where transaction_time_end != 'infinity';
+            where not(transaction_time_end = 'infinity'
+                and valid_time_start &lt;= current_timestamp
+                and current_timestamp &lt; valid_time_end);
             alter table "User_device" add constraint "User_device_pkey" primary key ("ID");
             alter table "Ticket" add constraint "Ticket_belongs_device_fkey" foreign key (belongs_device) references "User_device" ("ID") on update cascade on delete cascade;
             alter table "Food_item" add constraint "Food_item_registers_fkey" foreign key (registers) references "User_device" ("ID") on update cascade on delete restrict;
@@ -504,7 +512,9 @@
             drop function food_item_contiguous_primary_key cascade;
             delete
             from "Food_item"
-            where transaction_time_end != 'infinity';
+            where not(transaction_time_end = 'infinity'
+                and valid_time_start &lt;= current_timestamp
+                and current_timestamp &lt; valid_time_end);
             alter table "Food_item" add constraint "Food_item_pkey" primary key ("ID");
             alter table "Food_item" drop column transaction_time_end;
             alter table "Food_item" drop column transaction_time_start;
@@ -600,7 +610,9 @@
             drop function ean_number_contiguous_primary_key cascade;
             delete
             from "EAN_number"
-            where transaction_time_end != 'infinity';
+            where not(transaction_time_end = 'infinity'
+                and valid_time_start &lt;= current_timestamp
+                and current_timestamp &lt; valid_time_end);
             alter table "EAN_number" add constraint "EAN_number_pkey" primary key ("ID");
             alter table "EAN_number" drop column transaction_time_end;
             alter table "EAN_number" drop column transaction_time_start;
