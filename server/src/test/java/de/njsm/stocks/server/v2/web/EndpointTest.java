@@ -22,11 +22,15 @@ package de.njsm.stocks.server.v2.web;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Instant;
+
 import static org.junit.Assert.*;
 
 public class EndpointTest {
 
     private Endpoint uut;
+
+    private static final String RAW_INSTANT = "1970.01.01-00:00:00.000-+0000";
 
     @Before
     public void setup() {
@@ -95,11 +99,27 @@ public class EndpointTest {
 
     @Test
     public void testValidInstant() {
-        assertTrue(uut.isValidInstant("1970.01.01-00:00:00.000-+0000", "name"));
+        assertTrue(uut.isValidInstant(RAW_INSTANT, "name"));
     }
 
     @Test
     public void testInvalidInstant() {
         assertFalse(uut.isValidInstant("jfidfd", "name"));
+    }
+
+    @Test
+    public void parsingMissingInstantGivesEpochDefault() {
+        assertEquals(Instant.EPOCH, uut.parseToInstant(null, "name").get());
+        assertEquals(Instant.EPOCH, uut.parseToInstant("", "name").get());
+    }
+
+    @Test
+    public void validInstantIsParsedSuccessfully() {
+        assertTrue(uut.parseToInstant(RAW_INSTANT, "name").isPresent());
+    }
+
+    @Test
+    public void invalidInstantGivesEmptyOptional() {
+        assertFalse(uut.parseToInstant("invalid", "name").isPresent());
     }
 }

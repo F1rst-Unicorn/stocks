@@ -25,8 +25,6 @@ import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.UserHandler;
 import fj.data.Validation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.ws.rs.container.AsyncResponse;
 import java.time.Instant;
@@ -34,8 +32,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class UserManager extends BusinessObject {
-
-    private static final Logger LOG = LogManager.getLogger(UserManager.class);
 
     private final UserHandler dbHandler;
 
@@ -66,25 +62,15 @@ public class UserManager extends BusinessObject {
 
     public StatusCode deleteUser(User userToDelete, Principals currentUser) {
         return runOperation(() -> {
-            Validation<StatusCode, List<UserDevice>> devices = deviceManager.getDevicesBelonging(userToDelete);
+            Validation<StatusCode, List<UserDevice>> deviceResult = deviceManager.getDevicesBelonging(userToDelete);
 
-            if (devices.isFail())
-                return devices.fail();
+            if (deviceResult.isFail())
+                return deviceResult.fail();
 
-            for (UserDevice device : devices.success()) {
-                StatusCode removeCode = deviceManager.removeDeviceInternally(device, currentUser);
+            List<UserDevice> devices = deviceResult.success();
 
-                if (removeCode != StatusCode.SUCCESS) {
-                    return removeCode;
-                }
-            }
-            StatusCode transferItemsCode = foodItemHandler.transferFoodItems(userToDelete, currentUser.toUser());
-
-            if (transferItemsCode != StatusCode.SUCCESS) {
-                return transferItemsCode;
-            }
-
-            return dbHandler.delete(userToDelete);
+            return foodItemHandler.transferFoodItems(userToDelete, currentUser.toUser(), devices, currentUser.toDevice())
+                    .bind(() -> dbHandler.delete(userToDelete));
         });
     }
 

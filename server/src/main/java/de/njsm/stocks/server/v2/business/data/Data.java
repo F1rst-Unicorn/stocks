@@ -38,5 +38,9 @@ public abstract class Data {
         this.id = id;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public abstract <I, O> O accept(AbstractVisitor<I, O> visitor, I arg);
 }

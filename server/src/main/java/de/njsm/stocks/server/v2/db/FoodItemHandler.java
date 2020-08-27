@@ -35,6 +35,7 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD_ITEM;
 
@@ -116,10 +117,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
         });
     }
 
-    /**
-     * CF 10.7
-     */
-    public StatusCode transferFoodItems(User from, User to) {
+    public StatusCode transferFoodItems(User from, User to, List<UserDevice> fromDevices, UserDevice toDevice) {
         return runCommand(context -> {
             if (userChecker.isCurrentlyMissing(from, context)) {
                 LOG.warn("Origin ID " + from + " not found");
@@ -131,16 +129,21 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                 return StatusCode.NOT_FOUND;
             }
 
+            List<Integer> deviceIds = fromDevices.stream()
+                    .map(UserDevice::getId)
+                    .collect(Collectors.toList());
+
             StatusCode result = currentUpdate(Arrays.asList(
                     FOOD_ITEM.ID,
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,
                     FOOD_ITEM.STORED_IN,
-                    FOOD_ITEM.REGISTERS,
+                    DSL.inline(toDevice.id),
                     DSL.inline(to.id),
                     FOOD_ITEM.VERSION.add(1)
                     ),
-                    FOOD_ITEM.BUYS.eq(from.id));
+                    FOOD_ITEM.BUYS.eq(from.id)
+                            .and(FOOD_ITEM.REGISTERS.in(deviceIds)));
 
             // we don't care if the device owned no items
             if (result == StatusCode.NOT_FOUND) {

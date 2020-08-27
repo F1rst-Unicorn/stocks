@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -201,11 +202,14 @@ public class FoodItemHandlerTest extends DbTestCase {
     @Test
     public void movingFromUnknownUserIsReported() {
         User from = new User(1, 0, "fdsa");
-        User to = new User(3, 0, "fdsa");
+        User to = new User(2, 0, "fdsa");
+        UserDevice from1 = new UserDevice(1, 0, "fdsa", 1);
+        UserDevice from2 = new UserDevice(2, 0, "fdsa", 1);
+        UserDevice toDevice = new UserDevice(3, 0, "fdsa", 2);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(true);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
-        StatusCode result = uut.transferFoodItems(from, to);
+        StatusCode result = uut.transferFoodItems(from, to, Arrays.asList(from1, from2), toDevice);
 
         assertEquals(StatusCode.NOT_FOUND, result);
         Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(from), any());
@@ -214,11 +218,14 @@ public class FoodItemHandlerTest extends DbTestCase {
     @Test
     public void movingToUnknownUserIsReported() {
         User from = new User(1, 0, "fdsa");
-        User to = new User(3, 0, "fdsa");
+        User to = new User(2, 0, "fdsa");
+        UserDevice from1 = new UserDevice(1, 0, "fdsa", 1);
+        UserDevice from2 = new UserDevice(2, 0, "fdsa", 1);
+        UserDevice toDevice = new UserDevice(3, 0, "fdsa", 2);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(true);
 
-        StatusCode result = uut.transferFoodItems(from, to);
+        StatusCode result = uut.transferFoodItems(from, to, Arrays.asList(from1, from2), toDevice);
 
         assertEquals(StatusCode.NOT_FOUND, result);
         Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(from), any());
@@ -226,12 +233,15 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void moveUserSuccessfully() {
-        User from = new User(3, 0, "fdsa");
-        User to = new User(1, 0, "fdsa");
+        User from = new User(1, 0, "fdsa");
+        User to = new User(2, 0, "fdsa");
+        UserDevice from1 = new UserDevice(1, 0, "fdsa", 1);
+        UserDevice from2 = new UserDevice(2, 0, "fdsa", 1);
+        UserDevice toDevice = new UserDevice(3, 0, "fdsa", 2);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
-        StatusCode result = uut.transferFoodItems(from, to);
+        StatusCode result = uut.transferFoodItems(from, to, Arrays.asList(from1, from2), toDevice);
 
         Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
         assertEquals(StatusCode.SUCCESS, result);
