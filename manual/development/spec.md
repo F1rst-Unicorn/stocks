@@ -111,6 +111,25 @@ version of the entity to edit. If the version does not match an error is
 returned using status codes, see "Status Codes" for a list of status codes
 to support.
 
+#### Valid Time
+
+Each entity in the database is tagged with information about when it was present
+in the given state. This interval of validity is encoded using two timestamps,
+`validTimeStart` and `validTimeEnd`. The interval contains the starting
+timestamp while the ending timestamp is the first moment which is no longer
+included (closed-open notation, `[start, end)` using mathematical notation). See
+also the `bitemporal` flag.
+
+#### Transaction Time
+
+Each entity in the database is tagged with information about when the
+information of the entity was entered into the database. This allows for
+reconstruction of past states of the database. This interval of validity is
+encoded using two timestamps, `transactionTimeStart` and `transactionTimeEnd`.
+The interval contains the starting timestamp while the ending timestamp is the
+first moment which is no longer included (closed-open notation, `[start, end)`
+using mathematical notation). See also the `bitemporal` flag.
+
 #### Status Codes
 
 Numbers reporting the result status of a request. The API refers to this
@@ -229,7 +248,14 @@ Update {
 
 `GET /v2/user`: Get all users in the system
 
-No parameters
+Query parameters:
+
+* `bitemporal: int`: Set to 1 to include bitemporal data. 0 yields the
+  current state of the data as best known.
+
+* `startingFrom: Timestamp`: Only include the latest changes to the
+  data since `startingFrom`. For useful interpretation of the data
+  `bitemporal` SHOULD be set to 1.
 
 Result: `application/json`
 
@@ -294,7 +320,14 @@ ClientTicket {
 
 `GET /v2/device`: Get all devices in the system
 
-No parameters
+Query parameters:
+
+* `bitemporal: int`: Set to 1 to include bitemporal data. 0 yields the
+  current state of the data as best known.
+
+* `startingFrom: Timestamp`: Only include the latest changes to the
+  data since `startingFrom`. For useful interpretation of the data
+  `bitemporal` SHOULD be set to 1.
 
 Result: `application/json`
 
@@ -337,7 +370,14 @@ Result: `application/json`, `Response`
 
 `GET /v2/food`: Get all food types in the system.
 
-No parameters.
+Query parameters:
+
+* `bitemporal: int`: Set to 1 to include bitemporal data. 0 yields the
+  current state of the data as best known.
+
+* `startingFrom: Timestamp`: Only include the latest changes to the
+  data since `startingFrom`. For useful interpretation of the data
+  `bitemporal` SHOULD be set to 1.
 
 Result: `application/json`
 
@@ -408,7 +448,14 @@ Result: `application/json`, `Response`
 
 `GET /v2/location`: Get the locations of the system.
 
-No parameters.
+Query parameters:
+
+* `bitemporal: int`: Set to 1 to include bitemporal data. 0 yields the
+  current state of the data as best known.
+
+* `startingFrom: Timestamp`: Only include the latest changes to the
+  data since `startingFrom`. For useful interpretation of the data
+  `bitemporal` SHOULD be set to 1.
 
 Result: `application/json`
 
@@ -467,7 +514,14 @@ Result: `application/json`, `Response`
 
 `GET /v2/ean`: Get the EAN codes of the system.
 
-No parameters
+Query parameters:
+
+* `bitemporal: int`: Set to 1 to include bitemporal data. 0 yields the
+  current state of the data as best known.
+
+* `startingFrom: Timestamp`: Only include the latest changes to the
+  data since `startingFrom`. For useful interpretation of the data
+  `bitemporal` SHOULD be set to 1.
 
 Result: `application/json`
 ```
@@ -511,7 +565,14 @@ Result: `application/json`, `Response`
 
 `GET /v2/fooditem`: Get all the food items in the system
 
-No parameters
+Query parameters:
+
+* `bitemporal: int`: Set to 1 to include bitemporal data. 0 yields the
+  current state of the data as best known.
+
+* `startingFrom: Timestamp`: Only include the latest changes to the
+  data since `startingFrom`. For useful interpretation of the data
+  `bitemporal` SHOULD be set to 1.
 
 Result: `application/json`
 
