@@ -262,7 +262,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.3.0</version>
+            <version>3.5.7</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -286,6 +286,7 @@
                 <de.njsm.stocks.server.v2.db.postgres.sslkey>dummy</de.njsm.stocks.server.v2.db.postgres.sslkey>
                 <de.njsm.stocks.server.v2.db.postgres.sslrootcert>dummy</de.njsm.stocks.server.v2.db.postgres.sslrootcert>
                 <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
+                <de.njsm.stocks.server.v2.db.history.maxPeriod>P3Y</de.njsm.stocks.server.v2.db.history.maxPeriod>
             </properties>
         </profile>
         <profile>
@@ -303,6 +304,7 @@
                 <de.njsm.stocks.server.v2.db.postgres.sslkey>${user.home}/ssl/db.j.njsm.de.pk8</de.njsm.stocks.server.v2.db.postgres.sslkey>
                 <de.njsm.stocks.server.v2.db.postgres.sslrootcert>${user.home}/ssl/ca.crt</de.njsm.stocks.server.v2.db.postgres.sslrootcert>
                 <de.njsm.stocks.internal.ticketValidityTimeInMinutes>10</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
+                <de.njsm.stocks.server.v2.db.history.maxPeriod>P3Y</de.njsm.stocks.server.v2.db.history.maxPeriod>
                 <liquibase.promptOnNonLocalDatabase>false</liquibase.promptOnNonLocalDatabase>
             </properties>
         </profile>
@@ -338,6 +340,8 @@
                         <de.njsm.stocks.server.v2.db.postgres.sslkey>${de.njsm.stocks.server.v2.db.postgres.sslkey}</de.njsm.stocks.server.v2.db.postgres.sslkey>
                         <de.njsm.stocks.server.v2.db.postgres.sslrootcert>${de.njsm.stocks.server.v2.db.postgres.sslrootcert}</de.njsm.stocks.server.v2.db.postgres.sslrootcert>
                         <de.njsm.stocks.internal.ticketValidityTimeInMinutes>${de.njsm.stocks.internal.ticketValidityTimeInMinutes}</de.njsm.stocks.internal.ticketValidityTimeInMinutes>
+                        <de.njsm.stocks.server.v2.db.history.maxPeriod>${de.njsm.stocks.server.v2.db.history.maxPeriod}</de.njsm.stocks.server.v2.db.history.maxPeriod>
+                        <org.jooq.no-logo>true</org.jooq.no-logo>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

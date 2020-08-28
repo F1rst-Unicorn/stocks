@@ -77,6 +77,8 @@
 
     <bean name="ticketValidity" factory-bean="config" factory-method="getTicketValidity"/>
 
+    <bean name="maxHistory" factory-bean="config" factory-method="getDbHistoryMaxPeriod"/>
+
     <bean name="dbUrl" class="java.lang.String" factory-method="format">
         <constructor-arg index="0" value="jdbc:postgresql://%s:%s/%s"/>
         <constructor-arg index="1" type="java.lang.Object[]">

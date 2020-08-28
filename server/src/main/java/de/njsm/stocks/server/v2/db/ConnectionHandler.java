@@ -28,7 +28,7 @@ import fj.data.Validation;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionHandler implements HystrixWrapper<Connection, SQLException> {
+public class ConnectionHandler implements HystrixWrapper<Connection, SQLException>, TransactionHandler {
 
     private static final String SERIALISATION_FAILURE_SQL_STATE = "40001";
 
@@ -46,6 +46,7 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
         this.timeout = timeout;
     }
 
+    @Override
     public StatusCode commit() {
         return runCommand(con -> {
             con.setAutoCommit(false);
@@ -56,6 +57,7 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
         });
     }
 
+    @Override
     public StatusCode rollback() {
         return runCommand(con -> {
             con.setAutoCommit(false);
@@ -66,6 +68,7 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
         });
     }
 
+    @Override
     public StatusCode setReadOnly() {
         return runCommand(con -> {
             con.setReadOnly(true);

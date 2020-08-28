@@ -27,8 +27,12 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.Period;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
+import static de.njsm.stocks.server.v2.db.jooq.tables.Location.LOCATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -145,5 +149,40 @@ public class LocationHandlerTest extends DbTestCase {
         StatusCode result = uut.delete(data);
 
         assertEquals(StatusCode.NOT_FOUND, result);
+    }
+
+    @Test
+    public void historyCleanupCleansDesiredRowsOnly() {
+        Period oldData = Period.ofDays(2);
+        OffsetDateTime now = OffsetDateTime.now();
+        getDSLContext().insertInto(LOCATION)
+                .columns(LOCATION.ID,
+                        LOCATION.NAME,
+                        LOCATION.VALID_TIME_START,
+                        LOCATION.VALID_TIME_END,
+                        LOCATION.TRANSACTION_TIME_START,
+                        LOCATION.TRANSACTION_TIME_END
+                )
+                .values(3, "", now.minusDays(3), now.minusDays(1), now.minusDays(3), INFINITY)
+                .values(3, "", now.minusDays(1), now.plusDays(3), now.minusDays(3), INFINITY)
+                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(3), INFINITY)
+
+                .values(3, "", now.minusDays(4), now, now.minusDays(4), now.minusDays(3))
+                .values(3, "", now, now.plusDays(3), now.minusDays(4), now.minusDays(3))
+                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(4), now.minusDays(3))
+                .execute();
+
+
+        uut.cleanDataOlderThan(oldData);
+
+        long currentRows = uut.get(false, Instant.EPOCH)
+                .success()
+                .count();
+        assertEquals(3, currentRows);
+
+        long allRows = uut.get(true, Instant.EPOCH)
+                .success()
+                .count();
+        assertEquals(5, allRows);
     }
 }

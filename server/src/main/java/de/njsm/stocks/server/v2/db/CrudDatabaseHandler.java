@@ -22,14 +22,13 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.VersionedData;
 import fj.data.Validation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.postgresql.PGStatement;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -38,6 +37,8 @@ import java.util.stream.Stream;
 public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends VersionedData>
         extends FailSafeDatabaseHandler
         implements PresenceChecker<R> {
+
+    private static final Logger LOG = LogManager.getLogger(CrudDatabaseHandler.class);
 
     public static final OffsetDateTime INFINITY = OffsetDateTime.ofInstant(Instant.ofEpochMilli(PGStatement.DATE_POSITIVE_INFINITY), ZoneId.of("UTC"));
 
@@ -237,6 +238,23 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
         return count == 0;
     }
 
+    public StatusCode cleanDataOlderThan(Period period) {
+        return runCommand(context -> {
+
+            OffsetDateTime oldestDateToPreserve = OffsetDateTime.now().minus(period);
+
+            int count = context.deleteFrom(getTable())
+                    .where(getTransactionTimeEndField().lessThan(oldestDateToPreserve))
+                    .execute();
+
+            if (count > 0) {
+                LOG.info("Cleaned up {} rows from {}", count, this);
+            }
+
+            return StatusCode.SUCCESS;
+        });
+    }
+
     protected List<Field<?>> getFieldsWithTime(List<Field<?>> fields) {
         List<Field<?>> fieldsWithTime = new ArrayList<>(fields);
         fieldsWithTime.add(getValidTimeStartField());
@@ -290,5 +308,10 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
             return StatusCode.SUCCESS;
         else
             return code;
+    }
+
+    @Override
+    public String toString() {
+        return getTable().getQualifiedName().toString();
     }
 }

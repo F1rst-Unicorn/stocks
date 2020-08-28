@@ -22,6 +22,7 @@ package de.njsm.stocks.server;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Period;
 import java.util.Properties;
 
 import static de.njsm.stocks.server.Config.*;
@@ -41,6 +42,7 @@ public class ConfigTest {
         p.put(DB_VALIDITY_KEY, "10");
         p.put(POSTGRESQL_CONFIG_PREFIX + "user", "user");
         p.put(POSTGRESQL_CONFIG_PREFIX + "password", "password");
+        p.put(DB_HISTORY_MAX_PERIOD, "P3Y");
     }
 
     @Test
@@ -54,6 +56,7 @@ public class ConfigTest {
         assertEquals("user", uut.getDbProperties().getProperty("user"));
         assertEquals("password", uut.getDbProperties().getProperty("password"));
         assertEquals(10, uut.getTicketValidity());
+        assertEquals(Period.ofYears(3), uut.getDbHistoryMaxPeriod());
     }
 
     @Test(expected = NumberFormatException.class)

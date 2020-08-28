@@ -22,6 +22,8 @@ package de.njsm.stocks.server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.Period;
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.Properties;
 
@@ -33,6 +35,7 @@ public class Config {
     static final String DB_PORT_KEY = "de.njsm.stocks.server.v2.db.port";
     static final String DB_NAME_KEY = "de.njsm.stocks.server.v2.db.name";
     static final String DB_CIRCUIT_BREAKER_TIMEOUT_KEY = "de.njsm.stocks.server.v2.circuitbreaker.timeout";
+    static final String DB_HISTORY_MAX_PERIOD = "de.njsm.stocks.server.v2.db.history.maxPeriod";
     static final String DB_VALIDITY_KEY = "de.njsm.stocks.internal.ticketValidityTimeInMinutes";
 
     static final String POSTGRESQL_CONFIG_PREFIX = "de.njsm.stocks.server.v2.db.postgres.";
@@ -43,6 +46,7 @@ public class Config {
     private int circuitBreakerTimeout;
     private Properties dbProperties;
     private int ticketValidity;
+    private Period dbHistoryMaxPeriod;
 
     public Config(Properties p) {
         readProperties(p);
@@ -70,6 +74,14 @@ public class Config {
             LOG.error(DB_VALIDITY_KEY + " is not an integer", e);
             throw e;
         }
+
+        String rawDbHistoryMaxPeriod = p.getProperty(DB_HISTORY_MAX_PERIOD);
+        try {
+            dbHistoryMaxPeriod = Period.parse(rawDbHistoryMaxPeriod);
+        } catch (DateTimeParseException e) {
+            LOG.error(DB_HISTORY_MAX_PERIOD + " is not a valid ISO-8601 period", e);
+            throw e;
+        }
     }
 
     public String getDbAddress() {
@@ -94,6 +106,10 @@ public class Config {
 
     public int getTicketValidity() {
         return ticketValidity;
+    }
+
+    public Period getDbHistoryMaxPeriod() {
+        return dbHistoryMaxPeriod;
     }
 
     private Properties filterPostgresqlProperties(Properties config) {

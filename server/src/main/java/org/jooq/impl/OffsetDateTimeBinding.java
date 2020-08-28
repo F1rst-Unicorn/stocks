@@ -27,15 +27,9 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.SignStyle;
-import java.util.Locale;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.NEGATIVE_INFINITY;
-import static java.time.temporal.ChronoField.*;
-import static org.jooq.SQLDialect.POSTGRES;
 
 /**
  * Needed as long as
@@ -43,24 +37,6 @@ import static org.jooq.SQLDialect.POSTGRES;
  * is not resolved
  */
 public class OffsetDateTimeBinding implements Binding<OffsetDateTime, OffsetDateTime> {
-
-    private static final DateTimeFormatter ERA = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnnnnZZZZZ G", Locale.US);
-
-    private static final DateTimeFormatter F_TIMESTAMPTZ = new DateTimeFormatterBuilder()
-            .appendValue(YEAR, 4, 10, SignStyle.NORMAL)
-            .appendLiteral('-')
-            .appendValue(MONTH_OF_YEAR, 2)
-            .appendLiteral('-')
-            .appendValue(DAY_OF_MONTH, 2)
-            .appendLiteral(' ')
-            .appendValue(HOUR_OF_DAY, 2)
-            .appendLiteral(':')
-            .appendValue(MINUTE_OF_HOUR, 2)
-            .appendLiteral(':')
-            .appendValue(SECOND_OF_MINUTE, 2)
-            .appendFraction(NANO_OF_SECOND, 0, 9, true)
-            .appendOffset("+HH:MM", "+00:00")
-            .toFormatter();
 
     @Override
     public Converter<OffsetDateTime, OffsetDateTime> converter() {
@@ -88,16 +64,8 @@ public class OffsetDateTimeBinding implements Binding<OffsetDateTime, OffsetDate
         else if (value.equals(INFINITY))
             ctx.statement().setTimestamp(ctx.index(), new Timestamp(PGStatement.DATE_POSITIVE_INFINITY));
         else {
-            SQLDialect family = ctx.family();
-            ctx.statement().setString(ctx.index(), format(value, family));
+            ctx.statement().setObject(ctx.index(), value);
         }
-    }
-
-    private static String format(OffsetDateTime val, SQLDialect family) {
-        if (family == POSTGRES && val.getYear() <= 0)
-            return val.format(ERA);
-
-        return val.format(F_TIMESTAMPTZ);
     }
 
     @Override
