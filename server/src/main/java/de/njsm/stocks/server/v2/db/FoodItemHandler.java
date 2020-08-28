@@ -110,10 +110,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.REGISTERS.eq(from.id));
 
             // we don't care if the device owned no items
-            if (result == StatusCode.NOT_FOUND) {
-                result = StatusCode.SUCCESS;
-            }
-            return result;
+            return notFoundIsOk(result);
         });
     }
 
@@ -145,11 +142,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.BUYS.eq(from.id)
                             .and(FOOD_ITEM.REGISTERS.in(deviceIds)));
 
-            // we don't care if the device owned no items
-            if (result == StatusCode.NOT_FOUND) {
-                result = StatusCode.SUCCESS;
-            }
-            return result;
+            // we don't care if the user/device owned no items
+            return notFoundIsOk(result);
         });
     }
 
@@ -166,10 +160,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
     public StatusCode deleteItemsStoredIn(Location location) {
         return runCommand(context -> {
             StatusCode result = currentDelete(FOOD_ITEM.STORED_IN.eq(location.id));
-            if (result == StatusCode.NOT_FOUND) {
-                return StatusCode.SUCCESS;
-            }
-            return result;
+            return notFoundIsOk(result);
         });
     }
 
