@@ -32,25 +32,19 @@ public class Version implements Comparable<Version> {
 
     public static final Version V_0_5_0 = new Version(0, 5, 0);
 
-    public static final Version V_0_5_1 = new Version(0, 5, 1);
-
-    public static final Version V_2_0_0 = new Version(2, 0, 0);
-
-    public static final Version V_2_0_1 = new Version(2, 0, 1);
-
-    public static final Version V_2_0_2 = new Version(2, 0, 2);
-
     public static final Version V_2_0_3 = new Version(2, 0, 3);
 
     public static final Version V_3_0_0 = new Version(3, 0, 0);
 
-    public static final Version CURRENT = V_3_0_0;
+    public static final Version V_3_0_1 = new Version(3, 0, 1);
 
-    private int major;
+    public static final Version CURRENT = V_3_0_1;
 
-    private int minor;
+    private final int major;
 
-    private int patch;
+    private final int minor;
+
+    private final int patch;
 
     Version(int major, int minor, int patch) {
         this.major = major;

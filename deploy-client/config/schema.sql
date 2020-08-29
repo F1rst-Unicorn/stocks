@@ -21,7 +21,6 @@ DROP TABLE IF EXISTS `Food`;
 CREATE TABLE `Food` (
   `ID` INT NOT NULL UNIQUE,
   `name` varchar(200) NOT NULL,
-  `image_path` varchar(200) NOT NULL DEFAULT '',
   `version` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`)
 );
@@ -61,12 +60,11 @@ CREATE TABLE User_device (
 );
 
 
-
 DROP TABLE IF EXISTS Food_item;
 
 CREATE TABLE Food_item (
     `ID` INT NOT NULL UNIQUE,
-    `eat_by` DATETIME NOT NULL,
+    `eat_by` varchar(40) NOT NULL,
     `of_type` INT NOT NULL,
     `stored_in` INT NOT NULL,
     `registers` INT NOT NULL,
@@ -85,7 +83,7 @@ DROP TABLE IF EXISTS Updates;
 CREATE TABLE Updates (
     `ID` INT NOT NULL,
     `table_name` varchar(200) NOT NULL,
-    `last_update` DATETIME NOT NULL DEFAULT 0,
+    `last_update` varchar(40) NOT NULL DEFAULT '1970.01.01-00:00:00.000000-+0000',
     PRIMARY KEY (`ID`)
 );
 
@@ -107,4 +105,4 @@ CREATE TABLE Config (
 
 INSERT INTO Config (`key`, `value`)
 VALUES
-    ('db.version', '3.0.0')
+    ('db.version', '3.0.1')

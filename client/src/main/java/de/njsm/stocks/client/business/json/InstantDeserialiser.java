@@ -46,10 +46,14 @@ public class InstantDeserialiser extends StdDeserializer<Instant> {
 
     public static Instant parseString(String rawTimestamp) throws IOException {
         try {
-            return InstantSerialiser.FORMAT.parse(rawTimestamp, Instant::from);
+            return parseTimestamp(rawTimestamp);
         } catch (DateTimeParseException |
                 NullPointerException e) {
             throw new IOException("Cannot parse date value " + rawTimestamp, e);
         }
+    }
+
+    public static Instant parseTimestamp(String rawTimestamp) {
+        return InstantSerialiser.FORMAT.parse(rawTimestamp, Instant::from);
     }
 }

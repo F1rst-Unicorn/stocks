@@ -231,6 +231,7 @@
                         <user.stocks.dir>${user.stocks.dir}</user.stocks.dir>
                         <system.stocks.dir>${system.stocks.dir}</system.stocks.dir>
                         <sql.schema.path>${sql.schema.path}</sql.schema.path>
+                        <org.jooq.no-logo>true</org.jooq.no-logo>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -302,6 +303,7 @@
                 <system.stocks.dir>${basedir}/src/test/system/resources</system.stocks.dir>
                 <sql.schema.path>${basedir}/../deploy-client/config/schema.sql</sql.schema.path>
                 <sql.db.path>${user.stocks.dir}/db-jooq.sqlite</sql.db.path>
+                <org.jooq.no-logo>true</org.jooq.no-logo>
             </properties>
         </profile>
     </profiles>

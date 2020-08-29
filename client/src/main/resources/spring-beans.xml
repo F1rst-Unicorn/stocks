@@ -87,6 +87,9 @@
                 <bean class="de.njsm.stocks.client.init.upgrade.EntityVersioningUpgradeProcedure" >
                     <constructor-arg index="0" ref="dbManager" />
                 </bean>
+                <bean class="de.njsm.stocks.client.init.upgrade.MicrosecondUpgradeProcedure" >
+                    <constructor-arg index="0" ref="dbManager" />
+                </bean>
             </list>
         </constructor-arg>
     </bean>

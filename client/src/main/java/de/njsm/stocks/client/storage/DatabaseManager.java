@@ -33,12 +33,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static de.njsm.stocks.client.business.json.InstantDeserialiser.parseTimestamp;
+import static de.njsm.stocks.client.business.json.InstantSerialiser.FORMAT;
 import static de.njsm.stocks.client.storage.jooq.Tables.*;
 import static org.jooq.impl.DSL.condition;
 
@@ -52,9 +53,9 @@ public class DatabaseManager extends BaseDatabaseManager {
                 c -> c.selectFrom(UPDATES)
                         .fetch()
                         .map(r -> new Update(r.getTableName(),
-                                             Instant.ofEpochMilli(r.getLastUpdate().getTime())
+                                        parseTimestamp(r.getLastUpdate())
+                                )
                         )
-                )
         );
     }
 
@@ -63,7 +64,7 @@ public class DatabaseManager extends BaseDatabaseManager {
         runCommand(c -> {
             for (Update u : values) {
                 c.update(UPDATES)
-                        .set(UPDATES.LAST_UPDATE, new Timestamp(u.lastUpdate.toEpochMilli()))
+                        .set(UPDATES.LAST_UPDATE, FORMAT.format(u.lastUpdate))
                         .where(UPDATES.TABLE_NAME.eq(u.table))
                         .execute();
             }
@@ -74,7 +75,7 @@ public class DatabaseManager extends BaseDatabaseManager {
     public void resetUpdates() throws DatabaseException {
         LOG.info("Resetting updates");
         runCommand(c -> c.update(UPDATES)
-                .set(UPDATES.LAST_UPDATE, new Timestamp(0))
+                .set(UPDATES.LAST_UPDATE, FORMAT.format(Instant.EPOCH))
                 .execute());
     }
 
@@ -220,7 +221,7 @@ public class DatabaseManager extends BaseDatabaseManager {
                 .map(r -> new FoodItem(
                         r.getId(),
                         r.getVersion(),
-                        Instant.ofEpochMilli(r.getEatBy().getTime()),
+                        parseTimestamp(r.getEatBy()),
                         r.getOfType(),
                         r.getStoredIn(),
                         r.getRegisters(),
@@ -235,7 +236,7 @@ public class DatabaseManager extends BaseDatabaseManager {
             de.njsm.stocks.client.storage.jooq.tables.FoodItem I = FOOD_ITEM;
             de.njsm.stocks.client.storage.jooq.tables.Location L = LOCATION;
 
-            Table<Record7<Integer, Timestamp, Integer, Integer, String, String, String>> richFoodItems =
+            Table<Record7<Integer, String, Integer, Integer, String, String, String>> richFoodItems =
                     c.select(I.OF_TYPE.as("type"), I.EAT_BY.as("date"), I.STORED_IN.as("stored_in"), I.BUYS.as("buys"), L.NAME.as("location"), USER.NAME.as("user"), USER_DEVICE.NAME.as("device"))
                             .from(FOOD_ITEM, LOCATION, USER, USER_DEVICE)
                             .where(L.ID.eq(I.STORED_IN))
@@ -250,8 +251,8 @@ public class DatabaseManager extends BaseDatabaseManager {
             int lastId = -1;
             FoodView f = null;
 
-            Result<Record7<Integer, String, Integer, Timestamp, String, String, String>> items = c.select(F.ID, F.NAME, F.VERSION,
-                    richFoodItems.field("date", Timestamp.class),
+            Result<Record7<Integer, String, Integer, String, String, String, String>> items = c.select(F.ID, F.NAME, F.VERSION,
+                    richFoodItems.field("date", String.class),
                     richFoodItems.field("location", String.class),
                     richFoodItems.field("user", String.class),
                     richFoodItems.field("device", String.class))
@@ -262,7 +263,7 @@ public class DatabaseManager extends BaseDatabaseManager {
                     .orderBy(F.ID.asc(), richFoodItems.field("date").asc())
                     .fetch();
 
-            for (Record7<Integer, String, Integer, Timestamp, String, String, String> rs : items) {
+            for (Record7<Integer, String, Integer, String, String, String, String> rs : items) {
                 int id = rs.component1();
                 if (id != lastId) {
                     if (f != null) {
@@ -272,10 +273,10 @@ public class DatabaseManager extends BaseDatabaseManager {
                     f = new FoodView(newFood);
                 }
 
-                Timestamp date = rs.component4();
+                String date = rs.component4();
                 if (date != null) {     // may have no elements due to outer join
                     FoodItemView item = new FoodItemView();
-                    item.eatByDate = Instant.ofEpochMilli(date.getTime());
+                    item.eatByDate = parseTimestamp(rs.component4());
                     item.location = rs.component5();
                     item.user = rs.component6();
                     item.device = rs.component7();
@@ -296,13 +297,13 @@ public class DatabaseManager extends BaseDatabaseManager {
     public void writeFoodItems(List<FoodItem> values) throws DatabaseException {
         runCommand(c -> {
             c.deleteFrom(FOOD_ITEM).execute();
-            InsertValuesStep7<FoodItemRecord, Integer, Integer, Timestamp, Integer, Integer, Integer, Integer> base = c.insertInto(FOOD_ITEM)
+            InsertValuesStep7<FoodItemRecord, Integer, Integer, String, Integer, Integer, Integer, Integer> base = c.insertInto(FOOD_ITEM)
                     .columns(FOOD_ITEM.ID, FOOD_ITEM.VERSION, FOOD_ITEM.EAT_BY, FOOD_ITEM.STORED_IN, FOOD_ITEM.BUYS, FOOD_ITEM.REGISTERS, FOOD_ITEM.OF_TYPE);
 
             for (FoodItem u : values) {
                 base = base.values(u.id,
                         u.version,
-                        new Timestamp(u.eatByDate.toEpochMilli()),
+                        FORMAT.format(u.eatByDate),
                         u.storedIn,
                         u.buys,
                         u.registers,
@@ -323,7 +324,7 @@ public class DatabaseManager extends BaseDatabaseManager {
                 .map(r -> new FoodItem(
                         r.getId(),
                         r.getVersion(),
-                        Instant.ofEpochMilli(r.getEatBy().getTime()),
+                        parseTimestamp(r.getEatBy()),
                         r.getOfType(),
                         r.getStoredIn(),
                         r.getRegisters(),

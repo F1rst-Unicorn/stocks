@@ -52,6 +52,7 @@ public class BaseDatabaseManager {
             stmt.close();
             c.commit();
         } catch (SQLException e) {
+            rollback(c);
             throw new DatabaseException("Could complete SQL script", e);
         } finally {
             close(c);
@@ -94,6 +95,16 @@ public class BaseDatabaseManager {
                 con.close();
             } catch (SQLException e) {
                 LOG.error("Error closing connection", e);
+            }
+        }
+    }
+
+    static void rollback(Connection con) {
+        if (con != null) {
+            try {
+                con.rollback();
+            } catch (SQLException e) {
+                LOG.error("Error rolling back connection", e);
             }
         }
     }
