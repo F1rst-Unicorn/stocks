@@ -45,9 +45,13 @@ sed "0,/<version>/{s$<version>.*</version>$<version>$MAVEN_VERSION</version>$}" 
 sed -i "s/pkgver=.*/pkgver=$VERSION/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
 sed -i "s/pkgrel=.*/pkgrel=$RELEASE/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
 
+sed -i -e "/## Unreleased/a ## [$VERSION-$RELEASE]" -e "/## Unreleased/G" \
+        "$STOCKS_ROOT/manual/server/CHANGELOG.md"
+
 echo Tagging release
 git add -A
 git commit -m "Increment server version to $VERSION-$RELEASE"
+zsh
 git tag -a "server-$VERSION-$RELEASE" -m \
         "Tagging server version $VERSION-$RELEASE"
 git push --all

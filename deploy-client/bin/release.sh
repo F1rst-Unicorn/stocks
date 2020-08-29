@@ -62,9 +62,13 @@ sed -i "s/.*db\.version.*/    ('db.version', '$SQL_VERSION')/g" \
 sed -i "s/stocks_version: .*/stocks_version: $VERSION-$RELEASE/" \
         "$STOCKS_ROOT"/deploy-client/install.yml
 
+sed -i -e "/## Unreleased/a ## [$VERSION-$RELEASE]" -e "/## Unreleased/G" \
+        "$STOCKS_ROOT/manual/client/CHANGELOG.md"
+
 echo Tagging release
 git add -A
 git commit -m "Increment client version to $VERSION-$RELEASE"
+zsh
 git tag -a "client-$VERSION-$RELEASE" -m \
         "Tagging client version $VERSION-$RELEASE"
 git push --all

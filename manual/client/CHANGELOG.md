@@ -2,19 +2,19 @@
 
 ## [Unreleased]
 
-## Release [3.0.1.0-1]
+## [3.0.1.0-1]
 
 ### Added
 
 * STOCKS-101: Support microsecond-resolution timestamps
 
-## Release [3.0.0.1-1]
+## [3.0.0.1-1]
 
 ### Changed
 
 * STOCKS-74: Make forward compatible to future server versions
 
-## Release [3.0.0.0-1]
+## [3.0.0.0-1]
 
 ### Changed
 
@@ -26,7 +26,7 @@
 
 * STOCKS-62: Mitigate server bug crashing the client when adding devices
 
-## Release [2.0.3.0-1]
+## [2.0.3.0-1]
 
 ### Changed
 
@@ -36,37 +36,37 @@
 
 * STOCKS-67: Food expiration dates added by the client were one day off
 
-## Release [2.0.2.0-1]
+## [2.0.2.0-1]
 
 ### Added
 
 * STOCKS-18: Emit QR codes for mobile apps when creating devices
 
-## Release [2.0.1.0-1]
+## [2.0.1.0-1]
 
 ### Added
 
 * STOCKS-19: Display location and owner of food items when listing them
 
-## Release [2.0.0.1-1]
+## [2.0.0.1-1]
 
 Maintenance release
 
-## Release [2.0.0.0-0]
+## [2.0.0.0-0]
 
 Maintenance release
 
-## Release [0.5.1-2]
+## [0.5.1-2]
 
 ### Fixed
 
 * Repair broken history scrolling
 
-## Release [0.5.1]
+## [0.5.1]
 
 Maintenancy release
 
-## Release [0.5.0]
+## [0.5.0]
 
 ### Fixed
 
@@ -74,7 +74,7 @@ Maintenancy release
 
 * Expiration dates were transmitted one day off
 
-## Release [0.4.2]
+## [0.4.2]
 
 ### Added
 
@@ -82,12 +82,12 @@ Maintenancy release
 
 * Introduce proper logging and error reporting to user
 
-## Release [0.4.1]
+## [0.4.1]
 
 ### Fixed
 
 * New server could make client crash during updating
 
-## Release [0.4]
+## [0.4]
 
 Creative chaos

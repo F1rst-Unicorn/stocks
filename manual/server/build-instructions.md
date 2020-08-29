@@ -4,10 +4,10 @@ This guide tells how to build the server.
 
 ## Arch Linux
 
-Checkout the git repository. Audit the PKGBUILD in `deploy-server`. Import the
-database schema into a PostgreSQL database. Make sure the database is accessible
-for the build user with the properties given in the default profile in
-`server/pom.xml`. Then build the package.
+Checkout the git repository. Audit the PKGBUILD in `deploy-server`. Create a
+PostgreSQL database. Make sure the database is accessible for the build user
+with the properties given in the default profile in `server/pom.xml`. Then build
+the package.
 
 ## License
 

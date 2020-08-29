@@ -6,17 +6,20 @@
 
 ### Added
 
-* Support for bitemporal data. This allows showing the history of the
-  stored entities. This is a breaking change because the API now reports
-  all timestamps up to microsecond precision which breaks clients'
-  timestamp parsing.
+* STOCKS-101: Support for bitemporal data. This allows showing the history of
+  the stored entities. This is a breaking change because the API now reports all
+  timestamps up to microsecond precision which breaks clients' timestamp
+  parsing.
+
+* STOCKS-102: Improve stability by reconfiguring the circuit breaker. This might
+  improve stability on slow systems.
 
 ## [4.8.0.0-1]
 
 ### Added
 
-* Use DB migration framework liquibase so this will be the last time to
-  install DB changes manually
+* STOCKS-93: Use DB migration framework liquibase so this will be the last time
+  to install DB changes manually
 
 ## [4.7.0.0-1]
 
