@@ -51,7 +51,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            StatusCode result = currentUpdate(Arrays.asList(
+            return currentUpdate(Arrays.asList(
                     FOOD.ID,
                     FOOD.NAME,
                     FOOD.VERSION.add(1),
@@ -61,27 +61,23 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     ),
                     getIdField().eq(item.id)
                             .and(getVersionField().eq(item.version))
-                            .and(FOOD.TO_BUY.ne(item.toBuy)));
-
-            return notFoundMeansInvalidVersion(result);
+                            .and(FOOD.TO_BUY.ne(item.toBuy)))
+                    .map(this::notFoundMeansInvalidVersion);
         });
     }
 
     public StatusCode setToBuyStatus(Food item, boolean value) {
-        return runCommand(context -> {
-            StatusCode result = currentUpdate(Arrays.asList(
-                    FOOD.ID,
-                    FOOD.NAME,
-                    FOOD.VERSION.add(1),
-                    DSL.inline(value),
-                    FOOD.EXPIRATION_OFFSET,
-                    FOOD.LOCATION
-                    ),
-                    getIdField().eq(item.id)
-                            .and(FOOD.TO_BUY.ne(value)));
-
-            return notFoundIsOk(result);
-        });
+        return runCommand(context -> currentUpdate(Arrays.asList(
+                FOOD.ID,
+                FOOD.NAME,
+                FOOD.VERSION.add(1),
+                DSL.inline(value),
+                FOOD.EXPIRATION_OFFSET,
+                FOOD.LOCATION
+                ),
+                getIdField().eq(item.id)
+                        .and(FOOD.TO_BUY.ne(value)))
+                .map(this::notFoundIsOk));
     }
 
     public StatusCode edit(Food item, String newName, Period expirationOffset, Integer location) {
@@ -89,7 +85,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            StatusCode result = currentUpdate(Arrays.asList(
+            return currentUpdate(Arrays.asList(
                     FOOD.ID,
                     DSL.inline(newName),
                     FOOD.VERSION.add(1),
@@ -103,26 +99,21 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                                             .or(FOOD.EXPIRATION_OFFSET.ne(expirationOffset))
                                             .or(FOOD.LOCATION.ne(location)))
                             )
-            );
-
-            return notFoundMeansInvalidVersion(result);
+            )
+                    .map(this::notFoundMeansInvalidVersion);
         });
     }
 
     public StatusCode unregisterDefaultLocation(Location l) {
-        StatusCode result = currentUpdate(Arrays.asList(
+        return currentUpdate(Arrays.asList(
                 FOOD.ID,
                 FOOD.NAME,
                 FOOD.VERSION.add(1),
                 FOOD.TO_BUY,
                 FOOD.EXPIRATION_OFFSET,
                 DSL.inline((Integer) null)),
-                FOOD.LOCATION.eq(l.id));
-
-        if (result == StatusCode.NOT_FOUND) {
-            return StatusCode.SUCCESS;
-        }
-        return result;
+                FOOD.LOCATION.eq(l.id))
+                .map(this::notFoundIsOk);
     }
 
     @Override

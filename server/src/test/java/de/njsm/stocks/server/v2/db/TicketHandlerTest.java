@@ -30,6 +30,7 @@ import org.junit.Test;
 
 import java.util.Date;
 
+import static de.njsm.stocks.server.v2.db.jooq.tables.Ticket.TICKET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -114,5 +115,18 @@ public class TicketHandlerTest extends DbTestCase {
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(storedTicket.isSuccess());
         assertEquals(device.id, storedTicket.success().deviceId);
+    }
+
+    @Test
+    public void removingTicketOfDeviceWorks() {
+        UserDevice device = new UserDevice(4, 0, "pending_device", 2);
+        long numberOfTickets = getDSLContext().selectFrom(TICKET).stream().count();
+        assertEquals(1, numberOfTickets);
+
+        StatusCode result = uut.removeTicketOfDevice(device);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        numberOfTickets = getDSLContext().selectFrom(TICKET).stream().count();
+        assertEquals(0, numberOfTickets);
     }
 }

@@ -22,6 +22,7 @@ package de.njsm.stocks.server.v2.business;
 import fj.data.Validation;
 
 import javax.ws.rs.core.Response;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public enum StatusCode {
@@ -123,5 +124,9 @@ public enum StatusCode {
             return this;
         else
             return next.get();
+    }
+
+    public StatusCode map(Function<StatusCode, StatusCode> next) {
+        return next.apply(this);
     }
 }

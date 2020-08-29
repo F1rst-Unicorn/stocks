@@ -44,11 +44,8 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
     }
 
     public StatusCode deleteOwnedByFood(Food food) {
-        StatusCode result = currentDelete(EAN_NUMBER.IDENTIFIES.eq(food.id));
-        if (result == StatusCode.NOT_FOUND) {
-            return StatusCode.SUCCESS;
-        }
-        return result;
+        return currentDelete(EAN_NUMBER.IDENTIFIES.eq(food.id))
+                .map(this::notFoundIsOk);
     }
 
     @Override

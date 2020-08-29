@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Period;
+import java.time.format.DateTimeParseException;
 import java.util.Properties;
 
 import static de.njsm.stocks.server.Config.*;
@@ -69,6 +70,13 @@ public class ConfigTest {
     @Test(expected = NumberFormatException.class)
     public void testInvalidNumberInCircuitBreakerTimeout() {
         p.put(DB_CIRCUIT_BREAKER_TIMEOUT_KEY, "invalidNumber");
+
+        new Config(p);
+    }
+
+    @Test(expected = DateTimeParseException.class)
+    public void testInvalidPeriodInMaxHistory() {
+        p.put(DB_HISTORY_MAX_PERIOD, "invalidPeriod");
 
         new Config(p);
     }

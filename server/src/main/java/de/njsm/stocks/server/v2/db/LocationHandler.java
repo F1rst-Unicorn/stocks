@@ -54,29 +54,22 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            StatusCode result = currentUpdate(Arrays.asList(
+            return currentUpdate(Arrays.asList(
                     LOCATION.ID,
                     DSL.inline(newName),
                     LOCATION.VERSION.add(1)
                     ),
                     LOCATION.ID.eq(item.id)
                             .and(LOCATION.VERSION.eq(item.version))
-                            .and(LOCATION.NAME.ne(newName)));
-
-            return notFoundMeansInvalidVersion(result);
+                            .and(LOCATION.NAME.ne(newName)))
+                    .map(this::notFoundMeansInvalidVersion);
         });
     }
 
     @Override
     public StatusCode delete(Location item) {
-        return runCommand(context -> {
-            StatusCode checkResult = performDeleteChecks(item, context);
-
-            if (checkResult != StatusCode.SUCCESS)
-                return checkResult;
-
-            return super.delete(item);
-        });
+        return runCommand(context -> performDeleteChecks(item, context)
+                .bind(() -> super.delete(item)));
     }
 
     private StatusCode performDeleteChecks(Location location, DSLContext context) {

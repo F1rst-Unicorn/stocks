@@ -95,10 +95,9 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            StatusCode result = currentDelete(getIdField().eq(item.id)
-                    .and(getVersionField().eq(item.version)));
-
-            return notFoundMeansInvalidVersion(result);
+            return currentDelete(getIdField().eq(item.id)
+                    .and(getVersionField().eq(item.version)))
+                    .map(this::notFoundMeansInvalidVersion);
         });
     }
 

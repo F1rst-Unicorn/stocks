@@ -67,7 +67,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
 
             OffsetDateTime newEatByDate = item.eatByDate.atOffset(ZoneOffset.UTC);
 
-            StatusCode result = currentUpdate(Arrays.asList(
+            return currentUpdate(Arrays.asList(
                     FOOD_ITEM.ID,
                     DSL.inline(OffsetDateTime.from(newEatByDate)),
                     FOOD_ITEM.OF_TYPE,
@@ -81,9 +81,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                             .and(FOOD_ITEM.EAT_BY.ne(newEatByDate)
                                     .or(FOOD_ITEM.STORED_IN.ne(item.storedIn))
                             )
-            );
-
-            return notFoundMeansInvalidVersion(result);
+            )
+                    .map(this::notFoundMeansInvalidVersion);
         });
     }
 
@@ -98,7 +97,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                 LOG.warn("Target ID " + from + " not found");
                 return StatusCode.NOT_FOUND;
             }
-            StatusCode result = currentUpdate(Arrays.asList(
+            return currentUpdate(Arrays.asList(
                     FOOD_ITEM.ID,
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,
@@ -107,10 +106,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.BUYS,
                     FOOD_ITEM.VERSION.add(1)
                     ),
-                    FOOD_ITEM.REGISTERS.eq(from.id));
-
-            // we don't care if the device owned no items
-            return notFoundIsOk(result);
+                    FOOD_ITEM.REGISTERS.eq(from.id))
+                    .map(this::notFoundIsOk);
         });
     }
 
@@ -130,7 +127,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     .map(UserDevice::getId)
                     .collect(Collectors.toList());
 
-            StatusCode result = currentUpdate(Arrays.asList(
+            return currentUpdate(Arrays.asList(
                     FOOD_ITEM.ID,
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,
@@ -140,28 +137,19 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.VERSION.add(1)
                     ),
                     FOOD_ITEM.BUYS.eq(from.id)
-                            .and(FOOD_ITEM.REGISTERS.in(deviceIds)));
-
-            // we don't care if the user/device owned no items
-            return notFoundIsOk(result);
+                            .and(FOOD_ITEM.REGISTERS.in(deviceIds)))
+                    .map(this::notFoundIsOk);
         });
     }
 
     public StatusCode deleteItemsOfType(Food item) {
-        return runCommand(context -> {
-            StatusCode result = currentDelete(FOOD_ITEM.OF_TYPE.eq(item.id));
-            if (result == StatusCode.NOT_FOUND) {
-                return StatusCode.SUCCESS;
-            }
-            return result;
-        });
+        return runCommand(context -> currentDelete(FOOD_ITEM.OF_TYPE.eq(item.id))
+                .map(this::notFoundIsOk));
     }
 
     public StatusCode deleteItemsStoredIn(Location location) {
-        return runCommand(context -> {
-            StatusCode result = currentDelete(FOOD_ITEM.STORED_IN.eq(location.id));
-            return notFoundIsOk(result);
-        });
+        return runCommand(context -> currentDelete(FOOD_ITEM.STORED_IN.eq(location.id))
+                 .map(this::notFoundIsOk));
     }
 
     boolean areItemsStoredIn(Location location, DSLContext context) {

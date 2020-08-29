@@ -21,6 +21,7 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.business.data.Location;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +30,7 @@ import java.time.Instant;
 import java.time.Period;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class FoodHandlerTest extends DbTestCase {
 
@@ -42,6 +42,18 @@ public class FoodHandlerTest extends DbTestCase {
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT,
                 new InsertVisitor<>());
+    }
+
+    @Test
+    public void bitemporalDataIsPresentWhenDesired() {
+
+        Validation<StatusCode, Stream<Food>> result = uut.get(true, Instant.EPOCH);
+
+        Food sample = result.success().findAny().get();
+        assertNotNull(sample.validTimeStart);
+        assertNotNull(sample.validTimeEnd);
+        assertNotNull(sample.transactionTimeStart);
+        assertNotNull(sample.transactionTimeEnd);
     }
 
     @Test
@@ -166,5 +178,45 @@ public class FoodHandlerTest extends DbTestCase {
         StatusCode result = uut.setToBuyStatus(data);
 
         assertEquals(StatusCode.NOT_FOUND, result);
+    }
+
+    @Test
+    public void settingExplicitBuyStatusWorks() {
+        Food data = new Food(2, 1);
+
+        StatusCode result = uut.setToBuyStatus(data, false);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        Food changedData = uut.get(false, Instant.EPOCH).success().filter(f -> f.id == data.id).findFirst().get();
+        assertFalse(changedData.toBuy);
+    }
+
+    @Test
+    public void settingExplicitBuyStatusWithoutFindingAnyFoodIsOk() {
+        Food data = new Food(2, 1);
+
+        StatusCode result = uut.setToBuyStatus(data, true);
+
+        assertEquals(StatusCode.SUCCESS, result);
+    }
+
+    @Test
+    public void unregisteringALocationWithoutFoodIsOk() {
+        Location l = new Location(2, "", 1);
+
+        StatusCode result = uut.unregisterDefaultLocation(l);
+
+        assertEquals(StatusCode.SUCCESS, result);
+    }
+
+    @Test
+    public void unregisteringALocationWorks() {
+        Location l = new Location(1, "", 1);
+
+        StatusCode result = uut.unregisterDefaultLocation(l);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        Food changedFood = uut.get(false, Instant.EPOCH).success().filter(f -> f.id == 3).findAny().get();
+        assertNull(changedFood.location);
     }
 }

@@ -33,8 +33,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.db.jooq.tables.Location.LOCATION;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 
 public class LocationHandlerTest extends DbTestCase {
@@ -152,6 +151,18 @@ public class LocationHandlerTest extends DbTestCase {
     }
 
     @Test
+    public void bitemporalDataIsPresentWhenDesired() {
+
+        Validation<StatusCode, Stream<Location>> result = uut.get(true, Instant.EPOCH);
+
+        Location sample = result.success().findAny().get();
+        assertNotNull(sample.validTimeStart);
+        assertNotNull(sample.validTimeEnd);
+        assertNotNull(sample.transactionTimeStart);
+        assertNotNull(sample.transactionTimeEnd);
+    }
+
+    @Test
     public void historyCleanupCleansDesiredRowsOnly() {
         Period oldData = Period.ofDays(2);
         OffsetDateTime now = OffsetDateTime.now();
@@ -184,5 +195,35 @@ public class LocationHandlerTest extends DbTestCase {
                 .success()
                 .count();
         assertEquals(5, allRows);
+    }
+
+    @Test
+    public void gettingLatestChangesWorks() {
+        OffsetDateTime now = OffsetDateTime.now();
+        getDSLContext().insertInto(LOCATION)
+                .columns(LOCATION.ID,
+                        LOCATION.NAME,
+                        LOCATION.VALID_TIME_START,
+                        LOCATION.VALID_TIME_END,
+                        LOCATION.TRANSACTION_TIME_START,
+                        LOCATION.TRANSACTION_TIME_END
+                )
+                .values(3, "", now.minusDays(3), now.minusDays(1), now.minusDays(3), INFINITY)
+                .values(3, "", now.minusDays(1), now.plusDays(3), now.minusDays(3), INFINITY)
+                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(3), INFINITY)
+
+                .values(3, "", now.minusDays(4), now, now.minusDays(4), now.minusDays(3))
+                .values(3, "", now, now.plusDays(3), now.minusDays(4), now.minusDays(3))
+                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(4), now.minusDays(3))
+                .execute();
+
+
+        //                                             DB only tracks at microsecond precision -----v
+        Validation<StatusCode, Stream<Location>> result = uut.get(true, now.minusDays(3).minusNanos(1000).toInstant());
+
+        long retrievedRows = result
+                .success()
+                .count();
+        assertEquals(5, retrievedRows);
     }
 }

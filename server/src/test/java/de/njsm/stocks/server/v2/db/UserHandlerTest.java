@@ -35,6 +35,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class UserHandlerTest extends DbTestCase {
 
@@ -59,6 +60,18 @@ public class UserHandlerTest extends DbTestCase {
         assertThat(list, hasItem(new User(1, 0, "Bob")));
         assertThat(list, hasItem(new User(2, 0, "Alice")));
         assertThat(list, hasItem(new User(3, 0, "Jack")));
+    }
+
+    @Test
+    public void bitemporalDataIsPresentWhenDesired() {
+
+        Validation<StatusCode, Stream<User>> result = uut.get(true, Instant.EPOCH);
+
+        User sample = result.success().findAny().get();
+        assertNotNull(sample.validTimeStart);
+        assertNotNull(sample.validTimeEnd);
+        assertNotNull(sample.transactionTimeStart);
+        assertNotNull(sample.transactionTimeEnd);
     }
 
     @Test

@@ -21,6 +21,7 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.EanNumber;
+import de.njsm.stocks.server.v2.business.data.Food;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +29,8 @@ import org.junit.Test;
 import java.time.Instant;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static de.njsm.stocks.server.v2.db.jooq.tables.EanNumber.EAN_NUMBER;
+import static org.junit.Assert.*;
 
 public class EanNumberHandlerTest extends DbTestCase {
 
@@ -56,6 +57,18 @@ public class EanNumberHandlerTest extends DbTestCase {
         assertTrue(dbData.isSuccess());
 
         assertTrue(dbData.success().map(f -> f.eanCode).anyMatch(name -> name.equals(data.eanCode)));
+    }
+
+    @Test
+    public void bitemporalDataIsPresentWhenDesired() {
+
+        Validation<StatusCode, Stream<EanNumber>> result = uut.get(true, Instant.EPOCH);
+
+        EanNumber sample = result.success().findAny().get();
+        assertNotNull(sample.validTimeStart);
+        assertNotNull(sample.validTimeEnd);
+        assertNotNull(sample.transactionTimeStart);
+        assertNotNull(sample.transactionTimeEnd);
     }
 
     @Test
@@ -95,5 +108,25 @@ public class EanNumberHandlerTest extends DbTestCase {
         StatusCode result = uut.delete(data);
 
         assertEquals(StatusCode.NOT_FOUND, result);
+    }
+
+    @Test
+    public void deletingCodesWithoutFoodIsOk() {
+
+        StatusCode result = uut.deleteOwnedByFood(new Food(1, 1));
+
+        assertEquals(StatusCode.SUCCESS, result);
+    }
+
+    @Test
+    public void deletingCodesWorks() {
+        long codes = uut.get(false, Instant.EPOCH).success().count();
+        assertEquals(1, codes);
+
+        StatusCode result = uut.deleteOwnedByFood(new Food(2, 1));
+
+        assertEquals(StatusCode.SUCCESS, result);
+        codes = uut.get(false, Instant.EPOCH).success().count();
+        assertEquals(0, codes);
     }
 }

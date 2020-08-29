@@ -20,10 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.business.data.Location;
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.*;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Assert;
@@ -38,8 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -67,6 +63,18 @@ public class FoodItemHandlerTest extends DbTestCase {
     @After
     public void verifyMocks() {
         Mockito.verifyNoMoreInteractions(userDevicePresenceChecker);
+    }
+
+    @Test
+    public void bitemporalDataIsPresentWhenDesired() {
+
+        Validation<StatusCode, Stream<FoodItem>> result = uut.get(true, Instant.EPOCH);
+
+        FoodItem sample = result.success().findAny().get();
+        assertNotNull(sample.validTimeStart);
+        assertNotNull(sample.validTimeEnd);
+        assertNotNull(sample.transactionTimeStart);
+        assertNotNull(sample.transactionTimeEnd);
     }
 
     @Test
@@ -267,5 +275,25 @@ public class FoodItemHandlerTest extends DbTestCase {
     public void testingAreItemsStoredIn() {
         assertTrue(uut.areItemsStoredIn(new Location(1, "", 0), getDSLContext()));
         assertFalse(uut.areItemsStoredIn(new Location(2, "", 0), getDSLContext()));
+    }
+
+    @Test
+    public void deletingFoodWithoutItemsIsOk() {
+
+        StatusCode result = uut.deleteItemsOfType(new Food(1, 1));
+
+        assertEquals(StatusCode.SUCCESS, result);
+    }
+
+    @Test
+    public void deletingCodesWorks() {
+        long entities = uut.get(false, Instant.EPOCH).success().count();
+        assertEquals(3, entities);
+
+        StatusCode result = uut.deleteItemsOfType(new Food(2, 1));
+
+        assertEquals(StatusCode.SUCCESS, result);
+        entities = uut.get(false, Instant.EPOCH).success().count();
+        assertEquals(0, entities);
     }
 }
