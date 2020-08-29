@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [3.5.0.2]
+
+### Fixed
+
+* STOCKS-101 contained an invalid DB migration making the app crash on start up.
+  This is now fixed.
+
 ## [3.5.0.1]
 
 ### Added
