@@ -37,6 +37,7 @@ import de.njsm.stocks.android.db.dao.UpdateDao;
 import de.njsm.stocks.android.db.dao.UserDao;
 import de.njsm.stocks.android.db.dao.UserDeviceDao;
 import de.njsm.stocks.android.db.migrations.Migration_27_28;
+import de.njsm.stocks.android.db.migrations.Migration_28_29;
 
 @Module
 public abstract class DbModule {
@@ -46,7 +47,8 @@ public abstract class DbModule {
     static StocksDatabase provideDatabase(Application context) {
         return Room.databaseBuilder(context, StocksDatabase.class, "stocks.db")
                 .addMigrations(
-                        new Migration_27_28()
+                        new Migration_27_28(),
+                        new Migration_28_29()
                 )
                 .build();
     }

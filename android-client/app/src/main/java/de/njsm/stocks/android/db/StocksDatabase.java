@@ -34,7 +34,7 @@ import de.njsm.stocks.android.db.entities.*;
         FoodItem.class,
         EanNumber.class,
         SearchSuggestion.class,
-}, version = 28)
+}, version = 29)
 @TypeConverters(de.njsm.stocks.android.db.TypeConverters.class)
 public abstract class StocksDatabase extends RoomDatabase {
 
