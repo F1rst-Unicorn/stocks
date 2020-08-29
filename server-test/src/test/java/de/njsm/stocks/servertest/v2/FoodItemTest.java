@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 
 public class FoodItemTest {
 
-    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSS-Z")
+    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSSSSS-Z")
             .withZone(ZoneId.of("UTC"));
 
     @Test

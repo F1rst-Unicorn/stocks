@@ -37,14 +37,14 @@ public class UpdateChangeTest {
     @Test
     public void updatesChangeOnDataChange() {
         String olderDate = getLocationChangeDate();
-        addALocation();
+        addALocation("1");
         String youngerDate = getLocationChangeDate();
 
         assertTrue(olderDate + " is not older than " + youngerDate,
                 olderDate.compareTo(youngerDate) < 0);
 
         olderDate = youngerDate;
-        addALocation();
+        addALocation("2");
         youngerDate = getLocationChangeDate();
 
         assertTrue(olderDate + " is not older than " + youngerDate,
@@ -53,9 +53,9 @@ public class UpdateChangeTest {
 
     @Test
     public void gettingChangesStartingFromDateWorks() {
-        addALocation();
+        addALocation("3");
         String lastChangeDate = getLocationChangeDate();
-        addALocation();
+        addALocation("4");
 
         getDataYoungerThan(lastChangeDate)
                 .body("data", iterableWithSize(1));
@@ -73,9 +73,9 @@ public class UpdateChangeTest {
                 .body("status", equalTo(0));
     }
 
-    private void addALocation() {
+    private void addALocation(String name) {
         given()
-                .queryParam("name", "update").
+                .queryParam("name", "update" + name).
         when()
                 .put(TestSuite.DOMAIN + "/v2/location").
         then()
