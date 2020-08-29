@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## [5.0.0.0-1]
+
+### Added
+
+* Support for bitemporal data. This allows showing the history of the
+  stored entities. This is a breaking change because the API now reports
+  all timestamps up to microsecond precision which breaks clients'
+  timestamp parsing.
+
 ## [4.8.0.0-1]
 
 ### Added

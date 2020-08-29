@@ -155,7 +155,7 @@ via the `StatusCode` type.
 
 #### Timestamps
 
-The timestamp format used is `yyyy.MM.dd-HH:mm:ss.SSS-Z`. Refer to
+The timestamp format used is `yyyy.MM.dd-HH:mm:ss.SSSSSS-Z`. Refer to
 [the Java API Reference](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html)
 for semantics. The timestamps are passed as strings.
 

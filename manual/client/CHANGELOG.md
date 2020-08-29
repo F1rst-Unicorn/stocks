@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## Release [3.0.1.0-1]
+
+### Added
+
+* STOCKS-101: Support microsecond-resolution timestamps
+
 ## Release [3.0.0.1-1]
 
 ### Changed
