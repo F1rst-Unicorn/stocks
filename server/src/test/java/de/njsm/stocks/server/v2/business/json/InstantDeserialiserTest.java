@@ -66,7 +66,7 @@ public class InstantDeserialiserTest {
 
     @Test
     public void validInputIsParsedWithoutModification() throws IOException {
-        String input = "1970.01.01-00:00:00.000-+0000";
+        String input = "1970.01.01-00:00:00.000000-+0000";
         Instant expected = Instant.ofEpochMilli(0);
 
         Instant actual = InstantDeserialiser.parseString(input);

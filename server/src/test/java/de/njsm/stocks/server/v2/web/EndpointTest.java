@@ -30,7 +30,7 @@ public class EndpointTest {
 
     private Endpoint uut;
 
-    private static final String RAW_INSTANT = "1970.01.01-00:00:00.000-+0000";
+    private static final String RAW_INSTANT = "1970.01.01-00:00:00.000000-+0000";
 
     @Before
     public void setup() {

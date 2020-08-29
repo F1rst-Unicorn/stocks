@@ -42,7 +42,7 @@ public class InstantSerialiserTest {
 
     @Test
     public void instantIsSerialisedWithoutModification() throws Exception {
-        String expected = "1970.01.01-00:00:00.000-+0000";
+        String expected = "1970.01.01-00:00:00.000000-+0000";
         Instant input = Instant.ofEpochMilli(0);
 
         uut.serialize(input, generatorMock, null);

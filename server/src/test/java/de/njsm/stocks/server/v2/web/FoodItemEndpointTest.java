@@ -42,7 +42,7 @@ import static org.mockito.Mockito.verify;
 
 public class FoodItemEndpointTest {
 
-    private static final String DATE = "1970.01.01-00:00:00.000-+0000";
+    private static final String DATE = "1970.01.01-00:00:00.000000-+0000";
 
     private FoodItemEndpoint uut;
 
