@@ -56,26 +56,18 @@ fi
 if ! grep "('db.version', '$CLIENTVERSIONDB')" \
         deploy-client/config/schema.sql >/dev/null 2>&1 ;
 then
-        echo "schema.sql version differs"
+        echo "client schema.sql version differs"
         exit 1
 fi
 
-# verify server version number
-SERVERVERSION=$(grep "<version>" server/pom.xml | \
-        head -n 1 | \
-        sed 's$ *<version>\(.*\)</version>$\1$g')
-if ! grep "pkgver=${SERVERVERSION}" deploy-server/PKGBUILD >/dev/null 2>&1 ;
+# SERVER
+
+SERVERVERSION="$(grep pkgver= deploy-server/PKGBUILD \
+        | sed 's/pkgver=//')"
+
+if ! egrep "^    <version>$SERVERVERSION</version>$" \
+        server/pom.xml >/dev/null 2>&1 ;
 then
-        echo "server PKGBUILD version differs from pom.xml"
+        echo "server pom.xml version differs from PKGBUILD"
         exit 1
 fi
-
-SERVERCOUNT=$(grep "pkgver=${SERVERVERSION}" deploy-server/PKGBUILD | \
-        head -n 1 | \
-        sed 's/pkgver=[0-9]\+\.[0-9]\+\.\?\([0-9]*\)/\1/g')
-
-# verify server package version
-SERVERRELEASE=$(grep 'pkgrel=' deploy-server/PKGBUILD | \
-        head -n 1 | \
-        sed 's$.*=\([0-9]*\)$\1$g')
-

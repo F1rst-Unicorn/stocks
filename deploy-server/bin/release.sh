@@ -30,7 +30,6 @@ if ! git branch | grep "* master" >/dev/null ; then
         exit 2
 fi
 
-MAVEN_VERSION=$(echo "$1" | sed -r 's/([^.]+\.[^.]+).*/\1/g')
 VERSION=$(echo "$1" | sed -r 's/(.*)-.*/\1/g')
 RELEASE=$(echo "$1" | sed -r 's/.*-(.*)/\1/g')
 
@@ -40,7 +39,7 @@ if git tag | grep "server-$VERSION-$RELEASE" >/dev/null ; then
 fi
 
 echo Patching version number
-sed "0,/<version>/{s$<version>.*</version>$<version>$MAVEN_VERSION</version>$}" \
+sed "0,/<version>/{s$<version>.*</version>$<version>$VERSION</version>$}" \
         -i "$STOCKS_ROOT"/server/pom.xml
 sed -i "s/pkgver=.*/pkgver=$VERSION/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
 sed -i "s/pkgrel=.*/pkgrel=$RELEASE/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
