@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+* STOCKS-106: Upgrade to Java 11
+
 ## [3.0.1.0-1]
 
 ### Added

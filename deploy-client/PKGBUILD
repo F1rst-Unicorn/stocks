@@ -24,8 +24,7 @@ pkgdesc="Manages a household's stocks client"
 arch=('any')
 url="https://github.com/F1rst-Unicorn/stocks"
 license=('GPL3')
-depends=('jre8-openjdk'
-         'java-environment'
+depends=('java-runtime-headless'
          'sqlite'
          )
 makedepends=('git'

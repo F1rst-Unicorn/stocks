@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.10</version>
+            <version>42.2.16</version>
         </dependency>
 
         <dependency>
@@ -63,121 +63,121 @@
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet</artifactId>
-            <version>2.30.1</version>
+            <version>2.31</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.10.2</version>
+            <version>2.11.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.10.2</version>
+            <version>2.11.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.10.2</version>
+            <version>2.11.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>2.10.2.1</version>
+            <version>2.11.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
-            <version>2.10.2</version>
+            <version>2.11.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.ext</groupId>
             <artifactId>jersey-spring5</artifactId>
-            <version>2.30.1</version>
+            <version>2.31</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-common</artifactId>
-            <version>2.30.1</version>
+            <version>2.31</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
-            <version>2.30.1</version>
+            <version>2.31</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.6</version>
+            <version>2.7</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.13.0</version>
+            <version>2.13.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.13.0</version>
+            <version>2.13.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-web</artifactId>
-            <version>2.13.0</version>
+            <version>2.13.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.13.0</version>
+            <version>2.13.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.2.3.RELEASE</version>
+            <version>5.2.8.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>5.2.3.RELEASE</version>
+            <version>5.2.8.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.2.3.RELEASE</version>
+            <version>5.2.8.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>5.2.3.RELEASE</version>
+            <version>5.2.8.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-            <version>5.2.3.RELEASE</version>
+            <version>5.2.8.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.64</version>
+            <version>1.66</version>
         </dependency>
 
         <dependency>
@@ -219,13 +219,13 @@
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient</artifactId>
-            <version>0.8.1</version>
+            <version>0.9.0</version>
         </dependency>
 
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_servlet</artifactId>
-            <version>0.8.1</version>
+            <version>0.9.0</version>
         </dependency>
 
         <dependency>
@@ -237,7 +237,7 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>3.8.7</version>
+            <version>4.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>ch.qos.logback</groupId>
@@ -249,7 +249,7 @@
         <dependency>
             <groupId>com.mattbertolini</groupId>
             <artifactId>liquibase-slf4j</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
         </dependency>
 
         <dependency>
@@ -318,8 +318,8 @@
                 <version>3.5.1</version>
                 <configuration>
                     <generatedSourcesDirectory>target/generated-sources/java</generatedSourcesDirectory>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>

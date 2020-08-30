@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Maintenance
+
+* STOCKS-106: Upgrade to Java 11
+
+* STOCKS-106: Upgrade library dependencies
+
 ## [5.0.0.1-1]
 
 ### Fixed
