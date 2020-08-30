@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed
+
+* STOCKS-105: Allow proper local DB reset by replacing with proto.db
+
+### Maintenance
+
 * STOCKS-106: Upgrade to Java 11
 
 ## [3.0.1.0-1]
