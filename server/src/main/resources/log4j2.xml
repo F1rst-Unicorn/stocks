@@ -20,7 +20,7 @@
 -->
 
 
-<Configuration monitorInterval="30" >
+<Configuration monitorInterval="10" >
 
     <Appenders>
 

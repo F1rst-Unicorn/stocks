@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+* Fix transaction + connection handlung for periodic jobs.
+
 ## [5.0.0.0-1]
 
 ### Added

@@ -5,6 +5,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
                             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
+    <import resource="spring-job-ca-consistency.xml" />
+    <import resource="spring-job-history-cleanup.xml" />
+
     <bean name="quartzProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations">
             <list>
@@ -13,84 +16,8 @@
         </property>
     </bean>
 
-    <bean name="prototypedConnectionFactory" class="de.njsm.stocks.server.v2.db.ConnectionFactory" scope="prototype">
-        <constructor-arg index="0" ref="datasource" />
-    </bean>
-
-    <bean name="prototypedFoodDbHandler" class="de.njsm.stocks.server.v2.db.FoodHandler" scope="prototype">
-        <constructor-arg index="0" ref="prototypedConnectionFactory"/>
-        <constructor-arg index="1" ref="circuitBreakerDatabase" />
-        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
-    </bean>
-
-    <bean name="prototypedEanNumberDbHandler" class="de.njsm.stocks.server.v2.db.EanNumberHandler" scope="prototype">
-        <constructor-arg index="0" ref="prototypedConnectionFactory"/>
-        <constructor-arg index="1" ref="circuitBreakerDatabase" />
-        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
-    </bean>
-
-    <bean name="prototypedLocationDbHandler" class="de.njsm.stocks.server.v2.db.LocationHandler" scope="prototype">
-        <constructor-arg index="0" ref="prototypedConnectionFactory"/>
-        <constructor-arg index="1" ref="circuitBreakerDatabase" />
-        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
-        <constructor-arg index="4" ref="prototypedFoodItemBackend" />
-    </bean>
-
-    <bean name="prototypedFoodItemBackend" class="de.njsm.stocks.server.v2.db.FoodItemHandler" scope="prototype">
-        <constructor-arg index="0" ref="prototypedConnectionFactory" />
-        <constructor-arg index="1" ref="circuitBreakerDatabase" />
-        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
-        <constructor-arg index="4" ref="prototypedDeviceBackend" />
-        <constructor-arg index="5" ref="prototypedUserBackend" />
-    </bean>
-
-    <bean name="prototypedDeviceBackend" class="de.njsm.stocks.server.v2.db.UserDeviceHandler" scope="prototype">
-        <constructor-arg index="0" ref="prototypedConnectionFactory" />
-        <constructor-arg index="1" ref="circuitBreakerDatabase" />
-        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
-    </bean>
-
-    <bean name="prototypedUserBackend" class="de.njsm.stocks.server.v2.db.UserHandler" scope="prototype">
-        <constructor-arg index="0" ref="prototypedConnectionFactory" />
-        <constructor-arg index="1" ref="circuitBreakerDatabase" />
-        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
-    </bean>
-    
-    <bean name="principalsDbHandler" class="de.njsm.stocks.server.v2.db.PrincipalsHandler" scope="prototype">
-        <constructor-arg index="0" ref="prototypedConnectionFactory"/>
-        <constructor-arg index="1" ref="circuitBreakerDatabase" />
-        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-    </bean>
-
-    <bean id="caConsistencyCheck" class="de.njsm.stocks.server.v2.business.CaConsistencyCheckJob">
-        <constructor-arg index="0" ref="authAdmin" />
-        <constructor-arg index="1" ref="principalsDbHandler" />
-        <constructor-arg index="2" ref="prototypedDeviceBackend" />
-    </bean>
-
-    <bean id="historyCleanupJob" class="de.njsm.stocks.server.v2.business.HistoryCleanupJob">
-        <constructor-arg index="0" ref="maxHistory"/>
-        <constructor-arg index="1" ref="prototypedDeviceBackend" />
-        <constructor-arg index="2">
-            <list>
-                <ref bean="prototypedDeviceBackend"/>
-                <ref bean="prototypedUserBackend"/>
-                <ref bean="prototypedFoodDbHandler"/>
-                <ref bean="prototypedLocationDbHandler"/>
-                <ref bean="prototypedFoodItemBackend"/>
-                <ref bean="prototypedEanNumberDbHandler"/>
-            </list>
-        </constructor-arg>
-    </bean>
-
     <bean id="job1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="caConsistencyCheck"/>
+        <property name="targetObject" ref="caConsistencyCheckJob"/>
         <property name="targetMethod" value="run"/>
     </bean>
 
@@ -106,7 +33,7 @@
 
     <bean id="trigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="job2"/>
-        <property name="cronExpression" value="0 1 * * * ? *"/>
+        <property name="cronExpression" value="0 30 * * * ? *"/>
     </bean>
 
     <bean name="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

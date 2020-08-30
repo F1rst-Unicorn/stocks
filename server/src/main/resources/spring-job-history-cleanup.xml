@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <bean name="historyCleanupConnectionFactory" class="de.njsm.stocks.server.v2.db.ConnectionFactory">
+        <constructor-arg index="0" ref="datasource" />
+    </bean>
+
+    <bean name="historyCleanupFoodDbHandler" class="de.njsm.stocks.server.v2.db.FoodHandler">
+        <constructor-arg index="0" ref="historyCleanupConnectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+        <constructor-arg index="3" ref="dbInsertVisitor" />
+    </bean>
+
+    <bean name="historyCleanupEanNumberDbHandler" class="de.njsm.stocks.server.v2.db.EanNumberHandler">
+        <constructor-arg index="0" ref="historyCleanupConnectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+        <constructor-arg index="3" ref="dbInsertVisitor" />
+    </bean>
+
+    <bean name="historyCleanupLocationDbHandler" class="de.njsm.stocks.server.v2.db.LocationHandler">
+        <constructor-arg index="0" ref="historyCleanupConnectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+        <constructor-arg index="3" ref="dbInsertVisitor" />
+        <constructor-arg index="4" ref="historyCleanupFoodItemBackend" />
+    </bean>
+
+    <bean name="historyCleanupFoodItemBackend" class="de.njsm.stocks.server.v2.db.FoodItemHandler">
+        <constructor-arg index="0" ref="historyCleanupConnectionFactory" />
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+        <constructor-arg index="3" ref="dbInsertVisitor" />
+        <constructor-arg index="4" ref="historyCleanupDeviceBackend" />
+        <constructor-arg index="5" ref="historyCleanupUserBackend" />
+    </bean>
+
+    <bean name="historyCleanupDeviceBackend" class="de.njsm.stocks.server.v2.db.UserDeviceHandler">
+        <constructor-arg index="0" ref="historyCleanupConnectionFactory" />
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+        <constructor-arg index="3" ref="dbInsertVisitor" />
+    </bean>
+
+    <bean name="historyCleanupUserBackend" class="de.njsm.stocks.server.v2.db.UserHandler">
+        <constructor-arg index="0" ref="historyCleanupConnectionFactory" />
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+        <constructor-arg index="3" ref="dbInsertVisitor" />
+    </bean>
+
+    <bean id="historyCleanupJob" class="de.njsm.stocks.server.v2.business.HistoryCleanupJob">
+        <constructor-arg index="0" ref="maxHistory"/>
+        <constructor-arg index="1" ref="historyCleanupFoodItemBackend" />
+        <constructor-arg index="2">
+            <list>
+                <ref bean="historyCleanupFoodItemBackend"/>
+                <ref bean="historyCleanupDeviceBackend"/>
+                <ref bean="historyCleanupUserBackend"/>
+                <ref bean="historyCleanupLocationDbHandler"/>
+                <ref bean="historyCleanupEanNumberDbHandler"/>
+                <ref bean="historyCleanupFoodDbHandler"/>
+            </list>
+        </constructor-arg>
+    </bean>
+</beans>
