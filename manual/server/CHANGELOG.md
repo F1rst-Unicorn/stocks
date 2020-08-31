@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.0.0.2-1]
+
 ### Fixed
 
 * STOCKS-107: Fix setting food's default storage location
