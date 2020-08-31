@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+* STOCKS-107: Fix setting food's default storage location
+
 ### Maintenance
 
 * STOCKS-106: Upgrade to Java 11

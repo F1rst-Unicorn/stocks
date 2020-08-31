@@ -97,7 +97,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                             .and(getVersionField().eq(item.version)
                                     .and(FOOD.NAME.ne(newName)
                                             .or(FOOD.EXPIRATION_OFFSET.ne(expirationOffset))
-                                            .or(FOOD.LOCATION.ne(location)))
+                                            .or(FOOD.LOCATION.isDistinctFrom(location)))
                             )
             )
                     .map(this::notFoundMeansInvalidVersion);

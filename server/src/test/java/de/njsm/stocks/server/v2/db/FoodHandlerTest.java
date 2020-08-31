@@ -95,6 +95,28 @@ public class FoodHandlerTest extends DbTestCase {
     }
 
     @Test
+    public void editAFoodDefaultLocation() {
+        String newName = "Beer";
+        Period expirationOffset = Period.ZERO;
+        int location = 2;
+        Food data = new Food(2, newName, 0, true, expirationOffset, null);
+
+        StatusCode result = uut.edit(data, newName, expirationOffset, location);
+
+        assertEquals(StatusCode.SUCCESS, result);
+
+        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
+
+        assertTrue(dbData.isSuccess());
+
+        assertTrue(dbData.success()
+                .anyMatch(f -> f.name.equals(newName)
+                        && f.toBuy
+                        && f.expirationOffset.equals(expirationOffset)
+                        && f.location == location));
+    }
+
+    @Test
     public void wrongVersionIsNotRenamed() {
         String newName = "Wine";
         Food data = new Food(2, "Beer", 100, true, Period.ZERO, 1);
