@@ -77,7 +77,9 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                 bitemporalSelector = nowAsBestKnown();
 
             OffsetDateTime startingFromWithOffset = OffsetDateTime.from(startingFrom.atOffset(ZoneOffset.UTC));
-            bitemporalSelector = bitemporalSelector.and(getTransactionTimeStartField().greaterThan(startingFromWithOffset));
+            bitemporalSelector = bitemporalSelector.and(getTransactionTimeStartField().greaterThan(startingFromWithOffset)
+                    .or(getTransactionTimeEndField().greaterThan(startingFromWithOffset)
+                            .and(getTransactionTimeEndField().lessThan(INFINITY))));
 
             Stream<R> result = context
                     .selectFrom(getTable())

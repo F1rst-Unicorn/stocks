@@ -208,13 +208,21 @@ public class LocationHandlerTest extends DbTestCase {
                         LOCATION.TRANSACTION_TIME_START,
                         LOCATION.TRANSACTION_TIME_END
                 )
+
+                // currently valid record, will be reported
                 .values(3, "", now.minusDays(3), now.minusDays(1), now.minusDays(3), INFINITY)
                 .values(3, "", now.minusDays(1), now.plusDays(3), now.minusDays(3), INFINITY)
                 .values(3, "", now.plusDays(3), INFINITY, now.minusDays(3), INFINITY)
 
+                // "just terminated" record, will be reported
                 .values(3, "", now.minusDays(4), now, now.minusDays(4), now.minusDays(3))
                 .values(3, "", now, now.plusDays(3), now.minusDays(4), now.minusDays(3))
                 .values(3, "", now.plusDays(3), INFINITY, now.minusDays(4), now.minusDays(3))
+
+                // "very old" record, not reported
+                .values(3, "", now.minusDays(5), now, now.minusDays(5), now.minusDays(4))
+                .values(3, "", now, now.plusDays(4), now.minusDays(5), now.minusDays(4))
+                .values(3, "", now.plusDays(4), INFINITY, now.minusDays(5), now.minusDays(4))
                 .execute();
 
 
@@ -224,6 +232,6 @@ public class LocationHandlerTest extends DbTestCase {
         long retrievedRows = result
                 .success()
                 .count();
-        assertEquals(5, retrievedRows);
+        assertEquals(8, retrievedRows);
     }
 }

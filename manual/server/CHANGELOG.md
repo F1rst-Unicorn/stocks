@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* STOCKS-108: Fix logic of `startingFrom` query parameter in GET
+  methods. Otherwise it cannot be used productively.
+
 ## [5.0.0.2-1]
 
 ### Fixed
