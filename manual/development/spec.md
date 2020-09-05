@@ -159,6 +159,10 @@ The timestamp format used is `yyyy.MM.dd-HH:mm:ss.SSSSSS-Z`. Refer to
 [the Java API Reference](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html)
 for semantics. The timestamps are passed as strings.
 
+The special date `+292278994.08.16-23:00:00.000000-+0000` is used in valid time
+to denote _infinity_ and in transaction time to denote _now_. It corresponds
+to 9223372036825200000 milliseconds since epoch.
+
 #### Response
 
 Most calls only return a basic response with a status code. They have the

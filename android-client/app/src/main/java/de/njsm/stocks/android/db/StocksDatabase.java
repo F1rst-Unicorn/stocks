@@ -34,9 +34,20 @@ import de.njsm.stocks.android.db.entities.*;
         FoodItem.class,
         EanNumber.class,
         SearchSuggestion.class,
-}, version = 30)
+}, version = 31)
 @TypeConverters(de.njsm.stocks.android.db.TypeConverters.class)
 public abstract class StocksDatabase extends RoomDatabase {
+
+    /**
+     * <code>datetime('now')</code> is precise up to second. Server time is
+     * measured in microseconds. If <code>last_update</code> contains a larger
+     * value than <code>datetime('now')</code> it is closer to the present than
+     * <code>datetime('now')</code>.
+     *
+     * This solution prevents entities to be presented to the user which will be
+     * absent on the server in the same second as the one reported by <code>datetime('now')</code>.
+     */
+    public static final String NOW = "(select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) ";
 
     public abstract UserDao userDao();
 

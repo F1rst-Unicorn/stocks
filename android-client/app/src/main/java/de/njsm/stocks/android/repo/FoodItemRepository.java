@@ -73,7 +73,7 @@ public class FoodItemRepository {
     public LiveData<StatusCode> addItem(int foodId, int locationId, Instant eatBy) {
         LOG.d("adding item of type " + foodId + ", location " + locationId + ", eat by " + eatBy);
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
-        webClient.addFoodItem(Config.DATABASE_DATE_FORMAT.format(eatBy), locationId, foodId)
+        webClient.addFoodItem(Config.API_DATE_FORMAT.format(eatBy), locationId, foodId)
                 .enqueue(new StatusCodeCallback(result, synchroniser));
         return result;
     }
@@ -86,7 +86,7 @@ public class FoodItemRepository {
     public LiveData<StatusCode> editItem(int id, int version, int locationId, Instant eatBy) {
         LOG.d("editing item " + id);
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
-        webClient.editFoodItem(id, version, Config.DATABASE_DATE_FORMAT.format(eatBy), locationId)
+        webClient.editFoodItem(id, version, Config.API_DATE_FORMAT.format(eatBy), locationId)
                 .enqueue(new StatusCodeCallback(result, synchroniser));
         return result;
     }

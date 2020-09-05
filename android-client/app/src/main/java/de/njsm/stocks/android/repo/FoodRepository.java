@@ -140,6 +140,6 @@ public class FoodRepository {
     }
 
     public LiveData<List<Food>> getFood() {
-        return foodDao.getFood();
+        return foodDao.getAll();
     }
 }

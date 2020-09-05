@@ -23,14 +23,17 @@ package de.njsm.stocks.android.db.entities;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import org.threeten.bp.Instant;
+
 import de.njsm.stocks.android.network.server.util.InstantDeserialiser;
 import de.njsm.stocks.android.network.server.util.InstantSerialiser;
-import org.threeten.bp.Instant;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -56,6 +59,5 @@ public class Update extends Data {
     }
 
     @Ignore
-    public Update() {
-    }
+    public Update() {}
 }

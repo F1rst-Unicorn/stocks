@@ -20,12 +20,16 @@
 package de.njsm.stocks.android.db.entities;
 
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import org.threeten.bp.Instant;
 
 import java.util.Objects;
 
@@ -35,7 +39,7 @@ import java.util.Objects;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity
+@Entity(primaryKeys = {"_id", "version", "transaction_time_start"})
 public class EanNumber extends VersionedData {
 
     @ColumnInfo(name = "number")
@@ -44,21 +48,14 @@ public class EanNumber extends VersionedData {
     @ColumnInfo(name = "identifies")
     public int identifiesFood;
 
-    public EanNumber(int id, int version, String eanCode, int identifiesFood) {
-        super(id, version);
+    public EanNumber(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String eanCode, int identifiesFood) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
         this.eanCode = eanCode;
         this.identifiesFood = identifiesFood;
     }
 
     @Ignore
-    public EanNumber(String eanCode, int identifiesFood) {
-        this.eanCode = eanCode;
-        this.identifiesFood = identifiesFood;
-    }
-
-    @Ignore
-    public EanNumber() {
-    }
+    public EanNumber() {}
 
     @Override
     public boolean equals(Object o) {

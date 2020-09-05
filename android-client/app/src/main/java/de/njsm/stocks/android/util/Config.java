@@ -20,6 +20,8 @@
 package de.njsm.stocks.android.util;
 
 import android.content.SharedPreferences;
+
+import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatter;
 
@@ -44,8 +46,21 @@ public class Config {
     public static final String PASSWORD = "passwordfooyouneverguessme$32XD";
 
     public static final DateTimeFormatter TECHNICAL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneId.of("UTC"));
-    public static final DateTimeFormatter DATABASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSSSSS-Z").withZone(ZoneId.of("UTC"));
+    public static final DateTimeFormatter API_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSSSSS-Z").withZone(ZoneId.of("UTC"));
     public static final DateTimeFormatter PRETTY_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yy").withZone(ZoneId.systemDefault());
+
+    /**
+     * Taken from org.postgresql.PGStatement;
+     */
+    public static final Instant API_INFINITY = Instant.ofEpochMilli(9223372036825200000L);
+
+    public static final DateTimeFormatter DATABASE_DATE_FORMAT;
+    public static final Instant DATABASE_INFINITY;
+
+    static {
+        DATABASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS").withZone(ZoneId.of("UTC"));
+        DATABASE_INFINITY = DATABASE_DATE_FORMAT.parse("9999-12-31 23:59:59.999999", Instant::from);
+    }
 
     public static String formatServerUrl(SharedPreferences prefs) {
         return formatServerUrl(prefs.getString(Config.SERVER_NAME_CONFIG, ""),

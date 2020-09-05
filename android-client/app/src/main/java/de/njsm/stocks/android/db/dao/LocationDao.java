@@ -22,20 +22,36 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
-import de.njsm.stocks.android.db.entities.Location;
+
+import org.threeten.bp.Instant;
 
 import java.util.List;
+
+import de.njsm.stocks.android.db.entities.Location;
+
+import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
 public abstract class LocationDao {
 
-    @Query("SELECT * FROM Location")
-    public abstract LiveData<List<Location>> getAll();
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract void insert(Location[] locations);
 
-    @Query("SELECT * FROM Location WHERE _id = :locationId")
-    public abstract LiveData<Location> getLocation(int locationId);
+    public LiveData<List<Location>> getAll() {
+        return getAll(DATABASE_INFINITY);
+    }
+
+    public LiveData<Location> getLocationWithMostItemsOfType(int food) {
+        return getLocationWithMostItemsOfType(food, DATABASE_INFINITY);
+    }
+
+    public LiveData<Location> getLocation(int locationId) {
+        return getLocation(locationId, DATABASE_INFINITY);
+    }
 
     @Transaction
     public void synchronise(Location[] locations) {
@@ -43,17 +59,36 @@ public abstract class LocationDao {
         insert(locations);
     }
 
-    @Insert
-    abstract void insert(Location[] locations);
+    @Query("select * " +
+            "from Location " +
+            "where _id = :locationId " +
+            "and valid_time_start <= " + NOW +
+            "and " + NOW + "< valid_time_end " +
+            "and transaction_time_end = :infinity")
+    abstract LiveData<Location> getLocation(int locationId, Instant infinity);
 
-    @Query("DELETE FROM Location")
+    @Query("select l._id, l.version, l.name, l.valid_time_start, " +
+            "l.valid_time_end, l.transaction_time_start, " +
+            "l.transaction_time_end, count(*) as amount " +
+            "from Location l " +
+            "inner join FoodItem i on i.stored_in = l._id " +
+            "where i.of_type = :food " +
+            "and l.valid_time_start <= " + NOW +
+            "and " + NOW + "< l.valid_time_end " +
+            "and l.transaction_time_end = :infinity " +
+            "group by l._id " +
+            "order by amount desc " +
+            "limit 1")
+    abstract LiveData<Location> getLocationWithMostItemsOfType(int food, Instant infinity);
+
+
+    @Query("select * " +
+            "from Location " +
+            "where valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = :infinity")
+    abstract LiveData<List<Location>> getAll(Instant infinity);
+
+    @Query("delete from Location")
     abstract void delete();
-
-    @Query("SELECT l._id, l.version, l.name, count(*) as amount FROM Location l " +
-            "INNER JOIN  FoodItem i on i.stored_in = l._id " +
-            "WHERE i.of_type = :food " +
-            "GROUP BY l._id " +
-            "ORDER BY amount DESC " +
-            "LIMIT 1")
-    public abstract LiveData<Location> getLocationWithMostItemsOfType(int food);
 }

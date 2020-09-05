@@ -21,19 +21,21 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import de.njsm.stocks.android.util.Principals;
-import de.njsm.stocks.android.frontend.device.ServerTicket;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import de.njsm.stocks.android.db.dao.UserDeviceDao;
 import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.frontend.device.ServerTicket;
 import de.njsm.stocks.android.network.server.DataResultCallback;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.Principals;
 import fj.data.Validation;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class UserDeviceRepository {
 

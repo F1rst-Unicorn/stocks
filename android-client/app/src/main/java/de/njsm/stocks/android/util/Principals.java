@@ -20,8 +20,6 @@
 package de.njsm.stocks.android.util;
 
 import androidx.annotation.NonNull;
-import de.njsm.stocks.android.db.entities.User;
-import de.njsm.stocks.android.db.entities.UserDevice;
 
 import java.util.Objects;
 
@@ -81,14 +79,6 @@ public class Principals {
 
     public String getReadableString() {
         return username + "@" + deviceName;
-    }
-
-    public User toUser() {
-        return new User(uid, 0, username);
-    }
-
-    public UserDevice toDevice() {
-        return new UserDevice(did, 0, deviceName, uid);
     }
 
     @Override

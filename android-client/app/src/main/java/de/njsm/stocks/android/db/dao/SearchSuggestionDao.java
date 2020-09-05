@@ -11,7 +11,12 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import org.threeten.bp.Instant;
+
 import de.njsm.stocks.android.db.entities.SearchSuggestion;
+
+import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
 public abstract class SearchSuggestionDao {
@@ -22,6 +27,9 @@ public abstract class SearchSuggestionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(SearchSuggestion suggestion);
 
+    public Cursor getFoodBySubStringJoiningStoredSuggestions(String searchTerm) {
+        return getFoodBySubStringJoiningStoredSuggestions(searchTerm, DATABASE_INFINITY);
+    }
 
     @Query("select * from (" +
                 "select * from ( " +
@@ -36,6 +44,9 @@ public abstract class SearchSuggestionDao {
                     "null as time " +
                     "from Food f " +
                     "where f.name like :searchTerm " +
+                    "and f.valid_time_start <= " + NOW +
+                    "and " + NOW + " < f.valid_time_end " +
+                    "and f.transaction_time_end = :infinity " +
                     "order by length(" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") desc " +
                     "limit 6" +
                 ") union select * from (" +
@@ -55,5 +66,5 @@ public abstract class SearchSuggestionDao {
                 ")" +
             ") " +
             "order by type, time desc, length(" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") desc")
-    public abstract Cursor getFoodBySubStringJoiningStoredSuggestions(String searchTerm);
+    abstract Cursor getFoodBySubStringJoiningStoredSuggestions(String searchTerm, Instant infinity);
 }

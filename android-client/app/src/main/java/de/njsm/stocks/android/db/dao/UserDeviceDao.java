@@ -22,17 +22,28 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
-import de.njsm.stocks.android.db.entities.UserDevice;
+
+import org.threeten.bp.Instant;
 
 import java.util.List;
+
+import de.njsm.stocks.android.db.entities.UserDevice;
+
+import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
 public abstract class UserDeviceDao {
 
-    @Query("SELECT * FROM User_device WHERE belongs_to = :userId")
-    public abstract LiveData<List<UserDevice>> getDevicesOfUser(int userId);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract void insert(UserDevice[] users);
+
+    public LiveData<List<UserDevice>> getDevicesOfUser(int userId) {
+        return getCurrentDevicesOfUser(userId, DATABASE_INFINITY);
+    }
 
     @Transaction
     public void synchronise(UserDevice[] users) {
@@ -40,9 +51,14 @@ public abstract class UserDeviceDao {
         insert(users);
     }
 
-    @Insert
-    abstract void insert(UserDevice[] users);
+    @Query("select * " +
+            "from User_device " +
+            "where belongs_to = :userId " +
+            "and valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = :infinity")
+    abstract LiveData<List<UserDevice>> getCurrentDevicesOfUser(int userId, Instant infinity);
 
-    @Query("DELETE FROM User_device")
+    @Query("delete from User_device")
     abstract void delete();
 }
