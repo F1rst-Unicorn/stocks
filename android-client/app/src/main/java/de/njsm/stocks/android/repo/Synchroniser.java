@@ -161,7 +161,7 @@ public class Synchroniser {
             if (localUpdate != null) {
                 if (localUpdate.isBefore(update.lastUpdate)) {
                     LOG.d("Refreshing " + update.table + " starting from " + Config.API_DATE_FORMAT.format(localUpdate));
-                    refresh(update.table);
+                    refresh(update.table, localUpdate);
                 } else {
                     LOG.v("Table " + update.table + " is up to date");
                 }
@@ -170,19 +170,20 @@ public class Synchroniser {
         }
     }
 
-    private void refresh(String table) throws StatusCodeException {
+    private void refresh(String table, Instant localUpdate) throws StatusCodeException {
+        String rawLocalUpdate = Config.API_DATE_FORMAT.format(localUpdate);
         if (table.equals("User")) {
-            refreshUsers();
+            refreshUsers(rawLocalUpdate);
         } else if (table.equals("User_device")) {
-            refreshUserDevices();
+            refreshUserDevices(rawLocalUpdate);
         } else if (table.equals("Location")) {
-            refreshLocations();
+            refreshLocations(rawLocalUpdate);
         } else if (table.equals("Food")) {
-            refreshFood();
+            refreshFood(rawLocalUpdate);
         } else if (table.equals("Food_item")) {
-            refreshFoodItems();
+            refreshFoodItems(rawLocalUpdate);
         } else if (table.equals("EAN_number")) {
-            refreshEanNumbers();
+            refreshEanNumbers(rawLocalUpdate);
         }
     }
 
@@ -214,6 +215,36 @@ public class Synchroniser {
     private void refreshEanNumbers() throws StatusCodeException {
         EanNumber[] u = StatusCodeCallback.executeCall(serverClient.getEanNumbers(1, null));
         eanNumberDao.synchronise(u);
+    }
+
+    private void refreshUsers(String startingFrom) throws StatusCodeException {
+        User[] u = StatusCodeCallback.executeCall(serverClient.getUsers(1, startingFrom));
+        userDao.insert(u);
+    }
+
+    private void refreshLocations(String startingFrom) throws StatusCodeException {
+        Location[] u = StatusCodeCallback.executeCall(serverClient.getLocations(1, startingFrom));
+        locationDao.insert(u);
+    }
+
+    private void refreshUserDevices(String startingFrom) throws StatusCodeException {
+        UserDevice[] u = StatusCodeCallback.executeCall(serverClient.getDevices(1, startingFrom));
+        userDeviceDao.insert(u);
+    }
+
+    private void refreshFood(String startingFrom) throws StatusCodeException {
+        Food[] u = StatusCodeCallback.executeCall(serverClient.getFood(1, startingFrom));
+        foodDao.insert(u);
+    }
+
+    private void refreshFoodItems(String startingFrom) throws StatusCodeException {
+        FoodItem[] u = StatusCodeCallback.executeCall(serverClient.getFoodItems(1, startingFrom));
+        foodItemDao.insert(u);
+    }
+
+    private void refreshEanNumbers(String startingFrom) throws StatusCodeException {
+        EanNumber[] u = StatusCodeCallback.executeCall(serverClient.getEanNumbers(1, startingFrom));
+        eanNumberDao.insert(u);
     }
 
     private Instant getLatestLocalUpdate(Update[] localUpdates, Update update) {
