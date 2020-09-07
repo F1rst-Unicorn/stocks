@@ -31,7 +31,7 @@ import org.threeten.bp.Instant;
 import de.njsm.stocks.android.network.server.util.InstantDeserialiser;
 import de.njsm.stocks.android.network.server.util.InstantSerialiser;
 
-public abstract class VersionedData extends Data {
+public class VersionedData extends Data {
 
     @JsonSerialize(using = InstantSerialiser.class)
     @JsonDeserialize(using = InstantDeserialiser.class)

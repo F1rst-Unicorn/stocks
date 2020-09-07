@@ -26,8 +26,14 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.LiveData;
@@ -36,8 +42,12 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
@@ -46,8 +56,6 @@ import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
-
-import javax.inject.Inject;
 
 public class OutlineFragment extends BaseFragment {
 
@@ -99,6 +107,7 @@ public class OutlineFragment extends BaseFragment {
             FoodViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
             result.findViewById(R.id.fragment_outline_cardview).setOnClickListener(this::goToEatSoon);
             result.findViewById(R.id.fragment_outline_cardview2).setOnClickListener(this::goToEmptyFood);
+            result.findViewById(R.id.fragment_outline_cardview3).setOnClickListener(this::goToEvents);
             result.findViewById(R.id.fragment_outline_fab).setOnClickListener(v -> this.addFood(viewModel));
 
             foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
@@ -119,6 +128,11 @@ public class OutlineFragment extends BaseFragment {
     private void goToEmptyFood(View view) {
         Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                 .navigate(R.id.action_nav_fragment_outline_to_nav_fragment_empty_food);
+    }
+
+    private void goToEvents(View view) {
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                .navigate(R.id.action_nav_fragment_outline_to_nav_fragment_events);
     }
 
     @Override

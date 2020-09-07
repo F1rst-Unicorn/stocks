@@ -64,4 +64,6 @@ public abstract class StocksDatabase extends RoomDatabase {
     public abstract EanNumberDao eanNumberDao();
 
     public abstract SearchSuggestionDao searchSuggestionDao();
+
+    public abstract EventDao eventDao();
 }

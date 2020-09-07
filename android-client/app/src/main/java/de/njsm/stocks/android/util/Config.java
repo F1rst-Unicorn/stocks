@@ -47,7 +47,7 @@ public class Config {
 
     public static final DateTimeFormatter TECHNICAL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneId.of("UTC"));
     public static final DateTimeFormatter API_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSSSSS-Z").withZone(ZoneId.of("UTC"));
-    public static final DateTimeFormatter PRETTY_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yy").withZone(ZoneId.systemDefault());
+    public static final DateTimeFormatter PRETTY_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm").withZone(ZoneId.systemDefault());
 
     /**
      * Taken from org.postgresql.PGStatement;

@@ -29,6 +29,7 @@ import de.njsm.stocks.android.frontend.crashlog.CrashLogListFragment;
 import de.njsm.stocks.android.frontend.device.DeviceFragment;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberFragment;
 import de.njsm.stocks.android.frontend.emptyfood.EmptyFoodFragment;
+import de.njsm.stocks.android.frontend.events.EventFragment;
 import de.njsm.stocks.android.frontend.food.FoodFragment;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemFragment;
 import de.njsm.stocks.android.frontend.locations.LocationFragment;
@@ -90,6 +91,9 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract ShoppingListFragment contributeShoppingListFragment();
+
+    @ContributesAndroidInjector
+    abstract EventFragment contributeEventFragment();
 
     @ContributesAndroidInjector
     abstract MainActivity contributeMainActivity();

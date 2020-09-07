@@ -93,6 +93,9 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
 
+    def paging_version = "2.1.2"
+    implementation "androidx.paging:paging-runtime:$paging_version"
+
     def lifecycle_version = "2.1.0"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"

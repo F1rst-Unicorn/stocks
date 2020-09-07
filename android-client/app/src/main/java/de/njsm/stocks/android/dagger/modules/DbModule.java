@@ -29,6 +29,7 @@ import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.android.db.StocksDatabase;
 import de.njsm.stocks.android.db.dao.EanNumberDao;
+import de.njsm.stocks.android.db.dao.EventDao;
 import de.njsm.stocks.android.db.dao.FoodDao;
 import de.njsm.stocks.android.db.dao.FoodItemDao;
 import de.njsm.stocks.android.db.dao.LocationDao;
@@ -86,5 +87,10 @@ public abstract class DbModule {
     @Provides
     static SearchSuggestionDao provideSearchSuggestionDao(StocksDatabase database) {
         return database.searchSuggestionDao();
+    }
+
+    @Provides
+    static EventDao provideEventDao(StocksDatabase database) {
+        return database.eventDao();
     }
 }
