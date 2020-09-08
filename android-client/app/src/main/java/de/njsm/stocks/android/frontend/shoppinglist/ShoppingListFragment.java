@@ -40,7 +40,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodToBuyInteractor;
@@ -52,7 +52,7 @@ public class ShoppingListFragment extends BaseFragment {
 
     private FoodToBuyViewModel viewModel;
 
-    private LiveData<List<FoodView>> data;
+    private LiveData<List<FoodWithLatestItemView>> data;
 
     @Override
     public void onAttach(Context context) {
@@ -97,7 +97,7 @@ public class ShoppingListFragment extends BaseFragment {
     private void onClick(View view) {
         AmountAdapter.ViewHolder holder = (AmountAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodView> data = this.data.getValue();
+        List<FoodWithLatestItemView> data = this.data.getValue();
         if (data != null) {
             int id = data.get(position).id;
             ShoppingListFragmentDirections.ActionNavFragmentShoppingListToNavFragmentFoodItem args =

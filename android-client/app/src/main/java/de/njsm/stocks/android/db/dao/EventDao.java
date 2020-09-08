@@ -47,7 +47,8 @@ public abstract class EventDao {
             "on l1.transaction_time_start = l2.transaction_time_start and l1.version + 1 = l2.version ";
 
     private static final String WHERE_VALID =
-            "where not (l1.version != 0 and l2._id is null and l1.transaction_time_end != :infinity) ";
+            "where not (l1.version != 0 and l2._id is null and l1.transaction_time_end != :infinity) " +
+            "and not (l1.valid_time_end = :infinity and l1.transaction_time_end = l1.valid_time_end)";
 
     @Query("select " +
             "'location' as entity, " +
@@ -60,20 +61,24 @@ public abstract class EventDao {
 
             "union select " +
             "'eannumber' as entity, " +
-            "'' as food1_name, 0 as food1_to_buy, 0 as food1_expiration_offset, 0 as food1_location, '' as location1_name, l1.number as eannumber1_number, " +
-            "'' as food2_name, 0 as food2_to_buy, 0 as food2_expiration_offset, 0 as food2_location, '' as location2_name, l2.number as eannumber2_number, " +
+            "f1.name as food1_name, 0 as food1_to_buy, 0 as food1_expiration_offset, 0 as food1_location, '' as location1_name, l1.number as eannumber1_number, " +
+            "f2.name as food2_name, 0 as food2_to_buy, 0 as food2_expiration_offset, 0 as food2_location, '' as location2_name, l2.number as eannumber2_number, " +
             TIME_COLUMNS +
             "from eannumber l1 " +
             "left outer join eannumber l2 " + ON_CHRONOLOGY +
+            "join food f1 on l1.identifies = f1._id and f1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < f1.valid_time_end and f1.transaction_time_end = :infinity " +
+            "left outer join food f2 on l2.identifies = f2._id and f2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < f2.valid_time_end and f2.transaction_time_end = :infinity " +
             WHERE_VALID +
 
             "union select " +
             "'food' as entity, " +
-            "l1.name as food1_name, l1.to_buy as food1_to_buy, l1.expiration_offset as food1_expiration_offset, l1.location as food1_location, '' as location1_name, '' as eannumber1_number, " +
-            "l2.name as food2_name, l2.to_buy as food2_to_buy, l2.expiration_offset as food2_expiration_offset, l2.location as food2_location, '' as location2_name, '' as eannumber2_number, " +
+            "l1.name as food1_name, l1.to_buy as food1_to_buy, l1.expiration_offset as food1_expiration_offset, l1.location as food1_location, f1.name as location1_name, '' as eannumber1_number, " +
+            "l2.name as food2_name, l2.to_buy as food2_to_buy, l2.expiration_offset as food2_expiration_offset, l2.location as food2_location, f2.name as location2_name, '' as eannumber2_number, " +
             TIME_COLUMNS +
             "from food l1 " +
             "left outer join food l2 " + ON_CHRONOLOGY +
+            "left outer join location f1 on l1.location = f1._id and f1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < f1.valid_time_end and f1.transaction_time_end = :infinity " +
+            "left outer join location f2 on l2.location = f2._id and f2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < f2.valid_time_end and f2.transaction_time_end = :infinity " +
             WHERE_VALID +
             "order by l1.transaction_time_start desc")
     abstract PositionalDataSource.Factory<Integer, EventHistoryView> getEventHistory(Instant infinity);

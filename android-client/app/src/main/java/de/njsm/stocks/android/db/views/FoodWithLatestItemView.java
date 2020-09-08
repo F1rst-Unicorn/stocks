@@ -26,7 +26,7 @@ import org.threeten.bp.Instant;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.VersionedData;
 
-public class FoodView extends VersionedData {
+public class FoodWithLatestItemView extends VersionedData {
 
     private int amount;
 
@@ -40,7 +40,7 @@ public class FoodView extends VersionedData {
 
     private int location;
 
-    public FoodView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int amount, Instant eatBy, String name, boolean toBuy, int expirationOffset, int location) {
+    public FoodWithLatestItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int amount, Instant eatBy, String name, boolean toBuy, int expirationOffset, int location) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
         this.amount = amount;
         this.eatBy = eatBy;
@@ -83,11 +83,11 @@ public class FoodView extends VersionedData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FoodView foodView = (FoodView) o;
+        FoodWithLatestItemView foodWithLatestItemView = (FoodWithLatestItemView) o;
 
-        if (amount != foodView.amount) return false;
-        if (!eatBy.equals(foodView.eatBy)) return false;
-        return name.equals(foodView.name);
+        if (amount != foodWithLatestItemView.amount) return false;
+        if (!eatBy.equals(foodWithLatestItemView.eatBy)) return false;
+        return name.equals(foodWithLatestItemView.name);
     }
 
     @Override

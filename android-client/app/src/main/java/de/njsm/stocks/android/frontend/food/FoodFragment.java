@@ -40,7 +40,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
@@ -56,7 +56,7 @@ public class FoodFragment extends BaseFragment {
 
     private FoodViewModel viewModel;
 
-    private LiveData<List<FoodView>> data;
+    private LiveData<List<FoodWithLatestItemView>> data;
 
     private LocationViewModel locationViewModel;
 
@@ -131,7 +131,7 @@ public class FoodFragment extends BaseFragment {
     private void onClick(View view) {
         FoodAdapter.ViewHolder holder = (FoodAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodView> data = this.data.getValue();
+        List<FoodWithLatestItemView> data = this.data.getValue();
         if (data != null) {
             int id = data.get(position).id;
             FoodFragmentDirections.ActionNavFragmentFoodToNavFragmentFoodItem args =

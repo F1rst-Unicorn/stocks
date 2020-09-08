@@ -22,6 +22,7 @@ package de.njsm.stocks.android.db.views;
 import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 
+import de.njsm.stocks.android.business.data.activity.ChangedFoodEvent;
 import de.njsm.stocks.android.business.data.activity.ChangedLocationEvent;
 import de.njsm.stocks.android.business.data.activity.DeletedEanNumberEvent;
 import de.njsm.stocks.android.business.data.activity.DeletedFoodEvent;
@@ -30,8 +31,6 @@ import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.business.data.activity.NewEanNumberEvent;
 import de.njsm.stocks.android.business.data.activity.NewFoodEvent;
 import de.njsm.stocks.android.business.data.activity.NewLocationEvent;
-import de.njsm.stocks.android.db.entities.EanNumber;
-import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.db.entities.VersionedData;
 import de.njsm.stocks.android.util.Config;
@@ -75,7 +74,7 @@ public class EventHistoryView {
     private int foodExpirationOffset1;
 
     @ColumnInfo(name = "food2_expiration_offset")
-    private int getFoodExpirationOffset2;
+    private int foodExpirationOffset2;
 
     @ColumnInfo(name = "food1_location")
     private int foodLocation1;
@@ -83,7 +82,7 @@ public class EventHistoryView {
     @ColumnInfo(name = "food2_location")
     private int foodLocation2;
 
-    public EventHistoryView(String entityName, VersionedData version1, VersionedData version2, String locationName1, String locationName2, String eannumberNumber1, String eannumberNumber2, String foodName1, String foodName2, int foodToBuy1, int foodToBuy2, int foodExpirationOffset1, int getFoodExpirationOffset2, int foodLocation1, int foodLocation2) {
+    public EventHistoryView(String entityName, VersionedData version1, VersionedData version2, String locationName1, String locationName2, String eannumberNumber1, String eannumberNumber2, String foodName1, String foodName2, int foodToBuy1, int foodToBuy2, int foodExpirationOffset1, int foodExpirationOffset2, int foodLocation1, int foodLocation2) {
         this.entityName = entityName;
         this.version1 = version1;
         this.version2 = version2;
@@ -96,7 +95,7 @@ public class EventHistoryView {
         this.foodToBuy1 = foodToBuy1;
         this.foodToBuy2 = foodToBuy2;
         this.foodExpirationOffset1 = foodExpirationOffset1;
-        this.getFoodExpirationOffset2 = getFoodExpirationOffset2;
+        this.foodExpirationOffset2 = foodExpirationOffset2;
         this.foodLocation1 = foodLocation1;
         this.foodLocation2 = foodLocation2;
     }
@@ -112,8 +111,12 @@ public class EventHistoryView {
                     return new NewFoodEvent(getFood1());
             }
         } else if (version2 != null) {
-            if (entityName.equals("location"))
-                return new ChangedLocationEvent(getLocation1(), getLocation2());
+            switch (entityName) {
+                case "location":
+                    return new ChangedLocationEvent(getLocation1(), getLocation2());
+                case "food":
+                    return new ChangedFoodEvent(getFood1(), getFood2());
+            }
         } else {
             switch (entityName) {
                 case "location":
@@ -127,12 +130,16 @@ public class EventHistoryView {
         return null;
     }
 
-    private Food getFood1() {
-        return new Food(0, version1.id, version1.validTimeStart, version1.validTimeEnd, version1.transactionTimeStart, version1.transactionTimeEnd, version1.version, foodName1, foodToBuy1 == 1, foodExpirationOffset1, foodLocation1);
+    private FoodWithLocationName getFood1() {
+        return new FoodWithLocationName(0, version1.id, version1.validTimeStart, version1.validTimeEnd, version1.transactionTimeStart, version1.transactionTimeEnd, version1.version, foodName1, foodToBuy1 == 1, foodExpirationOffset1, foodLocation1, locationName1);
     }
 
-    private EanNumber getEanNumber1() {
-        return new EanNumber(version1.id, version1.validTimeStart, version1.validTimeEnd, version1.transactionTimeStart, version1.transactionTimeEnd, version1.version, eannumberNumber1, 0);
+    private FoodWithLocationName getFood2() {
+        return new FoodWithLocationName(0, version2.id, version2.validTimeStart, version2.validTimeEnd, version2.transactionTimeStart, version2.transactionTimeEnd, version2.version, foodName2, foodToBuy2 == 1, foodExpirationOffset2, foodLocation2, locationName2);
+    }
+
+    private EanNumberEventView getEanNumber1() {
+        return new EanNumberEventView(version1.id, version1.validTimeStart, version1.validTimeEnd, version1.transactionTimeStart, version1.transactionTimeEnd, version1.version, eannumberNumber1, 0, foodName1);
     }
 
     private Location getLocation1() {

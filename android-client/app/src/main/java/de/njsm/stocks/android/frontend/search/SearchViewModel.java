@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.repo.FoodRepository;
 
@@ -36,7 +36,7 @@ public class SearchViewModel extends FoodViewModel {
         super(foodRepository);
     }
 
-    public LiveData<List<FoodView>> search(String searchTerm) {
+    public LiveData<List<FoodWithLatestItemView>> search(String searchTerm) {
         return foodRepository.getFoodBySubString(searchTerm);
     }
 }

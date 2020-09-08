@@ -28,7 +28,7 @@ import javax.inject.Inject;
 
 import de.njsm.stocks.android.db.dao.FoodDao;
 import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
@@ -118,11 +118,11 @@ public class FoodRepository {
 
     }
 
-    public LiveData<List<FoodView>> getFoodToEat() {
+    public LiveData<List<FoodWithLatestItemView>> getFoodToEat() {
         return foodDao.getFoodToEat();
     }
 
-    public LiveData<List<FoodView>> getFoodByLocation(int location) {
+    public LiveData<List<FoodWithLatestItemView>> getFoodByLocation(int location) {
         return foodDao.getFoodByLocation(location);
     }
 
@@ -130,11 +130,11 @@ public class FoodRepository {
         return foodDao.getFoodByEanNumber(s);
     }
 
-    public LiveData<List<FoodView>> getFoodToBuy() {
+    public LiveData<List<FoodWithLatestItemView>> getFoodToBuy() {
         return foodDao.getFoodToBuy();
     }
 
-    public LiveData<List<FoodView>> getFoodBySubString(String searchTerm) {
+    public LiveData<List<FoodWithLatestItemView>> getFoodBySubString(String searchTerm) {
         LOG.d("searching for %" + searchTerm + "%");
         return foodDao.getFoodBySubString("%" + searchTerm + "%");
     }

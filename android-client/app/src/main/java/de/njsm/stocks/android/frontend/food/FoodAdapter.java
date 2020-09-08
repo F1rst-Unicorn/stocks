@@ -39,19 +39,19 @@ import org.threeten.bp.Instant;
 import java.util.List;
 
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.frontend.BaseAdapter;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemAdapter;
 
 import static android.view.View.GONE;
 
-public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
+public class FoodAdapter extends BaseAdapter<FoodWithLatestItemView, FoodAdapter.ViewHolder> {
 
     private Resources resources;
 
     private Resources.Theme theme;
 
-    public FoodAdapter(LiveData<List<FoodView>> data,
+    public FoodAdapter(LiveData<List<FoodWithLatestItemView>> data,
                        Resources resources,
                        Resources.Theme theme,
                        Consumer<View> onClickListener,
@@ -119,7 +119,7 @@ public class FoodAdapter extends BaseAdapter<FoodView, FoodAdapter.ViewHolder> {
     }
 
     @Override
-    protected void bindConcrete(ViewHolder holder, FoodView data) {
+    protected void bindConcrete(ViewHolder holder, FoodWithLatestItemView data) {
         holder.setAmount(String.valueOf(data.getAmount()));
         holder.setDate(mapToRelativeDate(data.getEatBy()));
         holder.setName(data.getName());

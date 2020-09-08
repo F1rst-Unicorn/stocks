@@ -31,7 +31,7 @@ import org.threeten.bp.Instant;
 import java.util.List;
 
 import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
@@ -60,11 +60,11 @@ public abstract class FoodDao {
         return getEmptyFood(DATABASE_INFINITY);
     }
 
-    public LiveData<List<FoodView>> getFoodToEat() {
+    public LiveData<List<FoodWithLatestItemView>> getFoodToEat() {
         return getFoodToEat(DATABASE_INFINITY);
     }
 
-    public LiveData<List<FoodView>> getFoodByLocation(int location) {
+    public LiveData<List<FoodWithLatestItemView>> getFoodByLocation(int location) {
         return getFoodByLocation(location, DATABASE_INFINITY);
     }
 
@@ -72,11 +72,11 @@ public abstract class FoodDao {
         return getFoodByEanNumber(s, DATABASE_INFINITY);
     }
 
-    public LiveData<List<FoodView>> getFoodBySubString(String searchTerm) {
+    public LiveData<List<FoodWithLatestItemView>> getFoodBySubString(String searchTerm) {
         return getFoodBySubString(searchTerm, DATABASE_INFINITY);
     }
 
-    public LiveData<List<FoodView>> getFoodToBuy() {
+    public LiveData<List<FoodWithLatestItemView>> getFoodToBuy() {
         return getFoodToBuy(DATABASE_INFINITY);
     }
 
@@ -125,7 +125,7 @@ public abstract class FoodDao {
             "and " + NOW + " < f.valid_time_end " +
             "and transaction_time_end = :infinity " +
             "order by eatBy")
-    abstract LiveData<List<FoodView>> getFoodToEat(Instant infinity);
+    abstract LiveData<List<FoodWithLatestItemView>> getFoodToEat(Instant infinity);
 
     @Query("with least_item as (" +
             "select i.of_type, count(*) as amount, i.eat_by as eatBy " +
@@ -143,7 +143,7 @@ public abstract class FoodDao {
             "and " + NOW + " < f.valid_time_end " +
             "and f.transaction_time_end = :infinity " +
             "order by eatBy")
-    abstract LiveData<List<FoodView>> getFoodByLocation(int location, Instant infinity);
+    abstract LiveData<List<FoodWithLatestItemView>> getFoodByLocation(int location, Instant infinity);
 
     @Query("select f._id, f.version, f.name, f.to_buy, f.expiration_offset, f.location as location, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end " +
             "from Food f " +
@@ -176,7 +176,7 @@ public abstract class FoodDao {
                     "where i.valid_time_start <= " + NOW +
                     "and " + NOW + " < i.valid_time_end " +
                     "and i.transaction_time_end = :infinity)")
-    abstract LiveData<List<FoodView>> getFoodBySubString(String searchTerm, Instant infinity);
+    abstract LiveData<List<FoodWithLatestItemView>> getFoodBySubString(String searchTerm, Instant infinity);
 
     @Query(     "select f._id as _id, f.version as version, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, count(*) as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
                 "from Food f " +
@@ -199,7 +199,7 @@ public abstract class FoodDao {
                     "where i.valid_time_start <= " + NOW +
                     "and " + NOW + " < i.valid_time_end " +
                     "and i.transaction_time_end = :infinity)")
-    abstract LiveData<List<FoodView>> getFoodToBuy(Instant infinity);
+    abstract LiveData<List<FoodWithLatestItemView>> getFoodToBuy(Instant infinity);
 
     @Query("delete from Food")
     abstract void delete();

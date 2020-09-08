@@ -27,7 +27,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.FoodRepository;
 
@@ -60,7 +60,7 @@ public class FoodViewModel extends ViewModel {
         return foodRepository.editToBuyStatus(item, status);
     }
 
-    public LiveData<List<FoodView>> getFoodByLocation(int location) {
+    public LiveData<List<FoodWithLatestItemView>> getFoodByLocation(int location) {
         return foodRepository.getFoodByLocation(location);
     }
 

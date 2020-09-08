@@ -22,17 +22,17 @@ package de.njsm.stocks.android.business.data.activity;
 import java.util.function.IntFunction;
 
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.entities.EanNumber;
+import de.njsm.stocks.android.db.views.EanNumberEventView;
 
-public class DeletedEanNumberEvent extends DeletedEntityEvent<EanNumber> implements EanNumberIconResourceProvider {
+public class DeletedEanNumberEvent extends DeletedEntityEvent<EanNumberEventView> implements EanNumberIconResourceProvider {
 
-    public DeletedEanNumberEvent(EanNumber entity) {
+    public DeletedEanNumberEvent(EanNumberEventView entity) {
         super(entity);
     }
 
     @Override
     public String describe(IntFunction<String> stringResourceResolver) {
         String template = stringResourceResolver.apply(R.string.event_eannumber_deleted);
-        return String.format(template, entity.eanCode);
+        return String.format(template, entity.eanCode, entity.identifiedFoodName);
     }
 }
