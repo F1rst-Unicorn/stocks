@@ -181,5 +181,7 @@
     <string name="event_food_expiration_offset_set">The expiration time %swas set to %d days.</string>
     <string name="event_food_specific_name">%s</string>
     <string name="event_food_specific_name_of">of %s</string>
+    <string name="event_user_created">%s was invited.</string>
+    <string name="event_user_deleted">%s was deleted.</string>
 
 </resources>

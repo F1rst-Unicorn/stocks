@@ -27,11 +27,14 @@ import de.njsm.stocks.android.business.data.activity.ChangedLocationEvent;
 import de.njsm.stocks.android.business.data.activity.DeletedEanNumberEvent;
 import de.njsm.stocks.android.business.data.activity.DeletedFoodEvent;
 import de.njsm.stocks.android.business.data.activity.DeletedLocationEvent;
+import de.njsm.stocks.android.business.data.activity.DeletedUserEvent;
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.business.data.activity.NewEanNumberEvent;
 import de.njsm.stocks.android.business.data.activity.NewFoodEvent;
 import de.njsm.stocks.android.business.data.activity.NewLocationEvent;
+import de.njsm.stocks.android.business.data.activity.NewUserEvent;
 import de.njsm.stocks.android.db.entities.Location;
+import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.VersionedData;
 import de.njsm.stocks.android.util.Config;
 
@@ -82,7 +85,13 @@ public class EventHistoryView {
     @ColumnInfo(name = "food2_location")
     private int foodLocation2;
 
-    public EventHistoryView(String entityName, VersionedData version1, VersionedData version2, String locationName1, String locationName2, String eannumberNumber1, String eannumberNumber2, String foodName1, String foodName2, int foodToBuy1, int foodToBuy2, int foodExpirationOffset1, int foodExpirationOffset2, int foodLocation1, int foodLocation2) {
+    @ColumnInfo(name = "user1_name")
+    private String userName1;
+
+    @ColumnInfo(name = "user2_name")
+    private String userName2;
+
+    public EventHistoryView(String entityName, VersionedData version1, VersionedData version2, String locationName1, String locationName2, String eannumberNumber1, String eannumberNumber2, String foodName1, String foodName2, int foodToBuy1, int foodToBuy2, int foodExpirationOffset1, int foodExpirationOffset2, int foodLocation1, int foodLocation2, String userName1, String userName2) {
         this.entityName = entityName;
         this.version1 = version1;
         this.version2 = version2;
@@ -98,6 +107,8 @@ public class EventHistoryView {
         this.foodExpirationOffset2 = foodExpirationOffset2;
         this.foodLocation1 = foodLocation1;
         this.foodLocation2 = foodLocation2;
+        this.userName1 = userName1;
+        this.userName2 = userName2;
     }
 
     public EntityEvent<?> mapToEvent() {
@@ -109,6 +120,8 @@ public class EventHistoryView {
                     return new NewEanNumberEvent(getEanNumber1());
                 case "food":
                     return new NewFoodEvent(getFood1());
+                case "user":
+                    return new NewUserEvent(getUser1());
             }
         } else if (version2 != null) {
             switch (entityName) {
@@ -125,9 +138,15 @@ public class EventHistoryView {
                     return new DeletedEanNumberEvent(getEanNumber1());
                 case "food":
                     return new DeletedFoodEvent(getFood1());
+                case "user":
+                    return new DeletedUserEvent(getUser1());
             }
         }
         return null;
+    }
+
+    private User getUser1() {
+        return new User(version1.id, version1.validTimeStart, version1.validTimeEnd, version1.transactionTimeStart, version1.transactionTimeEnd, version1.version, userName1);
     }
 
     private FoodWithLocationName getFood1() {

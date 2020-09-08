@@ -19,11 +19,20 @@
 
 package de.njsm.stocks.android.business.data.activity;
 
+import java.util.function.IntFunction;
+
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.User;
 
-public interface EanNumberIconResourceProvider extends EntityIconResourceProvider {
+public class NewUserEvent extends NewEntityEvent<User> implements UserIconResourceProvider {
 
-    default int getEntityIconResource() {
-        return R.drawable.ic_photo_camera_white_24dp;
+    public NewUserEvent(User entity) {
+        super(entity);
+    }
+
+    @Override
+    public String describe(IntFunction<String> stringResourceResolver) {
+        String template = stringResourceResolver.apply(R.string.event_user_created);
+        return String.format(template, entity.name);
     }
 }

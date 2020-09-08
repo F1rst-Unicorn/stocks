@@ -40,7 +40,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/fragment_outline_cardview"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
 
                 android:clickable="true"
@@ -82,7 +82,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/fragment_outline_cardview2"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
 
                 android:layout_gravity="center"
                 android:clickable="true"
@@ -117,7 +117,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/fragment_outline_cardview3"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
 
                 android:layout_gravity="center"
                 android:clickable="true"
