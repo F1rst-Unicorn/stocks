@@ -29,6 +29,8 @@ import de.njsm.stocks.android.db.entities.VersionedData;
 
 public abstract class EntityEvent<T extends VersionedData> implements Comparable<EntityEvent<?>>, EntityIconResourceProvider {
 
+    private Key key;
+
     public abstract String describe(IntFunction<String> stringResourceResolver);
 
     public abstract Instant getTime();
@@ -37,7 +39,7 @@ public abstract class EntityEvent<T extends VersionedData> implements Comparable
 
     @Override
     public int compareTo(EntityEvent<?> o) {
-        return getTime().compareTo(o.getTime());
+        return getTime().compareTo(o.getTime()) * -1;
     }
 
     @Override
@@ -49,5 +51,13 @@ public abstract class EntityEvent<T extends VersionedData> implements Comparable
             return compareTo((EntityEvent<?>) obj) == 0;
         else
             return false;
+    }
+
+    public void setKey(Key key) {
+        this.key = key;
+    }
+
+    public Key getKey() {
+        return key;
     }
 }

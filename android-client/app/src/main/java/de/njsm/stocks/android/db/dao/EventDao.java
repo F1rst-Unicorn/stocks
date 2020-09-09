@@ -34,11 +34,6 @@ import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 @Dao
 public abstract class EventDao {
 
-    public DataSource.Factory<Integer, EntityEvent<?>> getEventHistory() {
-        return getEventHistory(DATABASE_INFINITY)
-                .map(EventHistoryView::mapToEvent);
-    }
-
     private static final String TIME_COLUMNS =
             "l1._id as version1__id, l1.version as version1_version, l1.valid_time_start as version1_valid_time_start, l1.valid_time_end as version1_valid_time_end, l1.transaction_time_start as version1_transaction_time_start, l1.transaction_time_end as version1_transaction_time_end, " +
             "l2._id as version2__id, l2.version as version2_version, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end ";
@@ -58,8 +53,10 @@ public abstract class EventDao {
             "from location l1 " +
             "left outer join location l2 " + ON_CHRONOLOGY +
             WHERE_VALID +
+            "order by l1.transaction_time_start desc")
+    abstract PositionalDataSource.Factory<Integer, EventHistoryView> getLocationHistory(Instant infinity);
 
-            "union select " +
+    @Query("select " +
             "'eannumber' as entity, " +
             "'' as user1_name, f1.name as food1_name, 0 as food1_to_buy, 0 as food1_expiration_offset, 0 as food1_location, '' as location1_name, l1.number as eannumber1_number, " +
             "'' as user2_name, f2.name as food2_name, 0 as food2_to_buy, 0 as food2_expiration_offset, 0 as food2_location, '' as location2_name, l2.number as eannumber2_number, " +
@@ -69,8 +66,10 @@ public abstract class EventDao {
             "join food f1 on l1.identifies = f1._id and f1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < f1.valid_time_end and f1.transaction_time_end = :infinity " +
             "left outer join food f2 on l2.identifies = f2._id and f2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < f2.valid_time_end and f2.transaction_time_end = :infinity " +
             WHERE_VALID +
+            "order by l1.transaction_time_start desc")
+    abstract PositionalDataSource.Factory<Integer, EventHistoryView> getEanHistory(Instant infinity);
 
-            "union select " +
+    @Query("select " +
             "'food' as entity, " +
             "'' as user1_name, l1.name as food1_name, l1.to_buy as food1_to_buy, l1.expiration_offset as food1_expiration_offset, l1.location as food1_location, f1.name as location1_name, '' as eannumber1_number, " +
             "'' as user2_name, l2.name as food2_name, l2.to_buy as food2_to_buy, l2.expiration_offset as food2_expiration_offset, l2.location as food2_location, f2.name as location2_name, '' as eannumber2_number, " +
@@ -80,8 +79,10 @@ public abstract class EventDao {
             "left outer join location f1 on l1.location = f1._id and f1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < f1.valid_time_end and f1.transaction_time_end = :infinity " +
             "left outer join location f2 on l2.location = f2._id and f2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < f2.valid_time_end and f2.transaction_time_end = :infinity " +
             WHERE_VALID +
+            "order by l1.transaction_time_start desc")
+    abstract PositionalDataSource.Factory<Integer, EventHistoryView> getFoodHistory(Instant infinity);
 
-            "union select " +
+    @Query("select " +
             "'user' as entity, " +
             "l1.name as user1_name, '' as food1_name, 0 as food1_to_buy, 0 as food1_expiration_offset, 0 as food1_location, '' as location1_name, '' as eannumber1_number, " +
             "l2.name as user2_name, '' as food2_name, 0 as food2_to_buy, 0 as food2_expiration_offset, 0 as food2_location, '' as location2_name, '' as eannumber2_number, " +
@@ -90,5 +91,26 @@ public abstract class EventDao {
             "left outer join user l2 " + ON_CHRONOLOGY +
             WHERE_VALID +
             "order by l1.transaction_time_start desc")
-    abstract PositionalDataSource.Factory<Integer, EventHistoryView> getEventHistory(Instant infinity);
+    abstract PositionalDataSource.Factory<Integer, EventHistoryView> getUserHistory(Instant infinity);
+
+    public DataSource.Factory<Integer, EntityEvent<?>> getLocationHistory() {
+        return getLocationHistory(DATABASE_INFINITY)
+                .map(EventHistoryView::mapToEvent);
+    }
+
+    public DataSource.Factory<Integer, EntityEvent<?>> getEanHistory() {
+        return getEanHistory(DATABASE_INFINITY)
+                .map(EventHistoryView::mapToEvent);
+    }
+
+    public DataSource.Factory<Integer, EntityEvent<?>> getFoodHistory() {
+        return getFoodHistory(DATABASE_INFINITY)
+                .map(EventHistoryView::mapToEvent);
+    }
+
+    public DataSource.Factory<Integer, EntityEvent<?>> getUserHistory() {
+        return getUserHistory(DATABASE_INFINITY)
+                .map(EventHistoryView::mapToEvent);
+    }
+
 }

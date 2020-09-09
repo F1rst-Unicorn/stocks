@@ -26,6 +26,7 @@ import androidx.paging.PagedList;
 import javax.inject.Inject;
 
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
+import de.njsm.stocks.android.business.data.activity.MyDataSourceFactory;
 import de.njsm.stocks.android.db.dao.EventDao;
 import de.njsm.stocks.android.util.Logger;
 
@@ -42,6 +43,12 @@ public class EventRepository {
 
     public LiveData<PagedList<EntityEvent<?>>> getLocationEvents() {
         LOG.d("getting history");
-        return new LivePagedListBuilder<>(eventDao.getEventHistory(), 3).build();
+        return new LivePagedListBuilder<>(
+                new MyDataSourceFactory(
+                        eventDao.getEanHistory(),
+                        eventDao.getFoodHistory(),
+                        eventDao.getUserHistory(),
+                        eventDao.getLocationHistory())
+                , 2).build();
     }
 }
