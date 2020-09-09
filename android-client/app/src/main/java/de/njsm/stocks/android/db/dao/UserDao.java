@@ -59,7 +59,8 @@ public abstract class UserDao {
             "from User " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity")
+            "and transaction_time_end = :infinity " +
+            "order by name")
     abstract LiveData<List<User>> getAll(Instant infinity);
 
     @Query("select * " +

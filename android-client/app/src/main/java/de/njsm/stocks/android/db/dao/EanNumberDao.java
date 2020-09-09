@@ -56,7 +56,8 @@ public abstract class EanNumberDao {
             "where identifies = :foodId " +
             "and valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity")
+            "and transaction_time_end = :infinity " +
+            "order by number")
     abstract LiveData<List<EanNumber>> getEanNumbersOf(int foodId, Instant infinity);
 
     @Query("delete from EanNumber")

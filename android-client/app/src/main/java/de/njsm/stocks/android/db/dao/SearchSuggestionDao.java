@@ -81,7 +81,7 @@ public abstract class SearchSuggestionDao {
                     "from Search_suggestion s " +
                     "where s.term like :searchTerm " +
                     "order by s.last_queried desc " +
-                    "limit 4" +
+                    "limit 10" +
                 ")" +
             ") " +
             "order by type, time desc, length(" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") desc")

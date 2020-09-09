@@ -56,7 +56,8 @@ public abstract class UserDeviceDao {
             "where belongs_to = :userId " +
             "and valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity")
+            "and transaction_time_end = :infinity " +
+            "order by name")
     abstract LiveData<List<UserDevice>> getCurrentDevicesOfUser(int userId, Instant infinity);
 
     @Query("delete from User_device")

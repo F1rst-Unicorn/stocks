@@ -105,7 +105,8 @@ public abstract class FoodDao {
             "(select distinct of_type from FoodItem i " +
             "where i.valid_time_start <= " + NOW +
             "and " + NOW + " < i.valid_time_end " +
-            "and i.transaction_time_end = :infinity)")
+            "and i.transaction_time_end = :infinity) " +
+            "order by _id")
     abstract LiveData<List<Food>> getEmptyFood(Instant infinity);
 
     @Query("with least_item as (" +
@@ -175,7 +176,8 @@ public abstract class FoodDao {
                     "from FoodItem i " +
                     "where i.valid_time_start <= " + NOW +
                     "and " + NOW + " < i.valid_time_end " +
-                    "and i.transaction_time_end = :infinity)")
+                    "and i.transaction_time_end = :infinity) " +
+            "order by name")
     abstract LiveData<List<FoodWithLatestItemView>> getFoodBySubString(String searchTerm, Instant infinity);
 
     @Query(     "select f._id as _id, f.version as version, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, count(*) as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
@@ -198,7 +200,8 @@ public abstract class FoodDao {
                     "from FoodItem i " +
                     "where i.valid_time_start <= " + NOW +
                     "and " + NOW + " < i.valid_time_end " +
-                    "and i.transaction_time_end = :infinity)")
+                    "and i.transaction_time_end = :infinity) " +
+            "order by name")
     abstract LiveData<List<FoodWithLatestItemView>> getFoodToBuy(Instant infinity);
 
     @Query("delete from Food")

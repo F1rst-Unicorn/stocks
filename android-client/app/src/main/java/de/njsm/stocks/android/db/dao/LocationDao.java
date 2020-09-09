@@ -86,7 +86,8 @@ public abstract class LocationDao {
             "from Location " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity")
+            "and transaction_time_end = :infinity " +
+            "order by name")
     abstract LiveData<List<Location>> getAll(Instant infinity);
 
     @Query("delete from Location")
