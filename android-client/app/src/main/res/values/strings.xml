@@ -183,5 +183,12 @@
     <string name="event_food_specific_name_of">of %s</string>
     <string name="event_user_created">%s was invited.</string>
     <string name="event_user_deleted">%s was deleted.</string>
+    <string name="event_user_device_created">%s of %s was registered.</string>
+    <string name="event_user_device_deleted">%s of %s was deleted.</string>
+    <string name="event_food_item_added">%s has bought a new %s with %s and put it into %s. Consume it by %s.</string>
+    <string name="event_food_item_deleted">A %s was consumed.</string>
+    <string name="event_food_item_changed_location">A %s was moved from %s to %s.</string>
+    <string name="event_food_item_changed_eat_by_addendum">It should now be consumed by %s instead of %s.</string>
+    <string name="event_food_item_changed_eat_by">The expiration date of a %s was changed from %s to %s.</string>
 
 </resources>

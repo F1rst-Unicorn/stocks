@@ -121,7 +121,7 @@ public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.V
         holder.setBuyer(data.getUserName());
         holder.setDevice(data.getDeviceName());
         holder.setLocation(data.getLocation());
-        holder.setDate(Config.PRETTY_FORMAT.format(data.getEatByDate()));
+        holder.setDate(Config.PRETTY_DATE_FORMAT.format(data.getEatByDate()));
         holder.setIcon(computeIcon(data.getEatByDate(), Instant.now()));
     }
 

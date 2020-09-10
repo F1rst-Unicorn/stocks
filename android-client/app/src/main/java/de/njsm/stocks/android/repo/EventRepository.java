@@ -45,9 +45,11 @@ public class EventRepository {
         LOG.d("getting history");
         return new LivePagedListBuilder<>(
                 new MergingDataSourceFactory(
+                        eventDao.getFoodItemHistory(),
                         eventDao.getEanHistory(),
                         eventDao.getFoodHistory(),
                         eventDao.getUserHistory(),
+                        eventDao.getUserDeviceHistory(),
                         eventDao.getLocationHistory())
                 , 10).build();
     }

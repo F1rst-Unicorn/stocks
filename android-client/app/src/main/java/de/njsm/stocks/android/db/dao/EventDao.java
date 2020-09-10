@@ -30,7 +30,9 @@ import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.db.views.AbstractHistoryView;
 import de.njsm.stocks.android.db.views.EanNumberHistoryView;
 import de.njsm.stocks.android.db.views.FoodHistoryView;
+import de.njsm.stocks.android.db.views.FoodItemHistoryView;
 import de.njsm.stocks.android.db.views.LocationHistoryView;
+import de.njsm.stocks.android.db.views.UserDeviceHistoryView;
 import de.njsm.stocks.android.db.views.UserHistoryView;
 
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
@@ -66,6 +68,16 @@ public abstract class EventDao {
 
     public DataSource.Factory<Integer, EntityEvent<?>> getUserHistory() {
         return getUserHistory(DATABASE_INFINITY)
+                .map(AbstractHistoryView::mapToEvent);
+    }
+
+    public DataSource.Factory<Integer, EntityEvent<?>> getUserDeviceHistory() {
+        return getUserDeviceHistory(DATABASE_INFINITY)
+                .map(AbstractHistoryView::mapToEvent);
+    }
+
+    public DataSource.Factory<Integer, EntityEvent<?>> getFoodItemHistory() {
+        return getFoodItemHistory(DATABASE_INFINITY)
                 .map(AbstractHistoryView::mapToEvent);
     }
 
@@ -112,5 +124,35 @@ public abstract class EventDao {
             WHERE_VALID +
             "order by l1.transaction_time_start desc")
     abstract PositionalDataSource.Factory<Integer, UserHistoryView> getUserHistory(Instant infinity);
+
+    @Query("select " +
+            "l1.name as version1_name, l1.belongs_to as version1_belongs_to, f1.name as version1_username, " +
+            "l2.name as version2_name, l2.belongs_to as version2_belongs_to, f2.name as version2_username, " +
+            TIME_COLUMNS +
+            "from user_device l1 " +
+            "left outer join user_device l2 " + ON_CHRONOLOGY +
+            "join user f1 on l1.belongs_to = f1._id and f1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < f1.valid_time_end and f1.transaction_time_end = :infinity " +
+            "left outer join user f2 on l2.belongs_to = f2._id and f2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < f2.valid_time_end and f2.transaction_time_end = :infinity " +
+            WHERE_VALID +
+            "order by l1.transaction_time_start desc")
+    abstract PositionalDataSource.Factory<Integer, UserDeviceHistoryView> getUserDeviceHistory(Instant infinity);
+
+    @Query("select " +
+            "d1.name as version1_deviceName, u1.name as version1_userName, i1.name as version1_location, f1.name as version1_food_name, l1.of_type as version1_ofType, l1.stored_in as version1_storedIn, l1.eat_by as version1_eatByDate, " +
+            "d2.name as version2_deviceName, u2.name as version2_userName, i2.name as version2_location, f2.name as version2_food_name, l2.of_type as version2_ofType, l2.stored_in as version2_storedIn, l2.eat_by as version2_eatByDate, " +
+            TIME_COLUMNS +
+            "from fooditem l1 " +
+            "left outer join fooditem l2 " + ON_CHRONOLOGY +
+            "join food f1 on l1.of_type = f1._id and f1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < f1.valid_time_end and f1.transaction_time_end = :infinity " +
+            "left outer join food f2 on l2.of_type = f2._id and f2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < f2.valid_time_end and f2.transaction_time_end = :infinity " +
+            "join location i1 on l1.stored_in = i1._id and i1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < i1.valid_time_end and i1.transaction_time_end = :infinity " +
+            "left outer join location i2 on l2.stored_in = i2._id and i2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < i2.valid_time_end and i2.transaction_time_end = :infinity " +
+            "join user u1 on l1.buys = u1._id and u1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < u1.valid_time_end and u1.transaction_time_end = :infinity " +
+            "left outer join user u2 on l2.buys = u2._id and u2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < u2.valid_time_end and u2.transaction_time_end = :infinity " +
+            "join user_device d1 on l1.registers = d1._id and d1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < d1.valid_time_end and d1.transaction_time_end = :infinity " +
+            "left outer join user_device d2 on l2.registers = d2._id and d2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < d2.valid_time_end and d2.transaction_time_end = :infinity " +
+            WHERE_VALID +
+            "order by l1.transaction_time_start desc")
+    abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistory(Instant infinity);
 
 }

@@ -19,12 +19,27 @@
 
 package de.njsm.stocks.android.business.data.activity;
 
+import java.util.function.IntFunction;
+
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.views.FoodItemWithFoodNameView;
+import de.njsm.stocks.android.util.Config;
 
-public interface LocationIconResourceProvider extends EntityIconResourceProvider {
+public class NewFoodItemEvent extends NewEntityEvent<FoodItemWithFoodNameView> implements FoodItemIconResourceProvider {
 
-    default int getEntityIconResource() {
-        return R.drawable.baseline_kitchen_black_24;
+
+    public NewFoodItemEvent(FoodItemWithFoodNameView entity) {
+        super(entity);
     }
 
+    @Override
+    public String describe(IntFunction<String> stringResourceResolver) {
+        String template = stringResourceResolver.apply(R.string.event_food_item_added);
+        return String.format(template,
+                entity.getUserName(),
+                entity.getFoodName(),
+                entity.getDeviceName(),
+                entity.getLocation(),
+                Config.PRETTY_DATE_FORMAT.format(entity.getEatByDate()));
+    }
 }

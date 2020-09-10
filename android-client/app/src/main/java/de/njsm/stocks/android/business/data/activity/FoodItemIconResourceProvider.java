@@ -21,10 +21,9 @@ package de.njsm.stocks.android.business.data.activity;
 
 import de.njsm.stocks.R;
 
-public interface LocationIconResourceProvider extends EntityIconResourceProvider {
+public interface FoodItemIconResourceProvider extends EntityIconResourceProvider {
 
     default int getEntityIconResource() {
-        return R.drawable.baseline_kitchen_black_24;
+        return R.drawable.baseline_room_service_black_24;
     }
-
 }

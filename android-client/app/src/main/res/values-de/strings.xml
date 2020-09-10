@@ -181,7 +181,14 @@
     <string name="event_food_expiration_offset_set">Die Haltbarkeit %swurde auf %d Tage gesetzt.</string>
     <string name="event_food_specific_name">%s</string>
     <string name="event_food_specific_name_of">von %s</string>
+    <string name="event_user_created">%s wurde eingeladen.</string>
     <string name="event_user_deleted">%s wurde entfernt.</string>
-
+    <string name="event_user_device_created">%s von %s wurde registriert.</string>
+    <string name="event_user_device_deleted">%s von %s wurde entfernt.</string>
+    <string name="event_food_item_added">%s hat ein neues %s mit %s gekauft und hat es nach %s gelegt. Verbraucht es bis %s.</string>
+    <string name="event_food_item_deleted">Ein %s wurde konsumiert.</string>
+    <string name="event_food_item_changed_location">Ein %s wurde von %s nach %s verlegt.</string>
+    <string name="event_food_item_changed_eat_by_addendum">Es sollte neu bis %s anstelle vom %s konsumiert werden.</string>
+    <string name="event_food_item_changed_eat_by">Das Mindesthaltbarkeitsdatum eines %s wurde von %s zu %s geändert.</string>
 
 </resources>
