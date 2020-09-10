@@ -27,18 +27,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MyDataSourceFactory extends DataSource.Factory<Key, EntityEvent<?>> {
+public class MergingDataSourceFactory extends DataSource.Factory<Key, EntityEvent<?>> {
 
     private List<DataSource.Factory<Integer, EntityEvent<?>>> factories;
 
-    public MyDataSourceFactory(DataSource.Factory<Integer, EntityEvent<?>>... factories) {
+    public MergingDataSourceFactory(DataSource.Factory<Integer, EntityEvent<?>>... factories) {
         this.factories = Arrays.asList(factories);
     }
 
     @NonNull
     @Override
-    public MyDataSource create() {
-        return new MyDataSource(factories.stream()
+    public MergingDataSource create() {
+        return new MergingDataSource(factories.stream()
                 .map(DataSource.Factory::create)
                 .map(v -> ((PositionalDataSource<EntityEvent<?>>) v))
                 .map(CachingDataSource::new)

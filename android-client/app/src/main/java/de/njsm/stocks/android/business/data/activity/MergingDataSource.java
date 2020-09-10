@@ -27,13 +27,16 @@ import java.util.List;
 
 import de.njsm.stocks.android.util.Logger;
 
-public class MyDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> {
+import static de.njsm.stocks.android.business.data.activity.CachingDataSource.Direction.BACKWARD;
+import static de.njsm.stocks.android.business.data.activity.CachingDataSource.Direction.FORWARD;
 
-    private static final Logger LOG = new Logger(MyDataSource.class);
+public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> {
+
+    private static final Logger LOG = new Logger(MergingDataSource.class);
 
     private List<CachingDataSource> sources;
 
-    public MyDataSource(List<CachingDataSource> sources) {
+    public MergingDataSource(List<CachingDataSource> sources) {
         this.sources = sources;
     }
 
@@ -45,12 +48,14 @@ public class MyDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> {
 
         List<EntityEvent<?>> result = new ArrayList<>();
 
+        int totalCount = sources.stream().map(CachingDataSource::count).reduce(0, Integer::sum);
+
         while (result.size() < params.requestedLoadSize) {
             int i = 0;
             int minIndex = -1;
             EntityEvent<?> min = null;
             for (CachingDataSource item : sources) {
-                EntityEvent<?> current = item.get(position.getIndex(i));
+                EntityEvent<?> current = item.get(position.getIndex(i), params.requestedLoadSize, FORWARD);
                 if (current == null) {
                     i++;
                     continue;
@@ -74,7 +79,7 @@ public class MyDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> {
             position.increment(minIndex);
         }
 
-        callback.onResult(result);
+        callback.onResult(result, 0, totalCount);
     }
 
     @Override
@@ -83,7 +88,7 @@ public class MyDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> {
 
         LOG.d("Loading after " + position.getPosition() + " (" + position.getKeyIndex() + "), " + params.requestedLoadSize + " elements");
 
-        EntityEvent<?> pivot = sources.get(position.getKeyIndex()).get(position.getPartialPosition());
+        EntityEvent<?> pivot = sources.get(position.getKeyIndex()).get(position.getPartialPosition(), params.requestedLoadSize, FORWARD);
 
         position.increment(position.getKeyIndex());
 
@@ -94,7 +99,7 @@ public class MyDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> {
             int minIndex = -1;
             EntityEvent<?> min = null;
             for (CachingDataSource item : sources) {
-                EntityEvent<?> current = item.get(position.getIndex(i));
+                EntityEvent<?> current = item.get(position.getIndex(i), params.requestedLoadSize, FORWARD);
                 if (current == null) {
                     i++;
                     continue;
@@ -128,7 +133,7 @@ public class MyDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> {
 
         LOG.d("Loading before " + position.getPosition() + " (" + position.getKeyIndex() + "), " + params.requestedLoadSize + " elements");
 
-        EntityEvent<?> pivot = sources.get(position.getKeyIndex()).get(position.getPartialPosition());
+        EntityEvent<?> pivot = sources.get(position.getKeyIndex()).get(position.getPartialPosition(), params.requestedLoadSize, BACKWARD);
 
         position.decrement(position.getKeyIndex());
 
@@ -139,7 +144,7 @@ public class MyDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> {
             int maxIndex = -1;
             EntityEvent<?> max = null;
             for (CachingDataSource item : sources) {
-                EntityEvent<?> current = item.get(position.getIndex(i));
+                EntityEvent<?> current = item.get(position.getIndex(i), params.requestedLoadSize, BACKWARD);
                 if (current == null) {
                     i++;
                     continue;

@@ -29,8 +29,6 @@ import de.njsm.stocks.android.util.Logger;
 
 public class CachingDataSource {
 
-    private static final int PAGE_SIZE = 7;
-
     private static final Logger LOG = new Logger(CachingDataSource.class);
 
     private PositionalDataSource<EntityEvent<?>> source;
@@ -41,18 +39,21 @@ public class CachingDataSource {
 
     private LoadRangeCallback callback;
 
+    private int count;
+
     public CachingDataSource(PositionalDataSource<EntityEvent<?>> source) {
         this.source = source;
         this.cursor = -1;
         this.cache = Collections.emptyList();
         this.callback = new LoadRangeCallback();
+        this.count = -1;
     }
 
-    public EntityEvent<?> get(int position) {
+    public EntityEvent<?> get(int position, int pageSize, Direction direction) {
         LOG.d("At [" + cursor + ", " + lastPosition() + "], queried for " + position);
 
         if (cursor > position || position > lastPosition()) {
-            load(Math.max(position - PAGE_SIZE / 2, 0));
+            load(Math.max(position, 0), pageSize, direction);
         }
 
         if (cursor > position || position > lastPosition()) {
@@ -63,11 +64,25 @@ public class CachingDataSource {
         return cache.get(position - cursor);
     }
 
-    private void load(int position) {
+    public int count() {
+        if (count == -1) {
+            PositionalDataSource.LoadInitialParams params = new PositionalDataSource.LoadInitialParams(0, 1, 1, true);
+            source.loadInitial(params, new LoadInitialCallback());
+        }
+        LOG.d("totalCount " + count);
+        return count;
+    }
+
+    private void load(int position, int pageSize, Direction direction) {
         if (position == cursor)
             return;
 
-        PositionalDataSource.LoadRangeParams params = new PositionalDataSource.LoadRangeParams(position, PAGE_SIZE);
+        position = direction.getLeftEnd(position, pageSize);
+        if (position >= count())
+            return;
+
+        LOG.d("Moving to [" + position + ", " + (position + pageSize - 1) + "]");
+        PositionalDataSource.LoadRangeParams params = new PositionalDataSource.LoadRangeParams(position, pageSize);
         source.loadRange(params, callback);
 
         if (size() > 0)
@@ -90,5 +105,36 @@ public class CachingDataSource {
         public void onResult(@NonNull List<EntityEvent<?>> data) {
             CachingDataSource.this.cache = data;
         }
+    }
+
+    private class LoadInitialCallback extends PositionalDataSource.LoadInitialCallback<EntityEvent<?>> {
+
+        @Override
+        public void onResult(@NonNull List<EntityEvent<?>> data, int position, int totalCount) {
+            CachingDataSource.this.count = totalCount;
+        }
+
+        @Override
+        public void onResult(@NonNull List<EntityEvent<?>> data, int position) {
+            throw new UnsupportedOperationException("Call the other method");
+        }
+    }
+
+    enum Direction {
+        FORWARD {
+            @Override
+            public int getLeftEnd(int position, int pageSize) {
+                return position;
+            }
+        },
+        BACKWARD {
+            @Override
+            public int getLeftEnd(int position, int pageSize) {
+                return position - pageSize + 1;
+            }
+        },
+        ;
+
+        public abstract int getLeftEnd(int position, int pageSize);
     }
 }

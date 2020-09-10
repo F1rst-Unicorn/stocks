@@ -35,10 +35,6 @@ public class Key {
         return Arrays.stream(positions).sum();
     }
 
-    public void setIndex(int position, int value) {
-        positions[position] = value;
-    }
-
     public int getIndex(int position) {
         return positions[position];
     }
