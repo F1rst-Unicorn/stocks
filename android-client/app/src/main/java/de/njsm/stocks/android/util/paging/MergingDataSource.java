@@ -26,14 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
-import de.njsm.stocks.android.util.Logger;
 
 import static de.njsm.stocks.android.util.paging.CachingDataSource.Direction.BACKWARD;
 import static de.njsm.stocks.android.util.paging.CachingDataSource.Direction.FORWARD;
 
 public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> {
-
-    private static final Logger LOG = new Logger(MergingDataSource.class);
 
     private List<CachingDataSource> sources;
 
@@ -43,7 +40,6 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Key> params, @NonNull LoadInitialCallback<EntityEvent<?>> callback) {
-        LOG.d("Loading initial " + params.requestedLoadSize + " elements");
 
         Key position = new Key(sources.size());
 
@@ -71,7 +67,6 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
             if (min == null) {
                 break;
             }
-            LOG.d("Yield " + minIndex);
 
             position.setKeyIndex(minIndex);
             min.setKey(position.copy());
@@ -86,8 +81,6 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
     @Override
     public void loadAfter(@NonNull LoadParams<Key> params, @NonNull LoadCallback<EntityEvent<?>> callback) {
         Key position = params.key.copy();
-
-        LOG.d("Loading after " + position.getPosition() + " (" + position.getKeyIndex() + "), " + params.requestedLoadSize + " elements");
 
         EntityEvent<?> pivot = sources.get(position.getKeyIndex()).get(position.getPartialPosition(), params.requestedLoadSize, FORWARD);
 
@@ -116,8 +109,6 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
                 break;
             }
 
-            LOG.d("Yield " + minIndex + " timestamp " + min.getTime());
-
             position.setKeyIndex(minIndex);
             min.setKey(position.copy());
             result.add(min);
@@ -131,8 +122,6 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
     @Override
     public void loadBefore(@NonNull LoadParams<Key> params, @NonNull LoadCallback<EntityEvent<?>> callback) {
         Key position = params.key.copy();
-
-        LOG.d("Loading before " + position.getPosition() + " (" + position.getKeyIndex() + "), " + params.requestedLoadSize + " elements");
 
         EntityEvent<?> pivot = sources.get(position.getKeyIndex()).get(position.getPartialPosition(), params.requestedLoadSize, BACKWARD);
 
@@ -160,8 +149,6 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
             if (max == null) {
                 break;
             }
-
-            LOG.d("Yield " + maxIndex);
 
             position.setKeyIndex(maxIndex);
             max.setKey(position.copy());

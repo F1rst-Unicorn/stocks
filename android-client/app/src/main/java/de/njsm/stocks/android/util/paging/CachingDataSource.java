@@ -26,11 +26,8 @@ import java.util.Collections;
 import java.util.List;
 
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
-import de.njsm.stocks.android.util.Logger;
 
 public class CachingDataSource {
-
-    private static final Logger LOG = new Logger(CachingDataSource.class);
 
     private PositionalDataSource<EntityEvent<?>> source;
 
@@ -51,14 +48,11 @@ public class CachingDataSource {
     }
 
     public EntityEvent<?> get(int position, int pageSize, Direction direction) {
-        LOG.d("At [" + cursor + ", " + lastPosition() + "], queried for " + position);
-
         if (cursor > position || position > lastPosition()) {
             load(Math.max(position, 0), pageSize, direction);
         }
 
         if (cursor > position || position > lastPosition()) {
-            LOG.d("no result");
             return null;
         }
 
@@ -70,7 +64,6 @@ public class CachingDataSource {
             PositionalDataSource.LoadInitialParams params = new PositionalDataSource.LoadInitialParams(0, 1, 1, true);
             source.loadInitial(params, new LoadInitialCallback());
         }
-        LOG.d("totalCount " + count);
         return count;
     }
 
@@ -82,14 +75,11 @@ public class CachingDataSource {
         if (position >= count())
             return;
 
-        LOG.d("Moving to [" + position + ", " + (position + pageSize - 1) + "]");
         PositionalDataSource.LoadRangeParams params = new PositionalDataSource.LoadRangeParams(position, pageSize);
         source.loadRange(params, callback);
 
         if (size() > 0)
             cursor = position;
-
-        LOG.d("Moved to [" + cursor + ", " + lastPosition() + "]");
     }
 
     private int size() {

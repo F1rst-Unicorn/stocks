@@ -51,6 +51,6 @@ public class EventRepository {
                         eventDao.getUserHistory(),
                         eventDao.getUserDeviceHistory(),
                         eventDao.getLocationHistory())
-                , 10).build();
+                , 7).build();
     }
 }
