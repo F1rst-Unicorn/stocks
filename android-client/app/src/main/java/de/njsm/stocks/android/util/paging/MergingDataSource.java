@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.business.data.activity;
+package de.njsm.stocks.android.util.paging;
 
 import androidx.annotation.NonNull;
 import androidx.paging.ItemKeyedDataSource;
@@ -25,10 +25,11 @@ import androidx.paging.ItemKeyedDataSource;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.util.Logger;
 
-import static de.njsm.stocks.android.business.data.activity.CachingDataSource.Direction.BACKWARD;
-import static de.njsm.stocks.android.business.data.activity.CachingDataSource.Direction.FORWARD;
+import static de.njsm.stocks.android.util.paging.CachingDataSource.Direction.BACKWARD;
+import static de.njsm.stocks.android.util.paging.CachingDataSource.Direction.FORWARD;
 
 public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> {
 

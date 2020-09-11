@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.business.data.activity;
+package de.njsm.stocks.android.util.paging;
 
 import androidx.annotation.NonNull;
 import androidx.paging.DataSource;
@@ -26,6 +26,8 @@ import androidx.paging.PositionalDataSource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import de.njsm.stocks.android.business.data.activity.EntityEvent;
 
 public class MergingDataSourceFactory extends DataSource.Factory<Key, EntityEvent<?>> {
 

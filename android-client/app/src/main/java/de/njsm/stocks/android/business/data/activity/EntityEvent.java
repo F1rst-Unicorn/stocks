@@ -26,6 +26,7 @@ import org.threeten.bp.Instant;
 import java.util.function.IntFunction;
 
 import de.njsm.stocks.android.db.entities.VersionedData;
+import de.njsm.stocks.android.util.paging.Key;
 
 public abstract class EntityEvent<T extends VersionedData> implements Comparable<EntityEvent<?>>, EntityIconResourceProvider {
 

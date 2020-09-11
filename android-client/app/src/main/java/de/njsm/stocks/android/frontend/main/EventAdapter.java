@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.events;
+package de.njsm.stocks.android.frontend.main;
 
 import android.content.res.Resources;
 import android.graphics.PorterDuff;

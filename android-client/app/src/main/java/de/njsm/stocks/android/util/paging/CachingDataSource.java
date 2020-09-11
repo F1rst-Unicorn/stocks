@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.business.data.activity;
+package de.njsm.stocks.android.util.paging;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PositionalDataSource;
@@ -25,6 +25,7 @@ import androidx.paging.PositionalDataSource;
 import java.util.Collections;
 import java.util.List;
 
+import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.util.Logger;
 
 public class CachingDataSource {

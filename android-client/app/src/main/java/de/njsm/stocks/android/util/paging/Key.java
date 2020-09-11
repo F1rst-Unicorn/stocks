@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.business.data.activity;
+package de.njsm.stocks.android.util.paging;
 
 import java.util.Arrays;
 

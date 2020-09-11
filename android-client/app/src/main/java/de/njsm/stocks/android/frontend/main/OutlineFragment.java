@@ -36,12 +36,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -72,6 +76,10 @@ public class OutlineFragment extends BaseFragment {
 
     private FoodViewModel foodViewModel;
 
+    private EventViewModel eventViewModel;
+
+    private SwipeRefreshLayout swiper;
+
     @Override
     public void onAttach(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);
@@ -93,26 +101,42 @@ public class OutlineFragment extends BaseFragment {
         if (!initialised) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(R.id.nav_fragment_startup);
         } else {
+
+            swiper = result.findViewById(R.id.fragment_outline_swipe);
             RefreshViewModel refresher = initialiseSwipeRefresh(result, R.id.fragment_outline_swipe, viewModelFactory);
             refresher.refresh();
+            MotionLayout l = result.findViewById(R.id.fragment_outline_motion_layout);
+            l.addTransitionListener(new MotionTransitionListener());
+
             setHasOptionsMenu(true);
-            NavigationView nav = requireActivity().findViewById(R.id.main_nav);
-            TextView view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_username);
-            view.setText(settings.getString(Config.USERNAME_CONFIG, ""));
-            view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_dev);
-            view.setText(settings.getString(Config.DEVICE_NAME_CONFIG, ""));
-            view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_server);
-            view.setText(settings.getString(Config.SERVER_NAME_CONFIG, ""));
+
+            writeUsernameToDrawer();
 
             FoodViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
             result.findViewById(R.id.fragment_outline_cardview).setOnClickListener(this::goToEatSoon);
             result.findViewById(R.id.fragment_outline_cardview2).setOnClickListener(this::goToEmptyFood);
-            result.findViewById(R.id.fragment_outline_cardview3).setOnClickListener(this::goToEvents);
             result.findViewById(R.id.fragment_outline_fab).setOnClickListener(v -> this.addFood(viewModel));
+
+            RecyclerView list = result.findViewById(R.id.fragment_outline_list);
+            list.setLayoutManager(new LinearLayoutManager(requireContext()));
+            eventViewModel = ViewModelProviders.of(this, viewModelFactory).get(EventViewModel.class);
+            EventAdapter adapter = new EventAdapter(getResources(), requireActivity().getTheme(), requireContext()::getString);
+            eventViewModel.getHistory().observe(getViewLifecycleOwner(), adapter::submitList);
+            list.setAdapter(adapter);
 
             foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
         }
         return result;
+    }
+
+    private void writeUsernameToDrawer() {
+        NavigationView nav = requireActivity().findViewById(R.id.main_nav);
+        TextView view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_username);
+        view.setText(settings.getString(Config.USERNAME_CONFIG, ""));
+        view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_dev);
+        view.setText(settings.getString(Config.DEVICE_NAME_CONFIG, ""));
+        view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_server);
+        view.setText(settings.getString(Config.SERVER_NAME_CONFIG, ""));
     }
 
     @Inject
@@ -128,11 +152,6 @@ public class OutlineFragment extends BaseFragment {
     private void goToEmptyFood(View view) {
         Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                 .navigate(R.id.action_nav_fragment_outline_to_nav_fragment_empty_food);
-    }
-
-    private void goToEvents(View view) {
-        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
-                .navigate(R.id.action_nav_fragment_outline_to_nav_fragment_events);
     }
 
     @Override
@@ -189,5 +208,24 @@ public class OutlineFragment extends BaseFragment {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
         });
+    }
+
+    private class MotionTransitionListener implements MotionLayout.TransitionListener {
+
+        @Override
+        public void onTransitionStarted(MotionLayout motionLayout, int i, int i1) {
+            OutlineFragment.this.swiper.setEnabled(false);
+        }
+
+        @Override
+        public void onTransitionCompleted(MotionLayout motionLayout, int i) {
+            OutlineFragment.this.swiper.setEnabled(i == R.id.fragment_outline_scene_start);
+        }
+
+        @Override
+        public void onTransitionChange(MotionLayout motionLayout, int i, int i1, float v) {}
+
+        @Override
+        public void onTransitionTrigger(MotionLayout motionLayout, int i, boolean b, float v) {}
     }
 }

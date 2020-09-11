@@ -190,5 +190,6 @@
     <string name="event_food_item_changed_location">A %s was moved from %s to %s.</string>
     <string name="event_food_item_changed_eat_by_addendum">It should now be consumed by %s instead of %s.</string>
     <string name="event_food_item_changed_eat_by">The expiration date of a %s was changed from %s to %s.</string>
+    <string name="title_recent_activity">Recent Activity</string>
 
 </resources>

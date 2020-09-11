@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.events;
+package de.njsm.stocks.android.frontend.main;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -34,7 +34,7 @@ public class EventViewModel extends ViewModel {
         this.eventRepository = eventRepository;
     }
 
-    public LiveData<PagedList<EntityEvent<?>>> getLocationHistory() {
-        return eventRepository.getLocationEvents();
+    public LiveData<PagedList<EntityEvent<?>>> getHistory() {
+        return eventRepository.getEvents();
     }
 }

@@ -80,13 +80,6 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_nav_fragment_outline_to_nav_fragment_events"
-            app:destination="@id/nav_fragment_events"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_users"
@@ -495,11 +488,6 @@
         <argument
             android:name="ticket"
             app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_fragment_events"
-        android:name="de.njsm.stocks.android.frontend.events.EventFragment"
-        tools:layout="@layout/template_swipe_list">
     </fragment>
     <action
         android:id="@+id/action_global_nav_fragment_settings"

@@ -55,7 +55,7 @@ public class ChangedFoodItemEvent extends ChangedEntityEvent<FoodItemWithFoodNam
                         Config.PRETTY_DATE_FORMAT.format(oldEntity.getEatByDate()),
                         Config.PRETTY_DATE_FORMAT.format(newEntity.getEatByDate()));
             } else {
-                template = stringResourceResolver.apply(R.string.event_food_item_changed_eat_by_addendum);
+                template = " " + stringResourceResolver.apply(R.string.event_food_item_changed_eat_by_addendum);
                 message = String.format(template,
                         Config.PRETTY_DATE_FORMAT.format(oldEntity.getEatByDate()),
                         Config.PRETTY_DATE_FORMAT.format(newEntity.getEatByDate()));

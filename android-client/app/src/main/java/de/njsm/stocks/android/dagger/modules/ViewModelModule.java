@@ -37,7 +37,7 @@ import de.njsm.stocks.android.frontend.device.UserDeviceViewModel;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.EmptyFoodViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
-import de.njsm.stocks.android.frontend.events.EventViewModel;
+import de.njsm.stocks.android.frontend.main.EventViewModel;
 import de.njsm.stocks.android.frontend.food.FoodToEatViewModel;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
