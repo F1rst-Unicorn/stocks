@@ -22,16 +22,19 @@ package de.njsm.stocks.android.network.server;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+
+import java.io.IOException;
+
 import de.njsm.stocks.android.error.StatusCodeException;
 import de.njsm.stocks.android.network.server.data.DataResponse;
 import de.njsm.stocks.android.network.server.data.Response;
 import de.njsm.stocks.android.repo.Synchroniser;
 import de.njsm.stocks.android.util.Logger;
 import fj.data.Validation;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-
-import java.io.IOException;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class StatusCodeCallback implements Callback<Response> {
 
@@ -111,13 +114,41 @@ public class StatusCodeCallback implements Callback<Response> {
     }
 
     private static StatusCode error(retrofit2.Response<? extends Response> r) {
-        logResponse(r);
         Response response = r.body();
 
         if (response != null)
             return response.status;
-        else
+        else if (r.errorBody() != null)
+            return unmarshalResponseOurselves(r);
+        else {
+            logResponse(r);
             return StatusCode.GENERAL_ERROR;
+        }
+    }
+
+    private static StatusCode unmarshalResponseOurselves(retrofit2.Response<? extends Response> r) {
+        Response response;
+
+        ResponseBody body = r.errorBody();
+        if (body == null) {
+            logResponse(r);
+            return StatusCode.GENERAL_ERROR;
+        }
+
+        try {
+            JacksonConverterFactory factory = JacksonConverterFactory.create();
+            response = (Response) factory.responseBodyConverter(Response.class, null, null).convert(body);
+        } catch (IOException | ClassCastException e) {
+            logResponse(r);
+            return StatusCode.GENERAL_ERROR;
+        }
+
+        if (response != null)
+            return response.status;
+        else {
+            logResponse(r);
+            return StatusCode.GENERAL_ERROR;
+        }
     }
 
     private static <T> void logResponse(retrofit2.Response<T> r) {

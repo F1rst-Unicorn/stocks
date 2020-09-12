@@ -180,6 +180,7 @@ public class ViewModelModule {
     @ViewModelKey(EventViewModel.class)
     ViewModel provideEventsViewModel(EventRepository repo) {
         EventViewModel result = new EventViewModel(repo);
+        result.init();
         return result;
     }
 }

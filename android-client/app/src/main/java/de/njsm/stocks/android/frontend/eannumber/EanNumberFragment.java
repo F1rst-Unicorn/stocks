@@ -53,10 +53,6 @@ public class EanNumberFragment extends BaseFragment {
 
     private EanNumberViewModel viewModel;
 
-    private FoodViewModel foodViewModel;
-
-    private RecyclerView list;
-
     private EanNumberAdapter adapter;
 
     private EanNumberBroadcastReceiver receiver;
@@ -64,7 +60,7 @@ public class EanNumberFragment extends BaseFragment {
     private EanNumberFragmentArgs input;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -74,22 +70,22 @@ public class EanNumberFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
-        list = result.findViewById(R.id.template_swipe_list_list);
+        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         assert getArguments() != null;
         input = EanNumberFragmentArgs.fromBundle(getArguments());
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EanNumberViewModel.class);
-        foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
+        FoodViewModel foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
         viewModel.init(input.getFoodId());
-        foodViewModel.getFood(input.getFoodId()).observe(this, f -> {
+        foodViewModel.getFood(input.getFoodId()).observe(getViewLifecycleOwner(), f -> {
             String title = getString(R.string.title_barcode_fragment, f.name);
             requireActivity().setTitle(title);
         });
 
         adapter = new EanNumberAdapter(viewModel.getData(), this::doNothing);
-        viewModel.getData().observe(this, v -> adapter.notifyDataSetChanged());
+        viewModel.getData().observe(getViewLifecycleOwner(), v -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         EanNumberDeletionInteractor deleter = new EanNumberDeletionInteractor(this, result, v -> adapter.notifyDataSetChanged(), viewModel::deleteEanNumber);

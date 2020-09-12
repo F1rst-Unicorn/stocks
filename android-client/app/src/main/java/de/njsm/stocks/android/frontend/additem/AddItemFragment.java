@@ -80,12 +80,8 @@ public class AddItemFragment extends BaseFragment {
 
     private ArrayAdapter<String> adapter;
 
-    private LiveData<Food> food;
-
-    private LiveData<List<Location>> locations;
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -112,18 +108,17 @@ public class AddItemFragment extends BaseFragment {
                 new ArrayList<>());
         location.setAdapter(adapter);
 
-        locations = locationViewModel.getLocations();
-        food = foodViewModel.getFood(input.getFoodId());
-        food.observe(this, f -> {
-            locations.observe(this, l -> {
-                Food food = this.food.getValue();
+        foodViewModel.initFood(input.getFoodId());
+        LiveData<Food> food = foodViewModel.getFood();
+        food.observe(getViewLifecycleOwner(), f -> {
+            locationViewModel.getLocations().observe(getViewLifecycleOwner(), l -> {
                 LiveData<Location> defaultLocation;
-                if (food != null && food.location != 0) {
-                    defaultLocation = locationViewModel.getLocation(food.location);
+                if (f != null && f.location != 0) {
+                    defaultLocation = locationViewModel.getLocation(f.location);
                 } else {
                     defaultLocation = locationViewModel.getLocationWithMostItemsOfType(input.getFoodId());
                 }
-                defaultLocation.observe(this, this::setDefaultLocation);
+                defaultLocation.observe(getViewLifecycleOwner(), this::setDefaultLocation);
                 List<String> data = l.stream().map(i -> i.name).collect(Collectors.toList());
                 adapter.clear();
                 adapter.addAll(data);
@@ -146,7 +141,7 @@ public class AddItemFragment extends BaseFragment {
 
     private void initialiseDatePickerFromExistingFood(AddItemFragmentArgs input) {
         LiveData<Instant> latestExpiration = viewModel.getLatestExpirationOf(input.getFoodId());
-        latestExpiration.observe(this, i -> {
+        latestExpiration.observe(getViewLifecycleOwner(), i -> {
             if (i != null) {
                 LocalDate date = LocalDate.from(i.atZone(ZoneId.systemDefault()));
                 initialiseDatePicker(date);
@@ -160,7 +155,7 @@ public class AddItemFragment extends BaseFragment {
     }
 
     private void setDefaultLocation(Location l) {
-        List<Location> data = locations.getValue();
+        List<Location> data = locationViewModel.getLocations().getValue();
         if (l != null && data != null) {
             int position = data.indexOf(l);
             location.setSelection(position);
@@ -168,7 +163,7 @@ public class AddItemFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_add_item_options, menu);
     }
 
@@ -211,7 +206,7 @@ public class AddItemFragment extends BaseFragment {
 
     private void sendItem(LocalDate finalDate, int locId) {
         Instant i = Instant.from(finalDate.atStartOfDay().atZone(ZoneId.of("UTC")));
-        Food f = food.getValue();
+        Food f = foodViewModel.getFood().getValue();
         if (f != null) {
             LiveData<StatusCode> result = viewModel.addItem(f.id, locId, i);
             result.observe(this, this::maybeShowAddError);
@@ -227,7 +222,7 @@ public class AddItemFragment extends BaseFragment {
 
     private int readLocationId() {
         int position = location.getSelectedItemPosition();
-        List<Location> data = locations.getValue();
+        List<Location> data = locationViewModel.getLocations().getValue();
         if (position == -1 || data == null || data.size() <= position)
             return 0;
         else

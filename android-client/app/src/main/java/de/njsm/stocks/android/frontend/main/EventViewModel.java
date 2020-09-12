@@ -30,11 +30,19 @@ public class EventViewModel extends ViewModel {
 
     private EventRepository eventRepository;
 
+    private LiveData<PagedList<EntityEvent<?>>> data;
+
     public EventViewModel(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 
+    public void init() {
+        if (data == null) {
+            data = eventRepository.getEvents();
+        }
+    }
+
     public LiveData<PagedList<EntityEvent<?>>> getHistory() {
-        return eventRepository.getEvents();
+        return data;
     }
 }

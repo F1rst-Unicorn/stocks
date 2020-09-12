@@ -35,6 +35,11 @@ public class FoodToEatViewModel extends FoodViewModel {
         super(foodRepository);
     }
 
+    @Override
+    public LiveData<List<FoodWithLatestItemView>> getCurrentFoodSubset() {
+        return data;
+    }
+
     public void init() {
         if (data == null) {
             data = foodRepository.getFoodToEat();

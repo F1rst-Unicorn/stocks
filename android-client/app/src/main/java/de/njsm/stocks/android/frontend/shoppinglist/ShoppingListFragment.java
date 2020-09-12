@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
@@ -52,10 +51,8 @@ public class ShoppingListFragment extends BaseFragment {
 
     private FoodToBuyViewModel viewModel;
 
-    private LiveData<List<FoodWithLatestItemView>> data;
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -69,16 +66,15 @@ public class ShoppingListFragment extends BaseFragment {
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodToBuyViewModel.class);
-        data = viewModel.getFoodToBuy();
 
         FoodEditInteractor editor = new FoodEditInteractor(this,
                 viewModel::renameFood,
                 viewModel::getFood);
         AmountAdapter adapter = new AmountAdapter(
-                data,
+                viewModel.getFoodToBuy(),
                 this::onClick,
                 v -> editInternally(v, viewModel.getFoodToBuy(), R.string.dialog_rename_food, (f,s) -> editor.observeEditing(f.mapToFood(), s)));
-        data.observe(this, i -> adapter.notifyDataSetChanged());
+        viewModel.getFoodToBuy().observe(getViewLifecycleOwner(), i -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         FoodToBuyInteractor buyInteractor = new FoodToBuyInteractor(this,
@@ -87,7 +83,7 @@ public class ShoppingListFragment extends BaseFragment {
                     return viewModel.setToBuyStatus(f, s);
                 },
                 viewModel::getFood);
-        addSwipeToDelete(list, data, R.drawable.ic_remove_shopping_cart_white_24, v -> buyInteractor.observeEditing(v.mapToFood(), false));
+        addSwipeToDelete(list, viewModel.getFoodToBuy(), R.drawable.ic_remove_shopping_cart_white_24, v -> buyInteractor.observeEditing(v.mapToFood(), false));
 
         result.findViewById(R.id.template_swipe_list_fab).setVisibility(View.GONE);
         initialiseSwipeRefresh(result, viewModelFactory);
@@ -97,7 +93,7 @@ public class ShoppingListFragment extends BaseFragment {
     private void onClick(View view) {
         AmountAdapter.ViewHolder holder = (AmountAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodWithLatestItemView> data = this.data.getValue();
+        List<FoodWithLatestItemView> data = viewModel.getFoodToBuy().getValue();
         if (data != null) {
             int id = data.get(position).id;
             ShoppingListFragmentDirections.ActionNavFragmentShoppingListToNavFragmentFoodItem args =

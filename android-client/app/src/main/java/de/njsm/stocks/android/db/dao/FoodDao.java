@@ -187,6 +187,9 @@ public abstract class FoodDao {
                 "and f.valid_time_start <= " + NOW +
                 "and " + NOW + " < f.valid_time_end " +
                 "and f.transaction_time_end = :infinity " +
+                "and i.valid_time_start <= " + NOW +
+                "and " + NOW + " < i.valid_time_end " +
+                "and i.transaction_time_end = :infinity " +
                 "group by f.name " +
             "union " +
                 "select f._id as _id, f.version as version, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, 0 as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +

@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -57,7 +58,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private Executor executor;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull  Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -146,9 +147,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private boolean clearSearchHistory(Preference preference) {
-        executor.execute(() -> {
-            RecentSearchSuggestionsProvider.clearSearchHistory(requireContext());
-        });
+        executor.execute(() -> RecentSearchSuggestionsProvider.clearSearchHistory(requireContext()));
         return true;
     }
 }

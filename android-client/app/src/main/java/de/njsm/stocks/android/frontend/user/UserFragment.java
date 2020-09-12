@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -34,6 +35,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
@@ -43,12 +49,7 @@ import de.njsm.stocks.android.frontend.util.NameValidator;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-import javax.inject.Inject;
-import java.util.List;
-
 public class UserFragment extends BaseFragment {
-
-    private RecyclerView list;
 
     RecyclerView.Adapter<UserAdapter.ViewHolder> adapter;
 
@@ -57,7 +58,7 @@ public class UserFragment extends BaseFragment {
     private ViewModelProvider.Factory viewModelFactory;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -67,13 +68,13 @@ public class UserFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
-        list = result.findViewById(R.id.template_swipe_list_list);
+        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
 
         adapter = new UserAdapter(viewModel.getUsers(), this::onListItemClick);
-        viewModel.getUsers().observe(this, u -> adapter.notifyDataSetChanged());
+        viewModel.getUsers().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         UserDeletionInteractor interactor = new UserDeletionInteractor(

@@ -76,8 +76,6 @@ public class OutlineFragment extends BaseFragment {
 
     private FoodViewModel foodViewModel;
 
-    private EventViewModel eventViewModel;
-
     private SwipeRefreshLayout swiper;
 
     @Override
@@ -119,7 +117,7 @@ public class OutlineFragment extends BaseFragment {
 
             RecyclerView list = result.findViewById(R.id.fragment_outline_list);
             list.setLayoutManager(new LinearLayoutManager(requireContext()));
-            eventViewModel = ViewModelProviders.of(this, viewModelFactory).get(EventViewModel.class);
+            EventViewModel eventViewModel = ViewModelProviders.of(this, viewModelFactory).get(EventViewModel.class);
             EventAdapter adapter = new EventAdapter(getResources(), requireActivity().getTheme(), requireContext()::getString);
             eventViewModel.getHistory().observe(getViewLifecycleOwner(), adapter::submitList);
             list.setAdapter(adapter);
@@ -155,7 +153,7 @@ public class OutlineFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_outline_options, menu);
 
         SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
@@ -167,19 +165,18 @@ public class OutlineFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.fragment_outline_options_scan:
-                if (! probeForCameraPermission()) {
-                    return true;
-                }
-                if (receiver == null) {
-                    receiver = new ScanBroadcaseReceiver(this::goToScannedFood);
-                }
-                IntentFilter filter = new IntentFilter(MainActivity.ACTION_QR_CODE_SCANNED);
-                LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiver, filter);
-                LOG.i("Starting QR code reader");
-                IntentIntegrator integrator = new IntentIntegrator(getActivity());
-                integrator.initiateScan();
+        if (item.getItemId() == R.id.fragment_outline_options_scan) {
+            if (!probeForCameraPermission()) {
+                return true;
+            }
+            if (receiver == null) {
+                receiver = new ScanBroadcaseReceiver(this::goToScannedFood);
+            }
+            IntentFilter filter = new IntentFilter(MainActivity.ACTION_QR_CODE_SCANNED);
+            LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiver, filter);
+            LOG.i("Starting QR code reader");
+            IntentIntegrator integrator = new IntentIntegrator(getActivity());
+            integrator.initiateScan();
         }
         return true;
     }

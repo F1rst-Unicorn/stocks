@@ -35,6 +35,12 @@ public class FoodViewModel extends ViewModel {
 
     protected FoodRepository foodRepository;
 
+    private LiveData<Food> singleFood;
+
+    private LiveData<List<Food>> allFood;
+
+    protected LiveData<List<FoodWithLatestItemView>> foodByLocation;
+
     @Inject
     public FoodViewModel(FoodRepository foodRepository) {
         this.foodRepository = foodRepository;
@@ -46,6 +52,14 @@ public class FoodViewModel extends ViewModel {
 
     public LiveData<StatusCode> deleteFood(Food item) {
         return foodRepository.deleteFood(item);
+    }
+
+    public void initFood(int foodId) {
+        singleFood = foodRepository.getFood(foodId);
+    }
+
+    public LiveData<Food> getFood() {
+        return singleFood;
     }
 
     public LiveData<Food> getFood(int id) {
@@ -60,12 +74,28 @@ public class FoodViewModel extends ViewModel {
         return foodRepository.editToBuyStatus(item, status);
     }
 
-    public LiveData<List<FoodWithLatestItemView>> getFoodByLocation(int location) {
-        return foodRepository.getFoodByLocation(location);
+    public void initFoodByLocation(int location) {
+        if (foodByLocation == null) {
+            foodByLocation = foodRepository.getFoodByLocation(location);
+        }
     }
 
-    public LiveData<List<Food>> getFood() {
-        return foodRepository.getFood();
+    public LiveData<List<FoodWithLatestItemView>> getCurrentFoodSubset() {
+        return foodByLocation;
+    }
+
+    public LiveData<List<FoodWithLatestItemView>> getFoodByLocation() {
+        return foodByLocation;
+    }
+
+    public void initAllFood() {
+        if (allFood == null) {
+            allFood = foodRepository.getFood();
+        }
+    }
+
+    public LiveData<List<Food>> getAllFood() {
+        return allFood;
     }
 
     public LiveData<Food> getFoodByEanNumber(String s) {

@@ -94,7 +94,7 @@
     <string name="dialog_register_key">Registering key</string>
     <string name="dialog_wrong_fpr">Wrong fingerprint</string>
     <string name="dialog_ticket_reject">Server rejected ticket</string>
-    <string name="dialog_server_trouble">Server is in trouble.Contact your admin.</string>
+    <string name="dialog_server_trouble">Server is in trouble. Contact your admin.</string>
     <string name="dialog_invalid_answer">Got invalid answer from server</string>
     <string name="dialog_cert_unreadable">Certificate is unreadable</string>
     <string name="dialog_retry">RETRY</string>
@@ -119,9 +119,9 @@
     <string name="dialog_done">Task successful</string>
     <string name="dialog_invalid_input">Invalid input</string>
     <string name="dialog_not_found">Object already deleted by someone else</string>
-    <string name="dialog_delete_but_edited">"The object was changed in the meantime.Refresh and check if you really want to delete it."</string>
-    <string name="dialog_delete_but_dependants">The object can\'t be deleted because it is still linked to other objects.E.g.a location still contains food items.</string>
-    <string name="dialog_edit_but_edited">The object was edited in the meantime.Refresh and check your change again.</string>
+    <string name="dialog_delete_but_edited">The object was changed in the meantime. Refresh and check if you really want to delete it.</string>
+    <string name="dialog_delete_but_dependants">The object can\'t be deleted because it is still linked to other objects. E.g. a location still contains food items.</string>
+    <string name="dialog_edit_but_edited">The object was edited in the meantime. Refresh and check your change again.</string>
     <string name="dialog_create_device">Creating new device</string>
     <string name="dialog_error">An unforeseen error has occurred.</string>
     <string name="dialog_user_was_deleted">User was deleted</string>
@@ -132,9 +132,9 @@
     <string name="dialog_default_location">Set default location</string>
     <string name="dialog_food_was_deleted">Food was deleted</string>
     <string name="dialog_rename_food">Rename Food</string>
-    <string name="dialog_item_location_changed" >The item was moved from %1$s to %2$s.Do you still want to eat it?</string>
-    <string name="dialog_item_date_changed" >The item\'s expiration date was changed from %1$s to %2$s.Do you still want to eat it?</string>
-    <string name="dialog_item_both_changed" >The item was moved from %1$s to %2$s and the expiration date was changed from %3s to %4$s.Do you still want to eat it?</string>
+    <string name="dialog_item_location_changed" >The item was moved from %1$s to %2$s. Do you still want to eat it?</string>
+    <string name="dialog_item_date_changed" >The item\'s expiration date was changed from %1$s to %2$s. Do you still want to eat it?</string>
+    <string name="dialog_item_both_changed" >The item was moved from %1$s to %2$s and the expiration date was changed from %3s to %4$s. Do you still want to eat it?</string>
     <string name="dialog_ean_was_deleted">Barcode was deleted</string>
     <string name="dialog_food_item_was_deleted">Food was eaten</string>
     <string name="dialog_food_was_removed_from_shopping_list">Food was removed from shopping list</string>
@@ -143,11 +143,11 @@
     <string name="error_no_id">ID has to be filled in</string>
     <string name="error_no_location_present">Please create a location first</string>
     <string name="error_wrong_name_format">Name may not contain: $ =</string>
-    <string name="error_location_foreign_key_violation">%1$s still contains food items.Do you want to delete all the items, too?</string>
-    <string name="error_location_changed">The location was renamed from %1$s to %2$s.Do you still want to delete it?</string>
-    <string name="error_location_changed_twice">The location with original name %1$s was renamed to %2$s by you and to %3$s by someone else.Do you want to apply your name?</string>
-    <string name="error_food_changed" >The food was renamed from %1$s to %2$s.Do you still want to delete it?</string>
-    <string name="error_food_changed_twice" >The food was with original name %1$s was renamed to %2$s by you and to %3$s by someone else.Do you want to apply your name?</string>
+    <string name="error_location_foreign_key_violation">%1$s still contains food items. Do you want to delete all the items, too?</string>
+    <string name="error_location_changed">The location was renamed from %1$s to %2$s. Do you still want to delete it?</string>
+    <string name="error_location_changed_twice">The location with original name %1$s was renamed to %2$s by you and to %3$s by someone else. Do you want to apply your name?</string>
+    <string name="error_food_changed" >The food was renamed from %1$s to %2$s. Do you still want to delete it?</string>
+    <string name="error_food_changed_twice" >The food was with original name %1$s was renamed to %2$s by you and to %3$s by someone else. Do you want to apply your name?</string>
 
     <string name="text_show_qr_code_friend">Let your new device read this code:</string>
     <string name="text_amount">Amount:</string>
@@ -155,7 +155,7 @@
     <string name="text_eat_by_date">Date of expiry:</string>
     <string name="text_no_crash_logs">App is running stable.</string>
     <string name="text_no_search_result">No food found</string>
-    <string name="text_camera_explanation">Stocks needs the camera permission to scan bar codes of food.During setup it also reads the ticket from your friend.Both are convenient but not required for the app to work.</string>
+    <string name="text_camera_explanation">Stocks needs the camera permission to scan bar codes of food. During setup it also reads the ticket from your friend. Both are convenient but not required for the app to work.</string>
 
     <string name="desc_profile_picture">The user\'s profile picture</string>
     <string name="desc_cutlery">Cutlery</string>

@@ -76,6 +76,9 @@ public abstract class LocationDao {
             "and l.valid_time_start <= " + NOW +
             "and " + NOW + "< l.valid_time_end " +
             "and l.transaction_time_end = :infinity " +
+            "and i.valid_time_start <= " + NOW +
+            "and " + NOW + "< i.valid_time_end " +
+            "and i.transaction_time_end = :infinity " +
             "group by l._id " +
             "order by amount desc " +
             "limit 1")
