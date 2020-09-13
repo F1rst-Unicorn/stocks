@@ -19,8 +19,6 @@
 
 package de.njsm.stocks.android.business.data.activity;
 
-import androidx.annotation.Nullable;
-
 import org.threeten.bp.Instant;
 
 import java.util.function.IntFunction;
@@ -38,17 +36,19 @@ public abstract class EntityEvent<T extends VersionedData> implements Comparable
 
     public abstract int getEventIconResource();
 
-    @Override
-    public int compareTo(EntityEvent<?> o) {
-        return getTime().compareTo(o.getTime()) * -1;
+    public abstract VersionedData getEntity();
+
+    public boolean equals(EntityEvent<?> obj) {
+        VersionedData me = getEntity();
+        VersionedData other = obj.getEntity();
+        return me.id == other.id &&
+                me.version == other.version &&
+                me.transactionTimeStart.equals(other.transactionTimeStart);
     }
 
     @Override
-    public boolean equals(@Nullable Object obj) {
-        if (obj instanceof EntityEvent<?>)
-            return compareTo((EntityEvent<?>) obj) == 0;
-        else
-            return false;
+    public int compareTo(EntityEvent<?> o) {
+        return getTime().compareTo(o.getTime()) * -1;
     }
 
     public void setKey(Key key) {

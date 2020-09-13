@@ -43,11 +43,15 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.util.Config;
 
+import static android.view.View.*;
+
 public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.ViewHolder> {
 
     private final IntFunction<String> stringResourceProvider;
 
-    private final View header;
+    private final OnClickListener goToEatSoon;
+
+    private final OnClickListener goToEmptyFood;
 
     private Resources resources;
 
@@ -99,15 +103,17 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
         }
     }
 
-    EventAdapter(View header,
-                 Resources resources,
+    EventAdapter(Resources resources,
                  Resources.Theme theme,
-                 IntFunction<String> stringResourceProvider) {
+                 IntFunction<String> stringResourceProvider,
+                 OnClickListener goToEatSoon,
+                 OnClickListener goToEmptyFood) {
         super(DIFF_CALLBACK);
         this.resources = resources;
         this.theme = theme;
         this.stringResourceProvider = stringResourceProvider;
-        this.header = header;
+        this.goToEatSoon = goToEatSoon;
+        this.goToEmptyFood = goToEmptyFood;
     }
 
     @Override
@@ -122,7 +128,10 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int type) {
         if (type == TYPE_HEADER) {
-            return new ViewHolderHeader(this.header);
+            View header = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_outline_header, viewGroup, false);
+            header.findViewById(R.id.fragment_outline_header_cardview).setOnClickListener(goToEatSoon);
+            header.findViewById(R.id.fragment_outline_header_cardview2).setOnClickListener(goToEmptyFood);
+            return new ViewHolderHeader(header);
         } else {
             RelativeLayout v = (RelativeLayout) LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.item_event, viewGroup, false);
@@ -175,7 +184,7 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
 
                 @Override
                 public boolean areContentsTheSame(@NonNull EntityEvent<?> oldItem, @NonNull EntityEvent<?> newItem) {
-                    return oldItem.equals(newItem);
+                    return true;
                 }
             };
 

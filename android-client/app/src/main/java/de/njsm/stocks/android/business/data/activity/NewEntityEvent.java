@@ -33,6 +33,11 @@ public abstract class NewEntityEvent<T extends VersionedData> extends EntityEven
     }
 
     @Override
+    public VersionedData getEntity() {
+        return entity;
+    }
+
+    @Override
     public Instant getTime() {
         return entity.transactionTimeStart;
     }

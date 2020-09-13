@@ -45,7 +45,7 @@ public abstract class EventDao {
             "l2._id as version2__id, l2.version as version2_version, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end ";
 
     private static final String ON_CHRONOLOGY =
-            "on l1.transaction_time_start = l2.transaction_time_start and l1.version + 1 = l2.version ";
+            "on l1.transaction_time_start = l2.transaction_time_start and l1.version + 1 = l2.version and l1._id = l2._id ";
 
     private static final String WHERE_VALID =
             "where not (l1.version != 0 and l2._id is null and l1.transaction_time_end != :infinity) " +

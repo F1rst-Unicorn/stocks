@@ -36,6 +36,11 @@ public abstract class ChangedEntityEvent<T extends VersionedData> extends Entity
     }
 
     @Override
+    public VersionedData getEntity() {
+        return oldEntity;
+    }
+
+    @Override
     public Instant getTime() {
         return oldEntity.transactionTimeStart;
     }

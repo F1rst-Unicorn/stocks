@@ -58,7 +58,7 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
                     i++;
                     continue;
                 }
-                if (min == null || min.compareTo(current) > 0) {
+                if (min == null || min.compareTo(current) >= 0) {
                     min = current;
                     minIndex = i;
                 }
@@ -99,7 +99,9 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
                     i++;
                     continue;
                 }
-                if (pivot.compareTo(current) < 0 && (min == null || min.compareTo(current) > 0)) {
+                if (!pivot.equals(current) &&
+                        pivot.compareTo(current) <= 0 &&
+                        (min == null || min.compareTo(current) >= 0)) {
                     min = current;
                     minIndex = i;
                 }
@@ -140,7 +142,9 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
                     i++;
                     continue;
                 }
-                if (pivot.compareTo(current) > 0 && (max == null || max.compareTo(current) < 0)) {
+                if (!pivot.equals(current) &&
+                        pivot.compareTo(current) >= 0 &&
+                        (max == null || max.compareTo(current) <= 0)) {
                     max = current;
                     maxIndex = i;
                 }

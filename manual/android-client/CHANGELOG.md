@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixed
+
+* STOCKS-103: Fix crash when opening the app because of illegally reused views.
+
+* STOCKS-103: Display missing information about recent events.
+
 ## [3.6.0.0]
 
 ### Added

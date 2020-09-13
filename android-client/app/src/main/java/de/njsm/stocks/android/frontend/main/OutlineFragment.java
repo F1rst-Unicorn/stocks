@@ -113,10 +113,7 @@ public class OutlineFragment extends BaseFragment {
             RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
             list.setLayoutManager(new LinearLayoutManager(requireContext()));
             EventViewModel eventViewModel = ViewModelProviders.of(this, viewModelFactory).get(EventViewModel.class);
-            View header = inflater.inflate(R.layout.fragment_outline_header, container, false);
-            header.findViewById(R.id.fragment_outline_header_cardview).setOnClickListener(this::goToEatSoon);
-            header.findViewById(R.id.fragment_outline_header_cardview2).setOnClickListener(this::goToEmptyFood);
-            EventAdapter adapter = new EventAdapter(header, getResources(), requireActivity().getTheme(), requireContext()::getString);
+            EventAdapter adapter = new EventAdapter(getResources(), requireActivity().getTheme(), requireContext()::getString, this::goToEatSoon, this::goToEmptyFood);
             eventViewModel.getHistory().observe(getViewLifecycleOwner(), adapter::submitList);
             list.setAdapter(adapter);
 

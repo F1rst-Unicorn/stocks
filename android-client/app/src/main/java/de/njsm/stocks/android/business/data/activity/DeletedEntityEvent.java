@@ -33,6 +33,11 @@ public abstract class DeletedEntityEvent<T extends VersionedData> extends Entity
     }
 
     @Override
+    public VersionedData getEntity() {
+        return entity;
+    }
+
+    @Override
     public Instant getTime() {
         return entity.transactionTimeStart;
     }
