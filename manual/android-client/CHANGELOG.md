@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.6.0.1]
+
 ### Fixed
 
 * STOCKS-103: Fix crash when opening the app because of illegally reused views.
