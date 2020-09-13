@@ -36,8 +36,6 @@ public class SearchViewModel extends FoodViewModel {
 
     private LiveData<List<FoodWithLatestItemView>> data;
 
-    protected FoodRepository foodRepository;
-
     @Inject
     public SearchViewModel(FoodRepository foodRepository) {
         super(foodRepository);

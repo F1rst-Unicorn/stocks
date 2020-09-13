@@ -49,16 +49,16 @@ public class FoodItemAddTest {
                 .click(0)
                 .addItems()
                 .selectLocation(2)
-                .assertLocation("Basement")
+                .assertLocation("Freezer")
                 .addManyItems(numberOfItems)
                 .selectDate(2100, 12, 31)
                 .addAndFinish();
 
         for (int i = 0; i < numberOfItems; i++) {
-            finalScreen.assertItem(i, "Jack", "android-client", LocalDate.now(), "Basement");
+            finalScreen.assertItem(i, "Jack", "android-client", LocalDate.now(), "Freezer");
         }
 
-        finalScreen.assertItem(numberOfItems, "Jack", "android-client", "31.12.00", "Basement");
+        finalScreen.assertItem(numberOfItems, "Jack", "android-client", "31.12.00", "Freezer");
     }
 
     @Test

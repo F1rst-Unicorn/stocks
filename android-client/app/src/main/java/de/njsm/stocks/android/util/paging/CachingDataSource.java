@@ -19,7 +19,10 @@
 
 package de.njsm.stocks.android.util.paging;
 
+import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
+import androidx.paging.DataSource;
 import androidx.paging.PositionalDataSource;
 
 import java.util.Collections;
@@ -127,5 +130,15 @@ public class CachingDataSource {
         ;
 
         public abstract int getLeftEnd(int position, int pageSize);
+    }
+
+    @AnyThread
+    public void addInvalidatedCallback(@NonNull DataSource.InvalidatedCallback onInvalidatedCallback) {
+        source.addInvalidatedCallback(onInvalidatedCallback);
+    }
+
+    @WorkerThread
+    public boolean isInvalid() {
+        return source.isInvalid();
     }
 }

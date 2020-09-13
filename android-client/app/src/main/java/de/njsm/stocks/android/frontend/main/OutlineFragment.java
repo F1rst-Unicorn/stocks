@@ -36,7 +36,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
-import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -95,30 +94,29 @@ public class OutlineFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.fragment_outline, container, false);
+        View result = inflater.inflate(R.layout.template_swipe_list, container, false);
         if (!initialised) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(R.id.nav_fragment_startup);
         } else {
 
-            swiper = result.findViewById(R.id.fragment_outline_swipe);
-            RefreshViewModel refresher = initialiseSwipeRefresh(result, R.id.fragment_outline_swipe, viewModelFactory);
+            swiper = result.findViewById(R.id.template_swipe_list_swipe);
+            RefreshViewModel refresher = initialiseSwipeRefresh(result, R.id.template_swipe_list_swipe, viewModelFactory);
             refresher.refresh();
-            MotionLayout l = result.findViewById(R.id.fragment_outline_motion_layout);
-            l.addTransitionListener(new MotionTransitionListener());
 
             setHasOptionsMenu(true);
 
             writeUsernameToDrawer();
 
             FoodViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-            result.findViewById(R.id.fragment_outline_cardview).setOnClickListener(this::goToEatSoon);
-            result.findViewById(R.id.fragment_outline_cardview2).setOnClickListener(this::goToEmptyFood);
-            result.findViewById(R.id.fragment_outline_fab).setOnClickListener(v -> this.addFood(viewModel));
+            result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(v -> this.addFood(viewModel));
 
-            RecyclerView list = result.findViewById(R.id.fragment_outline_list);
+            RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
             list.setLayoutManager(new LinearLayoutManager(requireContext()));
             EventViewModel eventViewModel = ViewModelProviders.of(this, viewModelFactory).get(EventViewModel.class);
-            EventAdapter adapter = new EventAdapter(getResources(), requireActivity().getTheme(), requireContext()::getString);
+            View header = inflater.inflate(R.layout.fragment_outline_header, container, false);
+            header.findViewById(R.id.fragment_outline_header_cardview).setOnClickListener(this::goToEatSoon);
+            header.findViewById(R.id.fragment_outline_header_cardview2).setOnClickListener(this::goToEmptyFood);
+            EventAdapter adapter = new EventAdapter(header, getResources(), requireActivity().getTheme(), requireContext()::getString);
             eventViewModel.getHistory().observe(getViewLifecycleOwner(), adapter::submitList);
             list.setAdapter(adapter);
 
@@ -205,24 +203,5 @@ public class OutlineFragment extends BaseFragment {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
         });
-    }
-
-    private class MotionTransitionListener implements MotionLayout.TransitionListener {
-
-        @Override
-        public void onTransitionStarted(MotionLayout motionLayout, int i, int i1) {
-            OutlineFragment.this.swiper.setEnabled(false);
-        }
-
-        @Override
-        public void onTransitionCompleted(MotionLayout motionLayout, int i) {
-            OutlineFragment.this.swiper.setEnabled(i == R.id.fragment_outline_scene_start);
-        }
-
-        @Override
-        public void onTransitionChange(MotionLayout motionLayout, int i, int i1, float v) {}
-
-        @Override
-        public void onTransitionTrigger(MotionLayout motionLayout, int i, boolean b, float v) {}
     }
 }

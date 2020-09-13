@@ -45,9 +45,6 @@ public abstract class EntityEvent<T extends VersionedData> implements Comparable
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (obj == null)
-            return false;
-
         if (obj instanceof EntityEvent<?>)
             return compareTo((EntityEvent<?>) obj) == 0;
         else

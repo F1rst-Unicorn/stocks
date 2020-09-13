@@ -23,14 +23,16 @@ import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.android.db.entities.Positionable;
 
 import java.util.List;
+
+import de.njsm.stocks.android.db.entities.Positionable;
 
 public class SwipeCallback<T extends Positionable> extends ItemTouchHelper.SimpleCallback {
 

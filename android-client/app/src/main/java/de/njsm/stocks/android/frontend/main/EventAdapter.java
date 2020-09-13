@@ -24,12 +24,14 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
@@ -41,13 +43,26 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.util.Config;
 
-public class EventAdapter extends PagedListAdapter<EntityEvent<?>, EventAdapter.ViewHolder> {
+public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.ViewHolder> {
 
     private final IntFunction<String> stringResourceProvider;
+
+    private final View header;
 
     private Resources resources;
 
     private Resources.Theme theme;
+
+    private static final int TYPE_HEADER = 0;
+
+    private static final int TYPE_ITEM = 1;
+
+    public static class ViewHolderHeader extends RecyclerView.ViewHolder {
+
+        public ViewHolderHeader(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -78,37 +93,69 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, EventAdapter.
         public void setEntityIcon(Drawable icon) {
             this.entityIcon.setImageDrawable(icon);
         }
+
         public void setEventIcon(Drawable icon) {
             this.eventIcon.setImageDrawable(icon);
         }
     }
 
-    EventAdapter(Resources resources,
+    EventAdapter(View header,
+                 Resources resources,
                  Resources.Theme theme,
                  IntFunction<String> stringResourceProvider) {
         super(DIFF_CALLBACK);
         this.resources = resources;
         this.theme = theme;
         this.stringResourceProvider = stringResourceProvider;
+        this.header = header;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0)
+            return TYPE_HEADER;
+        else
+            return TYPE_ITEM;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        RelativeLayout v = (RelativeLayout) LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_event, viewGroup, false);
-        ViewHolder result =  new EventAdapter.ViewHolder(v);
-        v.setTag(result);
-        return result;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int type) {
+        if (type == TYPE_HEADER) {
+            return new ViewHolderHeader(this.header);
+        } else {
+            RelativeLayout v = (RelativeLayout) LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.item_event, viewGroup, false);
+            ViewHolder result = new EventAdapter.ViewHolder(v);
+            v.setTag(result);
+            return result;
+        }
+    }
+
+    @Nullable
+    @Override
+    protected EntityEvent<?> getItem(int position) {
+        if (position == 0)
+            return null;
+        return super.getItem(position - 1);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public int getItemCount() {
+        return super.getItemCount();
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (position == 0)
+            return;
+
+        ViewHolder vh = (ViewHolder) holder;
         EntityEvent<?> event = getItem(position);
         if (event != null) {
-            bindConcrete(holder, event);
+            bindConcrete(vh, event);
         } else {
-            bindVoid(holder);
+            bindVoid(vh);
         }
     }
 

@@ -27,7 +27,32 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.StringBuilderWriter;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.util.Locale;
+
+import javax.security.auth.x500.X500Principal;
+
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.dagger.modules.WebModule;
 import de.njsm.stocks.android.error.TextResourceException;
@@ -38,26 +63,9 @@ import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.ExceptionHandler;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.Principals;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.StringBuilderWriter;
-import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import org.bouncycastle.pkcs.PKCS10CertificationRequest;
-import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-
-import javax.security.auth.x500.X500Principal;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.util.Locale;
 
 public class SetupHandler extends Handler {
 
@@ -129,6 +137,7 @@ public class SetupHandler extends Handler {
 
     private void cleanup(Exception e, int p) {
         LOG.e("Caught exception during initialisation", e);
+        LOG.e("Caught exception during initialisation " + e.getMessage());
         new File(c.getFilesDir().getAbsolutePath() + "/keystore").delete();
         broadcastTermination(R.string.title_error, p, false);
     }

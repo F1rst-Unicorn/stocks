@@ -36,6 +36,7 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
 
     public MergingDataSource(List<CachingDataSource> sources) {
         this.sources = sources;
+        sources.forEach(v -> v.addInvalidatedCallback(this::invalidate));
     }
 
     @Override
@@ -164,5 +165,10 @@ public class MergingDataSource extends ItemKeyedDataSource<Key, EntityEvent<?>> 
     @Override
     public Key getKey(@NonNull EntityEvent<?> item) {
         return item.getKey();
+    }
+
+    @Override
+    public boolean isInvalid() {
+        return sources.stream().anyMatch(CachingDataSource::isInvalid) || super.isInvalid();
     }
 }
