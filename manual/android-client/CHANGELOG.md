@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.6.0.0]
+
 ### Added
 
 * STOCKS-103: Support for bitemporal data. Save network bandwidth by only
