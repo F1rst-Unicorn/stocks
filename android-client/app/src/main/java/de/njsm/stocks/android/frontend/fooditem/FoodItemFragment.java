@@ -73,10 +73,8 @@ public class FoodItemFragment extends BaseFragment {
 
     private FoodItemFragmentArgs input;
 
-    private LiveData<Food> selfFood;
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -97,13 +95,13 @@ public class FoodItemFragment extends BaseFragment {
         eanNumberViewModel = ViewModelProviders.of(this, viewModelFactory).get(EanNumberViewModel.class);
         viewModel.init(input.getFoodId());
         foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-        selfFood = foodViewModel.getFood(input.getFoodId());
-        selfFood.observe(this, u -> requireActivity().setTitle(u == null ? "" : u.name));
-        selfFood.observe(this, u -> requireActivity().invalidateOptionsMenu());
+        foodViewModel.initFood(input.getFoodId());
+        foodViewModel.getFood().observe(getViewLifecycleOwner(), u -> requireActivity().setTitle(u == null ? "" : u.name));
+        foodViewModel.getFood().observe(getViewLifecycleOwner(), u -> requireActivity().invalidateOptionsMenu());
 
         adapter = new FoodItemAdapter(getResources(), requireActivity().getTheme(),
                 viewModel.getFoodItems(), this::editItem);
-        viewModel.getFoodItems().observe(this, v -> adapter.notifyDataSetChanged());
+        viewModel.getFoodItems().observe(getViewLifecycleOwner(), v -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         FoodItemDeletionInteractor interactor = new FoodItemDeletionInteractor(
@@ -120,14 +118,14 @@ public class FoodItemFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_food_item_options, menu);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.fragment_food_item_options_shopping);
-        Food f = selfFood.getValue();
+        Food f = foodViewModel.getFood().getValue();
         if (f != null) {
             if (f.toBuy) {
                 item.setIcon(R.drawable.ic_remove_shopping_cart_white_24);
@@ -142,7 +140,7 @@ public class FoodItemFragment extends BaseFragment {
     private void maybeAddEanCode(String eanNumber) {
         if (eanNumber != null && ! eanNumber.isEmpty()) {
             eanNumberViewModel.addEanNumber(eanNumber, input.getFoodId())
-                    .observe(this, this::maybeShowAddError);
+                    .observe(getViewLifecycleOwner(), this::maybeShowAddError);
         }
         getArguments().remove("eanNumber");
     }
@@ -178,7 +176,7 @@ public class FoodItemFragment extends BaseFragment {
                         .navigate(args);
                 break;
             case R.id.fragment_food_item_options_shopping:
-                Food f = selfFood.getValue();
+                Food f = foodViewModel.getFood().getValue();
                 if (f != null) {
                     LiveData<StatusCode> code = foodViewModel.setToBuyStatus(f, ! f.toBuy);
                     code.observe(this, c -> {
@@ -213,7 +211,7 @@ public class FoodItemFragment extends BaseFragment {
             adapter.addAll(data);
             adapter.notifyDataSetChanged();
 
-            Food food = selfFood.getValue();
+            Food food = foodViewModel.getFood().getValue();
             if (food != null && food.location != 0) {
                 LiveData<Location> liveData = locationViewModel.getLocation(food.location);
                 liveData.observe(this, loc -> {
@@ -229,17 +227,21 @@ public class FoodItemFragment extends BaseFragment {
                 .setTitle(getString(R.string.dialog_default_location))
                 .setView(spinner)
                 .setPositiveButton(R.string.dialog_ok, (dialog, whichButton) -> {
-                    Food food = selfFood.getValue();
+                    Food food = foodViewModel.getFood().getValue();
                     List<Location> locations = locationData.getValue();
                     int position = spinner.getSelectedItemPosition();
-                    if (food != null && locations != null && position >= 0 && position < locations.size()) {
+                    if (food != null
+                            && locations != null
+                            && position >= 0
+                            && position < locations.size()
+                            && locations.get(position).id != food.location) {
                         LiveData<StatusCode> result = foodViewModel.setFoodDefaultLocation(food, locations.get(position).id);
                         result.observe(this, this::maybeShowEditError);
                     }
                 })
                 .setNeutralButton(R.string.dialog_remove, (dialog, whichButton) -> {
-                    Food food = selfFood.getValue();
-                    if (food != null) {
+                    Food food = foodViewModel.getFood().getValue();
+                    if (food != null && food.location != 0) {
                         LiveData<StatusCode> result = foodViewModel.setFoodDefaultLocation(food, 0);
                         result.observe(this, this::maybeShowEditError);
                     }
@@ -253,7 +255,7 @@ public class FoodItemFragment extends BaseFragment {
         view.setMinValue(0);
         view.setMaxValue(Integer.MAX_VALUE);
         view.setWrapSelectorWheel(false);
-        Food f = selfFood.getValue();
+        Food f = foodViewModel.getFood().getValue();
         if (f != null) {
             view.setValue(f.expirationOffset);
         } else {
@@ -263,7 +265,7 @@ public class FoodItemFragment extends BaseFragment {
                 .setTitle(getString(R.string.dialog_default_expiration_offset))
                 .setView(view)
                 .setPositiveButton(R.string.dialog_ok, (dialog, whichButton) -> {
-                    Food food = selfFood.getValue();
+                    Food food = foodViewModel.getFood().getValue();
                     int newOffset = view.getValue();
                     if (food != null && food.expirationOffset != newOffset) {
                         LiveData<StatusCode> result = foodViewModel.setFoodExpirationOffset(food, newOffset);

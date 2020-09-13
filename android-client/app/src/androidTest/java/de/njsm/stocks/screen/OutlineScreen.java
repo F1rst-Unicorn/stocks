@@ -43,14 +43,14 @@ public class OutlineScreen extends AbstractScreen {
     }
 
     public OutlineScreen addFoodType(String name) {
-        onView(withId(R.id.fragment_outline_fab)).perform(click());
+        onView(withId(R.id.template_swipe_list_fab)).perform(click());
         onView(withHint(R.string.hint_food)).perform(replaceText(name));
         onView(withText("OK")).perform(click());
         return this;
     }
 
     public EmptyFoodScreen goToEmptyFood() {
-        onView(withId(R.id.fragment_outline_cardview2)).perform(click());
+        onView(withId(R.id.fragment_outline_header_cardview2)).perform(click());
         return new EmptyFoodScreen();
     }
 
@@ -79,7 +79,7 @@ public class OutlineScreen extends AbstractScreen {
     }
 
     public EatSoonScreen goToEatSoon() {
-        onView(withId(R.id.fragment_outline_cardview)).perform(click());
+        onView(withId(R.id.fragment_outline_header_cardview)).perform(click());
         return new EatSoonScreen();
     }
 

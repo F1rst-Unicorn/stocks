@@ -23,9 +23,12 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import org.threeten.bp.Instant;
 
 import java.util.Objects;
 
@@ -35,25 +38,19 @@ import java.util.Objects;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity
+@Entity(primaryKeys = {"_id", "version", "transaction_time_start"})
 public class Location extends VersionedData {
 
     @ColumnInfo(name = "name")
     public String name;
 
-    public Location(int id, int version, String name) {
-        super(id, version);
+    public Location(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String name) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
         this.name = name;
     }
 
     @Ignore
-    public Location(String name) {
-        this.name = name;
-    }
-
-    @Ignore
-    public Location() {
-    }
+    public Location() {}
 
     @Override
     public boolean equals(Object o) {

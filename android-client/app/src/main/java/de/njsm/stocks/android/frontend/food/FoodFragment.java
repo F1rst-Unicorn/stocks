@@ -40,7 +40,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
@@ -50,18 +50,12 @@ import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 
 public class FoodFragment extends BaseFragment {
 
-    private RecyclerView list;
-
     private ViewModelProvider.Factory viewModelFactory;
 
     private FoodViewModel viewModel;
 
-    private LiveData<List<FoodView>> data;
-
-    private LocationViewModel locationViewModel;
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -71,17 +65,20 @@ public class FoodFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
-        list = result.findViewById(R.id.template_swipe_list_list);
+        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
+        LocationViewModel locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
+
+        LiveData<List<FoodWithLatestItemView>> data;
 
         if (getArguments() != null) {
             FoodFragmentArgs input = FoodFragmentArgs.fromBundle(getArguments());
             if (input.getLocation() != 0) {
                 viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-                data = viewModel.getFoodByLocation(input.getLocation());
-                locationViewModel.getLocation(input.getLocation()).observe(this,
+                viewModel.initFoodByLocation(input.getLocation());
+                data = viewModel.getFoodByLocation();
+                locationViewModel.getLocation(input.getLocation()).observe(getViewLifecycleOwner(),
                         d -> requireActivity().setTitle(d.name));
             } else {
                 FoodToEatViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodToEatViewModel.class);
@@ -89,6 +86,8 @@ public class FoodFragment extends BaseFragment {
                 this.viewModel = viewModel;
                 requireActivity().setTitle(R.string.action_eat_next);
             }
+        } else {
+            throw new IllegalArgumentException("no arguments given");
         }
 
         FoodEditInteractor editor = new FoodEditInteractor(this,
@@ -103,7 +102,7 @@ public class FoodFragment extends BaseFragment {
                 v -> editInternally(v, data, R.string.dialog_rename_food,
                         (f,s) -> editor.observeEditing(f.mapToFood(), s))
         );
-        data.observe(this, i -> adapter.notifyDataSetChanged());
+        data.observe(getViewLifecycleOwner(), i -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         FoodDeletionInteractor interactor = new FoodDeletionInteractor(
@@ -131,7 +130,7 @@ public class FoodFragment extends BaseFragment {
     private void onClick(View view) {
         FoodAdapter.ViewHolder holder = (FoodAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodView> data = this.data.getValue();
+        List<FoodWithLatestItemView> data = viewModel.getCurrentFoodSubset().getValue();
         if (data != null) {
             int id = data.get(position).id;
             FoodFragmentDirections.ActionNavFragmentFoodToNavFragmentFoodItem args =

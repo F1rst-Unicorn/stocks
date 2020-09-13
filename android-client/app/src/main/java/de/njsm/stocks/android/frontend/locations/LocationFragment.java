@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -35,6 +36,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Location;
@@ -44,21 +50,16 @@ import de.njsm.stocks.android.frontend.interactor.LocationEditInteractor;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-import javax.inject.Inject;
-import java.util.List;
-
 public class LocationFragment extends BaseFragment {
 
     private ViewModelProvider.Factory viewModelFactory;
 
     LocationViewModel viewModel;
 
-    private RecyclerView list;
-
     RecyclerView.Adapter<LocationAdapter.ViewHolder> adapter;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -69,7 +70,7 @@ public class LocationFragment extends BaseFragment {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(this::addLocation);
-        list = result.findViewById(R.id.template_swipe_list_list);
+        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
@@ -86,7 +87,7 @@ public class LocationFragment extends BaseFragment {
                         viewModel.getLocations(),
                         R.string.dialog_rename_location,
                         editor::observeEditing));
-        viewModel.getLocations().observe(this, u -> adapter.notifyDataSetChanged());
+        viewModel.getLocations().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         LocationDeletionInteractor interactor = new LocationDeletionInteractor(

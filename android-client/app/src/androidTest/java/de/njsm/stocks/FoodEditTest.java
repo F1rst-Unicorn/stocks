@@ -21,11 +21,13 @@ package de.njsm.stocks;
 
 
 import androidx.test.rule.ActivityTestRule;
-import de.njsm.stocks.android.frontend.main.MainActivity;
-import de.njsm.stocks.screen.OutlineScreen;
+
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
+
+import de.njsm.stocks.android.frontend.main.MainActivity;
+import de.njsm.stocks.screen.OutlineScreen;
 
 public class FoodEditTest {
 
@@ -38,42 +40,42 @@ public class FoodEditTest {
     }
 
     @Test
-    public void editLastItemInList() throws Exception {
+    public void editLastItemInList() {
         OutlineScreen.test()
                 .goToEatSoon()
                 .click(0)
-                .assertLastItem("Jack", "android-client", "31.12.00", "Basement")
+                .assertLastItem("Jack", "android-client", "31.12.00", "Freezer")
                 .longClickLast()
-                .assertLocation("Basement")
+                .assertLocation("Freezer")
                 .assertDate(2100, 12, 31)
                 .selectDate(2099, 12, 31)
                 .editItem()
-                .assertLastItem("Jack", "android-client", "31.12.99", "Basement")
+                .assertLastItem("Jack", "android-client", "31.12.99", "Freezer")
                 .longClickLast()
-                .assertLocation("Basement")
+                .assertLocation("Freezer")
                 .assertDate(2099, 12, 31)
                 .selectDate(2100, 12, 31)
                 .editItem()
-                .assertLastItem("Jack", "android-client", "31.12.00", "Basement");
+                .assertLastItem("Jack", "android-client", "31.12.00", "Freezer");
     }
 
     @Test
-    public void verifyMaximumLocationIsSelected() throws Exception {
+    public void verifyMaximumLocationIsSelected() {
         OutlineScreen.test()
                 .goToEatSoon()
                 .click(0)
                 .addItems()
-                .assertLocation("Basement");
+                .assertLocation("Freezer");
     }
 
     @Test
-    public void pretendEditingButPressBack() throws Exception {
+    public void pretendEditingButPressBack() {
         OutlineScreen.test()
                 .goToEatSoon()
                 .click(0)
-                .assertLastItem("Jack", "android-client", "31.12.00", "Basement")
+                .assertLastItem("Jack", "android-client", "31.12.00", "Freezer")
                 .longClickLast()
                 .pressBack()
-                .assertLastItem("Jack", "android-client", "31.12.00", "Basement");
+                .assertLastItem("Jack", "android-client", "31.12.00", "Freezer");
     }
 }

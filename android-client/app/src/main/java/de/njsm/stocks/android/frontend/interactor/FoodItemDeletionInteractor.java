@@ -84,8 +84,8 @@ public class FoodItemDeletionInteractor extends DeletionInteractor<FoodItemView>
                 message = owner.getString(R.string.dialog_item_both_changed,
                         item.getLocation(),
                         newItem.getLocation(),
-                        Config.PRETTY_FORMAT.format(item.getEatByDate()),
-                        Config.PRETTY_FORMAT.format(newItem.getEatByDate()));
+                        Config.PRETTY_DATE_FORMAT.format(item.getEatByDate()),
+                        Config.PRETTY_DATE_FORMAT.format(newItem.getEatByDate()));
             }
         }
         owner.showErrorDialog(R.string.title_consume,

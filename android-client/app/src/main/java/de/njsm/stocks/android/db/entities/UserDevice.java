@@ -24,9 +24,12 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import org.threeten.bp.Instant;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -34,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity(tableName = "User_device")
+@Entity(tableName = "User_device", primaryKeys = {"_id", "version", "transaction_time_start"})
 public class UserDevice extends VersionedData {
 
     @ColumnInfo(name = "name")
@@ -43,26 +46,14 @@ public class UserDevice extends VersionedData {
     @ColumnInfo(name = "belongs_to")
     public int userId;
 
-    @Ignore
-    public UserDevice(int id, int version) {
-        super(id, version);
-    }
-
-    @Ignore
-    public UserDevice(String name, int userId) {
-        this.name = name;
-        this.userId = userId;
-    }
-
-    public UserDevice(int id, int version, String name, int userId) {
-        super(id, version);
+    public UserDevice(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String name, int userId) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
         this.name = name;
         this.userId = userId;
     }
 
     @Ignore
-    public UserDevice() {
-    }
+    public UserDevice() {}
 
     @Override
     public boolean equals(Object o) {

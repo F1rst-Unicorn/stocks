@@ -23,16 +23,21 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.repo.FoodRepository;
 
 public class FoodToEatViewModel extends FoodViewModel {
 
-    private LiveData<List<FoodView>> data;
+    private LiveData<List<FoodWithLatestItemView>> data;
 
     public FoodToEatViewModel(FoodRepository foodRepository) {
         super(foodRepository);
+    }
+
+    @Override
+    public LiveData<List<FoodWithLatestItemView>> getCurrentFoodSubset() {
+        return data;
     }
 
     public void init() {
@@ -41,7 +46,7 @@ public class FoodToEatViewModel extends FoodViewModel {
         }
     }
 
-    public LiveData<List<FoodView>> getFoodToEat() {
+    public LiveData<List<FoodWithLatestItemView>> getFoodToEat() {
         return data;
     }
 }

@@ -33,12 +33,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.frontend.BaseAdapter;
 
 import static android.view.View.GONE;
 
-public class AmountAdapter extends BaseAdapter<FoodView, AmountAdapter.ViewHolder> {
+public class AmountAdapter extends BaseAdapter<FoodWithLatestItemView, AmountAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -71,7 +71,7 @@ public class AmountAdapter extends BaseAdapter<FoodView, AmountAdapter.ViewHolde
         }
     }
 
-    public AmountAdapter(LiveData<List<FoodView>> data, Consumer<View> onClickListener, Consumer<View> onLongClickListener) {
+    public AmountAdapter(LiveData<List<FoodWithLatestItemView>> data, Consumer<View> onClickListener, Consumer<View> onLongClickListener) {
         super(data, onClickListener, onLongClickListener);
     }
 
@@ -88,7 +88,7 @@ public class AmountAdapter extends BaseAdapter<FoodView, AmountAdapter.ViewHolde
     }
 
     @Override
-    protected void bindConcrete(ViewHolder holder, FoodView data) {
+    protected void bindConcrete(ViewHolder holder, FoodWithLatestItemView data) {
         holder.setName(data.getName());
         holder.setAmount(String.valueOf(data.getAmount()));
         holder.setBuyStatus(data.getToBuy());

@@ -1,3 +1,22 @@
+/* stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2019  The stocks developers
+ *
+ * This file is part of the stocks program suite.
+ *
+ * stocks is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * stocks is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package de.njsm.stocks.android.db.dao;
 
 import android.app.SearchManager;
@@ -11,7 +30,12 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import org.threeten.bp.Instant;
+
 import de.njsm.stocks.android.db.entities.SearchSuggestion;
+
+import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
 public abstract class SearchSuggestionDao {
@@ -22,6 +46,9 @@ public abstract class SearchSuggestionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(SearchSuggestion suggestion);
 
+    public Cursor getFoodBySubStringJoiningStoredSuggestions(String searchTerm) {
+        return getFoodBySubStringJoiningStoredSuggestions(searchTerm, DATABASE_INFINITY);
+    }
 
     @Query("select * from (" +
                 "select * from ( " +
@@ -36,6 +63,9 @@ public abstract class SearchSuggestionDao {
                     "null as time " +
                     "from Food f " +
                     "where f.name like :searchTerm " +
+                    "and f.valid_time_start <= " + NOW +
+                    "and " + NOW + " < f.valid_time_end " +
+                    "and f.transaction_time_end = :infinity " +
                     "order by length(" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") desc " +
                     "limit 6" +
                 ") union select * from (" +
@@ -51,9 +81,9 @@ public abstract class SearchSuggestionDao {
                     "from Search_suggestion s " +
                     "where s.term like :searchTerm " +
                     "order by s.last_queried desc " +
-                    "limit 4" +
+                    "limit 10" +
                 ")" +
             ") " +
             "order by type, time desc, length(" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") desc")
-    public abstract Cursor getFoodBySubStringJoiningStoredSuggestions(String searchTerm);
+    abstract Cursor getFoodBySubStringJoiningStoredSuggestions(String searchTerm, Instant infinity);
 }

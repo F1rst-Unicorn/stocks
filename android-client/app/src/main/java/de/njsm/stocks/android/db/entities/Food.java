@@ -20,12 +20,16 @@
 package de.njsm.stocks.android.db.entities;
 
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import org.threeten.bp.Instant;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -33,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity
+@Entity(primaryKeys = {"_id", "version", "transaction_time_start"})
 public class Food extends VersionedData {
 
     @ColumnInfo(name = "name")
@@ -48,27 +52,24 @@ public class Food extends VersionedData {
     @ColumnInfo(name = "location")
     public int location;
 
-    public Food(int id, int version, String name, boolean toBuy, int expirationOffset, int location) {
-        super(id, version);
+    public Food(String name, boolean toBuy, int expirationOffset, int location) {
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;
         this.location = location;
     }
 
-    public Food(int id, int version, String name, boolean toBuy, int expirationOffset, int position, int location) {
-        this(id, version, name, toBuy, expirationOffset, location);
+    public Food(int position, int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String name, boolean toBuy, int expirationOffset, int location) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
+        this.name = name;
+        this.toBuy = toBuy;
+        this.expirationOffset = expirationOffset;
+        this.location = location;
         setPosition(position);
     }
 
     @Ignore
-    public Food(String name, boolean toBuy, int expirationOffset, int location) {
-        this(0, 0, name, toBuy, expirationOffset, location);
-    }
-
-    @Ignore
-    public Food() {
-    }
+    public Food() {}
 
     @Override
     public boolean equals(Object o) {

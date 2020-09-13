@@ -33,8 +33,9 @@ import static junit.framework.TestCase.assertTrue;
 
 public class LocationScreen extends AbstractListPresentingScreen {
 
-    public LocationScreen addLocation(String name) {
+    public LocationScreen addLocation(String name) throws InterruptedException {
         onView(withId(R.id.template_swipe_list_fab)).perform(click());
+        Thread.sleep(100);
         onView(withHint(R.string.hint_location)).perform(replaceText(name));
         onView(withText("OK")).perform(click());
         return this;

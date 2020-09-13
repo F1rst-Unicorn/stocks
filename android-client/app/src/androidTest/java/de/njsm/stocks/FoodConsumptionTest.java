@@ -21,11 +21,13 @@ package de.njsm.stocks;
 
 
 import androidx.test.rule.ActivityTestRule;
-import de.njsm.stocks.android.frontend.main.MainActivity;
-import de.njsm.stocks.screen.OutlineScreen;
+
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
+
+import de.njsm.stocks.android.frontend.main.MainActivity;
+import de.njsm.stocks.screen.OutlineScreen;
 
 public class FoodConsumptionTest {
 
@@ -43,6 +45,6 @@ public class FoodConsumptionTest {
                 .goToEatSoon()
                 .click(0)
                 .eatAllButOne()
-                .assertItem(0, "Jack", "android-client", "31.12.00", "Basement");
+                .assertItem(0, "Jack", "android-client", "31.12.00", "Freezer");
     }
 }

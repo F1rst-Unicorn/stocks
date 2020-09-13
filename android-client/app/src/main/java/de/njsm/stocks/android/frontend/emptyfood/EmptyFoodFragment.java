@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,6 +32,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
@@ -39,12 +45,7 @@ import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodToBuyInteractor;
 
-import javax.inject.Inject;
-import java.util.List;
-
 public class EmptyFoodFragment extends BaseFragment {
-
-    private RecyclerView list;
 
     FoodAdapter adapter;
 
@@ -53,7 +54,7 @@ public class EmptyFoodFragment extends BaseFragment {
     private ViewModelProvider.Factory viewModelFactory;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -65,7 +66,7 @@ public class EmptyFoodFragment extends BaseFragment {
                              @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
-        list = result.findViewById(R.id.template_swipe_list_list);
+        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EmptyFoodViewModel.class);
@@ -78,7 +79,7 @@ public class EmptyFoodFragment extends BaseFragment {
                 this::onListItemClicked,
                 v -> editInternally(v, viewModel.getEmptyFood(), R.string.dialog_rename_food,
                 editor::observeEditing));
-        viewModel.getEmptyFood().observe(this, u -> adapter.notifyDataSetChanged());
+        viewModel.getEmptyFood().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         FoodDeletionInteractor deleter = new FoodDeletionInteractor(this, result,

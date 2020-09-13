@@ -26,8 +26,14 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.LiveData;
@@ -36,8 +42,15 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
@@ -46,8 +59,6 @@ import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
-
-import javax.inject.Inject;
 
 public class OutlineFragment extends BaseFragment {
 
@@ -63,6 +74,8 @@ public class OutlineFragment extends BaseFragment {
     private ScanBroadcaseReceiver receiver;
 
     private FoodViewModel foodViewModel;
+
+    private SwipeRefreshLayout swiper;
 
     @Override
     public void onAttach(Context context) {
@@ -81,29 +94,45 @@ public class OutlineFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.fragment_outline, container, false);
+        View result = inflater.inflate(R.layout.template_swipe_list, container, false);
         if (!initialised) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(R.id.nav_fragment_startup);
         } else {
-            RefreshViewModel refresher = initialiseSwipeRefresh(result, R.id.fragment_outline_swipe, viewModelFactory);
+
+            swiper = result.findViewById(R.id.template_swipe_list_swipe);
+            RefreshViewModel refresher = initialiseSwipeRefresh(result, R.id.template_swipe_list_swipe, viewModelFactory);
             refresher.refresh();
+
             setHasOptionsMenu(true);
-            NavigationView nav = requireActivity().findViewById(R.id.main_nav);
-            TextView view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_username);
-            view.setText(settings.getString(Config.USERNAME_CONFIG, ""));
-            view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_dev);
-            view.setText(settings.getString(Config.DEVICE_NAME_CONFIG, ""));
-            view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_server);
-            view.setText(settings.getString(Config.SERVER_NAME_CONFIG, ""));
+
+            writeUsernameToDrawer();
 
             FoodViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-            result.findViewById(R.id.fragment_outline_cardview).setOnClickListener(this::goToEatSoon);
-            result.findViewById(R.id.fragment_outline_cardview2).setOnClickListener(this::goToEmptyFood);
-            result.findViewById(R.id.fragment_outline_fab).setOnClickListener(v -> this.addFood(viewModel));
+            result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(v -> this.addFood(viewModel));
+
+            RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
+            list.setLayoutManager(new LinearLayoutManager(requireContext()));
+            EventViewModel eventViewModel = ViewModelProviders.of(this, viewModelFactory).get(EventViewModel.class);
+            View header = inflater.inflate(R.layout.fragment_outline_header, container, false);
+            header.findViewById(R.id.fragment_outline_header_cardview).setOnClickListener(this::goToEatSoon);
+            header.findViewById(R.id.fragment_outline_header_cardview2).setOnClickListener(this::goToEmptyFood);
+            EventAdapter adapter = new EventAdapter(header, getResources(), requireActivity().getTheme(), requireContext()::getString);
+            eventViewModel.getHistory().observe(getViewLifecycleOwner(), adapter::submitList);
+            list.setAdapter(adapter);
 
             foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
         }
         return result;
+    }
+
+    private void writeUsernameToDrawer() {
+        NavigationView nav = requireActivity().findViewById(R.id.main_nav);
+        TextView view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_username);
+        view.setText(settings.getString(Config.USERNAME_CONFIG, ""));
+        view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_dev);
+        view.setText(settings.getString(Config.DEVICE_NAME_CONFIG, ""));
+        view = nav.getHeaderView(0).findViewById(R.id.nav_header_main_server);
+        view.setText(settings.getString(Config.SERVER_NAME_CONFIG, ""));
     }
 
     @Inject
@@ -122,7 +151,7 @@ public class OutlineFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_outline_options, menu);
 
         SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
@@ -134,19 +163,18 @@ public class OutlineFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.fragment_outline_options_scan:
-                if (! probeForCameraPermission()) {
-                    return true;
-                }
-                if (receiver == null) {
-                    receiver = new ScanBroadcaseReceiver(this::goToScannedFood);
-                }
-                IntentFilter filter = new IntentFilter(MainActivity.ACTION_QR_CODE_SCANNED);
-                LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiver, filter);
-                LOG.i("Starting QR code reader");
-                IntentIntegrator integrator = new IntentIntegrator(getActivity());
-                integrator.initiateScan();
+        if (item.getItemId() == R.id.fragment_outline_options_scan) {
+            if (!probeForCameraPermission()) {
+                return true;
+            }
+            if (receiver == null) {
+                receiver = new ScanBroadcaseReceiver(this::goToScannedFood);
+            }
+            IntentFilter filter = new IntentFilter(MainActivity.ACTION_QR_CODE_SCANNED);
+            LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiver, filter);
+            LOG.i("Starting QR code reader");
+            IntentIntegrator integrator = new IntentIntegrator(getActivity());
+            integrator.initiateScan();
         }
         return true;
     }

@@ -37,7 +37,8 @@ public interface ServerClient {
     Call<Response> addUser(@Query("name") String name);
 
     @GET("/v2/user")
-    Call<ListResponse<User>> getUsers();
+    Call<ListResponse<User>> getUsers(@Query("bitemporal") int bitemporal,
+                                      @Query("startingFrom") String startingFrom);
 
     @DELETE("/v2/user")
     Call<Response> deleteUser(@Query("id") int id,
@@ -48,7 +49,8 @@ public interface ServerClient {
                                                @Query("belongsTo") int uid);
 
     @GET("/v2/device")
-    Call<ListResponse<UserDevice>> getDevices();
+    Call<ListResponse<UserDevice>> getDevices(@Query("bitemporal") int bitemporal,
+                                              @Query("startingFrom") String startingFrom);
 
     @DELETE("/v2/device")
     Call<Response> deleteDevice(@Query("id") int id,
@@ -58,7 +60,8 @@ public interface ServerClient {
     Call<ListResponse<Update>> getUpdates();
 
     @GET("/v2/location")
-    Call<ListResponse<Location>> getLocations();
+    Call<ListResponse<Location>> getLocations(@Query("bitemporal") int bitemporal,
+                                              @Query("startingFrom") String startingFrom);
 
     @PUT("/v2/location")
     Call<Response> addLocation(@Query("name") String name);
@@ -74,7 +77,8 @@ public interface ServerClient {
                                   @Query("cascade") int cascade);
 
     @GET("/v2/food")
-    Call<ListResponse<Food>> getFood();
+    Call<ListResponse<Food>> getFood(@Query("bitemporal") int bitemporal,
+                                     @Query("startingFrom") String startingFrom);
 
     @PUT("/v2/food")
     Call<Response> addFood(@Query("name") String name);
@@ -97,7 +101,8 @@ public interface ServerClient {
 
 
     @GET("/v2/fooditem")
-    Call<ListResponse<FoodItem>> getFoodItems();
+    Call<ListResponse<FoodItem>> getFoodItems(@Query("bitemporal") int bitemporal,
+                                              @Query("startingFrom") String startingFrom);
 
     @PUT("/v2/fooditem")
     Call<Response> addFoodItem(@Query("eatByDate") String eatByDate,
@@ -119,7 +124,8 @@ public interface ServerClient {
                                 @Query("identifies") int identifies);
 
     @GET("/v2/ean")
-    Call<ListResponse<EanNumber>> getEanNumbers();
+    Call<ListResponse<EanNumber>> getEanNumbers(@Query("bitemporal") int bitemporal,
+                                                @Query("startingFrom") String startingFrom);
 
     @DELETE("/v2/ean")
     Call<Response> deleteEanNumber(@Query("id") int id,

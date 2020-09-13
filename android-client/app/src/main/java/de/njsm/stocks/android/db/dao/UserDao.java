@@ -22,20 +22,32 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
-import de.njsm.stocks.android.db.entities.User;
+
+import org.threeten.bp.Instant;
 
 import java.util.List;
+
+import de.njsm.stocks.android.db.entities.User;
+
+import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
 public abstract class UserDao {
 
-    @Query("SELECT * FROM User")
-    public abstract LiveData<List<User>> getAll();
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract void insert(User[] users);
 
-    @Query("SELECT * FROM User WHERE _id = :userId")
-    public abstract LiveData<User> getUser(int userId);
+    public LiveData<List<User>> getAll() {
+        return getAll(DATABASE_INFINITY);
+    }
+
+    public LiveData<User> getUser(int userId) {
+        return getUser(userId, DATABASE_INFINITY);
+    }
 
     @Transaction
     public void synchronise(User[] users) {
@@ -43,9 +55,22 @@ public abstract class UserDao {
         insert(users);
     }
 
-    @Insert
-    abstract void insert(User[] users);
+    @Query("select * " +
+            "from User " +
+            "where valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = :infinity " +
+            "order by name")
+    abstract LiveData<List<User>> getAll(Instant infinity);
 
-    @Query("DELETE FROM User")
+    @Query("select * " +
+            "from User " +
+            "where _id = :userId " +
+            "and valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = :infinity")
+    abstract LiveData<User> getUser(int userId, Instant infinity);
+
+    @Query("delete from User")
     abstract void delete();
 }

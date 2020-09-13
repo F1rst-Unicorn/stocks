@@ -22,21 +22,33 @@ package de.njsm.stocks.android.frontend.search;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.repo.FoodRepository;
 
 public class SearchViewModel extends FoodViewModel {
+
+    private String searchTerm;
+
+    private LiveData<List<FoodWithLatestItemView>> data;
 
     @Inject
     public SearchViewModel(FoodRepository foodRepository) {
         super(foodRepository);
     }
 
-    public LiveData<List<FoodView>> search(String searchTerm) {
-        return foodRepository.getFoodBySubString(searchTerm);
+    public void setSearchTerm(String searchTerm) {
+        if (!Objects.equals(this.searchTerm, searchTerm)) {
+            data = foodRepository.getFoodBySubString(searchTerm);
+            this.searchTerm = searchTerm;
+        }
+    }
+
+    public LiveData<List<FoodWithLatestItemView>> getFoundData() {
+        return data;
     }
 }

@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -35,6 +36,9 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
@@ -44,8 +48,6 @@ import de.njsm.stocks.android.frontend.util.NameValidator;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 import fj.data.Validation;
-
-import javax.inject.Inject;
 
 public class DeviceFragment extends BaseFragment {
 
@@ -60,7 +62,7 @@ public class DeviceFragment extends BaseFragment {
     DeviceAdapter adapter;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -82,7 +84,7 @@ public class DeviceFragment extends BaseFragment {
         singleUserViewModel.init(input.getUserId());
 
         adapter = new DeviceAdapter(viewModel.getDevices(), this::doNothing);
-        viewModel.getDevices().observe(this, d -> adapter.notifyDataSetChanged());
+        viewModel.getDevices().observe(getViewLifecycleOwner(), d -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         DeviceDeletionInteractor interactor = new DeviceDeletionInteractor(
@@ -93,7 +95,7 @@ public class DeviceFragment extends BaseFragment {
 
         initialiseSwipeRefresh(result, R.id.fragment_devices_swipe, viewModelFactory);
 
-        singleUserViewModel.getUser().observe(this, u -> requireActivity().setTitle(u == null ? "" : u.name));
+        singleUserViewModel.getUser().observe(getViewLifecycleOwner(), u -> requireActivity().setTitle(u == null ? "" : u.name));
         return result;
     }
 

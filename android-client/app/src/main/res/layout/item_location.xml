@@ -26,7 +26,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
-    android:drawableStart="@drawable/ic_account_balance_wallet_black_24dp"
+    android:drawableStart="@drawable/baseline_kitchen_black_24"
     android:drawablePadding="@dimen/text_margin"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"

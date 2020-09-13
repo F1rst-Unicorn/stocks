@@ -23,11 +23,13 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import de.njsm.stocks.android.util.Config;
+
 import org.threeten.bp.Instant;
 import org.threeten.bp.format.DateTimeParseException;
 
 import java.io.IOException;
+
+import de.njsm.stocks.android.util.Config;
 
 public class InstantDeserialiser extends StdDeserializer<Instant> {
 
@@ -47,7 +49,7 @@ public class InstantDeserialiser extends StdDeserializer<Instant> {
 
     public static Instant parseString(String rawTimestamp) throws IOException {
         try {
-            return Config.DATABASE_DATE_FORMAT.parse(rawTimestamp, Instant::from);
+            return Config.API_DATE_FORMAT.parse(rawTimestamp, Instant::from);
         } catch (DateTimeParseException |
                 NullPointerException e) {
             throw new IOException("Cannot parse date value " + rawTimestamp, e);

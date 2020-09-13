@@ -20,18 +20,33 @@
 package de.njsm.stocks.android.db;
 
 import androidx.room.TypeConverter;
-import de.njsm.stocks.android.util.Config;
+
 import org.threeten.bp.Instant;
+
+import de.njsm.stocks.android.util.Config;
+
+import static de.njsm.stocks.android.util.Config.DATABASE_DATE_FORMAT;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
+import static de.njsm.stocks.android.util.Config.API_INFINITY;
 
 public class TypeConverters {
 
     @TypeConverter
-    public String instantToString(Instant i) {
-        return Config.DATABASE_DATE_FORMAT.format(i);
+    public String instantToDb(Instant instant) {
+        if (instant.equals(Config.API_INFINITY)) {
+            return DATABASE_DATE_FORMAT.format(DATABASE_INFINITY);
+        } else {
+            return DATABASE_DATE_FORMAT.format(instant);
+        }
     }
 
     @TypeConverter
-    public Instant stringToInstant(String s) {
-        return Config.DATABASE_DATE_FORMAT.parse(s, Instant::from);
+    public Instant dbToInstant(String rawInstant) {
+        Instant result = DATABASE_DATE_FORMAT.parse(rawInstant, Instant::from);
+        if (result.equals(DATABASE_INFINITY)) {
+            return API_INFINITY;
+        } else {
+            return result;
+        }
     }
 }

@@ -19,8 +19,11 @@
 
 package de.njsm.stocks.android.db.views;
 
-import de.njsm.stocks.android.db.entities.VersionedData;
+import androidx.annotation.NonNull;
+
 import org.threeten.bp.Instant;
+
+import de.njsm.stocks.android.db.entities.VersionedData;
 
 public class FoodItemView extends VersionedData {
 
@@ -36,19 +39,14 @@ public class FoodItemView extends VersionedData {
 
     private int storedIn;
 
-    public FoodItemView(int id,
-                        int version,
-                        int ofType, int storedIn, String userName,
-                        String deviceName,
-                        Instant eatByDate,
-                        String location) {
-        super(id, version);
-        this.ofType = ofType;
-        this.storedIn = storedIn;
+    public FoodItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String userName, String deviceName, Instant eatByDate, String location, int ofType, int storedIn) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
         this.userName = userName;
         this.deviceName = deviceName;
         this.eatByDate = eatByDate;
         this.location = location;
+        this.ofType = ofType;
+        this.storedIn = storedIn;
     }
 
     public String getUserName() {

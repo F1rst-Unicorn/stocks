@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
@@ -40,7 +39,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodView;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
@@ -52,10 +51,10 @@ public class SearchFragment extends BaseFragment {
 
     private AmountAdapter adapter;
 
-    private LiveData<List<FoodView>> data;
+    private SearchViewModel viewModel;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
@@ -70,20 +69,20 @@ public class SearchFragment extends BaseFragment {
         RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-        SearchViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel.class);
-        data = viewModel.search(input.getSearchTerm());
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel.class);
+        viewModel.setSearchTerm(input.getSearchTerm());
 
         FoodEditInteractor editor = new FoodEditInteractor(this,
                 viewModel::renameFood,
                 viewModel::getFood);
 
         adapter = new AmountAdapter(
-                data,
+                viewModel.getFoundData(),
                 this::onClick,
                 v -> editInternally(v,
-                        data,
+                        viewModel.getFoundData(),
                         R.string.dialog_rename_food, (f,s) -> editor.observeEditing(f.mapToFood(), s)));
-        data.observe(this, v -> adapter.notifyDataSetChanged());
+        viewModel.getFoundData().observe(getViewLifecycleOwner(), v -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         FoodDeletionInteractor interactor = new FoodDeletionInteractor(
@@ -99,7 +98,7 @@ public class SearchFragment extends BaseFragment {
                 },
                 viewModel::getFood);
 
-        addBidirectionalSwiper(list, data, R.drawable.ic_add_shopping_cart_white_24,
+        addBidirectionalSwiper(list, viewModel.getFoundData(), R.drawable.ic_add_shopping_cart_white_24,
                 v -> interactor.initiateDeletion(v.mapToFood()),
                 v -> buyInteractor.observeEditing(v.mapToFood(), true));
 
@@ -111,7 +110,7 @@ public class SearchFragment extends BaseFragment {
     private void onClick(View view) {
         AmountAdapter.ViewHolder holder = (AmountAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodView> list = data.getValue();
+        List<FoodWithLatestItemView> list = viewModel.getFoundData().getValue();
         if (list != null) {
             int id = list.get(position).id;
             SearchFragmentDirections.ActionNavFragmentSearchToNavFragmentFoodItem args =

@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -32,6 +33,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
@@ -39,20 +45,15 @@ import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.StringListAdapter;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 
-import javax.inject.Inject;
-import java.util.List;
-
 public class AllFoodFragment extends BaseFragment {
 
     private ViewModelProvider.Factory viewModelFactory;
 
-    private FoodViewModel viewModel;
-
     private FoodAdapter adapter;
 
-    private LiveData<List<Food>> data;
-
     private AllFoodFragmentArgs input;
+
+    private FoodViewModel viewModel;
 
     @Override
     public void onAttach(Context context) {
@@ -71,10 +72,11 @@ public class AllFoodFragment extends BaseFragment {
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-        data = viewModel.getFood();
+        viewModel.initAllFood();
+        LiveData<List<Food>> data = viewModel.getAllFood();
 
         adapter = new FoodAdapter(data, this::onClick);
-        data.observe(this, v -> adapter.notifyDataSetChanged());
+        data.observe(getViewLifecycleOwner(), v -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         initialiseSwipeRefresh(result, viewModelFactory);
@@ -84,7 +86,7 @@ public class AllFoodFragment extends BaseFragment {
     private void onClick(View view) {
         StringListAdapter.ViewHolder holder = (StringListAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<Food> data = this.data.getValue();
+        List<Food> data = viewModel.getAllFood().getValue();
         if (data != null) {
             int id = data.get(position).id;
             AllFoodFragmentDirections.ActionNavFragmentAllFoodToNavFragmentFoodItem args =

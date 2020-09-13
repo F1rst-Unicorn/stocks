@@ -20,19 +20,23 @@
 package de.njsm.stocks.android.db.entities;
 
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.njsm.stocks.android.network.server.util.InstantDeserialiser;
-import de.njsm.stocks.android.network.server.util.InstantSerialiser;
+
 import org.threeten.bp.Instant;
 
 import java.util.Objects;
+
+import de.njsm.stocks.android.network.server.util.InstantDeserialiser;
+import de.njsm.stocks.android.network.server.util.InstantSerialiser;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -40,7 +44,7 @@ import java.util.Objects;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity
+@Entity(primaryKeys = {"_id", "version", "transaction_time_start"})
 public class FoodItem extends VersionedData {
 
     @JsonSerialize(using = InstantSerialiser.class)
@@ -60,18 +64,8 @@ public class FoodItem extends VersionedData {
     @ColumnInfo(name = "buys")
     public int buys;
 
-    @Ignore
-    public FoodItem() {
-    }
-
-    public FoodItem(int id,
-                    int version,
-                    Instant eatByDate,
-                    int ofType,
-                    int storedIn,
-                    int registers,
-                    int buys) {
-        super(id, version);
+    public FoodItem(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, Instant eatByDate, int ofType, int storedIn, int registers, int buys) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
         this.eatByDate = eatByDate;
         this.ofType = ofType;
         this.storedIn = storedIn;
@@ -80,23 +74,7 @@ public class FoodItem extends VersionedData {
     }
 
     @Ignore
-    public FoodItem(Instant eatByDate,
-                    int ofType,
-                    int storedIn,
-                    int registers,
-                    int buys) {
-        this.eatByDate = eatByDate;
-        this.ofType = ofType;
-        this.storedIn = storedIn;
-        this.registers = registers;
-        this.buys = buys;
-    }
-
-    @Ignore
-    public FoodItem(int id, int version) {
-        super(id, version);
-        eatByDate = Instant.EPOCH;
-    }
+    public FoodItem() {}
 
     @Override
     public boolean equals(Object o) {
