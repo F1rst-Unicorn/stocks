@@ -20,8 +20,6 @@
 package de.njsm.stocks.android.frontend.main;
 
 import android.content.res.Resources;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -196,13 +194,8 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
     }
 
     public Drawable computeIcon(int resId) {
-        int black = resources.getColor(android.R.color.black, theme);
         Drawable result = ResourcesCompat.getDrawable(resources, resId, theme);
         assert result != null;
-
-        result.setColorFilter(new PorterDuffColorFilter(
-                black,
-                PorterDuff.Mode.SRC_ATOP));
         return result;
     }
 }

@@ -44,6 +44,6 @@ public abstract class DeletedEntityEvent<T extends VersionedData> extends Entity
 
     @Override
     public int getEventIconResource() {
-        return R.drawable.ic_delete_white_24dp;
+        return R.drawable.baseline_delete_black_24;
     }
 }

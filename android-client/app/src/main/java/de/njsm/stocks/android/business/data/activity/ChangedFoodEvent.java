@@ -32,7 +32,10 @@ public class ChangedFoodEvent extends ChangedEntityEvent<FoodWithLocationName> i
         super(former, current);
 
         if (former.toBuy != current.toBuy)
-            eventIcon = R.drawable.ic_shopping_cart_black_24;
+            if (current.toBuy)
+                eventIcon = R.drawable.baseline_add_shopping_cart_black_24;
+            else
+                eventIcon = R.drawable.baseline_remove_shopping_cart_black_24;
         else
             eventIcon = super.getEventIconResource();
     }

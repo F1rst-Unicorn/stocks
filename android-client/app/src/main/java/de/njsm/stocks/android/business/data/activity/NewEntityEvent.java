@@ -44,6 +44,6 @@ public abstract class NewEntityEvent<T extends VersionedData> extends EntityEven
 
     @Override
     public int getEventIconResource() {
-        return R.drawable.ic_add_white_24dp;
+        return R.drawable.baseline_add_black_24;
     }
 }

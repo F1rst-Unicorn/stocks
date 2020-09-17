@@ -24,6 +24,6 @@ import de.njsm.stocks.R;
 public interface EanNumberIconResourceProvider extends EntityIconResourceProvider {
 
     default int getEntityIconResource() {
-        return R.drawable.ic_photo_camera_white_24dp;
+        return R.drawable.baseline_photo_camera_black_24;
     }
 }
