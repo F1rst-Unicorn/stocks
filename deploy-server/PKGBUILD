@@ -52,7 +52,6 @@ build() {
 package() {
     cd "$srcdir"
 
-    install -D -m 444 deploy-server/config/db-migration.sql             $pkgdir/usr/share/$pkgname/db-migration.sql
     install -D -m 444 deploy-server/config/nginx.conf                   $pkgdir/usr/share/$pkgname/nginx.conf
     install -D -m 444 deploy-server/config/nginx-site.conf              $pkgdir/usr/share/$pkgname/nginx-site.conf
     install -D -m 444 deploy-server/config/openssl.cnf                  $pkgdir/usr/share/$pkgname/openssl.cnf

@@ -2,7 +2,6 @@ server/target/server.war /usr/lib/stocks-server/
 deploy-server/config/setup-ca /usr/lib/stocks-server/
 
 deploy-server/config/openssl*.cnf /usr/share/stocks-server/
-deploy-server/config/db-migration.sql /usr/share/stocks-server/
 
 deploy-server/config/stocks.properties /etc/stocks-server/
 
