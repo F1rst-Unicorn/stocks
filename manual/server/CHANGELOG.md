@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* STOCKS-111: Add Debian packaging
+* STOCKS-111: Replace nginx-reload by systemctl invocation
+
 ## [5.0.0.3-1]
 
 ### Fixed
