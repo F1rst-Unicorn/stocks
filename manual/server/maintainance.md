@@ -5,23 +5,28 @@ This document gives a brief introduction to how to administer the server.
 ## Container logs
 
 Both tomcat and nginx write their own log files. All of the files are found in
-/var/log/.
+`/var/log/`. Tomcat logs can also be found under `${catalina.base}/logs`. The
+directory `${catalina.base}` is the base directory for tomcat configuration,
+which might differ between operating systems. Common values are
+`/usr/share/tomcatX` (e.g. on ArchLinux) and `/var/lib/tomcatX` (e.g. on
+Debian).
 
 ## Stocks server log
 
-The log file of the stocks server is at /var/log/tomcat8/stocks.log.
-The used library is log4j2. If the default tomcat server.xml is used the
-log config is stored in /usr/share/tomcat8/webapps/server/WEB-INF/classes/
-log4j2.xml. The server refreshes the config every 30 seconds
-so the log level can be adjusted without restarting the server.
+The log file of the stocks server is at `/var/log/tomcatX/stocks.log`, where X
+is your tomcat version.  The used library is log4j2. If the default tomcat
+`server.xml` is used the log config is stored in
+`${catalina.base}/webapps/stocks/WEB-INF/classes/log4j2.xml`. The server
+refreshes the config every 30 seconds so the log level can be adjusted without
+restarting the server.
 
 The config can be reset by removing the directory
-/usr/share/tomcat8/webapps/server (but not the symlinks). Note that during
+`${catalina.base}/webapps/stocks` (but not the symlinks). Note that during
 redeployment the webapp might be subject to downtime.
 
 ## Stocks config file
 
-The stocks config in /etc/stocks-server/stocks.properties can be adjusted at
+The stocks config in `/etc/stocks-server/stocks.properties` can be adjusted at
 any time. A restart of the tomcat container is required to apply the changes.
 The recommended way of configuring stocks is via the official ansible role at
 https://gitlab.com/veenj/ansible-stocks.
@@ -32,11 +37,11 @@ If for some reason the server has to be migrated to another instance the
 following system parts must be backed up:
 
  * PostgreSQL stocks database
- * Stocks CA at /usr/share/stocks-server/root/CA/
+ * Stocks CA at `/usr/share/stocks-server/root/CA/`
 
 In addition to that the following files should be saved if you modified them:
 
- * /etc/stocks-server/stocks.properties
+ * `/etc/stocks-server/stocks.properties`
  * Log4j2 configs
  * tomcat config
  * nginx config
