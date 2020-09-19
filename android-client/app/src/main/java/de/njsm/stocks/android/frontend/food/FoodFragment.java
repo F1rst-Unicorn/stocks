@@ -80,6 +80,8 @@ public class FoodFragment extends BaseFragment {
         if (getArguments() != null) {
             input = FoodFragmentArgs.fromBundle(getArguments());
             if (input.getLocation() != 0) {
+                setHasOptionsMenu(true);
+
                 viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
                 viewModel.initFoodByLocation(input.getLocation());
                 data = viewModel.getFoodByLocation();
@@ -129,7 +131,6 @@ public class FoodFragment extends BaseFragment {
 
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(v -> addFood(viewModel));
         initialiseSwipeRefresh(result, viewModelFactory);
-        setHasOptionsMenu(true);
         return result;
     }
 

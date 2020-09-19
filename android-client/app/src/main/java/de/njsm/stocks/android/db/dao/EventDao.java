@@ -40,34 +40,32 @@ import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 @Dao
 public abstract class EventDao {
 
-    private static final String TIME_COLUMNS_FOOD =
+    private static final String TIME_COLUMNS =
             "l1._id as version1__id, l1.version as version1_version, l1.valid_time_start as version1_valid_time_start, l1.valid_time_end as version1_valid_time_end, l1.transaction_time_start as version1_transaction_time_start, l1.transaction_time_end as version1_transaction_time_end, " +
-            "l2._id as version2__id, l2.version as version2_version, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end, " +
+            "l2._id as version2__id, l2.version as version2_version, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end, ";
+
+    private static final String TIME_COLUMNS_FOOD =
+            TIME_COLUMNS +
             "l1.transaction_time_start = (select min(transaction_time_start) from food x where x._id = l1._id) as is_first ";
 
     private static final String TIME_COLUMNS_FOOD_ITEM =
-            "l1._id as version1__id, l1.version as version1_version, l1.valid_time_start as version1_valid_time_start, l1.valid_time_end as version1_valid_time_end, l1.transaction_time_start as version1_transaction_time_start, l1.transaction_time_end as version1_transaction_time_end, " +
-            "l2._id as version2__id, l2.version as version2_version, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end, " +
+            TIME_COLUMNS +
             "l1.transaction_time_start = (select min(transaction_time_start) from fooditem x where x._id = l1._id) as is_first ";
 
     private static final String TIME_COLUMNS_LOCATION =
-            "l1._id as version1__id, l1.version as version1_version, l1.valid_time_start as version1_valid_time_start, l1.valid_time_end as version1_valid_time_end, l1.transaction_time_start as version1_transaction_time_start, l1.transaction_time_end as version1_transaction_time_end, " +
-            "l2._id as version2__id, l2.version as version2_version, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end, " +
+            TIME_COLUMNS +
             "l1.transaction_time_start = (select min(transaction_time_start) from location x where x._id = l1._id) as is_first ";
 
     private static final String TIME_COLUMNS_USER =
-            "l1._id as version1__id, l1.version as version1_version, l1.valid_time_start as version1_valid_time_start, l1.valid_time_end as version1_valid_time_end, l1.transaction_time_start as version1_transaction_time_start, l1.transaction_time_end as version1_transaction_time_end, " +
-            "l2._id as version2__id, l2.version as version2_version, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end, " +
+            TIME_COLUMNS +
             "l1.transaction_time_start = (select min(transaction_time_start) from user x where x._id = l1._id) as is_first ";
 
     private static final String TIME_COLUMNS_USER_DEVICE =
-            "l1._id as version1__id, l1.version as version1_version, l1.valid_time_start as version1_valid_time_start, l1.valid_time_end as version1_valid_time_end, l1.transaction_time_start as version1_transaction_time_start, l1.transaction_time_end as version1_transaction_time_end, " +
-            "l2._id as version2__id, l2.version as version2_version, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end, " +
+            TIME_COLUMNS +
             "l1.transaction_time_start = (select min(transaction_time_start) from user_device x where x._id = l1._id) as is_first ";
 
     private static final String TIME_COLUMNS_EAN_NUMBER =
-            "l1._id as version1__id, l1.version as version1_version, l1.valid_time_start as version1_valid_time_start, l1.valid_time_end as version1_valid_time_end, l1.transaction_time_start as version1_transaction_time_start, l1.transaction_time_end as version1_transaction_time_end, " +
-            "l2._id as version2__id, l2.version as version2_version, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end, " +
+            TIME_COLUMNS +
             "l1.transaction_time_start = (select min(transaction_time_start) from eannumber x where x._id = l1._id) as is_first ";
 
     private static final String ON_CHRONOLOGY =
