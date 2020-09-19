@@ -53,6 +53,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
@@ -113,7 +114,7 @@ public class OutlineFragment extends BaseFragment {
             RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
             list.setLayoutManager(new LinearLayoutManager(requireContext()));
             EventViewModel eventViewModel = ViewModelProviders.of(this, viewModelFactory).get(EventViewModel.class);
-            EventAdapter adapter = new EventAdapter(getResources(), requireActivity().getTheme(), requireContext()::getString, this::goToEatSoon, this::goToEmptyFood);
+            EventAdapter adapter = new EventAdapter(getResources(), requireActivity().getTheme(), this::goToEatSoon, this::goToEmptyFood, this::goToEventSource, requireContext()::getString);
             eventViewModel.getHistory().observe(getViewLifecycleOwner(), adapter::submitList);
             list.setAdapter(adapter);
 
@@ -145,6 +146,16 @@ public class OutlineFragment extends BaseFragment {
     private void goToEmptyFood(View view) {
         Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                 .navigate(R.id.action_nav_fragment_outline_to_nav_fragment_empty_food);
+    }
+
+    private void goToEventSource(View view) {
+        OutlineEventVisitor visitor = new OutlineEventVisitor();
+        EntityEvent<?> event = (EntityEvent<?>) view.getTag();
+
+        visitor.visit(event).ifPresent(d -> {
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(d);
+        });
     }
 
     @Override

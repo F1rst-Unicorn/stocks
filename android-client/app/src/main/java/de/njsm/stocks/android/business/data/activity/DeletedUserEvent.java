@@ -35,4 +35,9 @@ public class DeletedUserEvent extends DeletedEntityEvent<User> implements UserIc
         String template = stringResourceResolver.apply(R.string.event_user_deleted);
         return String.format(template, entity.name);
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.deletedUserEvent(this, arg);
+    }
 }

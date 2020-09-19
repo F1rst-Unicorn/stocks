@@ -36,4 +36,9 @@ public class DeletedFoodItemEvent extends DeletedEntityEvent<FoodItemWithFoodNam
         return String.format(template,
                 entity.getFoodName());
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.deletedFoodItemEvent(this, arg);
+    }
 }

@@ -36,11 +36,6 @@ public abstract class ChangedEntityEvent<T extends VersionedData> extends Entity
     }
 
     @Override
-    public VersionedData getEntity() {
-        return oldEntity;
-    }
-
-    @Override
     public Instant getTime() {
         return oldEntity.transactionTimeStart;
     }
@@ -48,5 +43,10 @@ public abstract class ChangedEntityEvent<T extends VersionedData> extends Entity
     @Override
     public int getEventIconResource() {
         return R.drawable.ic_create_black_24;
+    }
+
+    @Override
+    public T getEntity() {
+        return oldEntity;
     }
 }

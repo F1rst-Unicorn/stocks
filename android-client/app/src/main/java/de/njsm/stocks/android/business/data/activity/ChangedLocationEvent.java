@@ -35,4 +35,9 @@ public class ChangedLocationEvent extends ChangedEntityEvent<Location> implement
         String template = stringResourceResolver.apply(R.string.event_location_renamed);
         return String.format(template, oldEntity.name, newEntity.name);
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.changedLocationEvent(this, arg);
+    }
 }

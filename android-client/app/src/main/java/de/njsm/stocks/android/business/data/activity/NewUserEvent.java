@@ -35,4 +35,9 @@ public class NewUserEvent extends NewEntityEvent<User> implements UserIconResour
         String template = stringResourceResolver.apply(R.string.event_user_created);
         return String.format(template, entity.name);
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.newUserEvent(this, arg);
+    }
 }

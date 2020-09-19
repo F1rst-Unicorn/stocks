@@ -35,4 +35,9 @@ public class DeletedLocationEvent extends DeletedEntityEvent<Location> implement
         String template = stringResourceResolver.apply(R.string.event_location_deleted);
         return String.format(template, entity.name);
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.deletedLocationEvent(this, arg);
+    }
 }

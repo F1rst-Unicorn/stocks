@@ -65,4 +65,9 @@ public class ChangedFoodItemEvent extends ChangedEntityEvent<FoodItemWithFoodNam
 
         return result.toString();
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.changedFoodItemEvent(this, arg);
+    }
 }

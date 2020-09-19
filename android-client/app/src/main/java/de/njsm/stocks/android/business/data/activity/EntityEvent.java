@@ -30,13 +30,15 @@ public abstract class EntityEvent<T extends VersionedData> implements Comparable
 
     private Key key;
 
+    public abstract T getEntity();
+
     public abstract String describe(IntFunction<String> stringResourceResolver);
 
     public abstract Instant getTime();
 
     public abstract int getEventIconResource();
 
-    public abstract VersionedData getEntity();
+    public abstract <I, O> O accept(EventVisitor<I, O> visitor, I arg);
 
     public boolean equals(EntityEvent<?> obj) {
         VersionedData me = getEntity();

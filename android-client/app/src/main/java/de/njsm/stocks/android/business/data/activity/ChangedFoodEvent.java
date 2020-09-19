@@ -129,4 +129,9 @@ public class ChangedFoodEvent extends ChangedEntityEvent<FoodWithLocationName> i
     public int getEventIconResource() {
         return eventIcon;
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.changedFoodEvent(this, arg);
+    }
 }

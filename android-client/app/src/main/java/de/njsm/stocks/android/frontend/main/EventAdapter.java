@@ -59,6 +59,8 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
 
     private static final int TYPE_ITEM = 1;
 
+    private View.OnClickListener callback;
+
     public static class ViewHolderHeader extends RecyclerView.ViewHolder {
 
         public ViewHolderHeader(@NonNull View itemView) {
@@ -103,15 +105,17 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
 
     EventAdapter(Resources resources,
                  Resources.Theme theme,
-                 IntFunction<String> stringResourceProvider,
                  OnClickListener goToEatSoon,
-                 OnClickListener goToEmptyFood) {
+                 OnClickListener goToEmptyFood,
+                 View.OnClickListener callback,
+                 IntFunction<String> stringResourceProvider) {
         super(DIFF_CALLBACK);
         this.resources = resources;
         this.theme = theme;
         this.stringResourceProvider = stringResourceProvider;
         this.goToEatSoon = goToEatSoon;
         this.goToEmptyFood = goToEmptyFood;
+        this.callback = callback;
     }
 
     @Override
@@ -134,7 +138,7 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
             RelativeLayout v = (RelativeLayout) LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.item_event, viewGroup, false);
             ViewHolder result = new EventAdapter.ViewHolder(v);
-            v.setTag(result);
+            v.setOnClickListener(callback);
             return result;
         }
     }
@@ -171,6 +175,14 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
         holder.setEventIcon(computeIcon(data.getEventIconResource()));
         holder.setDate(Config.PRETTY_FORMAT.format(data.getTime()));
         holder.setEntityIcon(computeIcon(data.getEntityIconResource()));
+        holder.itemView.setTag(data);
+    }
+
+    protected void bindVoid(ViewHolder holder) {
+        holder.setDescription("");
+        holder.setDate("");
+        holder.setEventIcon(computeIcon(R.drawable.ic_menu_recent_history_24dp));
+        holder.setEntityIcon(computeIcon(R.drawable.ic_menu_recent_history_24dp));
     }
 
     private static final DiffUtil.ItemCallback<EntityEvent<?>> DIFF_CALLBACK =
@@ -185,13 +197,6 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
                     return true;
                 }
             };
-
-    protected void bindVoid(ViewHolder holder) {
-        holder.setDescription("");
-        holder.setDate("");
-        holder.setEventIcon(computeIcon(R.drawable.ic_menu_recent_history_24dp));
-        holder.setEntityIcon(computeIcon(R.drawable.ic_menu_recent_history_24dp));
-    }
 
     public Drawable computeIcon(int resId) {
         Drawable result = ResourcesCompat.getDrawable(resources, resId, theme);

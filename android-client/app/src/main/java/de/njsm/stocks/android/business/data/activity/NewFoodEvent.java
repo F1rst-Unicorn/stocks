@@ -35,4 +35,9 @@ public class NewFoodEvent extends NewEntityEvent<Food> implements FoodIconResour
         String template = stringResourceResolver.apply(R.string.event_food_created);
         return String.format(template, entity.name);
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.newFoodEvent(this, arg);
+    }
 }

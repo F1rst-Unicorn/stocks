@@ -31,7 +31,7 @@
         android:id="@+id/nav_fragment_outline"
         android:name="de.njsm.stocks.android.frontend.main.OutlineFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_outline">
+        tools:layout="@layout/template_swipe_list">
         <action
             android:id="@+id/action_nav_fragment_outline_to_nav_fragment_startup"
             app:destination="@id/nav_fragment_startup" />
@@ -48,6 +48,27 @@
         <action
             android:id="@+id/action_nav_fragment_outline_to_nav_fragment_food"
             app:destination="@id/nav_fragment_food"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_fragment_outline_to_nav_fragment_ean_number"
+            app:destination="@id/nav_fragment_ean_number"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_fragment_outline_to_nav_fragment_devices"
+            app:destination="@id/nav_fragment_devices"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_fragment_outline_to_nav_fragment_users"
+            app:destination="@id/nav_fragment_users"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"

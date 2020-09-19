@@ -35,4 +35,9 @@ public class NewEanNumberEvent extends NewEntityEvent<EanNumberView> implements 
         String template = stringResourceResolver.apply(R.string.event_eannumber_created);
         return String.format(template, entity.eanCode, entity.getIdentifiedFoodName());
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.newEanNumberEvent(this, arg);
+    }
 }

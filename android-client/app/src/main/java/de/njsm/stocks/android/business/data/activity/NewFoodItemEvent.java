@@ -42,4 +42,9 @@ public class NewFoodItemEvent extends NewEntityEvent<FoodItemWithFoodNameView> i
                 entity.getLocation(),
                 Config.PRETTY_DATE_FORMAT.format(entity.getEatByDate()));
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.newFoodItemEvent(this, arg);
+    }
 }

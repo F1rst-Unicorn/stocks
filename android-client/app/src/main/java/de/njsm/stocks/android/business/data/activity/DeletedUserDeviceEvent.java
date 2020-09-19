@@ -35,4 +35,9 @@ public class DeletedUserDeviceEvent extends DeletedEntityEvent<UserDeviceWithUse
         String template = stringResourceResolver.apply(R.string.event_user_device_created);
         return String.format(template, entity.name, entity.getUsername());
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.deletedUserDeviceEvent(this, arg);
+    }
 }

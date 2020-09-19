@@ -35,4 +35,9 @@ public class DeletedEanNumberEvent extends DeletedEntityEvent<EanNumberView> imp
         String template = stringResourceResolver.apply(R.string.event_eannumber_deleted);
         return String.format(template, entity.eanCode, entity.getIdentifiedFoodName());
     }
+
+    @Override
+    public <I, O> O accept(EventVisitor<I, O> visitor, I arg) {
+        return visitor.deletedEanNumberEvent(this, arg);
+    }
 }
