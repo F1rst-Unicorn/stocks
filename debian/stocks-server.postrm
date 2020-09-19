@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+set -x
+
+case "$1" in
+	purge)
+		rm -rf /usr/share/stocks-server/root/CA
+		rm -rf /usr/share/stocks-server/root/nginx
+		rm -f /etc/nginx/ssl/stocks.*.pem
+	;;
+	*)
+	;;
+esac
