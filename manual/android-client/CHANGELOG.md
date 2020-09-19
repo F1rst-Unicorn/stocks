@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.6.0.3]
+
 ### Added
 
 * STOCKS-103: Show events of a single food type or location.
