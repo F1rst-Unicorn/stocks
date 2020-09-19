@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+* STOCKS-112: Don't show history button if it is not useful.
+
 ## [3.6.0.3]
 
 ### Added
