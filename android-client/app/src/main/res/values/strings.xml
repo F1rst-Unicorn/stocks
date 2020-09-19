@@ -52,6 +52,9 @@
     <string name="title_expiration_offset">Default expiration period</string>
     <string name="title_clear_search_history">Clear Search History</string>
     <string name="title_location">Default Location</string>
+    <string name="title_recent_activity">Recent Activity</string>
+    <string name="title_show_history">Show history</string>
+    <string name="title_food_activity">Activity on %s</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>
@@ -190,6 +193,5 @@
     <string name="event_food_item_changed_location">A %s was moved from %s to %s.</string>
     <string name="event_food_item_changed_eat_by_addendum">It should now be consumed by %s instead of %s.</string>
     <string name="event_food_item_changed_eat_by">The expiration date of a %s was changed from %s to %s.</string>
-    <string name="title_recent_activity">Recent Activity</string>
 
 </resources>

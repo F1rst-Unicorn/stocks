@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+* STOCKS-103: Show events of a single food type.
+
 ## [3.6.0.2]
 
 ### Added

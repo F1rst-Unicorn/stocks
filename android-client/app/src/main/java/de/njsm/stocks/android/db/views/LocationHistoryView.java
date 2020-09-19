@@ -29,8 +29,8 @@ import de.njsm.stocks.android.db.entities.Location;
 
 public class LocationHistoryView extends AbstractHistoryView<Location> {
 
-    public LocationHistoryView(Location version1, Location version2) {
-        super(version1, version2);
+    public LocationHistoryView(Location version1, Location version2, boolean isFirst) {
+        super(version1, version2, isFirst);
     }
 
     @Override

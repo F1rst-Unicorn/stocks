@@ -191,8 +191,18 @@ public class FoodItemFragment extends BaseFragment {
             case R.id.fragment_food_item_options_location:
                 editDefaultLocation();
                 break;
+            case R.id.fragment_food_item_options_events:
+                goToEvents();
+                break;
         }
         return true;
+    }
+
+    private void goToEvents() {
+        FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentFoodItemHistory args =
+                FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentFoodItemHistory(input.getFoodId());
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                .navigate(args);
     }
 
     private void editDefaultLocation() {

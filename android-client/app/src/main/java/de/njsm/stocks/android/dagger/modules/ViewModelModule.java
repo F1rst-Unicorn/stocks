@@ -183,4 +183,11 @@ public class ViewModelModule {
         result.init();
         return result;
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(de.njsm.stocks.android.frontend.foodhistory.EventViewModel.class)
+    ViewModel provideFoodEventsViewModel(EventRepository repo) {
+        return new de.njsm.stocks.android.frontend.foodhistory.EventViewModel(repo);
+    }
 }

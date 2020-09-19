@@ -27,8 +27,8 @@ import de.njsm.stocks.android.business.data.activity.NewUserDeviceEvent;
 
 public class UserDeviceHistoryView extends AbstractHistoryView<UserDeviceWithUser> {
 
-    public UserDeviceHistoryView(UserDeviceWithUser version1, UserDeviceWithUser version2) {
-        super(version1, version2);
+    public UserDeviceHistoryView(UserDeviceWithUser version1, UserDeviceWithUser version2, boolean isFirst) {
+        super(version1, version2, isFirst);
     }
 
     @Override

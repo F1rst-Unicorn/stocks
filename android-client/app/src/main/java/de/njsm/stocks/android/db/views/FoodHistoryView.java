@@ -28,8 +28,8 @@ import de.njsm.stocks.android.business.data.activity.NewFoodEvent;
 
 public class FoodHistoryView extends AbstractHistoryView<FoodWithLocationName> {
 
-    public FoodHistoryView(FoodWithLocationName version1, FoodWithLocationName version2) {
-        super(version1, version2);
+    public FoodHistoryView(FoodWithLocationName version1, FoodWithLocationName version2, boolean isFirst) {
+        super(version1, version2, isFirst);
     }
 
     @Override

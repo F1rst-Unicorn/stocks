@@ -416,6 +416,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_fragment_food_item_to_nav_fragment_food_item_history"
+            app:destination="@id/nav_fragment_food_history"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_add_food_item"
@@ -509,6 +516,14 @@
         <argument
             android:name="ticket"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_food_history"
+        android:name="de.njsm.stocks.android.frontend.foodhistory.FoodHistoryFragment"
+        tools:layout="@layout/template_swipe_list">
+        <argument
+            android:name="foodId"
+            app:argType="integer" />
     </fragment>
     <action
         android:id="@+id/action_global_nav_fragment_settings"

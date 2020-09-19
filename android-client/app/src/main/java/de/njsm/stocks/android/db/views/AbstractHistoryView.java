@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.android.db.views;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 
 import de.njsm.stocks.android.business.data.activity.ChangedEntityEvent;
@@ -26,7 +27,6 @@ import de.njsm.stocks.android.business.data.activity.DeletedEntityEvent;
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.business.data.activity.NewEntityEvent;
 import de.njsm.stocks.android.db.entities.VersionedData;
-import de.njsm.stocks.android.util.Config;
 
 public abstract class AbstractHistoryView<T extends VersionedData> {
 
@@ -36,9 +36,13 @@ public abstract class AbstractHistoryView<T extends VersionedData> {
     @Embedded(prefix = "version2_")
     T version2;
 
-    public AbstractHistoryView(T version1, T version2) {
+    @ColumnInfo(name = "is_first")
+    boolean isFirst;
+
+    public AbstractHistoryView(T version1, T version2, boolean isFirst) {
         this.version1 = version1;
         this.version2 = version2;
+        this.isFirst = isFirst;
     }
 
     abstract NewEntityEvent<?> getNewEntityEvent();
@@ -48,10 +52,10 @@ public abstract class AbstractHistoryView<T extends VersionedData> {
     abstract DeletedEntityEvent<?> getDeletedEntityEvent();
 
     public EntityEvent<?> mapToEvent() {
-        if (version1.version == 0 && version2 == null && version1.validTimeEnd.equals(Config.API_INFINITY)) {
-            return getNewEntityEvent();
-        } else if (version2 != null) {
+        if (version2 != null) {
             return getChangedEntityEvent();
+        } else if (isFirst) {
+            return getNewEntityEvent();
         } else {
             return getDeletedEntityEvent();
         }

@@ -28,8 +28,8 @@ import de.njsm.stocks.android.db.entities.User;
 
 public class UserHistoryView extends AbstractHistoryView<User> {
 
-    public UserHistoryView(User version1, User version2) {
-        super(version1, version2);
+    public UserHistoryView(User version1, User version2, boolean isFirst) {
+        super(version1, version2, isFirst);
     }
 
     @Override

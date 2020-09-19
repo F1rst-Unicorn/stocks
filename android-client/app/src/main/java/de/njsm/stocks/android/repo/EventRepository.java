@@ -53,4 +53,14 @@ public class EventRepository {
                         eventDao.getLocationHistory())
                 , 7).build();
     }
+
+    public LiveData<PagedList<EntityEvent<?>>> getFoodEvents(int id) {
+        LOG.d("getting history");
+        return new LivePagedListBuilder<>(
+                new MergingDataSourceFactory(
+                        eventDao.getFoodHistoryOfSingleFood(id),
+                        eventDao.getEanNumberHistoryOfSingleFood(id),
+                        eventDao.getFoodItemHistoryOfSingleFood(id))
+                , 7).build();
+    }
 }

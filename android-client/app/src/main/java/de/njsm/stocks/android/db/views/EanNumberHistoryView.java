@@ -27,8 +27,8 @@ import de.njsm.stocks.android.business.data.activity.NewEntityEvent;
 
 public class EanNumberHistoryView extends AbstractHistoryView<EanNumberView> {
 
-    public EanNumberHistoryView(EanNumberView version1, EanNumberView version2) {
-        super(version1, version2);
+    public EanNumberHistoryView(EanNumberView version1, EanNumberView version2, boolean isFirst) {
+        super(version1, version2, isFirst);
     }
 
     @Override
