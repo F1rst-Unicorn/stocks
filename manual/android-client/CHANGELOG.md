@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+* STOCKS-103: Allow clicking on events.
+
 ## [3.6.0.1]
 
 ### Fixed
