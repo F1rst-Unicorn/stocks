@@ -29,7 +29,7 @@ import org.junit.Test;
 import java.time.Instant;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.db.jooq.tables.EanNumber.EAN_NUMBER;
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.Assert.*;
 
 public class EanNumberHandlerTest extends DbTestCase {
@@ -42,6 +42,7 @@ public class EanNumberHandlerTest extends DbTestCase {
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT,
                 new InsertVisitor<>());
+        uut.setPrincipals(TEST_USER);
     }
 
     @Test

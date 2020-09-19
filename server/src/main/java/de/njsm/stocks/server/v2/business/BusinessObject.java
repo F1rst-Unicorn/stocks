@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
 import fj.data.Validation;
 import io.prometheus.client.Summary;
@@ -36,8 +37,15 @@ public class BusinessObject {
 
     private final FailSafeDatabaseHandler dbHandler;
 
+    Principals principals;
+
     public BusinessObject(FailSafeDatabaseHandler dbHandler) {
         this.dbHandler = dbHandler;
+    }
+
+    public void setPrincipals(Principals principals) {
+        this.principals = principals;
+        dbHandler.setPrincipals(principals);
     }
 
     <O> Validation<StatusCode, O> runFunction(Producer<Validation<StatusCode, O>> operation) {
@@ -50,6 +58,7 @@ public class BusinessObject {
     }
 
     private <O> Validation<StatusCode, O> runTransactionUntilSerialisable(Producer<Validation<StatusCode, O>> operation) {
+        assertPrincipalsAreSet();
         Validation<StatusCode, O> result;
         int repetitions = 0;
         do {
@@ -70,7 +79,6 @@ public class BusinessObject {
         r.register((CompletionCallback) this::finishTransaction);
         return operation.call();
     }
-
     <O> Validation<StatusCode, O> finishTransaction(Validation<StatusCode, O> carry) {
         if (carry.isFail()) {
             dbHandler.rollback();
@@ -90,5 +98,11 @@ public class BusinessObject {
             dbHandler.rollback();
         else
             dbHandler.commit();
+    }
+
+    private void assertPrincipalsAreSet() {
+        if (principals == null) {
+            throw new IllegalArgumentException("You forgot to set principals");
+        }
     }
 }

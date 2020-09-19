@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.VersionedData;
 import fj.data.Validation;
@@ -52,6 +53,12 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                                InsertVisitor<T> visitor) {
         super(connectionFactory, resourceIdentifier, timeout);
         this.visitor = visitor;
+    }
+
+    @Override
+    public void setPrincipals(Principals principals) {
+        super.setPrincipals(principals);
+        visitor.setPrincipals(principals);
     }
 
     public Validation<StatusCode, Integer> add(R item) {
@@ -106,11 +113,11 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
     /**
      * CF 10.11
      */
-    public StatusCode currentDelete(Condition condition) {
+    StatusCode currentDelete(Condition condition) {
         return runCommand(context -> {
             Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
             List<Field<?>> fields = getNontemporalFields();
-            List<Field<?>> fieldsWithTime = getFieldsWithTime(fields);
+            List<Field<?>> fieldsWithTime = getFieldsWithTimeAndCreator(fields);
 
             int changedItems = context.insertInto(getTable())
                     .columns(fieldsWithTime)
@@ -119,19 +126,21 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                                     .select(getValidTimeStartField(),
                                             now,
                                             now,
-                                            DSL.inline(CrudDatabaseHandler.INFINITY))
+                                            DSL.inline(CrudDatabaseHandler.INFINITY),
+                                            DSL.inline(principals.getUid()),
+                                            DSL.inline(principals.getDid()))
                                     .from(getTable())
                                     .where(condition
-                                    .and(getValidTimeStartField().lessThan(now))
-                                    .and(getValidTimeEndField().greaterThan(now))
-                                    .and(getTransactionTimeEndField().eq(CrudDatabaseHandler.INFINITY))))
+                                            .and(getValidTimeStartField().lessThan(now))
+                                            .and(getValidTimeEndField().greaterThan(now))
+                                            .and(getTransactionTimeEndField().eq(CrudDatabaseHandler.INFINITY))))
                     .execute();
 
             context.update(getTable())
                     .set(getTransactionTimeEndField(), now)
                     .where(condition
-                    .and(getValidTimeEndField().greaterThan(now))
-                    .and(getTransactionTimeEndField().eq(CrudDatabaseHandler.INFINITY)))
+                            .and(getValidTimeEndField().greaterThan(now))
+                            .and(getTransactionTimeEndField().eq(CrudDatabaseHandler.INFINITY)))
                     .execute();
 
             if (0 < changedItems)
@@ -145,12 +154,12 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
     /**
      * CF 10.7
      */
-    public StatusCode currentUpdate(List<Field<?>> valuesToUpdate, Condition condition) {
+    StatusCode currentUpdate(List<Field<?>> valuesToUpdate, Condition condition) {
         return runCommand(context -> {
 
             Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
             List<Field<?>> fields = getNontemporalFields();
-            List<Field<?>> fieldsWithTime = getFieldsWithTime(fields);
+            List<Field<?>> fieldsWithTime = getFieldsWithTimeAndCreator(fields);
 
             int changedItems = context.insertInto(getTable())
                     .columns(fieldsWithTime)
@@ -160,7 +169,9 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                                             now,
                                             getValidTimeEndField(),
                                             now,
-                                            DSL.inline(CrudDatabaseHandler.INFINITY))
+                                            DSL.inline(CrudDatabaseHandler.INFINITY),
+                                            DSL.inline(principals.getUid()),
+                                            DSL.inline(principals.getDid()))
                                     .from(getTable())
                                     .where(condition
                                             .and(getValidTimeStartField().lessOrEqual(now))
@@ -177,7 +188,9 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                                             getValidTimeStartField(),
                                             now,
                                             now,
-                                            DSL.inline(INFINITY)
+                                            DSL.inline(INFINITY),
+                                            DSL.inline(principals.getUid()),
+                                            DSL.inline(principals.getDid())
                                     ).from(getTable())
                                     .where(condition
                                             .and(getValidTimeStartField().lessThan(now))
@@ -204,7 +217,9 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                                             getValidTimeStartField(),
                                             getValidTimeEndField(),
                                             now,
-                                            DSL.inline(CrudDatabaseHandler.INFINITY))
+                                            DSL.inline(CrudDatabaseHandler.INFINITY),
+                                            DSL.inline(principals.getUid()),
+                                            DSL.inline(principals.getDid()))
                                     .from(getTable())
                                     .where(condition
                                             .and(getValidTimeStartField().greaterThan(now))
@@ -256,12 +271,14 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
         });
     }
 
-    protected List<Field<?>> getFieldsWithTime(List<Field<?>> fields) {
+    private List<Field<?>> getFieldsWithTimeAndCreator(List<Field<?>> fields) {
         List<Field<?>> fieldsWithTime = new ArrayList<>(fields);
         fieldsWithTime.add(getValidTimeStartField());
         fieldsWithTime.add(getValidTimeEndField());
         fieldsWithTime.add(getTransactionTimeStartField());
         fieldsWithTime.add(getTransactionTimeEndField());
+        fieldsWithTime.add(getCreatorUserField());
+        fieldsWithTime.add(getCreatorUserDeviceField());
         return fieldsWithTime;
     }
 
@@ -289,6 +306,14 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
 
     protected Field<OffsetDateTime> getTransactionTimeEndField() {
         return getTable().field("transaction_time_end", OffsetDateTime.class);
+    }
+
+    protected Field<Integer> getCreatorUserField() {
+        return getTable().field("creator_user", Integer.class);
+    }
+
+    protected Field<Integer> getCreatorUserDeviceField() {
+        return getTable().field("creator_user_device", Integer.class);
     }
 
     protected Condition nowAsBestKnown() {

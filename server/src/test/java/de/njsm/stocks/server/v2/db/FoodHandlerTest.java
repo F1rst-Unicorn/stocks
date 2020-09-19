@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.time.Period;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.Assert.*;
 
 public class FoodHandlerTest extends DbTestCase {
@@ -42,6 +43,7 @@ public class FoodHandlerTest extends DbTestCase {
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT,
                 new InsertVisitor<>());
+        uut.setPrincipals(TEST_USER);
     }
 
     @Test

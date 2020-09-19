@@ -34,7 +34,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/health")
 public class HealthEndpoint {
 
-    private HealthManager healthManager;
+    private final HealthManager healthManager;
 
     @Inject
     public HealthEndpoint(HealthManager healthManager) {

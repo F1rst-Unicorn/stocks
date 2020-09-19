@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.TicketAuthoriser;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
@@ -82,5 +83,6 @@ public class RegistrationEndpointTest {
         assertEquals(StatusCode.SUCCESS, result.status);
         assertEquals("certificate", result.data);
         Mockito.verify(authoriser).handleTicket(ticket);
+        Mockito.verify(authoriser).setPrincipals(Principals.DUMMY);
     }
 }

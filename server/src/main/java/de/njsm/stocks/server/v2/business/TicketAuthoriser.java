@@ -34,11 +34,11 @@ public class TicketAuthoriser extends BusinessObject {
 
     private static final Logger LOG = LogManager.getLogger(TicketAuthoriser.class);
 
-    private TicketHandler databaseHandler;
+    private final TicketHandler databaseHandler;
 
-    private AuthAdmin authAdmin;
+    private final AuthAdmin authAdmin;
 
-    private int validityTime;
+    private final int validityTime;
 
     public TicketAuthoriser(AuthAdmin authAdmin, TicketHandler databaseHandler, int validityTime) {
         super(databaseHandler);

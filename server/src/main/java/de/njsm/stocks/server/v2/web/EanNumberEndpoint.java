@@ -27,9 +27,11 @@ import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.time.Instant;
 import java.util.Optional;
@@ -47,11 +49,13 @@ public class EanNumberEndpoint extends Endpoint {
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response putEanNumber(@QueryParam("code") String code,
+    public Response putEanNumber(@Context HttpServletRequest request,
+                                 @QueryParam("code") String code,
                                  @QueryParam("identifies") int foodId) {
         if (isValid(code, "code") &&
                 isValid(foodId, "foodId")) {
 
+            manager.setPrincipals(getPrincipals(request));
             Validation<StatusCode, Integer> status = manager.add(new EanNumber(code, foodId));
             return new Response(status);
         } else {
@@ -76,12 +80,14 @@ public class EanNumberEndpoint extends Endpoint {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteEanNumber(@QueryParam("id") int id,
+    public Response deleteEanNumber(@Context HttpServletRequest request,
+                                    @QueryParam("id") int id,
                                     @QueryParam("version") int version) {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
+            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.delete(new EanNumber(id, version, "", 0));
             return new Response(status);
         } else {

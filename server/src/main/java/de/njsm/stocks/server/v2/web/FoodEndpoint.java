@@ -27,9 +27,11 @@ import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.time.Instant;
 import java.time.Period;
@@ -48,8 +50,10 @@ public class FoodEndpoint extends Endpoint {
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response putFood(@QueryParam("name") String name) {
+    public Response putFood(@Context HttpServletRequest request,
+                            @QueryParam("name") String name) {
         if (isValid(name, "name")) {
+            manager.setPrincipals(getPrincipals(request));
             Validation<StatusCode, Integer> status = manager.add(new Food(name));
             return new Response(status);
         } else {
@@ -76,7 +80,8 @@ public class FoodEndpoint extends Endpoint {
     @PUT
     @Path("rename")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response renameFood(@QueryParam("id") int id,
+    public Response renameFood(@Context HttpServletRequest request,
+                               @QueryParam("id") int id,
                                @QueryParam("version") int version,
                                @QueryParam("new") String newName,
                                @QueryParam("expirationoffset") int expirationOffset,
@@ -85,6 +90,7 @@ public class FoodEndpoint extends Endpoint {
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
 
+            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.rename(new Food(id, newName, version, false, Period.ofDays(expirationOffset), location == 0 ? null : location));
             return new Response(status);
         } else {
@@ -95,12 +101,14 @@ public class FoodEndpoint extends Endpoint {
     @PUT
     @Path("buy")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response setToBuyStatus(@QueryParam("id") int id,
+    public Response setToBuyStatus(@Context HttpServletRequest request,
+                                   @QueryParam("id") int id,
                                    @QueryParam("version") int version,
                                    @QueryParam("buy") int toBuyParameter) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
+            manager.setPrincipals(getPrincipals(request));
             boolean toBuy = toBuyParameter == 1;
             StatusCode status = manager.setToBuyStatus(new Food(id, "", version, toBuy, Period.ZERO, 0));
             return new Response(status);
@@ -111,11 +119,13 @@ public class FoodEndpoint extends Endpoint {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteFood(@QueryParam("id") int id,
+    public Response deleteFood(@Context HttpServletRequest request,
+                               @QueryParam("id") int id,
                                @QueryParam("version") int version) {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
+            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.delete(new Food(id, "", version, false, Period.ZERO, 0));
             return new Response(status);
         } else {

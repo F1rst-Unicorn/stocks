@@ -40,6 +40,8 @@ import java.util.stream.Collectors;
 
 import static de.njsm.stocks.server.v2.business.StatusCode.INVALID_ARGUMENT;
 import static de.njsm.stocks.server.v2.business.StatusCode.SUCCESS;
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,7 +66,7 @@ public class EanNumberEndpointTest {
     @Test
     public void puttingNullCodeIsInvalid() {
 
-        Response result = uut.putEanNumber(null, 1);
+        Response result = uut.putEanNumber(createMockRequest(), null, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -72,7 +74,7 @@ public class EanNumberEndpointTest {
     @Test
     public void puttingEmptyCodeIsInvalid() {
 
-        Response result = uut.putEanNumber("", 1);
+        Response result = uut.putEanNumber(createMockRequest(), "", 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -80,7 +82,7 @@ public class EanNumberEndpointTest {
     @Test
     public void puttingInvalidFoodIdIsInvalid() {
 
-        Response result = uut.putEanNumber("code", 0);
+        Response result = uut.putEanNumber(createMockRequest(), "code", 0);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -88,7 +90,7 @@ public class EanNumberEndpointTest {
     @Test
     public void deletingInvalidIdIsInvalid() {
 
-        Response result = uut.deleteEanNumber(0, 1);
+        Response result = uut.deleteEanNumber(createMockRequest(), 0, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -96,7 +98,7 @@ public class EanNumberEndpointTest {
     @Test
     public void deletingInvalidVersionIsInvalid() {
 
-        Response result = uut.deleteEanNumber(1, -1);
+        Response result = uut.deleteEanNumber(createMockRequest(), 1, -1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -106,10 +108,11 @@ public class EanNumberEndpointTest {
         EanNumber data = new EanNumber("CODE", 2);
         when(manager.add(data)).thenReturn(Validation.success(5));
 
-        Response response = uut.putEanNumber(data.eanCode, data.identifiesFood);
+        Response response = uut.putEanNumber(createMockRequest(), data.eanCode, data.identifiesFood);
 
         assertEquals(SUCCESS, response.status);
         verify(manager).add(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -143,9 +146,10 @@ public class EanNumberEndpointTest {
         EanNumber data = new EanNumber(1, 0, "", 0);
         when(manager.delete(data)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteEanNumber(data.id, data.version);
+        Response response = uut.deleteEanNumber(createMockRequest(), data.id, data.version);
 
         assertEquals(SUCCESS, response.status);
         verify(manager).delete(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 }

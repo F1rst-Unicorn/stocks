@@ -40,38 +40,42 @@ class SampleData {
             "ALTER SEQUENCE \"Ticket_ID_seq\" RESTART",
             "ALTER SEQUENCE \"EAN_number_ID_seq\" RESTART",
 
-            "INSERT INTO \"Location\" (\"name\") VALUES " +
-                    "('Fridge'), " +
-                    "('Cupboard')",
-            "INSERT INTO \"Food\" (\"name\", \"to_buy\", \"location\") VALUES " +
-                    "('Carrot', false, null), " +
-                    "('Beer', true, null), " +
-                    "('Cheese', false, 1)",
-            "INSERT INTO \"User\" (\"name\") VALUES " +
-                    "('Bob'), " +
-                    "('Alice'), " +
-                    "('Jack')",
-            "INSERT INTO \"User_device\" (\"name\", \"belongs_to\") VALUES " +
-                    "('mobile', 1), " +
-                    "('mobile2', 1), " +
-                    "('laptop', 2), " +
-                    "('pending_device', 2)",
-            "INSERT INTO \"Food_item\" (\"eat_by\", \"registers\", \"buys\", \"stored_in\", \"of_type\") VALUES" +
-                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2)," +
-                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2)," +
-                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2)",
+            "INSERT INTO \"Location\" (\"name\", creator_user, creator_user_device) VALUES " +
+                    "('Fridge', 1, 1), " +
+                    "('Cupboard', 1, 1)",
+            "INSERT INTO \"Food\" (\"name\", \"to_buy\", \"location\", creator_user, creator_user_device) VALUES " +
+                    "('Carrot', false, null, 1, 1), " +
+                    "('Beer', true, null, 1, 1), " +
+                    "('Cheese', false, 1, 1, 1)",
+            "INSERT INTO \"User\" (\"name\", creator_user, creator_user_device) VALUES " +
+                    "('Bob', 1, 1), " +
+                    "('Alice', 1, 1), " +
+                    "('Jack', 1, 1)",
+            "INSERT INTO \"User_device\" (\"name\", \"belongs_to\", creator_user, creator_user_device) VALUES " +
+                    "('mobile', 1, 1, 1), " +
+                    "('mobile2', 1, 1, 1), " +
+                    "('laptop', 2, 1, 1), " +
+                    "('pending_device', 2, 1, 1)",
+            "INSERT INTO \"Food_item\" (\"eat_by\", \"registers\", \"buys\", \"stored_in\", \"of_type\", creator_user, creator_user_device) VALUES" +
+                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)," +
+                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)," +
+                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)",
             "INSERT INTO \"Ticket\" (\"ticket\", \"belongs_device\") VALUES " +
                     "('AAAA', 4)",
-            "INSERT INTO \"EAN_number\" (\"number\", \"identifies\") VALUES " +
-                    "('EAN BEER', 2)",
+            "INSERT INTO \"EAN_number\" (\"number\", \"identifies\", creator_user, creator_user_device) VALUES " +
+                    "('EAN BEER', 2, 1, 1)",
     };
 
     static void insertSampleData(Connection c) throws SQLException {
+        c.setAutoCommit(false);
+        c.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
         Statement stmt = c.createStatement();
 
         for (String cmd : sampleDbData) {
             stmt.execute(cmd);
         }
+
+        c.commit();
     }
 
 }

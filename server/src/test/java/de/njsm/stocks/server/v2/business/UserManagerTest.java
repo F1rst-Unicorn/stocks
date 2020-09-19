@@ -36,6 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Matchers.any;
@@ -57,10 +58,12 @@ public class UserManagerTest {
         foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
         uut = new UserManager(userDbHandler, deviceManager, foodItemHandler);
+        uut.setPrincipals(TEST_USER);
     }
 
     @After
     public void tearDown() {
+        Mockito.verify(userDbHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(userDbHandler);
         Mockito.verifyNoMoreInteractions(deviceManager);
         Mockito.verifyNoMoreInteractions(foodItemHandler);
@@ -110,7 +113,7 @@ public class UserManagerTest {
         User input = new User(1, 2, "user");
         Mockito.when(deviceManager.getDevicesBelonging(input)).thenReturn(Validation.fail(code));
 
-        StatusCode result = uut.deleteUser(input, PrincipalFilterTest.TEST_USER);
+        StatusCode result = uut.deleteUser(input);
 
         assertEquals(code, result);
         Mockito.verify(deviceManager).getDevicesBelonging(input);
@@ -128,7 +131,7 @@ public class UserManagerTest {
         Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice()))
                 .thenReturn(code);
 
-        StatusCode result = uut.deleteUser(input, PrincipalFilterTest.TEST_USER);
+        StatusCode result = uut.deleteUser(input);
 
         assertEquals(code, result);
         Mockito.verify(deviceManager).getDevicesBelonging(input);
@@ -149,7 +152,7 @@ public class UserManagerTest {
         Mockito.when(userDbHandler.delete(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.deleteUser(input, PrincipalFilterTest.TEST_USER);
+        StatusCode result = uut.deleteUser(input);
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(deviceManager).getDevicesBelonging(input);

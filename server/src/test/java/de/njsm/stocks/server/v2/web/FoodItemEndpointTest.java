@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
@@ -119,6 +121,7 @@ public class FoodItemEndpointTest {
 
         assertEquals(StatusCode.SUCCESS, result.status);
         Mockito.verify(manager).add(expected);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -165,12 +168,13 @@ public class FoodItemEndpointTest {
 
         assertEquals(StatusCode.SUCCESS, result.status);
         Mockito.verify(manager).edit(expected);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
     public void deleteInvalidIdIsReported() {
 
-        Response result = uut.deleteItem(0, 1);
+        Response result = uut.deleteItem(createMockRequest(), 0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -178,7 +182,7 @@ public class FoodItemEndpointTest {
     @Test
     public void deleteInvalidVersionIsReported() {
 
-        Response result = uut.deleteItem(1, -1);
+        Response result = uut.deleteItem(createMockRequest(), 1, -1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -188,9 +192,10 @@ public class FoodItemEndpointTest {
         FoodItem expected = new FoodItem(2, 2, Instant.EPOCH, 0, 0, 0, 0);
         Mockito.when(manager.delete(expected)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.deleteItem(expected.id, expected.version);
+        Response result = uut.deleteItem(createMockRequest(), expected.id, expected.version);
 
         assertEquals(StatusCode.SUCCESS, result.status);
         Mockito.verify(manager).delete(expected);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 }

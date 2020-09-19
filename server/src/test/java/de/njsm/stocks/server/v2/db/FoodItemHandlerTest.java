@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -58,6 +59,7 @@ public class FoodItemHandlerTest extends DbTestCase {
                 new InsertVisitor<>(),
                 userDevicePresenceChecker,
                 userPresenceChecker);
+        uut.setPrincipals(TEST_USER);
     }
 
     @After

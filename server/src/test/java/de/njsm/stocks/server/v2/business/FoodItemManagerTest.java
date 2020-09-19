@@ -32,6 +32,7 @@ import javax.ws.rs.container.AsyncResponse;
 import java.time.Instant;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,10 +52,12 @@ public class FoodItemManagerTest {
         foodHandler = Mockito.mock(FoodHandler.class);
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
         uut = new FoodItemManager(backend, foodHandler);
+        uut.setPrincipals(TEST_USER);
     }
 
     @After
     public void tearDown() {
+        Mockito.verify(backend).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(backend);
         Mockito.verifyNoMoreInteractions(foodHandler);
     }

@@ -35,6 +35,8 @@ import javax.ws.rs.container.AsyncResponse;
 import java.time.Instant;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -85,7 +87,7 @@ public class UserEndpointTest {
     @Test
     public void addingInvalidNameIsRejected() {
 
-        Response result = uut.putUser(null);
+        Response result = uut.putUser(createMockRequest(), null);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -93,9 +95,8 @@ public class UserEndpointTest {
     @Test
     public void addUserContainingDollarIsRejected() {
         String name = "John$1";
-        int belongsUser = 2;
 
-        Response result = uut.putUser(name);
+        Response result = uut.putUser(createMockRequest(), name);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -103,9 +104,8 @@ public class UserEndpointTest {
     @Test
     public void addUserContainingEqualSignIsRejected() {
         String name = "John=1";
-        int belongsUser = 2;
 
-        Response result = uut.putUser(name);
+        Response result = uut.putUser(createMockRequest(), name);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
     }
@@ -115,10 +115,11 @@ public class UserEndpointTest {
         String name = "user";
         Mockito.when(userManager.addUser(any())).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.putUser(name);
+        Response result = uut.putUser(createMockRequest(), name);
 
         assertEquals(StatusCode.SUCCESS, result.status);
         Mockito.verify(userManager).addUser(new User(name));
+        Mockito.verify(userManager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -141,11 +142,12 @@ public class UserEndpointTest {
 
     @Test
     public void validDeletingIsSuccessful() {
-        Mockito.when(userManager.deleteUser(any(), any())).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(userManager.deleteUser(any())).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.deleteUser(Util.createMockRequest(), 1, 2);
 
         assertEquals(StatusCode.SUCCESS, result.status);
-        Mockito.verify(userManager).deleteUser(new User(1, 2), PrincipalFilterTest.TEST_USER);
+        Mockito.verify(userManager).deleteUser(new User(1, 2));
+        Mockito.verify(userManager).setPrincipals(TEST_USER);
     }
 }

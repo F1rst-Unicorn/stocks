@@ -20,7 +20,6 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.util.AuthAdmin;
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
@@ -88,8 +87,8 @@ public class DeviceManager extends BusinessObject {
         });
     }
 
-    public StatusCode removeDevice(UserDevice device, Principals currentUser) {
-        return runOperation(() -> removeDeviceInternally(device, currentUser));
+    public StatusCode removeDevice(UserDevice device) {
+        return runOperation(() -> removeDeviceInternally(device));
     }
 
     public StatusCode revokeDevice(UserDevice device) {
@@ -103,8 +102,8 @@ public class DeviceManager extends BusinessObject {
         return userDeviceHandler.getDevicesOfUser(u);
     }
 
-    StatusCode removeDeviceInternally(UserDevice device, Principals currentUser) {
-        return foodItemHandler.transferFoodItems(device, currentUser.toDevice())
+    StatusCode removeDeviceInternally(UserDevice device) {
+        return foodItemHandler.transferFoodItems(device, principals.toDevice())
                 .bind(() -> ticketHandler.removeTicketOfDevice(device))
                 .bind(() -> userDeviceHandler.delete(device))
                 .bind(() -> authAdmin.revokeCertificate(device.id));

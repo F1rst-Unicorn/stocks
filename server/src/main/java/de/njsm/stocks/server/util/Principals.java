@@ -31,6 +31,8 @@ import java.util.Objects;
  */
 public class Principals {
 
+    public static final Principals DUMMY = new Principals("Anonymous", "Anonymous", 0, 0);
+
     private String username;
     private String deviceName;
     private int uid;

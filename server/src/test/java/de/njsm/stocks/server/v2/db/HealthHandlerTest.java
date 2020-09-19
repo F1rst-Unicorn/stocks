@@ -23,6 +23,7 @@ import de.njsm.stocks.server.v2.business.StatusCode;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.Assert.assertEquals;
 
 public class HealthHandlerTest extends DbTestCase {
@@ -34,6 +35,7 @@ public class HealthHandlerTest extends DbTestCase {
         uut = new HealthHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT);
+        uut.setPrincipals(TEST_USER);
     }
 
     @Test

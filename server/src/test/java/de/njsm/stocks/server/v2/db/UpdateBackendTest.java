@@ -37,7 +37,6 @@ public class UpdateBackendTest extends DbTestCase {
 
     @Before
     public void setup() {
-
         Config c = new Config(System.getProperties());
         uut = new UpdateBackend(getConnectionFactory(),
                 getNewResourceIdentifier(),

@@ -33,6 +33,7 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -53,10 +54,12 @@ public class TicketAuthoriserTest {
         authAdmin = Mockito.mock(AuthAdmin.class);
         databaseHandler = Mockito.mock(TicketHandler.class);
         uut = new TicketAuthoriser(authAdmin, databaseHandler, validityTime / (60 * 1000));
+        uut.setPrincipals(TEST_USER);
     }
 
     @After
     public void tearDown() {
+        Mockito.verify(databaseHandler).setPrincipals(TEST_USER);
         verifyNoMoreInteractions(authAdmin);
         verifyNoMoreInteractions(databaseHandler);
     }

@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
@@ -60,7 +59,7 @@ public class UserManager extends BusinessObject {
         });
     }
 
-    public StatusCode deleteUser(User userToDelete, Principals currentUser) {
+    public StatusCode deleteUser(User userToDelete) {
         return runOperation(() -> {
             Validation<StatusCode, List<UserDevice>> deviceResult = deviceManager.getDevicesBelonging(userToDelete);
 
@@ -69,7 +68,7 @@ public class UserManager extends BusinessObject {
 
             List<UserDevice> devices = deviceResult.success();
 
-            return foodItemHandler.transferFoodItems(userToDelete, currentUser.toUser(), devices, currentUser.toDevice())
+            return foodItemHandler.transferFoodItems(userToDelete, principals.toUser(), devices, principals.toDevice())
                     .bind(() -> dbHandler.delete(userToDelete));
         });
     }

@@ -29,6 +29,7 @@ import org.mockito.Mockito;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.CompletionCallback;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.times;
@@ -43,10 +44,12 @@ public class BusinessObjectTest {
     public void setup() {
         backend = Mockito.mock(FailSafeDatabaseHandler.class);
         uut = new BusinessObject(backend);
+        uut.setPrincipals(TEST_USER);
     }
 
     @After
     public void tearDown() {
+        Mockito.verify(backend).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(backend);
     }
 

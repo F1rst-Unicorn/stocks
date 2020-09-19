@@ -27,9 +27,11 @@ import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.time.Instant;
 import java.util.Optional;
@@ -47,8 +49,10 @@ public class LocationEndpoint extends Endpoint {
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response putLocation(@QueryParam("name") String name) {
+    public Response putLocation(@Context HttpServletRequest request,
+                                @QueryParam("name") String name) {
         if (isValid(name, "name")) {
+            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.put(new Location(name));
             return new Response(status);
         } else {
@@ -74,13 +78,15 @@ public class LocationEndpoint extends Endpoint {
     @PUT
     @Path("rename")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response renameLocation(@QueryParam("id") int id,
-                               @QueryParam("version") int version,
-                               @QueryParam("new") String newName) {
+    public Response renameLocation(@Context HttpServletRequest request,
+                                   @QueryParam("id") int id,
+                                   @QueryParam("version") int version,
+                                   @QueryParam("new") String newName) {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
+            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.rename(new Location(id, newName, version));
             return new Response(status);
         } else {
@@ -90,13 +96,15 @@ public class LocationEndpoint extends Endpoint {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteLocation(@QueryParam("id") int id,
+    public Response deleteLocation(@Context HttpServletRequest request,
+                                   @QueryParam("id") int id,
                                    @QueryParam("version") int version,
                                    @QueryParam("cascade") int cascadeParameter) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
             boolean cascade = cascadeParameter == 1;
+            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.delete(new Location(id, "", version), cascade);
             return new Response(status);
 

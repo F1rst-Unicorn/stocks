@@ -41,6 +41,8 @@ import java.util.stream.Collectors;
 
 import static de.njsm.stocks.server.v2.business.StatusCode.INVALID_ARGUMENT;
 import static de.njsm.stocks.server.v2.business.StatusCode.SUCCESS;
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -67,7 +69,7 @@ public class FoodEndpointTest {
     @Test
     public void puttingNullCodeIsInvalid() {
 
-        Response result = uut.putFood(null);
+        Response result = uut.putFood(createMockRequest(), null);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -75,7 +77,7 @@ public class FoodEndpointTest {
     @Test
     public void puttingEmptyCodeIsInvalid() {
 
-        Response result = uut.putFood("");
+        Response result = uut.putFood(createMockRequest(), "");
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -83,7 +85,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidIdIsInvalid() {
 
-        Response result = uut.renameFood(0, 1, "fdsa", 0, 1);
+        Response result = uut.renameFood(createMockRequest(), 0, 1, "fdsa", 0, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -91,7 +93,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidVersionIsInvalid() {
 
-        Response result = uut.renameFood(1, -1, "fdsa", 0, 1);
+        Response result = uut.renameFood(createMockRequest(), 1, -1, "fdsa", 0, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -99,7 +101,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingToInvalidNameIsInvalid() {
 
-        Response result = uut.renameFood(1, 1, "", 0, 1);
+        Response result = uut.renameFood(createMockRequest(), 1, 1, "", 0, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -107,7 +109,7 @@ public class FoodEndpointTest {
     @Test
     public void settingBuyStatusInvalidIdIsInvalid() {
 
-        Response result = uut.setToBuyStatus(0, 1, 1);
+        Response result = uut.setToBuyStatus(createMockRequest(), 0, 1, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -115,7 +117,7 @@ public class FoodEndpointTest {
     @Test
     public void settingBuyStatusInvalidVersionIsInvalid() {
 
-        Response result = uut.setToBuyStatus(1, -1, 1);
+        Response result = uut.setToBuyStatus(createMockRequest(), 1, -1, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -123,7 +125,7 @@ public class FoodEndpointTest {
     @Test
     public void deletingInvalidIdIsInvalid() {
 
-        Response result = uut.deleteFood(0, 1);
+        Response result = uut.deleteFood(createMockRequest(), 0, 1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -131,7 +133,7 @@ public class FoodEndpointTest {
     @Test
     public void deletingInvalidVersionIsInvalid() {
 
-        Response result = uut.deleteFood(1, -1);
+        Response result = uut.deleteFood(createMockRequest(), 1, -1);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -141,10 +143,11 @@ public class FoodEndpointTest {
         Food data = new Food(0, "Banana", 0, false, Period.ZERO, null);
         when(manager.add(data)).thenReturn(Validation.success(5));
 
-        Response response = uut.putFood(data.name);
+        Response response = uut.putFood(createMockRequest(), data.name);
 
         assertEquals(SUCCESS, response.status);
         verify(manager).add(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -179,10 +182,11 @@ public class FoodEndpointTest {
         Food data = new Food(1, newName, 2, false, Period.ZERO.plusDays(3), 1);
         when(manager.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameFood(data.id, data.version, newName, 3, 1);
+        Response response = uut.renameFood(createMockRequest(), data.id, data.version, newName, 3, 1);
 
         assertEquals(SUCCESS, response.status);
         verify(manager).rename(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -191,10 +195,11 @@ public class FoodEndpointTest {
         Food data = new Food(1, newName, 2, false, Period.ZERO.plusDays(3), null);
         when(manager.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameFood(data.id, data.version, newName, 3, 0);
+        Response response = uut.renameFood(createMockRequest(), data.id, data.version, newName, 3, 0);
 
         assertEquals(SUCCESS, response.status);
         verify(manager).rename(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -202,10 +207,11 @@ public class FoodEndpointTest {
         Food data = new Food(1, "", 2, true, Period.ZERO, 0);
         when(manager.setToBuyStatus(data)).thenReturn(SUCCESS);
 
-        Response response = uut.setToBuyStatus(data.id, data.version, 1);
+        Response response = uut.setToBuyStatus(createMockRequest(), data.id, data.version, 1);
 
         assertEquals(SUCCESS, response.status);
         verify(manager).setToBuyStatus(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -213,9 +219,10 @@ public class FoodEndpointTest {
         Food data = new Food(1, "", 2, false, Period.ZERO, 0);
         when(manager.delete(data)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteFood(data.id, data.version);
+        Response response = uut.deleteFood(createMockRequest(), data.id, data.version);
 
         assertEquals(SUCCESS, response.status);
         verify(manager).delete(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 }

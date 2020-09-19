@@ -27,8 +27,9 @@ import org.junit.Test;
 
 import java.util.Set;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PrincipalsHandlerTest extends DbTestCase {
 
@@ -39,6 +40,7 @@ public class PrincipalsHandlerTest extends DbTestCase {
         uut = new PrincipalsHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT);
+        uut.setPrincipals(TEST_USER);
     }
 
     @Test

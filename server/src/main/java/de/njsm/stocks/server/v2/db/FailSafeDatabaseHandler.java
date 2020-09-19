@@ -23,6 +23,7 @@ import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
 import de.njsm.stocks.server.util.HystrixProducer;
 import de.njsm.stocks.server.util.HystrixWrapper;
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 import org.jooq.DSLContext;
@@ -40,6 +41,8 @@ public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLEx
 
     private final ConnectionFactory connectionFactory;
 
+    protected Principals principals;
+
     public FailSafeDatabaseHandler(ConnectionFactory connectionFactory,
                                    String resourceIdentifier,
                                    int timeout) {
@@ -51,6 +54,10 @@ public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLEx
     boolean isCircuitBreakerOpen() {
         return new HystrixProducer<>(resourceIdentifier, 1000, null, null)
                 .isCircuitBreakerOpen();
+    }
+
+    public void setPrincipals(Principals principals) {
+        this.principals = principals;
     }
 
     @Override

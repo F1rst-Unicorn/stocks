@@ -40,6 +40,8 @@ import java.util.stream.Collectors;
 
 import static de.njsm.stocks.server.v2.business.StatusCode.INVALID_ARGUMENT;
 import static de.njsm.stocks.server.v2.business.StatusCode.SUCCESS;
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,7 +66,7 @@ public class LocationEndpointTest {
     @Test
     public void puttingNullCodeIsInvalid() {
 
-        Response result = uut.putLocation(null);
+        Response result = uut.putLocation(createMockRequest(), null);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -72,7 +74,7 @@ public class LocationEndpointTest {
     @Test
     public void puttingEmptyCodeIsInvalid() {
 
-        Response result = uut.putLocation("");
+        Response result = uut.putLocation(createMockRequest(), "");
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -80,7 +82,7 @@ public class LocationEndpointTest {
     @Test
     public void renamingInvalidIdIsInvalid() {
 
-        Response result = uut.renameLocation(0, 1, "fdsa");
+        Response result = uut.renameLocation(createMockRequest(), 0, 1, "fdsa");
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -88,7 +90,7 @@ public class LocationEndpointTest {
     @Test
     public void renamingInvalidVersionIsInvalid() {
 
-        Response result = uut.renameLocation(1, -1, "fdsa");
+        Response result = uut.renameLocation(createMockRequest(), 1, -1, "fdsa");
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -96,7 +98,7 @@ public class LocationEndpointTest {
     @Test
     public void renamingToInvalidNameIsInvalid() {
 
-        Response result = uut.renameLocation(1, 1, "");
+        Response result = uut.renameLocation(createMockRequest(), 1, 1, "");
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -104,7 +106,7 @@ public class LocationEndpointTest {
     @Test
     public void deletingInvalidIdIsInvalid() {
 
-        Response result = uut.deleteLocation(0, 1, 0);
+        Response result = uut.deleteLocation(createMockRequest(), 0, 1, 0);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -112,7 +114,7 @@ public class LocationEndpointTest {
     @Test
     public void deletingInvalidVersionIsInvalid() {
 
-        Response result = uut.deleteLocation(1, -1, 0);
+        Response result = uut.deleteLocation(createMockRequest(), 1, -1, 0);
 
         assertEquals(INVALID_ARGUMENT, result.status);
     }
@@ -122,10 +124,11 @@ public class LocationEndpointTest {
         Location data = new Location(0, "Banana", 0);
         when(businessLayer.put(data)).thenReturn(SUCCESS);
 
-        Response response = uut.putLocation(data.name);
+        Response response = uut.putLocation(createMockRequest(), data.name);
 
         assertEquals(SUCCESS, response.status);
         verify(businessLayer).put(data);
+        Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -160,10 +163,11 @@ public class LocationEndpointTest {
         Location data = new Location(1, newName, 2);
         when(businessLayer.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameLocation(data.id, data.version, newName);
+        Response response = uut.renameLocation(createMockRequest(), data.id, data.version, newName);
 
         assertEquals(SUCCESS, response.status);
         verify(businessLayer).rename(data);
+        Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -171,10 +175,11 @@ public class LocationEndpointTest {
         Location data = new Location(1, "", 2);
         when(businessLayer.delete(data, false)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteLocation(data.id, data.version, 0);
+        Response response = uut.deleteLocation(createMockRequest(), data.id, data.version, 0);
 
         assertEquals(SUCCESS, response.status);
         verify(businessLayer).delete(data, false);
+        Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -182,9 +187,10 @@ public class LocationEndpointTest {
         Location data = new Location(1, "", 2);
         when(businessLayer.delete(data, true)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteLocation(data.id, data.version, 1);
+        Response response = uut.deleteLocation(createMockRequest(), data.id, data.version, 1);
 
         assertEquals(SUCCESS, response.status);
         verify(businessLayer).delete(data, true);
+        Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 }

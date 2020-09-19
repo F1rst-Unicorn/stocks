@@ -51,11 +51,14 @@ public class DeviceEndpoint extends Endpoint {
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public DataResponse<NewDeviceTicket> putDevice(@QueryParam("name") String name,
-                                                @QueryParam("belongsTo") int userId) {
+    public DataResponse<NewDeviceTicket> putDevice(
+            @Context HttpServletRequest request,
+            @QueryParam("name") String name,
+            @QueryParam("belongsTo") int userId) {
+
         if (isValidName(name, "name") &&
                 isValid(userId, "userId")) {
-
+            manager.setPrincipals(getPrincipals(request));
             Validation<StatusCode, NewDeviceTicket> result = manager.addDevice(new UserDevice(name, userId));
             return new DataResponse<>(result);
         } else {
@@ -86,7 +89,8 @@ public class DeviceEndpoint extends Endpoint {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
-            StatusCode result = manager.removeDevice(new UserDevice(id, version), getPrincipals(request));
+            manager.setPrincipals(getPrincipals(request));
+            StatusCode result = manager.removeDevice(new UserDevice(id, version));
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
@@ -102,6 +106,7 @@ public class DeviceEndpoint extends Endpoint {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
+            manager.setPrincipals(getPrincipals(request));
             StatusCode result = manager.revokeDevice(new UserDevice(id, version));
             return new Response(result);
         } else {

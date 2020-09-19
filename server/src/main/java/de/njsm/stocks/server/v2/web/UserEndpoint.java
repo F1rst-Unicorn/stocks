@@ -49,9 +49,11 @@ public class UserEndpoint extends Endpoint {
 
     @PUT
     @Produces("application/json")
-    public Response putUser(@QueryParam("name") String name) {
+    public Response putUser(@Context HttpServletRequest request,
+                            @QueryParam("name") String name) {
 
         if (isValidName(name, "name")) {
+            manager.setPrincipals(getPrincipals(request));
             StatusCode result = manager.addUser(new User(name));
             return new Response(result);
 
@@ -83,7 +85,8 @@ public class UserEndpoint extends Endpoint {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-            StatusCode result = manager.deleteUser(new User(id, version), getPrincipals(request));
+            manager.setPrincipals(getPrincipals(request));
+            StatusCode result = manager.deleteUser(new User(id, version));
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));

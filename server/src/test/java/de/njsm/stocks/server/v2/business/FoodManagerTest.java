@@ -34,6 +34,7 @@ import java.time.Instant;
 import java.time.Period;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
@@ -54,10 +55,12 @@ public class FoodManagerTest {
         eanNumberHandler = Mockito.mock(EanNumberHandler.class);
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
         uut = new FoodManager(backend, foodItemHandler, eanNumberHandler);
+        uut.setPrincipals(TEST_USER);
     }
 
     @After
     public void tearDown() {
+        Mockito.verify(backend).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(backend);
         Mockito.verifyNoMoreInteractions(foodItemHandler);
         Mockito.verifyNoMoreInteractions(eanNumberHandler);

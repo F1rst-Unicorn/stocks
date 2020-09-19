@@ -63,6 +63,7 @@ public class FoodItemEndpoint extends Endpoint {
 
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
+            manager.setPrincipals(user);
             Validation<StatusCode, Integer> status = manager.add(new FoodItem(eatByDate,
                     ofType, storedIn, user.getDid(), user.getUid()));
             return new Response(status);
@@ -102,6 +103,7 @@ public class FoodItemEndpoint extends Endpoint {
 
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
+            manager.setPrincipals(user);
             StatusCode result = manager.edit(new FoodItem(id, version,
                     eatByDate, 0, storedIn, user.getDid(), user.getUid()));
 
@@ -113,11 +115,14 @@ public class FoodItemEndpoint extends Endpoint {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteItem(@QueryParam("id") int id,
+    public Response deleteItem(@Context HttpServletRequest request,
+                               @QueryParam("id") int id,
                                @QueryParam("version") int version) {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
+
+            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.delete(new FoodItem(id, version));
             return new Response(status);
         } else {

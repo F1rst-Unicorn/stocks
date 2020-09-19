@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.business.data.visitor.BaseVisitor;
 import org.jooq.InsertOnDuplicateStep;
@@ -32,22 +33,24 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.*;
 
 public class InsertVisitor<T extends Record> extends BaseVisitor<InsertSetStep<T>, InsertOnDuplicateStep<T>> {
 
+    private Principals principals;
+
     @Override
     public InsertOnDuplicateStep<T> food(Food f, InsertSetStep<T> arg) {
-        return arg.columns(FOOD.NAME, FOOD.VERSION, FOOD.EXPIRATION_OFFSET)
-                .values(f.name, f.version, f.expirationOffset);
+        return arg.columns(FOOD.NAME, FOOD.VERSION, FOOD.EXPIRATION_OFFSET, FOOD.CREATOR_USER, FOOD.CREATOR_USER_DEVICE)
+                .values(f.name, f.version, f.expirationOffset, principals.getUid(), principals.getDid());
     }
 
     @Override
     public InsertOnDuplicateStep<T> location(Location l, InsertSetStep<T> arg) {
-        return arg.columns(LOCATION.NAME, LOCATION.VERSION)
-                .values(l.name, l.version);
+        return arg.columns(LOCATION.NAME, LOCATION.VERSION, LOCATION.CREATOR_USER, LOCATION.CREATOR_USER_DEVICE)
+                .values(l.name, l.version, principals.getUid(), principals.getDid());
     }
 
     @Override
     public InsertOnDuplicateStep<T> eanNumber(EanNumber n, InsertSetStep<T> arg) {
-        return arg.columns(EAN_NUMBER.NUMBER, EAN_NUMBER.IDENTIFIES)
-                .values(n.eanCode, n.identifiesFood);
+        return arg.columns(EAN_NUMBER.NUMBER, EAN_NUMBER.IDENTIFIES, EAN_NUMBER.CREATOR_USER, EAN_NUMBER.CREATOR_USER_DEVICE)
+                .values(n.eanCode, n.identifiesFood, principals.getUid(), principals.getDid());
     }
 
     @Override
@@ -56,23 +59,30 @@ public class InsertVisitor<T extends Record> extends BaseVisitor<InsertSetStep<T
                 FOOD_ITEM.STORED_IN,
                 FOOD_ITEM.OF_TYPE,
                 FOOD_ITEM.REGISTERS,
-                FOOD_ITEM.BUYS)
+                FOOD_ITEM.BUYS,
+                FOOD_ITEM.CREATOR_USER,
+                FOOD_ITEM.CREATOR_USER_DEVICE)
                 .values(OffsetDateTime.from(i.eatByDate.atOffset(ZoneOffset.UTC)),
                         i.storedIn,
                         i.ofType,
                         i.registers,
-                        i.buys);
+                        i.buys, principals.getUid(),
+                        principals.getDid());
     }
 
     @Override
     public InsertOnDuplicateStep<T> userDevice(UserDevice userDevice, InsertSetStep<T> input) {
-        return input.columns(USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO)
-                .values(userDevice.name, userDevice.userId);
+        return input.columns(USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.CREATOR_USER, USER_DEVICE.CREATOR_USER_DEVICE)
+                .values(userDevice.name, userDevice.userId, principals.getUid(), principals.getDid());
     }
 
     @Override
     public InsertOnDuplicateStep<T> user(User u, InsertSetStep<T> arg) {
-        return arg.columns(USER.NAME)
-                .values(u.name);
+        return arg.columns(USER.NAME, USER.CREATOR_USER, USER.CREATOR_USER_DEVICE)
+                .values(u.name, principals.getUid(), principals.getDid());
+    }
+
+    public void setPrincipals(Principals principals) {
+        this.principals = principals;
     }
 }
