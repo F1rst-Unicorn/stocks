@@ -104,7 +104,7 @@
         <property name="properties" ref="dbConfig" />
         <property name="contextClassLoaderSource" value="library" />
         <property name="privilegeSpawnedThreads" value="true" />
-        <property name="unreturnedConnectionTimeout" value="15" />
+        <property name="unreturnedConnectionTimeout" value="60" />
     </bean>
 
     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase" lazy-init="false">
