@@ -4,7 +4,7 @@
 
 ### Added
 
-* STOCKS-103: Show events of a single food type.
+* STOCKS-103: Show events of a single food type or location.
 
 ## [3.6.0.2]
 

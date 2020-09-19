@@ -30,8 +30,9 @@ import de.njsm.stocks.android.frontend.device.DeviceFragment;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberFragment;
 import de.njsm.stocks.android.frontend.emptyfood.EmptyFoodFragment;
 import de.njsm.stocks.android.frontend.food.FoodFragment;
-import de.njsm.stocks.android.frontend.fooditem.FoodItemFragment;
 import de.njsm.stocks.android.frontend.foodhistory.FoodHistoryFragment;
+import de.njsm.stocks.android.frontend.fooditem.FoodItemFragment;
+import de.njsm.stocks.android.frontend.locationhistory.LocationHistoryFragment;
 import de.njsm.stocks.android.frontend.locations.LocationFragment;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.frontend.main.OutlineFragment;
@@ -94,6 +95,9 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract FoodHistoryFragment contributeFoodHistoryFragment();
+
+    @ContributesAndroidInjector
+    abstract LocationHistoryFragment contributeLocationHistoryFragment();
 
     @ContributesAndroidInjector
     abstract MainActivity contributeMainActivity();

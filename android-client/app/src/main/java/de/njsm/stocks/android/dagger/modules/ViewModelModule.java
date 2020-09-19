@@ -190,4 +190,11 @@ public class ViewModelModule {
     ViewModel provideFoodEventsViewModel(EventRepository repo) {
         return new de.njsm.stocks.android.frontend.foodhistory.EventViewModel(repo);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(de.njsm.stocks.android.frontend.locationhistory.EventViewModel.class)
+    ViewModel provideLocationEventsViewModel(EventRepository repo) {
+        return new de.njsm.stocks.android.frontend.locationhistory.EventViewModel(repo);
+    }
 }

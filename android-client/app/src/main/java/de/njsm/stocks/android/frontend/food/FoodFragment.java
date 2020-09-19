@@ -22,6 +22,9 @@ package de.njsm.stocks.android.frontend.food;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -54,6 +57,8 @@ public class FoodFragment extends BaseFragment {
 
     private FoodViewModel viewModel;
 
+    private FoodFragmentArgs input;
+
     @Override
     public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
@@ -73,7 +78,7 @@ public class FoodFragment extends BaseFragment {
         LiveData<List<FoodWithLatestItemView>> data;
 
         if (getArguments() != null) {
-            FoodFragmentArgs input = FoodFragmentArgs.fromBundle(getArguments());
+            input = FoodFragmentArgs.fromBundle(getArguments());
             if (input.getLocation() != 0) {
                 viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
                 viewModel.initFoodByLocation(input.getLocation());
@@ -124,7 +129,24 @@ public class FoodFragment extends BaseFragment {
 
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(v -> addFood(viewModel));
         initialiseSwipeRefresh(result, viewModelFactory);
+        setHasOptionsMenu(true);
         return result;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_food_options, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.fragment_food_options_events) {
+            FoodFragmentDirections.ActionNavFragmentFoodToNavFragmentLocationHistory args =
+                    FoodFragmentDirections.actionNavFragmentFoodToNavFragmentLocationHistory(input.getLocation());
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(args);
+        }
+        return true;
     }
 
     private void onClick(View view) {

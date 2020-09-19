@@ -82,7 +82,7 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
         }
     }
 
-    EventAdapter(Resources resources,
+    public EventAdapter(Resources resources,
                  Resources.Theme theme,
                  IntFunction<String> stringResourceProvider) {
         super(DIFF_CALLBACK);
