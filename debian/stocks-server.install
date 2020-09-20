@@ -1,3 +1,5 @@
+#!/usr/bin/dh-exec
+
 server/target/server.war /usr/lib/stocks-server/
 deploy-server/config/setup-ca /usr/lib/stocks-server/
 
@@ -11,3 +13,5 @@ README.md /usr/share/doc/stocks-server/
 manual/server/maintainance.md /usr/share/doc/stocks-server/
 manual/server/server-installation.md /usr/share/doc/stocks-server/
 debian/initial-user.sql /usr/share/doc/stocks-server/
+
+debian/tomcat9-override.conf => /etc/systemd/system/tomcat9.service.d/stocks.conf
