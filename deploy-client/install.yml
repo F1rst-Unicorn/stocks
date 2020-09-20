@@ -28,7 +28,7 @@
       local_action:
         module: find
         paths: "{{ stocks_pkg_dir }}"
-        patterns: 'stocks-server-*.pkg.tar.zst'
+        patterns: 'stocks-*.pkg.tar.zst'
       register: found_files
 
     - name: Set package name
