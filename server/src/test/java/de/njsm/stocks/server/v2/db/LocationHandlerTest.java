@@ -63,11 +63,14 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertTrue(code.isSuccess());
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().map(f -> f.name).anyMatch(name -> name.equals("Fridge")));
+        assertTrue(dbData.success().anyMatch(f -> f.name.equals("Fridge")
+                && f.id == 3
+                && f.creatorUser == TEST_USER.getUid()
+                && f.creatorUserDevice == TEST_USER.getDid()));
     }
 
     @Test
@@ -78,11 +81,15 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().map(f -> f.name).anyMatch(name -> name.equals("Basement")));
+        assertTrue(dbData.success().anyMatch(f -> f.name.equals("Basement")
+                && f.id == 2
+                && f.version == 1
+                && f.creatorUser == TEST_USER.getUid()
+                && f.creatorUserDevice == TEST_USER.getDid()));
     }
 
     @Test
@@ -112,10 +119,18 @@ public class LocationHandlerTest extends DbTestCase {
         assertEquals(StatusCode.SUCCESS, result);
 
         Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
-
         assertTrue(dbData.isSuccess());
-
         assertTrue(dbData.success().map(f -> f.name).noneMatch(name -> name.equals("Cupboard")));
+
+        dbData = uut.get(true, Instant.EPOCH);
+        assertTrue(dbData.isSuccess());
+        assertTrue(dbData.success().anyMatch(f -> f.name.equals("Cupboard")
+                && f.id == 2
+                && f.version == 0
+                && !f.validTimeEnd.equals(INFINITY.toInstant())
+                && f.transactionTimeEnd.equals(INFINITY.toInstant())
+                && f.creatorUser == TEST_USER.getUid()
+                && f.creatorUserDevice == TEST_USER.getDid()));
     }
 
     @Test

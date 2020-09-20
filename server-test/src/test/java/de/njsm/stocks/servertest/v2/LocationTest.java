@@ -39,7 +39,9 @@ public class LocationTest {
 
         assertOnLocation()
                 .body("status", equalTo(0))
-                .body("data.name", hasItem("Location5"));
+                .body("data.name", hasItem("Location5"))
+                .body("data.creatorUser", hasItem(1))
+                .body("data.creatorUserDevice", hasItem(1));
     }
 
     @Test
