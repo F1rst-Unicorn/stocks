@@ -111,6 +111,7 @@ public class RegistrationTest {
         when()
                 .delete(TestSuite.DOMAIN + "/v2/device").
         then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
@@ -129,7 +130,8 @@ public class RegistrationTest {
                         .keyStore("keystore_2", SetupTest.PASSWORD))).
         when()
                 .get(TestSuite.DOMAIN + "/v2/location").
-        then();
+        then()
+                .log().ifValidationFails();
     }
 
     private void tryFailingRegistration(int deviceId, String ticket, String commonName) throws Exception {
