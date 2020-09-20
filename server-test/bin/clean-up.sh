@@ -23,7 +23,7 @@ ssh dp-server "sudo rm -rf /var/lib/tomcat8/webapp/stocks.war;
         sudo pacman -Rsn stocks-server --noconfirm;
         sudo rm -rf /usr/share/stocks-server;
         sudo rm -rf /var/log/tomcat8/stocks.log;
-        sudo pgrep -f 'postgres: .* stocks' | sudo xargs kill;
+        pgrep -U postgres -f 'postgres: .* stocks' | sudo xargs kill || true;
         sudo -u postgres dropdb stocks;
         sudo -u postgres dropuser stocks;"
 
