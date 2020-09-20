@@ -74,7 +74,9 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
                     cursor.getTransactionTimeStart().toInstant(),
                     cursor.getTransactionTimeEnd().toInstant(),
                     cursor.getNumber(),
-                    cursor.getIdentifies()
+                    cursor.getIdentifies(),
+                    cursor.getCreatorUser(),
+                    cursor.getCreatorUserDevice()
             );
         else
             return cursor -> new EanNumber(

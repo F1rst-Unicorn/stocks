@@ -25,7 +25,6 @@ import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.Instant;
-import java.time.Instant;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -54,8 +53,8 @@ public class UserDevice extends VersionedData {
         this.userId = userId;
     }
 
-    public UserDevice(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, int userId) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd);
+    public UserDevice(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, int userId, int creatorUser, int creatorUserDevice) {
+        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, creatorUser, creatorUserDevice);
         this.name = name;
         this.userId = userId;
     }

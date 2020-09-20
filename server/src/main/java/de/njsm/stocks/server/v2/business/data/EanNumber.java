@@ -24,7 +24,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
 
 import java.time.Instant;
-import java.time.Instant;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -49,8 +48,8 @@ public class EanNumber extends VersionedData {
         this.identifiesFood = identifiesFood;
     }
 
-    public EanNumber(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String eanCode, int identifiesFood) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd);
+    public EanNumber(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String eanCode, int identifiesFood, int creatorUser, int creatorUserDevice) {
+        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, creatorUser, creatorUserDevice);
         this.eanCode = eanCode;
         this.identifiesFood = identifiesFood;
     }

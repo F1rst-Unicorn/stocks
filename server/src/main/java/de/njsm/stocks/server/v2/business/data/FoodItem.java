@@ -76,8 +76,8 @@ public class FoodItem extends VersionedData {
         this.buys = buys;
     }
 
-    public FoodItem(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, Instant eatByDate, int ofType, int storedIn, int registers, int buys) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd);
+    public FoodItem(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, Instant eatByDate, int ofType, int storedIn, int registers, int buys, int creatorUser, int creatorUserDevice) {
+        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, creatorUser, creatorUserDevice);
         this.eatByDate = eatByDate;
         this.ofType = ofType;
         this.storedIn = storedIn;

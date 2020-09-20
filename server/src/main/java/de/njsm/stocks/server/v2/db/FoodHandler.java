@@ -144,7 +144,9 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     cursor.getName(),
                     cursor.getToBuy(),
                     cursor.getExpirationOffset(),
-                    cursor.getLocation()
+                    cursor.getLocation(),
+                    cursor.getCreatorUser(),
+                    cursor.getCreatorUserDevice()
             );
         else
             return cursor -> new Food(

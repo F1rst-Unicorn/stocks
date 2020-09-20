@@ -24,7 +24,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
 
 import java.time.Instant;
-import java.time.Instant;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -45,8 +44,8 @@ public class Location extends VersionedData {
         this.name = name;
     }
 
-    public Location(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd);
+    public Location(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, int creatorUser, int creatorUserDevice) {
+        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, creatorUser, creatorUserDevice);
         this.name = name;
     }
 

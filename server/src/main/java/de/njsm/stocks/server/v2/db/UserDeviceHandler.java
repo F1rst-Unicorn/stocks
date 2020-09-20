@@ -77,7 +77,9 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
                     cursor.getTransactionTimeStart().toInstant(),
                     cursor.getTransactionTimeEnd().toInstant(),
                     cursor.getName(),
-                    cursor.getBelongsTo()
+                    cursor.getBelongsTo(),
+                    cursor.getCreatorUser(),
+                    cursor.getCreatorUserDevice()
             );
 
         else

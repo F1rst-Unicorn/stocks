@@ -46,6 +46,10 @@ public abstract class VersionedData extends Data {
     @JsonDeserialize(using = InstantDeserialiser.class)
     public Instant transactionTimeEnd;
 
+    public int creatorUser;
+
+    public int creatorUserDevice;
+
     public VersionedData() {
     }
 
@@ -54,12 +58,14 @@ public abstract class VersionedData extends Data {
         this.version = version;
     }
 
-    public VersionedData(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd) {
+    public VersionedData(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int creatorUser, int creatorUserDevice) {
         super(id);
         this.version = version;
         this.validTimeStart = validTimeStart;
         this.validTimeEnd = validTimeEnd;
         this.transactionTimeStart = transactionTimeStart;
         this.transactionTimeEnd = transactionTimeEnd;
+        this.creatorUser = creatorUser;
+        this.creatorUserDevice = creatorUserDevice;
     }
 }
