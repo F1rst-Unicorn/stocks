@@ -130,6 +130,13 @@ The interval contains the starting timestamp while the ending timestamp is the
 first moment which is no longer included (closed-open notation, `[start, end)`
 using mathematical notation). See also the `bitemporal` flag.
 
+#### Change Initiators
+
+Each entity record in the database stores, which user device initiated
+that change. This is indicated by the `initiates` field, which is only
+present if `bitemporal` data is requested, just as the timestamps
+described before.
+
 #### Status Codes
 
 Numbers reporting the result status of a request. The API refers to this
@@ -176,7 +183,7 @@ Response {
 
 ### Prometheus
 
-Tomcat exposes Prometheus metrics on the path `/server/metrics`. It gives
+Tomcat exposes Prometheus metrics on the path `/stocks/metrics`. It gives
 information about request durations, circuit breaker events and command retries
 due to serialisation conflicts.
 

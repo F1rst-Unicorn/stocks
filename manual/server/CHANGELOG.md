@@ -2,7 +2,15 @@
 
 ## Unreleased
 
+### Added
+
 * STOCKS-111: Add Debian packaging
+
+* STOCKS-109: For each change to the data, store the initiating user device for
+  auditing.
+
+### Changed
+
 * STOCKS-111: Replace nginx-reload by systemctl invocation
 
 ## [5.0.0.3-1]
