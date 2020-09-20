@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.Food;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
 import de.njsm.stocks.server.v2.db.FoodHandler;
@@ -62,5 +63,11 @@ public class FoodItemManager extends BusinessObject {
 
     public StatusCode delete(FoodItem item) {
         return runOperation(() -> dbHandler.delete(item));
+    }
+
+    @Override
+    public void setPrincipals(Principals principals) {
+        super.setPrincipals(principals);
+        foodHandler.setPrincipals(principals);
     }
 }

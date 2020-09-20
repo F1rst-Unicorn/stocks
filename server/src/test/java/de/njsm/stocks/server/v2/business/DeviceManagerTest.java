@@ -75,6 +75,8 @@ public class DeviceManagerTest {
     @After
     public void tearDown() {
         Mockito.verify(dbHandler).setPrincipals(TEST_USER);
+        Mockito.verify(foodDbHandler).setPrincipals(TEST_USER);
+        Mockito.verify(ticketDbHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(dbHandler);
         Mockito.verifyNoMoreInteractions(foodDbHandler);
         Mockito.verifyNoMoreInteractions(ticketDbHandler);

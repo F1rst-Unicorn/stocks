@@ -61,6 +61,8 @@ public class FoodManagerTest {
     @After
     public void tearDown() {
         Mockito.verify(backend).setPrincipals(TEST_USER);
+        Mockito.verify(foodItemHandler).setPrincipals(TEST_USER);
+        Mockito.verify(eanNumberHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(backend);
         Mockito.verifyNoMoreInteractions(foodItemHandler);
         Mockito.verifyNoMoreInteractions(eanNumberHandler);

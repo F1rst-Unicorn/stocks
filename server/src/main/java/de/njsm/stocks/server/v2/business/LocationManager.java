@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.Location;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
@@ -73,5 +74,12 @@ public class LocationManager extends BusinessObject {
             return foodHandler.unregisterDefaultLocation(l)
                     .bind(() -> locationHandler.delete(l));
         });
+    }
+
+    @Override
+    public void setPrincipals(Principals principals) {
+        super.setPrincipals(principals);
+        foodHandler.setPrincipals(principals);
+        foodItemHandler.setPrincipals(principals);
     }
 }

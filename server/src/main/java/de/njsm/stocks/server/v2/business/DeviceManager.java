@@ -20,6 +20,7 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.util.AuthAdmin;
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
@@ -128,5 +129,10 @@ public class DeviceManager extends BusinessObject {
         return result;
     }
 
-
+    @Override
+    public void setPrincipals(Principals principals) {
+        super.setPrincipals(principals);
+        foodItemHandler.setPrincipals(principals);
+        ticketHandler.setPrincipals(principals);
+    }
 }

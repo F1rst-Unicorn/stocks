@@ -64,6 +64,8 @@ public class UserManagerTest {
     @After
     public void tearDown() {
         Mockito.verify(userDbHandler).setPrincipals(TEST_USER);
+        Mockito.verify(deviceManager).setPrincipals(TEST_USER);
+        Mockito.verify(foodItemHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(userDbHandler);
         Mockito.verifyNoMoreInteractions(deviceManager);
         Mockito.verifyNoMoreInteractions(foodItemHandler);

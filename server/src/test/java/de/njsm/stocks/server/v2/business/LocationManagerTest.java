@@ -60,6 +60,8 @@ public class LocationManagerTest {
     @After
     public void tearDown() {
         Mockito.verify(dbLayer).setPrincipals(TEST_USER);
+        Mockito.verify(foodItemDbLayer).setPrincipals(TEST_USER);
+        Mockito.verify(foodHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(dbLayer);
         Mockito.verifyNoMoreInteractions(foodHandler);
         Mockito.verifyNoMoreInteractions(foodItemDbLayer);

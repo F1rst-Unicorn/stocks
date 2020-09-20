@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
@@ -73,4 +74,10 @@ public class UserManager extends BusinessObject {
         });
     }
 
+    @Override
+    public void setPrincipals(Principals principals) {
+        super.setPrincipals(principals);
+        deviceManager.setPrincipals(principals);
+        foodItemHandler.setPrincipals(principals);
+    }
 }
