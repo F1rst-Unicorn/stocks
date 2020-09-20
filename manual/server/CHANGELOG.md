@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.1.0.0]
+
 ### Added
 
 * STOCKS-111: Add Debian packaging

@@ -20,7 +20,7 @@
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 
-if ! echo "$1" | egrep '^([0-9]+\.){3}[0-9]+-[0-9]+$' > /dev/null ; then
+if ! echo "$1" | egrep '^([0-9]+\.){3}[0-9]+$' > /dev/null ; then
         echo Version number has wrong format!
         exit 1
 fi
@@ -30,7 +30,7 @@ if ! git branch | grep "* master" >/dev/null ; then
         exit 2
 fi
 
-VERSION=$(echo "$1" | sed -r 's/(.*)-.*/\1/g')
+VERSION="$1"
 
 if git tag | grep "server-$VERSION" >/dev/null ; then
         echo This version has already been built
