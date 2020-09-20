@@ -51,8 +51,8 @@ public class User extends VersionedData {
         super(id, version);
     }
 
-    public User(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, int creatorUser, int creatorUserDevice) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, creatorUser, creatorUserDevice);
+    public User(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, int initiates) {
+        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
         this.name = name;
     }
 

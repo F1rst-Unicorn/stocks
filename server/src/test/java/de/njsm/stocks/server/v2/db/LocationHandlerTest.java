@@ -69,8 +69,7 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertTrue(dbData.success().anyMatch(f -> f.name.equals("Fridge")
                 && f.id == 3
-                && f.creatorUser == TEST_USER.getUid()
-                && f.creatorUserDevice == TEST_USER.getDid()));
+                && f.initiates == TEST_USER.getDid()));
     }
 
     @Test
@@ -88,8 +87,7 @@ public class LocationHandlerTest extends DbTestCase {
         assertTrue(dbData.success().anyMatch(f -> f.name.equals("Basement")
                 && f.id == 2
                 && f.version == 1
-                && f.creatorUser == TEST_USER.getUid()
-                && f.creatorUserDevice == TEST_USER.getDid()));
+                && f.initiates == TEST_USER.getDid()));
     }
 
     @Test
@@ -129,8 +127,7 @@ public class LocationHandlerTest extends DbTestCase {
                 && f.version == 0
                 && !f.validTimeEnd.equals(INFINITY.toInstant())
                 && f.transactionTimeEnd.equals(INFINITY.toInstant())
-                && f.creatorUser == TEST_USER.getUid()
-                && f.creatorUserDevice == TEST_USER.getDid()));
+                && f.initiates == TEST_USER.getDid()));
     }
 
     @Test
@@ -190,16 +187,15 @@ public class LocationHandlerTest extends DbTestCase {
                         LOCATION.VALID_TIME_END,
                         LOCATION.TRANSACTION_TIME_START,
                         LOCATION.TRANSACTION_TIME_END,
-                        LOCATION.CREATOR_USER,
-                        LOCATION.CREATOR_USER_DEVICE
+                        LOCATION.INITIATES
                 )
-                .values(3, "", now.minusDays(3), now.minusDays(1), now.minusDays(3), INFINITY, 1, 1)
-                .values(3, "", now.minusDays(1), now.plusDays(3), now.minusDays(3), INFINITY, 1, 1)
-                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(3), INFINITY, 1, 1)
+                .values(3, "", now.minusDays(3), now.minusDays(1), now.minusDays(3), INFINITY, 1)
+                .values(3, "", now.minusDays(1), now.plusDays(3), now.minusDays(3), INFINITY, 1)
+                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(3), INFINITY, 1)
 
-                .values(3, "", now.minusDays(4), now, now.minusDays(4), now.minusDays(3), 1, 1)
-                .values(3, "", now, now.plusDays(3), now.minusDays(4), now.minusDays(3), 1, 1)
-                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(4), now.minusDays(3), 1, 1)
+                .values(3, "", now.minusDays(4), now, now.minusDays(4), now.minusDays(3), 1)
+                .values(3, "", now, now.plusDays(3), now.minusDays(4), now.minusDays(3), 1)
+                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(4), now.minusDays(3), 1)
                 .execute();
 
 
@@ -226,24 +222,23 @@ public class LocationHandlerTest extends DbTestCase {
                         LOCATION.VALID_TIME_END,
                         LOCATION.TRANSACTION_TIME_START,
                         LOCATION.TRANSACTION_TIME_END,
-                        LOCATION.CREATOR_USER,
-                        LOCATION.CREATOR_USER_DEVICE
+                        LOCATION.INITIATES
                 )
 
                 // currently valid record, will be reported
-                .values(3, "", now.minusDays(3), now.minusDays(1), now.minusDays(3), INFINITY, 1, 1)
-                .values(3, "", now.minusDays(1), now.plusDays(3), now.minusDays(3), INFINITY, 1, 1)
-                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(3), INFINITY, 1, 1)
+                .values(3, "", now.minusDays(3), now.minusDays(1), now.minusDays(3), INFINITY, 1)
+                .values(3, "", now.minusDays(1), now.plusDays(3), now.minusDays(3), INFINITY, 1)
+                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(3), INFINITY, 1)
 
                 // "just terminated" record, will be reported
-                .values(3, "", now.minusDays(4), now, now.minusDays(4), now.minusDays(3), 1, 1)
-                .values(3, "", now, now.plusDays(3), now.minusDays(4), now.minusDays(3), 1, 1)
-                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(4), now.minusDays(3), 1, 1)
+                .values(3, "", now.minusDays(4), now, now.minusDays(4), now.minusDays(3), 1)
+                .values(3, "", now, now.plusDays(3), now.minusDays(4), now.minusDays(3), 1)
+                .values(3, "", now.plusDays(3), INFINITY, now.minusDays(4), now.minusDays(3), 1)
 
                 // "very old" record, not reported
-                .values(3, "", now.minusDays(5), now, now.minusDays(5), now.minusDays(4), 1, 1)
-                .values(3, "", now, now.plusDays(4), now.minusDays(5), now.minusDays(4), 1, 1)
-                .values(3, "", now.plusDays(4), INFINITY, now.minusDays(5), now.minusDays(4), 1, 1)
+                .values(3, "", now.minusDays(5), now, now.minusDays(5), now.minusDays(4), 1)
+                .values(3, "", now, now.plusDays(4), now.minusDays(5), now.minusDays(4), 1)
+                .values(3, "", now.plusDays(4), INFINITY, now.minusDays(5), now.minusDays(4), 1)
                 .execute();
 
 

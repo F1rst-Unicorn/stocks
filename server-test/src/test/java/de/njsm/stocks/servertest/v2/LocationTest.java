@@ -27,7 +27,6 @@ import org.junit.Test;
 import java.time.Instant;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
@@ -39,9 +38,17 @@ public class LocationTest {
 
         assertOnLocation()
                 .body("status", equalTo(0))
-                .body("data.name", hasItem("Location5"))
-                .body("data.creatorUser", hasItem(1))
-                .body("data.creatorUserDevice", hasItem(1));
+                .body("data.name", hasItem("Location5"));
+    }
+
+    @Test
+    public void initiatingDevicesAreSet() {
+        addLocationType("Location6");
+
+        assertOnLocation(true)
+                .body("status", equalTo(0))
+                .body("data.name", hasItem("Location6"))
+                .body("data.initiates", hasItem(1));
     }
 
     @Test
@@ -173,7 +180,14 @@ public class LocationTest {
     }
 
     private static ValidatableResponse assertOnLocation() {
+        return assertOnLocation(false);
+    }
+
+    private static ValidatableResponse assertOnLocation(boolean bitemporal) {
         return
+        given()
+                .log().ifValidationFails()
+                .queryParam("bitemporal", bitemporal ? 1 : 0).
         when()
                 .get(TestSuite.DOMAIN + "/v2/location").
         then()

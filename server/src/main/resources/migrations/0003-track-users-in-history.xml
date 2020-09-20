@@ -37,17 +37,17 @@
     </changeSet>
     <changeSet id="2" author="admin">
         <sql endDelimiter=";;">
-            alter table "User" add column creator_user int;;
+            alter table "User" add column initiates int;;
 
             update "User" f
-            set creator_user = (
+            set initiates = (
                 select min("ID")
-                from "User" p
+                from "User_device" p
                 where p.valid_time_start &lt;= f.valid_time_start
                 and f.valid_time_start &lt; p.valid_time_end
                 and p.transaction_time_end = 'infinity');;
 
-            create or replace function user_creator_user_ref_user() returns trigger
+            create or replace function user_initiates_ref_user_device() returns trigger
                 language plpgsql
             as
             $$
@@ -61,16 +61,16 @@
                   and (
                         not exists(
                                 select *
-                                from "User" p
-                                where f.creator_user = p."ID"
+                                from "User_device" p
+                                where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
                                   and p.valid_time_start &lt;= f.valid_time_start
                                   and f.valid_time_start &lt; p.valid_time_end
                             )
                         or not exists(
                             select *
-                            from "User" p
-                            where f.creator_user = p."ID"
+                            from "User_device" p
+                            where f.initiates = p."ID"
                               and p.transaction_time_end = 'infinity'
                               and p.valid_time_start &lt; f.valid_time_end
                               and f.valid_time_end &lt;= p.valid_time_end
@@ -82,31 +82,37 @@
                 return new;
             end;
             $$;
-            create constraint trigger user_creator_user_ref_user
-                after insert or update or delete
+            create constraint trigger user_initiates_ref_user_device
+                after update or delete
+                on "User_device"
+                deferrable initially deferred
+                for each row
+            execute function user_initiates_ref_user_device();;
+            create constraint trigger user_initiates_ref_user_device
+                after insert or update
                 on "User"
                 deferrable initially deferred
                 for each row
-            execute function user_creator_user_ref_user();
+            execute function user_initiates_ref_user_device();;
         </sql>
         <rollback>
-            drop function user_creator_user_ref_user cascade;
-            alter table "User" drop column creator_user;
+            drop function user_initiates_ref_user_device cascade;
+            alter table "User" drop column initiates;
         </rollback>
     </changeSet>
     <changeSet id="3" author="admin">
         <sql endDelimiter=";;">
-            alter table "User" add column creator_user_device int;;
+            alter table "Location" add column initiates int;;
 
-            update "User" f
-            set creator_user_device = (
+            update "Location" f
+            set initiates = (
                 select min("ID")
                 from "User_device" p
                 where p.valid_time_start &lt;= f.valid_time_start
                 and f.valid_time_start &lt; p.valid_time_end
                 and p.transaction_time_end = 'infinity');;
 
-            create or replace function user_creator_user_device_ref_user_device() returns trigger
+            create or replace function location_initiates_ref_user_device() returns trigger
                 language plpgsql
             as
             $$
@@ -115,13 +121,13 @@
             begin
                 select *
                 into count
-                from "User" f
+                from "Location" f
                 where f.transaction_time_end = 'infinity'
                   and (
                         not exists(
                                 select *
                                 from "User_device" p
-                                where f.creator_user_device = p."ID"
+                                where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
                                   and p.valid_time_start &lt;= f.valid_time_start
                                   and f.valid_time_start &lt; p.valid_time_end
@@ -129,7 +135,7 @@
                         or not exists(
                             select *
                             from "User_device" p
-                            where f.creator_user_device = p."ID"
+                            where f.initiates = p."ID"
                               and p.transaction_time_end = 'infinity'
                               and p.valid_time_start &lt; f.valid_time_end
                               and f.valid_time_end &lt;= p.valid_time_end
@@ -141,37 +147,37 @@
                 return new;
             end;
             $$;
-            create constraint trigger user_creator_user_device_ref_user_device
+            create constraint trigger location_initiates_ref_user_device
                 after update or delete
                 on "User_device"
                 deferrable initially deferred
                 for each row
-            execute function user_creator_user_device_ref_user_device();;
-            create constraint trigger user_creator_user_device_ref_user_device
+            execute function location_initiates_ref_user_device();
+            create constraint trigger location_initiates_ref_user_device
                 after insert or update
-                on "User"
+                on "Location"
                 deferrable initially deferred
                 for each row
-            execute function user_creator_user_device_ref_user_device();;
+            execute function location_initiates_ref_user_device();
         </sql>
         <rollback>
-            drop function user_creator_user_device_ref_user_device cascade;
-            alter table "User" drop column creator_user_device;
+            drop function location_initiates_ref_user_device cascade;
+            alter table "Location" drop column initiates;
         </rollback>
     </changeSet>
     <changeSet id="4" author="admin">
         <sql endDelimiter=";;">
-            alter table "Location" add column creator_user int;;
+            alter table "Food" add column initiates int;;
 
-            update "Location" f
-            set creator_user = (
+            update "Food" f
+            set initiates = (
                 select min("ID")
-                from "User" p
+                from "User_device" p
                 where p.valid_time_start &lt;= f.valid_time_start
                 and f.valid_time_start &lt; p.valid_time_end
                 and p.transaction_time_end = 'infinity');;
 
-            create or replace function location_creator_user_ref_user() returns trigger
+            create or replace function food_initiates_ref_user_device() returns trigger
                 language plpgsql
             as
             $$
@@ -180,21 +186,21 @@
             begin
                 select *
                 into count
-                from "Location" f
+                from "Food" f
                 where f.transaction_time_end = 'infinity'
                   and (
                         not exists(
                                 select *
-                                from "User" p
-                                where f.creator_user = p."ID"
+                                from "User_device" p
+                                where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
                                   and p.valid_time_start &lt;= f.valid_time_start
                                   and f.valid_time_start &lt; p.valid_time_end
                             )
                         or not exists(
                             select *
-                            from "User" p
-                            where f.creator_user = p."ID"
+                            from "User_device" p
+                            where f.initiates = p."ID"
                               and p.transaction_time_end = 'infinity'
                               and p.valid_time_start &lt; f.valid_time_end
                               and f.valid_time_end &lt;= p.valid_time_end
@@ -206,297 +212,37 @@
                 return new;
             end;
             $$;
-            create constraint trigger location_creator_user_ref_user
+            create constraint trigger food_initiates_ref_user_device
                 after update or delete
-                on "User"
+                on "User_device"
                 deferrable initially deferred
                 for each row
-            execute function location_creator_user_ref_user();
-            create constraint trigger location_creator_user_ref_user
+            execute function food_initiates_ref_user_device();;
+            create constraint trigger food_initiates_ref_user_device
                 after insert or update
-                on "Location"
+                on "Food"
                 deferrable initially deferred
                 for each row
-            execute function location_creator_user_ref_user();
+            execute function food_initiates_ref_user_device();;
         </sql>
         <rollback>
-            drop function location_creator_user_ref_user cascade;
-            alter table "Location" drop column creator_user;
+            drop function food_initiates_ref_user_device cascade;
+            alter table "Food" drop column initiates;
         </rollback>
     </changeSet>
     <changeSet id="5" author="admin">
         <sql endDelimiter=";;">
-            alter table "Location" add column creator_user_device int;;
-
-            update "Location" f
-            set creator_user_device = (
-                select min("ID")
-                from "User_device" p
-                where p.valid_time_start &lt;= f.valid_time_start
-                and f.valid_time_start &lt; p.valid_time_end
-                and p.transaction_time_end = 'infinity');;
-
-            create or replace function location_creator_user_device_ref_user_device() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "Location" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
-                                select *
-                                from "User_device" p
-                                where f.creator_user_device = p."ID"
-                                  and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
-                            )
-                        or not exists(
-                            select *
-                            from "User_device" p
-                            where f.creator_user_device = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
-            create constraint trigger location_creator_user_device_ref_user_device
-                after update or delete
-                on "User_device"
-                deferrable initially deferred
-                for each row
-            execute function location_creator_user_device_ref_user_device();
-            create constraint trigger location_creator_user_device_ref_user_device
-                after insert or update
-                on "Location"
-                deferrable initially deferred
-                for each row
-            execute function location_creator_user_device_ref_user_device();
-        </sql>
-        <rollback>
-            drop function location_creator_user_device_ref_user_device cascade;
-            alter table "Location" drop column creator_user_device;
-        </rollback>
-    </changeSet>
-    <changeSet id="6" author="admin">
-        <sql endDelimiter=";;">
-            alter table "Food" add column creator_user int;;
-
-            update "Food" f
-            set creator_user = (
-                select min("ID")
-                from "User" p
-                where p.valid_time_start &lt;= f.valid_time_start
-                and f.valid_time_start &lt; p.valid_time_end
-                and p.transaction_time_end = 'infinity');;
-
-            create or replace function food_creator_user_ref_user() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "Food" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
-                                select *
-                                from "User" p
-                                where f.creator_user = p."ID"
-                                  and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
-                            )
-                        or not exists(
-                            select *
-                            from "User" p
-                            where f.creator_user = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
-            create constraint trigger food_creator_user_ref_user
-                after update or delete
-                on "User"
-                deferrable initially deferred
-                for each row
-            execute function food_creator_user_ref_user();
-            create constraint trigger food_creator_user_ref_user
-                after insert or update
-                on "Food"
-                deferrable initially deferred
-                for each row
-            execute function food_creator_user_ref_user();
-        </sql>
-        <rollback>
-            drop function food_creator_user_ref_user cascade;
-            alter table "Food" drop column creator_user;
-        </rollback>
-    </changeSet>
-    <changeSet id="7" author="admin">
-        <sql endDelimiter=";;">
-            alter table "Food" add column creator_user_device int;;
-
-            update "Food" f
-            set creator_user_device = (
-                select min("ID")
-                from "User_device" p
-                where p.valid_time_start &lt;= f.valid_time_start
-                and f.valid_time_start &lt; p.valid_time_end
-                and p.transaction_time_end = 'infinity');;
-
-            create or replace function food_creator_user_device_ref_user_device() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "Food" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
-                                select *
-                                from "User_device" p
-                                where f.creator_user_device = p."ID"
-                                  and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
-                            )
-                        or not exists(
-                            select *
-                            from "User_device" p
-                            where f.creator_user_device = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
-            create constraint trigger food_creator_user_device_ref_user_device
-                after update or delete
-                on "User_device"
-                deferrable initially deferred
-                for each row
-            execute function food_creator_user_device_ref_user_device();;
-            create constraint trigger food_creator_user_device_ref_user_device
-                after insert or update
-                on "Food"
-                deferrable initially deferred
-                for each row
-            execute function food_creator_user_device_ref_user_device();;
-        </sql>
-        <rollback>
-            drop function food_creator_user_device_ref_user_device cascade;
-            alter table "Food" drop column creator_user_device;
-        </rollback>
-    </changeSet>
-    <changeSet id="8" author="admin">
-        <sql endDelimiter=";;">
-            alter table "User_device" add column creator_user int;;
+            alter table "User_device" add column initiates int;;
 
             update "User_device" f
-            set creator_user = (
-                select min("ID")
-                from "User" p
-                where p.valid_time_start &lt;= f.valid_time_start
-                and f.valid_time_start &lt; p.valid_time_end
-                and p.transaction_time_end = 'infinity');;
-
-            create or replace function user_device_creator_user_ref_user() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "User_device" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
-                                select *
-                                from "User" p
-                                where f.creator_user = p."ID"
-                                  and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
-                            )
-                        or not exists(
-                            select *
-                            from "User" p
-                            where f.creator_user = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;;
-            create constraint trigger user_device_creator_user_ref_user
-                after update or delete
-                on "User"
-                deferrable initially deferred
-                for each row
-            execute function user_device_creator_user_ref_user();;
-            create constraint trigger user_device_creator_user_ref_user
-                after insert or update
-                on "User_device"
-                deferrable initially deferred
-                for each row
-            execute function user_device_creator_user_ref_user();;
-        </sql>
-        <rollback>
-            drop function user_device_creator_user_ref_user cascade;
-            alter table "User_device" drop column creator_user;
-        </rollback>
-    </changeSet>
-    <changeSet id="9" author="admin">
-        <sql endDelimiter=";;">
-            alter table "User_device" add column creator_user_device int;;
-
-            update "User_device" f
-            set creator_user_device = (
+            set initiates = (
                 select min("ID")
                 from "User_device" p
                 where p.valid_time_start &lt;= f.valid_time_start
                 and f.valid_time_start &lt; p.valid_time_end
                 and p.transaction_time_end = 'infinity');;
 
-            create or replace function user_device_creator_user_device_ref_user_device() returns trigger
+            create or replace function user_device_initiates_ref_user_device() returns trigger
                 language plpgsql
             as
             $$
@@ -511,7 +257,7 @@
                         not exists(
                                 select *
                                 from "User_device" p
-                                where f.creator_user_device = p."ID"
+                                where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
                                   and p.valid_time_start &lt;= f.valid_time_start
                                   and f.valid_time_start &lt; p.valid_time_end
@@ -519,7 +265,7 @@
                         or not exists(
                             select *
                             from "User_device" p
-                            where f.creator_user_device = p."ID"
+                            where f.initiates = p."ID"
                               and p.transaction_time_end = 'infinity'
                               and p.valid_time_start &lt; f.valid_time_end
                               and f.valid_time_end &lt;= p.valid_time_end
@@ -531,96 +277,31 @@
                 return new;
             end;
             $$;
-            create constraint trigger user_device_creator_user_device_ref_user_device
+            create constraint trigger user_device_initiates_ref_user_device
                 after insert or update or delete
                 on "User_device"
                 deferrable initially deferred
                 for each row
-            execute function user_device_creator_user_device_ref_user_device();
+            execute function user_device_initiates_ref_user_device();
         </sql>
         <rollback>
-            drop function user_device_creator_user_device_ref_user_device cascade;
-            alter table "User_device" drop column creator_user_device;
+            drop function user_device_initiates_ref_user_device cascade;
+            alter table "User_device" drop column initiates;
         </rollback>
     </changeSet>
-    <changeSet id="10" author="admin">
+    <changeSet id="6" author="admin">
         <sql endDelimiter=";;">
-            alter table "Food_item" add column creator_user int;;
+            alter table "Food_item" add column initiates int;;
 
             update "Food_item" f
-            set creator_user = (
-                select min("ID")
-                from "User" p
-                where p.valid_time_start &lt;= f.valid_time_start
-                and f.valid_time_start &lt; p.valid_time_end
-                and p.transaction_time_end = 'infinity');;
-
-            create or replace function food_item_creator_user_ref_user() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "Food_item" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
-                                select *
-                                from "User" p
-                                where f.creator_user = p."ID"
-                                  and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
-                            )
-                        or not exists(
-                            select *
-                            from "User" p
-                            where f.creator_user = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
-            create constraint trigger food_item_creator_user_ref_user
-                after update or delete
-                on "User"
-                deferrable initially deferred
-                for each row
-            execute function food_item_creator_user_ref_user();
-            create constraint trigger food_item_creator_user_ref_user
-                after insert or update
-                on "Food_item"
-                deferrable initially deferred
-                for each row
-            execute function food_item_creator_user_ref_user();
-        </sql>
-        <rollback>
-            drop function food_item_creator_user_ref_user cascade;
-            alter table "Food_item" drop column creator_user;
-        </rollback>
-    </changeSet>
-    <changeSet id="11" author="admin">
-        <sql endDelimiter=";;">
-            alter table "Food_item" add column creator_user_device int;;
-
-            update "Food_item" f
-            set creator_user_device = (
+            set initiates = (
                 select min("ID")
                 from "User_device" p
                 where p.valid_time_start &lt;= f.valid_time_start
                 and f.valid_time_start &lt; p.valid_time_end
                 and p.transaction_time_end = 'infinity');;
 
-            create or replace function food_item_creator_user_device_ref_user_device() returns trigger
+            create or replace function food_item_initiates_ref_user_device() returns trigger
                 language plpgsql
             as
             $$
@@ -635,7 +316,7 @@
                         not exists(
                                 select *
                                 from "User_device" p
-                                where f.creator_user_device = p."ID"
+                                where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
                                   and p.valid_time_start &lt;= f.valid_time_start
                                   and f.valid_time_start &lt; p.valid_time_end
@@ -643,7 +324,7 @@
                         or not exists(
                             select *
                             from "User_device" p
-                            where f.creator_user_device = p."ID"
+                            where f.initiates = p."ID"
                               and p.transaction_time_end = 'infinity'
                               and p.valid_time_start &lt; f.valid_time_end
                               and f.valid_time_end &lt;= p.valid_time_end
@@ -655,102 +336,37 @@
                 return new;
             end;
             $$;
-            create constraint trigger food_item_creator_user_device_ref_user_device
+            create constraint trigger food_item_initiates_ref_user_device
                 after update or delete
                 on "User_device"
                 deferrable initially deferred
                 for each row
-            execute function food_item_creator_user_device_ref_user_device();
-            create constraint trigger food_item_creator_user_device_ref_user_device
+            execute function food_item_initiates_ref_user_device();
+            create constraint trigger food_item_initiates_ref_user_device
                 after insert or update
                 on "Food_item"
                 deferrable initially deferred
                 for each row
-            execute function food_item_creator_user_device_ref_user_device();
+            execute function food_item_initiates_ref_user_device();
         </sql>
         <rollback>
-            drop function food_item_creator_user_device_ref_user_device cascade;
-            alter table "Food_item" drop column creator_user_device;
+            drop function food_item_initiates_ref_user_device cascade;
+            alter table "Food_item" drop column initiates;
         </rollback>
     </changeSet>
-    <changeSet id="12" author="admin">
+    <changeSet id="7" author="admin">
         <sql endDelimiter=";;">
-            alter table "EAN_number" add column creator_user int;;
+            alter table "EAN_number" add column initiates int;;
 
             update "EAN_number" f
-            set creator_user = (
-                select min("ID")
-                from "User" p
-                where p.valid_time_start &lt;= f.valid_time_start
-                and f.valid_time_start &lt; p.valid_time_end
-                and p.transaction_time_end = 'infinity');;
-
-            create or replace function ean_number_creator_user_ref_user() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "EAN_number" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
-                                select *
-                                from "User" p
-                                where f.creator_user = p."ID"
-                                  and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
-                            )
-                        or not exists(
-                            select *
-                            from "User" p
-                            where f.creator_user = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
-            create constraint trigger ean_number_creator_user_ref_user
-                after update or delete
-                on "User"
-                deferrable initially deferred
-                for each row
-            execute function ean_number_creator_user_ref_user();
-            create constraint trigger ean_number_creator_user_ref_user
-                after insert or update
-                on "EAN_number"
-                deferrable initially deferred
-                for each row
-            execute function ean_number_creator_user_ref_user();
-        </sql>
-        <rollback>
-            drop function ean_number_creator_user_ref_user cascade;
-            alter table "EAN_number" drop column creator_user;
-        </rollback>
-    </changeSet>
-    <changeSet id="13" author="admin">
-        <sql endDelimiter=";;">
-            alter table "EAN_number" add column creator_user_device int;;
-
-            update "EAN_number" f
-            set creator_user_device = (
+            set initiates = (
                 select min("ID")
                 from "User_device" p
                 where p.valid_time_start &lt;= f.valid_time_start
                 and f.valid_time_start &lt; p.valid_time_end
                 and p.transaction_time_end = 'infinity');;
 
-            create or replace function ean_number_creator_user_device_ref_user_device() returns trigger
+            create or replace function ean_number_initiates_ref_user_device() returns trigger
                 language plpgsql
             as
             $$
@@ -765,7 +381,7 @@
                         not exists(
                                 select *
                                 from "User_device" p
-                                where f.creator_user_device = p."ID"
+                                where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
                                   and p.valid_time_start &lt;= f.valid_time_start
                                   and f.valid_time_start &lt; p.valid_time_end
@@ -773,7 +389,7 @@
                         or not exists(
                             select *
                             from "User_device" p
-                            where f.creator_user_device = p."ID"
+                            where f.initiates = p."ID"
                               and p.transaction_time_end = 'infinity'
                               and p.valid_time_start &lt; f.valid_time_end
                               and f.valid_time_end &lt;= p.valid_time_end
@@ -785,52 +401,40 @@
                 return new;
             end;
             $$;
-            create constraint trigger ean_number_creator_user_device_ref_user_device
+            create constraint trigger ean_number_initiates_ref_user_device
                 after update or delete
                 on "User_device"
                 deferrable initially deferred
                 for each row
-            execute function ean_number_creator_user_device_ref_user_device();
-            create constraint trigger ean_number_creator_user_device_ref_user_device
+            execute function ean_number_initiates_ref_user_device();
+            create constraint trigger ean_number_initiates_ref_user_device
                 after insert or update
                 on "EAN_number"
                 deferrable initially deferred
                 for each row
-            execute function ean_number_creator_user_device_ref_user_device();
+            execute function ean_number_initiates_ref_user_device();
         </sql>
         <rollback>
-            drop function ean_number_creator_user_device_ref_user_device cascade;
-            alter table "EAN_number" drop column creator_user_device;
+            drop function ean_number_initiates_ref_user_device cascade;
+            alter table "EAN_number" drop column initiates;
         </rollback>
     </changeSet>
-    <changeSet id="14" author="admin">
+    <changeSet id="8" author="admin">
         <sql>
-            alter table "User" alter column creator_user set not null;
-            alter table "Location" alter column creator_user set not null;
-            alter table "Food" alter column creator_user set not null;
-            alter table "User_device" alter column creator_user set not null;
-            alter table "Food_item" alter column creator_user set not null;
-            alter table "EAN_number" alter column creator_user set not null;
-            alter table "User" alter column creator_user_device set not null;
-            alter table "Location" alter column creator_user_device set not null;
-            alter table "Food" alter column creator_user_device set not null;
-            alter table "User_device" alter column creator_user_device set not null;
-            alter table "Food_item" alter column creator_user_device set not null;
-            alter table "EAN_number" alter column creator_user_device set not null;
+            alter table "User" alter column initiates set not null;
+            alter table "Location" alter column initiates set not null;
+            alter table "Food" alter column initiates set not null;
+            alter table "User_device" alter column initiates set not null;
+            alter table "Food_item" alter column initiates set not null;
+            alter table "EAN_number" alter column initiates set not null;
         </sql>
         <rollback>
-            alter table "User" alter column creator_user drop not null;
-            alter table "Location" alter column creator_user drop not null;
-            alter table "Food" alter column creator_user drop not null;
-            alter table "User_device" alter column creator_user drop not null;
-            alter table "Food_item" alter column creator_user drop not null;
-            alter table "EAN_number" alter column creator_user drop not null;
-            alter table "User" alter column creator_user_device drop not null;
-            alter table "Location" alter column creator_user_device drop not null;
-            alter table "Food" alter column creator_user_device drop not null;
-            alter table "User_device" alter column creator_user_device drop not null;
-            alter table "Food_item" alter column creator_user_device drop not null;
-            alter table "EAN_number" alter column creator_user_device drop not null;
+            alter table "User" alter column initiates drop not null;
+            alter table "Location" alter column initiates drop not null;
+            alter table "Food" alter column initiates drop not null;
+            alter table "User_device" alter column initiates drop not null;
+            alter table "Food_item" alter column initiates drop not null;
+            alter table "EAN_number" alter column initiates drop not null;
         </rollback>
     </changeSet>
 </databaseChangeLog>

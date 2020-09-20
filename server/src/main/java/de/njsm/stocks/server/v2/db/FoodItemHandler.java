@@ -197,8 +197,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     cursor.getStoredIn(),
                     cursor.getRegisters(),
                     cursor.getBuys(),
-                    cursor.getCreatorUser(),
-                    cursor.getCreatorUserDevice()
+                    cursor.getInitiates()
             );
         else
             return cursor -> new FoodItem(

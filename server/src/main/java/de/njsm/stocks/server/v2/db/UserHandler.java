@@ -57,8 +57,7 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
                     cursor.getTransactionTimeStart().toInstant(),
                     cursor.getTransactionTimeEnd().toInstant(),
                     cursor.getName(),
-                    cursor.getCreatorUser(),
-                    cursor.getCreatorUserDevice()
+                    cursor.getInitiates()
             );
         else
             return record -> new User(

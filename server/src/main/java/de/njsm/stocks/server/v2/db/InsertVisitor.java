@@ -37,20 +37,20 @@ public class InsertVisitor<T extends Record> extends BaseVisitor<InsertSetStep<T
 
     @Override
     public InsertOnDuplicateStep<T> food(Food f, InsertSetStep<T> arg) {
-        return arg.columns(FOOD.NAME, FOOD.VERSION, FOOD.EXPIRATION_OFFSET, FOOD.CREATOR_USER, FOOD.CREATOR_USER_DEVICE)
-                .values(f.name, f.version, f.expirationOffset, principals.getUid(), principals.getDid());
+        return arg.columns(FOOD.NAME, FOOD.VERSION, FOOD.EXPIRATION_OFFSET, FOOD.INITIATES)
+                .values(f.name, f.version, f.expirationOffset, principals.getDid());
     }
 
     @Override
     public InsertOnDuplicateStep<T> location(Location l, InsertSetStep<T> arg) {
-        return arg.columns(LOCATION.NAME, LOCATION.VERSION, LOCATION.CREATOR_USER, LOCATION.CREATOR_USER_DEVICE)
-                .values(l.name, l.version, principals.getUid(), principals.getDid());
+        return arg.columns(LOCATION.NAME, LOCATION.VERSION, LOCATION.INITIATES)
+                .values(l.name, l.version, principals.getDid());
     }
 
     @Override
     public InsertOnDuplicateStep<T> eanNumber(EanNumber n, InsertSetStep<T> arg) {
-        return arg.columns(EAN_NUMBER.NUMBER, EAN_NUMBER.IDENTIFIES, EAN_NUMBER.CREATOR_USER, EAN_NUMBER.CREATOR_USER_DEVICE)
-                .values(n.eanCode, n.identifiesFood, principals.getUid(), principals.getDid());
+        return arg.columns(EAN_NUMBER.NUMBER, EAN_NUMBER.IDENTIFIES, EAN_NUMBER.INITIATES)
+                .values(n.eanCode, n.identifiesFood, principals.getDid());
     }
 
     @Override
@@ -60,26 +60,25 @@ public class InsertVisitor<T extends Record> extends BaseVisitor<InsertSetStep<T
                 FOOD_ITEM.OF_TYPE,
                 FOOD_ITEM.REGISTERS,
                 FOOD_ITEM.BUYS,
-                FOOD_ITEM.CREATOR_USER,
-                FOOD_ITEM.CREATOR_USER_DEVICE)
+                FOOD_ITEM.INITIATES)
                 .values(OffsetDateTime.from(i.eatByDate.atOffset(ZoneOffset.UTC)),
                         i.storedIn,
                         i.ofType,
                         i.registers,
-                        i.buys, principals.getUid(),
+                        i.buys,
                         principals.getDid());
     }
 
     @Override
     public InsertOnDuplicateStep<T> userDevice(UserDevice userDevice, InsertSetStep<T> input) {
-        return input.columns(USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.CREATOR_USER, USER_DEVICE.CREATOR_USER_DEVICE)
-                .values(userDevice.name, userDevice.userId, principals.getUid(), principals.getDid());
+        return input.columns(USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.INITIATES)
+                .values(userDevice.name, userDevice.userId, principals.getDid());
     }
 
     @Override
     public InsertOnDuplicateStep<T> user(User u, InsertSetStep<T> arg) {
-        return arg.columns(USER.NAME, USER.CREATOR_USER, USER.CREATOR_USER_DEVICE)
-                .values(u.name, principals.getUid(), principals.getDid());
+        return arg.columns(USER.NAME, USER.INITIATES)
+                .values(u.name, principals.getDid());
     }
 
     public void setPrincipals(Principals principals) {

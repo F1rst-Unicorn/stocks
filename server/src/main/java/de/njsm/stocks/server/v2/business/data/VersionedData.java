@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
@@ -46,9 +47,8 @@ public abstract class VersionedData extends Data {
     @JsonDeserialize(using = InstantDeserialiser.class)
     public Instant transactionTimeEnd;
 
-    public int creatorUser;
-
-    public int creatorUserDevice;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public int initiates;
 
     public VersionedData() {
     }
@@ -58,14 +58,13 @@ public abstract class VersionedData extends Data {
         this.version = version;
     }
 
-    public VersionedData(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int creatorUser, int creatorUserDevice) {
+    public VersionedData(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates) {
         super(id);
         this.version = version;
         this.validTimeStart = validTimeStart;
         this.validTimeEnd = validTimeEnd;
         this.transactionTimeStart = transactionTimeStart;
         this.transactionTimeEnd = transactionTimeEnd;
-        this.creatorUser = creatorUser;
-        this.creatorUserDevice = creatorUserDevice;
+        this.initiates = initiates;
     }
 }

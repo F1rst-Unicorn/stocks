@@ -127,7 +127,6 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                                             now,
                                             now,
                                             DSL.inline(CrudDatabaseHandler.INFINITY),
-                                            DSL.inline(principals.getUid()),
                                             DSL.inline(principals.getDid()))
                                     .from(getTable())
                                     .where(condition
@@ -170,7 +169,6 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                                             getValidTimeEndField(),
                                             now,
                                             DSL.inline(CrudDatabaseHandler.INFINITY),
-                                            DSL.inline(principals.getUid()),
                                             DSL.inline(principals.getDid()))
                                     .from(getTable())
                                     .where(condition
@@ -189,7 +187,6 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                                             now,
                                             now,
                                             DSL.inline(INFINITY),
-                                            DSL.inline(principals.getUid()),
                                             DSL.inline(principals.getDid())
                                     ).from(getTable())
                                     .where(condition
@@ -218,7 +215,6 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                                             getValidTimeEndField(),
                                             now,
                                             DSL.inline(CrudDatabaseHandler.INFINITY),
-                                            DSL.inline(principals.getUid()),
                                             DSL.inline(principals.getDid()))
                                     .from(getTable())
                                     .where(condition
@@ -277,8 +273,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
         fieldsWithTime.add(getValidTimeEndField());
         fieldsWithTime.add(getTransactionTimeStartField());
         fieldsWithTime.add(getTransactionTimeEndField());
-        fieldsWithTime.add(getCreatorUserField());
-        fieldsWithTime.add(getCreatorUserDeviceField());
+        fieldsWithTime.add(getInitiatesField());
         return fieldsWithTime;
     }
 
@@ -308,12 +303,8 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
         return getTable().field("transaction_time_end", OffsetDateTime.class);
     }
 
-    protected Field<Integer> getCreatorUserField() {
-        return getTable().field("creator_user", Integer.class);
-    }
-
-    protected Field<Integer> getCreatorUserDeviceField() {
-        return getTable().field("creator_user_device", Integer.class);
+    protected Field<Integer> getInitiatesField() {
+        return getTable().field("initiates", Integer.class);
     }
 
     protected Condition nowAsBestKnown() {
