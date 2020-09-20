@@ -1,13 +1,27 @@
 # Build instructions
 
-This guide tells how to build the server.
+This guide tells you how to build the server.
+
+## General steps
+
+1. Checkout the git repository.
+2. Create a PostgreSQL database. Make sure the database is accessible for the
+   build user with the properties given in the default profile in
+   `server/pom.xml`.
 
 ## Arch Linux
 
-Checkout the git repository. Audit the PKGBUILD in `deploy-server`. Create a
-PostgreSQL database. Make sure the database is accessible for the build user
-with the properties given in the default profile in `server/pom.xml`. Then build
-the package.
+1. Audit the PKGBUILD in `deploy-server`.
+2. Build the package using the provided `PKGBUILD`.
+
+## Debian
+
+1. Audit the `debian/` directory.
+2. Ensure that the build dependencies are installed.
+3. Build the package using `dpkg-buildpackge -us -uc` from the project root.
+
+This will build both the client and server packages and put them in the parent
+directory of the project root.
 
 ## License
 

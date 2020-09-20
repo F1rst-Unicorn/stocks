@@ -1,0 +1,35 @@
+Source: stocks
+Section: misc
+Priority: optional
+Maintainer: Ben Fiedler <debian@services.bfiedler.ch>
+Build-Depends:
+  debhelper (>= 13),
+  default-jdk-headless,
+  dh-exec,
+  maven,
+  xmlstarlet,
+
+Package: stocks-server
+Section: misc
+Architecture: all
+Depends:
+  default-jre-headless,
+  nginx,
+  openssl,
+  sudo,
+  tomcat9,
+Description: Manage a household's food stock
+ Stocks is a service which keeps track of stored food and its freshness. It is
+ responsible for keeping track of what food is it stock at what place, in which
+ amount, and when it should be consumed.
+
+Package: stocks-client
+Section: misc
+Architecture: all
+Depends:
+  default-jre-headless,
+  sqlite3,
+Description: Client for managing a household's food stock
+ Stocks is a service which keeps track of stored food and its freshness. It is
+ responsible for keeping track of what food is it stock at what place, in which
+ amount, and when it should be consumed.

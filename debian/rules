@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+
+DEB_REVISION := $(shell dpkg-parsechangelog | sed -n -e 's/^Version: //p' | cut -c 5-)
+SERVER_VERSION := $(shell xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' server/pom.xml)
+CLIENT_VERSION := $(shell xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' client/pom.xml)
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	mvn package -DskipTests
+	cp client/target/client-*.jar client/target/client.jar
+	cp server/target/server-*.war server/target/server.war
+
+override_dh_auto_install:
+	chmod +x deploy-client/config/client.sh
+	dh_install
+	chmod -x deploy-client/config/client.sh
+
+override_dh_gencontrol:
+	dh_gencontrol
+	dh_gencontrol -pstocks-server -- -v$(SERVER_VERSION)-$(DEB_REVISION)
+	dh_gencontrol -pstocks-client -- -v$(CLIENT_VERSION)-$(DEB_REVISION)

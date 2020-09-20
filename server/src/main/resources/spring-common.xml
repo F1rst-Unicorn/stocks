@@ -51,7 +51,7 @@
     </bean>
 
     <bean name="nginxReloadCommand" class="java.lang.String">
-        <constructor-arg index="0" value="sudo /usr/lib/stocks-server/nginx-reload" type="java.lang.String"/>
+        <constructor-arg index="0" value="sudo /bin/systemctl reload nginx" type="java.lang.String"/>
     </bean>
 
     <bean name="config" class="de.njsm.stocks.server.Config">

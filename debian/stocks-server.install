@@ -1,0 +1,13 @@
+server/target/server.war /usr/lib/stocks-server/
+deploy-server/config/setup-ca /usr/lib/stocks-server/
+
+deploy-server/config/openssl*.cnf /usr/share/stocks-server/
+
+deploy-server/config/stocks.properties /etc/stocks-server/
+
+deploy-server/config/nginx-site.conf /etc/nginx/sites-available/
+
+README.md /usr/share/doc/stocks-server/
+manual/server/maintainance.md /usr/share/doc/stocks-server/
+manual/server/server-installation.md /usr/share/doc/stocks-server/
+debian/initial-user.sql /usr/share/doc/stocks-server/

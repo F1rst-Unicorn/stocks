@@ -1,0 +1,9 @@
+#!/usr/bin/dh-exec
+
+deploy-client/config/client.sh => /usr/bin/stocks
+
+client/target/client.jar /usr/lib/stocks/
+
+deploy-client/config/schema.sql /usr/share/stocks/
+
+manual/client/README.md /usr/share/doc/stocks/

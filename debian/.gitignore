@@ -1,0 +1,8 @@
+*.substvars
+*.log
+debhelper-build-stamp
+/stocks-server
+/stocks-client
+files
+.debhelper
+/tmp/

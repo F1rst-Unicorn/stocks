@@ -52,7 +52,6 @@ build() {
 package() {
     cd "$srcdir"
 
-    install -D -m 444 deploy-server/config/db-migration.sql             $pkgdir/usr/share/$pkgname/db-migration.sql
     install -D -m 444 deploy-server/config/nginx.conf                   $pkgdir/usr/share/$pkgname/nginx.conf
     install -D -m 444 deploy-server/config/nginx-site.conf              $pkgdir/usr/share/$pkgname/nginx-site.conf
     install -D -m 444 deploy-server/config/openssl.cnf                  $pkgdir/usr/share/$pkgname/openssl.cnf
@@ -61,7 +60,6 @@ package() {
     mkdir -p $pkgdir/usr/share/$pkgname/root
 
     install -D -m 555 deploy-server/config/setup-ca     $pkgdir/usr/lib/$pkgname/setup-ca
-    install -D -m 555 deploy-server/config/nginx-reload $pkgdir/usr/lib/$pkgname/nginx-reload
     install -D -m 444 server/target/server-*.war        $pkgdir/usr/lib/$pkgname/server.war
 
     install -D -m 644 deploy-server/config/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
