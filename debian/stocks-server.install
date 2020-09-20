@@ -7,7 +7,7 @@ deploy-server/config/openssl*.cnf /usr/share/stocks-server/
 
 deploy-server/config/stocks.properties /etc/stocks-server/
 
-deploy-server/config/nginx-site.conf /etc/nginx/sites-available/
+deploy-server/config/nginx-site.conf => /etc/nginx/sites-available/stocks.conf
 
 README.md /usr/share/doc/stocks-server/
 manual/server/maintainance.md /usr/share/doc/stocks-server/
