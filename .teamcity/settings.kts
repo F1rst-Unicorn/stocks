@@ -18,6 +18,7 @@
  */
 
 import jetbrains.buildServer.configs.kotlin.v2018_2.*
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.MavenBuildStep
 import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.exec
 import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.maven
@@ -104,29 +105,21 @@ object Build : BuildType({
             goals = "clean install"
             runnerArgs = "-P teamcity"
             mavenVersion = auto()
+            localRepoScope = MavenBuildStep.RepositoryScope.MAVEN_DEFAULT
             coverageEngine = idea {
                 includeClasses = "de.njsm.stocks.*"
-                excludeClasses = "de.njsm.*.*Test\n" +
-                        "de.njsm.stocks.server.v2.db.jooq.*\n" +
-                        "de.njsm.stocks.client.storage.jooq.*\n" +
-                        ""
+                excludeClasses = """
+                    de.njsm.*.*Test
+                    de.njsm.stocks.server.v2.db.jooq.*
+                    de.njsm.stocks.client.storage.jooq.*
+                """.trimIndent()
             }
         }
         gradle {
-            name = "Build android client"
-            tasks = "build"
-            buildFile = "android-client/build.gradle"
-            gradleHome = "/usr/bin/gradle"
-            gradleWrapperPath = "android-client"
-            coverageEngine = idea {
-                includeClasses = "de.njsm.*"
-                excludeClasses = "*Test"
-            }
-        }
-        gradle {
-            name = "Test Android client local"
+            name = "Compile & Unit Test Android Client"
             tasks = "test"
             buildFile = "android-client/build.gradle"
+            gradleHome = "/usr/bin/gradle"
             gradleWrapperPath = "android-client"
             enableStacktrace = true
             coverageEngine = idea {
@@ -136,11 +129,15 @@ object Build : BuildType({
         }
         exec {
             name = "Package server"
-            path = "deploy-server/bin/package.sh"
+            workingDir = "deploy-server"
+            path = "makepkg"
+            arguments = "-cf"
         }
         exec {
             name = "Package client"
-            path = "deploy-client/bin/package.sh"
+            workingDir = "deploy-client"
+            path = "makepkg"
+            arguments = "-cf"
         }
         gradle {
             name = "Package Android App"
@@ -167,6 +164,7 @@ object Build : BuildType({
             pomLocation = "server-test/pom.xml"
             runnerArgs = "-Dtest=TestSuite"
             mavenVersion = auto()
+            localRepoScope = MavenBuildStep.RepositoryScope.MAVEN_DEFAULT
         }
         exec {
             name = "Server Log collection"
@@ -200,6 +198,7 @@ object Build : BuildType({
             branchFilter = "+:STOCKS-63"
             triggerBuild = always()
             withPendingChangesOnly = false
+            enabled = false
             param("hour", "1")
             param("revisionRuleDependsOn", "Stocks_Build")
         }
@@ -207,10 +206,6 @@ object Build : BuildType({
 
     failureConditions {
         executionTimeoutMin = 45
-    }
-
-    requirements {
-        exists("env.ANDROID_HOME")
     }
 
     cleanup {
