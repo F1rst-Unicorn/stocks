@@ -21,16 +21,25 @@
   vars:
       remote_pkg_dir: /tmp
       stocks_pkg_dir: "{{ playbook_dir }}"
-      stocks_version: 3.0.1.0-1
-      stocks_pkg: stocks-{{ stocks_version }}-any.pkg.tar.zst
-
 
   remote_user: root
   tasks:
-  - name: Copy package
-    copy:
-        src: "{{ stocks_pkg_dir }}/{{ stocks_pkg }}"
-        dest: "{{ remote_pkg_dir }}"
+    - name: Lookup package file
+      local_action:
+        module: find
+        paths: "{{ stocks_pkg_dir }}"
+        patterns: 'stocks-server-*.pkg.tar.zst'
+      register: found_files
 
-  - name: Install stocks package
-    command: "pacman -U --noconfirm {{ remote_pkg_dir }}/{{ stocks_pkg }}"
+    - name: Set package name
+      set_fact:
+        package: "{{ found_files.files | sort(attribute='path') | last }}"
+
+    - name: Copy package
+      copy:
+        src: "{{ package.path }}"
+        dest: "{{ remote_pkg_dir }}"
+      register: copied_file
+
+    - name: Install stocks package
+      command: "pacman --noconfirm -U {{ copied_file.dest }}"

@@ -31,9 +31,8 @@ if ! git branch | grep "* master" >/dev/null ; then
 fi
 
 VERSION=$(echo "$1" | sed -r 's/(.*)-.*/\1/g')
-RELEASE=$(echo "$1" | sed -r 's/.*-(.*)/\1/g')
 
-if git tag | grep "server-$VERSION-$RELEASE" >/dev/null ; then
+if git tag | grep "server-$VERSION" >/dev/null ; then
         echo This version has already been built
         exit 3
 fi
@@ -42,16 +41,15 @@ echo Patching version number
 sed "0,/<version>/{s$<version>.*</version>$<version>$VERSION</version>$}" \
         -i "$STOCKS_ROOT"/server/pom.xml
 sed -i "s/pkgver=.*/pkgver=$VERSION/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
-sed -i "s/pkgrel=.*/pkgrel=$RELEASE/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
 
-sed -i -e "/## Unreleased/a ## [$VERSION-$RELEASE]" -e "/## Unreleased/G" \
+sed -i -e "/## Unreleased/a ## [$VERSION]" -e "/## Unreleased/G" \
         "$STOCKS_ROOT/manual/server/CHANGELOG.md"
 
 echo Tagging release
 git add -A
-git commit -m "Increment server version to $VERSION-$RELEASE"
+git commit -m "Increment server version to $VERSION"
 zsh
-git tag -a "server-$VERSION-$RELEASE" -m \
-        "Tagging server version $VERSION-$RELEASE"
+git tag -a "server-$VERSION" -m \
+        "Tagging server version $VERSION"
 git push --all
 git push --tags

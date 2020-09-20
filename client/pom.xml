@@ -25,7 +25,7 @@
 
     <groupId>de.njsm.stocks</groupId>
     <artifactId>client</artifactId>
-    <version>3.0</version>
+    <version>3.0.1.0</version>
     <packaging>jar</packaging>
 
     <name>Stocks management client</name>

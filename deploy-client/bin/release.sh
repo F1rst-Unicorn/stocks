@@ -37,11 +37,10 @@ SQL_VERSION=$(echo "$1" | sed -r 's/([^.]+\.[^.]+\.[^.]+).*/\1/g')
 JAVA_VERSION=$(echo "$SQL_VERSION" | sed 's/\./_/g')
 JAVA_ARGUMENTS=$(echo "$SQL_VERSION" | sed 's/\./, /g')
 VERSION=$(echo "$1" | sed -r 's/(.*)-.*/\1/g')
-RELEASE=$(echo "$1" | sed -r 's/.*-(.*)/\1/g')
 
 VERSION_FILE="$STOCKS_ROOT/client/src/main/java/de/njsm/stocks/client/init/upgrade/Version.java"
 
-if git tag | grep "client-$VERSION-$RELEASE" >/dev/null ; then
+if git tag | grep "client-$VERSION" >/dev/null ; then
         echo This version has already been built
         exit 3
 fi
@@ -50,7 +49,6 @@ echo Patching version number
 sed "0,/<version>/{s$<version>.*</version>$<version>$MAVEN_VERSION</version>$}" \
         -i "$STOCKS_ROOT"/client/pom.xml
 sed -i "s/pkgver=.*/pkgver=$VERSION/g" "$STOCKS_ROOT"/deploy-client/PKGBUILD
-sed -i "s/pkgrel=.*/pkgrel=$RELEASE/g" "$STOCKS_ROOT"/deploy-client/PKGBUILD
 
 if ! grep "CURRENT = V_$JAVA_VERSION" $VERSION_FILE >/dev/null ; then
     sed -i "s/CURRENT = .*/CURRENT = V_$JAVA_VERSION;/g;
@@ -59,17 +57,15 @@ if ! grep "CURRENT = V_$JAVA_VERSION" $VERSION_FILE >/dev/null ; then
 fi
 sed -i "s/.*db\.version.*/    ('db.version', '$SQL_VERSION')/g" \
         "$STOCKS_ROOT"/deploy-client/config/schema.sql
-sed -i "s/stocks_version: .*/stocks_version: $VERSION-$RELEASE/" \
-        "$STOCKS_ROOT"/deploy-client/install.yml
 
-sed -i -e "/## Unreleased/a ## [$VERSION-$RELEASE]" -e "/## Unreleased/G" \
+sed -i -e "/## Unreleased/a ## [$VERSION]" -e "/## Unreleased/G" \
         "$STOCKS_ROOT/manual/client/CHANGELOG.md"
 
 echo Tagging release
 git add -A
-git commit -m "Increment client version to $VERSION-$RELEASE"
+git commit -m "Increment client version to $VERSION"
 zsh
-git tag -a "client-$VERSION-$RELEASE" -m \
-        "Tagging client version $VERSION-$RELEASE"
+git tag -a "client-$VERSION" -m \
+        "Tagging client version $VERSION"
 git push --all
 git push --tags

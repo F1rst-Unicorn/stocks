@@ -23,26 +23,13 @@
 CLIENTVERSION=$(grep "<version>" client/pom.xml | \
         head -n 1 | \
         sed 's$ *<version>\(.*\)</version>$\1$g')
-CLIENTCOUNT=$(grep "pkgver=${CLIENTVERSION}" deploy-client/PKGBUILD | \
-        head -n 1 | \
-        sed 's/pkgver=[0-9]\+\.[0-9]\+\.\?\([0-9]*\)/\1/g')
-CLIENTVERSIONJAVA=$(echo ${CLIENTVERSION}_${CLIENTCOUNT} | sed 's/\./_/g' |
+CLIENTVERSIONJAVA=$(echo ${CLIENTVERSION} | sed 's/\./_/g' |
         sed 's/\(.*\)_.*/\1/g' )
 CLIENTVERSIONDB=$(echo ${CLIENTVERSIONJAVA} | sed 's/_/./g' )
-CLIENTRELEASE=$(grep 'pkgrel=' deploy-client/PKGBUILD | \
-        head -n 1 | \
-        sed 's$.*=\([0-9]*\)$\1$g')
 
 if ! grep "pkgver=${CLIENTVERSION}" deploy-client/PKGBUILD >/dev/null 2>&1 ;
 then
         echo "client PKGBUILD version differs from pom.xml"
-        exit 1
-fi
-
-if ! grep "stocks_version: ${CLIENTVERSION}.${CLIENTCOUNT}-${CLIENTRELEASE}" \
-        deploy-client/install.yml >/dev/null 2>&1 ;
-then
-        echo "client ansible install version differs from PKGBUILD"
         exit 1
 fi
 
