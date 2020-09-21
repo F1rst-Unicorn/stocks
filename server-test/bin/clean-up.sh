@@ -20,6 +20,7 @@
 
 ssh dp-server "sudo rm -rf /var/lib/tomcat8/webapp/stocks.war;
         while [ -d /usr/share/tomcat8/webapp/stocks ] ; do sleep 1 ; done;
+        sudo systemctl restart tomcat8;
         sudo pacman -Rsn stocks-server --noconfirm;
         sudo rm -rf /usr/share/stocks-server;
         sudo rm -rf /var/log/tomcat8/stocks.log;

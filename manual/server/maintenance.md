@@ -1,4 +1,4 @@
-# Server maintainance
+# Server maintenance
 
 This document gives a brief introduction to how to administer the server.
 
@@ -14,15 +14,10 @@ Debian).
 ## Stocks server log
 
 The log file of the stocks server is at `/var/log/tomcatX/stocks.log`, where X
-is your tomcat version.  The used library is log4j2. If the default tomcat
-`server.xml` is used the log config is stored in
-`${catalina.base}/webapps/stocks/WEB-INF/classes/log4j2.xml`. The server
-refreshes the config every 30 seconds so the log level can be adjusted without
-restarting the server.
-
-The config can be reset by removing the directory
-`${catalina.base}/webapps/stocks` (but not the symlinks). Note that during
-redeployment the webapp might be subject to downtime.
+is your tomcat version. The used library is [log4j2](https://logging.apache.org/log4j/2.x/manual/index.html)
+and the configuration file is stored in `/etc/stocks-server/log4j2.xml`. The
+server refreshes the config every 10 seconds so the log level can be adjusted
+without restarting the server.
 
 ## Stocks config file
 

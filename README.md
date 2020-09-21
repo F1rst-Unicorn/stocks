@@ -6,11 +6,11 @@ in which amount, and when it should be consumed.
 
 ## Server
 
-See `manual/server/` for build and maintainance manuals.
+See `manual/server/` for build and maintenance manuals.
 
 ## Linux client
 
-See `manual/client/` for build and maintainance manuals.
+See `manual/client/` for build and maintenance manuals.
 
 ## Android app installation
 

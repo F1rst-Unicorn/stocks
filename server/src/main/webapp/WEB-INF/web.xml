@@ -30,11 +30,21 @@
         <param-value>classpath:spring.xml</param-value>
     </context-param>
 
-    <listener>
-        <listener-class>de.njsm.stocks.server.util.LiquibaseFixer</listener-class>
-    </listener>
+    <context-param>
+        <param-name>isLog4jAutoInitializationDisabled</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>log4jConfiguration</param-name>
+        <param-value>file:///etc/stocks-server/log4j2.xml</param-value>
+    </context-param>
+
     <listener>
         <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>de.njsm.stocks.server.util.LiquibaseFixer</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
@@ -49,6 +59,7 @@
     <servlet>
         <servlet-name>prometheus</servlet-name>
         <servlet-class>io.prometheus.client.exporter.MetricsServlet</servlet-class>
+        <async-supported>true</async-supported>
     </servlet>
 
     <servlet>
@@ -88,6 +99,7 @@
     <filter>
         <filter-name>prometheusFilter</filter-name>
         <filter-class>io.prometheus.client.filter.MetricsFilter</filter-class>
+        <async-supported>true</async-supported>
         <init-param>
             <param-name>metric-name</param-name>
             <param-value>stocks_request_time</param-value>
@@ -100,8 +112,23 @@
             <param-name>path-components</param-name>
             <param-value>0</param-value>
         </init-param>
+    </filter>
+
+    <filter>
+        <filter-name>log4jServletFilter</filter-name>
+        <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
         <async-supported>true</async-supported>
     </filter>
+
+    <filter-mapping>
+        <filter-name>log4jServletFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+        <dispatcher>ASYNC</dispatcher>
+    </filter-mapping>
 
     <filter-mapping>
         <filter-name>prometheusFilter</filter-name>

@@ -31,7 +31,8 @@ makedepends=('git'
              'maven')
 install=stocks-server.install
 backup=("etc/$pkgname/stocks.properties"
-	"usr/lib/$pkgname/setup-ca")
+        "etc/$pkgname/log4j2.xml"
+        "usr/lib/$pkgname/setup-ca")
 
 build() {
     cd "$srcdir"
@@ -63,10 +64,11 @@ package() {
     install -D -m 444 server/target/server-*.war        $pkgdir/usr/lib/$pkgname/server.war
 
     install -D -m 644 deploy-server/config/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
+    install -D -m 644 deploy-server/config/log4j2.xml        $pkgdir/etc/$pkgname/log4j2.xml
 
     install -D -m 444 README.md                            $pkgdir/usr/share/doc/$pkgname/README.md
     install -D -m 444 manual/server/server-installation.md $pkgdir/usr/share/doc/$pkgname/
-    install -D -m 444 manual/server/maintainance.md        $pkgdir/usr/share/doc/$pkgname/
+    install -D -m 444 manual/server/maintenance.md         $pkgdir/usr/share/doc/$pkgname/
 
     install -D -m 444 LICENSE.md                             $pkgdir/usr/share/licenses/$pkgname/LICENSE.md
 }

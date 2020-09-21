@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Fixed
+
+* STOCKS-119: Fix memory leak leading to warnings during hot redeployments of
+  the WAR.
+
+### Changed
+
+* STOCKS-119: The log configuration file is now available at
+  `/etc/stocks-server/log4j2.xml`
+
 ## [5.1.0.0]
 
 ### Added

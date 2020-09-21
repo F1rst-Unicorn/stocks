@@ -19,11 +19,8 @@
     along with this program.  If not, see https://www.gnu.org/licenses/.
 -->
 
-
 <Configuration monitorInterval="10" >
-
     <Appenders>
-
         <RollingFile
                 name="logfile"
                 fileName="${sys:catalina.base}/logs/stocks.log"
@@ -34,11 +31,9 @@
             </Policies>
             <DefaultRolloverStrategy max="2" />
         </RollingFile>
-
     </Appenders>
 
     <Loggers>
-
         <Logger name="de.njsm.stocks.server" level="info" additivity="false">
             <AppenderRef ref="logfile"/>
         </Logger>
@@ -46,7 +41,5 @@
         <Root level="info">
             <AppenderRef ref="logfile"/>
         </Root>
-
     </Loggers>
-
 </Configuration>

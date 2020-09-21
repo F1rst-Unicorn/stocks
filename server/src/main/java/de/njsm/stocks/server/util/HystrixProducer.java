@@ -19,10 +19,7 @@
 
 package de.njsm.stocks.server.util;
 
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandKey;
-import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.*;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
 import org.apache.logging.log4j.LogManager;
@@ -53,6 +50,11 @@ public class HystrixProducer<I, O, E extends Exception> extends HystrixCommand<O
     private static Setter getHystrixConfig(String identifier, int timeout) {
         return Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(identifier))
                 .andCommandKey(HystrixCommandKey.Factory.asKey(identifier))
+                .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.defaultSetter()
+                        .withCoreSize(2)
+                        .withMaximumSize(10)
+                        .withAllowMaximumSizeToDivergeFromCoreSize(true)
+                )
                 .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
                         .withCircuitBreakerRequestVolumeThreshold(1)
                         .withCircuitBreakerErrorThresholdPercentage(1)
