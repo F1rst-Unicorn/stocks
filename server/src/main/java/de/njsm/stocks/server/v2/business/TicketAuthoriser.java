@@ -56,7 +56,11 @@ public class TicketAuthoriser extends BusinessObject {
                 return Validation.fail(StatusCode.ACCESS_DENIED);
             }
 
-            authAdmin.saveCsr(ticket.deviceId, ticket.pemFile);
+            StatusCode saveCsrResult = authAdmin.saveCsr(ticket.deviceId, ticket.pemFile);
+            if (saveCsrResult.isFail()) {
+                authAdmin.wipeDeviceCredentials(ticket.deviceId);
+                return Validation.fail(StatusCode.ACCESS_DENIED);
+            }
 
             if (!arePrincipalsValid(ticket)) {
                 authAdmin.wipeDeviceCredentials(ticket.deviceId);
