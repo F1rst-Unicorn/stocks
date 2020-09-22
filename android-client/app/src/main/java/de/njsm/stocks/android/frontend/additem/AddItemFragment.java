@@ -118,12 +118,16 @@ public class AddItemFragment extends BaseFragment {
                 } else {
                     defaultLocation = locationViewModel.getLocationWithMostItemsOfType(input.getFoodId());
                 }
-                defaultLocation.observe(getViewLifecycleOwner(), this::setDefaultLocation);
+                defaultLocation.observe(getViewLifecycleOwner(), lo -> {
+                    this.setDefaultLocation(lo);
+                    defaultLocation.removeObservers(getViewLifecycleOwner());
+
+                });
                 List<String> data = l.stream().map(i -> i.name).collect(Collectors.toList());
                 adapter.clear();
                 adapter.addAll(data);
                 adapter.notifyDataSetChanged();
-
+                locationViewModel.getLocations().removeObservers(getViewLifecycleOwner());
             });
             String title = getString(R.string.title_add_item, f.name);
             requireActivity().setTitle(title);
