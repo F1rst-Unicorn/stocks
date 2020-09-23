@@ -31,7 +31,7 @@ makedepends=('git'
              'maven')
 install=stocks-server.install
 backup=("etc/$pkgname/stocks.properties"
-        "etc/$pkgname/log4j2.xml"
+        "etc/$pkgname/log4j2-stocks.xml"
         "usr/lib/$pkgname/setup-ca")
 
 build() {
@@ -58,13 +58,13 @@ package() {
     install -D -m 444 deploy-server/config/openssl.cnf                  $pkgdir/usr/share/$pkgname/openssl.cnf
     install -D -m 444 deploy-server/config/openssl_intermediate.cnf     $pkgdir/usr/share/$pkgname/openssl_intermediate.cnf
 
-    mkdir -p $pkgdir/usr/share/$pkgname/root
+    mkdir -p $pkgdir/usr/share/$pkgname/instances
 
     install -D -m 555 deploy-server/config/setup-ca     $pkgdir/usr/lib/$pkgname/setup-ca
     install -D -m 444 server/target/server-*.war        $pkgdir/usr/lib/$pkgname/server.war
 
     install -D -m 644 deploy-server/config/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
-    install -D -m 644 deploy-server/config/log4j2.xml        $pkgdir/etc/$pkgname/log4j2.xml
+    install -D -m 644 deploy-server/config/log4j2.xml        $pkgdir/etc/$pkgname/log4j2-stocks.xml
 
     install -D -m 444 README.md                            $pkgdir/usr/share/doc/$pkgname/README.md
     install -D -m 444 manual/server/server-installation.md $pkgdir/usr/share/doc/$pkgname/
