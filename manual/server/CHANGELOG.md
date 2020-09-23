@@ -9,8 +9,11 @@
 
 ### Changed
 
+* STOCKS-120: Change file system locations of some files. SEE
+  `manual/server/upgrading.md` FOR UPGRADE.
+
 * STOCKS-119: The log configuration file is now available at
-  `/etc/stocks-server/log4j2.xml`
+  `/etc/stocks-server/log4j2-<instance>.xml`
 
 ## [5.1.0.0]
 

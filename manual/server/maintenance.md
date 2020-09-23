@@ -32,7 +32,7 @@ If for some reason the server has to be migrated to another instance the
 following system parts must be backed up:
 
  * PostgreSQL stocks database
- * Stocks CA at `/usr/share/stocks-server/root/CA/`
+ * Stocks CA at `/usr/share/stocks-server/instance/<instance-name>/CA/`
 
 In addition to that the following files should be saved if you modified them:
 

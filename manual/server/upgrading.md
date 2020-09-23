@@ -11,6 +11,24 @@ If the instruction is to simply perform an upgrade via the distribution's
 package manager this means that the tomcat container has to be restarted after
 installation.
 
+## 5.2.0.0
+
+Stocks can now run as several instances on one host. Some changes to the file
+system have to be made to adapt to this. This guide assumes your current
+instance is called "stocks".
+
+The CA and nginx download point which used to be stored at
+`/usr/share/stocks-server/root` are  now to be stored at
+`/usr/share/stocks-server/instances/stocks`. Change the directory accordingly.
+
+The key material in `/etc/nginx/ssl` is now stored differently. The first
+mention is the name of the application while the second mention reflects the
+name of the instance.
+
+* `stocks.cert.pem` -> `stocks-stocks.cert.pem`
+* `stocks.key.pem` -> `stocks-stocks.key.pem`
+* `stocks.ca-chain.pem` -> `stocks-stocks.ca-chain.pem`
+
 ## 4.8.0.0-1
 
 Changes in the database model require a database migration. Shut down the tomcat
