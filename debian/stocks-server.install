@@ -6,7 +6,7 @@ deploy-server/config/setup-ca /usr/lib/stocks-server/
 deploy-server/config/openssl*.cnf /usr/share/stocks-server/
 
 deploy-server/config/stocks.properties /etc/stocks-server/
-deploy-server/config/log4j2.xml /etc/stocks-server/
+deploy-server/config/log4j2.xml /etc/stocks-server/log4j2-stocks.xml
 
 deploy-server/config/nginx-site.conf => /etc/nginx/sites-available/stocks.conf
 
