@@ -20,5 +20,5 @@
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 
-scp dp-server:/var/log/tomcat8/stocks.log \
+scp dp-server:/var/log/tomcat8/stocks-stocks.log \
         $STOCKS_ROOT/server/target/server.log
