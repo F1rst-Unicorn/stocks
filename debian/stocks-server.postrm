@@ -5,9 +5,8 @@ set -x
 
 case "$1" in
 	purge)
-		rm -rf /usr/share/stocks-server/root/CA
-		rm -rf /usr/share/stocks-server/root/nginx
-		rm -f /etc/nginx/ssl/stocks.*.pem
+		rm -rf /usr/share/stocks-server/instances
+		rm -f /etc/nginx/ssl/stocks-*.pem
 	;;
 	*)
 	;;

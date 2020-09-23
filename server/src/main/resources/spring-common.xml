@@ -26,6 +26,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
        default-lazy-init="true">
 
+    <bean name="instanceNameProvider" class="de.njsm.stocks.server.util.InstanceNameProvider">
+        <constructor-arg index="0" ref="servletContext" />
+    </bean>
+
     <bean name="driver" class="java.lang.Class" factory-method="forName" lazy-init="false">
         <constructor-arg index="0" value="org.postgresql.Driver"/>
     </bean>
@@ -38,16 +42,18 @@
         <constructor-arg index="0" value="certificateAuthority"/>
     </bean>
 
-    <bean name="propertiesFile" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <bean name="propertiesFile" class="org.springframework.beans.factory.config.PropertiesFactoryBean" depends-on="servletContext">
         <property name="locations">
             <list>
-                <value>file:/etc/stocks-server/stocks.properties</value>
+                <bean name="configFile" factory-bean="instanceNameProvider" factory-method="getConfigFileUrl"/>
             </list>
         </property>
     </bean>
 
     <bean name="certificateAuthorityPath" class="java.lang.String">
-        <constructor-arg index="0" value="/usr/share/stocks-server/root/CA" type="java.lang.String"/>
+        <constructor-arg index="0">
+            <bean factory-bean="instanceNameProvider" factory-method="getCaDirectory" />
+        </constructor-arg>
     </bean>
 
     <bean name="nginxReloadCommand" class="java.lang.String">

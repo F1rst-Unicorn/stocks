@@ -13,11 +13,12 @@ Debian).
 
 ## Stocks server log
 
-The log file of the stocks server is at `/var/log/tomcatX/stocks.log`, where X
-is your tomcat version. The used library is [log4j2](https://logging.apache.org/log4j/2.x/manual/index.html)
-and the configuration file is stored in `/etc/stocks-server/log4j2.xml`. The
-server refreshes the config every 10 seconds so the log level can be adjusted
-without restarting the server.
+The log file of the stocks server is at `/var/log/tomcatX/stocks-stocks.log`,
+where X is your tomcat version. The used library is
+[log4j2](https://logging.apache.org/log4j/2.x/manual/index.html) and the
+configuration file is stored in `/etc/stocks-server/log4j2.xml`. The server
+refreshes the config every 10 seconds so the log level can be adjusted without
+restarting the server.
 
 ## Stocks config file
 
@@ -32,7 +33,7 @@ If for some reason the server has to be migrated to another instance the
 following system parts must be backed up:
 
  * PostgreSQL stocks database
- * Stocks CA at `/usr/share/stocks-server/root/CA/`
+ * Stocks CA at `/usr/share/stocks-server/instance/<instance-name>/CA/`
 
 In addition to that the following files should be saved if you modified them:
 

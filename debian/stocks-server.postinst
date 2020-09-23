@@ -3,21 +3,21 @@
 set -e
 set -x
 
-if [ -d /usr/share/stocks-server/root/CA ]; then
+if [ -d /usr/share/stocks-server/instances/stocks/CA ]; then
 	exit 0
 fi
 
 cd /usr/share/stocks-server
 
-/usr/lib/stocks-server/setup-ca /usr/share/stocks-server/root/CA /usr/share/stocks-server
-cp root/CA/certs/ca.cert.pem root/nginx/ca
-cp root/CA/intermediate/certs/ca-chain.cert.pem root/nginx/chain
+/usr/lib/stocks-server/setup-ca /usr/share/stocks-server/instances/stocks/CA /usr/share/stocks-server
+cp instances/stocks/CA/certs/ca.cert.pem instances/stocks/nginx/ca
+cp instances/stocks/CA/intermediate/certs/ca-chain.cert.pem instances/stocks/nginx/chain
 
-chown -R tomcat:tomcat /usr/share/stocks-server/root/
+chown -R tomcat:tomcat /usr/share/stocks-server/instances/stocks/
 
-cp root/CA/intermediate/certs/ca-chain.cert.pem /etc/nginx/ssl/stocks.ca-chain.pem
-cp root/CA/intermediate/certs/server.cert.pem /etc/nginx/ssl/stocks.cert.pem
-cp root/CA/intermediate/private/server.key.pem /etc/nginx/ssl/stocks.key.pem
+cp instances/stocks/CA/intermediate/certs/ca-chain.cert.pem /etc/nginx/ssl/stocks-stocks.ca-chain.pem
+cp instances/stocks/CA/intermediate/certs/server.cert.pem /etc/nginx/ssl/stocks-stocks.cert.pem
+cp instances/stocks/CA/intermediate/private/server.key.pem /etc/nginx/ssl/stocks-stocks.key.pem
 
 cat <<EOF > /etc/sudoers.d/10-stocks-server
 tomcat	ALL=NOPASSWD: /bin/systemctl reload nginx

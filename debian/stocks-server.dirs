@@ -1,2 +1,2 @@
-/usr/share/stocks-server/root/nginx
+/usr/share/stocks-server/instances/stocks/nginx
 /etc/nginx/ssl
