@@ -153,7 +153,7 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
 
     @Override
     public int getItemCount() {
-        return super.getItemCount();
+        return super.getItemCount() + 1;
     }
 
     @Override
