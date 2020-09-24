@@ -7,6 +7,9 @@
 * STOCKS-119: Fix memory leak leading to warnings during hot redeployments of
   the WAR.
 
+* STOCKS-116: Fix error condition leading to background jobs failing without
+  chance to recover.
+
 ### Changed
 
 * STOCKS-120: Change file system locations of some files. SEE

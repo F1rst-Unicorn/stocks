@@ -49,10 +49,10 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
     @Override
     public StatusCode commit() {
         return runCommand(con -> {
+            connectionFactory.reset();
             con.setAutoCommit(false);
             con.commit();
             con.close();
-            connectionFactory.reset();
             return StatusCode.SUCCESS;
         });
     }
@@ -60,10 +60,10 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
     @Override
     public StatusCode rollback() {
         return runCommand(con -> {
+            connectionFactory.reset();
             con.setAutoCommit(false);
             con.rollback();
             con.close();
-            connectionFactory.reset();
             return StatusCode.SUCCESS;
         });
     }

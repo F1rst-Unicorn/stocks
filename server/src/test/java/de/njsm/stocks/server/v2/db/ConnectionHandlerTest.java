@@ -23,7 +23,9 @@ import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import static junit.framework.TestCase.assertFalse;
@@ -91,5 +93,125 @@ public class ConnectionHandlerTest extends DbTestCase {
         RuntimeException e = new RuntimeException("", new SQLException("", "40002", null));
 
         ConnectionHandler.lookForSqlException(e);
+    }
+
+    @Test
+    public void failingDisablingAutoCommitOnRollbackResetsFactoryAnyway() throws SQLException {
+        var connection = Mockito.mock(Connection.class);
+        var connectionFactory = Mockito.mock(ConnectionFactory.class);
+        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.doThrow(new SQLException("test")).when(connection).setAutoCommit(false);
+        uut = new ConnectionHandler(getNewResourceIdentifier(),
+                connectionFactory,
+                CIRCUIT_BREAKER_TIMEOUT);
+
+        uut.rollback();
+
+        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).reset();
+        Mockito.verify(connection).setAutoCommit(false);
+        Mockito.verifyNoMoreInteractions(connection);
+        Mockito.verifyNoMoreInteractions(connectionFactory);
+    }
+
+    @Test
+    public void failingRollbackResetsFactoryAnyway() throws SQLException {
+        var connection = Mockito.mock(Connection.class);
+        var connectionFactory = Mockito.mock(ConnectionFactory.class);
+        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.doThrow(new SQLException("test")).when(connection).rollback();
+        uut = new ConnectionHandler(getNewResourceIdentifier(),
+                connectionFactory,
+                CIRCUIT_BREAKER_TIMEOUT);
+
+        uut.rollback();
+
+        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).reset();
+        Mockito.verify(connection).setAutoCommit(false);
+        Mockito.verify(connection).rollback();
+        Mockito.verifyNoMoreInteractions(connection);
+        Mockito.verifyNoMoreInteractions(connectionFactory);
+    }
+
+    @Test
+    public void failingClosingAfterRollbackResetsFactoryAnyway() throws SQLException {
+        var connection = Mockito.mock(Connection.class);
+        var connectionFactory = Mockito.mock(ConnectionFactory.class);
+        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.doThrow(new SQLException("test")).when(connection).close();
+        uut = new ConnectionHandler(getNewResourceIdentifier(),
+                connectionFactory,
+                CIRCUIT_BREAKER_TIMEOUT);
+
+        uut.rollback();
+
+        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).reset();
+        Mockito.verify(connection).setAutoCommit(false);
+        Mockito.verify(connection).rollback();
+        Mockito.verify(connection).close();
+        Mockito.verifyNoMoreInteractions(connection);
+        Mockito.verifyNoMoreInteractions(connectionFactory);
+    }
+
+    @Test
+    public void failingDisablingAutoCommitOnCommitResetsFactoryAnyway() throws SQLException {
+        var connection = Mockito.mock(Connection.class);
+        var connectionFactory = Mockito.mock(ConnectionFactory.class);
+        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.doThrow(new SQLException("test")).when(connection).setAutoCommit(false);
+        uut = new ConnectionHandler(getNewResourceIdentifier(),
+                connectionFactory,
+                CIRCUIT_BREAKER_TIMEOUT);
+
+        uut.commit();
+
+        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).reset();
+        Mockito.verify(connection).setAutoCommit(false);
+        Mockito.verifyNoMoreInteractions(connection);
+        Mockito.verifyNoMoreInteractions(connectionFactory);
+    }
+
+    @Test
+    public void failingCommitResetsFactoryAnyway() throws SQLException {
+        var connection = Mockito.mock(Connection.class);
+        var connectionFactory = Mockito.mock(ConnectionFactory.class);
+        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.doThrow(new SQLException("test")).when(connection).commit();
+        uut = new ConnectionHandler(getNewResourceIdentifier(),
+                connectionFactory,
+                CIRCUIT_BREAKER_TIMEOUT);
+
+        uut.commit();
+
+        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).reset();
+        Mockito.verify(connection).setAutoCommit(false);
+        Mockito.verify(connection).commit();
+        Mockito.verifyNoMoreInteractions(connection);
+        Mockito.verifyNoMoreInteractions(connectionFactory);
+    }
+
+    @Test
+    public void failingClosingAfterCommitResetsFactoryAnyway() throws SQLException {
+        var connection = Mockito.mock(Connection.class);
+        var connectionFactory = Mockito.mock(ConnectionFactory.class);
+        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.doThrow(new SQLException("test")).when(connection).close();
+        uut = new ConnectionHandler(getNewResourceIdentifier(),
+                connectionFactory,
+                CIRCUIT_BREAKER_TIMEOUT);
+
+        uut.commit();
+
+        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).reset();
+        Mockito.verify(connection).setAutoCommit(false);
+        Mockito.verify(connection).commit();
+        Mockito.verify(connection).close();
+        Mockito.verifyNoMoreInteractions(connection);
+        Mockito.verifyNoMoreInteractions(connectionFactory);
     }
 }
