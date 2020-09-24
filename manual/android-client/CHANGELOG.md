@@ -4,6 +4,9 @@
 
 ### Fixed
 
+* STOCKS-122: Fix reset to default of location and date when adding new food
+  items.
+
 * STOCKS-112: Don't show history button if it is not useful.
 
 ## [3.6.0.3]

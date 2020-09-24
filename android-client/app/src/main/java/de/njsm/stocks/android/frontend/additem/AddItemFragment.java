@@ -111,7 +111,9 @@ public class AddItemFragment extends BaseFragment {
         foodViewModel.initFood(input.getFoodId());
         LiveData<Food> food = foodViewModel.getFood();
         food.observe(getViewLifecycleOwner(), f -> {
+            food.removeObservers(getViewLifecycleOwner());
             locationViewModel.getLocations().observe(getViewLifecycleOwner(), l -> {
+                locationViewModel.getLocations().removeObservers(getViewLifecycleOwner());
                 LiveData<Location> defaultLocation;
                 if (f != null && f.location != 0) {
                     defaultLocation = locationViewModel.getLocation(f.location);
@@ -119,15 +121,14 @@ public class AddItemFragment extends BaseFragment {
                     defaultLocation = locationViewModel.getLocationWithMostItemsOfType(input.getFoodId());
                 }
                 defaultLocation.observe(getViewLifecycleOwner(), lo -> {
-                    this.setDefaultLocation(lo);
                     defaultLocation.removeObservers(getViewLifecycleOwner());
+                    this.setDefaultLocation(lo);
 
                 });
                 List<String> data = l.stream().map(i -> i.name).collect(Collectors.toList());
                 adapter.clear();
                 adapter.addAll(data);
                 adapter.notifyDataSetChanged();
-                locationViewModel.getLocations().removeObservers(getViewLifecycleOwner());
             });
             String title = getString(R.string.title_add_item, f.name);
             requireActivity().setTitle(title);
@@ -136,7 +137,6 @@ public class AddItemFragment extends BaseFragment {
             } else {
                 initialiseDatePickerFromExistingFood(input);
             }
-            food.removeObservers(this);
         });
 
         setHasOptionsMenu(true);
