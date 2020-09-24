@@ -62,7 +62,7 @@ public abstract class FoodItemDao {
 
     @Query("select i._id as _id, i.version as version, u.name as userName, " +
             "d.name as deviceName, l.name as location, i.eat_by as eatByDate, i.valid_time_start," +
-            "i.valid_time_end, i.transaction_time_start, i.transaction_time_end, " +
+            "i.valid_time_end, i.transaction_time_start, i.transaction_time_end, i.initiates, " +
             "i.of_type as ofType, i.stored_in as storedIn " +
             "from FoodItem i " +
             "inner join User u on i.buys = u._id " +
@@ -87,7 +87,7 @@ public abstract class FoodItemDao {
     @Query("select i._id as _id, i.version as version, u.name as userName, " +
             "d.name as deviceName, l.name as location, i.eat_by as eatByDate, " +
             "i.of_type as ofType, i.stored_in as storedIn, i.valid_time_start," +
-            "i.valid_time_end, i.transaction_time_start, i.transaction_time_end " +
+            "i.valid_time_end, i.transaction_time_start, i.transaction_time_end, i.initiates " +
             "from FoodItem i " +
             "inner join User u on i.buys = u._id " +
             "inner join User_device d on i.registers = d._id " +

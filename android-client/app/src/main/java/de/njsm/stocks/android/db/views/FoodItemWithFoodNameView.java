@@ -29,8 +29,8 @@ public class FoodItemWithFoodNameView extends FoodItemView {
     @ColumnInfo(name = "food_name")
     private String foodName;
 
-    public FoodItemWithFoodNameView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String userName, String deviceName, Instant eatByDate, String location, int ofType, int storedIn, String foodName) {
-        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, userName, deviceName, eatByDate, location, ofType, storedIn);
+    public FoodItemWithFoodNameView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String userName, String deviceName, Instant eatByDate, String location, int ofType, int storedIn, String foodName) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, userName, deviceName, eatByDate, location, ofType, storedIn);
         this.foodName = foodName;
     }
 

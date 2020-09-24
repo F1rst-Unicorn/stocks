@@ -41,8 +41,8 @@ import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 public abstract class EventDao {
 
     private static final String TIME_COLUMNS =
-            "l1._id as version1__id, l1.version as version1_version, l1.valid_time_start as version1_valid_time_start, l1.valid_time_end as version1_valid_time_end, l1.transaction_time_start as version1_transaction_time_start, l1.transaction_time_end as version1_transaction_time_end, " +
-            "l2._id as version2__id, l2.version as version2_version, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end, ";
+            "l1._id as version1__id, l1.version as version1_version, l1.initiates as version1_initiates, l1.valid_time_start as version1_valid_time_start, l1.valid_time_end as version1_valid_time_end, l1.transaction_time_start as version1_transaction_time_start, l1.transaction_time_end as version1_transaction_time_end, " +
+            "l2._id as version2__id, l2.version as version2_version, l2.initiates as version2_initiates, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end, ";
 
     private static final String TIME_COLUMNS_FOOD =
             TIME_COLUMNS +

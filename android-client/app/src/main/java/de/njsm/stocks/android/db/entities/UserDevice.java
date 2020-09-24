@@ -46,8 +46,8 @@ public class UserDevice extends VersionedData {
     @ColumnInfo(name = "belongs_to")
     public int userId;
 
-    public UserDevice(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String name, int userId) {
-        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
+    public UserDevice(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, int userId) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.name = name;
         this.userId = userId;
     }

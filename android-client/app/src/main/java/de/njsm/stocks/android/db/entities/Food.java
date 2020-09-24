@@ -59,8 +59,8 @@ public class Food extends VersionedData {
         this.location = location;
     }
 
-    public Food(int position, int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String name, boolean toBuy, int expirationOffset, int location) {
-        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
+    public Food(int position, int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;

@@ -45,8 +45,8 @@ public class User extends VersionedData {
     @ColumnInfo(name = "name")
     public String name;
 
-    public User(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String name) {
-        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
+    public User(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.name = name;
     }
 

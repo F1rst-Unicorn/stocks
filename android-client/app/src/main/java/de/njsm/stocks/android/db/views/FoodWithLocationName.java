@@ -31,8 +31,8 @@ public class FoodWithLocationName extends Food {
     @ColumnInfo(name = "location_name")
     public String locationName;
 
-    public FoodWithLocationName(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String name, boolean toBuy, int expirationOffset, int location, String locationName) {
-        super(0, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, name, toBuy, expirationOffset, location);
+    public FoodWithLocationName(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, String locationName) {
+        super(0, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location);
         this.locationName = locationName;
     }
 }

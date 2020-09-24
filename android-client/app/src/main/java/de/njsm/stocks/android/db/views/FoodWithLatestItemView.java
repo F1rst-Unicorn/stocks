@@ -40,8 +40,8 @@ public class FoodWithLatestItemView extends VersionedData {
 
     private int location;
 
-    public FoodWithLatestItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int amount, Instant eatBy, String name, boolean toBuy, int expirationOffset, int location) {
-        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
+    public FoodWithLatestItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, int amount, Instant eatBy, String name, boolean toBuy, int expirationOffset, int location) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, version);
         this.amount = amount;
         this.eatBy = eatBy;
         this.name = name;
@@ -51,7 +51,7 @@ public class FoodWithLatestItemView extends VersionedData {
     }
 
     public Food mapToFood() {
-        return new Food(getPosition(), id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, name, toBuy, expirationOffset, location);
+        return new Food(getPosition(), id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location);
     }
 
     public int getAmount() {

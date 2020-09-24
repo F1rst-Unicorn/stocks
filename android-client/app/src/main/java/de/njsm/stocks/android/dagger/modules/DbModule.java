@@ -37,6 +37,7 @@ import de.njsm.stocks.android.db.dao.SearchSuggestionDao;
 import de.njsm.stocks.android.db.dao.UpdateDao;
 import de.njsm.stocks.android.db.dao.UserDao;
 import de.njsm.stocks.android.db.dao.UserDeviceDao;
+import de.njsm.stocks.android.db.migrations.Migration_31_to_32;
 
 @Module
 public abstract class DbModule {
@@ -45,7 +46,7 @@ public abstract class DbModule {
     @Singleton
     static StocksDatabase provideDatabase(Application context) {
         return Room.databaseBuilder(context, StocksDatabase.class, "stocks.db")
-                .fallbackToDestructiveMigration()
+                .addMigrations(new Migration_31_to_32())
                 .build();
     }
 

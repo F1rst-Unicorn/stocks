@@ -39,8 +39,8 @@ public class FoodItemView extends VersionedData {
 
     private int storedIn;
 
-    public FoodItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String userName, String deviceName, Instant eatByDate, String location, int ofType, int storedIn) {
-        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
+    public FoodItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String userName, String deviceName, Instant eatByDate, String location, int ofType, int storedIn) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.userName = userName;
         this.deviceName = deviceName;
         this.eatByDate = eatByDate;

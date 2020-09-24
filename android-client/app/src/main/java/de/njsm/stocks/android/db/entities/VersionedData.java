@@ -60,15 +60,19 @@ public class VersionedData extends Data {
     @ColumnInfo(name = "version")
     public int version;
 
+    @ColumnInfo(name = "initiates")
+    public int initiates;
+
     @Ignore
     public VersionedData() {}
 
-    public VersionedData(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version) {
+    public VersionedData(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates) {
         super(id);
         this.validTimeStart = validTimeStart;
         this.validTimeEnd = validTimeEnd;
         this.transactionTimeStart = transactionTimeStart;
         this.transactionTimeEnd = transactionTimeEnd;
         this.version = version;
+        this.initiates = initiates;
     }
 }

@@ -69,7 +69,7 @@ public abstract class LocationDao {
 
     @Query("select l._id, l.version, l.name, l.valid_time_start, " +
             "l.valid_time_end, l.transaction_time_start, " +
-            "l.transaction_time_end, count(*) as amount " +
+            "l.transaction_time_end, l.initiates, count(*) as amount " +
             "from Location l " +
             "inner join FoodItem i on i.stored_in = l._id " +
             "where i.of_type = :food " +

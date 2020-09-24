@@ -64,8 +64,8 @@ public class FoodItem extends VersionedData {
     @ColumnInfo(name = "buys")
     public int buys;
 
-    public FoodItem(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, Instant eatByDate, int ofType, int storedIn, int registers, int buys) {
-        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
+    public FoodItem(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, Instant eatByDate, int ofType, int storedIn, int registers, int buys) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.eatByDate = eatByDate;
         this.ofType = ofType;
         this.storedIn = storedIn;

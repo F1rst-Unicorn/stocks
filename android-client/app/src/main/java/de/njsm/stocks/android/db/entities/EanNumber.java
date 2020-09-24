@@ -48,8 +48,8 @@ public class EanNumber extends VersionedData {
     @ColumnInfo(name = "identifies")
     public int identifiesFood;
 
-    public EanNumber(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, String eanCode, int identifiesFood) {
-        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version);
+    public EanNumber(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String eanCode, int identifiesFood) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.eanCode = eanCode;
         this.identifiesFood = identifiesFood;
     }
