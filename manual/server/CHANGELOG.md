@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.2.0.0]
+
 ### Fixed
 
 * STOCKS-119: Fix memory leak leading to warnings during hot redeployments of
