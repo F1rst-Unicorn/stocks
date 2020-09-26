@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.2.0.1]
+
 ### Fixed
 
 * STOCKS-124: Allow "younger" devices to modify and delete "older" objects which

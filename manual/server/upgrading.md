@@ -29,6 +29,9 @@ name of the instance.
 * `stocks.key.pem` -> `stocks-stocks.key.pem`
 * `stocks.ca-chain.pem` -> `stocks-stocks.ca-chain.pem`
 
+Finally inside the CA, edit both `openssl.cnf` and `intermediate/openssl.cnf`
+files to have their new path at `dir`, somewhere in the first few lines.
+
 ## 4.8.0.0-1
 
 Changes in the database model require a database migration. Shut down the tomcat
