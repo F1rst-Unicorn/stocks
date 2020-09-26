@@ -25,16 +25,17 @@ import de.njsm.stocks.android.business.data.activity.DeletedUserEvent;
 import de.njsm.stocks.android.business.data.activity.NewEntityEvent;
 import de.njsm.stocks.android.business.data.activity.NewUserEvent;
 import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 
 public class UserHistoryView extends AbstractHistoryView<User> {
 
-    public UserHistoryView(User version1, User version2, boolean isFirst) {
-        super(version1, version2, isFirst);
+    public UserHistoryView(User version1, User version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
+        super(version1, version2, isFirst, initiatorUser, initiatorUserDevice);
     }
 
     @Override
     NewEntityEvent<?> getNewEntityEvent() {
-        return new NewUserEvent(version1);
+        return new NewUserEvent(initiatorUser, initiatorUserDevice, version1);
     }
 
     @Override
@@ -44,6 +45,6 @@ public class UserHistoryView extends AbstractHistoryView<User> {
 
     @Override
     DeletedEntityEvent<?> getDeletedEntityEvent() {
-        return new DeletedUserEvent(version1);
+        return new DeletedUserEvent(initiatorUser, initiatorUserDevice, version1);
     }
 }

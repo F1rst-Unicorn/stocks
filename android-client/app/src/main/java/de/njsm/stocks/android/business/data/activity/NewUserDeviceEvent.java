@@ -22,18 +22,20 @@ package de.njsm.stocks.android.business.data.activity;
 import java.util.function.IntFunction;
 
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.views.UserDeviceWithUser;
 
 public class NewUserDeviceEvent extends NewEntityEvent<UserDeviceWithUser> implements UserDeviceIconResourceProvider {
 
-    public NewUserDeviceEvent(UserDeviceWithUser entity) {
-        super(entity);
+    public NewUserDeviceEvent(User initiatorUser, UserDevice initiatorDevice, UserDeviceWithUser entity) {
+        super(initiatorUser, initiatorDevice, entity);
     }
 
     @Override
     public String describe(IntFunction<String> stringResourceResolver) {
         String template = stringResourceResolver.apply(R.string.event_user_device_created);
-        return String.format(template, entity.name, entity.getUsername());
+        return String.format(template, initiatorUser.name, entity.name, entity.getUsername());
     }
 
     @Override

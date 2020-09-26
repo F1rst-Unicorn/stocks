@@ -23,17 +23,19 @@ import java.util.function.IntFunction;
 
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 
 public class DeletedFoodEvent extends DeletedEntityEvent<Food> implements FoodIconResourceProvider {
 
-    public DeletedFoodEvent(Food entity) {
-        super(entity);
+    public DeletedFoodEvent(User initiatorUser, UserDevice initiatorDevice, Food entity) {
+        super(initiatorUser, initiatorDevice, entity);
     }
 
     @Override
     public String describe(IntFunction<String> stringResourceResolver) {
         String template = stringResourceResolver.apply(R.string.event_food_deleted);
-        return String.format(template, entity.name);
+        return String.format(template, initiatorUser.name, entity.name);
     }
 
     @Override

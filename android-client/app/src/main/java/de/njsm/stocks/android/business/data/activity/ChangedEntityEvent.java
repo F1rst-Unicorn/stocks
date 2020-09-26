@@ -22,6 +22,8 @@ package de.njsm.stocks.android.business.data.activity;
 import org.threeten.bp.Instant;
 
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.entities.VersionedData;
 
 public abstract class ChangedEntityEvent<T extends VersionedData> extends EntityEvent<T> {
@@ -30,7 +32,8 @@ public abstract class ChangedEntityEvent<T extends VersionedData> extends Entity
 
     final T newEntity;
 
-    public ChangedEntityEvent(T oldEntity, T newEntity) {
+    public ChangedEntityEvent(User initiatorUser, UserDevice initiatorDevice, T oldEntity, T newEntity) {
+        super(initiatorUser, initiatorDevice);
         this.oldEntity = oldEntity;
         this.newEntity = newEntity;
     }

@@ -22,14 +22,16 @@ package de.njsm.stocks.android.business.data.activity;
 import java.util.function.IntFunction;
 
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.views.FoodItemWithFoodNameView;
 import de.njsm.stocks.android.util.Config;
 
 public class NewFoodItemEvent extends NewEntityEvent<FoodItemWithFoodNameView> implements FoodItemIconResourceProvider {
 
 
-    public NewFoodItemEvent(FoodItemWithFoodNameView entity) {
-        super(entity);
+    public NewFoodItemEvent(User initiatorUser, UserDevice initiatorDevice, FoodItemWithFoodNameView entity) {
+        super(initiatorUser, initiatorDevice, entity);
     }
 
     @Override
@@ -38,7 +40,6 @@ public class NewFoodItemEvent extends NewEntityEvent<FoodItemWithFoodNameView> i
         return String.format(template,
                 entity.getUserName(),
                 entity.getFoodName(),
-                entity.getDeviceName(),
                 entity.getLocation(),
                 Config.PRETTY_DATE_FORMAT.format(entity.getEatByDate()));
     }

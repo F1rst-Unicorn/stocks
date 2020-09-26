@@ -22,19 +22,20 @@ package de.njsm.stocks.android.business.data.activity;
 import java.util.function.IntFunction;
 
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.views.FoodItemWithFoodNameView;
 
 public class DeletedFoodItemEvent extends DeletedEntityEvent<FoodItemWithFoodNameView> implements FoodItemIconResourceProvider {
 
-    public DeletedFoodItemEvent(FoodItemWithFoodNameView entity) {
-        super(entity);
+    public DeletedFoodItemEvent(User initiatorUser, UserDevice initiatorDevice, FoodItemWithFoodNameView entity) {
+        super(initiatorUser, initiatorDevice, entity);
     }
 
     @Override
     public String describe(IntFunction<String> stringResourceResolver) {
         String template = stringResourceResolver.apply(R.string.event_food_item_deleted);
-        return String.format(template,
-                entity.getFoodName());
+        return String.format(template, initiatorUser.name, entity.getFoodName());
     }
 
     @Override

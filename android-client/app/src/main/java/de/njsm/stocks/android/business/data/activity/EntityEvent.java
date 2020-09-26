@@ -23,12 +23,23 @@ import org.threeten.bp.Instant;
 
 import java.util.function.IntFunction;
 
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.entities.VersionedData;
 import de.njsm.stocks.android.util.paging.Key;
 
 public abstract class EntityEvent<T extends VersionedData> implements Comparable<EntityEvent<?>>, EntityIconResourceProvider {
 
     private Key key;
+
+    User initiatorUser;
+
+    UserDevice initiatorDevice;
+
+    public EntityEvent(User initiatorUser, UserDevice initiatorDevice) {
+        this.initiatorUser = initiatorUser;
+        this.initiatorDevice = initiatorDevice;
+    }
 
     public abstract T getEntity();
 

@@ -24,16 +24,18 @@ import de.njsm.stocks.android.business.data.activity.DeletedEanNumberEvent;
 import de.njsm.stocks.android.business.data.activity.DeletedEntityEvent;
 import de.njsm.stocks.android.business.data.activity.NewEanNumberEvent;
 import de.njsm.stocks.android.business.data.activity.NewEntityEvent;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 
 public class EanNumberHistoryView extends AbstractHistoryView<EanNumberView> {
 
-    public EanNumberHistoryView(EanNumberView version1, EanNumberView version2, boolean isFirst) {
-        super(version1, version2, isFirst);
+    public EanNumberHistoryView(EanNumberView version1, EanNumberView version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
+        super(version1, version2, isFirst, initiatorUser, initiatorUserDevice);
     }
 
     @Override
     NewEntityEvent<?> getNewEntityEvent() {
-        return new NewEanNumberEvent(version1);
+        return new NewEanNumberEvent(initiatorUser, initiatorUserDevice, version1);
     }
 
     @Override
@@ -43,6 +45,6 @@ public class EanNumberHistoryView extends AbstractHistoryView<EanNumberView> {
 
     @Override
     DeletedEntityEvent<?> getDeletedEntityEvent() {
-        return new DeletedEanNumberEvent(version1);
+        return new DeletedEanNumberEvent(initiatorUser, initiatorUserDevice, version1);
     }
 }

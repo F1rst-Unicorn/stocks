@@ -22,13 +22,16 @@ package de.njsm.stocks.android.business.data.activity;
 import org.threeten.bp.Instant;
 
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.entities.VersionedData;
 
 public abstract class DeletedEntityEvent<T extends VersionedData> extends EntityEvent<T> {
 
     T entity;
 
-    public DeletedEntityEvent(T entity) {
+    public DeletedEntityEvent(User initiatorUser, UserDevice initiatorDevice, T entity) {
+        super(initiatorUser, initiatorDevice);
         this.entity = entity;
     }
 

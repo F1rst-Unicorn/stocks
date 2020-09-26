@@ -23,17 +23,18 @@ import java.util.function.IntFunction;
 
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 
 public class DeletedUserEvent extends DeletedEntityEvent<User> implements UserIconResourceProvider {
 
-    public DeletedUserEvent(User entity) {
-        super(entity);
+    public DeletedUserEvent(User initiatorUser, UserDevice initiatorDevice, User entity) {
+        super(initiatorUser, initiatorDevice, entity);
     }
 
     @Override
     public String describe(IntFunction<String> stringResourceResolver) {
         String template = stringResourceResolver.apply(R.string.event_user_deleted);
-        return String.format(template, entity.name);
+        return String.format(template, initiatorUser.name, entity.name);
     }
 
     @Override

@@ -23,17 +23,19 @@ import java.util.function.IntFunction;
 
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Location;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 
 public class ChangedLocationEvent extends ChangedEntityEvent<Location> implements LocationIconResourceProvider {
 
-    public ChangedLocationEvent(Location oldEntity, Location newEntity) {
-        super(oldEntity, newEntity);
+    public ChangedLocationEvent(User initiatorUser, UserDevice initiatorDevice, Location oldEntity, Location newEntity) {
+        super(initiatorUser, initiatorDevice, oldEntity, newEntity);
     }
 
     @Override
     public String describe(IntFunction<String> stringResourceResolver) {
         String template = stringResourceResolver.apply(R.string.event_location_renamed);
-        return String.format(template, oldEntity.name, newEntity.name);
+        return String.format(template, initiatorUser.name, oldEntity.name, newEntity.name);
     }
 
     @Override

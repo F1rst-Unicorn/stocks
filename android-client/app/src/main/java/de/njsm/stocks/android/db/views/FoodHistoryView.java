@@ -25,25 +25,27 @@ import de.njsm.stocks.android.business.data.activity.DeletedEntityEvent;
 import de.njsm.stocks.android.business.data.activity.DeletedFoodEvent;
 import de.njsm.stocks.android.business.data.activity.NewEntityEvent;
 import de.njsm.stocks.android.business.data.activity.NewFoodEvent;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 
 public class FoodHistoryView extends AbstractHistoryView<FoodWithLocationName> {
 
-    public FoodHistoryView(FoodWithLocationName version1, FoodWithLocationName version2, boolean isFirst) {
-        super(version1, version2, isFirst);
+    public FoodHistoryView(FoodWithLocationName version1, FoodWithLocationName version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
+        super(version1, version2, isFirst, initiatorUser, initiatorUserDevice);
     }
 
     @Override
     NewEntityEvent<?> getNewEntityEvent() {
-        return new NewFoodEvent(version1);
+        return new NewFoodEvent(initiatorUser, initiatorUserDevice, version1);
     }
 
     @Override
     ChangedEntityEvent<?> getChangedEntityEvent() {
-        return new ChangedFoodEvent(version1, version2);
+        return new ChangedFoodEvent(initiatorUser, initiatorUserDevice, version1, version2);
     }
 
     @Override
     DeletedEntityEvent<?> getDeletedEntityEvent() {
-        return new DeletedFoodEvent(version1);
+        return new DeletedFoodEvent(initiatorUser, initiatorUserDevice, version1);
     }
 }

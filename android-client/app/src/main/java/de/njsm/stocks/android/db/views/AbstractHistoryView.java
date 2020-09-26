@@ -26,6 +26,8 @@ import de.njsm.stocks.android.business.data.activity.ChangedEntityEvent;
 import de.njsm.stocks.android.business.data.activity.DeletedEntityEvent;
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.business.data.activity.NewEntityEvent;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.entities.VersionedData;
 
 public abstract class AbstractHistoryView<T extends VersionedData> {
@@ -39,10 +41,18 @@ public abstract class AbstractHistoryView<T extends VersionedData> {
     @ColumnInfo(name = "is_first")
     boolean isFirst;
 
-    public AbstractHistoryView(T version1, T version2, boolean isFirst) {
+    @Embedded(prefix = "initiator_user_")
+    User initiatorUser;
+
+    @Embedded(prefix = "initiator_user_device_")
+    UserDevice initiatorUserDevice;
+
+    public AbstractHistoryView(T version1, T version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
         this.version1 = version1;
         this.version2 = version2;
         this.isFirst = isFirst;
+        this.initiatorUser = initiatorUser;
+        this.initiatorUserDevice = initiatorUserDevice;
     }
 
     abstract NewEntityEvent<?> getNewEntityEvent();

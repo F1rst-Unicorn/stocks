@@ -26,25 +26,27 @@ import de.njsm.stocks.android.business.data.activity.DeletedLocationEvent;
 import de.njsm.stocks.android.business.data.activity.NewEntityEvent;
 import de.njsm.stocks.android.business.data.activity.NewLocationEvent;
 import de.njsm.stocks.android.db.entities.Location;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 
 public class LocationHistoryView extends AbstractHistoryView<Location> {
 
-    public LocationHistoryView(Location version1, Location version2, boolean isFirst) {
-        super(version1, version2, isFirst);
+    public LocationHistoryView(Location version1, Location version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
+        super(version1, version2, isFirst, initiatorUser, initiatorUserDevice);
     }
 
     @Override
     NewEntityEvent<?> getNewEntityEvent() {
-        return new NewLocationEvent(version1);
+        return new NewLocationEvent(initiatorUser, initiatorUserDevice, version1);
     }
 
     @Override
     ChangedEntityEvent<?> getChangedEntityEvent() {
-        return new ChangedLocationEvent(version1, version2);
+        return new ChangedLocationEvent(initiatorUser, initiatorUserDevice, version1, version2);
     }
 
     @Override
     DeletedEntityEvent<?> getDeletedEntityEvent() {
-        return new DeletedLocationEvent(version1);
+        return new DeletedLocationEvent(initiatorUser, initiatorUserDevice, version1);
     }
 }
