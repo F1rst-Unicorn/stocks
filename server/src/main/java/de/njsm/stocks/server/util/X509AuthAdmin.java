@@ -30,10 +30,8 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,17 +40,17 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
 
     private static final Logger LOG = LogManager.getLogger(X509AuthAdmin.class);
 
-    private String csrFormatString;
+    private final String csrFormatString;
 
-    private String certFormatString;
+    private final String certFormatString;
 
-    private String caRootDirectory;
+    private final String caRootDirectory;
 
-    private String reloadCommand;
+    private final String reloadCommand;
 
-    private String resourceIdentifier;
+    private final String resourceIdentifier;
 
-    private int timeout;
+    private final int timeout;
 
     public X509AuthAdmin(String caRootDirectory,
                          String reloadCommand,
@@ -97,8 +95,7 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
                 getCertificateFileName(deviceId));
 
         return runCommand(dummy -> {
-            Process p = Runtime.getRuntime().exec(command);
-            p.waitFor();
+            executeSystemCommand(command);
             return StatusCode.SUCCESS;
         });
     }
@@ -142,7 +139,7 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
                             "-revoke %s",
                     caRootDirectory,
                     getCertificateFileName(id));
-            Runtime.getRuntime().exec(command).waitFor();
+            executeSystemCommand(command);
             refreshCrl();
             return StatusCode.SUCCESS;
         });
@@ -195,9 +192,7 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
     @Override
     public <O> ProducerWithExceptions<Validation<StatusCode, O>, Exception>
     wrap(FunctionWithExceptions<Void, Validation<StatusCode, O>, Exception> client) {
-        return () -> {
-            return client.apply(null);
-        };
+        return () -> client.apply(null);
     }
 
     // Parsed according to https://pki-tutorial.readthedocs.io/en/latest/cadb.html
@@ -218,14 +213,14 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
 
     private void refreshCrl() {
         runCommand(dummy -> {
-            String crlCommand = String.format("openssl ca " +
+            String command = String.format("openssl ca " +
                             "-config %s/intermediate/openssl.cnf " +
                             "-gencrl " +
                             "-out %s/intermediate/crl/intermediate.crl.pem",
                     caRootDirectory,
                     caRootDirectory);
 
-            Runtime.getRuntime().exec(crlCommand).waitFor();
+            executeSystemCommand(command);
 
             FileOutputStream out = new FileOutputStream(caRootDirectory + "/intermediate/crl/whole.crl.pem");
             IOUtils.copy(new FileInputStream(caRootDirectory + "/crl/ca.crl.pem"), out);
@@ -235,6 +230,16 @@ public class X509AuthAdmin implements AuthAdmin, HystrixWrapper<Void, Exception>
             Runtime.getRuntime().exec(reloadCommand).waitFor();
             return null;
         });
+    }
+
+    private void executeSystemCommand(String command) throws IOException, InterruptedException {
+        Process p = Runtime.getRuntime().exec(command);
+        p.waitFor();
+        String stdout = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
+        String stderr = IOUtils.toString(p.getErrorStream(), Charset.defaultCharset());
+        LOG.debug("command: {}", command);
+        LOG.debug("stdout: {}", stdout);
+        LOG.debug("stderr: {}", stderr);
     }
 
     private String getCsrFileName(int deviceId) {
