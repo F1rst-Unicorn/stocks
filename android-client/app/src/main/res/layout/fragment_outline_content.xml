@@ -18,17 +18,16 @@
     along with this program.  If not, see https://www.gnu.org/licenses/.
 -->
 
-<!-- This nesting stops cards from filling screen -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
 
+    android:id="@+id/fragment_outline_content_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/fragment_outline_header_cardview"
+        android:id="@+id/fragment_outline_content_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -71,7 +70,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/fragment_outline_header_cardview2"
+        android:id="@+id/fragment_outline_content_cardview2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -113,5 +112,10 @@
         android:padding="@dimen/activity_horizontal_margin"
         android:text="@string/title_recent_activity"
         android:textAlignment="center" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_outline_content_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
