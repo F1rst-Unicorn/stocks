@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [3.7.0.0]
+
+### Added
+
+* STOCKS-117: Show initiator of each event by consuming new feature from server.
+
 ### Fixed
 
 * STOCKS-122: Fix reset to default of location and date when adding new food
