@@ -9,6 +9,9 @@
 
 * STOCKS-112: Don't show history button if it is not useful.
 
+* STOCKS-118: Fix displaying main event history's very first event, which is the
+  first user creation.
+
 ## [3.6.0.3]
 
 ### Added

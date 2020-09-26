@@ -21,6 +21,9 @@ package de.njsm.stocks.screen;
 
 
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.NoMatchingViewException;
+
+import java.util.function.Consumer;
 
 public class AbstractScreen {
 
@@ -28,6 +31,16 @@ public class AbstractScreen {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
+        }
+    }
+
+    protected void performFlakyAction(Consumer<Void> action) {
+        boolean done = false;
+        while (!done) {
+            try {
+                action.accept(null);
+                done = true;
+            } catch (NoMatchingViewException e) {}
         }
     }
 

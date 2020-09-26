@@ -29,7 +29,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
@@ -41,32 +40,15 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.util.Config;
 
-import static android.view.View.*;
-
 public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.ViewHolder> {
 
     private final IntFunction<String> stringResourceProvider;
-
-    private final OnClickListener goToEatSoon;
-
-    private final OnClickListener goToEmptyFood;
 
     private Resources resources;
 
     private Resources.Theme theme;
 
-    private static final int TYPE_HEADER = 0;
-
-    private static final int TYPE_ITEM = 1;
-
     private View.OnClickListener callback;
-
-    public static class ViewHolderHeader extends RecyclerView.ViewHolder {
-
-        public ViewHolderHeader(@NonNull View itemView) {
-            super(itemView);
-        }
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -105,62 +87,27 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
 
     EventAdapter(Resources resources,
                  Resources.Theme theme,
-                 OnClickListener goToEatSoon,
-                 OnClickListener goToEmptyFood,
                  View.OnClickListener callback,
                  IntFunction<String> stringResourceProvider) {
         super(DIFF_CALLBACK);
         this.resources = resources;
         this.theme = theme;
         this.stringResourceProvider = stringResourceProvider;
-        this.goToEatSoon = goToEatSoon;
-        this.goToEmptyFood = goToEmptyFood;
         this.callback = callback;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (position == 0)
-            return TYPE_HEADER;
-        else
-            return TYPE_ITEM;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int type) {
-        if (type == TYPE_HEADER) {
-            View header = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_outline_header, viewGroup, false);
-            header.findViewById(R.id.fragment_outline_header_cardview).setOnClickListener(goToEatSoon);
-            header.findViewById(R.id.fragment_outline_header_cardview2).setOnClickListener(goToEmptyFood);
-            return new ViewHolderHeader(header);
-        } else {
             RelativeLayout v = (RelativeLayout) LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.item_event, viewGroup, false);
             ViewHolder result = new EventAdapter.ViewHolder(v);
             v.setOnClickListener(callback);
             return result;
-        }
-    }
-
-    @Nullable
-    @Override
-    protected EntityEvent<?> getItem(int position) {
-        if (position == 0)
-            return null;
-        return super.getItem(position - 1);
-    }
-
-    @Override
-    public int getItemCount() {
-        return super.getItemCount();
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (position == 0)
-            return;
-
         ViewHolder vh = (ViewHolder) holder;
         EntityEvent<?> event = getItem(position);
         if (event != null) {
@@ -183,6 +130,7 @@ public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.
         holder.setDate("");
         holder.setEventIcon(computeIcon(R.drawable.ic_menu_recent_history_24dp));
         holder.setEntityIcon(computeIcon(R.drawable.ic_menu_recent_history_24dp));
+        holder.itemView.setTag(null);
     }
 
     private static final DiffUtil.ItemCallback<EntityEvent<?>> DIFF_CALLBACK =

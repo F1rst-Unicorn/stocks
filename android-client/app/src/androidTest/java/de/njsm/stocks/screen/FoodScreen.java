@@ -130,6 +130,7 @@ public class FoodScreen extends AbstractListPresentingScreen {
     public FoodScreen setDefaultLocation(int index) {
         openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
         onView(allOf(withId(R.id.title), withText("Default Location"))).perform(click());
+        sleep(1000);
         onView(allOf(withId(R.id.spinner_spinner),
                         childAtPosition(
                                 allOf(withId(R.id.custom),

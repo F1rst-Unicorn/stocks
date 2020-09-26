@@ -95,13 +95,13 @@ public class OutlineFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.template_swipe_list, container, false);
+        View result = inflater.inflate(R.layout.fragment_outline, container, false);
         if (!initialised) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(R.id.nav_fragment_startup);
         } else {
 
-            swiper = result.findViewById(R.id.template_swipe_list_swipe);
-            RefreshViewModel refresher = initialiseSwipeRefresh(result, R.id.template_swipe_list_swipe, viewModelFactory);
+            swiper = result.findViewById(R.id.fragment_outline_swipe);
+            RefreshViewModel refresher = initialiseSwipeRefresh(result, R.id.fragment_outline_swipe, viewModelFactory);
             refresher.refresh();
 
             setHasOptionsMenu(true);
@@ -109,13 +109,19 @@ public class OutlineFragment extends BaseFragment {
             writeUsernameToDrawer();
 
             FoodViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-            result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(v -> this.addFood(viewModel));
+            result.findViewById(R.id.fragment_outline_fab).setOnClickListener(v -> this.addFood(viewModel));
 
-            RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
+            result.findViewById(R.id.fragment_outline_content_cardview).setOnClickListener(this::goToEatSoon);
+            result.findViewById(R.id.fragment_outline_content_cardview2).setOnClickListener(this::goToEmptyFood);
+
+            RecyclerView list = result.findViewById(R.id.fragment_outline_content_list);
             list.setLayoutManager(new LinearLayoutManager(requireContext()));
             EventViewModel eventViewModel = ViewModelProviders.of(this, viewModelFactory).get(EventViewModel.class);
-            EventAdapter adapter = new EventAdapter(getResources(), requireActivity().getTheme(), this::goToEatSoon, this::goToEmptyFood, this::goToEventSource, requireContext()::getString);
-            eventViewModel.getHistory().observe(getViewLifecycleOwner(), adapter::submitList);
+            EventAdapter adapter = new EventAdapter(getResources(), requireActivity().getTheme(), this::goToEventSource, requireContext()::getString);
+            eventViewModel.getHistory().observe(getViewLifecycleOwner(), l -> {
+                adapter.submitList(l);
+                list.scrollToPosition(0);
+            });
             list.setAdapter(adapter);
 
             foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);

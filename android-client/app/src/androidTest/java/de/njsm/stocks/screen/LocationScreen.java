@@ -21,22 +21,27 @@ package de.njsm.stocks.screen;
 
 
 import androidx.test.espresso.contrib.RecyclerViewActions;
+
 import de.njsm.stocks.R;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.espresso.matcher.ViewMatchers.withHint;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static de.njsm.stocks.util.Matchers.atPosition;
 import static junit.framework.TestCase.assertTrue;
 
 public class LocationScreen extends AbstractListPresentingScreen {
 
-    public LocationScreen addLocation(String name) throws InterruptedException {
-        onView(withId(R.id.template_swipe_list_fab)).perform(click());
-        Thread.sleep(100);
-        onView(withHint(R.string.hint_location)).perform(replaceText(name));
+    public LocationScreen addLocation(String name) {
+        performFlakyAction(v -> {
+            onView(withId(R.id.template_swipe_list_fab)).perform(click());
+            onView(withHint(R.string.hint_location)).perform(replaceText(name));
+        });
+
         onView(withText("OK")).perform(click());
         return this;
     }
