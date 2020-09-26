@@ -19,19 +19,23 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Location;
+import de.njsm.stocks.server.v2.business.data.UserDevice;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.Period;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
+import static de.njsm.stocks.server.v2.db.jooq.Tables.USER_DEVICE;
 import static de.njsm.stocks.server.v2.db.jooq.tables.Location.LOCATION;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.Assert.*;
@@ -249,5 +253,60 @@ public class LocationHandlerTest extends DbTestCase {
                 .success()
                 .count();
         assertEquals(8, retrievedRows);
+    }
+
+    @Test
+    public void youngerDevicesAreAllowedToChangeOlderLocations() throws SQLException {
+        OffsetDateTime now = OffsetDateTime.now();
+        Instant nowAsInstant = now.toInstant();
+        UserDevice youngDevice = new UserDevice(5, 0, nowAsInstant, INFINITY.toInstant(), nowAsInstant, INFINITY.toInstant(), "youngDevice", 1, 1);
+        Principals principals = new Principals("Bob", youngDevice.name, 1, youngDevice.id);
+        uut.setPrincipals(principals);
+        Location input = new Location(1, "", 0);
+        String newName = "newName";
+        getDSLContext().insertInto(USER_DEVICE)
+                .columns(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.VALID_TIME_START, USER_DEVICE.VALID_TIME_END, USER_DEVICE.TRANSACTION_TIME_START, USER_DEVICE.TRANSACTION_TIME_END, USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.INITIATES)
+                .values(youngDevice.id, youngDevice.version, now, INFINITY, now, INFINITY, youngDevice.name, youngDevice.userId, youngDevice.initiates)
+                .execute();
+        getConnectionFactory().getConnection().commit();
+
+        uut.rename(input, newName);
+        getConnectionFactory().getConnection().commit();
+
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
+        assertTrue(dbData.isSuccess());
+        assertTrue(dbData.success().anyMatch(f -> f.name.equals(newName)
+                && f.id == 1
+                && f.version == 1
+                && f.validTimeEnd.equals(INFINITY.toInstant())
+                && f.transactionTimeEnd.equals(INFINITY.toInstant())
+                && f.initiates == principals.getDid()));
+    }
+
+    @Test
+    public void youngerDevicesAreAllowedToDeleteOlderLocations() throws SQLException {
+        OffsetDateTime now = OffsetDateTime.now();
+        Instant nowAsInstant = now.toInstant();
+        UserDevice youngDevice = new UserDevice(5, 0, nowAsInstant, INFINITY.toInstant(), nowAsInstant, INFINITY.toInstant(), "youngDevice", 1, 1);
+        Principals principals = new Principals("Bob", youngDevice.name, 1, youngDevice.id);
+        uut.setPrincipals(principals);
+        Location input = new Location(1, "Fridge", 0);
+        getDSLContext().insertInto(USER_DEVICE)
+                .columns(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.VALID_TIME_START, USER_DEVICE.VALID_TIME_END, USER_DEVICE.TRANSACTION_TIME_START, USER_DEVICE.TRANSACTION_TIME_END, USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.INITIATES)
+                .values(youngDevice.id, youngDevice.version, now, INFINITY, now, INFINITY, youngDevice.name, youngDevice.userId, youngDevice.initiates)
+                .execute();
+        getConnectionFactory().getConnection().commit();
+
+        uut.delete(input);
+        getConnectionFactory().getConnection().commit();
+
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
+        assertTrue(dbData.isSuccess());
+        assertTrue(dbData.success().anyMatch(f -> f.name.equals(input.name)
+                && f.id == 1
+                && f.version == 0
+                && !f.validTimeEnd.equals(INFINITY.toInstant())
+                && f.transactionTimeEnd.equals(INFINITY.toInstant())
+                && f.initiates == principals.getDid()));
     }
 }
