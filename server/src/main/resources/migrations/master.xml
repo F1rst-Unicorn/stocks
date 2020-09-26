@@ -29,4 +29,5 @@
     <include file="0001-schema.sql" relativeToChangelogFile="true"/>
     <include file="0002-temporal-data.xml" relativeToChangelogFile="true"/>
     <include file="0003-track-users-in-history.xml" relativeToChangelogFile="true"/>
+    <include file="0004-relax-initiates-constraints.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

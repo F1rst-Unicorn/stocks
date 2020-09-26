@@ -276,8 +276,8 @@ public class LocationHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
         assertTrue(dbData.isSuccess());
         assertTrue(dbData.success().anyMatch(f -> f.name.equals(newName)
-                && f.id == 1
-                && f.version == 1
+                && f.id == input.id
+                && f.version == input.version + 1
                 && f.validTimeEnd.equals(INFINITY.toInstant())
                 && f.transactionTimeEnd.equals(INFINITY.toInstant())
                 && f.initiates == principals.getDid()));
@@ -290,7 +290,7 @@ public class LocationHandlerTest extends DbTestCase {
         UserDevice youngDevice = new UserDevice(5, 0, nowAsInstant, INFINITY.toInstant(), nowAsInstant, INFINITY.toInstant(), "youngDevice", 1, 1);
         Principals principals = new Principals("Bob", youngDevice.name, 1, youngDevice.id);
         uut.setPrincipals(principals);
-        Location input = new Location(1, "Fridge", 0);
+        Location input = new Location(2, "Cupboard", 0);
         getDSLContext().insertInto(USER_DEVICE)
                 .columns(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.VALID_TIME_START, USER_DEVICE.VALID_TIME_END, USER_DEVICE.TRANSACTION_TIME_START, USER_DEVICE.TRANSACTION_TIME_END, USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.INITIATES)
                 .values(youngDevice.id, youngDevice.version, now, INFINITY, now, INFINITY, youngDevice.name, youngDevice.userId, youngDevice.initiates)
@@ -303,8 +303,8 @@ public class LocationHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
         assertTrue(dbData.isSuccess());
         assertTrue(dbData.success().anyMatch(f -> f.name.equals(input.name)
-                && f.id == 1
-                && f.version == 0
+                && f.id == input.id
+                && f.version == input.version
                 && !f.validTimeEnd.equals(INFINITY.toInstant())
                 && f.transactionTimeEnd.equals(INFINITY.toInstant())
                 && f.initiates == principals.getDid()));
