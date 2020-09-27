@@ -116,6 +116,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_outline_content_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
 
 </LinearLayout>

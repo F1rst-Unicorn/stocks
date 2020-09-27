@@ -22,7 +22,6 @@ package de.njsm.stocks.android.db.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -38,7 +37,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public abstract class Data implements Positionable {
 
     @ColumnInfo(name = "_id")
-    @PrimaryKey
     public int id;
 
     @Ignore

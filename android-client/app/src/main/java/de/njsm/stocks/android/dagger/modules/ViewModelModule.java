@@ -37,10 +37,11 @@ import de.njsm.stocks.android.frontend.device.UserDeviceViewModel;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.EmptyFoodViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
-import de.njsm.stocks.android.frontend.main.EventViewModel;
 import de.njsm.stocks.android.frontend.food.FoodToEatViewModel;
+import de.njsm.stocks.android.frontend.foodhistory.PlotViewModel;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
+import de.njsm.stocks.android.frontend.main.EventViewModel;
 import de.njsm.stocks.android.frontend.search.SearchViewModel;
 import de.njsm.stocks.android.frontend.settings.SettingsUpdaterViewModel;
 import de.njsm.stocks.android.frontend.shoppinglist.FoodToBuyViewModel;
@@ -53,6 +54,7 @@ import de.njsm.stocks.android.repo.EventRepository;
 import de.njsm.stocks.android.repo.FoodItemRepository;
 import de.njsm.stocks.android.repo.FoodRepository;
 import de.njsm.stocks.android.repo.LocationRepository;
+import de.njsm.stocks.android.repo.PlotRepository;
 import de.njsm.stocks.android.repo.RefreshRepository;
 import de.njsm.stocks.android.repo.UserDeviceRepository;
 import de.njsm.stocks.android.repo.UserRepository;
@@ -196,5 +198,12 @@ public class ViewModelModule {
     @ViewModelKey(de.njsm.stocks.android.frontend.locationhistory.EventViewModel.class)
     ViewModel provideLocationEventsViewModel(EventRepository repo) {
         return new de.njsm.stocks.android.frontend.locationhistory.EventViewModel(repo);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(PlotViewModel.class)
+    ViewModel providePlotViewModel(PlotRepository repo) {
+        return new PlotViewModel(repo);
     }
 }

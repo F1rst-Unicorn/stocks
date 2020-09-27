@@ -33,6 +33,7 @@ import de.njsm.stocks.android.db.dao.EventDao;
 import de.njsm.stocks.android.db.dao.FoodDao;
 import de.njsm.stocks.android.db.dao.FoodItemDao;
 import de.njsm.stocks.android.db.dao.LocationDao;
+import de.njsm.stocks.android.db.dao.PlotDao;
 import de.njsm.stocks.android.db.dao.SearchSuggestionDao;
 import de.njsm.stocks.android.db.dao.UpdateDao;
 import de.njsm.stocks.android.db.dao.UserDao;
@@ -93,5 +94,10 @@ public abstract class DbModule {
     @Provides
     static EventDao provideEventDao(StocksDatabase database) {
         return database.eventDao();
+    }
+
+    @Provides
+    static PlotDao providePlotDao(StocksDatabase database) {
+        return database.plotDao();
     }
 }

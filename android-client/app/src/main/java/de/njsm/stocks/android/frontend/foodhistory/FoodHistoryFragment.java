@@ -27,10 +27,20 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -52,14 +62,14 @@ public class FoodHistoryFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.template_swipe_list, container, false);
+        View result = inflater.inflate(R.layout.fragment_food_history, container, false);
 
         assert getArguments() != null;
         FoodHistoryFragmentArgs input = FoodHistoryFragmentArgs.fromBundle(getArguments());
 
-        result.findViewById(R.id.template_swipe_list_fab).setVisibility(View.GONE);
+        result.findViewById(R.id.fragment_food_history_fab).setVisibility(View.GONE);
 
-        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
+        RecyclerView list = result.findViewById(R.id.fragment_food_history_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
         EventViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(EventViewModel.class);
         viewModel.init(input.getFoodId());
@@ -71,8 +81,56 @@ public class FoodHistoryFragment extends BaseFragment {
         foodViewModel.initFood(input.getFoodId());
         foodViewModel.getFood().observe(getViewLifecycleOwner(), u -> requireActivity().setTitle(u == null ? "" : String.format(getString(R.string.title_food_activity), u.name)));
 
-        initialiseSwipeRefresh(result, viewModelFactory);
+        PlotViewModel plotViewModel = ViewModelProviders.of(this, viewModelFactory).get(PlotViewModel.class);
+        plotViewModel.init(input.getFoodId());
+        LineChart chart = result.findViewById(R.id.fragment_food_history_chart);
+        setupChart(chart);
+
+        plotViewModel.getHistory().observe(getViewLifecycleOwner(), l -> {
+            updateChart(chart, l);
+        });
+
+        initialiseSwipeRefresh(result, R.id.fragment_food_history_swipe, viewModelFactory);
         return result;
+    }
+
+    private void setupChart(LineChart chart) {
+        chart.getDescription().setText("");
+        chart.getLegend().setEnabled(false);
+        chart.getAxisRight().setEnabled(false);
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        chart.getXAxis().setValueFormatter(new ValueFormatter());
+        chart.setDrawBorders(false);
+        chart.setScaleXEnabled(true);
+        chart.setScaleYEnabled(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setHighlightPerDragEnabled(false);
+        chart.setHighlightPerTapEnabled(false);
+        chart.setHardwareAccelerationEnabled(true);
+        chart.getAxisRight().setDrawGridLines(false);
+        chart.getAxisLeft().setDrawGridLines(false);
+        chart.getAxisLeft().setAxisMinimum(0);
+        chart.getXAxis().setGranularity(86400f);
+        chart.setXAxisRenderer(new AxisRenderer(chart.getViewPortHandler(), chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT)));
+    }
+
+    private void updateChart(LineChart chart, List<Entry> l) {
+        LineDataSet dataSet = new LineDataSet(l, "");
+        dataSet.setDrawValues(false);
+        dataSet.setLineWidth(2.5f);
+        dataSet.setDrawCircleHole(false);
+        dataSet.setCircleColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, requireContext().getTheme()));
+        dataSet.setColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, requireContext().getTheme()));
+        LineData data = new LineData(dataSet);
+        data.setDrawValues(false);
+        chart.setData(data);
+        long minXx = (long) chart.getXAxis().getAxisMinimum();
+        minXx = minXx - (minXx % 86400L);
+        chart.getXAxis().setAxisMinimum(minXx);
+        long maxXx = (long) chart.getXAxis().getAxisMaximum();
+        maxXx = maxXx + (86400L - maxXx % 86400L);
+        chart.getXAxis().setAxisMaximum(maxXx);
+        chart.invalidate();
     }
 
     @Inject
