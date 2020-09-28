@@ -26,12 +26,9 @@ import com.github.mikephil.charting.data.Entry;
 
 import org.threeten.bp.ZoneId;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
 
@@ -54,53 +51,21 @@ public class PlotRepository {
         LOG.d("Getting food plot of " + foodId);
 
         MutableLiveData<List<Entry>> result = new MutableLiveData<>();
-        plotDao.getFoodPlot(foodId).observeForever(l -> {
-            Iterator<PlotPoint> iterator = l.iterator();
-            PlotPrefixSumComputer spliterator = new PlotPrefixSumComputer(iterator);
-            result.postValue(StreamSupport.stream(spliterator, false).collect(Collectors.toList()));
-        });
+        plotDao.getFoodPlot(foodId).observeForever(l ->
+                result.postValue(l.stream().map(new PlotPrefixSumComputer()).collect(Collectors.toList())));
 
         return result;
     }
 
-    private static class PlotPrefixSumComputer implements Spliterator<Entry> {
-
-        private Iterator<PlotPoint> iterator;
+    private static class PlotPrefixSumComputer implements Function<PlotPoint, Entry> {
 
         private int prefixSum;
 
-        private PlotPrefixSumComputer(Iterator<PlotPoint> iterator) {
-            this.iterator = iterator;
-        }
-
         @Override
-        public boolean tryAdvance(Consumer<? super Entry> action) {
-            if (iterator.hasNext()) {
-                PlotPoint point = iterator.next();
-                prefixSum += point.getValue();
-                float x = point.getTime().getEpochSecond() + ZoneId.systemDefault().getRules().getOffset(point.getTime()).getTotalSeconds();
-                Entry result = new Entry(x, prefixSum);
-                action.accept(result);
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public Spliterator<Entry> trySplit() {
-            return null;
-        }
-
-        @Override
-        public long estimateSize() {
-            return iterator.hasNext() ? Long.MAX_VALUE : 0;
-        }
-
-        @Override
-        public int characteristics() {
-            return ORDERED | NONNULL;
+        public Entry apply(PlotPoint point) {
+            prefixSum += point.getValue();
+            float x = point.getTime().getEpochSecond() + ZoneId.systemDefault().getRules().getOffset(point.getTime()).getTotalSeconds();
+            return new Entry(x, prefixSum);
         }
     }
-
 }

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.foodhistory;
+package de.njsm.stocks.android.frontend.foodcharts;
 
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.utils.Transformer;
@@ -50,9 +50,10 @@ public class AxisRenderer extends com.github.mikephil.charting.renderer.XAxisRen
         if (mAxis.isGranularityEnabled())
             interval = mAxis.getGranularity();
 
-        // Normalize interval
-        double intervalMagnitude = Utils.roundToNextSignificant(Math.pow(10, (int) Math.log10(interval)));
-        int intervalSigDigit = (int) (interval / intervalMagnitude);
+        double originalInterval = interval;
+        while (range / interval > 7) {
+            interval += originalInterval;
+        }
 
         int n = mAxis.isCenterAxisLabelsEnabled() ? 1 : 0;
 
@@ -79,7 +80,7 @@ public class AxisRenderer extends com.github.mikephil.charting.renderer.XAxisRen
             // no forced count
         } else {
 
-            double first = min + (interval - (min % interval));
+            double first = interval == 0.0 ? 0.0 : Math.ceil(min / interval) * interval;
             if(mAxis.isCenterAxisLabelsEnabled()) {
                 first -= interval;
             }
@@ -94,18 +95,6 @@ public class AxisRenderer extends com.github.mikephil.charting.renderer.XAxisRen
                     ++n;
                 }
             }
-
-            int nn = n;
-            int ii = 1;
-            while (nn > 8) {
-                nn = n;
-                nn /= ii;
-                ii++;
-            }
-
-            n /= ii;
-            interval *= ii;
-            n++;
 
             mAxis.mEntryCount = n;
 

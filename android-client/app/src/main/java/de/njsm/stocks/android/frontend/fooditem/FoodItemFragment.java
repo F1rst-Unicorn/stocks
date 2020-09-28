@@ -194,8 +194,18 @@ public class FoodItemFragment extends BaseFragment {
             case R.id.fragment_food_item_options_events:
                 goToEvents();
                 break;
+            case R.id.fragment_food_item_options_charts:
+                goToCharts();
+                break;
         }
         return true;
+    }
+
+    private void goToCharts() {
+        FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentFoodChart args =
+                FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentFoodChart(input.getFoodId());
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                .navigate(args);
     }
 
     private void goToEvents() {

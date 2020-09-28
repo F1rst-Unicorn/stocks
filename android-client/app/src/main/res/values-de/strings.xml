@@ -55,6 +55,9 @@
     <string name="title_recent_activity">Aktuelle Änderungen</string>
     <string name="title_show_history">Zeige Änderungen</string>
     <string name="title_food_activity">Änderungen an %s</string>
+    <string name="title_charts">Statistiken</string>
+    <string name="title_food_count_chart">Anzahl über Zeit</string>
+    <string name="title_food_histogram">Anzahl über Zeit</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>

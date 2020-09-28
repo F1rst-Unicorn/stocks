@@ -17,34 +17,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.foodhistory;
+package de.njsm.stocks.android.frontend.foodcharts;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
+import com.github.mikephil.charting.components.AxisBase;
 
-import com.github.mikephil.charting.data.Entry;
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZoneId;
 
-import java.util.List;
+import de.njsm.stocks.android.util.Config;
 
-import de.njsm.stocks.android.repo.PlotRepository;
+public class ValueFormatter extends com.github.mikephil.charting.formatter.ValueFormatter {
 
-public class PlotViewModel extends ViewModel {
-
-    private PlotRepository plotViewModel;
-
-    private LiveData<List<Entry>> data;
-
-    public PlotViewModel(PlotRepository plotViewModel) {
-        this.plotViewModel = plotViewModel;
-    }
-
-    public void init(int id) {
-        if (data == null) {
-            data = plotViewModel.getFoodPlot(id);
-        }
-    }
-
-    public LiveData<List<Entry>> getHistory() {
-        return data;
+    @Override
+    public String getAxisLabel(float value, AxisBase axis) {
+        Instant i = Instant.ofEpochSecond((long) value);
+        i = i.minusSeconds(ZoneId.systemDefault().getRules().getOffset(i).getTotalSeconds());
+        return Config.PRETTY_DATE_FORMAT.format(i);
     }
 }

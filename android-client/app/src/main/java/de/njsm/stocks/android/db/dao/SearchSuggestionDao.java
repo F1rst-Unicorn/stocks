@@ -68,7 +68,7 @@ public abstract class SearchSuggestionDao {
                     "and f.transaction_time_end = :infinity " +
                     "order by length(" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") desc " +
                     "limit 6" +
-                ") union select * from (" +
+                ") union all select * from (" +
                     "select 0 as " + BaseColumns._ID + ", " +
                     "s.term as " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", " +
                     "s.term as " + SearchManager.SUGGEST_COLUMN_QUERY + ", " +
