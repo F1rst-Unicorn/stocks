@@ -22,6 +22,7 @@ package de.njsm.stocks.android.frontend.foodcharts;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 
 import java.util.List;
@@ -34,6 +35,8 @@ public class PlotViewModel extends ViewModel {
 
     private LiveData<List<Entry>> data;
 
+    private LiveData<List<BarEntry>> histogramData;
+
     public PlotViewModel(PlotRepository plotViewModel) {
         this.plotViewModel = plotViewModel;
     }
@@ -41,10 +44,15 @@ public class PlotViewModel extends ViewModel {
     public void init(int id) {
         if (data == null) {
             data = plotViewModel.getFoodPlot(id);
+            histogramData = plotViewModel.getFoodHistogram(id);
         }
     }
 
     public LiveData<List<Entry>> getHistory() {
         return data;
+    }
+
+    public LiveData<List<BarEntry>> getHistogramData() {
+        return histogramData;
     }
 }

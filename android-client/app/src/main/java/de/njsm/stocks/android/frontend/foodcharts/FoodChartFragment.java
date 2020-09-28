@@ -31,9 +31,13 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -71,12 +75,46 @@ public class FoodChartFragment extends BaseFragment {
         setupChart(chart);
         plotViewModel.getHistory().observe(getViewLifecycleOwner(), l -> updateChart(chart, l));
 
+        BarChart histogram = result.findViewById(R.id.fragment_food_charts_histogram);
+        setupHistogram(histogram);
+        plotViewModel.getHistogramData().observe(getViewLifecycleOwner(), l -> updateHistogram(histogram, l));
+
         initialiseSwipeRefresh(result, R.id.fragment_food_charts_swipe, viewModelFactory);
         return result;
     }
 
+    private void updateHistogram(BarChart histogram, List<BarEntry> l) {
+        BarDataSet dataSet = new BarDataSet(l, "");
+        dataSet.setDrawValues(false);
+        dataSet.setColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, requireContext().getTheme()));
+        BarData data = new BarData(dataSet);
+        histogram.setData(data);
+        float x = (histogram.getWidth() - histogram.getDescription().getXOffset()) / 2;
+        float y = histogram.getViewPortHandler().offsetTop();
+        histogram.getDescription().setPosition(x, y);
+        histogram.invalidate();
+    }
+
+    private void setupHistogram(BarChart histogram) {
+        histogram.getDescription().setEnabled(false);
+        histogram.getLegend().setEnabled(false);
+        histogram.getXAxis().setDrawLabels(true);
+        histogram.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        histogram.getXAxis().setDrawGridLines(false);
+        histogram.getXAxis().setGranularity(1);
+        histogram.getAxisRight().setEnabled(false);
+        histogram.getAxisLeft().setGranularity(1);
+        histogram.getAxisLeft().setAxisMinimum(0);
+        histogram.getAxisLeft().setGridLineWidth(0.5f);
+        histogram.setScaleXEnabled(true);
+        histogram.setScaleYEnabled(false);
+        histogram.setDoubleTapToZoomEnabled(false);
+        histogram.setHighlightPerDragEnabled(false);
+        histogram.setHighlightPerTapEnabled(false);
+    }
+
     private void setupChart(LineChart chart) {
-        chart.getDescription().setText(getString(R.string.title_food_count_chart));
+        chart.getDescription().setEnabled(false);
         chart.getLegend().setEnabled(false);
         chart.getAxisRight().setEnabled(false);
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -92,6 +130,7 @@ public class FoodChartFragment extends BaseFragment {
         chart.getAxisLeft().setDrawGridLines(false);
         chart.getAxisLeft().setAxisMinimum(0);
         chart.getXAxis().setGranularity(86400f);
+        chart.getXAxis().setGridLineWidth(0.5f);
         chart.setXAxisRenderer(new AxisRenderer(chart.getViewPortHandler(), chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT)));
     }
 

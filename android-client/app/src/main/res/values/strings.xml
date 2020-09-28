@@ -57,7 +57,7 @@
     <string name="title_food_activity">Activity on %s</string>
     <string name="title_charts">Statistics</string>
     <string name="title_food_count_chart">Amount over time</string>
-    <string name="title_food_histogram">Amount over time</string>
+    <string name="title_food_histogram">How long before expiration were how many items consumed?</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>

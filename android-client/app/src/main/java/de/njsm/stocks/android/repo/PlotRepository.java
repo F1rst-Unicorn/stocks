@@ -22,6 +22,7 @@ package de.njsm.stocks.android.repo;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 
 import org.threeten.bp.ZoneId;
@@ -45,6 +46,11 @@ public class PlotRepository {
     @Inject
     public PlotRepository(PlotDao plotDao) {
         this.plotDao = plotDao;
+    }
+
+    public LiveData<List<BarEntry>> getFoodHistogram(int foodId) {
+        LOG.d("Getting food histogram of " + foodId);
+        return plotDao.getExpirationHistogram(foodId);
     }
 
     public LiveData<List<Entry>> getFoodPlot(int foodId) {

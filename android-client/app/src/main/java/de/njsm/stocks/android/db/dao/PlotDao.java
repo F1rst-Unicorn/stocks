@@ -20,13 +20,18 @@
 package de.njsm.stocks.android.db.dao;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 import androidx.room.Dao;
 import androidx.room.Query;
+
+import com.github.mikephil.charting.data.BarEntry;
 
 import org.threeten.bp.Instant;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import de.njsm.stocks.android.db.views.BarEntryView;
 import de.njsm.stocks.android.db.views.PlotPoint;
 
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
@@ -36,6 +41,11 @@ public abstract class PlotDao {
 
     public LiveData<List<PlotPoint>> getFoodPlot(int foodId) {
         return getFoodPlot(foodId, DATABASE_INFINITY);
+    }
+
+    public LiveData<List<BarEntry>> getExpirationHistogram(int foodId) {
+        return Transformations.map(getExpirationHistogram(foodId, DATABASE_INFINITY), l ->
+                l.stream().map(BarEntryView::map).collect(Collectors.toList()));
     }
 
     @Query("select valid_time_start as time, 1 as value " +
@@ -52,4 +62,13 @@ public abstract class PlotDao {
             "and version = (select max(version) from fooditem i2 where i2._id = i._id) " +
             "order by time")
     abstract LiveData<List<PlotPoint>> getFoodPlot(int foodId, Instant infinity);
+
+    @Query("select round(julianday(eat_by) - julianday(valid_time_end)) as x, count(*) as y " +
+            "from fooditem " +
+            "where of_type = :foodId " +
+            "and valid_time_end != :infinity " +
+            "and transaction_time_end = :infinity " +
+            "group by x " +
+            "order by x")
+    abstract LiveData<List<BarEntryView>> getExpirationHistogram(int foodId, Instant infinity);
 }

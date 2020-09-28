@@ -39,6 +39,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="@string/title_food_count_chart"
+                android:paddingTop="4dp"
+                android:paddingBottom="16dp"/>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/fragment_food_charts_histogram"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="@string/title_food_histogram"
+                android:paddingTop="4dp"
+                android:paddingBottom="16dp"/>
+
         </LinearLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
