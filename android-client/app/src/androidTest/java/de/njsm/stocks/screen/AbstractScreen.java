@@ -25,6 +25,10 @@ import androidx.test.espresso.NoMatchingViewException;
 
 import java.util.function.Consumer;
 
+import de.njsm.stocks.SystemTestSuite;
+
+import static org.junit.Assert.fail;
+
 public class AbstractScreen {
 
     protected void sleep(long millis) {
@@ -36,8 +40,12 @@ public class AbstractScreen {
 
     protected void performFlakyAction(Consumer<Void> action) {
         boolean done = false;
+        int counter = 0;
         while (!done) {
             try {
+                if (counter++ > SystemTestSuite.LOOP_BREAKER) {
+                    fail("LOOP BREAKER triggered");
+                }
                 action.accept(null);
                 done = true;
             } catch (NoMatchingViewException e) {}

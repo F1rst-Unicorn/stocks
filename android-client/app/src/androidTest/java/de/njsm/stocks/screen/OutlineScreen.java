@@ -42,9 +42,11 @@ import static org.hamcrest.Matchers.allOf;
 public class OutlineScreen extends AbstractScreen {
 
     public SearchScreen search(String searchText) {
-        onView(withId(R.id.fragment_outline_options_search)).perform(click());
-        onView(withId(R.id.search_src_text)).perform(replaceText(searchText));
-        onView(withId(R.id.search_go_btn)).perform(click());
+        performFlakyAction(__ -> {
+            onView(withId(R.id.fragment_outline_options_search)).perform(click());
+            onView(withId(R.id.search_src_text)).perform(replaceText(searchText));
+            onView(withId(R.id.search_go_btn)).perform(click());
+        });
 
         return new SearchScreen();
     }

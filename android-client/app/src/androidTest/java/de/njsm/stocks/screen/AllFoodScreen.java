@@ -21,6 +21,7 @@ package de.njsm.stocks.screen;
 
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
+
 import de.njsm.stocks.R;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -31,8 +32,8 @@ public class AllFoodScreen extends AbstractListPresentingScreen {
     public FoodScreen click(int itemIndex) {
         checkIndex(itemIndex);
 
-        onView(withId(R.id.template_swipe_list_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition(itemIndex, ViewActions.click()));
+        performFlakyAction(__ -> onView(withId(R.id.template_swipe_list_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(itemIndex, ViewActions.click())));
 
         return new FoodScreen();
     }
