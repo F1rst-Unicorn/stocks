@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [3.8.0.0]
+
+### Added
+
+* STOCKS-104: Show neat diagrams on food items
+
 ## [3.7.0.0]
 
 ### Added
