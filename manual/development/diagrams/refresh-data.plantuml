@@ -1,0 +1,67 @@
+@startuml
+
+participant "client program"
+database "client database"
+participant nginx
+participant tomcat
+database postgresql
+
+"client program" -> "client database" : get local update timestamps
+activate "client database"
+
+"client database" -> "client program"
+deactivate "client database"
+
+"client program" -> nginx : GET /update
+activate nginx
+
+nginx -> tomcat : GET /update
+activate tomcat
+
+tomcat -> postgresql : Get server update timestamps
+activate postgresql
+
+postgresql -> tomcat
+deactivate postgresql
+
+tomcat -> nginx : 200 OK
+deactivate tomcat
+
+nginx -> "client program" : 200 OK
+deactivate nginx
+
+alt server data more recent
+
+"client program" -> nginx : GET /<data>
+activate nginx
+
+nginx -> tomcat : GET /<data>
+activate tomcat
+
+tomcat -> postgresql : Get requested data table
+activate postgresql
+
+postgresql -> tomcat
+deactivate postgresql
+
+tomcat -> nginx : 200 OK
+deactivate tomcat
+
+nginx -> "client program" : 200 OK
+deactivate nginx
+
+"client program" -> "client database" : Write new data to database
+activate "client database"
+
+"client database" -> "client program"
+deactivate "client database"
+
+end
+
+"client program" -> "client database" : Write server timestamps
+activate "client database"
+
+"client database" -> "client program"
+deactivate "client database"
+
+@enduml

@@ -2,7 +2,7 @@
 
 ## Data Model
 
-![Data Model](diagrams/ER-diagram.png)
+![Data Model](diagrams/data-model.png)
 
 ### Date Timezones
 
@@ -27,14 +27,14 @@ described.
 
 #### Refreshing the Client Database
 
-![Refreshing](diagrams/Refreshment.png)
+![Refreshing](diagrams/refresh-data.png)
 
 #### New Users' Registration
 
 New users are always added by giving a ticket from an existing user. The details
 are outlined in the diagram.
 
-![Registration](diagrams/new-user-registration.png)
+![Registration](diagrams/device-registration.png)
 
 ##### Principal Names
 

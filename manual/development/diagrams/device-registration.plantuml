@@ -1,0 +1,99 @@
+@startuml
+
+participant "new client program"
+actor "existing user"
+participant nginx
+participant "tomcat (registration)"
+participant tomcat
+database postgresql
+database ca
+
+"existing user" -> nginx : PUT /device
+activate nginx
+
+nginx -> tomcat : PUT /device
+activate tomcat
+
+tomcat -> postgresql : Create new device
+activate postgresql
+
+postgresql -> tomcat
+deactivate postgresql
+
+tomcat -> postgresql : Create ticket for device
+activate postgresql
+
+postgresql -> tomcat
+deactivate postgresql
+
+tomcat -> nginx : Ticket
+deactivate tomcat
+
+nginx -> "existing user" : Ticket
+deactivate nginx
+
+"existing user" -> "new client program" : Ticket via text / QR code
+note right of "new client program"
+6 lines of text containing:
+- new user name
+- new device name
+- new user id
+- new device id
+- CA fingerprint
+- ticket
+end note
+
+alt ticket and principals valid
+
+"new client program" -> nginx : POST /uac/newuser
+note right of "new client program"
+- CSR with CN containing principals
+- ticket as got from other user
+- new device id as got from other user
+end note
+activate nginx
+
+nginx -> "tomcat (registration)" : PUT /uac/newuser
+activate "tomcat (registration)"
+
+"tomcat (registration)" -> postgresql : Get device and ticket information
+activate postgresql
+
+postgresql -> "tomcat (registration)"
+deactivate postgresql
+
+"tomcat (registration)" -> ca : Sign new device's certificate
+activate ca
+
+ca -> "tomcat (registration)" : Return signed certificate
+deactivate ca
+
+"tomcat (registration)" -> nginx : 200 OK (with certificate)
+deactivate "tomcat (registration)"
+
+nginx -> "new client program" : 200 OK (with certificate)
+deactivate nginx
+
+else ticket or principals not valid
+
+"new client program" -> nginx : POST /uac/newuser
+activate nginx
+
+nginx -> "tomcat (registration)" : PUT /uac/newuser
+activate "tomcat (registration)"
+
+"tomcat (registration)" -> postgresql : Get device and ticket information
+activate postgresql
+
+postgresql -> "tomcat (registration)"
+deactivate postgresql
+
+"tomcat (registration)" -> nginx : Access denied
+deactivate "tomcat (registration)"
+
+nginx -> "new client program" : Access denied
+deactivate nginx
+
+end
+
+@enduml

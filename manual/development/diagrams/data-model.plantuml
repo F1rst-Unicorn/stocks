@@ -1,0 +1,120 @@
+@startuml
+
+skinparam classFontSize 24
+skinparam packageFontSize 24
+skinparam arrowFontSize 20
+skinparam classAttributeFontSize 20
+skinparam classBackgroundColor Gold
+skinparam packageBackgroundColor PaleGreen
+
+class Location {
+    {static} ID: int
+    version: int
+    valid_time_start: OffsetDateTime
+    valid_time_end: OffsetDateTime
+    transaction_time_start: OffsetDateTime
+    transaction_time_end: OffsetDateTime
+    name: String
+}
+
+class User {
+    {static} ID: int
+    version: int
+    valid_time_start: OffsetDateTime
+    valid_time_end: OffsetDateTime
+    transaction_time_start: OffsetDateTime
+    transaction_time_end: OffsetDateTime
+    name: String
+}
+
+class User_device {
+    {static} ID: int
+    version: int
+    valid_time_start: OffsetDateTime
+    valid_time_end: OffsetDateTime
+    transaction_time_start: OffsetDateTime
+    transaction_time_end: OffsetDateTime
+    name: String
+}
+
+class Food {
+    {static} ID: int
+    version: int
+    valid_time_start: OffsetDateTime
+    valid_time_end: OffsetDateTime
+    transaction_time_start: OffsetDateTime
+    transaction_time_end: OffsetDateTime
+    name: String
+    to_buy: boolean
+    expiration_offset: Period
+}
+
+class Food_item {
+    {static} ID: int
+    version: int
+    valid_time_start: OffsetDateTime
+    valid_time_end: OffsetDateTime
+    transaction_time_start: OffsetDateTime
+    transaction_time_end: OffsetDateTime
+    eat_by: OffsetDateTime
+}
+
+class EAN_number {
+    {static} ID: int
+    version: int
+    valid_time_start: OffsetDateTime
+    valid_time_end: OffsetDateTime
+    transaction_time_start: OffsetDateTime
+    transaction_time_end: OffsetDateTime
+    number: String
+}
+
+class Updates {
+    {static} ID: int
+    table_name: String
+    last_update: OffsetDateTime
+}
+
+package Server {
+    class Ticket {
+        {static} ID: int
+        ticket: String
+        created_on: OffsetDateTime
+    }
+}
+
+package Client {
+    class Config {
+        {static} key: String
+        value: String
+    }
+}
+
+package Android {
+    class SearchSuggestion {
+        {static} term: String
+        last_queried: OffsetDateTime
+    }
+}
+
+Location "N" --> "1" User_device : initiates
+Food "N" --> "1" User_device : initiates
+User "N" --> "1" User_device : initiates
+User_device "N" --> "1" User_device : initiates
+Food_item "N" --> "1" User_device : initiates
+EAN_number "N" --> "1" User_device : initiates
+
+User_device "N" --> "1" User : belongs_to
+
+EAN_number "N" --> "1" Food : identifies
+
+Food "N" --> "1" Location : location
+
+Food_item "N" --> "1" Location : stored_in
+Food_item "N" --> "1" Food : of_type
+Food_item "N" --> "1" User : buys
+Food_item "N" --> "1" User_device : registers
+
+Ticket "1" --> "1" User_device : belongs_device
+
+@enduml

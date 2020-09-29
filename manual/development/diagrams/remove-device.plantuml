@@ -1,0 +1,45 @@
+@startuml
+
+participant "client program"
+participant nginx
+participant tomcat
+database postgresql
+database ca
+
+"client program" -> nginx : DELETE /v2/device
+activate nginx
+
+nginx -> tomcat : DELETE /v2/device
+activate tomcat
+
+tomcat -> postgresql : Remove device
+activate postgresql
+
+postgresql -> tomcat
+deactivate postgresql
+
+tomcat -> ca : Revoke device certificate
+activate ca
+
+ca -> tomcat
+deactivate ca
+
+tomcat -> ca : Generate new CRL
+activate ca
+
+ca -> tomcat
+deactivate ca
+
+tomcat -> nginx : Reload configuration
+activate nginx
+
+nginx -> tomcat
+deactivate nginx
+
+tomcat -> nginx : 200 OK
+deactivate tomcat
+
+nginx -> "client program" : 200 OK
+deactivate nginx
+
+@enduml

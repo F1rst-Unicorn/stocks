@@ -1,0 +1,26 @@
+@startuml
+
+participant "client program"
+participant nginx
+participant tomcat
+database postgresql
+
+"client program" -> nginx : PUT /<data>
+activate nginx
+
+nginx -> tomcat : PUT /<data>
+activate tomcat
+
+tomcat -> postgresql : Create data in database
+activate postgresql
+
+postgresql -> tomcat
+deactivate postgresql
+
+tomcat -> nginx : 200 OK
+deactivate tomcat
+
+nginx -> "client program" : 200 OK
+deactivate nginx
+
+@enduml
