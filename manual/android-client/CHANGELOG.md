@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [3.8.0.1]
+
+### Fixed
+
+* STOCKS-104: Only show whole numbers on food item count axis
+
 ## [3.8.0.0]
 
 ### Added

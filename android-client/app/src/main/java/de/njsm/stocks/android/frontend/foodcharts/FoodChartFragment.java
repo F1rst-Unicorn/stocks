@@ -129,6 +129,7 @@ public class FoodChartFragment extends BaseFragment {
         chart.getAxisRight().setDrawGridLines(false);
         chart.getAxisLeft().setDrawGridLines(false);
         chart.getAxisLeft().setAxisMinimum(0);
+        chart.getAxisLeft().setGranularity(1);
         chart.getXAxis().setGranularity(86400f);
         chart.getXAxis().setGridLineWidth(0.5f);
         chart.setXAxisRenderer(new AxisRenderer(chart.getViewPortHandler(), chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT)));
