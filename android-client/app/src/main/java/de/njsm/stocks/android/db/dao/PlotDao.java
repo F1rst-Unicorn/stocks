@@ -63,7 +63,7 @@ public abstract class PlotDao {
             "order by time")
     abstract LiveData<List<PlotPoint>> getFoodPlot(int foodId, Instant infinity);
 
-    @Query("select round(julianday(eat_by) - julianday(valid_time_end)) as x, count(*) as y " +
+    @Query("select round(julianday(eat_by) - julianday(valid_time_end) + 0.5) as x, count(*) as y " +
             "from fooditem " +
             "where of_type = :foodId " +
             "and valid_time_end != :infinity " +
