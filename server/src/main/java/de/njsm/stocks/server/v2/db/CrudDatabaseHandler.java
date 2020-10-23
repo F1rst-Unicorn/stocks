@@ -228,6 +228,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                     .where(condition
                             .and(getValidTimeStartField().greaterThan(now))
                             .and(getTransactionTimeEndField().eq(INFINITY))
+                            .and(getTransactionTimeStartField().lt(now))
                     )
                     .execute();
 
