@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixed
+
+* Fix reset of selected date while adding food items
+
+* STOCKS-126: Fix histogram plot which counted too many items
+
 ## [3.8.0.1]
 
 ### Fixed

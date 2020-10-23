@@ -63,11 +63,12 @@ public abstract class PlotDao {
             "order by time")
     abstract LiveData<List<PlotPoint>> getFoodPlot(int foodId, Instant infinity);
 
-    @Query("select round(julianday(eat_by) - julianday(valid_time_end) + 0.5) as x, count(*) as y " +
-            "from fooditem " +
-            "where of_type = :foodId " +
-            "and valid_time_end != :infinity " +
-            "and transaction_time_end = :infinity " +
+    @Query("select round(julianday(i.eat_by) - julianday(i.valid_time_end) + 0.5) as x, count(*) as y " +
+            "from fooditem i " +
+            "where i.of_type = :foodId " +
+            "and i.valid_time_end != :infinity " +
+            "and i.transaction_time_end = :infinity " +
+            "and i.version = (select max(i2.version) from fooditem i2 where i2._id = i._id) " +
             "group by x " +
             "order by x")
     abstract LiveData<List<BarEntryView>> getExpirationHistogram(int foodId, Instant infinity);

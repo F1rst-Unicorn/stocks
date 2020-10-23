@@ -149,7 +149,7 @@ public class AddItemFragment extends BaseFragment {
             if (i != null) {
                 LocalDate date = LocalDate.from(i.atZone(ZoneId.systemDefault()));
                 initialiseDatePicker(date);
-                latestExpiration.removeObservers(this);
+                latestExpiration.removeObservers(getViewLifecycleOwner());
             }
         });
     }
