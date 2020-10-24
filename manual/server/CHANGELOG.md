@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* STOCKS-125: Fix SQL query for updates on future rows. This has had no impact
+  on data validity.
+
 ## [5.2.0.1]
 
 ### Fixed
