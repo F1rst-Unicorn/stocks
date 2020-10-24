@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.8.0.2]
+
 ### Fixed
 
 * Fix reset of selected date while adding food items
