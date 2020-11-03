@@ -1,16 +1,5 @@
 @startuml
 
-class Location {
-    {static} ID: int
-    version: int
-    valid_time_start: OffsetDateTime
-    valid_time_end: OffsetDateTime
-    transaction_time_start: OffsetDateTime
-    transaction_time_end: OffsetDateTime
-    name: String
-    description: String
-}
-
 class User {
     {static} ID: int
     version: int
@@ -31,37 +20,107 @@ class User_device {
     name: String
 }
 
-class Food {
-    {static} ID: int
-    version: int
-    valid_time_start: OffsetDateTime
-    valid_time_end: OffsetDateTime
-    transaction_time_start: OffsetDateTime
-    transaction_time_end: OffsetDateTime
-    name: String
-    to_buy: boolean
-    expiration_offset: Period
-    description: String
+package Food <<Frame>> {
+
+    class Location {
+        {static} ID: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        name: String
+        description: String
+    }
+
+    class Food {
+        {static} ID: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        name: String
+        to_buy: boolean
+        expiration_offset: Period
+        description: String
+    }
+
+    class Food_item {
+        {static} ID: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        eat_by: OffsetDateTime
+    }
+
+    class EAN_number {
+        {static} ID: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        number: String
+    }
 }
 
-class Food_item {
-    {static} ID: int
-    version: int
-    valid_time_start: OffsetDateTime
-    valid_time_end: OffsetDateTime
-    transaction_time_start: OffsetDateTime
-    transaction_time_end: OffsetDateTime
-    eat_by: OffsetDateTime
-}
+package Recipes <<Frame>> {
 
-class EAN_number {
-    {static} ID: int
-    version: int
-    valid_time_start: OffsetDateTime
-    valid_time_end: OffsetDateTime
-    transaction_time_start: OffsetDateTime
-    transaction_time_end: OffsetDateTime
-    number: String
+    class Recipe {
+        {static} ID: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        name: String
+        instructions: String
+        duration: Duration
+    }
+
+    class Recipe_ingredient {
+        {static} ID: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        amount: int
+    }
+
+    class Recipe_product {
+        {static} ID: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        amount: int
+    }
+
+    class Scaled_unit {
+        {static} ID: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        scale: BigDecimal
+    }
+
+    class Unit {
+        {static} ID: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        name: String
+        abbreviation: String
+    }
 }
 
 class Updates {
@@ -70,7 +129,7 @@ class Updates {
     last_update: OffsetDateTime
 }
 
-package Server {
+package "Only Server" {
     class Ticket {
         {static} ID: int
         ticket: String
@@ -78,38 +137,54 @@ package Server {
     }
 }
 
-package Client {
+package "Only Client" {
     class Config {
         {static} key: String
         value: String
     }
 }
 
-package Android {
+package "Only Android" {
     class SearchSuggestion {
         {static} term: String
         last_queried: OffsetDateTime
     }
 }
 
-Location "N" --> "1" User_device : initiates
-Food "N" --> "1" User_device : initiates
-User "N" --> "1" User_device : initiates
-User_device "N" --> "1" User_device : initiates
-Food_item "N" --> "1" User_device : initiates
-EAN_number "N" --> "1" User_device : initiates
+Location --> User_device : initiates
+Food --> User_device : initiates
+User --> User_device : initiates
+User_device --> User_device : initiates
+Food_item --> User_device : initiates
+EAN_number --> User_device : initiates
+Recipe --> User_device : initiates
+Recipe_ingredient --> User_device : initiates
+Recipe_product --> User_device : initiates
+Unit --> User_device : initiates
+Scaled_unit --> User_device : initiates
 
-User_device "N" --> "1" User : belongs_to
+User_device --> User : belongs_to
 
-EAN_number "N" --> "1" Food : identifies
+EAN_number --> Food : identifies
 
-Food "N" --> "1" Location : location
+Food --> Location : location?
+Food --> Scaled_unit : store_unit
 
-Food_item "N" --> "1" Location : stored_in
-Food_item "N" --> "1" Food : of_type
-Food_item "N" --> "1" User : buys
-Food_item "N" --> "1" User_device : registers
+Food_item --> Location : stored_in
+Food_item --> Food : of_type
+Food_item --> User : buys
+Food_item --> User_device : registers
 
-Ticket "1" --> "1" User_device : belongs_device
+Recipe_ingredient --> Recipe : recipe
+Recipe_ingredient --> Food : ingredient
+Recipe_ingredient --> Scaled_unit : unit
+
+Recipe_product --> Recipe : recipe
+Recipe_product --> Food : product
+Recipe_product --> Scaled_unit : unit
+
+Scaled_unit --> Unit : unit
+
+Ticket --> User_device : belongs_device
 
 @enduml
