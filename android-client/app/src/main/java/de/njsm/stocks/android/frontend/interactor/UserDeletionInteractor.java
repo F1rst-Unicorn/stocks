@@ -28,13 +28,13 @@ import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-public class UserDeletionInteractor extends DeletionInteractor<User> {
+public class UserDeletionInteractor extends SnackbarDeletionInteractor<User> {
 
     public UserDeletionInteractor(BaseFragment owner,
                                   View snackbarParent,
                                   Consumer<User> deletionCancler,
                                   Function<User, LiveData<StatusCode>> deleter) {
-        super(owner, snackbarParent, deletionCancler, deleter);
+        super(owner, deleter, deletionCancler, snackbarParent);
     }
 
     @Override

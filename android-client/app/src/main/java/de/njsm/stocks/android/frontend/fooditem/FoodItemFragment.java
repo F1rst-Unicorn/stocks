@@ -105,8 +105,7 @@ public class FoodItemFragment extends BaseFragment {
         list.setAdapter(adapter);
 
         FoodItemDeletionInteractor interactor = new FoodItemDeletionInteractor(
-                this, result,
-                i -> adapter.notifyDataSetChanged(),
+                this,
                 i -> viewModel.deleteItem(i),
                 i -> viewModel.getItem(i));
         addSwipeToDelete(list, viewModel.getFoodItems(), R.drawable.ic_local_dining_white_24dp, interactor::initiateDeletion);

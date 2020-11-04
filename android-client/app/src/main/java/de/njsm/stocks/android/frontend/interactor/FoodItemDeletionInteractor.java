@@ -19,10 +19,9 @@
 
 package de.njsm.stocks.android.frontend.interactor;
 
-import android.view.View;
 import androidx.arch.core.util.Function;
-import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
+
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.frontend.BaseFragment;
@@ -31,20 +30,13 @@ import de.njsm.stocks.android.util.Config;
 
 public class FoodItemDeletionInteractor extends DeletionInteractor<FoodItemView> {
 
-    private Function<Integer, LiveData<FoodItemView>> updater;
+    private final Function<Integer, LiveData<FoodItemView>> updater;
 
     public FoodItemDeletionInteractor(BaseFragment owner,
-                                      View snackbarParent,
-                                      Consumer<FoodItemView> deletionCancler,
                                       Function<FoodItemView, LiveData<StatusCode>> deleter,
                                       Function<Integer, LiveData<FoodItemView>> updater) {
-        super(owner, snackbarParent, deletionCancler, deleter);
+        super(owner, deleter);
         this.updater = updater;
-    }
-
-    @Override
-    protected int getSnackbarMessageId() {
-        return R.string.dialog_food_item_was_deleted;
     }
 
     @Override

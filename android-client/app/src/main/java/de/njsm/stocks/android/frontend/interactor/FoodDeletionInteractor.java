@@ -28,11 +28,11 @@ import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-public class FoodDeletionInteractor extends DeletionInteractor<Food> {
+public class FoodDeletionInteractor extends SnackbarDeletionInteractor<Food> {
 
-    private Function<Integer, LiveData<Food>> updater;
+    private final Function<Integer, LiveData<Food>> updater;
 
-    private int snackBarMessageId;
+    private final int snackBarMessageId;
 
     public FoodDeletionInteractor(BaseFragment owner,
                                   View snackbarParent,
@@ -48,7 +48,7 @@ public class FoodDeletionInteractor extends DeletionInteractor<Food> {
                                   Consumer<Food> deletionCancler,
                                   Function<Food, LiveData<StatusCode>> deleter,
                                   Function<Integer, LiveData<Food>> updater) {
-        super(owner, snackbarParent, deletionCancler, deleter);
+        super(owner, deleter, deletionCancler, snackbarParent);
         this.updater = updater;
         this.snackBarMessageId = snackBarMessageId;
     }

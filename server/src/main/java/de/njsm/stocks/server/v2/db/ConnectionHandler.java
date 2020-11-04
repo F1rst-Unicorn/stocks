@@ -124,7 +124,7 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
         String sqlState = cause.getSQLState();
 
         if (sqlState != null && sqlState.equals(SERIALISATION_FAILURE_SQL_STATE)) {
-            LOG.warn("Serialisation error, transaction was rolled back");
+            LOG.info("Serialisation error, transaction was rolled back");
             return true;
         }
 

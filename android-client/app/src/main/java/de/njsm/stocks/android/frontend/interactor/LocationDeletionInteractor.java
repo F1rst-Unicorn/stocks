@@ -28,11 +28,11 @@ import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-public class LocationDeletionInteractor extends DeletionInteractor<Location> {
+public class LocationDeletionInteractor extends SnackbarDeletionInteractor<Location> {
 
-    private Function<Integer, LiveData<Location>> updater;
+    private final Function<Integer, LiveData<Location>> updater;
 
-    private Function<Location, LiveData<StatusCode>> cascadingDeleter;
+    private final Function<Location, LiveData<StatusCode>> cascadingDeleter;
 
     public LocationDeletionInteractor(BaseFragment owner,
                                       View snackbarParent,
@@ -40,7 +40,7 @@ public class LocationDeletionInteractor extends DeletionInteractor<Location> {
                                       Function<Location, LiveData<StatusCode>> deleter,
                                       Function<Integer, LiveData<Location>> updater,
                                       Function<Location, LiveData<StatusCode>> cascadingDeleter) {
-        super(owner, snackbarParent, deletionCancler, deleter);
+        super(owner, deleter, deletionCancler, snackbarParent);
         this.updater = updater;
         this.cascadingDeleter = cascadingDeleter;
     }

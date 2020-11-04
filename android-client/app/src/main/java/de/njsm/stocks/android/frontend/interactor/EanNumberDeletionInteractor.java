@@ -28,13 +28,13 @@ import de.njsm.stocks.android.db.entities.EanNumber;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-public class EanNumberDeletionInteractor extends DeletionInteractor<EanNumber> {
+public class EanNumberDeletionInteractor extends SnackbarDeletionInteractor<EanNumber> {
 
     public EanNumberDeletionInteractor(BaseFragment owner,
                                        View snackbarParent,
                                        Consumer<EanNumber> deletionCancler,
                                        Function<EanNumber, LiveData<StatusCode>> deleter) {
-        super(owner, snackbarParent, deletionCancler, deleter);
+        super(owner, deleter, deletionCancler, snackbarParent);
     }
 
     @Override
