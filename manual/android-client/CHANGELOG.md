@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.8.0.3]
+
 ### Changed
 
 * STOCKS-127: Don't show an UNDO button when deleting food items
