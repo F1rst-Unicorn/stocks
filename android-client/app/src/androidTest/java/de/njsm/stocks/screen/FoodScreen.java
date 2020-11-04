@@ -150,10 +150,6 @@ public class FoodScreen extends AbstractListPresentingScreen {
             onView(withId(R.id.template_swipe_list_list))
                     .perform(RecyclerViewActions.actionOnItemAtPosition(0, swipeRight()));
 
-            onView(withText(R.string.action_undo))
-                    .perform(swipeRight());
-            sleep(700);
-
             if (counter++ > SystemTestSuite.LOOP_BREAKER) {
                 fail("LOOP BREAKER triggered, list count is " + getListCount());
             }
