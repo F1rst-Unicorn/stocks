@@ -42,6 +42,9 @@ public class TypeConverters {
 
     @TypeConverter
     public Instant dbToInstant(String rawInstant) {
+        if (rawInstant == null)
+            return null;
+
         Instant result = DATABASE_DATE_FORMAT.parse(rawInstant, Instant::from);
         if (result.equals(DATABASE_INFINITY)) {
             return API_INFINITY;

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Changed
+
+* STOCKS-127: Don't show an UNDO button when deleting food items
+
+* STOCKS-127: Predict eat-by date for new items based on items which have been
+  deleted if currently no items are present
+
 ## [3.8.0.2]
 
 ### Fixed

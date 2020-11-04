@@ -107,16 +107,23 @@ public abstract class FoodItemDao {
             "and l.transaction_time_end = :infinity")
     abstract LiveData<FoodItemView> getItem(int id, Instant infinity);
 
-    @Query("select eat_by " +
-            "from FoodItem " +
-            "where of_type = :foodType " +
-            "and valid_time_start <= " + NOW +
-            "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity " +
-            "order by eat_by desc " +
+    @Query("select max(i.eat_by) " +
+            "from FoodItem i " +
+            "where i.of_type = :foodType " +
+            "and i.valid_time_start <= " + NOW +
+            "and " + NOW + " < i.valid_time_end " +
+            "and i.transaction_time_end = :infinity " +
+            "group by null " +
+            "union all " +
+            "select max(i.eat_by) " +
+            "from FoodItem i " +
+            "where i.of_type = :foodType " +
+            "and i.transaction_time_end = :infinity " +
+            "and i.version = (select max(i2.version) from fooditem i2 where i2._id = i._id) " +
+            "group by null " +
             "limit 1")
     abstract LiveData<Instant> getLatestExpirationOf(int foodType, Instant infinity);
 
-    @Query("DELETE from FoodItem")
+    @Query("delete from FoodItem")
     abstract void delete();
 }
