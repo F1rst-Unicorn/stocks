@@ -405,6 +405,7 @@ Food {
     toBuy: boolean
     expirationOffset: int
     location: int
+    description: String
 }
 ```
 `PUT /v2/food/rename`: Edit an existing food type.
@@ -433,6 +434,20 @@ Query parameters:
 * `version: int`: The version of the food type
 
 * `buy: int`: Set to 1 if the food is on the shopping list, 0 otherwise.
+
+Result: `application/json`, `Response`
+
+`POST /v2/food/description`: Set the description of an existing food
+
+Query parameters:
+
+* `id: int`: The ID of the food type to rename
+
+* `version: int`: The version of the food type
+
+Form parameters:
+
+* `description: String`: The new description to set
 
 Result: `application/json`, `Response`
 

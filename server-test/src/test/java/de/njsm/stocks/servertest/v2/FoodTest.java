@@ -56,6 +56,29 @@ public class FoodTest {
     }
 
     @Test
+    public void alterFoodDescription() {
+        String name = "Cake";
+        String newDescription = "new description";
+        int id = createNewFoodType(name);
+
+        given()
+                .log().ifValidationFails()
+                .queryParam("id", id)
+                .queryParam("version", 0)
+                .formParam("description", newDescription).
+        when()
+                .post(TestSuite.DOMAIN + "/v2/food/description").
+        then()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON)
+                .statusCode(200)
+                .body("status", equalTo(0));
+
+        assertOnFood()
+                .body("data.description", hasItem(newDescription));
+    }
+
+    @Test
     public void setBuyStatus() {
         String name = "Cake";
         int id = createNewFoodType(name);

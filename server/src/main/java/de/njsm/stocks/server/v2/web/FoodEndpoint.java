@@ -91,7 +91,7 @@ public class FoodEndpoint extends Endpoint {
                 isValid(newName, "new")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.rename(new Food(id, newName, version, false, Period.ofDays(expirationOffset), location == 0 ? null : location));
+            StatusCode status = manager.rename(new Food(id, newName, version, false, Period.ofDays(expirationOffset), location == 0 ? null : location, ""));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -110,7 +110,7 @@ public class FoodEndpoint extends Endpoint {
 
             manager.setPrincipals(getPrincipals(request));
             boolean toBuy = toBuyParameter == 1;
-            StatusCode status = manager.setToBuyStatus(new Food(id, "", version, toBuy, Period.ZERO, 0));
+            StatusCode status = manager.setToBuyStatus(new Food(id, "", version, toBuy, Period.ZERO, 0, ""));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -126,12 +126,27 @@ public class FoodEndpoint extends Endpoint {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.delete(new Food(id, "", version, false, Period.ZERO, 0));
+            StatusCode status = manager.delete(new Food(id, "", version, false, Period.ZERO, 0, ""));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
         }
     }
 
-
+    @POST
+    @Path("description")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setDescription(@Context HttpServletRequest request,
+                                   @QueryParam("id") int id,
+                                   @QueryParam("version") int version,
+                                   @FormParam("description") String description) {
+        if (isValid(id, "id") && isValidVersion(version, "version")) {
+            manager.setPrincipals(getPrincipals(request));
+            manager.setDescription(new Food(id, version, description));
+            return new Response(StatusCode.SUCCESS);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
+    }
 }

@@ -29,6 +29,7 @@ import de.njsm.stocks.server.v2.business.json.PeriodSerialiser;
 
 import java.time.Instant;
 import java.time.Period;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -47,29 +48,40 @@ public class Food extends VersionedData {
 
     public Integer location;
 
+    public String description;
+
     public Food(int id, int version) {
         super(id, version);
     }
 
-    public Food(int id, String name, int version, boolean toBuy, Period expirationOffset, Integer location) {
+    public Food(int id, String name, int version, boolean toBuy, Period expirationOffset, Integer location, String description) {
         super(id, version);
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;
         this.location = location;
+        this.description = description;
     }
 
-    public Food(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, boolean toBuy, Period expirationOffset, Integer location, int initiates) {
+    public Food(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, boolean toBuy, Period expirationOffset, Integer location, String description, int initiates) {
         super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;
         this.location = location;
+        this.description = description;
     }
 
     public Food(String name) {
         this.name = name;
         expirationOffset = Period.ZERO;
+        description = "";
+    }
+
+    public Food(int id, int version, String description) {
+        this.id = id;
+        this.version = version;
+        this.description = description;
     }
 
     @Override
@@ -85,9 +97,13 @@ public class Food extends VersionedData {
         Food food = (Food) o;
 
         if (toBuy != food.toBuy) return false;
-        if (!name.equals(food.name)) return false;
-        if (location != food.location) return false;
-        return expirationOffset.equals(food.expirationOffset);
+        if (!Objects.equals(name, food.name))
+            return false;
+        if (!Objects.equals(expirationOffset, food.expirationOffset))
+            return false;
+        if (!Objects.equals(location, food.location))
+            return false;
+        return Objects.equals(description, food.description);
     }
 
     @Override

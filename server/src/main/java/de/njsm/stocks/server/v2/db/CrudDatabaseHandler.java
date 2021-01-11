@@ -232,7 +232,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                     )
                     .execute();
 
-            if (changedItems == 1)
+            if (changedItems > 0)
                 return StatusCode.SUCCESS;
             else
                 return StatusCode.NOT_FOUND;

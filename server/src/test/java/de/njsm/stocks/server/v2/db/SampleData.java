@@ -43,10 +43,10 @@ class SampleData {
             "INSERT INTO \"Location\" (\"name\", initiates) VALUES " +
                     "('Fridge', 1), " +
                     "('Cupboard', 1)",
-            "INSERT INTO \"Food\" (\"name\", \"to_buy\", \"location\", initiates) VALUES " +
-                    "('Carrot', false, null, 1), " +
-                    "('Beer', true, null, 1), " +
-                    "('Cheese', false, 1, 1)",
+            "INSERT INTO \"Food\" (name, to_buy, location, description, initiates) VALUES " +
+                    "('Carrot', false, null, 'carrot description',  1), " +
+                    "('Beer', true, null, 'beer description', 1), " +
+                    "('Cheese', false, 1, '', 1)",
             "INSERT INTO \"User\" (\"name\", initiates) VALUES " +
                     "('Bob', 1), " +
                     "('Alice', 1), " +

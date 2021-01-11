@@ -29,14 +29,14 @@ public class FoodTest {
 
     @Test
     public void testHashCode() {
-        Food data = new Food(1, "Bread", 2, true, Period.ZERO, 1);
+        Food data = new Food(1, "Bread", 2, true, Period.ZERO, 1, "");
 
         assertEquals(141675498, data.hashCode());
     }
 
     @Test
     public void testToString() {
-        Food data = new Food(1, "Bread", 2, true, Period.ZERO, 1);
+        Food data = new Food(1, "Bread", 2, true, Period.ZERO, 1, "");
 
         assertEquals("Food (1, Bread, 2, true, 1)", data.toString());
     }

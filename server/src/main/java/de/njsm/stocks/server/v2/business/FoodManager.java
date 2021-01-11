@@ -76,4 +76,8 @@ public class FoodManager extends BusinessObject {
         foodItemHandler.setPrincipals(principals);
         eanNumberHandler.setPrincipals(principals);
     }
+
+    public StatusCode setDescription(Food item) {
+        return runOperation(() -> dbHandler.setDescription(item));
+    }
 }

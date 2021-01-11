@@ -82,7 +82,7 @@ public class FoodManagerTest {
 
     @Test
     public void testAddingItem() {
-        Food data = new Food(1, "Cheese", 2, true, Period.ZERO, 1);
+        Food data = new Food(1, "Cheese", 2, true, Period.ZERO, 1, "");
         Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
 
         Validation<StatusCode, Integer> result = uut.add(data);
@@ -95,7 +95,7 @@ public class FoodManagerTest {
     @Test
     public void testRenamingItem() {
         String newName = "Sausage";
-        Food data = new Food(1, newName, 2, true, Period.ZERO, 1);
+        Food data = new Food(1, newName, 2, true, Period.ZERO, 1, "");
         Mockito.when(backend.edit(data, newName, Period.ZERO, 1)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.rename(data);
@@ -108,7 +108,7 @@ public class FoodManagerTest {
     @Test
     public void testSettingBuyStatusItem() {
         String newName = "Sausage";
-        Food data = new Food(1, newName, 2, true, Period.ZERO, 1);
+        Food data = new Food(1, newName, 2, true, Period.ZERO, 1, "");
         Mockito.when(backend.setToBuyStatus(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.setToBuyStatus(data);
@@ -120,7 +120,7 @@ public class FoodManagerTest {
 
     @Test
     public void testDeletingItem() {
-        Food data = new Food(1, "Cheese", 2, true, Period.ZERO, 1);
+        Food data = new Food(1, "Cheese", 2, true, Period.ZERO, 1, "");
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodItemHandler.deleteItemsOfType(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(eanNumberHandler.deleteOwnedByFood(data)).thenReturn(StatusCode.SUCCESS);
@@ -132,5 +132,17 @@ public class FoodManagerTest {
         Mockito.verify(backend).commit();
         Mockito.verify(foodItemHandler).deleteItemsOfType(data);
         Mockito.verify(eanNumberHandler).deleteOwnedByFood(data);
+    }
+
+    @Test
+    public void settingDescriptionWorks() {
+        Food data = new Food(1, 2, "some description");
+        Mockito.when(backend.setDescription(data)).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.setDescription(data);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        Mockito.verify(backend).setDescription(data);
+        Mockito.verify(backend).commit();
     }
 }

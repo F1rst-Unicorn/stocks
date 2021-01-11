@@ -61,7 +61,7 @@ public class FoodHandlerTest extends DbTestCase {
     @Test
     public void addAFood() {
         Period expirationOffset = Period.ofDays(3);
-        Food data = new Food(7, "Banana", 1, false, expirationOffset, 0);
+        Food data = new Food(7, "Banana", 1, false, expirationOffset, 0, "");
 
         Validation<StatusCode, Integer> code = uut.add(data);
 
@@ -79,7 +79,7 @@ public class FoodHandlerTest extends DbTestCase {
         String newName = "Wine";
         Period expirationOffset = Period.ofDays(3);
         int location = 2;
-        Food data = new Food(2, "Beer", 0, true, Period.ZERO, location);
+        Food data = new Food(2, "Beer", 0, true, Period.ZERO, location, "");
 
         StatusCode result = uut.edit(data, newName, expirationOffset, location);
 
@@ -101,7 +101,7 @@ public class FoodHandlerTest extends DbTestCase {
         String newName = "Beer";
         Period expirationOffset = Period.ZERO;
         int location = 2;
-        Food data = new Food(2, newName, 0, true, expirationOffset, null);
+        Food data = new Food(2, newName, 0, true, expirationOffset, null, "");
 
         StatusCode result = uut.edit(data, newName, expirationOffset, location);
 
@@ -121,7 +121,7 @@ public class FoodHandlerTest extends DbTestCase {
     @Test
     public void wrongVersionIsNotRenamed() {
         String newName = "Wine";
-        Food data = new Food(2, "Beer", 100, true, Period.ZERO, 1);
+        Food data = new Food(2, "Beer", 100, true, Period.ZERO, 1, "");
 
         StatusCode result = uut.edit(data, newName, Period.ZERO, 1);
 
@@ -131,7 +131,7 @@ public class FoodHandlerTest extends DbTestCase {
     @Test
     public void unknownIsReported() {
         String newName = "Wine";
-        Food data = new Food(100, "Beer", 1, true, Period.ZERO, 1);
+        Food data = new Food(100, "Beer", 1, true, Period.ZERO, 1, "");
 
         StatusCode result = uut.edit(data, newName, Period.ZERO, 1);
 
@@ -140,7 +140,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void deleteAFood() {
-        Food data = new Food(2, "Beer", 0, true, Period.ZERO, 1);
+        Food data = new Food(2, "Beer", 0, true, Period.ZERO, 1, "");
 
         StatusCode result = uut.delete(data);
 
@@ -155,7 +155,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void invalidDataVersionIsRejected() {
-        Food data = new Food(2, "Beer", 100, true, Period.ZERO, 1);
+        Food data = new Food(2, "Beer", 100, true, Period.ZERO, 1, "");
 
         StatusCode result = uut.delete(data);
 
@@ -170,7 +170,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void unknownDeletionsAreReported() {
-        Food data = new Food(100, "Beer", 1, true, Period.ZERO, 1);
+        Food data = new Food(100, "Beer", 1, true, Period.ZERO, 1, "");
 
         StatusCode result = uut.delete(data);
 
@@ -179,7 +179,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void foodToBuyIsMarked() {
-        Food data = new Food(1, "Carrot", 0, true, Period.ZERO, 1);
+        Food data = new Food(1, "Carrot", 0, true, Period.ZERO, 1, "");
 
         StatusCode result = uut.setToBuyStatus(data);
 
@@ -188,7 +188,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void foodToBuyWithInvalidVersionIsNotMarked() {
-        Food data = new Food(1, "Carrot", 2, true, Period.ZERO, 1);
+        Food data = new Food(1, "Carrot", 2, true, Period.ZERO, 1, "");
 
         StatusCode result = uut.setToBuyStatus(data);
 
@@ -197,7 +197,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void missingFoodToBuyIsReported() {
-        Food data = new Food(100, "Beer", 1, true, Period.ZERO, 1);
+        Food data = new Food(100, "Beer", 1, true, Period.ZERO, 1, "");
 
         StatusCode result = uut.setToBuyStatus(data);
 
@@ -242,5 +242,29 @@ public class FoodHandlerTest extends DbTestCase {
         assertEquals(StatusCode.SUCCESS, result);
         Food changedFood = uut.get(false, Instant.EPOCH).success().filter(f -> f.id == 3).findAny().get();
         assertNull(changedFood.location);
+    }
+
+    @Test
+    public void settingDescriptionWorks() {
+        Food data = new Food(2, 0, "new description");
+
+        StatusCode result = uut.setDescription(data);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        assertTrue("expected description '" + data.description + "' not found",
+                uut.get(false, Instant.EPOCH)
+                .success()
+                .anyMatch(f -> f.id == data.id &&
+                        data.version + 1 == f.version &&
+                        data.description.equals(f.description)));
+    }
+
+    @Test
+    public void settingDescriptionOnAbsentFoodIsReported() {
+        Food data = new Food(4, 0, "new description");
+
+        StatusCode result = uut.setDescription(data);
+
+        assertEquals(StatusCode.NOT_FOUND, result);
     }
 }

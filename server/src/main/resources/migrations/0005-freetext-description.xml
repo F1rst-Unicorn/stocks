@@ -18,17 +18,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see https://www.gnu.org/licenses/.
 -->
-
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
-         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        context="production">
 
-    <include file="0001-schema.sql" relativeToChangelogFile="true"/>
-    <include file="0002-temporal-data.xml" relativeToChangelogFile="true"/>
-    <include file="0003-track-users-in-history.xml" relativeToChangelogFile="true"/>
-    <include file="0004-relax-initiates-constraints.xml" relativeToChangelogFile="true"/>
-    <include file="0005-freetext-description.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1" author="admin">
+        <sql endDelimiter=";;">
+            alter table "Food" add column description text not null default '';
+        </sql>
+        <rollback>
+            alter table "Food" drop column description;
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="admin">
+        <sql endDelimiter=";;">
+            alter table "Location" add column description text not null default '';
+        </sql>
+        <rollback>
+            alter table "Location" drop column description;
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

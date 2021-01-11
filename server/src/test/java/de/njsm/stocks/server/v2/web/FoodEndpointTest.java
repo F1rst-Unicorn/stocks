@@ -140,7 +140,7 @@ public class FoodEndpointTest {
 
     @Test
     public void foodIsAdded() {
-        Food data = new Food(0, "Banana", 0, false, Period.ZERO, null);
+        Food data = new Food(0, "Banana", 0, false, Period.ZERO, null, "");
         when(manager.add(data)).thenReturn(Validation.success(5));
 
         Response response = uut.putFood(createMockRequest(), data.name);
@@ -153,7 +153,7 @@ public class FoodEndpointTest {
     @Test
     public void getFoodReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        List<Food> data = Collections.singletonList(new Food(2, "Banana", 2, true, Period.ZERO, 1));
+        List<Food> data = Collections.singletonList(new Food(2, "Banana", 2, true, Period.ZERO, 1, ""));
         when(manager.get(any(), eq(false), eq(Instant.EPOCH))).thenReturn(Validation.success(data.stream()));
 
         uut.get(r, 0, null);
@@ -179,7 +179,7 @@ public class FoodEndpointTest {
     @Test
     public void renameFoodWorks() {
         String newName = "Bread";
-        Food data = new Food(1, newName, 2, false, Period.ZERO.plusDays(3), 1);
+        Food data = new Food(1, newName, 2, false, Period.ZERO.plusDays(3), 1, "");
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.renameFood(createMockRequest(), data.id, data.version, newName, 3, 1);
@@ -192,7 +192,7 @@ public class FoodEndpointTest {
     @Test
     public void renameFoodWithoutLocationYieldsNullAndWorks() {
         String newName = "Bread";
-        Food data = new Food(1, newName, 2, false, Period.ZERO.plusDays(3), null);
+        Food data = new Food(1, newName, 2, false, Period.ZERO.plusDays(3), null, "");
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.renameFood(createMockRequest(), data.id, data.version, newName, 3, 0);
@@ -204,7 +204,7 @@ public class FoodEndpointTest {
 
     @Test
     public void settingBuyStatusWorks() {
-        Food data = new Food(1, "", 2, true, Period.ZERO, 0);
+        Food data = new Food(1, "", 2, true, Period.ZERO, 0, "");
         when(manager.setToBuyStatus(data)).thenReturn(SUCCESS);
 
         Response response = uut.setToBuyStatus(createMockRequest(), data.id, data.version, 1);
@@ -216,7 +216,7 @@ public class FoodEndpointTest {
 
     @Test
     public void deleteFoodWorks() {
-        Food data = new Food(1, "", 2, false, Period.ZERO, 0);
+        Food data = new Food(1, "", 2, false, Period.ZERO, 0, "");
         when(manager.delete(data)).thenReturn(SUCCESS);
 
         Response response = uut.deleteFood(createMockRequest(), data.id, data.version);
@@ -224,5 +224,35 @@ public class FoodEndpointTest {
         assertEquals(SUCCESS, response.status);
         verify(manager).delete(data);
         Mockito.verify(manager).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void settingDescriptionIsPropagated() {
+        Food data = new Food(1, 2, "some description");
+        when(manager.setDescription(data)).thenReturn(SUCCESS);
+
+        Response response = uut.setDescription(createMockRequest(), data.id, data.version, data.description);
+
+        assertEquals(SUCCESS, response.status);
+        verify(manager).setDescription(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void invalidIdForDescriptionIsRejected() {
+        Food data = new Food(1, 2, "some description");
+
+        Response response = uut.setDescription(createMockRequest(), 0, data.version, data.description);
+
+        assertEquals(INVALID_ARGUMENT, response.status);
+    }
+
+    @Test
+    public void invalidVersionForDescriptionIsRejected() {
+        Food data = new Food(1, 2, "some description");
+
+        Response response = uut.setDescription(createMockRequest(), data.id, -1, data.description);
+
+        assertEquals(INVALID_ARGUMENT, response.status);
     }
 }
