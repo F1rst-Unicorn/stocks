@@ -1,12 +1,5 @@
 @startuml
 
-skinparam classFontSize 24
-skinparam packageFontSize 24
-skinparam arrowFontSize 20
-skinparam classAttributeFontSize 20
-skinparam classBackgroundColor Gold
-skinparam packageBackgroundColor PaleGreen
-
 class Location {
     {static} ID: int
     version: int
@@ -15,6 +8,7 @@ class Location {
     transaction_time_start: OffsetDateTime
     transaction_time_end: OffsetDateTime
     name: String
+    description: String
 }
 
 class User {
@@ -47,6 +41,7 @@ class Food {
     name: String
     to_buy: boolean
     expiration_offset: Period
+    description: String
 }
 
 class Food_item {
