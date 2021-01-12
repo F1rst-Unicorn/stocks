@@ -495,6 +495,7 @@ Location {
     id: int
     version: int
     name: String
+    description: String
 }
 ```
 
@@ -507,6 +508,20 @@ Query parameters:
 * `version: int`: The version to rename
 
 * `new: String`: The new name of the location
+
+Result: `application/json`, `Response`
+
+`POST /v2/location/description`: Set the description of an existing location
+
+Query parameters:
+
+* `id: int`: The ID of the location type to rename
+
+* `version: int`: The version of the location type
+
+Form parameters:
+
+* `description: String`: The new description to set
 
 Result: `application/json`, `Response`
 

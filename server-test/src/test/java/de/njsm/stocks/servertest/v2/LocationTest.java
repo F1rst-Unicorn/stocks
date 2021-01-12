@@ -125,6 +125,29 @@ public class LocationTest {
                 .body("status", equalTo(0));
     }
 
+    @Test
+    public void alterLocationDescription() {
+        String name = "Fridge";
+        String newDescription = "new description";
+        int id = createNewLocationType(name);
+
+        given()
+                .log().ifValidationFails()
+                .queryParam("id", id)
+                .queryParam("version", 0)
+                .formParam("description", newDescription).
+        when()
+                .post(TestSuite.DOMAIN + "/v2/location/description").
+        then()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON)
+                .statusCode(200)
+                .body("status", equalTo(0));
+
+        assertOnLocation()
+                .body("data.description", hasItem(newDescription));
+    }
+
     ValidatableResponse assertOnDelete(int id, int version, boolean cascade) {
         return
         given()

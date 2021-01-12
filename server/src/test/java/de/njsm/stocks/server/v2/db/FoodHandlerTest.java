@@ -226,7 +226,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void unregisteringALocationWithoutFoodIsOk() {
-        Location l = new Location(2, "", 1);
+        Location l = new Location(2, "", 1, "");
 
         StatusCode result = uut.unregisterDefaultLocation(l);
 
@@ -235,7 +235,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void unregisteringALocationWorks() {
-        Location l = new Location(1, "", 1);
+        Location l = new Location(1, "", 1, "");
 
         StatusCode result = uut.unregisterDefaultLocation(l);
 
@@ -266,5 +266,14 @@ public class FoodHandlerTest extends DbTestCase {
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.NOT_FOUND, result);
+    }
+
+    @Test
+    public void settingDescriptionOnInvalidVersionIsReported() {
+        Food data = new Food(2, 1, "new description");
+
+        StatusCode result = uut.setDescription(data);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
     }
 }

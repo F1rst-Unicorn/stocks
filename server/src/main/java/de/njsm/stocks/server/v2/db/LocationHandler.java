@@ -57,7 +57,8 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
             return currentUpdate(Arrays.asList(
                     LOCATION.ID,
                     DSL.inline(newName),
-                    LOCATION.VERSION.add(1)
+                    LOCATION.VERSION.add(1),
+                    LOCATION.DESCRIPTION
                     ),
                     LOCATION.ID.eq(item.id)
                             .and(LOCATION.VERSION.eq(item.version))
@@ -70,6 +71,23 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
     public StatusCode delete(Location item) {
         return runCommand(context -> performDeleteChecks(item, context)
                 .bind(() -> super.delete(item)));
+    }
+
+    public StatusCode setDescription(Location input) {
+        return runCommand(context -> {
+
+            if (isCurrentlyMissing(input, context))
+                return StatusCode.NOT_FOUND;
+
+            return currentUpdate(Arrays.asList(
+                    LOCATION.ID,
+                    LOCATION.NAME,
+                    LOCATION.VERSION.add(1),
+                    DSL.inline(input.description)
+                    ),
+                    LOCATION.ID.eq(input.id).and(LOCATION.VERSION.eq(input.version)))
+                    .map(this::notFoundMeansInvalidVersion);
+        });
     }
 
     private StatusCode performDeleteChecks(Location location, DSLContext context) {
@@ -106,13 +124,15 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                     cursor.getTransactionTimeStart().toInstant(),
                     cursor.getTransactionTimeEnd().toInstant(),
                     cursor.getName(),
+                    cursor.getDescription(),
                     cursor.getInitiates()
             );
         else
             return cursor -> new Location(
                     cursor.getId(),
                     cursor.getName(),
-                    cursor.getVersion()
+                    cursor.getVersion(),
+                    cursor.getDescription()
             );
     }
 
@@ -121,7 +141,8 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
         return Arrays.asList(
                 LOCATION.ID,
                 LOCATION.NAME,
-                LOCATION.VERSION
+                LOCATION.VERSION,
+                LOCATION.DESCRIPTION
         );
     }
 }

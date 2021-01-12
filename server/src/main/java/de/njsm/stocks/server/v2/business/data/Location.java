@@ -35,18 +35,23 @@ public class Location extends VersionedData {
 
     public String name;
 
-    public Location(int id, String name, int version) {
+    public String description;
+
+    public Location(int id, String name, int version, String description) {
         super(id, version);
         this.name = name;
+        this.description = description;
     }
 
     public Location(String name) {
         this.name = name;
+        this.description = "";
     }
 
-    public Location(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, int initiates) {
+    public Location(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, String description, int initiates) {
         super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
         this.name = name;
+        this.description = description;
     }
 
     @Override
@@ -58,15 +63,16 @@ public class Location extends VersionedData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Location other = (Location) o;
-        return id == other.id &&
-                version == other.version &&
-                Objects.equals(name, other.name);
+
+        Location location = (Location) o;
+
+        if (!name.equals(location.name)) return false;
+        return description.equals(location.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, version);
+        return Objects.hash(id, name, version, description);
     }
 
     @Override

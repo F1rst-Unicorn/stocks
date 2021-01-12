@@ -79,6 +79,7 @@ public class BusinessObject {
         r.register((CompletionCallback) this::finishTransaction);
         return operation.call();
     }
+
     <O> Validation<StatusCode, O> finishTransaction(Validation<StatusCode, O> carry) {
         if (carry.isFail()) {
             dbHandler.rollback();

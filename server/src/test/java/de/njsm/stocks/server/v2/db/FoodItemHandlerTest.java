@@ -262,7 +262,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void deleteItemsInLocationWorks() {
-        Location input = new Location(1, "", 0);
+        Location input = new Location(1, "", 0, "");
 
         StatusCode deleteResult = uut.deleteItemsStoredIn(input);
 
@@ -275,8 +275,8 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void testingAreItemsStoredIn() {
-        assertTrue(uut.areItemsStoredIn(new Location(1, "", 0), getDSLContext()));
-        assertFalse(uut.areItemsStoredIn(new Location(2, "", 0), getDSLContext()));
+        assertTrue(uut.areItemsStoredIn(new Location(1, "", 0, ""), getDSLContext()));
+        assertFalse(uut.areItemsStoredIn(new Location(2, "", 0, ""), getDSLContext()));
     }
 
     @Test

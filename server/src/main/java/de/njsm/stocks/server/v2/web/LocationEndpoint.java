@@ -87,7 +87,7 @@ public class LocationEndpoint extends Endpoint {
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.rename(new Location(id, newName, version));
+            StatusCode status = manager.rename(new Location(id, newName, version, ""));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -105,9 +105,26 @@ public class LocationEndpoint extends Endpoint {
 
             boolean cascade = cascadeParameter == 1;
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.delete(new Location(id, "", version), cascade);
+            StatusCode status = manager.delete(new Location(id, "", version, ""), cascade);
             return new Response(status);
 
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
+    }
+
+    @POST
+    @Path("description")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setDescription(@Context HttpServletRequest request,
+                                   @QueryParam("id") int id,
+                                   @QueryParam("version") int version,
+                                   @FormParam("description") String description) {
+        if (isValid(id, "id") && isValidVersion(version, "version")) {
+            manager.setPrincipals(getPrincipals(request));
+            StatusCode result = manager.setDescription(new Location(id, "", version, description));
+            return new Response(result);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
         }

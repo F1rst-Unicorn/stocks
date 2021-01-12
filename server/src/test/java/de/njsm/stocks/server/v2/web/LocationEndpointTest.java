@@ -121,7 +121,7 @@ public class LocationEndpointTest {
 
     @Test
     public void foodIsAdded() {
-        Location data = new Location(0, "Banana", 0);
+        Location data = new Location(0, "Banana", 0, "");
         when(businessLayer.put(data)).thenReturn(SUCCESS);
 
         Response response = uut.putLocation(createMockRequest(), data.name);
@@ -134,7 +134,7 @@ public class LocationEndpointTest {
     @Test
     public void getLocationReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        List<Location> data = Collections.singletonList(new Location(2, "Banana", 2));
+        List<Location> data = Collections.singletonList(new Location(2, "Banana", 2, ""));
         when(businessLayer.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
         uut.get(r, 0, null);
@@ -160,7 +160,7 @@ public class LocationEndpointTest {
     @Test
     public void renameLocationWorks() {
         String newName = "Bread";
-        Location data = new Location(1, newName, 2);
+        Location data = new Location(1, newName, 2, "");
         when(businessLayer.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.renameLocation(createMockRequest(), data.id, data.version, newName);
@@ -172,7 +172,7 @@ public class LocationEndpointTest {
 
     @Test
     public void deleteLocationWorks() {
-        Location data = new Location(1, "", 2);
+        Location data = new Location(1, "", 2, "");
         when(businessLayer.delete(data, false)).thenReturn(SUCCESS);
 
         Response response = uut.deleteLocation(createMockRequest(), data.id, data.version, 0);
@@ -184,7 +184,7 @@ public class LocationEndpointTest {
 
     @Test
     public void deleteLocationWorksCascading() {
-        Location data = new Location(1, "", 2);
+        Location data = new Location(1, "", 2, "");
         when(businessLayer.delete(data, true)).thenReturn(SUCCESS);
 
         Response response = uut.deleteLocation(createMockRequest(), data.id, data.version, 1);
@@ -192,5 +192,35 @@ public class LocationEndpointTest {
         assertEquals(SUCCESS, response.status);
         verify(businessLayer).delete(data, true);
         Mockito.verify(businessLayer).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void settingDescriptionIsForwarded() {
+        Location data = new Location(1, "", 2, "new description");
+        when(businessLayer.setDescription(data)).thenReturn(SUCCESS);
+
+        Response response = uut.setDescription(createMockRequest(), data.id, data.version, data.description);
+
+        assertEquals(SUCCESS, response.status);
+        verify(businessLayer).setDescription(data);
+        Mockito.verify(businessLayer).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void settingDescriptionWithInvalidIdIsRejected() {
+        Location data = new Location(0, "", 2, "new description");
+
+        Response response = uut.setDescription(createMockRequest(), data.id, data.version, data.description);
+
+        assertEquals(INVALID_ARGUMENT, response.status);
+    }
+
+    @Test
+    public void settingDescriptionWithInvalidVersionIsRejected() {
+        Location data = new Location(1, "", -1, "new description");
+
+        Response response = uut.setDescription(createMockRequest(), data.id, data.version, data.description);
+
+        assertEquals(INVALID_ARGUMENT, response.status);
     }
 }

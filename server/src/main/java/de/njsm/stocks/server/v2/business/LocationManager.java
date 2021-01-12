@@ -82,4 +82,8 @@ public class LocationManager extends BusinessObject {
         foodHandler.setPrincipals(principals);
         foodItemHandler.setPrincipals(principals);
     }
+
+    public StatusCode setDescription(Location data) {
+        return runOperation(() -> locationHandler.setDescription(data));
+    }
 }
