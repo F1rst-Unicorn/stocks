@@ -420,7 +420,7 @@ Query parameters:
 
 * `expirationoffset: int`: The number of days to use as default offset for
   the expiration date of new items.
-  
+
 * `location: int`: The default location where new food items will be placed in
 
 Result: `application/json`, `Response`
