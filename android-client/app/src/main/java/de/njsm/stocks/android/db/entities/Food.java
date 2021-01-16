@@ -52,10 +52,11 @@ public class Food extends VersionedData {
     @ColumnInfo(name = "location")
     public int location;
 
-    @ColumnInfo(name = "description")
+    @ColumnInfo(name = "description", defaultValue = "")
+    @NonNull
     public String description;
 
-    public Food(String name, boolean toBuy, int expirationOffset, int location, String description) {
+    public Food(String name, boolean toBuy, int expirationOffset, int location, @NonNull String description) {
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;
@@ -63,7 +64,7 @@ public class Food extends VersionedData {
         this.description = description;
     }
 
-    public Food(int position, int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, String description) {
+    public Food(int position, int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.name = name;
         this.toBuy = toBuy;

@@ -44,10 +44,11 @@ public class Location extends VersionedData {
     @ColumnInfo(name = "name")
     public String name;
 
-    @ColumnInfo(name = "description")
+    @ColumnInfo(name = "description", defaultValue = "")
+    @NonNull
     public String description;
 
-    public Location(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, String description) {
+    public Location(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, @NonNull String description) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.name = name;
         this.description = description;

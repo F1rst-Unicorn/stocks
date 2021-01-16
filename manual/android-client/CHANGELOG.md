@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [3.9.0.1]
+
+### Fixed
+
+* Crash during startup from older app version
+
 ## [3.9.0.0]
 
 ### Added

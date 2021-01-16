@@ -317,8 +317,8 @@ public abstract class EventDao {
     abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistoryOfSingleLocation(int id, Instant infinity);
 
     @Query("select " +
-            "l1.name as version1_name, " +
-            "l2.name as version2_name, " +
+            "l1.name as version1_name, l1.description as version1_description, " +
+            "l2.name as version2_name, l2.description as version2_description, " +
             INITIATOR_COLUMNS +
             TIME_COLUMNS_LOCATION +
             "from location l1 " +
