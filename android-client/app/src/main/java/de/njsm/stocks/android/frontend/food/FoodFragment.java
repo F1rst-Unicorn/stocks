@@ -146,6 +146,11 @@ public class FoodFragment extends BaseFragment {
                     FoodFragmentDirections.actionNavFragmentFoodToNavFragmentLocationHistory(input.getLocation());
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
+        } else if (item.getItemId() == R.id.fragment_food_options_description) {
+            FoodFragmentDirections.ActionNavFragmentFoodToNavFragmentLocationDescription args =
+                    FoodFragmentDirections.actionNavFragmentFoodToNavFragmentLocationDescription(input.getLocation());
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(args);
         }
         return true;
     }

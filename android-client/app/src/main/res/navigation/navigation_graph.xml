@@ -360,6 +360,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_fragment_food_to_nav_fragment_location_description"
+            app:destination="@id/nav_fragment_location_description"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_empty_food"
@@ -456,8 +463,8 @@
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_edit_food_description"
-        android:name="de.njsm.stocks.android.frontend.editfooddescription.FoodEditDescriptionFragment"
-        tools:layout="@layout/fragment_edit_food_description">
+        android:name="de.njsm.stocks.android.frontend.editdescription.FoodEditDescriptionFragment"
+        tools:layout="@layout/fragment_edit_description">
         <argument
             android:name="foodId"
             app:argType="integer" />
@@ -550,6 +557,14 @@
     <fragment
         android:id="@+id/nav_fragment_location_history"
         android:name="de.njsm.stocks.android.frontend.locationhistory.LocationHistoryFragment"
+        tools:layout="@layout/template_swipe_list">
+        <argument
+            android:name="locationId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_location_description"
+        android:name="de.njsm.stocks.android.frontend.editdescription.LocationEditDescriptionFragment"
         tools:layout="@layout/template_swipe_list">
         <argument
             android:name="locationId"

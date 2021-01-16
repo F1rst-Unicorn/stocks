@@ -21,15 +21,17 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import de.njsm.stocks.android.db.dao.LocationDao;
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class LocationRepository {
 
@@ -73,6 +75,14 @@ public class LocationRepository {
         LOG.d("renaming location " + entity + " to " + newName);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.renameLocation(entity.id, entity.version, newName)
+                .enqueue(new StatusCodeCallback(data, synchroniser));
+        return data;
+    }
+
+    public LiveData<StatusCode> setDescription(int id, int version, String description) {
+        LOG.d("editing description of location " + id);
+        MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
+        webClient.setLocationDescription(id, version, description)
                 .enqueue(new StatusCodeCallback(data, synchroniser));
         return data;
     }

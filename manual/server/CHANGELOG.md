@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+* STOCKS-100: Add description field for food and locations.
+
 ### Fixed
 
 * STOCKS-125: Fix SQL query for updates on future rows. This has had no impact

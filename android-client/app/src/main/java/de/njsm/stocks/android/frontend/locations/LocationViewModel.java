@@ -21,19 +21,23 @@ package de.njsm.stocks.android.frontend.locations;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.LocationRepository;
 import de.njsm.stocks.android.util.Logger;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class LocationViewModel extends ViewModel {
 
     private static final Logger LOG = new Logger(LocationViewModel.class);
 
     private LiveData<List<Location>> locations;
+
+    private LiveData<Location> singleLocation;
 
     private LocationRepository locationRepo;
 
@@ -49,8 +53,19 @@ public class LocationViewModel extends ViewModel {
         }
     }
 
+    public void init(int id) {
+        if (singleLocation == null) {
+            LOG.d("Initialising");
+            singleLocation = locationRepo.getLocation(id);
+        }
+    }
+
     public LiveData<List<Location>> getLocations() {
         return locations;
+    }
+
+    public LiveData<Location> getPreparedLocation() {
+        return singleLocation;
     }
 
     public LiveData<Location> getLocation(int id) {
@@ -71,5 +86,9 @@ public class LocationViewModel extends ViewModel {
 
     LiveData<StatusCode> deleteLocation(Location item, boolean cascade) {
         return locationRepo.deleteLocation(item, cascade);
+    }
+
+    public LiveData<StatusCode> setLocationDescription(int id, int version, String description) {
+        return locationRepo.setDescription(id, version, description);
     }
 }

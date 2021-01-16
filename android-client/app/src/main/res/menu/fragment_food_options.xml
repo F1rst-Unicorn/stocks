@@ -30,4 +30,11 @@
         android:title="@string/title_show_history"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/fragment_food_options_description"
+        android:icon="@drawable/baseline_info_white_24"
+        android:orderInCategory="100"
+        android:title="@string/title_description"
+        app:showAsAction="ifRoom" />
+
 </menu>
