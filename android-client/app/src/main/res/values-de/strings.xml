@@ -58,6 +58,7 @@
     <string name="title_charts">Statistiken</string>
     <string name="title_food_count_chart">Anzahl über Zeit</string>
     <string name="title_food_histogram">Wie lange vor Ablauf wurden wieviel Stück gegessen?</string>
+    <string name="title_description">Beschreibung ändern</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>
@@ -90,6 +91,9 @@
     <string name="hint_food">Lebensmittel</string>
     <string name="hint_new_name">Neuer Name</string>
     <string name="search_hint">Suche Essen</string>
+    <string name="hint_original">Original</string>
+    <string name="hint_remote">Andere Änderung</string>
+    <string name="hint_local">Deine Änderung</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>
@@ -144,6 +148,7 @@
     <string name="dialog_food_was_removed_from_shopping_list">Lebensmittel vom Einkaufszettel entfernt</string>
     <string name="dialog_default_expiration_offset">Standardablaufdauer setzen</string>
     <string name="dialog_default_location">Standardort setzen</string>
+    <string name="dialog_conflicting_description">Die Beschreibung wurde von jemand anderem geändert. Führe den originalen Text, die Änderungen der anderen Person und deinen eigenen Text jetzt zusammen.</string>
 
     <string name="error_may_not_be_empty">Hier Eingabe machen</string>
     <string name="error_no_id">ID darf nicht leer sein</string>
@@ -177,6 +182,8 @@
     <string name="event_location_created">%s hat %s erfasst.</string>
     <string name="event_location_renamed">%s hat %s zu %s umbenannt.</string>
     <string name="event_location_deleted">%s hat %s gelöscht.</string>
+    <string name="event_location_description_changed">%s has changed the description of %s</string>
+    <string name="event_location_description_changed_addendum">has changed the description</string>
     <string name="event_eannumber_created">%s hat einen Strichcode (%s) für %s hinzugefügt.</string>
     <string name="event_eannumber_deleted">%s hat einen Strichcode (%s) für %s gelöscht.</string>
     <string name="event_food_created">%s hat %s erfasst.</string>
@@ -194,6 +201,8 @@
     <string name="event_food_location_changed_addendum">hat den Standardort von %s auf %s gesetzt</string>
     <string name="event_food_expiration_offset_set">%s hat die Haltbarkeit von %s auf %d Tage gesetzt</string>
     <string name="event_food_expiration_offset_set_addendum">hat die Haltbarkeit auf %d Tage gesetzt</string>
+    <string name="event_food_description_changed">%s hat die Beschreibung von %s geändert</string>
+    <string name="event_food_description_changed_addendum">hat die Beschreibung geändert</string>
     <string name="event_user_created">%s hat %s eingeladen.</string>
     <string name="event_user_deleted">%s hat %s entfernt.</string>
     <string name="event_user_device_created">%s hat %s von %s registriert.</string>

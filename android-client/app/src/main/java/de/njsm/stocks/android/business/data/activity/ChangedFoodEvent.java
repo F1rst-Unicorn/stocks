@@ -29,7 +29,7 @@ import de.njsm.stocks.android.db.views.FoodWithLocationName;
 
 public class ChangedFoodEvent extends ChangedEntityEvent<FoodWithLocationName> implements FoodIconResourceProvider {
 
-    private int eventIcon;
+    private final int eventIcon;
 
     public ChangedFoodEvent(User initiatorUser, UserDevice initiatorDevice, FoodWithLocationName oldEntity, FoodWithLocationName newEntity) {
         super(initiatorUser, initiatorDevice, oldEntity, newEntity);
@@ -111,6 +111,16 @@ public class ChangedFoodEvent extends ChangedEntityEvent<FoodWithLocationName> i
             } else {
                 template = stringResourceResolver.apply(R.string.event_food_expiration_offset_set_addendum);
                 description = String.format(template, newEntity.expirationOffset);
+            }
+            partialSentences.add(description);
+        }
+
+        if (!oldEntity.description.equals(newEntity.description)) {
+            if (partialSentences.size() == 0) {
+                template = stringResourceResolver.apply(R.string.event_food_description_changed);
+                description = String.format(template, initiatorUser.name, oldEntity.name);
+            } else {
+                description = stringResourceResolver.apply(R.string.event_food_description_changed_addendum);
             }
             partialSentences.add(description);
         }

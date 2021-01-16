@@ -55,9 +55,9 @@
         android:title="@string/title_location"
         app:showAsAction="never" />
     <item
-        android:id="@+id/fragment_food_item_options_charts"
+        android:id="@+id/fragment_food_item_options_description"
         android:orderInCategory="100"
-        android:title="@string/title_charts"
+        android:title="@string/title_description"
         app:showAsAction="never" />
 
 </menu>

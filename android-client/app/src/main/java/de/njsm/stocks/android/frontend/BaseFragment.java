@@ -92,7 +92,7 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    private static void showErrorMessage(Activity a, int resourceId) {
+    protected static void showErrorMessage(Activity a, int resourceId) {
         new AlertDialog.Builder(a)
                 .setTitle(R.string.title_error)
                 .setMessage(resourceId)

@@ -159,8 +159,8 @@ public abstract class EventDao {
     }
 
     @Query("select " +
-            "l1.name as version1_name, " +
-            "l2.name as version2_name, " +
+            "l1.name as version1_name, l1.description as version1_description, " +
+            "l2.name as version2_name, l2.description as version2_description, " +
             INITIATOR_COLUMNS +
             TIME_COLUMNS_LOCATION +
             "from location l1 " +
@@ -185,8 +185,8 @@ public abstract class EventDao {
     abstract PositionalDataSource.Factory<Integer, EanNumberHistoryView> getEanHistory(Instant infinity);
 
     @Query("select " +
-            "l1.name as version1_name, l1.location as version1_location, l1.to_buy as version1_to_buy, l1.expiration_offset as version1_expiration_offset, l1.location as version1_location, f1.name as version1_location_name, " +
-            "l2.name as version2_name, l2.location as version2_location, l2.to_buy as version2_to_buy, l2.expiration_offset as version2_expiration_offset, l2.location as version2_location, f2.name as version2_location_name, " +
+            "l1.name as version1_name, l1.location as version1_location, l1.to_buy as version1_to_buy, l1.expiration_offset as version1_expiration_offset, l1.location as version1_location, f1.name as version1_location_name, l1.description as version1_description, " +
+            "l2.name as version2_name, l2.location as version2_location, l2.to_buy as version2_to_buy, l2.expiration_offset as version2_expiration_offset, l2.location as version2_location, f2.name as version2_location_name, l2.description as version2_description, " +
             INITIATOR_COLUMNS +
             TIME_COLUMNS_FOOD +
             "from food l1 " +
@@ -245,8 +245,8 @@ public abstract class EventDao {
     abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistory(Instant infinity);
 
     @Query("select " +
-            "l1.name as version1_name, l1.location as version1_location, l1.to_buy as version1_to_buy, l1.expiration_offset as version1_expiration_offset, l1.location as version1_location, f1.name as version1_location_name, " +
-            "l2.name as version2_name, l2.location as version2_location, l2.to_buy as version2_to_buy, l2.expiration_offset as version2_expiration_offset, l2.location as version2_location, f2.name as version2_location_name, " +
+            "l1.name as version1_name, l1.location as version1_location, l1.to_buy as version1_to_buy, l1.expiration_offset as version1_expiration_offset, l1.location as version1_location, f1.name as version1_location_name, l1.description as version1_description, " +
+            "l2.name as version2_name, l2.location as version2_location, l2.to_buy as version2_to_buy, l2.expiration_offset as version2_expiration_offset, l2.location as version2_location, f2.name as version2_location_name, l2.description as version1_description, " +
             INITIATOR_COLUMNS +
             TIME_COLUMNS_FOOD +
             "from food l1 " +

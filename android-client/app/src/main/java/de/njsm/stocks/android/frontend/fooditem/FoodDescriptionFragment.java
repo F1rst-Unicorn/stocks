@@ -17,13 +17,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.foodcharts;
+package de.njsm.stocks.android.frontend.fooditem;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,11 +50,22 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
-import de.njsm.stocks.android.frontend.foodhistory.FoodHistoryFragmentArgs;
+import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
+import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 
-public class FoodChartFragment extends BaseFragment {
+public class FoodDescriptionFragment extends BaseFragment {
+
+    private FoodViewModel foodViewModel;
+
+    private FoodItemViewModel foodItemViewModel;
+
+    private LocationViewModel locationViewModel;
 
     private ViewModelProvider.Factory viewModelFactory;
+
+    private FoodItemFragmentArgs input;
+
+    private SwipeListener swiper;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -64,22 +76,54 @@ public class FoodChartFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.fragment_food_charts, container, false);
+        View result = inflater.inflate(R.layout.fragment_food_description, container, false);
 
         assert getArguments() != null;
-        FoodHistoryFragmentArgs input = FoodHistoryFragmentArgs.fromBundle(getArguments());
+        input = FoodItemFragmentArgs.fromBundle(getArguments());
+
+        foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
+        foodViewModel.initFood(input.getFoodId());
+
+        foodItemViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodItemViewModel.class);
+        locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
+
+        result.findViewById(R.id.fragment_food_description_scroller).setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            swiper.setEnabled(scrollY == 0);
+        });
+
+        TextView description = result.findViewById(R.id.fragment_food_description_description);
+        TextView expiration = result.findViewById(R.id.fragment_food_description_standard_expiration);
+        TextView location = result.findViewById(R.id.fragment_food_description_location);
+        TextView amount = result.findViewById(R.id.fragment_food_description_amount);
+
+        foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
+                description.setText(String.valueOf(f.description)));
+
+        foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
+                expiration.setText(String.valueOf(f.expirationOffset)));
+
+        foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
+                foodItemViewModel.countItemsOfType(f.id).observe(getViewLifecycleOwner(), i ->
+                        amount.setText(String.valueOf(i))));
+
+        foodViewModel.getFood().observe(getViewLifecycleOwner(), f -> {
+                if (f.location != 0) {
+                    locationViewModel.getLocation(f.location).observe(getViewLifecycleOwner(), l ->
+                            location.setText(l.name));
+                }
+        });
+
 
         PlotViewModel plotViewModel = ViewModelProviders.of(this, viewModelFactory).get(PlotViewModel.class);
         plotViewModel.init(input.getFoodId());
-        LineChart chart = result.findViewById(R.id.fragment_food_charts_chart);
+        LineChart chart = result.findViewById(R.id.fragment_food_description_chart);
         setupChart(chart);
         plotViewModel.getHistory().observe(getViewLifecycleOwner(), l -> updateChart(chart, l));
 
-        BarChart histogram = result.findViewById(R.id.fragment_food_charts_histogram);
+        BarChart histogram = result.findViewById(R.id.fragment_food_description_histogram);
         setupHistogram(histogram);
         plotViewModel.getHistogramData().observe(getViewLifecycleOwner(), l -> updateHistogram(histogram, l));
 
-        initialiseSwipeRefresh(result, R.id.fragment_food_charts_swipe, viewModelFactory);
         return result;
     }
 
@@ -157,5 +201,9 @@ public class FoodChartFragment extends BaseFragment {
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         this.viewModelFactory = viewModelFactory;
+    }
+
+    public void setSwiper(SwipeListener swiper) {
+        this.swiper = swiper;
     }
 }

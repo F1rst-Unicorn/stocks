@@ -17,22 +17,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.db.views;
+package de.njsm.stocks.android.db.migrations;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import org.threeten.bp.Instant;
+public class Migration_32_to_33 extends androidx.room.migration.Migration {
 
-import de.njsm.stocks.android.db.entities.Food;
+    public Migration_32_to_33() {
+        super(32, 33);
+    }
 
-public class FoodWithLocationName extends Food {
-
-    @ColumnInfo(name = "location_name")
-    public String locationName;
-
-    public FoodWithLocationName(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, String locationName, String description) {
-        super(0, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description);
-        this.locationName = locationName;
+    @Override
+    public void migrate(@NonNull SupportSQLiteDatabase database) {
+        database.execSQL("alter table food add column description text not null default ''");
+        database.execSQL("alter table location add column description text not null default ''");
     }
 }

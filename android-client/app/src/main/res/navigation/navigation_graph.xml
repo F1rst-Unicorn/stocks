@@ -431,8 +431,8 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_nav_fragment_food_item_to_nav_fragment_food_chart"
-            app:destination="@id/nav_fragment_food_chart"
+            android:id="@+id/action_nav_fragment_food_item_to_nav_fragment_edit_food_description"
+            app:destination="@id/nav_fragment_edit_food_description"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -452,6 +452,14 @@
         tools:layout="@layout/fragment_add_food_item">
         <argument
             android:name="foodItemId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_edit_food_description"
+        android:name="de.njsm.stocks.android.frontend.editfooddescription.FoodEditDescriptionFragment"
+        tools:layout="@layout/fragment_edit_food_description">
+        <argument
+            android:name="foodId"
             app:argType="integer" />
     </fragment>
     <fragment
@@ -545,14 +553,6 @@
         tools:layout="@layout/template_swipe_list">
         <argument
             android:name="locationId"
-            app:argType="integer" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_fragment_food_chart"
-        android:name="de.njsm.stocks.android.frontend.foodcharts.FoodChartFragment"
-        tools:layout="@layout/fragment_food_charts">
-        <argument
-            android:name="foodId"
             app:argType="integer" />
     </fragment>
     <action

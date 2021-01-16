@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.foodcharts;
+package de.njsm.stocks.android.frontend.fooditem;
 
 import com.github.mikephil.charting.components.AxisBase;
 

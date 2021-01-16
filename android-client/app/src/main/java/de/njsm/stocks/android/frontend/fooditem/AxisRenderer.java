@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.foodcharts;
+package de.njsm.stocks.android.frontend.fooditem;
 
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.utils.Transformer;
@@ -51,8 +51,10 @@ public class AxisRenderer extends com.github.mikephil.charting.renderer.XAxisRen
             interval = mAxis.getGranularity();
 
         double originalInterval = interval;
-        while (range / interval > 7) {
+        int loopBreaker = 0;
+        while (range / interval > 7 && loopBreaker < 42) {
             interval += originalInterval;
+            loopBreaker++;
         }
 
         int n = mAxis.isCenterAxisLabelsEnabled() ? 1 : 0;

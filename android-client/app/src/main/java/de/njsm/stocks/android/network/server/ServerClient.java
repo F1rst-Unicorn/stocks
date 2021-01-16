@@ -20,14 +20,23 @@
 package de.njsm.stocks.android.network.server;
 
 
-import de.njsm.stocks.android.db.entities.*;
+import de.njsm.stocks.android.db.entities.EanNumber;
+import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.entities.FoodItem;
+import de.njsm.stocks.android.db.entities.Location;
+import de.njsm.stocks.android.db.entities.Update;
+import de.njsm.stocks.android.db.entities.User;
+import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.frontend.device.ServerTicket;
 import de.njsm.stocks.android.network.server.data.DataResponse;
 import de.njsm.stocks.android.network.server.data.ListResponse;
 import de.njsm.stocks.android.network.server.data.Response;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
@@ -71,6 +80,12 @@ public interface ServerClient {
                                   @Query("version") int version,
                                   @Query("new") String newName);
 
+    @FormUrlEncoded
+    @POST("/v2/location/description")
+    Call<Response> setLocationDescription(@Query("id") int id,
+                                          @Query("version") int version,
+                                          @Field("description") String description);
+
     @DELETE("/v2/location")
     Call<Response> deleteLocation(@Query("id") int id,
                                   @Query("version") int version,
@@ -94,6 +109,12 @@ public interface ServerClient {
     Call<Response> setToBuyStatus(@Query("id") int id,
                                   @Query("version") int version,
                                   @Query("buy") int toBuy);
+
+    @FormUrlEncoded
+    @POST("/v2/food/description")
+    Call<Response> setFoodDescription(@Query("id") int id,
+                                  @Query("version") int version,
+                                  @Field("description") String description);
 
     @DELETE("/v2/food")
     Call<Response> deleteFood(@Query("id") int id,

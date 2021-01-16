@@ -118,6 +118,14 @@ public class FoodRepository {
 
     }
 
+    public LiveData<StatusCode> setFoodDescription(int foodId, int foodVersion, String description) {
+        LOG.d("setting food description of " + foodId);
+        MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
+        webClient.setFoodDescription(foodId, foodVersion, description)
+                .enqueue(new StatusCodeCallback(data, synchroniser));
+        return data;
+    }
+
     public LiveData<List<FoodWithLatestItemView>> getFoodToEat() {
         return foodDao.getFoodToEat();
     }

@@ -38,8 +38,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,25 +53,19 @@ import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
-import de.njsm.stocks.android.frontend.interactor.FoodItemDeletionInteractor;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-public class FoodItemFragment extends BaseFragment {
-
-    private FoodItemViewModel viewModel;
+public class FoodItemFragment extends BaseFragment implements SwipeListener {
 
     private FoodViewModel foodViewModel;
 
     private EanNumberViewModel eanNumberViewModel;
 
     private ViewModelProvider.Factory viewModelFactory;
-
-    private FoodItemAdapter adapter;
 
     private FoodItemFragmentArgs input;
 
@@ -82,37 +78,36 @@ public class FoodItemFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.template_swipe_list, container, false);
+        View result = inflater.inflate(R.layout.fragment_food_item, container, false);
 
         assert getArguments() != null;
         input = FoodItemFragmentArgs.fromBundle(getArguments());
 
-        result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(this::addItem);
-        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
-        list.setLayoutManager(new LinearLayoutManager(requireActivity()));
-
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodItemViewModel.class);
         eanNumberViewModel = ViewModelProviders.of(this, viewModelFactory).get(EanNumberViewModel.class);
-        viewModel.init(input.getFoodId());
         foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
         foodViewModel.initFood(input.getFoodId());
         foodViewModel.getFood().observe(getViewLifecycleOwner(), u -> requireActivity().setTitle(u == null ? "" : u.name));
         foodViewModel.getFood().observe(getViewLifecycleOwner(), u -> requireActivity().invalidateOptionsMenu());
 
-        adapter = new FoodItemAdapter(getResources(), requireActivity().getTheme(),
-                viewModel.getFoodItems(), this::editItem);
-        viewModel.getFoodItems().observe(getViewLifecycleOwner(), v -> adapter.notifyDataSetChanged());
-        list.setAdapter(adapter);
+        ViewPager2 viewPager = result.findViewById(R.id.fragment_food_item_pager);
+        viewPager.setAdapter(new TabAdapter(this, input));
 
-        FoodItemDeletionInteractor interactor = new FoodItemDeletionInteractor(
-                this,
-                i -> viewModel.deleteItem(i),
-                i -> viewModel.getItem(i));
-        addSwipeToDelete(list, viewModel.getFoodItems(), R.drawable.ic_local_dining_white_24dp, interactor::initiateDeletion);
+        TabLayout tabLayout = result.findViewById(R.id.fragment_food_item_tabs);
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> {
+                    int iconId;
+                    if (position == 0) {
+                        iconId = R.drawable.baseline_room_service_black_24;
+                    } else {
+                        iconId = R.drawable.baseline_insert_chart_black_24;
+                    }
+                    tab.setIcon(iconId);
+                }
+        ).attach();
 
         setHasOptionsMenu(true);
-        initialiseSwipeRefresh(result, viewModelFactory);
         maybeAddEanCode(input.getEanNumber());
+        initialiseSwipeRefresh(result, R.id.fragment_food_item_swipe, viewModelFactory);
         return result;
     }
 
@@ -137,32 +132,11 @@ public class FoodItemFragment extends BaseFragment {
     }
 
     private void maybeAddEanCode(String eanNumber) {
-        if (eanNumber != null && ! eanNumber.isEmpty()) {
+        if (eanNumber != null && !eanNumber.isEmpty()) {
             eanNumberViewModel.addEanNumber(eanNumber, input.getFoodId())
                     .observe(getViewLifecycleOwner(), this::maybeShowAddError);
         }
         getArguments().remove("eanNumber");
-    }
-
-    private void addItem(View view) {
-        FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentAddFoodItem args =
-                FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentAddFoodItem(input.getFoodId());
-        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
-                .navigate(args);
-    }
-
-    private void editItem(View view) {
-        FoodItemAdapter.ViewHolder holder = (FoodItemAdapter.ViewHolder) view.getTag();
-        int position = holder.getAdapterPosition();
-        List<FoodItemView> data = viewModel.getFoodItems().getValue();
-        if (data != null) {
-            int id = data.get(position).id;
-
-            FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentEditFoodItem args =
-                    FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentEditFoodItem(id);
-            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
-                    .navigate(args);
-        }
     }
 
     @Override
@@ -177,7 +151,7 @@ public class FoodItemFragment extends BaseFragment {
             case R.id.fragment_food_item_options_shopping:
                 Food f = foodViewModel.getFood().getValue();
                 if (f != null) {
-                    LiveData<StatusCode> code = foodViewModel.setToBuyStatus(f, ! f.toBuy);
+                    LiveData<StatusCode> code = foodViewModel.setToBuyStatus(f, !f.toBuy);
                     code.observe(this, c -> {
                         code.removeObservers(this);
                         requireActivity().invalidateOptionsMenu();
@@ -193,18 +167,22 @@ public class FoodItemFragment extends BaseFragment {
             case R.id.fragment_food_item_options_events:
                 goToEvents();
                 break;
-            case R.id.fragment_food_item_options_charts:
-                goToCharts();
+            case R.id.fragment_food_item_options_description:
+                goToEditDescription();
                 break;
         }
         return true;
     }
 
-    private void goToCharts() {
-        FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentFoodChart args =
-                FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentFoodChart(input.getFoodId());
-        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
-                .navigate(args);
+    private void goToEditDescription() {
+        foodViewModel.getFood().observe(getViewLifecycleOwner(), f -> {
+            FoodItemFragmentDirections.ActionNavFragmentFoodItemToNavFragmentEditFoodDescription args =
+                    FoodItemFragmentDirections.actionNavFragmentFoodItemToNavFragmentEditFoodDescription(
+                            f.id
+                    );
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(args);
+        });
     }
 
     private void goToEvents() {
@@ -265,7 +243,8 @@ public class FoodItemFragment extends BaseFragment {
                         result.observe(this, this::maybeShowEditError);
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, (d, b) -> {})
+                .setNegativeButton(android.R.string.cancel, (d, b) -> {
+                })
                 .show();
     }
 
@@ -291,12 +270,17 @@ public class FoodItemFragment extends BaseFragment {
                         result.observe(this, this::maybeShowEditError);
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, (d, b) -> {})
+                .setNegativeButton(android.R.string.cancel, (d, b) -> {
+                })
                 .show();
     }
 
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         this.viewModelFactory = viewModelFactory;
+    }
+
+    public void setEnabled(boolean value) {
+        getView().findViewById(R.id.fragment_food_item_swipe).setEnabled(value);
     }
 }

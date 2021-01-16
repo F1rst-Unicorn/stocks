@@ -119,6 +119,7 @@ public abstract class FoodDao {
                 "having i.eat_by = MIN(i.eat_by)) " +
             "select f._id, f.version, f.initiates, f.name as name, f.to_buy as toBuy, i.eatBy as eatBy, " +
             "i.amount as amount, f.expiration_offset as expirationOffset, f.location as location, " +
+            "f.description as description, " +
             "f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end " +
             "from Food f " +
             "inner join least_item i on i.of_type = f._id " +
@@ -137,7 +138,7 @@ public abstract class FoodDao {
                 "and i.transaction_time_end = :infinity " +
                 "group by i.of_type " +
                 "having i.eat_by = MIN(i.eat_by)) " +
-            "select f._id, f.version, f.initiates, f.name as name, f.to_buy as toBuy, i.eatBy as eatBy, i.amount as amount, f.expiration_offset as expirationOffset, f.location as location, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end " +
+            "select f._id, f.version, f.initiates, f.name as name, f.to_buy as toBuy, i.eatBy as eatBy, i.amount as amount, f.expiration_offset as expirationOffset, f.location as location, f.description as description, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end " +
             "from Food f " +
             "inner join least_item i on i.of_type = f._id " +
             "and f.valid_time_start <= " + NOW +
@@ -146,7 +147,7 @@ public abstract class FoodDao {
             "order by eatBy")
     abstract LiveData<List<FoodWithLatestItemView>> getFoodByLocation(int location, Instant infinity);
 
-    @Query("select f._id, f.version, f.initiates, f.name, f.to_buy, f.expiration_offset, f.location as location, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end " +
+    @Query("select f._id, f.version, f.initiates, f.name, f.to_buy, f.expiration_offset, f.location as location, f.description as description, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end " +
             "from Food f " +
             "inner join EanNumber n on n.identifies = f._id " +
             "where n.number = :s " +
@@ -159,7 +160,7 @@ public abstract class FoodDao {
             "limit 1")
     abstract LiveData<Food> getFoodByEanNumber(String s, Instant infinity);
 
-    @Query(     "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, count(*) as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
+    @Query(     "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, count(*) as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
                 "from Food f " +
                 "inner join FoodItem i on f._id = i.of_type " +
                 "where f.name like :searchTerm " +
@@ -171,7 +172,7 @@ public abstract class FoodDao {
                 "and i.transaction_time_end = :infinity " +
                 "group by f.name " +
             "union all " +
-                "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, 0 as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
+                "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, 0 as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
                 "from Food f " +
                 "where f.name like :searchTerm " +
                 "and f.valid_time_start <= " + NOW +
@@ -186,7 +187,7 @@ public abstract class FoodDao {
             "order by name")
     abstract LiveData<List<FoodWithLatestItemView>> getFoodBySubString(String searchTerm, Instant infinity);
 
-    @Query(     "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, count(*) as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
+    @Query(     "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, count(*) as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
                 "from Food f " +
                 "inner join FoodItem i on f._id = i.of_type " +
                 "where f.to_buy " +
@@ -198,7 +199,7 @@ public abstract class FoodDao {
                 "and i.transaction_time_end = :infinity " +
                 "group by f.name " +
             "union all " +
-                "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, 0 as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
+                "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, 0 as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
                 "from Food f " +
                 "where f.to_buy " +
                 "and f.valid_time_start <= " + NOW +

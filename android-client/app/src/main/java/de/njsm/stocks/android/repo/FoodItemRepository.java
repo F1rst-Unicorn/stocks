@@ -21,6 +21,13 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+
+import org.threeten.bp.Instant;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import de.njsm.stocks.android.db.dao.FoodItemDao;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.network.server.ServerClient;
@@ -28,10 +35,6 @@ import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
-import org.threeten.bp.Instant;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class FoodItemRepository {
 
@@ -89,5 +92,10 @@ public class FoodItemRepository {
         webClient.editFoodItem(id, version, Config.API_DATE_FORMAT.format(eatBy), locationId)
                 .enqueue(new StatusCodeCallback(result, synchroniser));
         return result;
+    }
+
+    public LiveData<Integer> countItemsOfType(int foodId) {
+        LOG.d("editing items of type " + foodId);
+        return foodItemDao.countItemsOfType(foodId);
     }
 }

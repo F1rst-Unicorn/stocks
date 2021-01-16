@@ -109,4 +109,8 @@ public class FoodViewModel extends ViewModel {
     public LiveData<StatusCode> setFoodDefaultLocation(Food food, int location) {
         return foodRepository.setFoodDefaultLocation(food, location);
     }
+
+    public LiveData<StatusCode> setFoodDescription(int foodId, int foodVersion, String description) {
+        return foodRepository.setFoodDescription(foodId, foodVersion, description);
+    }
 }

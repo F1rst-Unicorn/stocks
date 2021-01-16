@@ -60,6 +60,11 @@ public abstract class FoodItemDao {
         return getItem(id, DATABASE_INFINITY);
     }
 
+    public LiveData<Integer> countItemsOfType(int foodId) {
+        return countItemsOfType(foodId, DATABASE_INFINITY);
+    }
+
+
     @Query("select i._id as _id, i.version as version, u.name as userName, " +
             "d.name as deviceName, l.name as location, i.eat_by as eatByDate, i.valid_time_start," +
             "i.valid_time_end, i.transaction_time_start, i.transaction_time_end, i.initiates, " +
@@ -123,6 +128,14 @@ public abstract class FoodItemDao {
             "group by null " +
             "limit 1")
     abstract LiveData<Instant> getLatestExpirationOf(int foodType, Instant infinity);
+
+    @Query("select count(*) " +
+            "from FoodItem i " +
+            "where i.of_type = :foodId " +
+            "and i.valid_time_start <= " + NOW +
+            "and " + NOW + " < i.valid_time_end " +
+            "and i.transaction_time_end = :infinity")
+    abstract LiveData<Integer> countItemsOfType(int foodId, Instant infinity);
 
     @Query("delete from FoodItem")
     abstract void delete();

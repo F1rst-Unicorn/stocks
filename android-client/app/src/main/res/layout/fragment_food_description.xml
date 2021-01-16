@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
+
+<ScrollView    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_food_description_scroller"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_amount"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" "
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/fragment_food_description_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="42" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_location"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": "
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/fragment_food_description_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_expiration_offset"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": "
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/fragment_food_description_standard_expiration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="365" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="d" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/fragment_food_description_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:text=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sit amet elit ac leo scelerisque auctor. Integer eu nibh malesuada, maximus lacus eu, rhoncus ante. Praesent non lectus commodo, ornare lacus eget, consequat magna. Nullam rhoncus, odio eget pretium ultrices, nibh nisl interdum dolor, nec volutpat nulla lectus ac erat. Cras interdum sem vel mi tristique, sit amet malesuada purus ultricies. Etiam rhoncus pharetra nisl. Proin ut justo erat. " />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/fragment_food_description_chart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="@string/title_food_count_chart"
+                android:paddingTop="4dp"
+                android:paddingBottom="16dp"/>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/fragment_food_description_histogram"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="@string/title_food_histogram"
+                android:paddingTop="4dp"
+                android:paddingBottom="16dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

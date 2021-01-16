@@ -40,9 +40,9 @@ public class StatusCodeCallback implements Callback<Response> {
 
     private static final Logger LOG = new Logger(StatusCodeCallback.class);
 
-    private MediatorLiveData<StatusCode> data;
+    private final MediatorLiveData<StatusCode> data;
 
-    private Synchroniser synchroniser;
+    private final Synchroniser synchroniser;
 
     public StatusCodeCallback(MediatorLiveData<StatusCode> data,
                               Synchroniser synchroniser) {
@@ -63,7 +63,7 @@ public class StatusCodeCallback implements Callback<Response> {
                 result == StatusCode.NOT_FOUND ||
                 result == StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION) {
             LiveData<StatusCode> syncResult = synchroniser.synchronise();
-            data.addSource(syncResult, value -> data.setValue(value));
+            data.addSource(syncResult, data::setValue);
         }
     }
 

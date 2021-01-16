@@ -67,7 +67,7 @@ public abstract class LocationDao {
             "and transaction_time_end = :infinity")
     abstract LiveData<Location> getLocation(int locationId, Instant infinity);
 
-    @Query("select l._id, l.version, l.name, l.valid_time_start, " +
+    @Query("select l._id, l.version, l.name, l.description, l.valid_time_start, " +
             "l.valid_time_end, l.transaction_time_start, " +
             "l.transaction_time_end, l.initiates, count(*) as amount " +
             "from Location l " +

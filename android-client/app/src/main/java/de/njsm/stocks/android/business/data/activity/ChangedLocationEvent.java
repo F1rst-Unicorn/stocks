@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.android.business.data.activity;
 
+import java.util.ArrayList;
 import java.util.function.IntFunction;
 
 import de.njsm.stocks.R;
@@ -34,8 +35,44 @@ public class ChangedLocationEvent extends ChangedEntityEvent<Location> implement
 
     @Override
     public String describe(IntFunction<String> stringResourceResolver) {
-        String template = stringResourceResolver.apply(R.string.event_location_renamed);
-        return String.format(template, initiatorUser.name, oldEntity.name, newEntity.name);
+        String template;
+        String description;
+        ArrayList<String> partialSentences = new ArrayList<>();
+
+        if (!oldEntity.name.equals(newEntity.name)) {
+            template = stringResourceResolver.apply(R.string.event_location_renamed);
+            description = String.format(template, initiatorUser.name, oldEntity.name, newEntity.name);
+            partialSentences.add(description);
+        }
+
+        if (!oldEntity.description.equals(newEntity.description)) {
+            if (partialSentences.size() == 0) {
+                template = stringResourceResolver.apply(R.string.event_location_description_changed);
+                description = String.format(template, initiatorUser.name, oldEntity.name);
+            } else {
+                description = stringResourceResolver.apply(R.string.event_location_description_changed_addendum);
+            }
+            partialSentences.add(description);
+        }
+
+        StringBuilder result = new StringBuilder();
+        String enumerationSeparator = stringResourceResolver.apply(R.string.event_enumeration_item_divider);
+        for (int i = 0; i < partialSentences.size() - 1; i++) {
+            result.append(partialSentences.get(i));
+            result.append(enumerationSeparator);
+            result.append(" ");
+        }
+
+        if (partialSentences.size() > 1) {
+            result.deleteCharAt(result.length() - 2);
+            result.append(stringResourceResolver.apply(R.string.event_enumeration_item_divider_last));
+            result.append(" ");
+        }
+
+        result.append(partialSentences.get(partialSentences.size() - 1));
+        result.append(stringResourceResolver.apply(R.string.event_end_of_sentence));
+
+        return result.toString();
     }
 
     @Override
