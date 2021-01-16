@@ -38,8 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.njsm.stocks.server.v2.business.StatusCode.INVALID_ARGUMENT;
-import static de.njsm.stocks.server.v2.business.StatusCode.SUCCESS;
+import static de.njsm.stocks.server.v2.business.StatusCode.*;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.Assert.assertEquals;
@@ -202,6 +201,18 @@ public class LocationEndpointTest {
         Response response = uut.setDescription(createMockRequest(), data.id, data.version, data.description);
 
         assertEquals(SUCCESS, response.status);
+        verify(businessLayer).setDescription(data);
+        Mockito.verify(businessLayer).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void errorFromBackendIsPropagated() {
+        Location data = new Location(1, "", 2, "new description");
+        when(businessLayer.setDescription(data)).thenReturn(INVALID_DATA_VERSION);
+
+        Response response = uut.setDescription(createMockRequest(), data.id, data.version, data.description);
+
+        assertEquals(INVALID_DATA_VERSION, response.status);
         verify(businessLayer).setDescription(data);
         Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }

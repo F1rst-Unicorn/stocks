@@ -85,7 +85,9 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                     LOCATION.VERSION.add(1),
                     DSL.inline(input.description)
                     ),
-                    LOCATION.ID.eq(input.id).and(LOCATION.VERSION.eq(input.version)))
+                    LOCATION.ID.eq(input.id)
+                            .and(LOCATION.VERSION.eq(input.version))
+                            .and(LOCATION.DESCRIPTION.ne(input.description)))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }

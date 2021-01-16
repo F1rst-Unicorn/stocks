@@ -276,4 +276,13 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
     }
+
+    @Test
+    public void settingDescriptionWithoutChangeIsPrevented() {
+        Food data = new Food(2, 0, "beer description");
+
+        StatusCode result = uut.setDescription(data);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
 }

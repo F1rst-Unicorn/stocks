@@ -143,8 +143,8 @@ public class FoodEndpoint extends Endpoint {
                                    @FormParam("description") String description) {
         if (isValid(id, "id") && isValidVersion(version, "version")) {
             manager.setPrincipals(getPrincipals(request));
-            manager.setDescription(new Food(id, version, description));
-            return new Response(StatusCode.SUCCESS);
+            StatusCode result = manager.setDescription(new Food(id, version, description));
+            return new Response(result);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
         }

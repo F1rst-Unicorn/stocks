@@ -134,7 +134,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     FOOD.LOCATION,
                     DSL.inline(item.description)),
                     getIdField().eq(item.id)
-                            .and(getVersionField().eq(item.version)))
+                            .and(getVersionField().eq(item.version))
+                            .and(FOOD.DESCRIPTION.ne(item.description)))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }

@@ -388,4 +388,13 @@ public class LocationHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
     }
+
+    @Test
+    public void settingDescriptionWithoutChangeIsPrevented() {
+        Location data = new Location(1, "", 0, "fridge description");
+
+        StatusCode result = uut.setDescription(data);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
 }
