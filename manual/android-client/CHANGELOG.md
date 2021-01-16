@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.9.0.0]
+
 ### Added
 
 * STOCKS-100: Allow viewing and editing food and location descriptions
