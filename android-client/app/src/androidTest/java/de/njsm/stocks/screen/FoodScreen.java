@@ -49,6 +49,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -58,10 +59,15 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static de.njsm.stocks.util.Matchers.atPosition;
 import static junit.framework.TestCase.fail;
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.core.AllOf.allOf;
 
 public class FoodScreen extends AbstractListPresentingScreen {
+
+    public FoodScreen() {
+        super(R.id.fragment_food_item_list_list);
+    }
 
     public FoodScreen assertTitle(String title) {
         onView(withText(title))
@@ -100,7 +106,7 @@ public class FoodScreen extends AbstractListPresentingScreen {
         openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
         onView(withText(R.string.title_expiration_offset)).perform(click());
         onView(withId(R.id.number_picker_picker)).check(matches(withChild(withText(String.valueOf(offset)))));
-        onView(withText("CANCEL")).perform(click());
+        onView(anyOf(withText("CANCEL"), withText("ABBRECHEN"))).perform(click());
         return this;
     }
 
@@ -114,7 +120,7 @@ public class FoodScreen extends AbstractListPresentingScreen {
 
     public FoodScreen assertDefaultLocation(String location) {
         openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
-        onView(allOf(withId(R.id.title), withText("Default Location"))).perform(click());
+        onView(allOf(withId(R.id.title), anyOf(withText("Default Location"), withText("Standardort")))).perform(click());
         onView(allOf(withId(R.id.spinner_spinner),
                 childAtPosition(
                         allOf(withId(R.id.custom),
@@ -123,13 +129,13 @@ public class FoodScreen extends AbstractListPresentingScreen {
                                         0)),
                         0),
                 isDisplayed())).check(matches(withChild(withText(location))));
-        onView(withText("CANCEL")).perform(click());
+        onView(anyOf(withText("CANCEL"), withText("ABBRECHEN"))).perform(click());
         return this;
     }
 
     public FoodScreen setDefaultLocation(int index) {
         openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
-        onView(allOf(withId(R.id.title), withText("Default Location"))).perform(click());
+        onView(allOf(withId(R.id.title), anyOf(withText("Default Location"), withText("Standardort")))).perform(click());
         sleep(1000);
         onView(allOf(withId(R.id.spinner_spinner),
                         childAtPosition(
@@ -148,7 +154,10 @@ public class FoodScreen extends AbstractListPresentingScreen {
         int counter = 0;
         while (getListCount() > 1) {
             onView(withId(R.id.fragment_food_item_list_list))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition(0, swipeRight()));
+                    .perform(
+                            RecyclerViewActions.actionOnItemAtPosition(0, click()),
+                            RecyclerViewActions.actionOnItemAtPosition(0, swipeUp()),
+                            RecyclerViewActions.actionOnItemAtPosition(0, swipeRight()));
 
             if (counter++ > SystemTestSuite.LOOP_BREAKER) {
                 fail("LOOP BREAKER triggered, list count is " + getListCount());
