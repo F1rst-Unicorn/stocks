@@ -70,13 +70,13 @@ public class FoodScreen extends AbstractListPresentingScreen {
     }
 
     public FoodAddScreen addItems() {
-        onView(withId(R.id.template_swipe_list_fab)).perform(click());
+        onView(withId(R.id.fragment_food_item_list_fab)).perform(click());
         return new FoodAddScreen();
     }
 
     public FoodAddScreen longClick(int index) {
         checkIndex(index);
-        onView(withId(R.id.template_swipe_list_list))
+        onView(withId(R.id.fragment_food_item_list_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(index, ViewActions.longClick()));
         return new FoodAddScreen();
     }
@@ -147,7 +147,7 @@ public class FoodScreen extends AbstractListPresentingScreen {
     public FoodScreen eatAllButOne() {
         int counter = 0;
         while (getListCount() > 1) {
-            onView(withId(R.id.template_swipe_list_list))
+            onView(withId(R.id.fragment_food_item_list_list))
                     .perform(RecyclerViewActions.actionOnItemAtPosition(0, swipeRight()));
 
             if (counter++ > SystemTestSuite.LOOP_BREAKER) {
@@ -159,7 +159,7 @@ public class FoodScreen extends AbstractListPresentingScreen {
 
     public FoodScreen assertItem(int index, String user, String device, String date, String location) {
         checkIndex(index);
-        ViewInteraction item = onView(withId(R.id.template_swipe_list_list))
+        ViewInteraction item = onView(withId(R.id.fragment_food_item_list_list))
                 .perform(RecyclerViewActions.scrollToPosition(index));
 
         item.check(matches(atPosition(index, withChild(allOf(withId(R.id.item_food_item_date),
