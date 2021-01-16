@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.3.0.0]
+
 ### Added
 
 * STOCKS-100: Add description field for food and locations.
