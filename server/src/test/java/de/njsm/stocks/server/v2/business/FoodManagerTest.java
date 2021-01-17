@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
@@ -82,7 +82,7 @@ public class FoodManagerTest {
 
     @Test
     public void testAddingItem() {
-        Food data = new Food(1, "Cheese", 2, true, Period.ZERO, 1, "");
+        FoodForInsertion data = new FoodForInsertion("Cheese");
         Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
 
         Validation<StatusCode, Integer> result = uut.add(data);
@@ -95,20 +95,19 @@ public class FoodManagerTest {
     @Test
     public void testRenamingItem() {
         String newName = "Sausage";
-        Food data = new Food(1, newName, 2, true, Period.ZERO, 1, "");
-        Mockito.when(backend.edit(data, newName, Period.ZERO, 1)).thenReturn(StatusCode.SUCCESS);
+        FoodForEditing data = new FoodForEditing(1, 2, newName, Period.ZERO, 1);
+        Mockito.when(backend.edit(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.rename(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Mockito.verify(backend).edit(data, newName, Period.ZERO, 1);
+        Mockito.verify(backend).edit(data);
         Mockito.verify(backend).commit();
     }
 
     @Test
     public void testSettingBuyStatusItem() {
-        String newName = "Sausage";
-        Food data = new Food(1, newName, 2, true, Period.ZERO, 1, "");
+        FoodForSetToBuy data = new FoodForSetToBuy(1, 2, true);
         Mockito.when(backend.setToBuyStatus(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.setToBuyStatus(data);
@@ -120,7 +119,7 @@ public class FoodManagerTest {
 
     @Test
     public void testDeletingItem() {
-        Food data = new Food(1, "Cheese", 2, true, Period.ZERO, 1, "");
+        FoodForDeletion data = new FoodForDeletion(1, 2);
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodItemHandler.deleteItemsOfType(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(eanNumberHandler.deleteOwnedByFood(data)).thenReturn(StatusCode.SUCCESS);
@@ -136,7 +135,7 @@ public class FoodManagerTest {
 
     @Test
     public void settingDescriptionWorks() {
-        Food data = new Food(1, 2, "some description");
+        FoodForSetDescription data = new FoodForSetDescription(1, 2, "some description");
         Mockito.when(backend.setDescription(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.setDescription(data);

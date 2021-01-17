@@ -20,8 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.EanNumber;
-import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -38,13 +37,12 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
 
     public EanNumberHandler(ConnectionFactory connectionFactory,
                             String resourceIdentifier,
-                            int timeout,
-                            InsertVisitor<EanNumberRecord> visitor) {
-        super(connectionFactory, resourceIdentifier, timeout, visitor);
+                            int timeout) {
+        super(connectionFactory, resourceIdentifier, timeout);
     }
 
-    public StatusCode deleteOwnedByFood(Food food) {
-        return currentDelete(EAN_NUMBER.IDENTIFIES.eq(food.id))
+    public StatusCode deleteOwnedByFood(Identifiable<Food> food) {
+        return currentDelete(EAN_NUMBER.IDENTIFIES.eq(food.getId()))
                 .map(this::notFoundIsOk);
     }
 
@@ -66,24 +64,24 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
     @Override
     protected Function<EanNumberRecord, EanNumber> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new EanNumber(
+            return cursor -> new BitemporalEanNumber(
                     cursor.getId(),
                     cursor.getVersion(),
                     cursor.getValidTimeStart().toInstant(),
                     cursor.getValidTimeEnd().toInstant(),
                     cursor.getTransactionTimeStart().toInstant(),
                     cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getNumber(),
                     cursor.getIdentifies(),
-                    cursor.getInitiates()
-            );
+                    cursor.getInitiates(),
+                    cursor.getNumber()
+                    );
         else
-            return cursor -> new EanNumber(
+            return cursor -> new EanNumberForGetting(
                     cursor.getId(),
                     cursor.getVersion(),
-                    cursor.getNumber(),
-                    cursor.getIdentifies()
-            );
+                    cursor.getIdentifies(),
+                    cursor.getNumber()
+                    );
     }
 
     @Override

@@ -22,7 +22,7 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.FoodItem;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
@@ -64,7 +64,7 @@ public class FoodItemEndpoint extends Endpoint {
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
             manager.setPrincipals(user);
-            Validation<StatusCode, Integer> status = manager.add(new FoodItem(eatByDate,
+            Validation<StatusCode, Integer> status = manager.add(new FoodItemForInsertion(eatByDate,
                     ofType, storedIn, user.getDid(), user.getUid()));
             return new Response(status);
 
@@ -104,8 +104,8 @@ public class FoodItemEndpoint extends Endpoint {
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
             manager.setPrincipals(user);
-            StatusCode result = manager.edit(new FoodItem(id, version,
-                    eatByDate, 0, storedIn, user.getDid(), user.getUid()));
+            StatusCode result = manager.edit(new FoodItemForEditing(id, version,
+                    eatByDate, storedIn));
 
             return new Response(result);
         } else {
@@ -123,7 +123,7 @@ public class FoodItemEndpoint extends Endpoint {
                 isValidVersion(version, "version")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.delete(new FoodItem(id, version));
+            StatusCode status = manager.delete(new FoodItemForDeletion(id, version));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

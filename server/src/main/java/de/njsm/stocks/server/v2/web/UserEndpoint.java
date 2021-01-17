@@ -22,6 +22,8 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.UserManager;
 import de.njsm.stocks.server.v2.business.data.User;
+import de.njsm.stocks.server.v2.business.data.UserForDeletion;
+import de.njsm.stocks.server.v2.business.data.UserForInsertion;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
@@ -54,7 +56,7 @@ public class UserEndpoint extends Endpoint {
 
         if (isValidName(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.addUser(new User(name));
+            StatusCode result = manager.addUser(new UserForInsertion(name));
             return new Response(result);
 
         } else {
@@ -86,7 +88,7 @@ public class UserEndpoint extends Endpoint {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.deleteUser(new User(id, version));
+            StatusCode result = manager.deleteUser(new UserForDeletion(id, version));
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));

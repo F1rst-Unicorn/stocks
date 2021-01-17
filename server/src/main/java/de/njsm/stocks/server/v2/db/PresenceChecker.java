@@ -19,10 +19,11 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.data.VersionedData;
+import de.njsm.stocks.server.v2.business.data.Entity;
+import de.njsm.stocks.server.v2.business.data.Identifiable;
 import org.jooq.DSLContext;
 
-public interface PresenceChecker<R extends VersionedData> {
+public interface PresenceChecker<T extends Entity> {
 
-    boolean isCurrentlyMissing(R item, DSLContext context);
+    boolean isCurrentlyMissing(Identifiable<T> item, DSLContext context);
 }

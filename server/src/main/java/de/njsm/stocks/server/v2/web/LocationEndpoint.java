@@ -21,7 +21,7 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v2.business.LocationManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Location;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
@@ -53,7 +53,7 @@ public class LocationEndpoint extends Endpoint {
                                 @QueryParam("name") String name) {
         if (isValid(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.put(new Location(name));
+            StatusCode status = manager.put(new LocationForInsertion(name));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -87,7 +87,7 @@ public class LocationEndpoint extends Endpoint {
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.rename(new Location(id, newName, version, ""));
+            StatusCode status = manager.rename(new LocationForRenaming(id, version, newName));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -105,7 +105,7 @@ public class LocationEndpoint extends Endpoint {
 
             boolean cascade = cascadeParameter == 1;
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.delete(new Location(id, "", version, ""), cascade);
+            StatusCode status = manager.delete(new LocationForDeletion(id, version), cascade);
             return new Response(status);
 
         } else {
@@ -121,9 +121,9 @@ public class LocationEndpoint extends Endpoint {
                                    @QueryParam("id") int id,
                                    @QueryParam("version") int version,
                                    @FormParam("description") String description) {
-        if (isValid(id, "id") && isValidVersion(version, "version")) {
+        if (isValid(id, "id") && isValidVersion(version, "version") && isValid(description, "description")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.setDescription(new Location(id, "", version, description));
+            StatusCode result = manager.setDescription(new LocationForSetDescription(id, version, description));
             return new Response(result);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

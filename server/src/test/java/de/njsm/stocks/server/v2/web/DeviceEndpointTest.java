@@ -23,6 +23,8 @@ import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.UserDeviceForDeletion;
+import de.njsm.stocks.server.v2.business.data.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
@@ -40,7 +42,6 @@ import java.util.stream.Stream;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static junit.framework.TestCase.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 
 public class DeviceEndpointTest {
@@ -70,7 +71,7 @@ public class DeviceEndpointTest {
 
         ArgumentCaptor<StreamResponse<UserDevice>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        assertEquals(StatusCode.SUCCESS, c.getValue().status);
+        assertEquals(StatusCode.SUCCESS, c.getValue().getStatus());
         assertEquals(0, c.getValue().data.count());
         Mockito.verify(businessObject).get(r, false, Instant.EPOCH);
     }
@@ -83,22 +84,18 @@ public class DeviceEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test
     public void addDevice() {
-        Mockito.when(businessObject.addDevice(any())).thenReturn(Validation.success(new NewDeviceTicket()));
-        String name = "test";
-        int belongsUser = 2;
+        UserDeviceForInsertion device = new UserDeviceForInsertion("test", 2);
+        Mockito.when(businessObject.addDevice(device)).thenReturn(Validation.success(new NewDeviceTicket(0, "")));
 
-        DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), name, belongsUser);
+        DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), device.getName(), device.getBelongsTo());
 
-        assertEquals(StatusCode.SUCCESS, result.status);
-        ArgumentCaptor<UserDevice> captor = ArgumentCaptor.forClass(UserDevice.class);
-        Mockito.verify(businessObject).addDevice(captor.capture());
-        assertEquals(name, captor.getValue().name);
-        assertEquals(belongsUser, captor.getValue().userId);
+        assertEquals(StatusCode.SUCCESS, result.getStatus());
+        Mockito.verify(businessObject).addDevice(device);
         Mockito.verify(businessObject).setPrincipals(TEST_USER);
     }
 
@@ -109,7 +106,7 @@ public class DeviceEndpointTest {
 
         DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), name, belongsUser);
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -119,7 +116,7 @@ public class DeviceEndpointTest {
 
         DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), name, belongsUser);
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -129,7 +126,7 @@ public class DeviceEndpointTest {
 
         DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), name, belongsUser);
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -139,23 +136,20 @@ public class DeviceEndpointTest {
 
         DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), name, belongsUser);
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
     public void deleteDevice() {
-        Mockito.when(businessObject.removeDevice(any())).thenReturn(StatusCode.SUCCESS);
-        int id = 4;
-        int version = 3;
+        UserDeviceForDeletion device = new UserDeviceForDeletion(4, 3);
+        Mockito.when(businessObject.removeDevice(device)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.deleteDevice(createMockRequest(),
-                id, version);
+                device.getId(),
+                device.getVersion());
 
-        assertEquals(StatusCode.SUCCESS, result.status);
-        ArgumentCaptor<UserDevice> captor = ArgumentCaptor.forClass(UserDevice.class);
-        Mockito.verify(businessObject).removeDevice(captor.capture());
-        assertEquals(id, captor.getValue().id);
-        assertEquals(version, captor.getValue().version);
+        assertEquals(StatusCode.SUCCESS, result.getStatus());
+        Mockito.verify(businessObject).removeDevice(device);
         Mockito.verify(businessObject).setPrincipals(TEST_USER);
     }
 
@@ -167,7 +161,7 @@ public class DeviceEndpointTest {
         Response result = uut.deleteDevice(Util.createMockRequest(),
                 id, version);
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -178,23 +172,20 @@ public class DeviceEndpointTest {
         Response result = uut.deleteDevice(Util.createMockRequest(),
                 id, version);
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
     public void revokeDevice() {
-        Mockito.when(businessObject.revokeDevice(any())).thenReturn(StatusCode.SUCCESS);
-        int id = 4;
-        int version = 3;
+        UserDeviceForDeletion device = new UserDeviceForDeletion(4, 3);
+        Mockito.when(businessObject.revokeDevice(device)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.revokeDevice(Util.createMockRequest(),
-                id, version);
+                device.getId(),
+                device.getVersion());
 
-        assertEquals(StatusCode.SUCCESS, result.status);
-        ArgumentCaptor<UserDevice> captor = ArgumentCaptor.forClass(UserDevice.class);
-        Mockito.verify(businessObject).revokeDevice(captor.capture());
-        assertEquals(id, captor.getValue().id);
-        assertEquals(version, captor.getValue().version);
+        assertEquals(StatusCode.SUCCESS, result.getStatus());
+        Mockito.verify(businessObject).revokeDevice(device);
         Mockito.verify(businessObject).setPrincipals(TEST_USER);
     }
 
@@ -207,7 +198,7 @@ public class DeviceEndpointTest {
         Response result = uut.revokeDevice(Util.createMockRequest(),
                 id, version);
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -218,7 +209,7 @@ public class DeviceEndpointTest {
         Response result = uut.revokeDevice(Util.createMockRequest(),
                 id, version);
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
 }

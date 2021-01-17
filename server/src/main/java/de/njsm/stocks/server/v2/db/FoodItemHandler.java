@@ -51,42 +51,41 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
     public FoodItemHandler(ConnectionFactory connectionFactory,
                            String resourceIdentifier,
                            int timeout,
-                           InsertVisitor<FoodItemRecord> visitor,
                            PresenceChecker<UserDevice> userDeviceChecker,
                            PresenceChecker<User> userChecker) {
-        super(connectionFactory, resourceIdentifier, timeout, visitor);
+        super(connectionFactory, resourceIdentifier, timeout);
         this.userDeviceChecker = userDeviceChecker;
         this.userChecker = userChecker;
     }
 
-    public StatusCode edit(FoodItem item) {
+    public StatusCode edit(FoodItemForEditing item) {
         return runCommand(context -> {
             if (isCurrentlyMissing(item, context)) {
                 return StatusCode.NOT_FOUND;
             }
 
-            OffsetDateTime newEatByDate = item.eatByDate.atOffset(ZoneOffset.UTC);
+            OffsetDateTime newEatByDate = item.getEatBy().atOffset(ZoneOffset.UTC);
 
             return currentUpdate(Arrays.asList(
                     FOOD_ITEM.ID,
                     DSL.inline(OffsetDateTime.from(newEatByDate)),
                     FOOD_ITEM.OF_TYPE,
-                    DSL.inline(item.storedIn),
+                    DSL.inline(item.getStoredIn()),
                     FOOD_ITEM.REGISTERS,
                     FOOD_ITEM.BUYS,
                     FOOD_ITEM.VERSION.add(1)
                     ),
-                    FOOD_ITEM.ID.eq(item.id)
-                            .and(FOOD_ITEM.VERSION.eq(item.version))
+                    FOOD_ITEM.ID.eq(item.getId())
+                            .and(FOOD_ITEM.VERSION.eq(item.getVersion()))
                             .and(FOOD_ITEM.EAT_BY.ne(newEatByDate)
-                                    .or(FOOD_ITEM.STORED_IN.ne(item.storedIn))
+                                    .or(FOOD_ITEM.STORED_IN.ne(item.getStoredIn()))
                             )
             )
                     .map(this::notFoundMeansInvalidVersion);
         });
     }
 
-    public StatusCode transferFoodItems(UserDevice from, UserDevice to) {
+    public StatusCode transferFoodItems(Identifiable<UserDevice> from, Identifiable<UserDevice> to) {
         return runCommand(context -> {
             if (userDeviceChecker.isCurrentlyMissing(from, context)) {
                 LOG.warn("Origin ID " + from + " not found");
@@ -102,16 +101,19 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,
                     FOOD_ITEM.STORED_IN,
-                    DSL.inline(to.id),
+                    DSL.inline(to.getId()),
                     FOOD_ITEM.BUYS,
                     FOOD_ITEM.VERSION.add(1)
                     ),
-                    FOOD_ITEM.REGISTERS.eq(from.id))
+                    FOOD_ITEM.REGISTERS.eq(from.getId()))
                     .map(this::notFoundIsOk);
         });
     }
 
-    public StatusCode transferFoodItems(User from, User to, List<UserDevice> fromDevices, UserDevice toDevice) {
+    public StatusCode transferFoodItems(Identifiable<User> from,
+                                        Identifiable<User> to,
+                                        List<Identifiable<UserDevice>> fromDevices,
+                                        Identifiable<UserDevice> toDevice) {
         return runCommand(context -> {
             if (userChecker.isCurrentlyMissing(from, context)) {
                 LOG.warn("Origin ID " + from + " not found");
@@ -124,7 +126,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
             }
 
             List<Integer> deviceIds = fromDevices.stream()
-                    .map(UserDevice::getId)
+                    .map(Identifiable::getId)
                     .collect(Collectors.toList());
 
             return currentUpdate(Arrays.asList(
@@ -132,32 +134,32 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,
                     FOOD_ITEM.STORED_IN,
-                    DSL.inline(toDevice.id),
-                    DSL.inline(to.id),
+                    DSL.inline(toDevice.getId()),
+                    DSL.inline(to.getId()),
                     FOOD_ITEM.VERSION.add(1)
                     ),
-                    FOOD_ITEM.BUYS.eq(from.id)
+                    FOOD_ITEM.BUYS.eq(from.getId())
                             .and(FOOD_ITEM.REGISTERS.in(deviceIds)))
                     .map(this::notFoundIsOk);
         });
     }
 
-    public StatusCode deleteItemsOfType(Food item) {
-        return runCommand(context -> currentDelete(FOOD_ITEM.OF_TYPE.eq(item.id))
+    public StatusCode deleteItemsOfType(Identifiable<Food> item) {
+        return runCommand(context -> currentDelete(FOOD_ITEM.OF_TYPE.eq(item.getId()))
                 .map(this::notFoundIsOk));
     }
 
-    public StatusCode deleteItemsStoredIn(Location location) {
-        return runCommand(context -> currentDelete(FOOD_ITEM.STORED_IN.eq(location.id))
+    public StatusCode deleteItemsStoredIn(Identifiable<Location> location) {
+        return runCommand(context -> currentDelete(FOOD_ITEM.STORED_IN.eq(location.getId()))
                  .map(this::notFoundIsOk));
     }
 
-    boolean areItemsStoredIn(Location location, DSLContext context) {
+    boolean areItemsStoredIn(Versionable<Location> location, DSLContext context) {
         Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
 
         int result = context.select(DSL.count())
                 .from(FOOD_ITEM)
-                .where(FOOD_ITEM.STORED_IN.eq(location.id)
+                .where(FOOD_ITEM.STORED_IN.eq(location.getId())
                         .and(getValidTimeStartField().lessOrEqual(now))
                         .and(now.lessThan(getValidTimeEndField()))
                         .and(getTransactionTimeEndField().eq(INFINITY))
@@ -185,22 +187,22 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
     @Override
     protected Function<FoodItemRecord, FoodItem> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new FoodItem(
+            return cursor -> new BitemporalFoodItem(
                     cursor.getId(),
                     cursor.getVersion(),
                     cursor.getValidTimeStart().toInstant(),
                     cursor.getValidTimeEnd().toInstant(),
                     cursor.getTransactionTimeStart().toInstant(),
                     cursor.getTransactionTimeEnd().toInstant(),
+                    cursor.getInitiates(),
                     cursor.getEatBy().toInstant(),
                     cursor.getOfType(),
                     cursor.getStoredIn(),
                     cursor.getRegisters(),
-                    cursor.getBuys(),
-                    cursor.getInitiates()
+                    cursor.getBuys()
             );
         else
-            return cursor -> new FoodItem(
+            return cursor -> new FoodItemForGetting(
                     cursor.getId(),
                     cursor.getVersion(),
                     cursor.getEatBy().toInstant(),

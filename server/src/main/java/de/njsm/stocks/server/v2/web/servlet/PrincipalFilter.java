@@ -105,12 +105,12 @@ public class PrincipalFilter implements ContainerRequestFilter {
         return Validation.success(new Principals(commonName.substring(0, indices[0]),
                 commonName.substring(indices[1] + 1, indices[2]),
                 commonName.substring(indices[0] + 1, indices[1]),
-                commonName.substring(indices[2] + 1, commonName.length())));
+                commonName.substring(indices[2] + 1)));
 
     }
 
     private static Validation<StatusCode, String> extractCommonName(String subject) {
-        Pattern pattern = Pattern.compile(".*CN=([-_ a-zA-Z0-9\\$]*).*");
+        Pattern pattern = Pattern.compile(".*CN=([-_ a-zA-Z0-9$]*).*");
         Matcher matcher = pattern.matcher(subject);
         if (matcher.matches()) {
             return Validation.success(matcher.group(1));

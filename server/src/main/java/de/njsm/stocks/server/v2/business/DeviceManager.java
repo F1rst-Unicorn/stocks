@@ -22,24 +22,20 @@ package de.njsm.stocks.server.v2.business;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
-import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.UserDeviceForDeletion;
+import de.njsm.stocks.server.v2.business.data.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.TicketHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import fj.data.Validation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.ws.rs.container.AsyncResponse;
 import java.security.SecureRandom;
 import java.time.Instant;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class DeviceManager extends BusinessObject {
-
-    private static final Logger LOG = LogManager.getLogger(DeviceManager.class);
 
     private static final int TICKET_LENGTH = 64;
 
@@ -62,17 +58,17 @@ public class DeviceManager extends BusinessObject {
         this.authAdmin = authAdmin;
     }
 
-    public Validation<StatusCode, NewDeviceTicket> addDevice(UserDevice device) {
+    public Validation<StatusCode, NewDeviceTicket> addDevice(UserDeviceForInsertion device) {
         return runFunction(() -> {
 
             Validation<StatusCode, Integer> deviceAddResult = userDeviceHandler.add(device);
             if (deviceAddResult.isFail())
                 return Validation.fail(deviceAddResult.fail());
 
-            device.id = deviceAddResult.success();
+            int deviceId = deviceAddResult.success();
             String ticket = generateTicket();
 
-            StatusCode ticketAddResult = ticketHandler.addTicket(device, ticket);
+            StatusCode ticketAddResult = ticketHandler.addTicket(deviceId, ticket);
             if (ticketAddResult != StatusCode.SUCCESS)
                 return Validation.fail(ticketAddResult);
 
@@ -88,26 +84,22 @@ public class DeviceManager extends BusinessObject {
         });
     }
 
-    public StatusCode removeDevice(UserDevice device) {
+    public StatusCode removeDevice(UserDeviceForDeletion device) {
         return runOperation(() -> removeDeviceInternally(device));
     }
 
-    public StatusCode revokeDevice(UserDevice device) {
+    public StatusCode revokeDevice(UserDeviceForDeletion device) {
         return runOperation(() -> {
             userDeviceHandler.setReadOnly();
-            return authAdmin.revokeCertificate(device.id);
+            return authAdmin.revokeCertificate(device.getId());
         });
     }
 
-    Validation<StatusCode, List<UserDevice>> getDevicesBelonging(User u) {
-        return userDeviceHandler.getDevicesOfUser(u);
-    }
-
-    StatusCode removeDeviceInternally(UserDevice device) {
+    StatusCode removeDeviceInternally(UserDeviceForDeletion device) {
         return foodItemHandler.transferFoodItems(device, principals.toDevice())
                 .bind(() -> ticketHandler.removeTicketOfDevice(device))
                 .bind(() -> userDeviceHandler.delete(device))
-                .bind(() -> authAdmin.revokeCertificate(device.id));
+                .bind(() -> authAdmin.revokeCertificate(device.getId()));
     }
 
     private static String generateTicket() {

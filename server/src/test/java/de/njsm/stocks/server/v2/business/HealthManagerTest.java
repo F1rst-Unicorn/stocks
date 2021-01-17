@@ -50,7 +50,7 @@ public class HealthManagerTest {
         Validation<StatusCode, Health> result = uut.get();
 
         assertTrue(result.isSuccess());
-        assertFalse(result.success().database);
-        assertFalse(result.success().ca);
+        assertFalse(result.success().isDatabase());
+        assertFalse(result.success().isCa());
     }
 }

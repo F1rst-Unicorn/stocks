@@ -27,7 +27,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 
 @Provider
 public class StatusCodeFilter implements ContainerResponseFilter {
@@ -36,11 +35,11 @@ public class StatusCodeFilter implements ContainerResponseFilter {
 
     @Override
     public void filter(ContainerRequestContext crc,
-                       ContainerResponseContext responseContext) throws IOException {
+                       ContainerResponseContext responseContext) {
         Object entity = responseContext.getEntity();
         if (entity instanceof Response) {
             Response r = (Response) entity;
-            javax.ws.rs.core.Response.Status code = r.status.toHttpStatus();
+            javax.ws.rs.core.Response.Status code = r.getStatus().toHttpStatus();
             if (code.getStatusCode() != responseContext.getStatus()) {
                 LOG.debug("HTTP status set from {} to {}", responseContext.getStatus(), code);
             }

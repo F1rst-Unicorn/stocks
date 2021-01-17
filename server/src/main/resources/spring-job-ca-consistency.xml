@@ -34,7 +34,6 @@
         <constructor-arg index="0" ref="caConsistencyCheckConnectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor"/>
     </bean>
 
     <bean name="caConsistencyCheckPrincipalsDbHandler" class="de.njsm.stocks.server.v2.db.PrincipalsHandler">

@@ -22,6 +22,8 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.EanNumber;
+import de.njsm.stocks.server.v2.business.data.EanNumberForDeletion;
+import de.njsm.stocks.server.v2.business.data.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
@@ -56,7 +58,7 @@ public class EanNumberEndpoint extends Endpoint {
                 isValid(foodId, "foodId")) {
 
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new EanNumber(code, foodId));
+            Validation<StatusCode, Integer> status = manager.add(new EanNumberForInsertion(foodId, code));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -88,7 +90,7 @@ public class EanNumberEndpoint extends Endpoint {
                 isValidVersion(version, "version")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.delete(new EanNumber(id, version, "", 0));
+            StatusCode status = manager.delete(new EanNumberForDeletion(id, version));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

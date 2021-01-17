@@ -34,45 +34,39 @@
         <constructor-arg index="0" ref="historyCleanupConnectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
     </bean>
 
     <bean name="historyCleanupEanNumberDbHandler" class="de.njsm.stocks.server.v2.db.EanNumberHandler">
         <constructor-arg index="0" ref="historyCleanupConnectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
     </bean>
 
     <bean name="historyCleanupLocationDbHandler" class="de.njsm.stocks.server.v2.db.LocationHandler">
         <constructor-arg index="0" ref="historyCleanupConnectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
-        <constructor-arg index="4" ref="historyCleanupFoodItemBackend" />
+        <constructor-arg index="3" ref="historyCleanupFoodItemBackend" />
     </bean>
 
     <bean name="historyCleanupFoodItemBackend" class="de.njsm.stocks.server.v2.db.FoodItemHandler">
         <constructor-arg index="0" ref="historyCleanupConnectionFactory" />
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
-        <constructor-arg index="4" ref="historyCleanupDeviceBackend" />
-        <constructor-arg index="5" ref="historyCleanupUserBackend" />
+        <constructor-arg index="3" ref="historyCleanupDeviceBackend" />
+        <constructor-arg index="4" ref="historyCleanupUserBackend" />
     </bean>
 
     <bean name="historyCleanupDeviceBackend" class="de.njsm.stocks.server.v2.db.UserDeviceHandler">
         <constructor-arg index="0" ref="historyCleanupConnectionFactory" />
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
     </bean>
 
     <bean name="historyCleanupUserBackend" class="de.njsm.stocks.server.v2.db.UserHandler">
         <constructor-arg index="0" ref="historyCleanupConnectionFactory" />
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
     </bean>
 
     <bean id="historyCleanupJob" class="de.njsm.stocks.server.v2.business.HistoryCleanupJob">

@@ -20,8 +20,8 @@
 package de.njsm.stocks.server.util;
 
 
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
+import de.njsm.stocks.server.v2.business.data.UserForPrincipals;
 
 import java.util.Objects;
 
@@ -85,12 +85,12 @@ public class Principals {
         return username + "@" + deviceName;
     }
 
-    public User toUser() {
-        return new User(uid, 0, username);
+    public UserForPrincipals toUser() {
+        return new UserForPrincipals(uid);
     }
 
-    public UserDevice toDevice() {
-        return new UserDevice(did, 0, deviceName, uid);
+    public UserDeviceForPrincipals toDevice() {
+        return new UserDeviceForPrincipals(did);
     }
 
     @Override

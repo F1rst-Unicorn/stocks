@@ -20,7 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.User;
+import de.njsm.stocks.server.v2.business.data.*;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,8 +46,7 @@ public class UserHandlerTest extends DbTestCase {
     public void setup() {
         uut = new UserHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT,
-                new InsertVisitor<>());
+                CIRCUIT_BREAKER_TIMEOUT);
         uut.setPrincipals(TEST_USER);
     }
 
@@ -59,9 +58,9 @@ public class UserHandlerTest extends DbTestCase {
         assertTrue(result.isSuccess());
         List<User> list = result.success().collect(Collectors.toList());
         assertEquals(3, list.size());
-        assertThat(list, hasItem(new User(1, 0, "Bob")));
-        assertThat(list, hasItem(new User(2, 0, "Alice")));
-        assertThat(list, hasItem(new User(3, 0, "Jack")));
+        assertThat(list, hasItem(new UserForGetting(1, 0, "Bob")));
+        assertThat(list, hasItem(new UserForGetting(2, 0, "Alice")));
+        assertThat(list, hasItem(new UserForGetting(3, 0, "Jack")));
     }
 
     @Test
@@ -69,33 +68,33 @@ public class UserHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Stream<User>> result = uut.get(true, Instant.EPOCH);
 
-        User sample = result.success().findAny().get();
-        assertNotNull(sample.validTimeStart);
-        assertNotNull(sample.validTimeEnd);
-        assertNotNull(sample.transactionTimeStart);
-        assertNotNull(sample.transactionTimeEnd);
+        BitemporalUser sample = (BitemporalUser) result.success().findAny().get();
+        assertNotNull(sample.getValidTimeStart());
+        assertNotNull(sample.getValidTimeEnd());
+        assertNotNull(sample.getTransactionTimeStart());
+        assertNotNull(sample.getTransactionTimeEnd());
     }
 
     @Test
     public void addingUserWorks() {
-        User input = new User(1, 0, "testuser");
+        UserForInsertion input = new UserForInsertion("testuser");
 
         Validation<StatusCode, Integer> result = uut.add(input);
 
         Validation<StatusCode, Stream<User>> users = uut.get(false, Instant.EPOCH);
         assertTrue(result.isSuccess());
         List<User> list = users.success().collect(Collectors.toList());
-        assertEquals(new Integer(4), result.success());
+        assertEquals(Integer.valueOf(4), result.success());
         assertTrue(users.isSuccess());
         assertEquals(4, list.size());
-        input.id = 4;
-        assertThat(list, hasItem(input));
+        UserForGetting expected = new UserForGetting(result.success(), 0,input.getName());
+        assertThat(list, hasItem(expected));
     }
 
     @Test
     public void deletingUnknownIdIsReported() {
 
-        StatusCode result = uut.delete(new User(99999, 0, ""));
+        StatusCode result = uut.delete(new UserForDeletion(99999, 0));
 
         assertEquals(StatusCode.NOT_FOUND, result);
     }
@@ -103,14 +102,14 @@ public class UserHandlerTest extends DbTestCase {
     @Test
     public void deletingInvalidVersionIsReported() {
 
-        StatusCode result = uut.delete(new User(1, 999, ""));
+        StatusCode result = uut.delete(new UserForDeletion(1, 999));
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
     }
 
     @Test
     public void deletingValidDeviceWorks() {
-        User input = new User(1, 0, "user");
+        UserForDeletion input = new UserForDeletion(1, 0);
 
         StatusCode result = uut.delete(input);
 
@@ -119,7 +118,8 @@ public class UserHandlerTest extends DbTestCase {
         assertTrue(users.isSuccess());
         List<User> list = users.success().collect(Collectors.toList());
         assertEquals(2, list.size());
-        assertThat(list, not(hasItem(input)));
+        UserForGetting expectedAbsent = new UserForGetting(1, 0, "Bob");
+        assertThat(list, not(hasItem(expectedAbsent)));
     }
 
 }

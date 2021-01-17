@@ -19,64 +19,10 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
+public interface Location extends Entity<Location> {
 
-import java.time.Instant;
-import java.util.Objects;
+    String getName();
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
-public class Location extends VersionedData {
+    String getDescription();
 
-    public String name;
-
-    public String description;
-
-    public Location(int id, String name, int version, String description) {
-        super(id, version);
-        this.name = name;
-        this.description = description;
-    }
-
-    public Location(String name) {
-        this.name = name;
-        this.description = "";
-    }
-
-    public Location(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, String name, String description, int initiates) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.name = name;
-        this.description = description;
-    }
-
-    @Override
-    public <I, O> O accept(AbstractVisitor<I, O> visitor, I arg) {
-        return visitor.location(this, arg);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Location location = (Location) o;
-
-        if (!name.equals(location.name)) return false;
-        return description.equals(location.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, version, description);
-    }
-
-    @Override
-    public String toString() {
-        return "Location (" + id + ", " + name + ", " + version + ")";
-    }
 }

@@ -20,8 +20,7 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v2.business.LocationManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Location;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
@@ -67,7 +66,7 @@ public class LocationEndpointTest {
 
         Response result = uut.putLocation(createMockRequest(), null);
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -75,7 +74,7 @@ public class LocationEndpointTest {
 
         Response result = uut.putLocation(createMockRequest(), "");
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -83,7 +82,7 @@ public class LocationEndpointTest {
 
         Response result = uut.renameLocation(createMockRequest(), 0, 1, "fdsa");
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -91,7 +90,7 @@ public class LocationEndpointTest {
 
         Response result = uut.renameLocation(createMockRequest(), 1, -1, "fdsa");
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -99,7 +98,7 @@ public class LocationEndpointTest {
 
         Response result = uut.renameLocation(createMockRequest(), 1, 1, "");
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -107,7 +106,7 @@ public class LocationEndpointTest {
 
         Response result = uut.deleteLocation(createMockRequest(), 0, 1, 0);
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -115,17 +114,17 @@ public class LocationEndpointTest {
 
         Response result = uut.deleteLocation(createMockRequest(), 1, -1, 0);
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
-    public void foodIsAdded() {
-        Location data = new Location(0, "Banana", 0, "");
+    public void locationIsAdded() {
+        LocationForInsertion data = new LocationForInsertion("Banana");
         when(businessLayer.put(data)).thenReturn(SUCCESS);
 
-        Response response = uut.putLocation(createMockRequest(), data.name);
+        Response response = uut.putLocation(createMockRequest(), data.getName());
 
-        assertEquals(SUCCESS, response.status);
+        assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).put(data);
         Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
@@ -133,14 +132,14 @@ public class LocationEndpointTest {
     @Test
     public void getLocationReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        List<Location> data = Collections.singletonList(new Location(2, "Banana", 2, ""));
+        List<Location> data = Collections.singletonList(new LocationForGetting(2, 3, "Banana", ""));
         when(businessLayer.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
         uut.get(r, 0, null);
 
         ArgumentCaptor<StreamResponse<Location>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        assertEquals(SUCCESS, c.getValue().status);
+        assertEquals(SUCCESS, c.getValue().getStatus());
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
         verify(businessLayer).get(r, false, Instant.EPOCH);
     }
@@ -153,85 +152,84 @@ public class LocationEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        TestCase.assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().status);
+        TestCase.assertEquals(INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test
     public void renameLocationWorks() {
-        String newName = "Bread";
-        Location data = new Location(1, newName, 2, "");
+        LocationForRenaming data = new LocationForRenaming(1, 3, "Bread");
         when(businessLayer.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameLocation(createMockRequest(), data.id, data.version, newName);
+        Response response = uut.renameLocation(createMockRequest(), data.getId(), data.getVersion(), data.getNewName());
 
-        assertEquals(SUCCESS, response.status);
+        assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).rename(data);
         Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 
     @Test
     public void deleteLocationWorks() {
-        Location data = new Location(1, "", 2, "");
+        LocationForDeletion data = new LocationForDeletion(1, 2);
         when(businessLayer.delete(data, false)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteLocation(createMockRequest(), data.id, data.version, 0);
+        Response response = uut.deleteLocation(createMockRequest(), data.getId(), data.getVersion(), 0);
 
-        assertEquals(SUCCESS, response.status);
+        assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).delete(data, false);
         Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 
     @Test
     public void deleteLocationWorksCascading() {
-        Location data = new Location(1, "", 2, "");
+        LocationForDeletion data = new LocationForDeletion(1, 2);
         when(businessLayer.delete(data, true)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteLocation(createMockRequest(), data.id, data.version, 1);
+        Response response = uut.deleteLocation(createMockRequest(), data.getId(), data.getVersion(), 1);
 
-        assertEquals(SUCCESS, response.status);
+        assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).delete(data, true);
         Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 
     @Test
     public void settingDescriptionIsForwarded() {
-        Location data = new Location(1, "", 2, "new description");
+        LocationForSetDescription data = new LocationForSetDescription(1, 2, "new description");
         when(businessLayer.setDescription(data)).thenReturn(SUCCESS);
 
-        Response response = uut.setDescription(createMockRequest(), data.id, data.version, data.description);
+        Response response = uut.setDescription(createMockRequest(), data.getId(), data.getVersion(), data.getDescription());
 
-        assertEquals(SUCCESS, response.status);
+        assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).setDescription(data);
         Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 
     @Test
     public void errorFromBackendIsPropagated() {
-        Location data = new Location(1, "", 2, "new description");
+        LocationForSetDescription data = new LocationForSetDescription(1, 2, "new description");
         when(businessLayer.setDescription(data)).thenReturn(INVALID_DATA_VERSION);
 
-        Response response = uut.setDescription(createMockRequest(), data.id, data.version, data.description);
+        Response response = uut.setDescription(createMockRequest(), data.getId(), data.getVersion(), data.getDescription());
 
-        assertEquals(INVALID_DATA_VERSION, response.status);
+        assertEquals(INVALID_DATA_VERSION, response.getStatus());
         verify(businessLayer).setDescription(data);
         Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 
     @Test
     public void settingDescriptionWithInvalidIdIsRejected() {
-        Location data = new Location(0, "", 2, "new description");
-
-        Response response = uut.setDescription(createMockRequest(), data.id, data.version, data.description);
-
-        assertEquals(INVALID_ARGUMENT, response.status);
+        Response response = uut.setDescription(createMockRequest(), 0, 2, "fdsa");
+        assertEquals(INVALID_ARGUMENT, response.getStatus());
     }
 
     @Test
     public void settingDescriptionWithInvalidVersionIsRejected() {
-        Location data = new Location(1, "", -1, "new description");
+        Response response = uut.setDescription(createMockRequest(), 1, -2, "fdsa");
+        assertEquals(INVALID_ARGUMENT, response.getStatus());
+    }
 
-        Response response = uut.setDescription(createMockRequest(), data.id, data.version, data.description);
-
-        assertEquals(INVALID_ARGUMENT, response.status);
+    @Test
+    public void settingDescriptionWithInvalidDescriptionIsRejected() {
+        Response response = uut.setDescription(createMockRequest(), 1, 2, null);
+        assertEquals(INVALID_ARGUMENT, response.getStatus());
     }
 }

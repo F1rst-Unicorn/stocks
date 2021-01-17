@@ -20,6 +20,8 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.EanNumber;
+import de.njsm.stocks.server.v2.business.data.EanNumberForDeletion;
+import de.njsm.stocks.server.v2.business.data.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import fj.data.Validation;
 import org.junit.After;
@@ -69,7 +71,7 @@ public class EanNumberManagerTest {
 
     @Test
     public void testAddingItem() {
-        EanNumber data = new EanNumber(1, 2, "code", 2);
+        EanNumberForInsertion data = new EanNumberForInsertion(2, "code");
         Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
 
         Validation<StatusCode, Integer> result = uut.add(data);
@@ -81,7 +83,7 @@ public class EanNumberManagerTest {
 
     @Test
     public void testDeletingItem() {
-        EanNumber data = new EanNumber(1, 2, "code", 2);
+        EanNumberForDeletion data = new EanNumberForDeletion(1, 2);
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);

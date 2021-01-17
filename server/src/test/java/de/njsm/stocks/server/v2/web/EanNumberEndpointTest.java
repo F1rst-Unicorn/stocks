@@ -22,6 +22,9 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.EanNumber;
+import de.njsm.stocks.server.v2.business.data.EanNumberForDeletion;
+import de.njsm.stocks.server.v2.business.data.EanNumberForGetting;
+import de.njsm.stocks.server.v2.business.data.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
@@ -68,7 +71,7 @@ public class EanNumberEndpointTest {
 
         Response result = uut.putEanNumber(createMockRequest(), null, 1);
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -76,7 +79,7 @@ public class EanNumberEndpointTest {
 
         Response result = uut.putEanNumber(createMockRequest(), "", 1);
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -84,7 +87,7 @@ public class EanNumberEndpointTest {
 
         Response result = uut.putEanNumber(createMockRequest(), "code", 0);
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -92,7 +95,7 @@ public class EanNumberEndpointTest {
 
         Response result = uut.deleteEanNumber(createMockRequest(), 0, 1);
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -100,17 +103,17 @@ public class EanNumberEndpointTest {
 
         Response result = uut.deleteEanNumber(createMockRequest(), 1, -1);
 
-        assertEquals(INVALID_ARGUMENT, result.status);
+        assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
     public void eanNumberIsAdded() {
-        EanNumber data = new EanNumber("CODE", 2);
+        EanNumberForInsertion data = new EanNumberForInsertion(2, "CODE");
         when(manager.add(data)).thenReturn(Validation.success(5));
 
-        Response response = uut.putEanNumber(createMockRequest(), data.eanCode, data.identifiesFood);
+        Response response = uut.putEanNumber(createMockRequest(), data.getEanNumber(), data.getIdentifiesFood());
 
-        assertEquals(SUCCESS, response.status);
+        assertEquals(SUCCESS, response.getStatus());
         verify(manager).add(data);
         Mockito.verify(manager).setPrincipals(TEST_USER);
     }
@@ -118,14 +121,14 @@ public class EanNumberEndpointTest {
     @Test
     public void getEanNumberReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        List<EanNumber> data = Collections.singletonList(new EanNumber("CODE", 2));
+        List<EanNumber> data = Collections.singletonList(new EanNumberForGetting(1, 2, 2, "CODE"));
         when(manager.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
         uut.get(r, 0, null);
 
         ArgumentCaptor<StreamResponse<EanNumber>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        assertEquals(SUCCESS, c.getValue().status);
+        assertEquals(SUCCESS, c.getValue().getStatus());
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
         verify(manager).get(r, false, Instant.EPOCH);
     }
@@ -138,17 +141,17 @@ public class EanNumberEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        TestCase.assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().status);
+        TestCase.assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test
     public void deleteEanNumberWorks() {
-        EanNumber data = new EanNumber(1, 0, "", 0);
+        EanNumberForDeletion data = new EanNumberForDeletion(1, 0);
         when(manager.delete(data)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteEanNumber(createMockRequest(), data.id, data.version);
+        Response response = uut.deleteEanNumber(createMockRequest(), data.getId(), data.getVersion());
 
-        assertEquals(SUCCESS, response.status);
+        assertEquals(SUCCESS, response.getStatus());
         verify(manager).delete(data);
         Mockito.verify(manager).setPrincipals(TEST_USER);
     }

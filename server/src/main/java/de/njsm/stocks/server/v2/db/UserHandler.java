@@ -19,7 +19,9 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.server.v2.business.data.BitemporalUser;
 import de.njsm.stocks.server.v2.business.data.User;
+import de.njsm.stocks.server.v2.business.data.UserForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -36,9 +38,8 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
 
     public UserHandler(ConnectionFactory connectionFactory,
                        String resourceIdentifier,
-                       int timeout,
-                       InsertVisitor<UserRecord> visitor) {
-        super(connectionFactory, resourceIdentifier, timeout, visitor);
+                       int timeout) {
+        super(connectionFactory, resourceIdentifier, timeout);
     }
 
     @Override
@@ -49,18 +50,18 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
     @Override
     protected Function<UserRecord, User> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new User(
+            return cursor -> new BitemporalUser(
                     cursor.getId(),
                     cursor.getVersion(),
                     cursor.getValidTimeStart().toInstant(),
                     cursor.getValidTimeEnd().toInstant(),
                     cursor.getTransactionTimeStart().toInstant(),
                     cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getName(),
-                    cursor.getInitiates()
+                    cursor.getInitiates(),
+                    cursor.getName()
             );
         else
-            return record -> new User(
+            return record -> new UserForGetting(
                     record.getId(),
                     record.getVersion(),
                     record.getName()

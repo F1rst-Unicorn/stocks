@@ -63,7 +63,7 @@ public class UpdateEndpointTest {
 
         ArgumentCaptor<StreamResponse<Update>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        assertEquals(StatusCode.SUCCESS, c.getValue().status);
+        assertEquals(StatusCode.SUCCESS, c.getValue().getStatus());
         assertEquals(0, c.getValue().data.count());
         Mockito.verify(dbLayer).getUpdates(r);
     }

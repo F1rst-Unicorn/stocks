@@ -20,7 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Location;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -42,13 +42,12 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
     public LocationHandler(ConnectionFactory connectionFactory,
                            String resourceIdentifier,
                            int timeout,
-                           InsertVisitor<LocationRecord> visitor,
                            FoodItemHandler foodItemHandler) {
-        super(connectionFactory, resourceIdentifier, timeout, visitor);
+        super(connectionFactory, resourceIdentifier, timeout);
         this.foodItemHandler = foodItemHandler;
     }
 
-    public StatusCode rename(Location item, String newName) {
+    public StatusCode rename(LocationForRenaming item) {
         return runCommand(context -> {
 
             if (isCurrentlyMissing(item, context))
@@ -56,24 +55,24 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
 
             return currentUpdate(Arrays.asList(
                     LOCATION.ID,
-                    DSL.inline(newName),
+                    DSL.inline(item.getNewName()),
                     LOCATION.VERSION.add(1),
                     LOCATION.DESCRIPTION
                     ),
-                    LOCATION.ID.eq(item.id)
-                            .and(LOCATION.VERSION.eq(item.version))
-                            .and(LOCATION.NAME.ne(newName)))
+                    LOCATION.ID.eq(item.getId())
+                            .and(LOCATION.VERSION.eq(item.getVersion()))
+                            .and(LOCATION.NAME.ne(item.getNewName())))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }
 
     @Override
-    public StatusCode delete(Location item) {
+    public StatusCode delete(Versionable<Location> item) {
         return runCommand(context -> performDeleteChecks(item, context)
                 .bind(() -> super.delete(item)));
     }
 
-    public StatusCode setDescription(Location input) {
+    public StatusCode setDescription(LocationForSetDescription input) {
         return runCommand(context -> {
 
             if (isCurrentlyMissing(input, context))
@@ -83,16 +82,16 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                     LOCATION.ID,
                     LOCATION.NAME,
                     LOCATION.VERSION.add(1),
-                    DSL.inline(input.description)
+                    DSL.inline(input.getDescription())
                     ),
-                    LOCATION.ID.eq(input.id)
-                            .and(LOCATION.VERSION.eq(input.version))
-                            .and(LOCATION.DESCRIPTION.ne(input.description)))
+                    LOCATION.ID.eq(input.getId())
+                            .and(LOCATION.VERSION.eq(input.getVersion()))
+                            .and(LOCATION.DESCRIPTION.ne(input.getDescription())))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }
 
-    private StatusCode performDeleteChecks(Location location, DSLContext context) {
+    private StatusCode performDeleteChecks(Versionable<Location> location, DSLContext context) {
         boolean locationContainsItems = foodItemHandler.areItemsStoredIn(location, context);
         if (locationContainsItems)
             return StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION;
@@ -118,22 +117,22 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
     @Override
     protected Function<LocationRecord, Location> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new Location(
+            return cursor -> new BitemporalLocation(
                     cursor.getId(),
                     cursor.getVersion(),
                     cursor.getValidTimeStart().toInstant(),
                     cursor.getValidTimeEnd().toInstant(),
                     cursor.getTransactionTimeStart().toInstant(),
                     cursor.getTransactionTimeEnd().toInstant(),
+                    cursor.getInitiates(),
                     cursor.getName(),
-                    cursor.getDescription(),
-                    cursor.getInitiates()
-            );
+                    cursor.getDescription()
+                    );
         else
-            return cursor -> new Location(
+            return cursor -> new LocationForGetting(
                     cursor.getId(),
-                    cursor.getName(),
                     cursor.getVersion(),
+                    cursor.getName(),
                     cursor.getDescription()
             );
     }

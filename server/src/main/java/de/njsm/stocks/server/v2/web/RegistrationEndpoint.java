@@ -33,7 +33,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Path("v2/auth")
-public class RegistrationEndpoint extends de.njsm.stocks.server.v2.web.Endpoint {
+public class RegistrationEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(RegistrationEndpoint.class);
 

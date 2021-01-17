@@ -19,9 +19,9 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
+import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import de.njsm.stocks.server.v2.db.UserHandler;
 import de.njsm.stocks.server.v2.web.PrincipalFilterTest;
 import fj.data.Validation;
@@ -47,27 +47,27 @@ public class UserManagerTest {
 
     private UserHandler userDbHandler;
 
-    private DeviceManager deviceManager;
+    private UserDeviceHandler deviceHandler;
 
     private FoodItemHandler foodItemHandler;
 
     @Before
     public void setup() {
         userDbHandler = Mockito.mock(UserHandler.class);
-        deviceManager = Mockito.mock(DeviceManager.class);
+        deviceHandler = Mockito.mock(UserDeviceHandler.class);
         foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
-        uut = new UserManager(userDbHandler, deviceManager, foodItemHandler);
+        uut = new UserManager(userDbHandler, deviceHandler, foodItemHandler);
         uut.setPrincipals(TEST_USER);
     }
 
     @After
     public void tearDown() {
         Mockito.verify(userDbHandler).setPrincipals(TEST_USER);
-        Mockito.verify(deviceManager).setPrincipals(TEST_USER);
+        Mockito.verify(deviceHandler).setPrincipals(TEST_USER);
         Mockito.verify(foodItemHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(userDbHandler);
-        Mockito.verifyNoMoreInteractions(deviceManager);
+        Mockito.verifyNoMoreInteractions(deviceHandler);
         Mockito.verifyNoMoreInteractions(foodItemHandler);
     }
 
@@ -86,7 +86,7 @@ public class UserManagerTest {
 
     @Test
     public void successfulAddingWorks() {
-        User input = new User("fdsa");
+        UserForInsertion input = new UserForInsertion("fdsa");
         Mockito.when(userDbHandler.add(any())).thenReturn(Validation.success(4));
         Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
@@ -99,7 +99,7 @@ public class UserManagerTest {
 
     @Test
     public void failingAddingWorks() {
-        User input = new User("fdsa");
+        UserForInsertion input = new UserForInsertion("fdsa");
         Mockito.when(userDbHandler.add(any())).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
 
         StatusCode result = uut.addUser(input);
@@ -112,43 +112,43 @@ public class UserManagerTest {
     @Test
     public void deleteWithFailingDeviceRetrieval() {
         StatusCode code = StatusCode.DATABASE_UNREACHABLE;
-        User input = new User(1, 2, "user");
-        Mockito.when(deviceManager.getDevicesBelonging(input)).thenReturn(Validation.fail(code));
+        UserForDeletion input = new UserForDeletion(1, 2);
+        Mockito.when(deviceHandler.getDevicesOfUser(input)).thenReturn(Validation.fail(code));
 
         StatusCode result = uut.deleteUser(input);
 
         assertEquals(code, result);
-        Mockito.verify(deviceManager).getDevicesBelonging(input);
+        Mockito.verify(deviceHandler).getDevicesOfUser(input);
         Mockito.verify(userDbHandler).rollback();
     }
 
     @Test
     public void deleteWithFailingUserTransfer() {
         StatusCode code = StatusCode.DATABASE_UNREACHABLE;
-        List<UserDevice> devices = new LinkedList<>();
-        User input = new User(1, 2, "user");
-        devices.add(new UserDevice(1, 2, "fdsa", input.id));
-        devices.add(new UserDevice(2, 2, "fdsa", input.id));
-        Mockito.when(deviceManager.getDevicesBelonging(input)).thenReturn(Validation.success(devices));
+        List<Identifiable<UserDevice>> devices = new LinkedList<>();
+        UserForDeletion input = new UserForDeletion(1, 2);
+        devices.add(new UserDeviceForGetting(1, 2, "fdsa", input.getId()));
+        devices.add(new UserDeviceForGetting(2, 2, "fdsa", input.getId()));
+        Mockito.when(deviceHandler.getDevicesOfUser(input)).thenReturn(Validation.success(devices));
         Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice()))
                 .thenReturn(code);
 
         StatusCode result = uut.deleteUser(input);
 
         assertEquals(code, result);
-        Mockito.verify(deviceManager).getDevicesBelonging(input);
+        Mockito.verify(deviceHandler).getDevicesOfUser(input);
         Mockito.verify(foodItemHandler).transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice());
         Mockito.verify(userDbHandler).rollback();
     }
 
     @Test
     public void deleteSuccessfully() {
-        List<UserDevice> devices = new LinkedList<>();
-        User input = new User(1, 2, "user");
-        devices.add(new UserDevice(1, 2, "fdsa", input.id));
-        devices.add(new UserDevice(2, 2, "fdsa", input.id));
-        devices.add(new UserDevice(3, 2, "fdsa", input.id));
-        Mockito.when(deviceManager.getDevicesBelonging(input)).thenReturn(Validation.success(devices));
+        List<Identifiable<UserDevice>> devices = new LinkedList<>();
+        UserForDeletion input = new UserForDeletion(1, 2);
+        devices.add(new UserDeviceForGetting(1, 2, "fdsa", input.getId()));
+        devices.add(new UserDeviceForGetting(2, 2, "fdsa", input.getId()));
+        devices.add(new UserDeviceForGetting(3, 2, "fdsa", input.getId()));
+        Mockito.when(deviceHandler.getDevicesOfUser(input)).thenReturn(Validation.success(devices));
         Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice()))
                 .thenReturn(StatusCode.SUCCESS);
         Mockito.when(userDbHandler.delete(input)).thenReturn(StatusCode.SUCCESS);
@@ -157,7 +157,7 @@ public class UserManagerTest {
         StatusCode result = uut.deleteUser(input);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Mockito.verify(deviceManager).getDevicesBelonging(input);
+        Mockito.verify(deviceHandler).getDevicesOfUser(input);
         Mockito.verify(foodItemHandler).transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice());
         Mockito.verify(userDbHandler).delete(input);
         Mockito.verify(userDbHandler).commit();

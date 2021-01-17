@@ -28,19 +28,15 @@ import de.njsm.stocks.server.v2.business.json.StatusCodeDeserialiser;
 import de.njsm.stocks.server.v2.business.json.StatusCodeSerialiser;
 import fj.data.Validation;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@XmlRootElement
+        creatorVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.NONE)
 public class Response {
 
-    @JsonSerialize(using = StatusCodeSerialiser.class)
-    @JsonDeserialize(using = StatusCodeDeserialiser.class)
-    public StatusCode status;
+    StatusCode status;
 
     public <T> Response(Validation<StatusCode, T> validation) {
         if (validation.isSuccess()) {
@@ -54,6 +50,11 @@ public class Response {
         this.status = status;
     }
 
-    public Response() {
+    public Response() {}
+
+    @JsonSerialize(using = StatusCodeSerialiser.class)
+    @JsonDeserialize(using = StatusCodeDeserialiser.class)
+    public StatusCode getStatus() {
+        return status;
     }
 }

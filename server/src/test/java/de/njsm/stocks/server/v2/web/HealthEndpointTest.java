@@ -49,9 +49,9 @@ public class HealthEndpointTest {
 
         DataResponse<Health> output = uut.getStatus();
 
-        assertEquals(StatusCode.SUCCESS, output.status);
-        assertTrue(output.data.database);
-        assertTrue(output.data.ca);
+        assertEquals(StatusCode.SUCCESS, output.getStatus());
+        assertTrue(output.data.isDatabase());
+        assertTrue(output.data.isCa());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class HealthEndpointTest {
 
         DataResponse<Health> output = uut.getStatus();
 
-        assertEquals(StatusCode.GENERAL_ERROR, output.status);
+        assertEquals(StatusCode.GENERAL_ERROR, output.getStatus());
         assertNull(output.data);
     }
 }

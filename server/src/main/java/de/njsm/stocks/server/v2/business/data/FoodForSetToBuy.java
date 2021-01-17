@@ -19,34 +19,32 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.util.Objects;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+public class FoodForSetToBuy extends VersionedData implements Versionable<Food> {
 
-public class EanNumberTest {
+    private final boolean toBuy;
 
-    EanNumber uut;
-
-    @Before
-    public void setup() {
-        uut = new EanNumber(1, 2, "code", 3);
+    public FoodForSetToBuy(int id, int version, boolean toBuy) {
+        super(id, version);
+        this.toBuy = toBuy;
     }
 
-    @Test
-    public void testHashCode() {
-        assertEquals(94865366, uut.hashCode());
+    public boolean isToBuy() {
+        return toBuy;
     }
 
-    @Test
-    public void testEqualsFalse() {
-        assertNotEquals(null, uut);
-        assertNotEquals(new Object(), uut);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        FoodForSetToBuy that = (FoodForSetToBuy) o;
+        return isToBuy() == that.isToBuy();
     }
 
-    @Test
-    public void testEqualsTrue() {
-        assertEquals(uut, uut);
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), isToBuy());
     }
 }

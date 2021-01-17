@@ -20,6 +20,9 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.FoodItem;
+import de.njsm.stocks.server.v2.business.data.FoodItemForDeletion;
+import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
+import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
@@ -77,7 +80,7 @@ public class FoodItemManagerTest {
 
     @Test
     public void testAddingItem() {
-        FoodItem data = new FoodItem(1, 2, Instant.now(), 2, 2, 3, 3);
+        FoodItemForInsertion data = new FoodItemForInsertion(Instant.now(), 2, 2, 3, 3);
         Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
         Mockito.when(foodHandler.setToBuyStatus(any(), eq(false))).thenReturn(StatusCode.SUCCESS);
 
@@ -91,7 +94,7 @@ public class FoodItemManagerTest {
 
     @Test
     public void testRenamingItem() {
-        FoodItem data = new FoodItem(1, 2, Instant.now(), 2, 2, 3, 3);
+        FoodItemForEditing data = new FoodItemForEditing(1, 2, Instant.now(), 3);
         Mockito.when(backend.edit(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.edit(data);
@@ -103,7 +106,7 @@ public class FoodItemManagerTest {
 
     @Test
     public void testDeletingItem() {
-        FoodItem data = new FoodItem(1, 2, Instant.now(), 2, 2, 3, 3);
+        FoodItemForDeletion data = new FoodItemForDeletion(1, 2);
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);

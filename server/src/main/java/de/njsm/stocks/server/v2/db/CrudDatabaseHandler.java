@@ -21,7 +21,7 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.VersionedData;
+import de.njsm.stocks.server.v2.business.data.*;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends VersionedData>
+public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends Entity<N>>
         extends FailSafeDatabaseHandler
-        implements PresenceChecker<R> {
+        implements PresenceChecker<N> {
 
     private static final Logger LOG = LogManager.getLogger(CrudDatabaseHandler.class);
 
@@ -45,25 +45,20 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
 
     public static final OffsetDateTime NEGATIVE_INFINITY = OffsetDateTime.ofInstant(Instant.ofEpochMilli(PGStatement.DATE_NEGATIVE_INFINITY), ZoneId.of("UTC"));
 
-    protected InsertVisitor<T> visitor;
-
     public CrudDatabaseHandler(ConnectionFactory connectionFactory,
                                String resourceIdentifier,
-                               int timeout,
-                               InsertVisitor<T> visitor) {
+                               int timeout) {
         super(connectionFactory, resourceIdentifier, timeout);
-        this.visitor = visitor;
     }
 
     @Override
     public void setPrincipals(Principals principals) {
         super.setPrincipals(principals);
-        visitor.setPrincipals(principals);
     }
 
-    public Validation<StatusCode, Integer> add(R item) {
+    public Validation<StatusCode, Integer> add(Insertable<T, N> item) {
         return runFunction(context -> {
-            int lastInsertId = visitor.visit(item, context.insertInto(getTable()))
+            int lastInsertId = item.insertValue(context.insertInto(getTable()), principals)
                     .returning(getIdField())
                     .fetch()
                     .getValue(0, getIdField());
@@ -74,7 +69,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
     /**
      * CF 10.23
      */
-    public Validation<StatusCode, Stream<R>> get(boolean bitemporal, Instant startingFrom) {
+    public Validation<StatusCode, Stream<N>> get(boolean bitemporal, Instant startingFrom) {
         return runFunction(context -> {
 
             Condition bitemporalSelector;
@@ -88,7 +83,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
                     .or(getTransactionTimeEndField().greaterThan(startingFromWithOffset)
                             .and(getTransactionTimeEndField().lessThan(INFINITY))));
 
-            Stream<R> result = context
+            Stream<N> result = context
                     .selectFrom(getTable())
                     .where(bitemporalSelector)
                     .fetchSize(1024)
@@ -99,13 +94,13 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
         });
     }
 
-    public StatusCode delete(R item) {
+    public StatusCode delete(Versionable<N> item) {
         return runCommand(context -> {
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            return currentDelete(getIdField().eq(item.id)
-                    .and(getVersionField().eq(item.version)))
+            return currentDelete(getIdField().eq(item.getId())
+                    .and(getVersionField().eq(item.getVersion())))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }
@@ -240,10 +235,10 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
     }
 
     @Override
-    public boolean isCurrentlyMissing(R item, DSLContext context) {
+    public boolean isCurrentlyMissing(Identifiable<N> item, DSLContext context) {
         int count = context.selectCount()
                 .from(getTable())
-                .where(getIdField().eq(item.id).and(nowAsBestKnown()))
+                .where(getIdField().eq(item.getId()).and(nowAsBestKnown()))
                 .fetch()
                 .get(0)
                 .value1();
@@ -280,7 +275,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, R extends Ve
 
     protected abstract Table<T> getTable();
 
-    protected abstract Function<T, R> getDtoMap(boolean bitemporal);
+    protected abstract Function<T, N> getDtoMap(boolean bitemporal);
 
     protected abstract TableField<T, Integer> getIdField();
 

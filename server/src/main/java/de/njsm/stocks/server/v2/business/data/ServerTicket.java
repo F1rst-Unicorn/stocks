@@ -19,25 +19,18 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
-
 import java.util.Date;
 import java.util.Objects;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
-public class ServerTicket extends Data {
+public class ServerTicket {
 
-    public Date creationDate;
+    private final int id;
 
-    public int deviceId;
+    private final Date creationDate;
 
-    public String ticket;
+    private final int deviceId;
+
+    private final String ticket;
 
     public ServerTicket(int id, Date creationDate, int deviceId, String ticket) {
         this.id = id;
@@ -46,9 +39,20 @@ public class ServerTicket extends Data {
         this.ticket = ticket;
     }
 
-    @Override
-    public <I, O> O accept(AbstractVisitor<I, O> visitor, I input) {
-        return visitor.serverTicket(this, input);
+    public int getId() {
+        return id;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public int getDeviceId() {
+        return deviceId;
+    }
+
+    public String getTicket() {
+        return ticket;
     }
 
     @Override
@@ -64,15 +68,5 @@ public class ServerTicket extends Data {
     @Override
     public int hashCode() {
         return Objects.hash(id, creationDate, deviceId);
-    }
-
-    @Override
-    public String toString() {
-        return "ServerTicket{" +
-                "creationDate=" + creationDate +
-                ", deviceId=" + deviceId +
-                ", ticket='" + ticket + '\'' +
-                ", id=" + id +
-                '}';
     }
 }

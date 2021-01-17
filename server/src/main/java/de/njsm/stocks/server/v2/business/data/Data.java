@@ -21,18 +21,18 @@ package de.njsm.stocks.server.v2.business.data;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import de.njsm.stocks.server.v2.business.data.visitor.AbstractVisitor;
+
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
+        isGetterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY,
+        creatorVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.NONE)
 public abstract class Data {
 
-    public int id;
-
-    public Data() {}
+    private final int id;
 
     public Data(int id) {
         this.id = id;
@@ -42,5 +42,16 @@ public abstract class Data {
         return id;
     }
 
-    public abstract <I, O> O accept(AbstractVisitor<I, O> visitor, I arg);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Data data = (Data) o;
+        return getId() == data.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

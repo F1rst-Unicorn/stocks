@@ -20,6 +20,8 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.EanNumber;
+import de.njsm.stocks.server.v2.business.data.EanNumberForDeletion;
+import de.njsm.stocks.server.v2.business.data.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import fj.data.Validation;
 
@@ -36,7 +38,7 @@ public class EanNumberManager extends BusinessObject {
         this.eanNumberHandler = eanNumberHandler;
     }
 
-    public Validation<StatusCode, Integer> add(EanNumber item) {
+    public Validation<StatusCode, Integer> add(EanNumberForInsertion item) {
         return runFunction(() -> eanNumberHandler.add(item));
     }
 
@@ -47,7 +49,7 @@ public class EanNumberManager extends BusinessObject {
         });
     }
 
-    public StatusCode delete(EanNumber item) {
+    public StatusCode delete(EanNumberForDeletion item) {
         return runOperation(() -> eanNumberHandler.delete(item));
     }
 }

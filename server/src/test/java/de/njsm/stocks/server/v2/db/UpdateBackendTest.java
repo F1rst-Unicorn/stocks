@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.Config;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Update;
 import fj.data.Validation;
@@ -37,7 +36,6 @@ public class UpdateBackendTest extends DbTestCase {
 
     @Before
     public void setup() {
-        Config c = new Config(System.getProperties());
         uut = new UpdateBackend(getConnectionFactory(),
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT);

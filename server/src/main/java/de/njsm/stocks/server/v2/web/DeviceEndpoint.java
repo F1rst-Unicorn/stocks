@@ -23,6 +23,8 @@ import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.UserDeviceForDeletion;
+import de.njsm.stocks.server.v2.business.data.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
@@ -59,7 +61,7 @@ public class DeviceEndpoint extends Endpoint {
         if (isValidName(name, "name") &&
                 isValid(userId, "userId")) {
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, NewDeviceTicket> result = manager.addDevice(new UserDevice(name, userId));
+            Validation<StatusCode, NewDeviceTicket> result = manager.addDevice(new UserDeviceForInsertion(name, userId));
             return new DataResponse<>(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
@@ -90,7 +92,7 @@ public class DeviceEndpoint extends Endpoint {
                 isValidVersion(version, "version")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.removeDevice(new UserDevice(id, version));
+            StatusCode result = manager.removeDevice(new UserDeviceForDeletion(id, version));
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
@@ -107,7 +109,7 @@ public class DeviceEndpoint extends Endpoint {
                 isValidVersion(version, "version")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.revokeDevice(new UserDevice(id, version));
+            StatusCode result = manager.revokeDevice(new UserDeviceForDeletion(id, version));
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));

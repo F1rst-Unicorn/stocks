@@ -17,27 +17,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.business.data.visitor;
+package de.njsm.stocks.server.v2.business.data;
 
-import de.njsm.stocks.server.v2.business.data.*;
-
-public abstract class AbstractVisitor<I, O> {
-
-    public O visit(Data d, I arg) {
-        return d.accept(this, arg);
+public class UserDeviceForPrincipals extends Data implements Versionable<UserDevice> {
+    public UserDeviceForPrincipals(int id) {
+        super(id);
     }
 
-    public abstract O food(Food f, I arg);
-
-    public abstract O location(Location l, I arg);
-
-    public abstract O eanNumber(EanNumber n, I arg);
-
-    public abstract O serverTicket(ServerTicket t, I arg);
-
-    public abstract O foodItem(FoodItem foodItem, I input);
-
-    public abstract O userDevice(UserDevice userDevice, I arg);
-
-    public abstract O user(User u, I arg);
+    /**
+     * UserDevice is immutable, thus the version never changes
+     */
+    @Override
+    public int getVersion() {
+        return 0;
+    }
 }

@@ -54,7 +54,7 @@ public class RegistrationEndpointTest {
 
         DataResponse<String> result = uut.getNewCertificate(1, "", "csr");
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class RegistrationEndpointTest {
 
         DataResponse<String> result = uut.getNewCertificate(1, "token", "");
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class RegistrationEndpointTest {
 
         DataResponse<String> result = uut.getNewCertificate(0, "token", "csr");
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -78,9 +78,9 @@ public class RegistrationEndpointTest {
         ClientTicket ticket = new ClientTicket(3, "ticket", "csr");
         Mockito.when(authoriser.handleTicket(ticket)).thenReturn(Validation.success("certificate"));
 
-        DataResponse<String> result = uut.getNewCertificate(ticket.deviceId, ticket.ticket, ticket.pemFile);
+        DataResponse<String> result = uut.getNewCertificate(ticket.getDeviceId(), ticket.getTicket(), ticket.getPemFile());
 
-        assertEquals(StatusCode.SUCCESS, result.status);
+        assertEquals(StatusCode.SUCCESS, result.getStatus());
         assertEquals("certificate", result.data);
         Mockito.verify(authoriser).handleTicket(ticket);
         Mockito.verify(authoriser).setPrincipals(Principals.DUMMY);

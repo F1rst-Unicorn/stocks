@@ -24,14 +24,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY,
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@XmlRootElement
+        creatorVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.NONE)
 public class DataResponse<T> extends Response {
 
     public T data;
@@ -44,5 +42,9 @@ public class DataResponse<T> extends Response {
             status = option.fail();
             data = null;
         }
+    }
+
+    public T getData() {
+        return data;
     }
 }

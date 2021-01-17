@@ -19,24 +19,30 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class ClientTicket {
 
-    public int deviceId;
+    private final int deviceId;
 
-    public String ticket;
+    private final String ticket;
 
-    public String pemFile;
-
-    public ClientTicket() {
-    }
+    private final String pemFile;
 
     public ClientTicket(int deviceId, String ticket, String pemFile) {
         this.deviceId = deviceId;
         this.ticket = ticket;
         this.pemFile = pemFile;
+    }
+
+    public int getDeviceId() {
+        return deviceId;
+    }
+
+    public String getTicket() {
+        return ticket;
+    }
+
+    public String getPemFile() {
+        return pemFile;
     }
 
     @Override
@@ -57,14 +63,5 @@ public class ClientTicket {
         result = 31 * result + ticket.hashCode();
         result = 31 * result + pemFile.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ClientTicket{" +
-                "deviceId=" + deviceId +
-                ", ticket='" + ticket + '\'' +
-                ", pemFile='" + pemFile + '\'' +
-                '}';
     }
 }

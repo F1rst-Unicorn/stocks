@@ -20,7 +20,7 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
@@ -45,7 +45,7 @@ public class FoodManager extends BusinessObject {
         this.eanNumberHandler = eanNumberHandler;
     }
 
-    public Validation<StatusCode, Integer> add(Food item) {
+    public Validation<StatusCode, Integer> add(FoodForInsertion item) {
         return runFunction(() -> dbHandler.add(item));
     }
 
@@ -56,15 +56,15 @@ public class FoodManager extends BusinessObject {
         });
     }
 
-    public StatusCode rename(Food item) {
-        return runOperation(() -> dbHandler.edit(item, item.name, item.expirationOffset, item.location));
+    public StatusCode rename(FoodForEditing item) {
+        return runOperation(() -> dbHandler.edit(item));
     }
 
-    public StatusCode setToBuyStatus(Food food) {
+    public StatusCode setToBuyStatus(FoodForSetToBuy food) {
         return runOperation(() -> dbHandler.setToBuyStatus(food));
     }
 
-    public StatusCode delete(Food item) {
+    public StatusCode delete(FoodForDeletion item) {
         return runOperation(() -> eanNumberHandler.deleteOwnedByFood(item)
                 .bind(() -> foodItemHandler.deleteItemsOfType(item))
                 .bind(() -> dbHandler.delete(item)));
@@ -77,7 +77,7 @@ public class FoodManager extends BusinessObject {
         eanNumberHandler.setPrincipals(principals);
     }
 
-    public StatusCode setDescription(Food item) {
+    public StatusCode setDescription(FoodForSetDescription item) {
         return runOperation(() -> dbHandler.setDescription(item));
     }
 }

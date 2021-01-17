@@ -62,7 +62,7 @@ public class ExceptionHandlerTest {
     public void testGet() {
         Response result = uut.get(request, response);
 
-        assertEquals(StatusCode.GENERAL_ERROR, result.status);
+        assertEquals(StatusCode.GENERAL_ERROR, result.getStatus());
         Mockito.verify(response).setStatus(500);
         Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
     }
@@ -71,7 +71,7 @@ public class ExceptionHandlerTest {
     public void testPut() {
         Response result = uut.put(request, response);
 
-        assertEquals(StatusCode.GENERAL_ERROR, result.status);
+        assertEquals(StatusCode.GENERAL_ERROR, result.getStatus());
         Mockito.verify(response).setStatus(500);
         Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
     }
@@ -80,7 +80,7 @@ public class ExceptionHandlerTest {
     public void testDelete() {
         Response result = uut.delete(request, response);
 
-        assertEquals(StatusCode.GENERAL_ERROR, result.status);
+        assertEquals(StatusCode.GENERAL_ERROR, result.getStatus());
         Mockito.verify(response).setStatus(500);
         Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
     }
@@ -89,7 +89,7 @@ public class ExceptionHandlerTest {
     public void testPost() {
         Response result = uut.post(request, response);
 
-        assertEquals(StatusCode.GENERAL_ERROR, result.status);
+        assertEquals(StatusCode.GENERAL_ERROR, result.getStatus());
         Mockito.verify(response).setStatus(500);
         Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
     }

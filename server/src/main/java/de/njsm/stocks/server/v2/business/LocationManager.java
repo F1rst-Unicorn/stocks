@@ -20,7 +20,7 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.Location;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
@@ -46,7 +46,7 @@ public class LocationManager extends BusinessObject {
         this.foodItemHandler = foodItemHandler;
     }
 
-    public StatusCode put(Location location) {
+    public StatusCode put(LocationForInsertion location) {
         return runOperation(() -> locationHandler.add(location)
                 .toEither().left().orValue(StatusCode.SUCCESS));
     }
@@ -58,11 +58,11 @@ public class LocationManager extends BusinessObject {
         });
     }
 
-    public StatusCode rename(Location item) {
-        return runOperation(() -> locationHandler.rename(item, item.name));
+    public StatusCode rename(LocationForRenaming item) {
+        return runOperation(() -> locationHandler.rename(item));
     }
 
-    public StatusCode delete(Location l, boolean cascadeOnFoodItems) {
+    public StatusCode delete(LocationForDeletion l, boolean cascadeOnFoodItems) {
         return runOperation(() -> {
             if (cascadeOnFoodItems) {
                 StatusCode deleteFoodResult = foodItemHandler.deleteItemsStoredIn(l);
@@ -83,7 +83,7 @@ public class LocationManager extends BusinessObject {
         foodItemHandler.setPrincipals(principals);
     }
 
-    public StatusCode setDescription(Location data) {
+    public StatusCode setDescription(LocationForSetDescription data) {
         return runOperation(() -> locationHandler.setDescription(data));
     }
 }

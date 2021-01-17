@@ -20,9 +20,9 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
+import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import de.njsm.stocks.server.v2.db.UserHandler;
 import fj.data.Validation;
 
@@ -35,20 +35,20 @@ public class UserManager extends BusinessObject {
 
     private final UserHandler dbHandler;
 
-    private final DeviceManager deviceManager;
+    private final UserDeviceHandler deviceHandler;
 
     private final FoodItemHandler foodItemHandler;
 
     public UserManager(UserHandler dbHandler,
-                       DeviceManager deviceManager,
+                       UserDeviceHandler deviceHandler,
                        FoodItemHandler foodItemHandler) {
         super(dbHandler);
         this.dbHandler = dbHandler;
-        this.deviceManager = deviceManager;
+        this.deviceHandler = deviceHandler;
         this.foodItemHandler = foodItemHandler;
     }
 
-    public StatusCode addUser(User u) {
+    public StatusCode addUser(UserForInsertion u) {
         return runOperation(() -> dbHandler.add(u)
                 .toEither().left().orValue(StatusCode.SUCCESS));
     }
@@ -60,14 +60,14 @@ public class UserManager extends BusinessObject {
         });
     }
 
-    public StatusCode deleteUser(User userToDelete) {
+    public StatusCode deleteUser(UserForDeletion userToDelete) {
         return runOperation(() -> {
-            Validation<StatusCode, List<UserDevice>> deviceResult = deviceManager.getDevicesBelonging(userToDelete);
+            Validation<StatusCode, List<Identifiable<UserDevice>>> deviceResult = deviceHandler.getDevicesOfUser(userToDelete);
 
             if (deviceResult.isFail())
                 return deviceResult.fail();
 
-            List<UserDevice> devices = deviceResult.success();
+            List<Identifiable<UserDevice>> devices = deviceResult.success();
 
             return foodItemHandler.transferFoodItems(userToDelete, principals.toUser(), devices, principals.toDevice())
                     .bind(() -> dbHandler.delete(userToDelete));
@@ -77,7 +77,7 @@ public class UserManager extends BusinessObject {
     @Override
     public void setPrincipals(Principals principals) {
         super.setPrincipals(principals);
-        deviceManager.setPrincipals(principals);
+        deviceHandler.setPrincipals(principals);
         foodItemHandler.setPrincipals(principals);
     }
 }

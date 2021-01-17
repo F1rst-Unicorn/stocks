@@ -20,8 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.*;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,8 +46,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
     public void setup() {
         uut = new UserDeviceHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT,
-                new InsertVisitor<>());
+                CIRCUIT_BREAKER_TIMEOUT);
         uut.setPrincipals(TEST_USER);
     }
 
@@ -61,10 +59,10 @@ public class UserDeviceHandlerTest extends DbTestCase {
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
         assertEquals(4, list.size());
-        assertThat(list, hasItem(new UserDevice(1, 0, "mobile", 1)));
-        assertThat(list, hasItem(new UserDevice(2, 0, "mobile2", 1)));
-        assertThat(list, hasItem(new UserDevice(3, 0, "laptop", 2)));
-        assertThat(list, hasItem(new UserDevice(4, 0, "pending_device", 2)));
+        assertThat(list, hasItem(new UserDeviceForGetting(1, 0, "mobile", 1)));
+        assertThat(list, hasItem(new UserDeviceForGetting(2, 0, "mobile2", 1)));
+        assertThat(list, hasItem(new UserDeviceForGetting(3, 0, "laptop", 2)));
+        assertThat(list, hasItem(new UserDeviceForGetting(4, 0, "pending_device", 2)));
     }
 
     @Test
@@ -72,34 +70,33 @@ public class UserDeviceHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Stream<UserDevice>> result = uut.get(true, Instant.EPOCH);
 
-        UserDevice sample = result.success().findAny().get();
-        assertNotNull(sample.validTimeStart);
-        assertNotNull(sample.validTimeEnd);
-        assertNotNull(sample.transactionTimeStart);
-        assertNotNull(sample.transactionTimeEnd);
+        BitemporalUserDevice sample = (BitemporalUserDevice) result.success().findAny().get();
+        assertNotNull(sample.getValidTimeStart());
+        assertNotNull(sample.getValidTimeEnd());
+        assertNotNull(sample.getTransactionTimeStart());
+        assertNotNull(sample.getTransactionTimeEnd());
     }
 
     @Test
     public void addingNewDeviceWorks() {
-        UserDevice device = new UserDevice(1, 0, "newDevice", 1);
+        UserDeviceForInsertion device = new UserDeviceForInsertion("newDevice", 1);
 
         Validation<StatusCode, Integer> result = uut.add(device);
 
 
         Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false, Instant.EPOCH);
         assertTrue(result.isSuccess());
-        assertEquals(new Integer(5), result.success());
+        assertEquals(Integer.valueOf(5), result.success());
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
         assertEquals(5, list.size());
-        device.id = 5;
-        assertThat(list, hasItem(device));
+        assertThat(list, hasItem(new UserDeviceForGetting(5, 0, device.getName(), device.getBelongsTo())));
     }
 
     @Test
     public void deletingUnknownIdIsReported() {
 
-        StatusCode result = uut.delete(new UserDevice(99999, 0, "", 1));
+        StatusCode result = uut.delete(new UserDeviceForDeletion(99999, 0));
 
         assertEquals(StatusCode.NOT_FOUND, result);
     }
@@ -107,14 +104,14 @@ public class UserDeviceHandlerTest extends DbTestCase {
     @Test
     public void deletingInvalidVersionIsReported() {
 
-        StatusCode result = uut.delete(new UserDevice(1, 999, "", 1));
+        StatusCode result = uut.delete(new UserDeviceForDeletion(1, 9999));
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
     }
 
     @Test
     public void deletingValidDeviceWorks() {
-        UserDevice device = new UserDevice(1, 0, "newDevice", 1);
+        UserDeviceForDeletion device = new UserDeviceForDeletion(1, 0);
 
         StatusCode result = uut.delete(device);
 
@@ -123,17 +120,17 @@ public class UserDeviceHandlerTest extends DbTestCase {
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
         assertEquals(3, list.size());
-        assertThat(list, not(hasItem(device)));
+        assertThat(list, not(hasItem(new UserDeviceForGetting(1, 0, "mobile", 1))));
     }
 
     @Test
     public void gettingDevicesOfUserWorks() {
 
-        Validation<StatusCode, List<UserDevice>> result = uut.getDevicesOfUser(new User(1, 2));
+        Validation<StatusCode, List<Identifiable<UserDevice>>> result = uut.getDevicesOfUser(new UserForDeletion(1, 2));
 
         assertTrue(result.isSuccess());
         assertEquals(2, result.success().size());
-        assertThat(result.success(), hasItem(new UserDevice(1, 0, "mobile", 1)));
-        assertThat(result.success(), hasItem(new UserDevice(2, 0, "mobile2", 1)));
+        assertThat(result.success(), hasItem(new UserDeviceForPrincipals(1)));
+        assertThat(result.success(), hasItem(new UserDeviceForPrincipals(2)));
     }
 }

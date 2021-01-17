@@ -20,8 +20,10 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.Food;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
+import de.njsm.stocks.server.v2.business.data.FoodItemForDeletion;
+import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
+import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
@@ -42,10 +44,10 @@ public class FoodItemManager extends BusinessObject {
         this.foodHandler = foodHandler;
     }
 
-    public Validation<StatusCode, Integer> add(FoodItem item) {
+    public Validation<StatusCode, Integer> add(FoodItemForInsertion item) {
         return runFunction(() -> {
             Validation<StatusCode, Integer> result = dbHandler.add(item);
-            return result.bind(v -> foodHandler.setToBuyStatus(new Food(item.ofType, -1), false)
+            return result.bind(v -> foodHandler.setToBuyStatus(item.getOfTypeFood(), false)
                     .toValidation().map((__) -> v));
         });
     }
@@ -57,11 +59,11 @@ public class FoodItemManager extends BusinessObject {
         });
     }
 
-    public StatusCode edit(FoodItem item) {
+    public StatusCode edit(FoodItemForEditing item) {
         return runOperation(() -> dbHandler.edit(item));
     }
 
-    public StatusCode delete(FoodItem item) {
+    public StatusCode delete(FoodItemForDeletion item) {
         return runOperation(() -> dbHandler.delete(item));
     }
 

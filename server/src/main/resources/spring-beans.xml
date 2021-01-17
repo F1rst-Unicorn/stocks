@@ -25,8 +25,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
        default-lazy-init="true">
 
-    <bean name="dbInsertVisitor" class="de.njsm.stocks.server.v2.db.InsertVisitor" />
-
     <bean name="connectionFactory" class="de.njsm.stocks.server.v2.db.ConnectionFactory" scope="request">
         <constructor-arg index="0" ref="datasource" />
     </bean>
@@ -36,22 +34,19 @@
         <constructor-arg index="0" ref="connectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
     </bean>
 
     <bean name="eanNumberDbHandler" class="de.njsm.stocks.server.v2.db.EanNumberHandler" scope="request">
         <constructor-arg index="0" ref="connectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
     </bean>
 
     <bean name="locationDbHandler" class="de.njsm.stocks.server.v2.db.LocationHandler" scope="request">
         <constructor-arg index="0" ref="connectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
-        <constructor-arg index="4" ref="foodItemBackend" />
+        <constructor-arg index="3" ref="foodItemBackend" />
     </bean>
 
     <bean name="ticketHandler" class="de.njsm.stocks.server.v2.db.TicketHandler" scope="request">
@@ -70,23 +65,20 @@
         <constructor-arg index="0" ref="connectionFactory" />
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
-        <constructor-arg index="4" ref="deviceBackend" />
-        <constructor-arg index="5" ref="userBackend" />
+        <constructor-arg index="3" ref="deviceBackend" />
+        <constructor-arg index="4" ref="userBackend" />
     </bean>
 
     <bean name="deviceBackend" class="de.njsm.stocks.server.v2.db.UserDeviceHandler" scope="request">
         <constructor-arg index="0" ref="connectionFactory" />
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
     </bean>
 
     <bean name="userBackend" class="de.njsm.stocks.server.v2.db.UserHandler" scope="request">
         <constructor-arg index="0" ref="connectionFactory" />
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
-        <constructor-arg index="3" ref="dbInsertVisitor" />
     </bean>
 
     <bean name="healthBackend" class="de.njsm.stocks.server.v2.db.HealthHandler" scope="request">
@@ -111,7 +103,7 @@
 
     <bean name="userManager" class="de.njsm.stocks.server.v2.business.UserManager" scope="request">
         <constructor-arg index="0" ref="userBackend" />
-        <constructor-arg index="1" ref="deviceManager" />
+        <constructor-arg index="1" ref="deviceBackend" />
         <constructor-arg index="2" ref="foodItemBackend" />
     </bean>
 

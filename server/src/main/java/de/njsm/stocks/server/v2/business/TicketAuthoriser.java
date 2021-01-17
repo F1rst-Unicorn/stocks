@@ -56,14 +56,14 @@ public class TicketAuthoriser extends BusinessObject {
                 return Validation.fail(StatusCode.ACCESS_DENIED);
             }
 
-            StatusCode saveCsrResult = authAdmin.saveCsr(ticket.deviceId, ticket.pemFile);
+            StatusCode saveCsrResult = authAdmin.saveCsr(ticket.getDeviceId(), ticket.getPemFile());
             if (saveCsrResult.isFail()) {
-                authAdmin.wipeDeviceCredentials(ticket.deviceId);
+                authAdmin.wipeDeviceCredentials(ticket.getDeviceId());
                 return Validation.fail(StatusCode.ACCESS_DENIED);
             }
 
             if (!arePrincipalsValid(ticket)) {
-                authAdmin.wipeDeviceCredentials(ticket.deviceId);
+                authAdmin.wipeDeviceCredentials(ticket.getDeviceId());
                 return Validation.fail(StatusCode.ACCESS_DENIED);
             }
 
@@ -88,18 +88,18 @@ public class TicketAuthoriser extends BusinessObject {
     }
 
     private Validation<StatusCode, String> grantAccess(ClientTicket ticket, ServerTicket dbTicket) {
-        authAdmin.generateCertificate(ticket.deviceId);
+        authAdmin.generateCertificate(ticket.getDeviceId());
 
         StatusCode removeResult = databaseHandler.removeTicket(dbTicket);
         if (removeResult == StatusCode.NOT_FOUND) {
             LOG.error("Could not remove previously found ticket " + dbTicket);
         }
 
-        Validation<StatusCode, String> certificate = authAdmin.getCertificate(ticket.deviceId);
+        Validation<StatusCode, String> certificate = authAdmin.getCertificate(ticket.getDeviceId());
         if (certificate.isFail()) {
             return Validation.fail(certificate.fail());
         }
-        LOG.info("Authorised new device with ID " + ticket.deviceId);
+        LOG.info("Authorised new device with ID " + ticket.getDeviceId());
         return Validation.success(certificate.success());
     }
 
@@ -111,16 +111,16 @@ public class TicketAuthoriser extends BusinessObject {
      * @return true iff the ticket is valid
      */
     private boolean isTicketInvalid(ClientTicket ticket, ServerTicket dbTicket) {
-        Date valid_till_date = new Date(dbTicket.creationDate.getTime() + validityTime * 60000);
+        Date valid_till_date = new Date(dbTicket.getCreationDate().getTime() + validityTime * 60000);
         Date now = new Date();
 
         return now.after(valid_till_date) ||
-                dbTicket.deviceId != ticket.deviceId;
+                dbTicket.getDeviceId() != ticket.getDeviceId();
     }
 
     private boolean arePrincipalsValid(ClientTicket ticket) {
-        Validation<StatusCode, Principals> csrPrincipals = authAdmin.getPrincipals(ticket.deviceId);
-        Validation<StatusCode, Principals> dbPrincipals = databaseHandler.getPrincipalsForTicket(ticket.ticket);
+        Validation<StatusCode, Principals> csrPrincipals = authAdmin.getPrincipals(ticket.getDeviceId());
+        Validation<StatusCode, Principals> dbPrincipals = databaseHandler.getPrincipalsForTicket(ticket.getTicket());
 
         if (dbPrincipals.isFail()) {
             return false;

@@ -21,7 +21,7 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v2.business.FoodManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
@@ -54,7 +54,7 @@ public class FoodEndpoint extends Endpoint {
                             @QueryParam("name") String name) {
         if (isValid(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new Food(name));
+            Validation<StatusCode, Integer> status = manager.add(new FoodForInsertion(name));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -91,7 +91,7 @@ public class FoodEndpoint extends Endpoint {
                 isValid(newName, "new")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.rename(new Food(id, newName, version, false, Period.ofDays(expirationOffset), location == 0 ? null : location, ""));
+            StatusCode status = manager.rename(new FoodForEditing(id, version, newName, Period.ofDays(expirationOffset), location));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -110,7 +110,7 @@ public class FoodEndpoint extends Endpoint {
 
             manager.setPrincipals(getPrincipals(request));
             boolean toBuy = toBuyParameter == 1;
-            StatusCode status = manager.setToBuyStatus(new Food(id, "", version, toBuy, Period.ZERO, 0, ""));
+            StatusCode status = manager.setToBuyStatus(new FoodForSetToBuy(id, version, toBuy));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -126,7 +126,7 @@ public class FoodEndpoint extends Endpoint {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.delete(new Food(id, "", version, false, Period.ZERO, 0, ""));
+            StatusCode status = manager.delete(new FoodForDeletion(id, version));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -141,9 +141,9 @@ public class FoodEndpoint extends Endpoint {
                                    @QueryParam("id") int id,
                                    @QueryParam("version") int version,
                                    @FormParam("description") String description) {
-        if (isValid(id, "id") && isValidVersion(version, "version")) {
+        if (isValid(id, "id") && isValidVersion(version, "version") && isValid(description, "description")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.setDescription(new Food(id, version, description));
+            StatusCode result = manager.setDescription(new FoodForSetDescription(id, version, description));
             return new Response(result);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

@@ -20,8 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
 import org.jooq.Field;
@@ -40,20 +39,19 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
 
     public UserDeviceHandler(ConnectionFactory connectionFactory,
                              String resourceIdentifier,
-                             int timeout,
-                             InsertVisitor<UserDeviceRecord> visitor) {
-        super(connectionFactory, resourceIdentifier, timeout, visitor);
+                             int timeout) {
+        super(connectionFactory, resourceIdentifier, timeout);
     }
 
-    public Validation<StatusCode, List<UserDevice>> getDevicesOfUser(User user) {
+    public Validation<StatusCode, List<Identifiable<UserDevice>>> getDevicesOfUser(Identifiable<User> user) {
         return runFunction(context -> {
-            List<UserDevice> result = context
+            List<Identifiable<UserDevice>> result = context
                     .selectFrom(USER_DEVICE)
-                    .where(USER_DEVICE.BELONGS_TO.eq(user.id)
+                    .where(USER_DEVICE.BELONGS_TO.eq(user.getId())
                         .and(nowAsBestKnown()))
                     .fetch()
                     .stream()
-                    .map(getDtoMap(false))
+                    .map(r -> new UserDeviceForPrincipals(r.getId()))
                     .collect(Collectors.toList());
 
             return Validation.success(result);
@@ -69,20 +67,20 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
     @Override
     protected Function<UserDeviceRecord, UserDevice> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new UserDevice(
+            return cursor -> new BitemporalUserDevice(
                     cursor.getId(),
                     cursor.getVersion(),
                     cursor.getValidTimeStart().toInstant(),
                     cursor.getValidTimeEnd().toInstant(),
                     cursor.getTransactionTimeStart().toInstant(),
                     cursor.getTransactionTimeEnd().toInstant(),
+                    cursor.getInitiates(),
                     cursor.getName(),
-                    cursor.getBelongsTo(),
-                    cursor.getInitiates()
+                    cursor.getBelongsTo()
             );
 
         else
-        return cursor -> new UserDevice(
+        return cursor -> new UserDeviceForGetting(
                 cursor.getId(),
                 cursor.getVersion(),
                 cursor.getName(),

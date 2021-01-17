@@ -22,6 +22,8 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.UserManager;
 import de.njsm.stocks.server.v2.business.data.User;
+import de.njsm.stocks.server.v2.business.data.UserForDeletion;
+import de.njsm.stocks.server.v2.business.data.UserForInsertion;
 import de.njsm.stocks.server.v2.web.data.Response;
 import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
@@ -68,7 +70,7 @@ public class UserEndpointTest {
 
         ArgumentCaptor<StreamResponse<User>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        assertEquals(StatusCode.SUCCESS, c.getValue().status);
+        assertEquals(StatusCode.SUCCESS, c.getValue().getStatus());
         assertEquals(0, c.getValue().data.count());
         Mockito.verify(userManager).get(r, false, Instant.EPOCH);
     }
@@ -81,33 +83,27 @@ public class UserEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test
     public void addingInvalidNameIsRejected() {
-
         Response result = uut.putUser(createMockRequest(), null);
-
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
     public void addUserContainingDollarIsRejected() {
         String name = "John$1";
-
         Response result = uut.putUser(createMockRequest(), name);
-
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
     public void addUserContainingEqualSignIsRejected() {
         String name = "John=1";
-
         Response result = uut.putUser(createMockRequest(), name);
-
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -117,8 +113,8 @@ public class UserEndpointTest {
 
         Response result = uut.putUser(createMockRequest(), name);
 
-        assertEquals(StatusCode.SUCCESS, result.status);
-        Mockito.verify(userManager).addUser(new User(name));
+        assertEquals(StatusCode.SUCCESS, result.getStatus());
+        Mockito.verify(userManager).addUser(new UserForInsertion(name));
         Mockito.verify(userManager).setPrincipals(TEST_USER);
     }
 
@@ -128,7 +124,7 @@ public class UserEndpointTest {
         Response result = uut.deleteUser(Util.createMockRequest(),
                 1, -1);
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -137,7 +133,7 @@ public class UserEndpointTest {
         Response result = uut.deleteUser(Util.createMockRequest(),
                 0, 1);
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.status);
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
@@ -146,8 +142,8 @@ public class UserEndpointTest {
 
         Response result = uut.deleteUser(Util.createMockRequest(), 1, 2);
 
-        assertEquals(StatusCode.SUCCESS, result.status);
-        Mockito.verify(userManager).deleteUser(new User(1, 2));
+        assertEquals(StatusCode.SUCCESS, result.getStatus());
+        Mockito.verify(userManager).deleteUser(new UserForDeletion(1, 2));
         Mockito.verify(userManager).setPrincipals(TEST_USER);
     }
 }

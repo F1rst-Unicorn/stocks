@@ -168,6 +168,7 @@ public class PrincipalFilterTest {
         assertEquals(1, p.success().getDid());
     }
 
+    @Test
     public void testMalformed() {
         String input = "/CN=$1$1";
 

@@ -19,28 +19,25 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.util.Objects;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
 public class NewDeviceTicket {
 
-    public int deviceId;
+    private final int deviceId;
 
-    public String ticket;
-
-    public NewDeviceTicket() {
-    }
+    private final String ticket;
 
     public NewDeviceTicket(int deviceId, String ticket) {
         this.deviceId = deviceId;
         this.ticket = ticket;
+    }
+
+    public int getDeviceId() {
+        return deviceId;
+    }
+
+    public String getTicket() {
+        return ticket;
     }
 
     @Override

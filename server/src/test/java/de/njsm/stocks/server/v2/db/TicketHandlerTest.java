@@ -23,7 +23,7 @@ import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
 import de.njsm.stocks.server.v2.business.data.ServerTicket;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
+import de.njsm.stocks.server.v2.business.data.UserDeviceForDeletion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,8 +52,8 @@ public class TicketHandlerTest extends DbTestCase {
         Validation<StatusCode, ServerTicket> result = uut.getTicket(ticket);
 
         assertTrue(result.isSuccess());
-        assertEquals(ticket.ticket, result.success().ticket);
-        assertEquals(ticket.deviceId, result.success().deviceId);
+        assertEquals(ticket.getTicket(), result.success().getTicket());
+        assertEquals(ticket.getDeviceId(), result.success().getDeviceId());
     }
 
     @Test
@@ -107,19 +107,19 @@ public class TicketHandlerTest extends DbTestCase {
     @Test
     public void addingTicketForDeviceWorks() {
         String ticket = "fdsagrdsbtdsgrafsafea";
-        UserDevice device = new UserDevice(4, 0, "pending_device", 2);
+        int id = 4;
 
-        StatusCode result = uut.addTicket(device, ticket);
+        StatusCode result = uut.addTicket(id, ticket);
 
-        Validation<StatusCode, ServerTicket> storedTicket = uut.getTicket(new ClientTicket(device.id, ticket, ""));
+        Validation<StatusCode, ServerTicket> storedTicket = uut.getTicket(new ClientTicket(id, ticket, ""));
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(storedTicket.isSuccess());
-        assertEquals(device.id, storedTicket.success().deviceId);
+        assertEquals(id, storedTicket.success().getDeviceId());
     }
 
     @Test
     public void removingTicketOfDeviceWorks() {
-        UserDevice device = new UserDevice(4, 0, "pending_device", 2);
+        UserDeviceForDeletion device = new UserDeviceForDeletion(4, 0);
         long numberOfTickets = getDSLContext().selectFrom(TICKET).stream().count();
         assertEquals(1, numberOfTickets);
 
