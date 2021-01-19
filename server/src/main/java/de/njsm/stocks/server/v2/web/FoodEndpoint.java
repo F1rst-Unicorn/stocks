@@ -141,7 +141,7 @@ public class FoodEndpoint extends Endpoint {
                                    @QueryParam("id") int id,
                                    @QueryParam("version") int version,
                                    @FormParam("description") String description) {
-        if (isValid(id, "id") && isValidVersion(version, "version") && isValid(description, "description")) {
+        if (isValid(id, "id") && isValidVersion(version, "version") && isValidOrEmpty(description, "description")) {
             manager.setPrincipals(getPrincipals(request));
             StatusCode result = manager.setDescription(new FoodForSetDescription(id, version, description));
             return new Response(result);

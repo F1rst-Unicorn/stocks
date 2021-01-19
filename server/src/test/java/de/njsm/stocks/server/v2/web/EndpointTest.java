@@ -98,6 +98,13 @@ public class EndpointTest {
     }
 
     @Test
+    public void testEmptyStringValidator() {
+        assertTrue(uut.isValidOrEmpty("", "value name"));
+        assertTrue(uut.isValidOrEmpty("content", "value name"));
+        assertFalse(uut.isValidOrEmpty(null, "value name"));
+    }
+
+    @Test
     public void testValidInstant() {
         assertTrue(uut.isValidInstant(RAW_INSTANT, "name"));
     }

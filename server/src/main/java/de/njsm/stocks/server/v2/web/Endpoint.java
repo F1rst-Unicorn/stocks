@@ -49,6 +49,17 @@ public class Endpoint {
         return false;
     }
 
+    protected boolean isValidOrEmpty(String parameter, String name) {
+        LOG.debug("Checking parameter " + name);
+
+        if (parameter != null) {
+            return true;
+        }
+
+        LOG.info("Request is invalid as " + name + " has value '" + parameter + "'");
+        return false;
+    }
+
     protected boolean isValid(int parameter, String name) {
         LOG.debug("Checking parameter " + name);
 

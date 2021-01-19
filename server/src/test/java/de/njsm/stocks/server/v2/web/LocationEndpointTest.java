@@ -204,6 +204,18 @@ public class LocationEndpointTest {
     }
 
     @Test
+    public void emptyDescriptionIsForwarded() {
+        LocationForSetDescription data = new LocationForSetDescription(1, 2, "");
+        when(businessLayer.setDescription(data)).thenReturn(SUCCESS);
+
+        Response response = uut.setDescription(createMockRequest(), data.getId(), data.getVersion(), data.getDescription());
+
+        assertEquals(SUCCESS, response.getStatus());
+        verify(businessLayer).setDescription(data);
+        Mockito.verify(businessLayer).setPrincipals(TEST_USER);
+    }
+
+    @Test
     public void errorFromBackendIsPropagated() {
         LocationForSetDescription data = new LocationForSetDescription(1, 2, "new description");
         when(businessLayer.setDescription(data)).thenReturn(INVALID_DATA_VERSION);

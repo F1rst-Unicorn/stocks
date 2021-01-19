@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+* STOCKS-129: Allow empty food and location descriptions
+
 ## [5.3.0.0]
 
 ### Added

@@ -249,6 +249,18 @@ public class FoodEndpointTest {
     }
 
     @Test
+    public void emptyDescriptionIsPropagated() {
+        FoodForSetDescription data = new FoodForSetDescription(1, 2, "");
+        when(manager.setDescription(data)).thenReturn(SUCCESS);
+
+        Response response = uut.setDescription(createMockRequest(), data.getId(), data.getVersion(), data.getDescription());
+
+        assertEquals(SUCCESS, response.getStatus());
+        verify(manager).setDescription(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
+    }
+
+    @Test
     public void errorFromBackendIsPropagated() {
         FoodForSetDescription data = new FoodForSetDescription(1, 2, "some description");
         when(manager.setDescription(data)).thenReturn(INVALID_DATA_VERSION);
@@ -268,7 +280,7 @@ public class FoodEndpointTest {
 
     @Test
     public void invalidVersionForDescriptionIsRejected() {
-        Response response = uut.setDescription(createMockRequest(), 1, 0, "");
+        Response response = uut.setDescription(createMockRequest(), 1, -1, "");
         assertEquals(INVALID_ARGUMENT, response.getStatus());
     }
 
