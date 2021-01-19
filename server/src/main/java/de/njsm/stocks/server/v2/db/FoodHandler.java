@@ -22,11 +22,13 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
 
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -84,20 +86,42 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
+            Field<?> locationField = item.getLocationOptional()
+                    .map(v -> {
+                        if (v != 0) {
+                            return (Field<Integer>) DSL.inline(v);
+                        } else {
+                            return DSL.inline((Integer) null);
+                        }
+                    })
+                    .orElse(FOOD.LOCATION);
+
+            Field<?> expirationOffsetField = item.getExpirationOffsetOptional()
+                    .map(v -> (Field<Period>) DSL.inline(v))
+                    .orElse(FOOD.EXPIRATION_OFFSET);
+
+            Condition locationCondition = item.getLocationOptional()
+                    .map(FOOD.LOCATION::isDistinctFrom)
+                    .orElseGet(DSL::falseCondition);
+
+            Condition expirationOffsetCondition = item.getExpirationOffsetOptional()
+                    .map(FOOD.EXPIRATION_OFFSET::ne)
+                    .orElseGet(DSL::falseCondition);
+
             return currentUpdate(Arrays.asList(
                     FOOD.ID,
                     DSL.inline(item.getNewName()),
                     FOOD.VERSION.add(1),
                     FOOD.TO_BUY,
-                    DSL.inline(item.getExpirationOffset()),
-                    DSL.inline(item.getLocation()),
+                    expirationOffsetField,
+                    locationField,
                     FOOD.DESCRIPTION
                     ),
                     getIdField().eq(item.getId())
                             .and(getVersionField().eq(item.getVersion())
                                     .and(FOOD.NAME.ne(item.getNewName())
-                                            .or(FOOD.EXPIRATION_OFFSET.ne(item.getExpirationOffset()))
-                                            .or(FOOD.LOCATION.isDistinctFrom(item.getLocation())))
+                                            .or(expirationOffsetCondition)
+                                            .or(locationCondition))
                             )
             )
                     .map(this::notFoundMeansInvalidVersion);

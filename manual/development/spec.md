@@ -419,9 +419,11 @@ Query parameters:
 * `new: String`: The name to which the food type shall be renamed
 
 * `expirationoffset: int`: The number of days to use as default offset for
-  the expiration date of new items.
+  the expiration date of new items. If omitted, this value won't be changed.
 
-* `location: int`: The default location where new food items will be placed in
+* `location: int`: The default location where new food items will be placed in.
+  Pass 0 for unsetting the default location. If omitted this value won't be
+  changed.
 
 Result: `application/json`, `Response`
 

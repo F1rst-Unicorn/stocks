@@ -184,8 +184,8 @@ public class FoodEndpointTest {
                 data.getId(),
                 data.getVersion(),
                 data.getNewName(),
-                data.getExpirationOffset().getDays(),
-                data.getLocation());
+                data.getExpirationOffsetOptional().get().getDays(),
+                data.getLocationOptional().get());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).rename(data);
@@ -193,7 +193,7 @@ public class FoodEndpointTest {
     }
 
     @Test
-    public void renameFoodWithoutLocationYieldsNullAndWorks() {
+    public void renameFoodWithoutLocationWorks() {
         FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, 0);
         when(manager.rename(data)).thenReturn(SUCCESS);
 
@@ -201,8 +201,42 @@ public class FoodEndpointTest {
                 data.getId(),
                 data.getVersion(),
                 data.getNewName(),
-                data.getExpirationOffset().getDays(),
-                data.getLocation());
+                data.getExpirationOffsetOptional().get().getDays(),
+                data.getLocationOptional().get());
+
+        assertEquals(SUCCESS, response.getStatus());
+        verify(manager).rename(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void renameFoodWithoutLocationYieldsNullAndMapsCorrectly() {
+        FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, null);
+        when(manager.rename(data)).thenReturn(SUCCESS);
+
+        Response response = uut.renameFood(createMockRequest(),
+                data.getId(),
+                data.getVersion(),
+                data.getNewName(),
+                data.getExpirationOffsetOptional().get().getDays(),
+                null);
+
+        assertEquals(SUCCESS, response.getStatus());
+        verify(manager).rename(data);
+        Mockito.verify(manager).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void renameFoodWithoutExpirationOffsetYieldsNullAndMapsCorrectly() {
+        FoodForEditing data = new FoodForEditing(1, 2, "Bread", null, 2);
+        when(manager.rename(data)).thenReturn(SUCCESS);
+
+        Response response = uut.renameFood(createMockRequest(),
+                data.getId(),
+                data.getVersion(),
+                data.getNewName(),
+                null,
+                data.getLocationOptional().get());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).rename(data);

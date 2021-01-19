@@ -6,6 +6,9 @@
 
 * STOCKS-129: Allow empty food and location descriptions
 
+* STOCKS-129: Editing food in the CLI client now won't overwrite expration
+  offset or default location from the android client.
+
 ## [5.3.0.0]
 
 ### Added

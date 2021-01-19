@@ -43,10 +43,10 @@ class SampleData {
             "INSERT INTO \"Location\" (\"name\", description, initiates) VALUES " +
                     "('Fridge', 'fridge description', 1), " +
                     "('Cupboard', 'cupboard description', 1)",
-            "INSERT INTO \"Food\" (name, to_buy, location, description, initiates) VALUES " +
-                    "('Carrot', false, null, 'carrot description',  1), " +
-                    "('Beer', true, null, 'beer description', 1), " +
-                    "('Cheese', false, 1, '', 1)",
+            "INSERT INTO \"Food\" (name, to_buy, location, description, initiates, expiration_offset) VALUES " +
+                    "('Carrot', false, null, 'carrot description',  1, '2 days'), " +
+                    "('Beer', true, null, 'beer description', 1, '0 days'), " +
+                    "('Cheese', false, 1, '', 1, '3 days')",
             "INSERT INTO \"User\" (\"name\", initiates) VALUES " +
                     "('Bob', 1), " +
                     "('Alice', 1), " +

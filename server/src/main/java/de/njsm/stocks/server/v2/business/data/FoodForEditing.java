@@ -21,32 +21,33 @@ package de.njsm.stocks.server.v2.business.data;
 
 import java.time.Period;
 import java.util.Objects;
+import java.util.Optional;
 
 public class FoodForEditing extends VersionedData implements Versionable<Food> {
 
     private final String newName;
 
-    private final Period expirationOffset;
+    private final Optional<Period> expirationOffset;
 
-    private final int location;
+    private final Optional<Integer> location;
 
-    public FoodForEditing(int id, int version, String newName, Period expirationOffset, int location) {
+    public FoodForEditing(int id, int version, String newName, Period expirationOffset, Integer location) {
         super(id, version);
         this.newName = newName;
-        this.expirationOffset = expirationOffset;
-        this.location = location;
+        this.expirationOffset = Optional.ofNullable(expirationOffset);
+        this.location = Optional.ofNullable(location);
     }
 
     public String getNewName() {
         return newName;
     }
 
-    public Period getExpirationOffset() {
-        return expirationOffset;
+    public Optional<Integer> getLocationOptional() {
+        return location;
     }
 
-    public int getLocation() {
-        return location;
+    public Optional<Period> getExpirationOffsetOptional() {
+        return expirationOffset;
     }
 
     @Override
@@ -55,11 +56,13 @@ public class FoodForEditing extends VersionedData implements Versionable<Food> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         FoodForEditing that = (FoodForEditing) o;
-        return getExpirationOffset() == that.getExpirationOffset() && getLocation() == that.getLocation() && getNewName().equals(that.getNewName());
+        return getExpirationOffsetOptional().equals(that.getExpirationOffsetOptional())
+                && getLocationOptional().equals(that.getLocationOptional())
+                && getNewName().equals(that.getNewName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getNewName(), getExpirationOffset(), getLocation());
+        return Objects.hash(super.hashCode(), getNewName(), getExpirationOffsetOptional(), getLocationOptional());
     }
 }

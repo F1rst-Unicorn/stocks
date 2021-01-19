@@ -84,14 +84,20 @@ public class FoodEndpoint extends Endpoint {
                                @QueryParam("id") int id,
                                @QueryParam("version") int version,
                                @QueryParam("new") String newName,
-                               @QueryParam("expirationoffset") int expirationOffset,
-                               @QueryParam("location") int location) {
+                               @QueryParam("expirationoffset") Integer expirationOffset,
+                               @QueryParam("location") Integer location) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.rename(new FoodForEditing(id, version, newName, Period.ofDays(expirationOffset), location));
+            StatusCode status = manager.rename(
+                    new FoodForEditing(
+                            id,
+                            version,
+                            newName,
+                            expirationOffset == null ? null : Period.ofDays(expirationOffset),
+                            location));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
