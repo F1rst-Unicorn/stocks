@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-ssh dp-client sudo pacman -Rsn stocks --noconfirm
-ssh dp-client rm -rf \~/.stocks
+ssh dp-server sudo pacman -Rsn stocks --noconfirm
+ssh dp-server rm -rf \~/.stocks
 
 exit 0

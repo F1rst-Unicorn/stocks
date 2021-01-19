@@ -8,9 +8,7 @@ the VMs as written in the headlines have to resolve to the respective VM.
 VM to setup new server instances. All stocks depenencies are already installed
 to accelerate testing.
 
-## dp-client
-
-Testing the registration of a new client.
+This instance is also used test the CLI client.
 
 ## License
 

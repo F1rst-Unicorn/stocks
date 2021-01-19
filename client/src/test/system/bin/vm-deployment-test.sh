@@ -40,10 +40,12 @@ FINGERPRINT=$(curl -s http://dp-server:10910/ca | \
         openssl x509 -noout -sha256 -fingerprint | \
         head -n 1 | sed 's/.*=//')
 
+set +e
+
 echo -e "dp-server\n\n\n\nJack\ncli-client\n1\n$DEVICE_ID\n\
 $FINGERPRINT\n\
 $TICKET_VALUE\nquit\n" | \
-        ssh dp-client stocks
+        ssh dp-server stocks
 echo "##teamcity[testFinished name='Initialisation']"
 
 python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
@@ -51,7 +53,7 @@ python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
 
 scp dp-server:/var/log/tomcat8/stocks-stocks.log \
         $STOCKS_ROOT/client/target/client-server.log
-scp dp-client:\~/.stocks/stocks.log $STOCKS_ROOT/client/target/client-client.log
+scp dp-server:\~/.stocks/stocks.log $STOCKS_ROOT/client/target/client-client.log
 
 echo "##teamcity[testSuiteFinished name='Client System Test']"
 echo

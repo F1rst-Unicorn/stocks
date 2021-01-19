@@ -56,7 +56,7 @@ def main(arguments):
 
 def setupSshConnection():
     process = subprocess.Popen(
-                    ["ssh dp-client \"LANG=de_DE.UTF-8 stocks\""],
+                    ["ssh dp-server \"LANG=de_DE.UTF-8 stocks\""],
                    stdin=subprocess.PIPE,
                    stdout=subprocess.PIPE,
                    shell=True,
