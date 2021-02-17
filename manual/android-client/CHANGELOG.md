@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.9.0.2]
+
 ### Fixed
 
 * STOCKS-132: Improve usability of food item list swiping by disabling the swipe
