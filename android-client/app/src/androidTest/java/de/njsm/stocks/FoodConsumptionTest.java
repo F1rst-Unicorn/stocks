@@ -23,7 +23,6 @@ package de.njsm.stocks;
 import androidx.test.rule.ActivityTestRule;
 
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -41,10 +40,6 @@ public class FoodConsumptionTest {
     }
 
     @Test
-    @Ignore("espresso is really stupid. If it shall swipe right on a " +
-            "view inside the leftmost tab of a tab view it tries to move " +
-            "the tab view instead of swiping the element. When swiping " +
-            "manually this is not a problem")
     public void removeItemsUntilOneIsLeft() throws Exception {
         OutlineScreen.test()
                 .goToEatSoon()

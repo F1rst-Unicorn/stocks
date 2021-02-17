@@ -91,6 +91,7 @@ public class FoodItemFragment extends BaseFragment implements SwipeListener {
 
         ViewPager2 viewPager = result.findViewById(R.id.fragment_food_item_pager);
         viewPager.setAdapter(new TabAdapter(this, input));
+        viewPager.setUserInputEnabled(false);
 
         TabLayout tabLayout = result.findViewById(R.id.fragment_food_item_tabs);
         new TabLayoutMediator(tabLayout, viewPager,

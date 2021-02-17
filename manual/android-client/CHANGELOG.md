@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixed
+
+* STOCKS-132: Improve usability of food item list swiping by disabling the swipe
+  gestures of the overall Tab view. This makes it easier again to remove
+  consumed food items.
+
 ## [3.9.0.1]
 
 ### Fixed
