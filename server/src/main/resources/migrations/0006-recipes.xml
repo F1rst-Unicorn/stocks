@@ -1074,15 +1074,15 @@
     </changeSet>
     <changeSet id="19" author="admin">
         <sql endDelimiter=";;">
-            insert into unit (name, abbreviation, initiates)
-            select 'Default', 'default', min("ID")
+            insert into unit (name, abbreviation, initiates, valid_time_start, transaction_time_start)
+            select 'Default', 'default', min("ID"), min(valid_time_start), min(transaction_time_start)
             from "User_device"
             where valid_time_start &lt;= current_timestamp
             and current_timestamp &lt; valid_time_end
             and transaction_time_end = 'infinity';;
 
-            insert into scaled_unit (scale, unit, initiates)
-            select 1, lastval(), min("ID")
+            insert into scaled_unit (scale, unit, initiates, valid_time_start, transaction_time_start)
+            select 1, lastval(), min("ID"), min(valid_time_start), min(transaction_time_start)
             from "User_device"
             where valid_time_start &lt;= current_timestamp
             and current_timestamp &lt; valid_time_end
@@ -1093,47 +1093,62 @@
     <changeSet id="20" author="admin">
         <sql endDelimiter=";;">
             alter table "Food" add column store_unit int;;
-
-            insert into "Food" ("ID", name, version, to_buy, expiration_offset, location, description, store_unit, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end, initiates)
-            select f."ID", f.name, f.version + 1, f.to_buy, f.expiration_offset, f.location, f.description, u.id, current_timestamp, f.valid_time_end, current_timestamp, 'infinity', f.initiates
-            from "Food" f, scaled_unit u
-            where u.id = (select min(id) from scaled_unit)
-            and f.valid_time_start &lt;= current_timestamp
-            and current_timestamp &lt; f.valid_time_end
-            and f.transaction_time_end = 'infinity';;
-
-            insert into "Food" ("ID", name, version, to_buy, expiration_offset, location, description, store_unit, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end, initiates)
-            select "ID", name, version, to_buy, expiration_offset, location, f.description, store_unit, valid_time_start, current_timestamp, current_timestamp, 'infinity', initiates
-            from "Food"
-            where valid_time_start &lt; current_timestamp
-            and current_timestamp &lt; valid_time_end
-            and transaction_time_end = 'infinity';;
-
-            update "Food"
-            set transaction_time_end = current_timestamp
-            where valid_time_start &lt; current_timestamp
-            and current_timestamp &lt; "Food".valid_time_end
-            and transaction_time_end = 'infinity';;
-
-            insert into "Food" ("ID", name, version, to_buy, expiration_offset, location, description, store_unit, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end, initiates)
-            select f."ID", f.name, f.version + 1, f.to_buy, f.expiration_offset, f.location, f.description, u.id, f.valid_time_start, f.valid_time_end, current_timestamp, 'infinity', f.initiates
-            from "Food" f, scaled_unit u
-            where u.id = (select min(id) from scaled_unit)
-            and current_timestamp &lt; f.valid_time_start
-            and f.transaction_time_end = 'infinity';;
-
-            update "Food"
-            set transaction_time_end = current_timestamp
-            where current_timestamp &lt; valid_time_start
-            and transaction_time_end = 'infinity'
-            and transaction_time_start &lt; current_timestamp;;
-
-            alter table "Food" alter column store_unit set not null;;
+            update "Food" set store_unit = (select min(id) from scaled_unit);
         </sql>
         <rollback>
             alter table "Food" drop column store_unit;
         </rollback>
     </changeSet>
+    <changeSet id="21" author="admin">
+        <sql endDelimiter=";;">
+            alter table "Food" alter column store_unit set not null;;
+        </sql>
+        <rollback>
+            alter table "Food" alter column store_unit drop not null;
+        </rollback>
+    </changeSet>
+    <changeSet id="22" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function food_store_unit_ref_scaled_unit() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                select count(*)
+                into count
+                from "Food" as f
+                where not exists(
+                        select *
+                        from scaled_unit as p
+                        where p.id = f.store_unit
+                          and p.valid_time_end = 'infinity'
+                          and p.transaction_time_end = 'infinity'
+                    );
 
+                if count != 0 then
+                    raise check_violation;
+                end if;
+                return new;
+            end;
+            $$;;
+            create constraint trigger food_store_unit_ref_scaled_unit
+                after insert or update
+                on "Food"
+                deferrable initially deferred
+                for each row
+            execute function food_store_unit_ref_scaled_unit();;
 
+            create constraint trigger food_store_unit_ref_scaled_unit
+                after update or delete
+                on scaled_unit
+                deferrable initially deferred
+                for each row
+            execute function food_store_unit_ref_scaled_unit();;
+        </sql>
+        <rollback>
+            drop function food_store_unit_ref_scaled_unit cascade;
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
