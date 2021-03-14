@@ -113,8 +113,24 @@
         <property name="unreturnedConnectionTimeout" value="60" />
     </bean>
 
+    <bean name="datasourceForMigrations" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="acquireIncrement" value="1" />
+        <property name="driverClass" value="org.postgresql.Driver" />
+        <property name="idleConnectionTestPeriod" value="60" />
+        <property name="testConnectionOnCheckin" value="true" />
+        <property name="initialPoolSize" value="1" />
+        <property name="maxPoolSize" value="1" />
+        <property name="minPoolSize" value="0" />
+        <property name="maxIdleTimeExcessConnections" value="900" />
+        <property name="checkoutTimeout" ref="circuitBreakerTimeout" />
+        <property name="jdbcUrl" ref="dbUrl" />
+        <property name="properties" ref="dbConfig" />
+        <property name="contextClassLoaderSource" value="library" />
+        <property name="privilegeSpawnedThreads" value="true" />
+    </bean>
+
     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase" lazy-init="false">
-        <property name="dataSource" ref="datasource" />
+        <property name="dataSource" ref="datasourceForMigrations" />
         <property name="changeLog" value="classpath:migrations/master.xml" />
         <property name="contexts" value="production" />
     </bean>
