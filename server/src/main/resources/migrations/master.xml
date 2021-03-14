@@ -31,4 +31,5 @@
     <include file="0003-track-users-in-history.xml" relativeToChangelogFile="true"/>
     <include file="0004-relax-initiates-constraints.xml" relativeToChangelogFile="true"/>
     <include file="0005-freetext-description.xml" relativeToChangelogFile="true"/>
+    <include file="0006-recipes.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

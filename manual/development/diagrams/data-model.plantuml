@@ -69,7 +69,7 @@ package Food <<Frame>> {
 
 package Recipes <<Frame>> {
 
-    class Recipe {
+    class recipe {
         {static} ID: int
         version: int
         valid_time_start: OffsetDateTime
@@ -81,7 +81,7 @@ package Recipes <<Frame>> {
         duration: Duration
     }
 
-    class Recipe_ingredient {
+    class recipe_ingredient {
         {static} ID: int
         version: int
         valid_time_start: OffsetDateTime
@@ -91,7 +91,7 @@ package Recipes <<Frame>> {
         amount: int
     }
 
-    class Recipe_product {
+    class recipe_product {
         {static} ID: int
         version: int
         valid_time_start: OffsetDateTime
@@ -101,7 +101,7 @@ package Recipes <<Frame>> {
         amount: int
     }
 
-    class Scaled_unit {
+    class scaled_unit {
         {static} ID: int
         version: int
         valid_time_start: OffsetDateTime
@@ -111,7 +111,7 @@ package Recipes <<Frame>> {
         scale: BigDecimal
     }
 
-    class Unit {
+    class unit {
         {static} ID: int
         version: int
         valid_time_start: OffsetDateTime
@@ -157,33 +157,33 @@ User --> User_device : initiates
 User_device --> User_device : initiates
 Food_item --> User_device : initiates
 EAN_number --> User_device : initiates
-Recipe --> User_device : initiates
-Recipe_ingredient --> User_device : initiates
-Recipe_product --> User_device : initiates
-Unit --> User_device : initiates
-Scaled_unit --> User_device : initiates
+recipe --> User_device : initiates
+recipe_ingredient --> User_device : initiates
+recipe_product --> User_device : initiates
+unit --> User_device : initiates
+scaled_unit --> User_device : initiates
 
 User_device --> User : belongs_to
 
 EAN_number --> Food : identifies
 
 Food --> Location : location?
-Food --> Scaled_unit : store_unit
+Food --> scaled_unit : store_unit
 
 Food_item --> Location : stored_in
 Food_item --> Food : of_type
 Food_item --> User : buys
 Food_item --> User_device : registers
 
-Recipe_ingredient --> Recipe : recipe
-Recipe_ingredient --> Food : ingredient
-Recipe_ingredient --> Scaled_unit : unit
+recipe_ingredient --> recipe : recipe
+recipe_ingredient --> Food : ingredient
+recipe_ingredient --> scaled_unit : unit
 
-Recipe_product --> Recipe : recipe
-Recipe_product --> Food : product
-Recipe_product --> Scaled_unit : unit
+recipe_product --> recipe : recipe
+recipe_product --> Food : product
+recipe_product --> scaled_unit : unit
 
-Scaled_unit --> Unit : unit
+scaled_unit --> unit : unit
 
 Ticket --> User_device : belongs_device
 
