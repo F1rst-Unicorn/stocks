@@ -42,6 +42,10 @@
 
             create index recipe_product_pkey on recipe_product (id);
 
+            create index recipe_product_current
+            on recipe_product (id asc, valid_time_start asc, valid_time_end asc)
+            where transaction_time_end = 'infinity';;
+
             create or replace function recipe_product_bitemporal_primary_key() returns trigger
                 language PLPGSQL
             as
@@ -139,6 +143,10 @@
 
             create index recipe_ingredient_pkey on recipe_ingredient (id);
 
+            create index recipe_ingredient_current
+            on recipe_ingredient (id asc, valid_time_start asc, valid_time_end asc)
+            where transaction_time_end = 'infinity';;
+
             create or replace function recipe_ingredient_bitemporal_primary_key() returns trigger
                 language PLPGSQL
             as
@@ -233,6 +241,10 @@
             );;
 
             create index scaled_unit_pkey on scaled_unit (id);
+
+            create index scaled_unit_current
+            on scaled_unit (id asc, valid_time_start asc, valid_time_end asc)
+            where transaction_time_end = 'infinity';;
 
             create or replace function scaled_unit_bitemporal_primary_key() returns trigger
                 language PLPGSQL
@@ -330,6 +342,10 @@
 
             create index recipe_pkey on recipe (id);
 
+            create index recipe_current
+            on recipe (id asc, valid_time_start asc, valid_time_end asc)
+            where transaction_time_end = 'infinity';;
+
             create or replace function recipe_bitemporal_primary_key() returns trigger
                 language PLPGSQL
             as
@@ -424,6 +440,10 @@
             );;
 
             create index unit_pkey on unit (id);
+
+            create index unit_current
+            on unit (id asc, valid_time_start asc, valid_time_end asc)
+            where transaction_time_end = 'infinity';;
 
             create or replace function unit_bitemporal_primary_key() returns trigger
                 language PLPGSQL
