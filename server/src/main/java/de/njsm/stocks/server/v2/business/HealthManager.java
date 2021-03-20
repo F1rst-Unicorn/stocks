@@ -24,7 +24,7 @@ import de.njsm.stocks.server.v2.business.data.Health;
 import de.njsm.stocks.server.v2.db.HealthHandler;
 import fj.data.Validation;
 
-public class HealthManager extends BusinessObject {
+public class HealthManager {
 
     private final HealthHandler dbBackend;
 
@@ -32,7 +32,6 @@ public class HealthManager extends BusinessObject {
 
     public HealthManager(HealthHandler dbBackend,
                          AuthAdmin caBackend) {
-        super(dbBackend);
         this.dbBackend = dbBackend;
         this.caBackend = caBackend;
     }

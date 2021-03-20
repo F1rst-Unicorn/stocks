@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.TicketAuthoriser;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
@@ -62,7 +61,6 @@ public class RegistrationEndpoint extends Endpoint {
                 isValid(token, "token") &&
                 isValid(csr, "csr")) {
 
-            authoriser.setPrincipals(Principals.DUMMY);
             Validation<StatusCode, String> response = authoriser.handleTicket(new ClientTicket(device, token, csr));
 
             return new DataResponse<>(response);

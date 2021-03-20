@@ -20,28 +20,28 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.server.v2.business.data.FoodItem;
+import de.njsm.stocks.server.v2.business.data.FoodItemForDeletion;
+import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
+import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Path("v2/fooditem")
-public class FoodItemEndpoint extends Endpoint {
+public class FoodItemEndpoint extends Endpoint implements Get<FoodItemRecord, FoodItem> {
 
     private final FoodItemManager manager;
 
@@ -70,21 +70,6 @@ public class FoodItemEndpoint extends Endpoint {
 
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
-        }
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public void get(@Suspended AsyncResponse response,
-                    @QueryParam("bitemporal") int bitemporalParameter,
-                    @QueryParam("startingFrom") String startingFromParameter) {
-        boolean bitemporal = bitemporalParameter == 1;
-        Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
-        if (startingFrom.isPresent()) {
-            Validation<StatusCode, Stream<FoodItem>> result = manager.get(response, bitemporal, startingFrom.get());
-            response.resume(new StreamResponse<>(result));
-        } else {
-            response.resume(new Response(StatusCode.INVALID_ARGUMENT));
         }
     }
 
@@ -130,5 +115,8 @@ public class FoodItemEndpoint extends Endpoint {
         }
     }
 
-
+    @Override
+    public BusinessGettable<FoodItemRecord, FoodItem> getManager() {
+        return manager;
+    }
 }

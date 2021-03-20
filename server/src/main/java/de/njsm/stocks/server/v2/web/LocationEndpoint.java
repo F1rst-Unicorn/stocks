@@ -19,26 +19,21 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.LocationManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.time.Instant;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Path("v2/location")
-public class LocationEndpoint extends Endpoint {
+public class LocationEndpoint extends Endpoint implements Get<LocationRecord, Location> {
 
     private final LocationManager manager;
 
@@ -57,21 +52,6 @@ public class LocationEndpoint extends Endpoint {
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
-        }
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public void get(@Suspended AsyncResponse response,
-                    @QueryParam("bitemporal") int bitemporalParameter,
-                    @QueryParam("startingFrom") String startingFromParameter) {
-        boolean bitemporal = bitemporalParameter == 1;
-        Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
-        if (startingFrom.isPresent()) {
-            Validation<StatusCode, Stream<Location>> result = manager.get(response, bitemporal, startingFrom.get());
-            response.resume(new StreamResponse<>(result));
-        } else {
-            response.resume(new Response(StatusCode.INVALID_ARGUMENT));
         }
     }
 
@@ -128,5 +108,10 @@ public class LocationEndpoint extends Endpoint {
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
         }
+    }
+
+    @Override
+    public BusinessGettable<LocationRecord, Location> getManager() {
+        return manager;
     }
 }

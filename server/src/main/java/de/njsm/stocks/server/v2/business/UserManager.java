@@ -24,14 +24,12 @@ import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import de.njsm.stocks.server.v2.db.UserHandler;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
 import fj.data.Validation;
 
-import javax.ws.rs.container.AsyncResponse;
-import java.time.Instant;
 import java.util.List;
-import java.util.stream.Stream;
 
-public class UserManager extends BusinessObject {
+public class UserManager extends BusinessObject<UserRecord, User> implements BusinessGettable<UserRecord, User>, BusinessAddable<UserRecord, User> {
 
     private final UserHandler dbHandler;
 
@@ -49,15 +47,7 @@ public class UserManager extends BusinessObject {
     }
 
     public StatusCode addUser(UserForInsertion u) {
-        return runOperation(() -> dbHandler.add(u)
-                .toEither().left().orValue(StatusCode.SUCCESS));
-    }
-
-    public Validation<StatusCode, Stream<User>> get(AsyncResponse r, boolean bitemporal, Instant startingFrom) {
-        return runAsynchronously(r, () -> {
-            dbHandler.setReadOnly();
-            return dbHandler.get(bitemporal, startingFrom);
-        });
+        return add(u).toEither().left().orValue(StatusCode.SUCCESS);
     }
 
     public StatusCode deleteUser(UserForDeletion userToDelete) {

@@ -26,13 +26,10 @@ import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
 import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import fj.data.Validation;
 
-import javax.ws.rs.container.AsyncResponse;
-import java.time.Instant;
-import java.util.stream.Stream;
-
-public class FoodItemManager extends BusinessObject {
+public class FoodItemManager extends BusinessObject<FoodItemRecord, FoodItem> implements BusinessGettable<FoodItemRecord, FoodItem> {
 
     private final FoodItemHandler dbHandler;
 
@@ -49,13 +46,6 @@ public class FoodItemManager extends BusinessObject {
             Validation<StatusCode, Integer> result = dbHandler.add(item);
             return result.bind(v -> foodHandler.setToBuyStatus(item.getOfTypeFood(), false)
                     .toValidation().map((__) -> v));
-        });
-    }
-
-    public Validation<StatusCode, Stream<FoodItem>> get(AsyncResponse r, boolean bitemporal, Instant startingFrom) {
-        return runAsynchronously(r, () -> {
-            dbHandler.setReadOnly();
-            return dbHandler.get(bitemporal, startingFrom);
         });
     }
 

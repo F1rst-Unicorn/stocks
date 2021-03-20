@@ -19,27 +19,23 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.FoodManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.time.Instant;
 import java.time.Period;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Path("v2/food")
-public class FoodEndpoint extends Endpoint {
+public class FoodEndpoint extends Endpoint implements Get<FoodRecord, Food> {
 
     private final FoodManager manager;
 
@@ -58,22 +54,6 @@ public class FoodEndpoint extends Endpoint {
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
-        }
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public void get(@Suspended AsyncResponse response,
-                    @QueryParam("bitemporal") int bitemporalParameter,
-                    @QueryParam("startingFrom") String startingFromParameter) {
-        boolean bitemporal = bitemporalParameter == 1;
-        Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
-        if (startingFrom.isPresent()) {
-
-            Validation<StatusCode, Stream<Food>> result = manager.get(response, bitemporal, startingFrom.get());
-            response.resume(new StreamResponse<>(result));
-        } else {
-            response.resume(new Response(StatusCode.INVALID_ARGUMENT));
         }
     }
 
@@ -154,5 +134,10 @@ public class FoodEndpoint extends Endpoint {
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
         }
+    }
+
+    @Override
+    public BusinessGettable<FoodRecord, Food> getManager() {
+        return manager;
     }
 }

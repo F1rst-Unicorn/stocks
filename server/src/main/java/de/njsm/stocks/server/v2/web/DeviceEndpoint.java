@@ -19,30 +19,26 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.UserDevice;
 import de.njsm.stocks.server.v2.business.data.UserDeviceForDeletion;
 import de.njsm.stocks.server.v2.business.data.UserDeviceForInsertion;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.time.Instant;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Path("v2/device")
-public class DeviceEndpoint extends Endpoint {
+public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, UserDevice> {
 
     private final DeviceManager manager;
 
@@ -65,21 +61,6 @@ public class DeviceEndpoint extends Endpoint {
             return new DataResponse<>(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
-        }
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public void get(@Suspended AsyncResponse response,
-                    @QueryParam("bitemporal") int bitemporalParameter,
-                    @QueryParam("startingFrom") String startingFromParameter) {
-        boolean bitemporal = bitemporalParameter == 1;
-        Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
-        if (startingFrom.isPresent()) {
-            Validation<StatusCode, Stream<UserDevice>> result = manager.get(response, bitemporal, startingFrom.get());
-            response.resume(new StreamResponse<>(result));
-        } else {
-            response.resume(new Response(StatusCode.INVALID_ARGUMENT));
         }
     }
 
@@ -114,5 +95,10 @@ public class DeviceEndpoint extends Endpoint {
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
         }
+    }
+
+    @Override
+    public BusinessGettable<UserDeviceRecord, UserDevice> getManager() {
+        return manager;
     }
 }

@@ -19,28 +19,24 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.UserManager;
 import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.UserForDeletion;
 import de.njsm.stocks.server.v2.business.data.UserForInsertion;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
 import de.njsm.stocks.server.v2.web.data.DataResponse;
 import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
-import java.time.Instant;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Path("/v2/user")
-public class UserEndpoint extends Endpoint {
+public class UserEndpoint extends Endpoint implements Get<UserRecord, User> {
 
     private final UserManager manager;
 
@@ -64,21 +60,6 @@ public class UserEndpoint extends Endpoint {
         }
     }
 
-    @GET
-    @Produces("application/json")
-    public void get(@Suspended AsyncResponse response,
-                    @QueryParam("bitemporal") int bitemporalParameter,
-                    @QueryParam("startingFrom") String startingFromParameter) {
-        boolean bitemporal = bitemporalParameter == 1;
-        Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
-        if (startingFrom.isPresent()) {
-            Validation<StatusCode, Stream<User>> result = manager.get(response, bitemporal, startingFrom.get());
-            response.resume(new StreamResponse<>(result));
-        } else {
-            response.resume(new Response(StatusCode.INVALID_ARGUMENT));
-        }
-    }
-
     @DELETE
     @Produces("application/json")
     public Response deleteUser(@Context HttpServletRequest request,
@@ -96,4 +77,8 @@ public class UserEndpoint extends Endpoint {
 
     }
 
+    @Override
+    public BusinessGettable<UserRecord, User> getManager() {
+        return manager;
+    }
 }

@@ -24,13 +24,9 @@ import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
-import fj.data.Validation;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 
-import javax.ws.rs.container.AsyncResponse;
-import java.time.Instant;
-import java.util.stream.Stream;
-
-public class LocationManager extends BusinessObject {
+public class LocationManager extends BusinessObject<LocationRecord, Location> implements BusinessGettable<LocationRecord, Location>, BusinessAddable<LocationRecord, Location> {
 
     private final LocationHandler locationHandler;
 
@@ -47,15 +43,7 @@ public class LocationManager extends BusinessObject {
     }
 
     public StatusCode put(LocationForInsertion location) {
-        return runOperation(() -> locationHandler.add(location)
-                .toEither().left().orValue(StatusCode.SUCCESS));
-    }
-
-    public Validation<StatusCode, Stream<Location>> get(AsyncResponse r, boolean bitemporal, Instant startingFrom) {
-        return runAsynchronously(r, () -> {
-            locationHandler.setReadOnly();
-            return locationHandler.get(bitemporal, startingFrom);
-        });
+        return add(location).toEither().left().orValue(StatusCode.SUCCESS);
     }
 
     public StatusCode rename(LocationForRenaming item) {

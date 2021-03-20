@@ -28,14 +28,12 @@ import de.njsm.stocks.server.v2.business.data.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.TicketHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
 
-import javax.ws.rs.container.AsyncResponse;
 import java.security.SecureRandom;
-import java.time.Instant;
-import java.util.stream.Stream;
 
-public class DeviceManager extends BusinessObject {
+public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> implements BusinessGettable<UserDeviceRecord, UserDevice> {
 
     private static final int TICKET_LENGTH = 64;
 
@@ -74,13 +72,6 @@ public class DeviceManager extends BusinessObject {
 
             NewDeviceTicket result = new NewDeviceTicket(deviceAddResult.success(), ticket);
             return Validation.success(result);
-        });
-    }
-
-    public Validation<StatusCode, Stream<UserDevice>> get(AsyncResponse r, boolean bitemporal, Instant startingFrom) {
-        return runAsynchronously(r, () -> {
-            userDeviceHandler.setReadOnly();
-            return userDeviceHandler.get(bitemporal, startingFrom);
         });
     }
 

@@ -20,18 +20,18 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.Update;
+import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
 import de.njsm.stocks.server.v2.db.UpdateBackend;
 import fj.data.Validation;
 
 import javax.ws.rs.container.AsyncResponse;
 import java.util.stream.Stream;
 
-public class UpdateManager extends BusinessObject {
+public class UpdateManager implements AsyncRunner {
 
     private final UpdateBackend updateBackend;
 
     public UpdateManager(UpdateBackend updateBackend) {
-        super(updateBackend);
         this.updateBackend = updateBackend;
     }
 
@@ -40,5 +40,10 @@ public class UpdateManager extends BusinessObject {
             updateBackend.setReadOnly();
             return updateBackend.get();
         });
+    }
+
+    @Override
+    public FailSafeDatabaseHandler getDbHandler() {
+        return updateBackend;
     }
 }

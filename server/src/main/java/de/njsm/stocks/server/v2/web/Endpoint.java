@@ -100,7 +100,7 @@ public class Endpoint {
         }
     }
 
-    protected Optional<Instant> parseToInstant(String rawInstant, String name) {
+    public static Optional<Instant> parseToInstant(String rawInstant, String name) {
         if (rawInstant == null || rawInstant.isEmpty()) {
             LOG.debug("Defaulting missing instant to epoch");
             return Optional.of(Instant.EPOCH);

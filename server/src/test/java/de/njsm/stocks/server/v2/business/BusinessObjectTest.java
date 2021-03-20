@@ -19,7 +19,9 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
+import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
@@ -36,14 +38,14 @@ import static org.mockito.Mockito.times;
 
 public class BusinessObjectTest {
 
-    private BusinessObject uut;
+    private BusinessObject<FoodRecord, Food> uut;
 
-    private FailSafeDatabaseHandler backend;
+    private CrudDatabaseHandler<FoodRecord, Food> backend;
 
     @Before
     public void setup() {
-        backend = Mockito.mock(FailSafeDatabaseHandler.class);
-        uut = new BusinessObject(backend);
+        backend = Mockito.mock(CrudDatabaseHandler.class);
+        uut = new BusinessObject<>(backend);
         uut.setPrincipals(TEST_USER);
     }
 

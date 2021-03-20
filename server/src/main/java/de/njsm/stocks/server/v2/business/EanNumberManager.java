@@ -21,32 +21,16 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.EanNumber;
 import de.njsm.stocks.server.v2.business.data.EanNumberForDeletion;
-import de.njsm.stocks.server.v2.business.data.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
-import fj.data.Validation;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 
-import javax.ws.rs.container.AsyncResponse;
-import java.time.Instant;
-import java.util.stream.Stream;
-
-public class EanNumberManager extends BusinessObject {
+public class EanNumberManager extends BusinessObject<EanNumberRecord, EanNumber> implements BusinessGettable<EanNumberRecord, EanNumber>, BusinessAddable<EanNumberRecord, EanNumber> {
 
     private final EanNumberHandler eanNumberHandler;
 
     public EanNumberManager(EanNumberHandler eanNumberHandler) {
         super(eanNumberHandler);
         this.eanNumberHandler = eanNumberHandler;
-    }
-
-    public Validation<StatusCode, Integer> add(EanNumberForInsertion item) {
-        return runFunction(() -> eanNumberHandler.add(item));
-    }
-
-    public Validation<StatusCode, Stream<EanNumber>> get(AsyncResponse r, boolean bitemporal, Instant startingFrom) {
-        return runAsynchronously(r, () -> {
-            eanNumberHandler.setReadOnly();
-            return eanNumberHandler.get(bitemporal, startingFrom);
-        });
     }
 
     public StatusCode delete(EanNumberForDeletion item) {

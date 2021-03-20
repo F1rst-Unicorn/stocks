@@ -24,6 +24,6 @@ import org.jooq.InsertOnDuplicateStep;
 import org.jooq.InsertSetStep;
 import org.jooq.Record;
 
-public interface Insertable<R extends Record, T extends Entity> {
+public interface Insertable<R extends Record, T extends Entity<T>> {
     InsertOnDuplicateStep<R> insertValue(InsertSetStep<R> insertInto, Principals principals);
 }
