@@ -1171,4 +1171,95 @@
             drop function food_store_unit_ref_scaled_unit cascade;
         </rollback>
     </changeSet>
+    <changeSet id="23" author="admin">
+        <sql endDelimiter=";;">
+            create or replace view "Updates" ("ID", table_name, last_update) as
+            select 1,
+                   'Location',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "Location"
+            union
+            select 2,
+                   'User',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "User"
+            union
+            select 3,
+                   'User_device',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "User_device"
+            union
+            select 4,
+                   'Food',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "Food"
+            union
+            select 5,
+                   'Food_item',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "Food_item"
+            union
+            select 6,
+                   'EAN_number',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "EAN_number"
+            union
+            select 7,
+                   'recipe_product',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from recipe_product
+            union
+            select 8,
+                   'recipe_ingredient',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from recipe_ingredient
+            union
+            select 9,
+                   'scaled_unit',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from scaled_unit
+            union
+            select 10,
+                   'recipe',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from recipe
+            union
+            select 11,
+                   'unit',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from unit;
+        </sql>
+        <rollback>
+            create or replace view "Updates" ("ID", table_name, last_update) as
+            select 1,
+                   'Location',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "Location"
+            union
+            select 2,
+                   'User',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "User"
+            union
+            select 3,
+                   'User_device',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "User_device"
+            union
+            select 4,
+                   'Food',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "Food"
+            union
+            select 5,
+                   'Food_item',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "Food_item"
+            union
+            select 6,
+                   'EAN_number',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "EAN_number";
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
