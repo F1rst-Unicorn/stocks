@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.EanNumber;
@@ -36,7 +35,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 @Path("v2/ean")
-public class EanNumberEndpoint extends Endpoint implements Get<EanNumberRecord, EanNumber> {
+public class EanNumberEndpoint extends Endpoint implements
+        Get<EanNumberRecord, EanNumber>,
+        Delete<EanNumberForDeletion, EanNumber> {
 
     private final EanNumberManager manager;
 
@@ -62,26 +63,12 @@ public class EanNumberEndpoint extends Endpoint implements Get<EanNumberRecord, 
     }
 
     @Override
-    public BusinessGettable<EanNumberRecord, EanNumber> getManager() {
+    public EanNumberManager getManager() {
         return manager;
     }
 
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteEanNumber(@Context HttpServletRequest request,
-                                    @QueryParam("id") int id,
-                                    @QueryParam("version") int version) {
-
-        if (isValid(id, "id") &&
-                isValidVersion(version, "version")) {
-
-            manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.delete(new EanNumberForDeletion(id, version));
-            return new Response(status);
-        } else {
-            return new Response(StatusCode.INVALID_ARGUMENT);
-        }
+    @Override
+    public EanNumberForDeletion wrapParameters(int id, int version) {
+        return new EanNumberForDeletion(id, version);
     }
-
-
 }

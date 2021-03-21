@@ -175,7 +175,7 @@ public class FoodItemEndpointTest {
     @Test
     public void deleteInvalidIdIsReported() {
 
-        Response result = uut.deleteItem(createMockRequest(), 0, 1);
+        Response result = uut.delete(createMockRequest(), 0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -183,7 +183,7 @@ public class FoodItemEndpointTest {
     @Test
     public void deleteInvalidVersionIsReported() {
 
-        Response result = uut.deleteItem(createMockRequest(), 1, -1);
+        Response result = uut.delete(createMockRequest(), 1, -1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -193,7 +193,7 @@ public class FoodItemEndpointTest {
         FoodItemForDeletion expected = new FoodItemForDeletion(2, 2);
         Mockito.when(manager.delete(expected)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.deleteItem(createMockRequest(), expected.getId(), expected.getVersion());
+        Response result = uut.delete(createMockRequest(), expected.getId(), expected.getVersion());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).delete(expected);

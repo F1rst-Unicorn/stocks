@@ -121,7 +121,7 @@ public class UserEndpointTest {
     @Test
     public void deletingInvalidVersionIsRejected() {
 
-        Response result = uut.deleteUser(Util.createMockRequest(),
+        Response result = uut.delete(Util.createMockRequest(),
                 1, -1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
@@ -130,7 +130,7 @@ public class UserEndpointTest {
     @Test
     public void deletingInvalidIdIsRejected() {
 
-        Response result = uut.deleteUser(Util.createMockRequest(),
+        Response result = uut.delete(Util.createMockRequest(),
                 0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
@@ -138,12 +138,12 @@ public class UserEndpointTest {
 
     @Test
     public void validDeletingIsSuccessful() {
-        Mockito.when(userManager.deleteUser(any())).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(userManager.delete(any())).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.deleteUser(Util.createMockRequest(), 1, 2);
+        Response result = uut.delete(Util.createMockRequest(), 1, 2);
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
-        Mockito.verify(userManager).deleteUser(new UserForDeletion(1, 2));
+        Mockito.verify(userManager).delete(new UserForDeletion(1, 2));
         Mockito.verify(userManager).setPrincipals(TEST_USER);
     }
 }

@@ -169,25 +169,25 @@ public class LocationEndpointTest {
 
     @Test
     public void deleteLocationWorks() {
-        LocationForDeletion data = new LocationForDeletion(1, 2);
-        when(businessLayer.delete(data, false)).thenReturn(SUCCESS);
+        LocationForDeletion data = new LocationForDeletion(1, 2, false);
+        when(businessLayer.delete(data)).thenReturn(SUCCESS);
 
         Response response = uut.deleteLocation(createMockRequest(), data.getId(), data.getVersion(), 0);
 
         assertEquals(SUCCESS, response.getStatus());
-        verify(businessLayer).delete(data, false);
+        verify(businessLayer).delete(data);
         Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 
     @Test
     public void deleteLocationWorksCascading() {
-        LocationForDeletion data = new LocationForDeletion(1, 2);
-        when(businessLayer.delete(data, true)).thenReturn(SUCCESS);
+        LocationForDeletion data = new LocationForDeletion(1, 2, true);
+        when(businessLayer.delete(data)).thenReturn(SUCCESS);
 
         Response response = uut.deleteLocation(createMockRequest(), data.getId(), data.getVersion(), 1);
 
         assertEquals(SUCCESS, response.getStatus());
-        verify(businessLayer).delete(data, true);
+        verify(businessLayer).delete(data);
         Mockito.verify(businessLayer).setPrincipals(TEST_USER);
     }
 

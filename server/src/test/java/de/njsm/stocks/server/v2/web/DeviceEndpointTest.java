@@ -142,14 +142,14 @@ public class DeviceEndpointTest {
     @Test
     public void deleteDevice() {
         UserDeviceForDeletion device = new UserDeviceForDeletion(4, 3);
-        Mockito.when(businessObject.removeDevice(device)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(businessObject.delete(device)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.deleteDevice(createMockRequest(),
                 device.getId(),
                 device.getVersion());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
-        Mockito.verify(businessObject).removeDevice(device);
+        Mockito.verify(businessObject).delete(device);
         Mockito.verify(businessObject).setPrincipals(TEST_USER);
     }
 

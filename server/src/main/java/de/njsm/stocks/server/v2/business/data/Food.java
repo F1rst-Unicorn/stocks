@@ -32,4 +32,6 @@ public interface Food extends Entity<Food> {
     boolean isToBuy();
 
     String getDescription();
+
+    int getStoreUnit();
 }

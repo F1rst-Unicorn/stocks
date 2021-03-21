@@ -23,41 +23,55 @@ import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import org.jooq.InsertOnDuplicateStep;
 import org.jooq.InsertSetStep;
+import org.jooq.impl.DSL;
 
 import java.util.Objects;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
+import static de.njsm.stocks.server.v2.db.jooq.Tables.SCALED_UNIT;
 
 public class FoodForInsertion implements Insertable<FoodRecord, Food> {
 
     private final String name;
 
-    public FoodForInsertion(String name) {
+    private final Integer storeUnit;
+
+    public FoodForInsertion(String name, Integer storeUnit) {
         this.name = name;
+        this.storeUnit = storeUnit;
     }
 
     public String getName() {
         return name;
     }
 
+    public Integer getStoreUnit() {
+        return storeUnit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof FoodForInsertion)) return false;
         FoodForInsertion that = (FoodForInsertion) o;
-        return getName().equals(that.getName());
+        return getName().equals(that.getName()) && Objects.equals(getStoreUnit(), that.getStoreUnit());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getName());
+        return Objects.hash(getName(), getStoreUnit());
     }
-
 
     @Override
     public InsertOnDuplicateStep<FoodRecord> insertValue(InsertSetStep<FoodRecord> insertInto, Principals principals) {
-        return insertInto.columns(FOOD.NAME, FOOD.INITIATES)
-                .values(name, principals.getDid());
+        if (storeUnit == null)
+            return insertInto.columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
+                    .select(DSL.select(DSL.inline(name), DSL.inline(principals.getDid()), DSL.min(SCALED_UNIT.ID))
+                            .from(SCALED_UNIT));
+
+        else
+            return insertInto.columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
+                    .values(name, principals.getDid(), storeUnit);
     }
 }
 

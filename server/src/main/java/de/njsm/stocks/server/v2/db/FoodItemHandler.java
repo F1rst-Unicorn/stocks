@@ -66,7 +66,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
 
             OffsetDateTime newEatByDate = item.getEatBy().atOffset(ZoneOffset.UTC);
 
-            return currentUpdate(Arrays.asList(
+            return currentUpdate(context, Arrays.asList(
                     FOOD_ITEM.ID,
                     DSL.inline(OffsetDateTime.from(newEatByDate)),
                     FOOD_ITEM.OF_TYPE,
@@ -96,7 +96,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                 LOG.warn("Target ID " + from + " not found");
                 return StatusCode.NOT_FOUND;
             }
-            return currentUpdate(Arrays.asList(
+            return currentUpdate(context, Arrays.asList(
                     FOOD_ITEM.ID,
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,
@@ -129,7 +129,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     .map(Identifiable::getId)
                     .collect(Collectors.toList());
 
-            return currentUpdate(Arrays.asList(
+            return currentUpdate(context, Arrays.asList(
                     FOOD_ITEM.ID,
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,

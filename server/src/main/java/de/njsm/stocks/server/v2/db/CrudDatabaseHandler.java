@@ -145,93 +145,94 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
         });
     }
 
+    StatusCode currentUpdate(List<Field<?>> valuesToUpdate, Condition condition) {
+        return runCommand(context -> currentUpdate(context, valuesToUpdate, condition));
+    }
+
     /**
      * CF 10.7
      */
-    StatusCode currentUpdate(List<Field<?>> valuesToUpdate, Condition condition) {
-        return runCommand(context -> {
+    StatusCode currentUpdate(DSLContext context, List<Field<?>> valuesToUpdate, Condition condition) {
+        Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+        List<Field<?>> fields = getNontemporalFields();
+        List<Field<?>> fieldsWithTime = getFieldsWithTimeAndCreator(fields);
 
-            Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
-            List<Field<?>> fields = getNontemporalFields();
-            List<Field<?>> fieldsWithTime = getFieldsWithTimeAndCreator(fields);
+        int changedItems = context.insertInto(getTable())
+                .columns(fieldsWithTime)
+                .select(
+                        context.select(valuesToUpdate)
+                                .select(
+                                        now,
+                                        getValidTimeEndField(),
+                                        now,
+                                        DSL.inline(CrudDatabaseHandler.INFINITY),
+                                        DSL.inline(principals.getDid()))
+                                .from(getTable())
+                                .where(condition
+                                        .and(getValidTimeStartField().lessOrEqual(now))
+                                        .and(getValidTimeEndField().greaterThan(now))
+                                        .and(getTransactionTimeEndField().eq(INFINITY))
+                                ))
+                .execute();
 
-            int changedItems = context.insertInto(getTable())
-                    .columns(fieldsWithTime)
-                    .select(
-                            context.select(valuesToUpdate)
-                                    .select(
-                                            now,
-                                            getValidTimeEndField(),
-                                            now,
-                                            DSL.inline(CrudDatabaseHandler.INFINITY),
-                                            DSL.inline(principals.getDid()))
-                                    .from(getTable())
-                                    .where(condition
-                                            .and(getValidTimeStartField().lessOrEqual(now))
-                                            .and(getValidTimeEndField().greaterThan(now))
-                                            .and(getTransactionTimeEndField().eq(INFINITY))
-                                    ))
-                    .execute();
+        context.insertInto(getTable())
+                .columns(fieldsWithTime)
+                .select(
+                        context.select(fields)
+                                .select(
+                                        getValidTimeStartField(),
+                                        now,
+                                        now,
+                                        DSL.inline(INFINITY),
+                                        DSL.inline(principals.getDid())
+                                ).from(getTable())
+                                .where(condition
+                                        .and(getValidTimeStartField().lessThan(now))
+                                        .and(getValidTimeEndField().greaterThan(now))
+                                        .and(getTransactionTimeEndField().eq(INFINITY))
+                                )
+                )
+                .execute();
 
-            context.insertInto(getTable())
-                    .columns(fieldsWithTime)
-                    .select(
-                            context.select(fields)
-                                    .select(
-                                            getValidTimeStartField(),
-                                            now,
-                                            now,
-                                            DSL.inline(INFINITY),
-                                            DSL.inline(principals.getDid())
-                                    ).from(getTable())
-                                    .where(condition
-                                            .and(getValidTimeStartField().lessThan(now))
-                                            .and(getValidTimeEndField().greaterThan(now))
-                                            .and(getTransactionTimeEndField().eq(INFINITY))
-                                    )
-                    )
-                    .execute();
+        context.update(getTable())
+                .set(getTransactionTimeEndField(), now)
+                .where(condition
+                        .and(getValidTimeStartField().lessThan(now))
+                        .and(getValidTimeEndField().greaterThan(now))
+                        .and(getTransactionTimeEndField().eq(INFINITY))
+                )
+                .execute();
 
-            context.update(getTable())
-                    .set(getTransactionTimeEndField(), now)
-                    .where(condition
-                            .and(getValidTimeStartField().lessThan(now))
-                            .and(getValidTimeEndField().greaterThan(now))
-                            .and(getTransactionTimeEndField().eq(INFINITY))
-                    )
-                    .execute();
+        context.insertInto(getTable())
+                .columns(fieldsWithTime)
+                .select(
+                        context.select(valuesToUpdate)
+                                .select(
+                                        getValidTimeStartField(),
+                                        getValidTimeEndField(),
+                                        now,
+                                        DSL.inline(CrudDatabaseHandler.INFINITY),
+                                        DSL.inline(principals.getDid()))
+                                .from(getTable())
+                                .where(condition
+                                        .and(getValidTimeStartField().greaterThan(now))
+                                        .and(getTransactionTimeEndField().eq(INFINITY))
+                                )
+                ).execute();
 
-            context.insertInto(getTable())
-                    .columns(fieldsWithTime)
-                    .select(
-                            context.select(valuesToUpdate)
-                                    .select(
-                                            getValidTimeStartField(),
-                                            getValidTimeEndField(),
-                                            now,
-                                            DSL.inline(CrudDatabaseHandler.INFINITY),
-                                            DSL.inline(principals.getDid()))
-                                    .from(getTable())
-                                    .where(condition
-                                            .and(getValidTimeStartField().greaterThan(now))
-                                            .and(getTransactionTimeEndField().eq(INFINITY))
-                                    )
-                    ).execute();
+        context.update(getTable())
+                .set(getTransactionTimeEndField(), now)
+                .where(condition
+                        .and(getValidTimeStartField().greaterThan(now))
+                        .and(getTransactionTimeEndField().eq(INFINITY))
+                        .and(getTransactionTimeStartField().lt(now))
+                )
+                .execute();
 
-            context.update(getTable())
-                    .set(getTransactionTimeEndField(), now)
-                    .where(condition
-                            .and(getValidTimeStartField().greaterThan(now))
-                            .and(getTransactionTimeEndField().eq(INFINITY))
-                            .and(getTransactionTimeStartField().lt(now))
-                    )
-                    .execute();
-
-            if (changedItems > 0)
-                return StatusCode.SUCCESS;
-            else
-                return StatusCode.NOT_FOUND;
-        });
+        if (changedItems > 0)
+            return StatusCode.SUCCESS;
+        else
+            return StatusCode.NOT_FOUND;
     }
 
     @Override

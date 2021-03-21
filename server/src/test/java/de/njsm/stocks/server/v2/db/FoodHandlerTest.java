@@ -58,7 +58,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void addAFood() {
-        FoodForInsertion data = new FoodForInsertion("Banana");
+        FoodForInsertion data = new FoodForInsertion("Banana", 1);
 
         Validation<StatusCode, Integer> code = uut.add(data);
 
@@ -68,7 +68,8 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().anyMatch(f -> f.getName().equals("Banana")));
+        assertTrue(dbData.success().anyMatch(f -> f.getName().equals(data.getName())
+                && f.getStoreUnit() == data.getStoreUnit()));
     }
 
     @Test

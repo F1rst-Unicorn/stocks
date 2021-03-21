@@ -111,12 +111,12 @@ public class LocationManagerTest {
 
     @Test
     public void deleteWithoutCascade() {
-        LocationForDeletion input = new LocationForDeletion(1, 2);
+        LocationForDeletion input = new LocationForDeletion(1, 2, false);
         Mockito.when(dbLayer.delete(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodHandler.unregisterDefaultLocation(input)).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.delete(input, false);
+        StatusCode result = uut.delete(input);
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(dbLayer).delete(input);
@@ -126,13 +126,13 @@ public class LocationManagerTest {
 
     @Test
     public void deleteWithCascadeSucceeds() {
-        LocationForDeletion input = new LocationForDeletion(1, 2);
+        LocationForDeletion input = new LocationForDeletion(1, 2, true);
         Mockito.when(foodItemDbLayer.deleteItemsStoredIn(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.delete(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodHandler.unregisterDefaultLocation(input)).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.delete(input, true);
+        StatusCode result = uut.delete(input);
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(foodItemDbLayer).deleteItemsStoredIn(input);
@@ -143,11 +143,11 @@ public class LocationManagerTest {
 
     @Test
     public void deleteWithCascadeFailsWhileDeletingItems() {
-        LocationForDeletion input = new LocationForDeletion(1, 2);
+        LocationForDeletion input = new LocationForDeletion(1, 2, true);
         Mockito.when(foodItemDbLayer.deleteItemsStoredIn(input)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         Mockito.when(foodItemDbLayer.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.delete(input, true);
+        StatusCode result = uut.delete(input);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         Mockito.verify(foodItemDbLayer).deleteItemsStoredIn(input);

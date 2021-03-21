@@ -29,7 +29,9 @@ import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import fj.data.Validation;
 
-public class FoodItemManager extends BusinessObject<FoodItemRecord, FoodItem> implements BusinessGettable<FoodItemRecord, FoodItem> {
+public class FoodItemManager extends BusinessObject<FoodItemRecord, FoodItem> implements
+        BusinessGettable<FoodItemRecord, FoodItem>,
+        BusinessDeletable<FoodItemForDeletion, FoodItem> {
 
     private final FoodItemHandler dbHandler;
 

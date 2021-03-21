@@ -41,13 +41,16 @@ public class FoodForGetting extends VersionedData implements Food {
 
     private final String description;
 
-    public FoodForGetting(int id, int version, String name, boolean toBuy, Period expirationOffset, Integer location, String description) {
+    private final int storeUnit;
+
+    public FoodForGetting(int id, int version, String name, boolean toBuy, Period expirationOffset, Integer location, String description, int storeUnit) {
         super(id, version);
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;
         this.location = location;
         this.description = description;
+        this.storeUnit = storeUnit;
     }
 
     public String getName() {
@@ -68,6 +71,11 @@ public class FoodForGetting extends VersionedData implements Food {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public int getStoreUnit() {
+        return storeUnit;
     }
 
     @Override

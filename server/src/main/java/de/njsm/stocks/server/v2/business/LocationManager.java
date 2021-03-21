@@ -26,7 +26,10 @@ import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 
-public class LocationManager extends BusinessObject<LocationRecord, Location> implements BusinessGettable<LocationRecord, Location>, BusinessAddable<LocationRecord, Location> {
+public class LocationManager extends BusinessObject<LocationRecord, Location> implements
+        BusinessGettable<LocationRecord, Location>,
+        BusinessAddable<LocationRecord, Location>,
+        BusinessDeletable<LocationForDeletion, Location> {
 
     private final LocationHandler locationHandler;
 
@@ -50,9 +53,9 @@ public class LocationManager extends BusinessObject<LocationRecord, Location> im
         return runOperation(() -> locationHandler.rename(item));
     }
 
-    public StatusCode delete(LocationForDeletion l, boolean cascadeOnFoodItems) {
+    public StatusCode delete(LocationForDeletion l) {
         return runOperation(() -> {
-            if (cascadeOnFoodItems) {
+            if (l.isCascade()) {
                 StatusCode deleteFoodResult = foodItemHandler.deleteItemsStoredIn(l);
 
                 if (deleteFoodResult != StatusCode.SUCCESS)

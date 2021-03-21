@@ -82,7 +82,7 @@ public class FoodManagerTest {
 
     @Test
     public void testAddingItem() {
-        FoodForInsertion data = new FoodForInsertion("Cheese");
+        FoodForInsertion data = new FoodForInsertion("Cheese", 1);
         Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
 
         Validation<StatusCode, Integer> result = uut.add(data);

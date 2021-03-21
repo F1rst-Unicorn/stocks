@@ -24,7 +24,10 @@ import de.njsm.stocks.server.v2.business.data.EanNumberForDeletion;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 
-public class EanNumberManager extends BusinessObject<EanNumberRecord, EanNumber> implements BusinessGettable<EanNumberRecord, EanNumber>, BusinessAddable<EanNumberRecord, EanNumber> {
+public class EanNumberManager extends BusinessObject<EanNumberRecord, EanNumber> implements
+        BusinessGettable<EanNumberRecord, EanNumber>,
+        BusinessAddable<EanNumberRecord, EanNumber>,
+        BusinessDeletable<EanNumberForDeletion, EanNumber> {
 
     private final EanNumberHandler eanNumberHandler;
 

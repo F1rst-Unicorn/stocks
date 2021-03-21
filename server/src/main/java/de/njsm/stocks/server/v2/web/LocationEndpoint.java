@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.LocationManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.*;
@@ -33,7 +32,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 @Path("v2/location")
-public class LocationEndpoint extends Endpoint implements Get<LocationRecord, Location> {
+public class LocationEndpoint extends Endpoint implements
+        Get<LocationRecord, Location>,
+        MetaDelete<LocationForDeletion, Location>{
 
     private final LocationManager manager;
 
@@ -82,12 +83,7 @@ public class LocationEndpoint extends Endpoint implements Get<LocationRecord, Lo
                                    @QueryParam("cascade") int cascadeParameter) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-
-            boolean cascade = cascadeParameter == 1;
-            manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.delete(new LocationForDeletion(id, version), cascade);
-            return new Response(status);
-
+            return delete(request, () -> new LocationForDeletion(id, version, cascadeParameter == 1));
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
         }
@@ -111,7 +107,7 @@ public class LocationEndpoint extends Endpoint implements Get<LocationRecord, Lo
     }
 
     @Override
-    public BusinessGettable<LocationRecord, Location> getManager() {
+    public LocationManager getManager() {
         return manager;
     }
 }

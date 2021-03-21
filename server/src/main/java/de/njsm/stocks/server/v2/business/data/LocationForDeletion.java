@@ -19,9 +19,37 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
+import java.util.Objects;
+
 public class LocationForDeletion extends VersionedData implements Versionable<Location> {
+
+    private final boolean cascade;
+
+    public LocationForDeletion(int id, int version, boolean cascade) {
+        super(id, version);
+        this.cascade = cascade;
+    }
 
     public LocationForDeletion(int id, int version) {
         super(id, version);
+        this.cascade = false;
+    }
+
+    public boolean isCascade() {
+        return cascade;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LocationForDeletion)) return false;
+        if (!super.equals(o)) return false;
+        LocationForDeletion that = (LocationForDeletion) o;
+        return isCascade() == that.isCascade();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), isCascade());
     }
 }

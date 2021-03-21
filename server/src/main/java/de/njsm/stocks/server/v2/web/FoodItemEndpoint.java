@@ -20,7 +20,6 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.FoodItem;
@@ -34,14 +33,19 @@ import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.time.Instant;
 
 @Path("v2/fooditem")
-public class FoodItemEndpoint extends Endpoint implements Get<FoodItemRecord, FoodItem> {
+public class FoodItemEndpoint extends Endpoint implements
+        Get<FoodItemRecord, FoodItem>,
+        Delete<FoodItemForDeletion, FoodItem> {
 
     private final FoodItemManager manager;
 
@@ -98,25 +102,13 @@ public class FoodItemEndpoint extends Endpoint implements Get<FoodItemRecord, Fo
         }
     }
 
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteItem(@Context HttpServletRequest request,
-                               @QueryParam("id") int id,
-                               @QueryParam("version") int version) {
-
-        if (isValid(id, "id") &&
-                isValidVersion(version, "version")) {
-
-            manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.delete(new FoodItemForDeletion(id, version));
-            return new Response(status);
-        } else {
-            return new Response(StatusCode.INVALID_ARGUMENT);
-        }
+    @Override
+    public FoodItemManager getManager() {
+        return manager;
     }
 
     @Override
-    public BusinessGettable<FoodItemRecord, FoodItem> getManager() {
-        return manager;
+    public FoodItemForDeletion wrapParameters(int id, int version) {
+        return new FoodItemForDeletion(id, version);
     }
 }

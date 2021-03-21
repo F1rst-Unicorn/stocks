@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.FoodManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.*;
@@ -35,7 +34,9 @@ import javax.ws.rs.core.MediaType;
 import java.time.Period;
 
 @Path("v2/food")
-public class FoodEndpoint extends Endpoint implements Get<FoodRecord, Food> {
+public class FoodEndpoint extends Endpoint implements
+        Get<FoodRecord, Food>,
+        Delete<FoodForDeletion, Food> {
 
     private final FoodManager manager;
 
@@ -47,10 +48,11 @@ public class FoodEndpoint extends Endpoint implements Get<FoodRecord, Food> {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response putFood(@Context HttpServletRequest request,
-                            @QueryParam("name") String name) {
+                            @QueryParam("name") String name,
+                            @QueryParam("unit") Integer storeUnit) {
         if (isValid(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new FoodForInsertion(name));
+            Validation<StatusCode, Integer> status = manager.add(new FoodForInsertion(name, storeUnit));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -103,22 +105,6 @@ public class FoodEndpoint extends Endpoint implements Get<FoodRecord, Food> {
         }
     }
 
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteFood(@Context HttpServletRequest request,
-                               @QueryParam("id") int id,
-                               @QueryParam("version") int version) {
-
-        if (isValid(id, "id") &&
-                isValidVersion(version, "version")) {
-            manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.delete(new FoodForDeletion(id, version));
-            return new Response(status);
-        } else {
-            return new Response(StatusCode.INVALID_ARGUMENT);
-        }
-    }
-
     @POST
     @Path("description")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -137,7 +123,12 @@ public class FoodEndpoint extends Endpoint implements Get<FoodRecord, Food> {
     }
 
     @Override
-    public BusinessGettable<FoodRecord, Food> getManager() {
+    public FoodManager getManager() {
         return manager;
+    }
+
+    @Override
+    public FoodForDeletion wrapParameters(int id, int version) {
+        return new FoodForDeletion(id, version);
     }
 }

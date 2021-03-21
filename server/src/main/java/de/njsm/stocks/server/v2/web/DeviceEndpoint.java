@@ -73,7 +73,7 @@ public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, Us
                 isValidVersion(version, "version")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.removeDevice(new UserDeviceForDeletion(id, version));
+            StatusCode result = manager.delete(new UserDeviceForDeletion(id, version));
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));

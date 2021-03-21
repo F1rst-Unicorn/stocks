@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.UserManager;
 import de.njsm.stocks.server.v2.business.data.User;
@@ -32,11 +31,14 @@ import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 @Path("/v2/user")
-public class UserEndpoint extends Endpoint implements Get<UserRecord, User> {
+public class UserEndpoint extends Endpoint implements Get<UserRecord, User>, Delete<UserForDeletion, User> {
 
     private final UserManager manager;
 
@@ -60,25 +62,13 @@ public class UserEndpoint extends Endpoint implements Get<UserRecord, User> {
         }
     }
 
-    @DELETE
-    @Produces("application/json")
-    public Response deleteUser(@Context HttpServletRequest request,
-                           @QueryParam("id") int id,
-                           @QueryParam("version") int version) {
-
-        if (isValid(id, "id") &&
-                isValidVersion(version, "version")) {
-            manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.deleteUser(new UserForDeletion(id, version));
-            return new Response(result);
-        } else {
-            return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
-        }
-
+    @Override
+    public UserManager getManager() {
+        return manager;
     }
 
     @Override
-    public BusinessGettable<UserRecord, User> getManager() {
-        return manager;
+    public UserForDeletion wrapParameters(int id, int version) {
+        return new UserForDeletion(id, version);
     }
 }

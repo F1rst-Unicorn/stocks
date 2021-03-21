@@ -40,13 +40,16 @@ public class BitemporalFood extends BitemporalData implements Food {
 
     private final String description;
 
-    public BitemporalFood(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, String name, boolean toBuy, Period expirationOffset, Integer location, String description) {
+    private final int storeUnit;
+
+    public BitemporalFood(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, String name, boolean toBuy, Period expirationOffset, Integer location, String description, int storeUnit) {
         super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;
         this.location = location;
         this.description = description;
+        this.storeUnit = storeUnit;
     }
 
     public String getName() {
@@ -71,17 +74,21 @@ public class BitemporalFood extends BitemporalData implements Food {
         return description;
     }
 
+    public int getStoreUnit() {
+        return storeUnit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof BitemporalFood)) return false;
         if (!super.equals(o)) return false;
         BitemporalFood that = (BitemporalFood) o;
-        return isToBuy() == that.isToBuy() && getName().equals(that.getName()) && getExpirationOffset().equals(that.getExpirationOffset()) && getLocation().equals(that.getLocation()) && getDescription().equals(that.getDescription());
+        return isToBuy() == that.isToBuy() && getStoreUnit() == that.getStoreUnit() && getName().equals(that.getName()) && getExpirationOffset().equals(that.getExpirationOffset()) && Objects.equals(getLocation(), that.getLocation()) && getDescription().equals(that.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), isToBuy(), getExpirationOffset(), getLocation(), getDescription());
+        return Objects.hash(super.hashCode(), getName(), isToBuy(), getExpirationOffset(), getLocation(), getDescription(), getStoreUnit());
     }
 }

@@ -50,14 +50,15 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            return currentUpdate(Arrays.asList(
+            return currentUpdate(context, Arrays.asList(
                     FOOD.ID,
                     FOOD.NAME,
                     FOOD.VERSION.add(1),
                     DSL.inline(item.isToBuy()),
                     FOOD.EXPIRATION_OFFSET,
                     FOOD.LOCATION,
-                    FOOD.DESCRIPTION
+                    FOOD.DESCRIPTION,
+                    FOOD.STORE_UNIT
                     ),
                     getIdField().eq(item.getId())
                             .and(getVersionField().eq(item.getVersion()))
@@ -67,18 +68,19 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
     }
 
     public StatusCode setToBuyStatus(Identifiable<Food> item, boolean value) {
-        return runCommand(context -> currentUpdate(Arrays.asList(
+        return currentUpdate(Arrays.asList(
                 FOOD.ID,
                 FOOD.NAME,
                 FOOD.VERSION.add(1),
                 DSL.inline(value),
                 FOOD.EXPIRATION_OFFSET,
                 FOOD.LOCATION,
-                FOOD.DESCRIPTION
+                FOOD.DESCRIPTION,
+                FOOD.STORE_UNIT
                 ),
                 getIdField().eq(item.getId())
                         .and(FOOD.TO_BUY.ne(value)))
-                .map(this::notFoundIsOk));
+                .map(this::notFoundIsOk);
     }
 
     public StatusCode edit(FoodForEditing item) {
@@ -108,15 +110,15 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     .map(FOOD.EXPIRATION_OFFSET::ne)
                     .orElseGet(DSL::falseCondition);
 
-            return currentUpdate(Arrays.asList(
+            return currentUpdate(context, Arrays.asList(
                     FOOD.ID,
                     DSL.inline(item.getNewName()),
                     FOOD.VERSION.add(1),
                     FOOD.TO_BUY,
                     expirationOffsetField,
                     locationField,
-                    FOOD.DESCRIPTION
-                    ),
+                    FOOD.DESCRIPTION,
+                    FOOD.STORE_UNIT),
                     getIdField().eq(item.getId())
                             .and(getVersionField().eq(item.getVersion())
                                     .and(FOOD.NAME.ne(item.getNewName())
@@ -136,7 +138,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                 FOOD.TO_BUY,
                 FOOD.EXPIRATION_OFFSET,
                 DSL.inline((Integer) null),
-                FOOD.DESCRIPTION),
+                FOOD.DESCRIPTION,
+                FOOD.STORE_UNIT),
                 FOOD.LOCATION.eq(l.getId()))
                 .map(this::notFoundIsOk);
     }
@@ -146,14 +149,15 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            return currentUpdate(Arrays.asList(
+            return currentUpdate(context, Arrays.asList(
                     FOOD.ID,
                     FOOD.NAME,
                     FOOD.VERSION.add(1),
                     FOOD.TO_BUY,
                     FOOD.EXPIRATION_OFFSET,
                     FOOD.LOCATION,
-                    DSL.inline(item.getDescription())),
+                    DSL.inline(item.getDescription()),
+                    FOOD.STORE_UNIT),
                     getIdField().eq(item.getId())
                             .and(getVersionField().eq(item.getVersion()))
                             .and(FOOD.DESCRIPTION.ne(item.getDescription())))
@@ -191,7 +195,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     cursor.getToBuy(),
                     cursor.getExpirationOffset(),
                     cursor.getLocation(),
-                    cursor.getDescription()
+                    cursor.getDescription(),
+                    cursor.getStoreUnit()
             );
         else
             return cursor -> new FoodForGetting(
@@ -201,8 +206,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     cursor.getToBuy(),
                     cursor.getExpirationOffset(),
                     cursor.getLocation(),
-                    cursor.getDescription()
-                    );
+                    cursor.getDescription(),
+                    cursor.getStoreUnit());
     }
 
     @Override
@@ -214,7 +219,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                 FOOD.TO_BUY,
                 FOOD.EXPIRATION_OFFSET,
                 FOOD.LOCATION,
-                FOOD.DESCRIPTION
+                FOOD.DESCRIPTION,
+                FOOD.STORE_UNIT
         );
     }
 }

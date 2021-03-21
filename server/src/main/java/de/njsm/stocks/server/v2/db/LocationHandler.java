@@ -53,7 +53,7 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            return currentUpdate(Arrays.asList(
+            return currentUpdate(context, Arrays.asList(
                     LOCATION.ID,
                     DSL.inline(item.getNewName()),
                     LOCATION.VERSION.add(1),
@@ -78,7 +78,7 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
             if (isCurrentlyMissing(input, context))
                 return StatusCode.NOT_FOUND;
 
-            return currentUpdate(Arrays.asList(
+            return currentUpdate(context, Arrays.asList(
                     LOCATION.ID,
                     LOCATION.NAME,
                     LOCATION.VERSION.add(1),

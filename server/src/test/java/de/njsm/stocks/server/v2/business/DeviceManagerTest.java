@@ -146,7 +146,7 @@ public class DeviceManagerTest {
         Mockito.when(authAdmin.revokeCertificate(device.getId())).thenReturn(StatusCode.SUCCESS);
         Mockito.when(ticketDbHandler.removeTicketOfDevice(device)).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.removeDevice(device);
+        StatusCode result = uut.delete(device);
 
         assertEquals(StatusCode.SUCCESS, result);
         ArgumentCaptor<UserDeviceForPrincipals> captor = ArgumentCaptor.forClass(UserDeviceForPrincipals.class);
@@ -179,7 +179,7 @@ public class DeviceManagerTest {
         Mockito.when(ticketDbHandler.removeTicketOfDevice(device)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        StatusCode result = uut.removeDevice(device);
+        StatusCode result = uut.delete(device);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         ArgumentCaptor<UserDeviceForPrincipals> captor = ArgumentCaptor.forClass(UserDeviceForPrincipals.class);
@@ -195,7 +195,7 @@ public class DeviceManagerTest {
         UserDeviceForDeletion device = new UserDeviceForDeletion(1, 2);
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDeviceForDeletion.class), any(UserDeviceForPrincipals.class))).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        StatusCode result = uut.removeDevice(device);
+        StatusCode result = uut.delete(device);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         ArgumentCaptor<UserDeviceForPrincipals> captor = ArgumentCaptor.forClass(UserDeviceForPrincipals.class);

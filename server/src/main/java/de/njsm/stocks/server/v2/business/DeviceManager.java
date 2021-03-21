@@ -33,7 +33,9 @@ import fj.data.Validation;
 
 import java.security.SecureRandom;
 
-public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> implements BusinessGettable<UserDeviceRecord, UserDevice> {
+public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> implements
+        BusinessGettable<UserDeviceRecord, UserDevice>,
+        BusinessDeletable<UserDeviceForDeletion, UserDevice> {
 
     private static final int TICKET_LENGTH = 64;
 
@@ -75,7 +77,7 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
         });
     }
 
-    public StatusCode removeDevice(UserDeviceForDeletion device) {
+    public StatusCode delete(UserDeviceForDeletion device) {
         return runOperation(() -> removeDeviceInternally(device));
     }
 

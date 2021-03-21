@@ -66,17 +66,17 @@ public class FoodEndpointTest {
     }
 
     @Test
-    public void puttingNullCodeIsInvalid() {
+    public void puttingNullNameIsInvalid() {
 
-        Response result = uut.putFood(createMockRequest(), null);
+        Response result = uut.putFood(createMockRequest(), null, null);
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
-    public void puttingEmptyCodeIsInvalid() {
+    public void puttingEmptyNameIsInvalid() {
 
-        Response result = uut.putFood(createMockRequest(), "");
+        Response result = uut.putFood(createMockRequest(), "", null);
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
@@ -124,7 +124,7 @@ public class FoodEndpointTest {
     @Test
     public void deletingInvalidIdIsInvalid() {
 
-        Response result = uut.deleteFood(createMockRequest(), 0, 1);
+        Response result = uut.delete(createMockRequest(), 0, 1);
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
@@ -132,17 +132,17 @@ public class FoodEndpointTest {
     @Test
     public void deletingInvalidVersionIsInvalid() {
 
-        Response result = uut.deleteFood(createMockRequest(), 1, -1);
+        Response result = uut.delete(createMockRequest(), 1, -1);
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
     public void foodIsAdded() {
-        FoodForInsertion data = new FoodForInsertion("Banana");
+        FoodForInsertion data = new FoodForInsertion("Banana", 1);
         when(manager.add(data)).thenReturn(Validation.success(5));
 
-        Response response = uut.putFood(createMockRequest(), data.getName());
+        Response response = uut.putFood(createMockRequest(), data.getName(), data.getStoreUnit());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).add(data);
@@ -152,7 +152,7 @@ public class FoodEndpointTest {
     @Test
     public void getFoodReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        List<Food> data = Collections.singletonList(new FoodForGetting(2, 2, "Banana", true, Period.ZERO, 1, ""));
+        List<Food> data = Collections.singletonList(new FoodForGetting(2, 2, "Banana", true, Period.ZERO, 1, "", 1));
         when(manager.get(any(), eq(false), eq(Instant.EPOCH))).thenReturn(Validation.success(data.stream()));
 
         uut.get(r, 0, null);
@@ -259,11 +259,11 @@ public class FoodEndpointTest {
     }
 
     @Test
-    public void deleteFoodWorks() {
+    public void deleteWorks() {
         FoodForDeletion data = new FoodForDeletion(1, 2);
         when(manager.delete(data)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteFood(createMockRequest(), data.getId(), data.getVersion());
+        Response response = uut.delete(createMockRequest(), data.getId(), data.getVersion());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).delete(data);

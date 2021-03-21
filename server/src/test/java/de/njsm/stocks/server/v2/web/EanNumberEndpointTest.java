@@ -93,7 +93,7 @@ public class EanNumberEndpointTest {
     @Test
     public void deletingInvalidIdIsInvalid() {
 
-        Response result = uut.deleteEanNumber(createMockRequest(), 0, 1);
+        Response result = uut.delete(createMockRequest(), 0, 1);
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
@@ -101,7 +101,7 @@ public class EanNumberEndpointTest {
     @Test
     public void deletingInvalidVersionIsInvalid() {
 
-        Response result = uut.deleteEanNumber(createMockRequest(), 1, -1);
+        Response result = uut.delete(createMockRequest(), 1, -1);
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
@@ -145,11 +145,11 @@ public class EanNumberEndpointTest {
     }
 
     @Test
-    public void deleteEanNumberWorks() {
+    public void deleteWorks() {
         EanNumberForDeletion data = new EanNumberForDeletion(1, 0);
         when(manager.delete(data)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteEanNumber(createMockRequest(), data.getId(), data.getVersion());
+        Response response = uut.delete(createMockRequest(), data.getId(), data.getVersion());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).delete(data);

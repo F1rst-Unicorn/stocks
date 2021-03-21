@@ -29,7 +29,10 @@ import fj.data.Validation;
 
 import java.util.List;
 
-public class UserManager extends BusinessObject<UserRecord, User> implements BusinessGettable<UserRecord, User>, BusinessAddable<UserRecord, User> {
+public class UserManager extends BusinessObject<UserRecord, User> implements
+        BusinessGettable<UserRecord, User>,
+        BusinessAddable<UserRecord, User>,
+        BusinessDeletable<UserForDeletion, User> {
 
     private final UserHandler dbHandler;
 
@@ -50,7 +53,8 @@ public class UserManager extends BusinessObject<UserRecord, User> implements Bus
         return add(u).toEither().left().orValue(StatusCode.SUCCESS);
     }
 
-    public StatusCode deleteUser(UserForDeletion userToDelete) {
+    @Override
+    public StatusCode delete(UserForDeletion userToDelete) {
         return runOperation(() -> {
             Validation<StatusCode, List<Identifiable<UserDevice>>> deviceResult = deviceHandler.getDevicesOfUser(userToDelete);
 

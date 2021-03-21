@@ -26,7 +26,10 @@ import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 
-public class FoodManager extends BusinessObject<FoodRecord, Food> implements BusinessGettable<FoodRecord, Food>, BusinessAddable<FoodRecord, Food> {
+public class FoodManager extends BusinessObject<FoodRecord, Food> implements
+        BusinessGettable<FoodRecord, Food>,
+        BusinessAddable<FoodRecord, Food>,
+        BusinessDeletable<FoodForDeletion, Food>{
 
     private final FoodHandler dbHandler;
 

@@ -115,7 +115,7 @@ public class UserManagerTest {
         UserForDeletion input = new UserForDeletion(1, 2);
         Mockito.when(deviceHandler.getDevicesOfUser(input)).thenReturn(Validation.fail(code));
 
-        StatusCode result = uut.deleteUser(input);
+        StatusCode result = uut.delete(input);
 
         assertEquals(code, result);
         Mockito.verify(deviceHandler).getDevicesOfUser(input);
@@ -133,7 +133,7 @@ public class UserManagerTest {
         Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice()))
                 .thenReturn(code);
 
-        StatusCode result = uut.deleteUser(input);
+        StatusCode result = uut.delete(input);
 
         assertEquals(code, result);
         Mockito.verify(deviceHandler).getDevicesOfUser(input);
@@ -154,7 +154,7 @@ public class UserManagerTest {
         Mockito.when(userDbHandler.delete(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.deleteUser(input);
+        StatusCode result = uut.delete(input);
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(deviceHandler).getDevicesOfUser(input);

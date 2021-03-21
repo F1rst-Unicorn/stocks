@@ -34,7 +34,7 @@ public class Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(Endpoint.class);
 
-    protected Principals getPrincipals(HttpServletRequest request) {
+    protected static Principals getPrincipals(HttpServletRequest request) {
         return (Principals) request.getAttribute(PrincipalFilter.STOCKS_PRINCIPAL);
     }
 
@@ -60,7 +60,7 @@ public class Endpoint {
         return false;
     }
 
-    protected boolean isValid(int parameter, String name) {
+    protected static boolean isValid(int parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter > 0) {
@@ -77,7 +77,7 @@ public class Endpoint {
         return isValid(value, name) && Principals.isNameValid(value);
     }
 
-    protected boolean isValidVersion(int parameter, String name) {
+    protected static boolean isValidVersion(int parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter >= 0) {
