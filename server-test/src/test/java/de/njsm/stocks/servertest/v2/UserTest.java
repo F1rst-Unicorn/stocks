@@ -28,7 +28,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 
-public class UserTest {
+public class UserTest implements Deleter {
 
     @Test
     public void addUser() {
@@ -84,17 +84,6 @@ public class UserTest {
                 .getInt("data.findAll{ it.name == '" + name + "' }.last().id");
     }
 
-    public static ValidatableResponse assertOnDelete(int id, int version) {
-        return given()
-                .log().ifValidationFails()
-                .queryParam("id", id)
-                .queryParam("version", version).
-        when()
-                .delete(TestSuite.DOMAIN + "/v2/user").
-        then()
-                .contentType(ContentType.JSON);
-    }
-
     public static ValidatableResponse assertOnAdd(String name) {
         return given()
                 .log().ifValidationFails()
@@ -114,5 +103,10 @@ public class UserTest {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
+    }
+
+    @Override
+    public String getEndpoint() {
+        return "/v2/user";
     }
 }

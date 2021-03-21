@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertEquals;
 
-public class FoodItemTest {
+public class FoodItemTest implements Deleter {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSSSSS-Z")
             .withZone(ZoneId.of("UTC"));
@@ -132,18 +132,6 @@ public class FoodItemTest {
                 .body("status", equalTo(2));
     }
 
-    private ValidatableResponse assertOnDelete(int id, int version) {
-        return given()
-                .log().ifValidationFails()
-                .queryParam("id", id)
-                .queryParam("version", version).
-        when()
-                .delete(TestSuite.DOMAIN + "/v2/fooditem").
-        then()
-                .log().ifValidationFails()
-                .contentType(ContentType.JSON);
-    }
-
     static int createNewItem(Instant eatByDate, int storedIn, int ofType) {
         addFoodItem(eatByDate, storedIn, ofType);
         return getIdOfItem(eatByDate);
@@ -195,5 +183,10 @@ public class FoodItemTest {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
+    }
+
+    @Override
+    public String getEndpoint() {
+        return "/v2/fooditem";
     }
 }

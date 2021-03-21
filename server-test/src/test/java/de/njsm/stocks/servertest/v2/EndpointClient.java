@@ -17,12 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.business.data;
+package de.njsm.stocks.servertest.v2;
 
-public class UnitForDeletion extends VersionedData implements Versionable<Unit> {
+public interface EndpointClient {
 
-
-    public UnitForDeletion(int id, int version) {
-        super(id, version);
-    }
+    String getEndpoint();
 }

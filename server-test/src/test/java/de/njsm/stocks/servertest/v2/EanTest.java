@@ -30,7 +30,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.not;
 
-public class EanTest {
+public class EanTest implements Deleter {
 
     @Test
     public void addAEan() {
@@ -51,15 +51,8 @@ public class EanTest {
         addEan(name, foodId);
         int id = getIdOfEan(name);
 
-        given()
-                .queryParam("id", id)
-                .queryParam("version", 0).
-        when()
-                .delete(TestSuite.DOMAIN + "/v2/ean").
-        then()
-                .log().ifValidationFails()
+        assertOnDelete(id, 0)
                 .statusCode(200)
-                .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
 
         assertOnEans()
@@ -101,5 +94,10 @@ public class EanTest {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
+    }
+
+    @Override
+    public String getEndpoint() {
+        return "/v2/ean";
     }
 }

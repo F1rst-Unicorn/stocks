@@ -533,9 +533,9 @@ cascade flag, the items stored in that location will be deleted as well.
 
 Query parameters:
 
-* `id: int`: The ID of the location to rename
+* `id: int`: The ID of the location to delete
 
-* `version: int`: The version to rename
+* `version: int`: The version to delete
 
 * `cascade: int`: Set to 1 to delete all food items contained
   in the location as well.
@@ -659,6 +659,71 @@ Query parameters:
 * `id: int`: The ID of the food item to delete
 
 * `version: int`: The version of the food item to delete
+
+Result: `application/json`, `Response`
+
+#### Units
+
+`PUT /v2/unit`: Create a new unit of measure in the system.
+
+Query parameters:
+
+* `name: String`: The name of the new unit
+
+* `abbreviation: String`: The abbreviation used for this measure
+
+Result: `application/json`, `Response`
+
+`GET /v2/unit`: Get all units in the system
+
+Query parameters:
+
+* `bitemporal: int`: Set to 1 to include bitemporal data. 0 yields the
+  current state of the data as best known.
+
+* `startingFrom: Timestamp`: Only include the latest changes to the
+  data since `startingFrom`. For useful interpretation of the data
+  `bitemporal` SHOULD be set to 1.
+
+Result: `application/json`
+
+```
+{
+    status: StatusCode
+    data: List<Unit>
+}
+
+Unit {
+	id: int
+	version: int
+	name: String
+	abbreviation: String
+}
+
+```
+
+`PUT /v2/unit/rename`: Rename an existing unit.
+
+Query parameters:
+
+* `id: int`: The ID of the unit to rename
+
+* `version: int`: The version to rename
+
+* `name: String`: The new name of the unit
+
+* `abbreviation: String`: The new abbreviation of the unit
+
+Result: `application/json`, `Response`
+
+`DELETE /v2/unit`: Delete a unit. Deleting a unit used by a scaled unit is
+restricted by default, raising status code 4.
+
+Query parameters:
+
+* `id: int`: The ID to delete
+
+* `version: int`: The version to delete
 
 Result: `application/json`, `Response`
 

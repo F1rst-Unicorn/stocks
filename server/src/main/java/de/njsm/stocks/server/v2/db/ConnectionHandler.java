@@ -32,6 +32,8 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
 
     private static final String SERIALISATION_FAILURE_SQL_STATE = "40001";
 
+    private static final String CHECK_VIOLATION_SQL_STATE = "23514";
+
     private final String resourceIdentifier;
 
     private final ConnectionFactory connectionFactory;
@@ -102,10 +104,23 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
             } catch (SQLException e) {
                 if (isSerialisationConflict(e))
                     return Validation.fail(StatusCode.SERIALISATION_CONFLICT);
+                else if (isCheckViolation(e))
+                    return Validation.fail(StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION);
                 else
                     throw e;
             }
         };
+    }
+
+    private boolean isCheckViolation(SQLException e) {
+        String sqlState = e.getSQLState();
+
+        if (sqlState != null && sqlState.equals(CHECK_VIOLATION_SQL_STATE)) {
+            LOG.info("Constraint violation, transaction was rolled back");
+            return true;
+        }
+
+        return false;
     }
 
     static <O> Validation<StatusCode, O> lookForSqlException(RuntimeException e) throws RuntimeException {

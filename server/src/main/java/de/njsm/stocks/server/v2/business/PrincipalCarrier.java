@@ -17,12 +17,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.business.data;
+package de.njsm.stocks.server.v2.business;
 
-public class UnitForDeletion extends VersionedData implements Versionable<Unit> {
+import de.njsm.stocks.server.util.Principals;
 
+public interface PrincipalCarrier {
 
-    public UnitForDeletion(int id, int version) {
-        super(id, version);
-    }
+    void setPrincipals(Principals principals);
 }

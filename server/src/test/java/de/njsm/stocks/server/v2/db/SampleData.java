@@ -31,6 +31,7 @@ class SampleData {
             "DELETE FROM \"Food\"",
             "DELETE FROM \"User\"",
             "DELETE FROM \"Location\"",
+            "delete from unit where id != 1",
 
             "ALTER SEQUENCE \"Food_item_ID_seq\" RESTART",
             "ALTER SEQUENCE \"Food_ID_seq\" RESTART",
@@ -39,6 +40,7 @@ class SampleData {
             "ALTER SEQUENCE \"Location_ID_seq\" RESTART",
             "ALTER SEQUENCE \"Ticket_ID_seq\" RESTART",
             "ALTER SEQUENCE \"EAN_number_ID_seq\" RESTART",
+            "alter sequence unit_id_seq restart with 2",
 
             "INSERT INTO \"Location\" (\"name\", description, initiates) VALUES " +
                     "('Fridge', 'fridge description', 1), " +

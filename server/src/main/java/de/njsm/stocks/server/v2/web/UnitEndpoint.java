@@ -35,7 +35,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-@Path("v2/food")
+@Path("v2/unit")
 public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Delete<UnitForDeletion, Unit> {
 
     private final UnitManager manager;

@@ -87,6 +87,12 @@
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
     </bean>
 
+    <bean name="unitBackend" class="de.njsm.stocks.server.v2.db.UnitHandler" scope="request">
+        <constructor-arg index="0" ref="connectionFactory" />
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+    </bean>
+
     <!-- Business Layer -->
     <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" scope="request">
         <constructor-arg index="0" ref="authAdmin"/>
@@ -137,6 +143,10 @@
         <constructor-arg index="1" ref="authAdmin" />
     </bean>
 
+    <bean name="unitManager" class="de.njsm.stocks.server.v2.business.UnitManager" scope="request">
+        <constructor-arg index="0" ref="unitBackend" />
+    </bean>
+
     <!-- Web Layer -->
     <bean name="updateEndpoint" class="de.njsm.stocks.server.v2.web.UpdateEndpoint" scope="request">
         <constructor-arg index="0" ref="updateManager" />
@@ -172,5 +182,9 @@
 
     <bean name="healthEndpoint" class="de.njsm.stocks.server.v2.web.HealthEndpoint" scope="request">
         <constructor-arg index="0" ref="healthManager" />
+    </bean>
+
+    <bean name="unitEndpoint" class="de.njsm.stocks.server.v2.web.UnitEndpoint" scope="request">
+        <constructor-arg index="0" ref="unitManager" />
     </bean>
 </beans>

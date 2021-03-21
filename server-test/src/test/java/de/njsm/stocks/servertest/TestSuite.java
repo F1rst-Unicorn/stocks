@@ -32,6 +32,7 @@ import org.junit.runners.Suite;
                      LocationTest.class,
                      UserTest.class,
                      FoodTest.class,
+                     UnitTest.class,
                      EanTest.class,
                      FoodItemTest.class,
                      DeviceTest.class,

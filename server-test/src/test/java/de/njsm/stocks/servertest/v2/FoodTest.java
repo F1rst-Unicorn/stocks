@@ -27,7 +27,7 @@ import org.junit.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class FoodTest {
+public class FoodTest implements Deleter {
 
     @Test
     public void testBitemporalFood() {
@@ -150,19 +150,6 @@ public class FoodTest {
                 .body("status", equalTo(2));
     }
 
-    private ValidatableResponse assertOnDelete(int id, int version) {
-        return
-        given()
-                .log().ifValidationFails()
-                .queryParam("id", id)
-                .queryParam("version", version).
-        when()
-                .delete(TestSuite.DOMAIN + "/v2/food").
-        then()
-                .log().ifValidationFails()
-                .contentType(ContentType.JSON);
-    }
-
     static int createNewFoodType(String name) {
         addFoodType(name);
         return getIdOfFood(name);
@@ -236,5 +223,10 @@ public class FoodTest {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
+    }
+
+    @Override
+    public String getEndpoint() {
+        return "/v2/food";
     }
 }

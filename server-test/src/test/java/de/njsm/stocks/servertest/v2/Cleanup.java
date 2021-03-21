@@ -150,6 +150,26 @@ public class Cleanup {
         }
     }
 
+
+    @Test
+    public void cleanUnits() {
+        List<Data> ids = getIds("/v2/unit");
+
+        for (Data d : ids) {
+            if (d.id == 1) continue;
+            given()
+                    .log().ifValidationFails()
+                    .queryParam("id", d.id)
+                    .queryParam("version", d.version).
+            when()
+                    .delete(TestSuite.DOMAIN + "/v2/unit").
+            then()
+                    .log().ifValidationFails()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON);
+        }
+    }
+
     @Test
     public void setupOtherTestAccounts() throws IOException {
         Tuple2<Integer, String> ticket1 = DeviceTest.createNewDevice("cli-client", 1);

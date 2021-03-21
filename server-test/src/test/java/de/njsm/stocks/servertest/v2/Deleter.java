@@ -17,12 +17,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.business.data;
+package de.njsm.stocks.servertest.v2;
 
-public class UnitForDeletion extends VersionedData implements Versionable<Unit> {
+import de.njsm.stocks.servertest.TestSuite;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 
+import static io.restassured.RestAssured.given;
 
-    public UnitForDeletion(int id, int version) {
-        super(id, version);
+public interface Deleter extends EndpointClient {
+
+    default ValidatableResponse assertOnDelete(int id, int version) {
+        return given()
+                        .log().ifValidationFails()
+                        .queryParam("id", id)
+                        .queryParam("version", version).
+                when()
+                        .delete(TestSuite.DOMAIN + getEndpoint()).
+                then()
+                        .log().ifValidationFails()
+                        .contentType(ContentType.JSON);
     }
+
 }
