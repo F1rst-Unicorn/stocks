@@ -255,6 +255,22 @@ Update {
 }
 ```
 
+Contained table names are:
+
+* `User_device`
+* `User`
+* `Food`
+* `Location`
+* `Food_item`
+* `EAN_number`
+* `unit`
+* `scaled_unit`
+* `recipe`
+* `recipe_ingredient`
+* `recipe_product`
+
+The developers present their apologies for the inconsistent casing.
+
 #### Users
 
 `GET /v2/user`: Get all users in the system
