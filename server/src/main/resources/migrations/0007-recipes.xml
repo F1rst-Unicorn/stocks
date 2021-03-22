@@ -50,7 +50,7 @@
                     into violating_row_count;
 
                 if violating_row_count != 0 then
-                    raise check_violation;
+                    raise check_violation using message = 'on table ' || tg_table_name;
                 end if;
                 return new;
             end;
@@ -86,7 +86,7 @@
                     into count;
 
                 if count != 0 then
-                    raise check_violation;
+                    raise check_violation using message = 'on table ' || tg_table_name;
                 end if;
                 return new;
             end;
@@ -128,7 +128,7 @@
                     into count;
 
                 if count != 0 then
-                    raise check_violation;
+                    raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
                 end if;
                 return new;
             end;
@@ -159,7 +159,7 @@
                 into count;
 
                 if count != 0 then
-                    raise check_violation;
+                    raise check_violation using message = tg_argv[0] || '.initiates -> user_device';
                 end if;
                 return new;
             end;
@@ -189,7 +189,7 @@
                 into count;
 
                 if count != 0 then
-                    raise check_violation;
+                    raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
                 end if;
                 return new;
             end;
@@ -232,7 +232,7 @@
                     into count;
 
                 if count != 0 then
-                    raise check_violation;
+                    raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
                 end if;
                 return new;
             end;
@@ -256,7 +256,7 @@
 
             drop function user_bitemporal_primary_key cascade;
             create constraint trigger user_bitemporal_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on "user"
                 deferrable initially deferred
                 for each row
@@ -264,7 +264,7 @@
 
             drop function user_contiguous_primary_key cascade;
             create constraint trigger user_contiguous_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on "user"
                 deferrable initially deferred
                 for each row
@@ -272,7 +272,7 @@
 
             drop function location_bitemporal_primary_key cascade;
             create constraint trigger location_bitemporal_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on location
                 deferrable initially deferred
                 for each row
@@ -280,7 +280,7 @@
 
             drop function location_contiguous_primary_key cascade;
             create constraint trigger location_contiguous_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on location
                 deferrable initially deferred
                 for each row
@@ -288,7 +288,7 @@
 
             drop function food_bitemporal_primary_key cascade;
             create constraint trigger food_bitemporal_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on food
                 deferrable initially deferred
                 for each row
@@ -296,7 +296,7 @@
 
             drop function food_contiguous_primary_key cascade;
             create constraint trigger food_contiguous_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on food
                 deferrable initially deferred
                 for each row
@@ -304,7 +304,7 @@
 
             drop function user_device_bitemporal_primary_key cascade;
             create constraint trigger user_device_bitemporal_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -312,7 +312,7 @@
 
             drop function user_device_contiguous_primary_key cascade;
             create constraint trigger user_device_contiguous_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -320,7 +320,7 @@
 
             drop function food_item_bitemporal_primary_key cascade;
             create constraint trigger food_item_bitemporal_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on food_item
                 deferrable initially deferred
                 for each row
@@ -328,7 +328,7 @@
 
             drop function food_item_contiguous_primary_key cascade;
             create constraint trigger food_item_contiguous_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on food_item
                 deferrable initially deferred
                 for each row
@@ -336,7 +336,7 @@
 
             drop function ean_number_bitemporal_primary_key cascade;
             create constraint trigger ean_number_bitemporal_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on ean_number
                 deferrable initially deferred
                 for each row
@@ -344,7 +344,7 @@
 
             drop function ean_number_contiguous_primary_key cascade;
             create constraint trigger ean_number_contiguous_primary_key
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on ean_number
                 deferrable initially deferred
                 for each row
@@ -352,14 +352,14 @@
 
             drop function ticket_belongs_device_ref_user_device cascade;;
             create constraint trigger ticket_belongs_device_ref_user_device
-                after insert or update
+                after insert or update of id
                 on ticket
                 deferrable initially deferred
                 for each row
             execute function current_to_bitemporal_foreign_key('ticket', 'belongs_device', 'user_device');;
 
             create constraint trigger ticket_belongs_device_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -367,14 +367,14 @@
 
             drop function user_device_belongs_to_ref_user cascade;;
             create constraint trigger user_device_belongs_to_ref_user
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on "user"
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('user_device', 'belongs_to', 'user');;
 
             create constraint trigger user_device_belongs_to_ref_user
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -382,14 +382,14 @@
 
             drop function ean_number_identifies_ref_food cascade;;
             create constraint trigger ean_number_identifies_ref_food
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on food
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('ean_number', 'identifies', 'food');;
 
             create constraint trigger ean_number_identifies_ref_food
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on ean_number
                 deferrable initially deferred
                 for each row
@@ -397,14 +397,14 @@
 
             drop function food_item_buys_ref_user cascade;;
             create constraint trigger food_item_buys_ref_user
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on "user"
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('food_item', 'buys', 'user');;
 
             create constraint trigger food_item_buys_ref_user
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on food_item
                 deferrable initially deferred
                 for each row
@@ -412,14 +412,14 @@
 
             drop function food_item_of_type_ref_food cascade;;
             create constraint trigger food_item_of_type_ref_food
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on food
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('food_item', 'of_type', 'food');;
 
             create constraint trigger food_item_of_type_ref_food
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on food_item
                 deferrable initially deferred
                 for each row
@@ -427,14 +427,14 @@
 
             drop function food_item_registers_ref_user_device cascade;;
             create constraint trigger food_item_registers_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('food_item', 'registers', 'user_device');;
 
             create constraint trigger food_item_registers_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on food_item
                 deferrable initially deferred
                 for each row
@@ -442,14 +442,14 @@
 
             drop function food_item_stored_in_ref_location cascade;;
             create constraint trigger food_item_stored_in_ref_location
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on location
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('food_item', 'stored_in', 'location');;
 
             create constraint trigger food_item_stored_in_ref_location
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on food_item
                 deferrable initially deferred
                 for each row
@@ -457,14 +457,14 @@
 
             drop function food_location_ref_location cascade;;
             create constraint trigger food_location_ref_location
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on location
                 deferrable initially deferred
                 for each row
             execute function nullable_bitemporal_foreign_key('food', 'location', 'location');;
 
             create constraint trigger food_location_ref_location
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on food
                 deferrable initially deferred
                 for each row
@@ -472,14 +472,14 @@
 
             drop function user_initiates_ref_user_device cascade;;
             create constraint trigger user_initiates_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on "user"
                 deferrable initially deferred
                 for each row
             execute function bitemporal_initiates_foreign_key('user');
 
             create constraint trigger user_initiates_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -487,14 +487,14 @@
 
             drop function food_initiates_ref_user_device cascade;;
             create constraint trigger food_initiates_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on food
                 deferrable initially deferred
                 for each row
             execute function bitemporal_initiates_foreign_key('food');
 
             create constraint trigger food_initiates_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -502,14 +502,14 @@
 
             drop function food_item_initiates_ref_user_device cascade;;
             create constraint trigger food_item_initiates_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on food_item
                 deferrable initially deferred
                 for each row
             execute function bitemporal_initiates_foreign_key('food_item');
 
             create constraint trigger food_item_initiates_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -517,14 +517,14 @@
 
             drop function location_initiates_ref_user_device cascade;;
             create constraint trigger location_initiates_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on location
                 deferrable initially deferred
                 for each row
             execute function bitemporal_initiates_foreign_key('location');
 
             create constraint trigger location_initiates_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -532,14 +532,14 @@
 
             drop function ean_number_initiates_ref_user_device cascade;;
             create constraint trigger ean_number_initiates_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on ean_number
                 deferrable initially deferred
                 for each row
             execute function bitemporal_initiates_foreign_key('ean_number');
 
             create constraint trigger ean_number_initiates_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -547,7 +547,7 @@
 
             drop function user_device_initiates_ref_user_device cascade;;
             create constraint trigger user_device_initiates_ref_user_device
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -578,14 +578,14 @@
             where transaction_time_end = 'infinity';
 
             create constraint trigger "recipe_product_bitemporal_primary_key"
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on recipe_product
                 deferrable initially deferred
                 for each row
             execute function bitemporal_primary_key();
 
             create constraint trigger "recipe_product_contiguous_primary_key"
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on recipe_product
                 deferrable initially deferred
                 for each row
@@ -618,14 +618,14 @@
             where transaction_time_end = 'infinity';
 
             create constraint trigger "recipe_ingredient_bitemporal_primary_key"
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on recipe_ingredient
                 deferrable initially deferred
                 for each row
             execute function bitemporal_primary_key();
 
             create constraint trigger "recipe_ingredient_contiguous_primary_key"
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on recipe_ingredient
                 deferrable initially deferred
                 for each row
@@ -656,14 +656,14 @@
             where transaction_time_end = 'infinity';
 
             create constraint trigger "scaled_unit_bitemporal_primary_key"
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on scaled_unit
                 deferrable initially deferred
                 for each row
             execute function bitemporal_primary_key();
 
             create constraint trigger "scaled_unit_contiguous_primary_key"
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on scaled_unit
                 deferrable initially deferred
                 for each row
@@ -695,14 +695,14 @@
             where transaction_time_end = 'infinity';
 
             create constraint trigger "recipe_bitemporal_primary_key"
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on recipe
                 deferrable initially deferred
                 for each row
             execute function bitemporal_primary_key();
 
             create constraint trigger "recipe_contiguous_primary_key"
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on recipe
                 deferrable initially deferred
                 for each row
@@ -733,14 +733,14 @@
             where transaction_time_end = 'infinity';
 
             create constraint trigger "unit_bitemporal_primary_key"
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on unit
                 deferrable initially deferred
                 for each row
             execute function bitemporal_primary_key();
 
             create constraint trigger "unit_contiguous_primary_key"
-                after insert or update or delete
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on unit
                 deferrable initially deferred
                 for each row
@@ -753,14 +753,14 @@
     <changeSet id="7" author="admin">
         <sql>
             create constraint trigger recipe_product_product_ref_food
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on recipe_product
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('recipe_product', 'product', 'food');
 
             create constraint trigger recipe_product_product_ref_food
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on food
                 deferrable initially deferred
                 for each row
@@ -774,14 +774,14 @@
     <changeSet id="8" author="admin">
         <sql>
             create constraint trigger recipe_product_unit_ref_scaled_unit
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on recipe_product
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('recipe_product', 'unit', 'scaled_unit');
 
             create constraint trigger recipe_product_unit_ref_scaled_unit
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on scaled_unit
                 deferrable initially deferred
                 for each row
@@ -795,14 +795,14 @@
     <changeSet id="9" author="admin">
         <sql>
             create constraint trigger recipe_product_recipe_ref_recipe
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on recipe_product
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('recipe_product', 'recipe', 'recipe');
 
             create constraint trigger recipe_product_recipe_ref_recipe
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on recipe
                 deferrable initially deferred
                 for each row
@@ -816,14 +816,14 @@
     <changeSet id="10" author="admin">
         <sql>
             create constraint trigger recipe_product_initiates_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on recipe_product
                 deferrable initially deferred
                 for each row
             execute function bitemporal_initiates_foreign_key('recipe_product');
 
             create constraint trigger recipe_product_initiates_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -837,14 +837,14 @@
     <changeSet id="11" author="admin">
         <sql>
             create constraint trigger recipe_ingredient_ingredient_ref_food
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on recipe_ingredient
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('recipe_ingredient', 'ingredient', 'food');
 
             create constraint trigger recipe_ingredient_ingredient_ref_food
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on food
                 deferrable initially deferred
                 for each row
@@ -858,14 +858,14 @@
     <changeSet id="12" author="admin">
         <sql>
             create constraint trigger recipe_ingredient_unit_ref_scaled_unit
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on recipe_ingredient
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('recipe_ingredient', 'unit', 'scaled_unit');
 
             create constraint trigger recipe_ingredient_unit_ref_scaled_unit
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on scaled_unit
                 deferrable initially deferred
                 for each row
@@ -879,14 +879,14 @@
     <changeSet id="13" author="admin">
         <sql>
             create constraint trigger recipe_ingredient_recipe_ref_recipe
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on recipe_ingredient
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('recipe_ingredient', 'recipe', 'recipe');
 
             create constraint trigger recipe_ingredient_recipe_ref_recipe
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on recipe
                 deferrable initially deferred
                 for each row
@@ -900,14 +900,14 @@
     <changeSet id="14" author="admin">
         <sql>
             create constraint trigger recipe_ingredient_initiates_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on recipe_ingredient
                 deferrable initially deferred
                 for each row
             execute function bitemporal_initiates_foreign_key('recipe_ingredient');
 
             create constraint trigger recipe_ingredient_initiates_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -921,14 +921,14 @@
     <changeSet id="15" author="admin">
         <sql>
             create constraint trigger scaled_unit_unit_ref_unit
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on scaled_unit
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('scaled_unit', 'unit', 'unit');
 
             create constraint trigger scaled_unit_unit_ref_unit
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on unit
                 deferrable initially deferred
                 for each row
@@ -942,14 +942,14 @@
     <changeSet id="16" author="admin">
         <sql>
             create constraint trigger scaled_unit_initiates_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on scaled_unit
                 deferrable initially deferred
                 for each row
             execute function bitemporal_initiates_foreign_key('scaled_unit');
 
             create constraint trigger scaled_unit_initiates_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -963,14 +963,14 @@
     <changeSet id="17" author="admin">
         <sql>
             create constraint trigger recipe_initiates_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on recipe
                 deferrable initially deferred
                 for each row
             execute function bitemporal_initiates_foreign_key('recipe');
 
             create constraint trigger recipe_initiates_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -984,14 +984,14 @@
     <changeSet id="18" author="admin">
         <sql>
             create constraint trigger unit_initiates_ref_user_device
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on unit
                 deferrable initially deferred
                 for each row
             execute function bitemporal_initiates_foreign_key('unit');
 
             create constraint trigger unit_initiates_ref_user_device
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on user_device
                 deferrable initially deferred
                 for each row
@@ -1081,14 +1081,14 @@
     <changeSet id="23" author="admin">
         <sql>
             create constraint trigger food_store_unit_ref_scaled_unit
-                after insert or update
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
                 on food
                 deferrable initially deferred
                 for each row
             execute function bitemporal_foreign_key('food', 'store_unit', 'scaled_unit');
 
             create constraint trigger food_store_unit_ref_scaled_unit
-                after update or delete
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
                 on scaled_unit
                 deferrable initially deferred
                 for each row
@@ -1101,6 +1101,7 @@
     </changeSet>
     <changeSet id="24" author="admin">
         <sql>
+            drop view "Updates";
             create or replace view updates (id, table_name, last_update) as
             select 1,
                    'Location',
