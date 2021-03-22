@@ -1,7 +1,7 @@
 @startuml
 
-class User {
-    {static} ID: int
+class user {
+    {static} id: int
     version: int
     valid_time_start: OffsetDateTime
     valid_time_end: OffsetDateTime
@@ -10,8 +10,8 @@ class User {
     name: String
 }
 
-class User_device {
-    {static} ID: int
+class user_device {
+    {static} id: int
     version: int
     valid_time_start: OffsetDateTime
     valid_time_end: OffsetDateTime
@@ -22,8 +22,8 @@ class User_device {
 
 package Food <<Frame>> {
 
-    class Location {
-        {static} ID: int
+    class location {
+        {static} id: int
         version: int
         valid_time_start: OffsetDateTime
         valid_time_end: OffsetDateTime
@@ -33,8 +33,8 @@ package Food <<Frame>> {
         description: String
     }
 
-    class Food {
-        {static} ID: int
+    class food {
+        {static} id: int
         version: int
         valid_time_start: OffsetDateTime
         valid_time_end: OffsetDateTime
@@ -46,8 +46,8 @@ package Food <<Frame>> {
         description: String
     }
 
-    class Food_item {
-        {static} ID: int
+    class food_item {
+        {static} id: int
         version: int
         valid_time_start: OffsetDateTime
         valid_time_end: OffsetDateTime
@@ -56,8 +56,8 @@ package Food <<Frame>> {
         eat_by: OffsetDateTime
     }
 
-    class EAN_number {
-        {static} ID: int
+    class ean_number {
+        {static} id: int
         version: int
         valid_time_start: OffsetDateTime
         valid_time_end: OffsetDateTime
@@ -70,7 +70,7 @@ package Food <<Frame>> {
 package Recipes <<Frame>> {
 
     class recipe {
-        {static} ID: int
+        {static} id: int
         version: int
         valid_time_start: OffsetDateTime
         valid_time_end: OffsetDateTime
@@ -82,7 +82,7 @@ package Recipes <<Frame>> {
     }
 
     class recipe_ingredient {
-        {static} ID: int
+        {static} id: int
         version: int
         valid_time_start: OffsetDateTime
         valid_time_end: OffsetDateTime
@@ -92,7 +92,7 @@ package Recipes <<Frame>> {
     }
 
     class recipe_product {
-        {static} ID: int
+        {static} id: int
         version: int
         valid_time_start: OffsetDateTime
         valid_time_end: OffsetDateTime
@@ -102,7 +102,7 @@ package Recipes <<Frame>> {
     }
 
     class scaled_unit {
-        {static} ID: int
+        {static} id: int
         version: int
         valid_time_start: OffsetDateTime
         valid_time_end: OffsetDateTime
@@ -112,7 +112,7 @@ package Recipes <<Frame>> {
     }
 
     class unit {
-        {static} ID: int
+        {static} id: int
         version: int
         valid_time_start: OffsetDateTime
         valid_time_end: OffsetDateTime
@@ -123,15 +123,15 @@ package Recipes <<Frame>> {
     }
 }
 
-class Updates {
-    {static} ID: int
+class updates {
+    {static} id: int
     table_name: String
     last_update: OffsetDateTime
 }
 
 package "Only Server" {
-    class Ticket {
-        {static} ID: int
+    class ticket {
+        {static} id: int
         ticket: String
         created_on: OffsetDateTime
     }
@@ -151,40 +151,40 @@ package "Only Android" {
     }
 }
 
-Location --> User_device : initiates
-Food --> User_device : initiates
-User --> User_device : initiates
-User_device --> User_device : initiates
-Food_item --> User_device : initiates
-EAN_number --> User_device : initiates
-recipe --> User_device : initiates
-recipe_ingredient --> User_device : initiates
-recipe_product --> User_device : initiates
-unit --> User_device : initiates
-scaled_unit --> User_device : initiates
+location --> user_device : initiates
+food --> user_device : initiates
+user --> user_device : initiates
+user_device --> user_device : initiates
+food_item --> user_device : initiates
+ean_number --> user_device : initiates
+recipe --> user_device : initiates
+recipe_ingredient --> user_device : initiates
+recipe_product --> user_device : initiates
+unit --> user_device : initiates
+scaled_unit --> user_device : initiates
 
-User_device --> User : belongs_to
+user_device --> user : belongs_to
 
-EAN_number --> Food : identifies
+ean_number --> food : identifies
 
-Food --> Location : location?
-Food --> scaled_unit : store_unit
+food --> location : location?
+food --> scaled_unit : store_unit
 
-Food_item --> Location : stored_in
-Food_item --> Food : of_type
-Food_item --> User : buys
-Food_item --> User_device : registers
+food_item --> location : stored_in
+food_item --> food : of_type
+food_item --> user : buys
+food_item --> user_device : registers
 
 recipe_ingredient --> recipe : recipe
-recipe_ingredient --> Food : ingredient
+recipe_ingredient --> food : ingredient
 recipe_ingredient --> scaled_unit : unit
 
 recipe_product --> recipe : recipe
-recipe_product --> Food : product
+recipe_product --> food : product
 recipe_product --> scaled_unit : unit
 
 scaled_unit --> unit : unit
 
-Ticket --> User_device : belongs_device
+ticket --> user_device : belongs_device
 
 @enduml
