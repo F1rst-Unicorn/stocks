@@ -58,11 +58,12 @@ public class UserDeviceHandlerTest extends DbTestCase {
 
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
-        assertEquals(4, list.size());
-        assertThat(list, hasItem(new UserDeviceForGetting(1, 0, "mobile", 1)));
-        assertThat(list, hasItem(new UserDeviceForGetting(2, 0, "mobile2", 1)));
-        assertThat(list, hasItem(new UserDeviceForGetting(3, 0, "laptop", 2)));
-        assertThat(list, hasItem(new UserDeviceForGetting(4, 0, "pending_device", 2)));
+        assertEquals(5, list.size());
+        assertThat(list, hasItem(new UserDeviceForGetting(1, 0, "Default", 1)));
+        assertThat(list, hasItem(new UserDeviceForGetting(2, 0, "mobile", 2)));
+        assertThat(list, hasItem(new UserDeviceForGetting(3, 0, "mobile2", 2)));
+        assertThat(list, hasItem(new UserDeviceForGetting(4, 0, "laptop", 3)));
+        assertThat(list, hasItem(new UserDeviceForGetting(5, 0, "pending_device", 3)));
     }
 
     @Test
@@ -86,11 +87,11 @@ public class UserDeviceHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false, Instant.EPOCH);
         assertTrue(result.isSuccess());
-        assertEquals(Integer.valueOf(5), result.success());
+        assertEquals(Integer.valueOf(6), result.success());
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
-        assertEquals(5, list.size());
-        assertThat(list, hasItem(new UserDeviceForGetting(5, 0, device.getName(), device.getBelongsTo())));
+        assertEquals(6, list.size());
+        assertThat(list, hasItem(new UserDeviceForGetting(6, 0, device.getName(), device.getBelongsTo())));
     }
 
     @Test
@@ -111,7 +112,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
 
     @Test
     public void deletingValidDeviceWorks() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(1, 0);
+        UserDeviceForDeletion device = new UserDeviceForDeletion(2, 0);
 
         StatusCode result = uut.delete(device);
 
@@ -119,18 +120,18 @@ public class UserDeviceHandlerTest extends DbTestCase {
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
-        assertEquals(3, list.size());
-        assertThat(list, not(hasItem(new UserDeviceForGetting(1, 0, "mobile", 1))));
+        assertEquals(4, list.size());
+        assertThat(list, not(hasItem(new UserDeviceForGetting(2, 0, "mobile", 2))));
     }
 
     @Test
     public void gettingDevicesOfUserWorks() {
 
-        Validation<StatusCode, List<Identifiable<UserDevice>>> result = uut.getDevicesOfUser(new UserForDeletion(1, 2));
+        Validation<StatusCode, List<Identifiable<UserDevice>>> result = uut.getDevicesOfUser(new UserForDeletion(2, 2));
 
         assertTrue(result.isSuccess());
         assertEquals(2, result.success().size());
-        assertThat(result.success(), hasItem(new UserDeviceForPrincipals(1)));
         assertThat(result.success(), hasItem(new UserDeviceForPrincipals(2)));
+        assertThat(result.success(), hasItem(new UserDeviceForPrincipals(3)));
     }
 }

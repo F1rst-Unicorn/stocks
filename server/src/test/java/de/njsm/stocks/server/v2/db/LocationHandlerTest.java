@@ -307,7 +307,7 @@ public class LocationHandlerTest extends DbTestCase {
     public void youngerDevicesAreAllowedToChangeOlderLocations() throws SQLException {
         OffsetDateTime now = OffsetDateTime.now();
         Instant nowAsInstant = now.toInstant();
-        BitemporalUserDevice youngDevice = new BitemporalUserDevice(5, 0, nowAsInstant, INFINITY.toInstant(), nowAsInstant, INFINITY.toInstant(), 1, "youngDevice", 1);
+        BitemporalUserDevice youngDevice = new BitemporalUserDevice(6, 0, nowAsInstant, INFINITY.toInstant(), nowAsInstant, INFINITY.toInstant(), 1, "youngDevice", 1);
         Principals principals = new Principals("Bob", youngDevice.getName(), 1, youngDevice.getId());
         uut.setPrincipals(principals);
         LocationForRenaming input = new LocationForRenaming(1, 0, "newName");
@@ -334,7 +334,7 @@ public class LocationHandlerTest extends DbTestCase {
     public void youngerDevicesAreAllowedToDeleteOlderLocations() throws SQLException {
         OffsetDateTime now = OffsetDateTime.now();
         Instant nowAsInstant = now.toInstant();
-        BitemporalUserDevice youngDevice = new BitemporalUserDevice(5, 0, nowAsInstant, INFINITY.toInstant(), nowAsInstant, INFINITY.toInstant(), 1, "youngDevice", 1);
+        BitemporalUserDevice youngDevice = new BitemporalUserDevice(6, 0, nowAsInstant, INFINITY.toInstant(), nowAsInstant, INFINITY.toInstant(), 1, "youngDevice", 1);
         Principals principals = new Principals("Bob", youngDevice.getName(), 1, youngDevice.getId());
         uut.setPrincipals(principals);
         LocationForDeletion input = new LocationForDeletion(2, 0);

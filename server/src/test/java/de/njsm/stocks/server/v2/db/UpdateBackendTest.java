@@ -46,6 +46,6 @@ public class UpdateBackendTest extends DbTestCase {
         Validation<StatusCode, Stream<Update>> result = uut.get();
 
         assertTrue(result.isSuccess());
-        assertEquals(6, result.success().count());
+        assertEquals(11, result.success().count());
     }
 }

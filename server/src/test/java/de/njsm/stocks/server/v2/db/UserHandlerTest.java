@@ -57,10 +57,11 @@ public class UserHandlerTest extends DbTestCase {
 
         assertTrue(result.isSuccess());
         List<User> list = result.success().collect(Collectors.toList());
-        assertEquals(3, list.size());
-        assertThat(list, hasItem(new UserForGetting(1, 0, "Bob")));
-        assertThat(list, hasItem(new UserForGetting(2, 0, "Alice")));
-        assertThat(list, hasItem(new UserForGetting(3, 0, "Jack")));
+        assertEquals(4, list.size());
+        assertThat(list, hasItem(new UserForGetting(1, 0, "Default")));
+        assertThat(list, hasItem(new UserForGetting(2, 0, "Bob")));
+        assertThat(list, hasItem(new UserForGetting(3, 0, "Alice")));
+        assertThat(list, hasItem(new UserForGetting(4, 0, "Jack")));
     }
 
     @Test
@@ -84,9 +85,9 @@ public class UserHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<User>> users = uut.get(false, Instant.EPOCH);
         assertTrue(result.isSuccess());
         List<User> list = users.success().collect(Collectors.toList());
-        assertEquals(Integer.valueOf(4), result.success());
+        assertEquals(Integer.valueOf(5), result.success());
         assertTrue(users.isSuccess());
-        assertEquals(4, list.size());
+        assertEquals(5, list.size());
         UserForGetting expected = new UserForGetting(result.success(), 0,input.getName());
         assertThat(list, hasItem(expected));
     }
@@ -117,7 +118,7 @@ public class UserHandlerTest extends DbTestCase {
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(users.isSuccess());
         List<User> list = users.success().collect(Collectors.toList());
-        assertEquals(2, list.size());
+        assertEquals(3, list.size());
         UserForGetting expectedAbsent = new UserForGetting(1, 0, "Bob");
         assertThat(list, not(hasItem(expectedAbsent)));
     }

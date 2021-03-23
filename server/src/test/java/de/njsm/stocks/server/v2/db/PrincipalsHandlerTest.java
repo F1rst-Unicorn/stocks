@@ -49,9 +49,10 @@ public class PrincipalsHandlerTest extends DbTestCase {
         Validation<StatusCode, Set<Principals>> output = uut.getPrincipals();
 
         assertTrue(output.isSuccess());
-        assertEquals(3, output.success().size());
-        assertTrue(output.success().contains(new Principals("Bob", "mobile", 1, 1)));
-        assertTrue(output.success().contains(new Principals("Bob", "mobile2", 1, 2)));
-        assertTrue(output.success().contains(new Principals("Alice", "laptop", 2, 3)));
+        assertEquals(4, output.success().size());
+        assertTrue(output.success().contains(new Principals("Default", "Default", 1, 1)));
+        assertTrue(output.success().contains(new Principals("Bob", "mobile", 2, 2)));
+        assertTrue(output.success().contains(new Principals("Bob", "mobile2", 2, 3)));
+        assertTrue(output.success().contains(new Principals("Alice", "laptop", 3, 4)));
     }
 }

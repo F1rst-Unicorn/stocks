@@ -47,7 +47,7 @@ public class TicketHandlerTest extends DbTestCase {
 
     @Test
     public void successfulTicketRetrival() {
-        ClientTicket ticket = new ClientTicket(4, "AAAA", "csr");
+        ClientTicket ticket = new ClientTicket(5, "AAAA", "csr");
 
         Validation<StatusCode, ServerTicket> result = uut.getTicket(ticket);
 
@@ -96,7 +96,7 @@ public class TicketHandlerTest extends DbTestCase {
 
     @Test
     public void retrievePrincipalsSuccessfully() {
-        Principals expected = new Principals("Alice", "pending_device", 2, 4);
+        Principals expected = new Principals("Alice", "pending_device", 3, 5);
 
         Validation<StatusCode, Principals> result = uut.getPrincipalsForTicket("AAAA");
 
@@ -119,7 +119,7 @@ public class TicketHandlerTest extends DbTestCase {
 
     @Test
     public void removingTicketOfDeviceWorks() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(4, 0);
+        UserDeviceForDeletion device = new UserDeviceForDeletion(5, 0);
         long numberOfTickets = getDSLContext().selectFrom(TICKET).stream().count();
         assertEquals(1, numberOfTickets);
 

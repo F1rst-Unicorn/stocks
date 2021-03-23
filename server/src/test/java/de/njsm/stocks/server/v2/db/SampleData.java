@@ -24,47 +24,47 @@ import java.sql.*;
 class SampleData {
 
     private static final String[] sampleDbData = {
-            "DELETE FROM \"Food_item\"",
-            "DELETE FROM \"Ticket\"",
-            "DELETE FROM \"User_device\"",
-            "DELETE FROM \"EAN_number\"",
-            "DELETE FROM \"Food\"",
-            "DELETE FROM \"User\"",
-            "DELETE FROM \"Location\"",
+            "delete from food_item",
+            "delete from ticket",
+            "delete from user_device where id != 1",
+            "delete from ean_number",
+            "delete from food",
+            "delete from \"user\" where id != 1",
+            "delete from location",
             "delete from unit where id != 1",
 
-            "ALTER SEQUENCE \"Food_item_ID_seq\" RESTART",
-            "ALTER SEQUENCE \"Food_ID_seq\" RESTART",
-            "ALTER SEQUENCE \"User_device_ID_seq\" RESTART",
-            "ALTER SEQUENCE \"User_ID_seq\" RESTART",
-            "ALTER SEQUENCE \"Location_ID_seq\" RESTART",
-            "ALTER SEQUENCE \"Ticket_ID_seq\" RESTART",
-            "ALTER SEQUENCE \"EAN_number_ID_seq\" RESTART",
+            "alter sequence \"Food_item_ID_seq\" restart",
+            "alter sequence \"Food_ID_seq\" restart",
+            "alter sequence \"User_device_ID_seq\" restart with 2",
+            "alter sequence \"User_ID_seq\" restart with 2",
+            "alter sequence \"Location_ID_seq\" restart",
+            "alter sequence \"Ticket_ID_seq\" restart",
+            "alter sequence \"EAN_number_ID_seq\" restart",
             "alter sequence unit_id_seq restart with 2",
 
-            "INSERT INTO \"Location\" (\"name\", description, initiates) VALUES " +
+            "insert into location (name, description, initiates) values " +
                     "('Fridge', 'fridge description', 1), " +
                     "('Cupboard', 'cupboard description', 1)",
-            "INSERT INTO \"Food\" (name, to_buy, location, description, initiates, expiration_offset, store_unit) VALUES " +
+            "insert into food (name, to_buy, location, description, initiates, expiration_offset, store_unit) values " +
                     "('Carrot', false, null, 'carrot description',  1, '2 days', 1), " +
                     "('Beer', true, null, 'beer description', 1, '0 days', 1), " +
                     "('Cheese', false, 1, '', 1, '3 days', 1)",
-            "INSERT INTO \"User\" (\"name\", initiates) VALUES " +
+            "insert into \"user\" (name, initiates) values " +
                     "('Bob', 1), " +
                     "('Alice', 1), " +
                     "('Jack', 1)",
-            "INSERT INTO \"User_device\" (\"name\", \"belongs_to\", initiates) VALUES " +
-                    "('mobile', 1, 1), " +
-                    "('mobile2', 1, 1), " +
-                    "('laptop', 2, 1), " +
-                    "('pending_device', 2, 1)",
-            "INSERT INTO \"Food_item\" (\"eat_by\", \"registers\", \"buys\", \"stored_in\", \"of_type\", initiates) VALUES" +
+            "insert into user_device (name, belongs_to, initiates) values " +
+                    "('mobile', 2, 1), " +
+                    "('mobile2', 2, 1), " +
+                    "('laptop', 3, 1), " +
+                    "('pending_device', 3, 1)",
+            "insert into food_item (eat_by, registers, buys, stored_in, of_type, initiates) values" +
                     "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1)," +
                     "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1)," +
                     "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1)",
-            "INSERT INTO \"Ticket\" (\"ticket\", \"belongs_device\") VALUES " +
-                    "('AAAA', 4)",
-            "INSERT INTO \"EAN_number\" (\"number\", \"identifies\", initiates) VALUES " +
+            "insert into ticket (ticket, belongs_device) values " +
+                    "('AAAA', 5)",
+            "insert into ean_number (number, identifies, initiates) values " +
                     "('EAN BEER', 2, 1)",
     };
 
