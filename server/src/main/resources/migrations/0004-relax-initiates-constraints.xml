@@ -55,41 +55,43 @@
             $$;
         </sql>
         <rollback>
-            create or replace function user_initiates_ref_user_device() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "User" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
+            <sql endDelimiter=";;">
+                create or replace function user_initiates_ref_user_device() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    select *
+                    into count
+                    from "User" f
+                    where f.transaction_time_end = 'infinity'
+                      and (
+                            not exists(
+                                    select *
+                                    from "User_device" p
+                                    where f.initiates = p."ID"
+                                      and p.transaction_time_end = 'infinity'
+                                      and p.valid_time_start &lt;= f.valid_time_start
+                                      and f.valid_time_start &lt; p.valid_time_end
+                                )
+                            or not exists(
                                 select *
                                 from "User_device" p
                                 where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
+                                  and p.valid_time_start &lt; f.valid_time_end
+                                  and f.valid_time_end &lt;= p.valid_time_end
                             )
-                        or not exists(
-                            select *
-                            from "User_device" p
-                            where f.initiates = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
+                        );
+                    if count != 0 then
+                        raise check_violation;
+                    end if;
+                    return new;
+                end;
+                $$;;
+            </sql>
         </rollback>
     </changeSet>
     <changeSet id="2" author="admin">
@@ -123,41 +125,43 @@
             $$;
         </sql>
         <rollback>
-            create or replace function location_initiates_ref_user_device() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "Location" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
+            <sql endDelimiter=";;">
+                create or replace function location_initiates_ref_user_device() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    select *
+                    into count
+                    from "Location" f
+                    where f.transaction_time_end = 'infinity'
+                      and (
+                            not exists(
+                                    select *
+                                    from "User_device" p
+                                    where f.initiates = p."ID"
+                                      and p.transaction_time_end = 'infinity'
+                                      and p.valid_time_start &lt;= f.valid_time_start
+                                      and f.valid_time_start &lt; p.valid_time_end
+                                )
+                            or not exists(
                                 select *
                                 from "User_device" p
                                 where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
+                                  and p.valid_time_start &lt; f.valid_time_end
+                                  and f.valid_time_end &lt;= p.valid_time_end
                             )
-                        or not exists(
-                            select *
-                            from "User_device" p
-                            where f.initiates = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
+                        );
+                    if count != 0 then
+                        raise check_violation;
+                    end if;
+                    return new;
+                end;
+                $$;;
+            </sql>
         </rollback>
     </changeSet>
     <changeSet id="3" author="admin">
@@ -191,41 +195,43 @@
             $$;
         </sql>
         <rollback>
-            create or replace function food_initiates_ref_user_device() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "Food" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
+            <sql endDelimiter=";;">
+                create or replace function food_initiates_ref_user_device() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    select *
+                    into count
+                    from "Food" f
+                    where f.transaction_time_end = 'infinity'
+                      and (
+                            not exists(
+                                    select *
+                                    from "User_device" p
+                                    where f.initiates = p."ID"
+                                      and p.transaction_time_end = 'infinity'
+                                      and p.valid_time_start &lt;= f.valid_time_start
+                                      and f.valid_time_start &lt; p.valid_time_end
+                                )
+                            or not exists(
                                 select *
                                 from "User_device" p
                                 where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
+                                  and p.valid_time_start &lt; f.valid_time_end
+                                  and f.valid_time_end &lt;= p.valid_time_end
                             )
-                        or not exists(
-                            select *
-                            from "User_device" p
-                            where f.initiates = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
+                        );
+                    if count != 0 then
+                        raise check_violation;
+                    end if;
+                    return new;
+                end;
+                $$;;
+            </sql>
         </rollback>
     </changeSet>
     <changeSet id="4" author="admin">
@@ -259,41 +265,43 @@
             $$;
         </sql>
         <rollback>
-            create or replace function user_device_initiates_ref_user_device() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "User_device" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
+            <sql endDelimiter=";;">
+                create or replace function user_device_initiates_ref_user_device() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    select *
+                    into count
+                    from "User_device" f
+                    where f.transaction_time_end = 'infinity'
+                      and (
+                            not exists(
+                                    select *
+                                    from "User_device" p
+                                    where f.initiates = p."ID"
+                                      and p.transaction_time_end = 'infinity'
+                                      and p.valid_time_start &lt;= f.valid_time_start
+                                      and f.valid_time_start &lt; p.valid_time_end
+                                )
+                            or not exists(
                                 select *
                                 from "User_device" p
                                 where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
+                                  and p.valid_time_start &lt; f.valid_time_end
+                                  and f.valid_time_end &lt;= p.valid_time_end
                             )
-                        or not exists(
-                            select *
-                            from "User_device" p
-                            where f.initiates = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
+                        );
+                    if count != 0 then
+                        raise check_violation;
+                    end if;
+                    return new;
+                end;
+                $$;;
+            </sql>
         </rollback>
     </changeSet>
     <changeSet id="5" author="admin">
@@ -327,41 +335,43 @@
             $$;
         </sql>
         <rollback>
-            create or replace function food_item_initiates_ref_user_device() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "Food_item" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
+            <sql endDelimiter=";;">
+                create or replace function food_item_initiates_ref_user_device() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    select *
+                    into count
+                    from "Food_item" f
+                    where f.transaction_time_end = 'infinity'
+                      and (
+                            not exists(
+                                    select *
+                                    from "User_device" p
+                                    where f.initiates = p."ID"
+                                      and p.transaction_time_end = 'infinity'
+                                      and p.valid_time_start &lt;= f.valid_time_start
+                                      and f.valid_time_start &lt; p.valid_time_end
+                                )
+                            or not exists(
                                 select *
                                 from "User_device" p
                                 where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
+                                  and p.valid_time_start &lt; f.valid_time_end
+                                  and f.valid_time_end &lt;= p.valid_time_end
                             )
-                        or not exists(
-                            select *
-                            from "User_device" p
-                            where f.initiates = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
+                        );
+                    if count != 0 then
+                        raise check_violation;
+                    end if;
+                    return new;
+                end;
+                $$;;
+            </sql>
         </rollback>
     </changeSet>
     <changeSet id="6" author="admin">
@@ -395,41 +405,43 @@
             $$;
         </sql>
         <rollback>
-            create or replace function ean_number_initiates_ref_user_device() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                select *
-                into count
-                from "EAN_number" f
-                where f.transaction_time_end = 'infinity'
-                  and (
-                        not exists(
+            <sql endDelimiter=";;">
+                create or replace function ean_number_initiates_ref_user_device() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    select *
+                    into count
+                    from "EAN_number" f
+                    where f.transaction_time_end = 'infinity'
+                      and (
+                            not exists(
+                                    select *
+                                    from "User_device" p
+                                    where f.initiates = p."ID"
+                                      and p.transaction_time_end = 'infinity'
+                                      and p.valid_time_start &lt;= f.valid_time_start
+                                      and f.valid_time_start &lt; p.valid_time_end
+                                )
+                            or not exists(
                                 select *
                                 from "User_device" p
                                 where f.initiates = p."ID"
                                   and p.transaction_time_end = 'infinity'
-                                  and p.valid_time_start &lt;= f.valid_time_start
-                                  and f.valid_time_start &lt; p.valid_time_end
+                                  and p.valid_time_start &lt; f.valid_time_end
+                                  and f.valid_time_end &lt;= p.valid_time_end
                             )
-                        or not exists(
-                            select *
-                            from "User_device" p
-                            where f.initiates = p."ID"
-                              and p.transaction_time_end = 'infinity'
-                              and p.valid_time_start &lt; f.valid_time_end
-                              and f.valid_time_end &lt;= p.valid_time_end
-                        )
-                    );
-                if count != 0 then
-                    raise check_violation;
-                end if;
-                return new;
-            end;
-            $$;
+                        );
+                    if count != 0 then
+                        raise check_violation;
+                    end if;
+                    return new;
+                end;
+                $$;;
+            </sql>
         </rollback>
     </changeSet>
 </databaseChangeLog>

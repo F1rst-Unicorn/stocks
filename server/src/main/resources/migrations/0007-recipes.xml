@@ -25,537 +25,6 @@
         context="production">
 
     <changeSet id="1" author="admin">
-        <sql endDelimiter=";;">
-            create or replace function bitemporal_primary_key() returns trigger
-                language PLPGSQL
-            as
-            $$
-            declare
-                violating_row_count int;
-            begin
-                execute format(
-                    'select count(*) '
-                    'from %I as u1 '
-                    'where u1.id is null '
-                       'or 1 &lt; ( '
-                        'select count(*) '
-                        'from %I as u2 '
-                        'where u1.id = u2.id '
-                          'and u1.valid_time_start &lt; u2.valid_time_end '
-                          'and u2.valid_time_start &lt; u1.valid_time_end '
-                          'and u1.transaction_time_end = %L '
-                          'and u2.transaction_time_end = %L '
-                       ')',
-                        tg_table_name, tg_table_name, 'infinity', 'infinity')
-                    into violating_row_count;
-
-                if violating_row_count != 0 then
-                    raise check_violation using message = 'on table ' || tg_table_name;
-                end if;
-                return new;
-            end;
-            $$;;
-
-            create or replace function contiguous_primary_key() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                execute format(
-                    'select count(*) '
-                    'from %I u1, '
-                         '%I u2 '
-                    'where u1.valid_time_end &lt; u2.valid_time_end '
-                      'and u1.id = u2.id '
-                      'and u1.transaction_time_end = %L '
-                      'and u2.transaction_time_end = %L '
-                      'and not exists( '
-                            'select * '
-                            'from %I u3 '
-                            'where u3.id = u1.id '
-                              'and u3.transaction_time_end = %L '
-                              'and (((u3.valid_time_start &lt;= u1.valid_time_end) '
-                                'and (u1.valid_time_end &lt; u3.valid_time_end)) '
-                                'or ((u3.valid_time_start &lt; u2.valid_time_start) '
-                                    'and '
-                                    'u2.valid_time_start &lt;= u3.valid_time_end)) '
-                      ')',
-                        tg_table_name, tg_table_name, 'infinity', 'infinity', tg_table_name, 'infinity')
-                    into count;
-
-                if count != 0 then
-                    raise check_violation using message = 'on table ' || tg_table_name;
-                end if;
-                return new;
-            end;
-            $$;;
-
-            -- arg 0: Referring table
-            -- arg 1: Referring column
-            -- arg 2: Referred table
-            create or replace function bitemporal_foreign_key() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                execute format(
-                    'select * '
-                    'from %I f '
-                    'where f.transaction_time_end = %L '
-                      'and ( '
-                            'not exists( '
-                                    'select * '
-                                    'from %I p '
-                                    'where f.%I = p.id '
-                                      'and p.transaction_time_end = %L '
-                                      'and p.valid_time_start &lt;= f.valid_time_start '
-                                      'and f.valid_time_start &lt; p.valid_time_end '
-                                ') '
-                            'or not exists( '
-                                'select * '
-                                'from %I u '
-                                'where f.%I = u.id '
-                                  'and u.transaction_time_end = %L '
-                                  'and u.valid_time_start &lt; f.valid_time_end '
-                                  'and f.valid_time_end &lt;= u.valid_time_end '
-                            ') '
-                        ')',
-                        tg_argv[0], 'infinity', tg_argv[2], tg_argv[1], 'infinity', tg_argv[2], tg_argv[1], 'infinity')
-                    into count;
-
-                if count != 0 then
-                    raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
-                end if;
-                return new;
-            end;
-            $$;;
-
-            -- arg 0: Referring table
-            create or replace function bitemporal_initiates_foreign_key() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                execute format(
-                    'select * '
-                    'from %I f '
-                    'where f.transaction_time_end = %L '
-                      'and ( '
-                        'not exists( '
-                                'select * '
-                                'from user_device p '
-                                'where f.initiates = p.id '
-                                  'and p.transaction_time_end = %L '
-                                  'and p.valid_time_start &lt;= f.transaction_time_start '
-                                  'and f.transaction_time_start &lt; p.valid_time_end '
-                            ') '
-                        ')', tg_argv[0], 'infinity', 'infinity')
-                into count;
-
-                if count != 0 then
-                    raise check_violation using message = tg_argv[0] || '.initiates -> user_device';
-                end if;
-                return new;
-            end;
-            $$;;
-
-            -- arg 0: Referring table
-            -- arg 1: Referring column
-            -- arg 2: Referred table
-            create or replace function current_to_bitemporal_foreign_key() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                execute format(
-                    'select count(*) '
-                    'from %I as f '
-                    'where not exists( '
-                            'select * '
-                            'from %I as p '
-                            'where p.id = f.%I '
-                              'and p.valid_time_end = %L '
-                              'and p.transaction_time_end = %L '
-                        ')',
-                    tg_argv[0], tg_argv[2], tg_argv[1], 'infinity', 'infinity')
-                into count;
-
-                if count != 0 then
-                    raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
-                end if;
-                return new;
-            end;
-            $$;;
-
-            -- arg 0: Referring table
-            -- arg 1: Referring column
-            -- arg 2: Referred table
-            create or replace function nullable_bitemporal_foreign_key() returns trigger
-                language plpgsql
-            as
-            $$
-            declare
-                count int;
-            begin
-                execute format(
-                'select * '
-                'from %I f '
-                'where f.transaction_time_end = %L '
-                  'and f.%I is not null '
-                  'and ( '
-                        'not exists( '
-                                'select * '
-                                'from %I p '
-                                'where f.%I = p.id '
-                                  'and p.transaction_time_end = %L '
-                                  'and p.valid_time_start &lt;= f.valid_time_start '
-                                  'and f.valid_time_start &lt; p.valid_time_end '
-                            ') '
-                        'or not exists( '
-                            'select * '
-                            'from %I p '
-                            'where f.%I = p.id '
-                              'and p.transaction_time_end = %L '
-                              'and p.valid_time_start &lt; f.valid_time_end '
-                              'and f.valid_time_end &lt;= p.valid_time_end '
-                        ') '
-                    ')', tg_argv[0], 'infinity', tg_argv[1], tg_argv[2],
-                    tg_argv[1], 'infinity', tg_argv[2], tg_argv[1], 'infinity')
-                    into count;
-
-                if count != 0 then
-                    raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
-                end if;
-                return new;
-            end;
-            $$;;
-
-            alter table "Food" rename to food;
-            alter table "User" rename to "user";
-            alter table "User_device" rename to user_device;
-            alter table "Location" rename to location;
-            alter table "Food_item" rename to food_item;
-            alter table "EAN_number" rename to ean_number;
-            alter table "Ticket" rename to ticket;
-
-            alter table food rename column "ID" to id;
-            alter table "user" rename column "ID" to id;
-            alter table user_device rename column "ID" to id;
-            alter table location rename column "ID" to id;
-            alter table food_item rename column "ID" to id;
-            alter table ean_number rename column "ID" to id;
-            alter table ticket rename column "ID" to id;
-
-            drop function user_bitemporal_primary_key cascade;
-            create constraint trigger user_bitemporal_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on "user"
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_primary_key();
-
-            drop function user_contiguous_primary_key cascade;
-            create constraint trigger user_contiguous_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on "user"
-                deferrable initially deferred
-                for each row
-            execute function contiguous_primary_key();;
-
-            drop function location_bitemporal_primary_key cascade;
-            create constraint trigger location_bitemporal_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on location
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_primary_key();
-
-            drop function location_contiguous_primary_key cascade;
-            create constraint trigger location_contiguous_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on location
-                deferrable initially deferred
-                for each row
-            execute function contiguous_primary_key();;
-
-            drop function food_bitemporal_primary_key cascade;
-            create constraint trigger food_bitemporal_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on food
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_primary_key();
-
-            drop function food_contiguous_primary_key cascade;
-            create constraint trigger food_contiguous_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on food
-                deferrable initially deferred
-                for each row
-            execute function contiguous_primary_key();;
-
-            drop function user_device_bitemporal_primary_key cascade;
-            create constraint trigger user_device_bitemporal_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_primary_key();
-
-            drop function user_device_contiguous_primary_key cascade;
-            create constraint trigger user_device_contiguous_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function contiguous_primary_key();;
-
-            drop function food_item_bitemporal_primary_key cascade;
-            create constraint trigger food_item_bitemporal_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on food_item
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_primary_key();
-
-            drop function food_item_contiguous_primary_key cascade;
-            create constraint trigger food_item_contiguous_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on food_item
-                deferrable initially deferred
-                for each row
-            execute function contiguous_primary_key();;
-
-            drop function ean_number_bitemporal_primary_key cascade;
-            create constraint trigger ean_number_bitemporal_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on ean_number
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_primary_key();
-
-            drop function ean_number_contiguous_primary_key cascade;
-            create constraint trigger ean_number_contiguous_primary_key
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on ean_number
-                deferrable initially deferred
-                for each row
-            execute function contiguous_primary_key();;
-
-            drop function ticket_belongs_device_ref_user_device cascade;;
-            create constraint trigger ticket_belongs_device_ref_user_device
-                after insert or update of id
-                on ticket
-                deferrable initially deferred
-                for each row
-            execute function current_to_bitemporal_foreign_key('ticket', 'belongs_device', 'user_device');;
-
-            create constraint trigger ticket_belongs_device_ref_user_device
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function current_to_bitemporal_foreign_key('ticket', 'belongs_device', 'user_device');;
-
-            drop function user_device_belongs_to_ref_user cascade;;
-            create constraint trigger user_device_belongs_to_ref_user
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on "user"
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('user_device', 'belongs_to', 'user');;
-
-            create constraint trigger user_device_belongs_to_ref_user
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('user_device', 'belongs_to', 'user');;
-
-            drop function ean_number_identifies_ref_food cascade;;
-            create constraint trigger ean_number_identifies_ref_food
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on food
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('ean_number', 'identifies', 'food');;
-
-            create constraint trigger ean_number_identifies_ref_food
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on ean_number
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('ean_number', 'identifies', 'food');;
-
-            drop function food_item_buys_ref_user cascade;;
-            create constraint trigger food_item_buys_ref_user
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on "user"
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('food_item', 'buys', 'user');;
-
-            create constraint trigger food_item_buys_ref_user
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on food_item
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('food_item', 'buys', 'user');;
-
-            drop function food_item_of_type_ref_food cascade;;
-            create constraint trigger food_item_of_type_ref_food
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on food
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('food_item', 'of_type', 'food');;
-
-            create constraint trigger food_item_of_type_ref_food
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on food_item
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('food_item', 'of_type', 'food');;
-
-            drop function food_item_registers_ref_user_device cascade;;
-            create constraint trigger food_item_registers_ref_user_device
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('food_item', 'registers', 'user_device');;
-
-            create constraint trigger food_item_registers_ref_user_device
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on food_item
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('food_item', 'registers', 'user_device');;
-
-            drop function food_item_stored_in_ref_location cascade;;
-            create constraint trigger food_item_stored_in_ref_location
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on location
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('food_item', 'stored_in', 'location');;
-
-            create constraint trigger food_item_stored_in_ref_location
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on food_item
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_foreign_key('food_item', 'stored_in', 'location');;
-
-            drop function food_location_ref_location cascade;;
-            create constraint trigger food_location_ref_location
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on location
-                deferrable initially deferred
-                for each row
-            execute function nullable_bitemporal_foreign_key('food', 'location', 'location');;
-
-            create constraint trigger food_location_ref_location
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on food
-                deferrable initially deferred
-                for each row
-            execute function nullable_bitemporal_foreign_key('food', 'location', 'location');;
-
-            drop function user_initiates_ref_user_device cascade;;
-            create constraint trigger user_initiates_ref_user_device
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on "user"
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('user');
-
-            create constraint trigger user_initiates_ref_user_device
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('user');
-
-            drop function food_initiates_ref_user_device cascade;;
-            create constraint trigger food_initiates_ref_user_device
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on food
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('food');
-
-            create constraint trigger food_initiates_ref_user_device
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('food');
-
-            drop function food_item_initiates_ref_user_device cascade;;
-            create constraint trigger food_item_initiates_ref_user_device
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on food_item
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('food_item');
-
-            create constraint trigger food_item_initiates_ref_user_device
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('food_item');
-
-            drop function location_initiates_ref_user_device cascade;;
-            create constraint trigger location_initiates_ref_user_device
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on location
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('location');
-
-            create constraint trigger location_initiates_ref_user_device
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('location');
-
-            drop function ean_number_initiates_ref_user_device cascade;;
-            create constraint trigger ean_number_initiates_ref_user_device
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
-                on ean_number
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('ean_number');
-
-            create constraint trigger ean_number_initiates_ref_user_device
-                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('ean_number');
-
-            drop function user_device_initiates_ref_user_device cascade;;
-            create constraint trigger user_device_initiates_ref_user_device
-                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
-                on user_device
-                deferrable initially deferred
-                for each row
-            execute function bitemporal_initiates_foreign_key('user_device');
-
-        </sql>
-    </changeSet>
-    <changeSet id="2" author="admin">
         <sql>
             create table recipe_product (
                 id serial not null,
@@ -595,7 +64,7 @@
             drop table recipe_product;
         </rollback>
     </changeSet>
-    <changeSet id="3" author="admin">
+    <changeSet id="2" author="admin">
         <sql>
             create table recipe_ingredient (
                 id serial not null,
@@ -635,7 +104,7 @@
             drop table recipe_ingredient;
         </rollback>
     </changeSet>
-    <changeSet id="4" author="admin">
+    <changeSet id="3" author="admin">
         <sql>
             create table scaled_unit (
                 id serial not null,
@@ -673,7 +142,7 @@
             drop table scaled_unit;
         </rollback>
     </changeSet>
-    <changeSet id="5" author="admin">
+    <changeSet id="4" author="admin">
         <sql>
             create table recipe (
                 id serial not null,
@@ -712,7 +181,7 @@
             drop table recipe;
         </rollback>
     </changeSet>
-    <changeSet id="6" author="admin">
+    <changeSet id="5" author="admin">
         <sql>
             create table unit (
                 id serial not null,
@@ -750,7 +219,7 @@
             drop table unit;
         </rollback>
     </changeSet>
-    <changeSet id="7" author="admin">
+    <changeSet id="6" author="admin">
         <sql>
             create constraint trigger recipe_product_product_ref_food
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -771,7 +240,7 @@
             drop trigger recipe_product_product_ref_food on food;
         </rollback>
     </changeSet>
-    <changeSet id="8" author="admin">
+    <changeSet id="7" author="admin">
         <sql>
             create constraint trigger recipe_product_unit_ref_scaled_unit
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -792,7 +261,7 @@
             drop trigger recipe_product_unit_ref_scaled_unit on scaled_unit;
         </rollback>
     </changeSet>
-    <changeSet id="9" author="admin">
+    <changeSet id="8" author="admin">
         <sql>
             create constraint trigger recipe_product_recipe_ref_recipe
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -813,7 +282,7 @@
             drop trigger recipe_product_recipe_ref_recipe on recipe;
         </rollback>
     </changeSet>
-    <changeSet id="10" author="admin">
+    <changeSet id="9" author="admin">
         <sql>
             create constraint trigger recipe_product_initiates_ref_user_device
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -834,7 +303,7 @@
             drop trigger recipe_product_initiates_ref_user_device on user_device;
         </rollback>
     </changeSet>
-    <changeSet id="11" author="admin">
+    <changeSet id="10" author="admin">
         <sql>
             create constraint trigger recipe_ingredient_ingredient_ref_food
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -855,7 +324,7 @@
             drop trigger recipe_ingredient_ingredient_ref_food on food;
         </rollback>
     </changeSet>
-    <changeSet id="12" author="admin">
+    <changeSet id="11" author="admin">
         <sql>
             create constraint trigger recipe_ingredient_unit_ref_scaled_unit
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -876,7 +345,7 @@
             drop trigger recipe_ingredient_unit_ref_scaled_unit on scaled_unit;
         </rollback>
     </changeSet>
-    <changeSet id="13" author="admin">
+    <changeSet id="12" author="admin">
         <sql>
             create constraint trigger recipe_ingredient_recipe_ref_recipe
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -897,7 +366,7 @@
             drop trigger recipe_ingredient_recipe_ref_recipe on recipe;
         </rollback>
     </changeSet>
-    <changeSet id="14" author="admin">
+    <changeSet id="13" author="admin">
         <sql>
             create constraint trigger recipe_ingredient_initiates_ref_user_device
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -918,7 +387,7 @@
             drop trigger recipe_ingredient_initiates_ref_user_device on user_device;
         </rollback>
     </changeSet>
-    <changeSet id="15" author="admin">
+    <changeSet id="14" author="admin">
         <sql>
             create constraint trigger scaled_unit_unit_ref_unit
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -939,7 +408,7 @@
             drop trigger scaled_unit_unit_ref_unit on unit;
         </rollback>
     </changeSet>
-    <changeSet id="16" author="admin">
+    <changeSet id="15" author="admin">
         <sql>
             create constraint trigger scaled_unit_initiates_ref_user_device
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -960,7 +429,7 @@
             drop trigger scaled_unit_initiates_ref_user_device on user_device;
         </rollback>
     </changeSet>
-    <changeSet id="17" author="admin">
+    <changeSet id="16" author="admin">
         <sql>
             create constraint trigger recipe_initiates_ref_user_device
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -981,7 +450,7 @@
             drop trigger recipe_initiates_ref_user_device on user_device;
         </rollback>
     </changeSet>
-    <changeSet id="18" author="admin">
+    <changeSet id="17" author="admin">
         <sql>
             create constraint trigger unit_initiates_ref_user_device
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -1002,7 +471,7 @@
             drop trigger unit_initiates_ref_user_device on user_device;
         </rollback>
     </changeSet>
-    <changeSet id="19" author="admin">
+    <changeSet id="18" author="admin">
         <sql endDelimiter=";;">
             create or replace function create_initial_user() returns void
                 language plpgsql
@@ -1041,9 +510,37 @@
 
             drop function create_initial_user cascade;;
         </sql>
-        <rollback/>
+        <rollback>
+            <sql endDelimiter=";;">
+                create or replace function drop_initial_user() returns void
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    select count(*)
+                    into count
+                    from ticket
+                    where ticket = '0000' and belongs_device = 1;
+
+                    if count != 1 then
+                        return;
+                    end if;
+
+                    delete from ticket;
+                    delete from "user";
+                    delete from user_device;
+                end;
+                $$;;
+
+                select drop_initial_user();;
+
+                drop function drop_initial_user cascade;;
+            </sql>
+        </rollback>
     </changeSet>
-    <changeSet id="20" author="admin">
+    <changeSet id="19" author="admin">
         <sql>
             insert into unit (name, abbreviation, initiates, valid_time_start, transaction_time_start)
             select 'Default', 'default', min(id), min(valid_time_start), min(transaction_time_start)
@@ -1059,9 +556,12 @@
             and current_timestamp &lt; valid_time_end
             and transaction_time_end = 'infinity';
         </sql>
-        <rollback/>
+        <rollback>
+            truncate unit;
+            truncate scaled_unit;
+        </rollback>
     </changeSet>
-    <changeSet id="21" author="admin">
+    <changeSet id="20" author="admin">
         <sql>
             alter table food add column store_unit int;
             update food set store_unit = (select min(id) from scaled_unit);
@@ -1070,7 +570,7 @@
             alter table food drop column store_unit;
         </rollback>
     </changeSet>
-    <changeSet id="22" author="admin">
+    <changeSet id="21" author="admin">
         <sql>
             alter table food alter column store_unit set not null;
         </sql>
@@ -1078,7 +578,7 @@
             alter table food alter column store_unit drop not null;
         </rollback>
     </changeSet>
-    <changeSet id="23" author="admin">
+    <changeSet id="22" author="admin">
         <sql>
             create constraint trigger food_store_unit_ref_scaled_unit
                 after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
@@ -1099,9 +599,8 @@
             drop trigger food_store_unit_ref_scaled_unit on scaled_unit;
         </rollback>
     </changeSet>
-    <changeSet id="24" author="admin">
+    <changeSet id="23" author="admin">
         <sql>
-            drop view "Updates";
             create or replace view updates (id, table_name, last_update) as
             select 1,
                    'Location',
@@ -1158,5 +657,89 @@
                    coalesce(max(transaction_time_start), current_timestamp)
             from unit;
         </sql>
+        <rollback>
+            create or replace view updates (id, table_name, last_update) as
+            select 1,
+                   'Location',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from location
+            union
+            select 2,
+                   'User',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "user"
+            union
+            select 3,
+                   'User_device',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from user_device
+            union
+            select 4,
+                   'Food',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from food
+            union
+            select 5,
+                   'Food_item',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from food_item
+            union
+            select 6,
+                   'EAN_number',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from ean_number;
+        </rollback>
+    </changeSet>
+    <changeSet id="24" author="admin">
+        <sql>
+            create index user_transaction_time_end on "user" (transaction_time_end);
+            create index user_device_transaction_time_end on user_device (transaction_time_end);
+            create index location_transaction_time_end on location (transaction_time_end);
+            create index food_transaction_time_end on food (transaction_time_end);
+            create index food_item_transaction_time_end on food_item (transaction_time_end);
+            create index ean_number_transaction_time_end on ean_number (transaction_time_end);
+            create index recipe_ingredient_transaction_time_end on recipe_ingredient (transaction_time_end);
+            create index recipe_product_transaction_time_end on recipe_product (transaction_time_end);
+            create index recipe_transaction_time_end on recipe (transaction_time_end);
+            create index unit_transaction_time_end on unit (transaction_time_end);
+            create index scaled_unit_transaction_time_end on scaled_unit (transaction_time_end);
+
+            create index user_transaction_time_start on "user" (transaction_time_start);
+            create index user_device_transaction_time_start on user_device (transaction_time_start);
+            create index location_transaction_time_start on location (transaction_time_start);
+            create index food_transaction_time_start on food (transaction_time_start);
+            create index food_item_transaction_time_start on food_item (transaction_time_start);
+            create index ean_number_transaction_time_start on ean_number (transaction_time_start);
+            create index recipe_ingredient_transaction_time_start on recipe_ingredient (transaction_time_start);
+            create index recipe_product_transaction_time_start on recipe_product (transaction_time_start);
+            create index recipe_transaction_time_start on recipe (transaction_time_start);
+            create index unit_transaction_time_start on unit (transaction_time_start);
+            create index scaled_unit_transaction_time_start on scaled_unit (transaction_time_start);
+        </sql>
+        <rollback>
+            drop index user_transaction_time_end;
+            drop index user_device_transaction_time_end;
+            drop index location_transaction_time_end;
+            drop index food_transaction_time_end;
+            drop index food_item_transaction_time_end;
+            drop index ean_number_transaction_time_end;
+            drop index recipe_ingredient_transaction_time_end;
+            drop index recipe_product_transaction_time_end;
+            drop index recipe_transaction_time_end;
+            drop index unit_transaction_time_end;
+            drop index scaled_unit_transaction_time_end;
+
+            drop index user_transaction_time_start;
+            drop index user_device_transaction_time_start;
+            drop index location_transaction_time_start;
+            drop index food_transaction_time_start;
+            drop index food_item_transaction_time_start;
+            drop index ean_number_transaction_time_start;
+            drop index recipe_ingredient_transaction_time_start;
+            drop index recipe_product_transaction_time_start;
+            drop index recipe_transaction_time_start;
+            drop index unit_transaction_time_start;
+            drop index scaled_unit_transaction_time_start;
+        </rollback>
     </changeSet>
 </databaseChangeLog>

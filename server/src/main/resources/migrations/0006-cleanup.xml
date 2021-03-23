@@ -1,0 +1,1471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (c, valid_time_end asc) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        context="production">
+    <changeSet id="1" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function bitemporal_primary_key() returns trigger
+                language PLPGSQL
+            as
+            $$
+            declare
+                violating_row_count int;
+            begin
+                execute format(
+                        'select count(*) '
+                            'from %I as u1 '
+                            'where u1.id is null '
+                            'or 1 &lt; ( '
+                            'select count(*) '
+                            'from %I as u2 '
+                            'where u1.id = u2.id '
+                            'and u1.valid_time_start &lt; u2.valid_time_end '
+                            'and u2.valid_time_start &lt; u1.valid_time_end '
+                            'and u1.transaction_time_end = %L '
+                            'and u2.transaction_time_end = %L '
+                            ')',
+                        tg_table_name, tg_table_name, 'infinity', 'infinity')
+                    into violating_row_count;
+
+                if violating_row_count != 0 then
+                    raise check_violation using message = 'on table ' || tg_table_name;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            create or replace function contiguous_primary_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                execute format(
+                        'select count(*) '
+                            'from %I u1, '
+                            '%I u2 '
+                            'where u1.valid_time_end &lt; u2.valid_time_end '
+                            'and u1.id = u2.id '
+                            'and u1.transaction_time_end = %L '
+                            'and u2.transaction_time_end = %L '
+                            'and not exists( '
+                            'select * '
+                            'from %I u3 '
+                            'where u3.id = u1.id '
+                            'and u3.transaction_time_end = %L '
+                            'and (((u3.valid_time_start &lt;= u1.valid_time_end) '
+                            'and (u1.valid_time_end &lt; u3.valid_time_end)) '
+                            'or ((u3.valid_time_start &lt; u2.valid_time_start) '
+                            'and '
+                            'u2.valid_time_start &lt;= u3.valid_time_end)) '
+                            ')',
+                        tg_table_name, tg_table_name, 'infinity', 'infinity', tg_table_name, 'infinity')
+                    into count;
+
+                if count != 0 then
+                    raise check_violation using message = 'on table ' || tg_table_name;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            -- arg 0: Referring table
+            -- arg 1: Referring column
+            -- arg 2: Referred table
+            create or replace function bitemporal_foreign_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                execute format(
+                        'select * '
+                            'from %I f '
+                            'where f.transaction_time_end = %L '
+                            'and ( '
+                            'not exists( '
+                            'select * '
+                            'from %I p '
+                            'where f.%I = p.id '
+                            'and p.transaction_time_end = %L '
+                            'and p.valid_time_start &lt;= f.valid_time_start '
+                            'and f.valid_time_start &lt; p.valid_time_end '
+                            ') '
+                            'or not exists( '
+                            'select * '
+                            'from %I u '
+                            'where f.%I = u.id '
+                            'and u.transaction_time_end = %L '
+                            'and u.valid_time_start &lt; f.valid_time_end '
+                            'and f.valid_time_end &lt;= u.valid_time_end '
+                            ') '
+                            ')',
+                        tg_argv[0], 'infinity', tg_argv[2], tg_argv[1], 'infinity', tg_argv[2], tg_argv[1], 'infinity')
+                    into count;
+
+                if count != 0 then
+                    raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
+                end if;
+                return new;
+            end;
+            $$;;
+
+            -- arg 0: Referring table
+            create or replace function bitemporal_initiates_foreign_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                execute format(
+                        'select * '
+                            'from %I f '
+                            'where f.transaction_time_end = %L '
+                            'and ( '
+                            'not exists( '
+                            'select * '
+                            'from user_device p '
+                            'where f.initiates = p.id '
+                            'and p.transaction_time_end = %L '
+                            'and p.valid_time_start &lt;= f.transaction_time_start '
+                            'and f.transaction_time_start &lt; p.valid_time_end '
+                            ') '
+                            ')', tg_argv[0], 'infinity', 'infinity')
+                    into count;
+
+                if count != 0 then
+                    raise check_violation using message = tg_argv[0] || '.initiates -> user_device';
+                end if;
+                return new;
+            end;
+            $$;;
+
+            -- arg 0: Referring table
+            -- arg 1: Referring column
+            -- arg 2: Referred table
+            create or replace function current_to_bitemporal_foreign_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                execute format(
+                        'select count(*) '
+                            'from %I as f '
+                            'where not exists( '
+                            'select * '
+                            'from %I as p '
+                            'where p.id = f.%I '
+                            'and p.valid_time_end = %L '
+                            'and p.transaction_time_end = %L '
+                            ')',
+                        tg_argv[0], tg_argv[2], tg_argv[1], 'infinity', 'infinity')
+                    into count;
+
+                if count != 0 then
+                    raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
+                end if;
+                return new;
+            end;
+            $$;;
+
+            -- arg 0: Referring table
+            -- arg 1: Referring column
+            -- arg 2: Referred table
+            create or replace function nullable_bitemporal_foreign_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                count int;
+            begin
+                execute format(
+                        'select * '
+                            'from %I f '
+                            'where f.transaction_time_end = %L '
+                            'and f.%I is not null '
+                            'and ( '
+                            'not exists( '
+                            'select * '
+                            'from %I p '
+                            'where f.%I = p.id '
+                            'and p.transaction_time_end = %L '
+                            'and p.valid_time_start &lt;= f.valid_time_start '
+                            'and f.valid_time_start &lt; p.valid_time_end '
+                            ') '
+                            'or not exists( '
+                            'select * '
+                            'from %I p '
+                            'where f.%I = p.id '
+                            'and p.transaction_time_end = %L '
+                            'and p.valid_time_start &lt; f.valid_time_end '
+                            'and f.valid_time_end &lt;= p.valid_time_end '
+                            ') '
+                            ')', tg_argv[0], 'infinity', tg_argv[1], tg_argv[2],
+                        tg_argv[1], 'infinity', tg_argv[2], tg_argv[1], 'infinity')
+                    into count;
+
+                if count != 0 then
+                    raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
+                end if;
+                return new;
+            end;
+            $$;;
+        </sql>
+        <rollback>
+            drop function bitemporal_primary_key cascade;
+            drop function contiguous_primary_key cascade;
+            drop function bitemporal_foreign_key cascade;
+            drop function nullable_bitemporal_foreign_key cascade;
+            drop function current_to_bitemporal_foreign_key cascade;
+            drop function bitemporal_initiates_foreign_key cascade;
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="admin">
+        <sql>
+            alter table "Food" rename to food;
+            alter table "User" rename to "user";
+            alter table "User_device" rename to user_device;
+            alter table "Location" rename to location;
+            alter table "Food_item" rename to food_item;
+            alter table "EAN_number" rename to ean_number;
+            alter table "Ticket" rename to ticket;
+            alter view "Updates" rename to updates;
+
+            alter table food rename column "ID" to id;
+            alter table "user" rename column "ID" to id;
+            alter table user_device rename column "ID" to id;
+            alter table location rename column "ID" to id;
+            alter table food_item rename column "ID" to id;
+            alter table ean_number rename column "ID" to id;
+            alter table ticket rename column "ID" to id;
+            alter view updates rename column "ID" to id;
+
+            drop function user_bitemporal_primary_key cascade;
+            create constraint trigger user_bitemporal_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on "user"
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_primary_key();
+
+            drop function user_contiguous_primary_key cascade;
+            create constraint trigger user_contiguous_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on "user"
+                deferrable initially deferred
+                for each row
+            execute function contiguous_primary_key();;
+
+            drop function location_bitemporal_primary_key cascade;
+            create constraint trigger location_bitemporal_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on location
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_primary_key();
+
+            drop function location_contiguous_primary_key cascade;
+            create constraint trigger location_contiguous_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on location
+                deferrable initially deferred
+                for each row
+            execute function contiguous_primary_key();;
+
+            drop function food_bitemporal_primary_key cascade;
+            create constraint trigger food_bitemporal_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on food
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_primary_key();
+
+            drop function food_contiguous_primary_key cascade;
+            create constraint trigger food_contiguous_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on food
+                deferrable initially deferred
+                for each row
+            execute function contiguous_primary_key();;
+
+            drop function user_device_bitemporal_primary_key cascade;
+            create constraint trigger user_device_bitemporal_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_primary_key();
+
+            drop function user_device_contiguous_primary_key cascade;
+            create constraint trigger user_device_contiguous_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function contiguous_primary_key();;
+
+            drop function food_item_bitemporal_primary_key cascade;
+            create constraint trigger food_item_bitemporal_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on food_item
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_primary_key();
+
+            drop function food_item_contiguous_primary_key cascade;
+            create constraint trigger food_item_contiguous_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on food_item
+                deferrable initially deferred
+                for each row
+            execute function contiguous_primary_key();;
+
+            drop function ean_number_bitemporal_primary_key cascade;
+            create constraint trigger ean_number_bitemporal_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on ean_number
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_primary_key();
+
+            drop function ean_number_contiguous_primary_key cascade;
+            create constraint trigger ean_number_contiguous_primary_key
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on ean_number
+                deferrable initially deferred
+                for each row
+            execute function contiguous_primary_key();;
+
+            drop function ticket_belongs_device_ref_user_device cascade;;
+            create constraint trigger ticket_belongs_device_ref_user_device
+                after insert or update of id
+                on ticket
+                deferrable initially deferred
+                for each row
+            execute function current_to_bitemporal_foreign_key('ticket', 'belongs_device', 'user_device');;
+
+            create constraint trigger ticket_belongs_device_ref_user_device
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function current_to_bitemporal_foreign_key('ticket', 'belongs_device', 'user_device');;
+
+            drop function user_device_belongs_to_ref_user cascade;;
+            create constraint trigger user_device_belongs_to_ref_user
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on "user"
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('user_device', 'belongs_to', 'user');;
+
+            create constraint trigger user_device_belongs_to_ref_user
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('user_device', 'belongs_to', 'user');;
+
+            drop function ean_number_identifies_ref_food cascade;;
+            create constraint trigger ean_number_identifies_ref_food
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on food
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('ean_number', 'identifies', 'food');;
+
+            create constraint trigger ean_number_identifies_ref_food
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on ean_number
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('ean_number', 'identifies', 'food');;
+
+            drop function food_item_buys_ref_user cascade;;
+            create constraint trigger food_item_buys_ref_user
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on "user"
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('food_item', 'buys', 'user');;
+
+            create constraint trigger food_item_buys_ref_user
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on food_item
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('food_item', 'buys', 'user');;
+
+            drop function food_item_of_type_ref_food cascade;;
+            create constraint trigger food_item_of_type_ref_food
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on food
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('food_item', 'of_type', 'food');;
+
+            create constraint trigger food_item_of_type_ref_food
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on food_item
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('food_item', 'of_type', 'food');;
+
+            drop function food_item_registers_ref_user_device cascade;;
+            create constraint trigger food_item_registers_ref_user_device
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('food_item', 'registers', 'user_device');;
+
+            create constraint trigger food_item_registers_ref_user_device
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on food_item
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('food_item', 'registers', 'user_device');;
+
+            drop function food_item_stored_in_ref_location cascade;;
+            create constraint trigger food_item_stored_in_ref_location
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on location
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('food_item', 'stored_in', 'location');;
+
+            create constraint trigger food_item_stored_in_ref_location
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on food_item
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('food_item', 'stored_in', 'location');;
+
+            drop function food_location_ref_location cascade;;
+            create constraint trigger food_location_ref_location
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on location
+                deferrable initially deferred
+                for each row
+            execute function nullable_bitemporal_foreign_key('food', 'location', 'location');;
+
+            create constraint trigger food_location_ref_location
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on food
+                deferrable initially deferred
+                for each row
+            execute function nullable_bitemporal_foreign_key('food', 'location', 'location');;
+
+            drop function user_initiates_ref_user_device cascade;;
+            create constraint trigger user_initiates_ref_user_device
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on "user"
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('user');
+
+            create constraint trigger user_initiates_ref_user_device
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('user');
+
+            drop function food_initiates_ref_user_device cascade;;
+            create constraint trigger food_initiates_ref_user_device
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on food
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('food');
+
+            create constraint trigger food_initiates_ref_user_device
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('food');
+
+            drop function food_item_initiates_ref_user_device cascade;;
+            create constraint trigger food_item_initiates_ref_user_device
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on food_item
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('food_item');
+
+            create constraint trigger food_item_initiates_ref_user_device
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('food_item');
+
+            drop function location_initiates_ref_user_device cascade;;
+            create constraint trigger location_initiates_ref_user_device
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on location
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('location');
+
+            create constraint trigger location_initiates_ref_user_device
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('location');
+
+            drop function ean_number_initiates_ref_user_device cascade;;
+            create constraint trigger ean_number_initiates_ref_user_device
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on ean_number
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('ean_number');
+
+            create constraint trigger ean_number_initiates_ref_user_device
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('ean_number');
+
+            drop function user_device_initiates_ref_user_device cascade;;
+            create constraint trigger user_device_initiates_ref_user_device
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('user_device');
+
+
+        </sql>
+        <rollback>
+            <sql endDelimiter=";;">
+                alter table food rename column id to "ID";
+                alter table "user" rename column id to "ID";
+                alter table user_device rename column id to "ID";
+                alter table location rename column id to "ID";
+                alter table food_item rename column id to "ID";
+                alter table ean_number rename column id to "ID";
+                alter table ticket rename column id to "ID";
+                alter view updates rename column id to "ID";
+
+                alter table food rename to "Food";
+                alter table "user" rename to "User";
+                alter table user_device rename to "User_device";
+                alter table location rename to "Location";
+                alter table food_item rename to "Food_item";
+                alter table ean_number rename to "EAN_number";
+                alter table ticket rename to "Ticket";
+                alter view updates rename to "Updates";
+
+                drop trigger user_bitemporal_primary_key on "User";
+                drop trigger user_contiguous_primary_key on "User";
+                drop trigger user_device_bitemporal_primary_key on "User_device";
+                drop trigger user_device_contiguous_primary_key on "User_device";
+                drop trigger location_bitemporal_primary_key on "Location";
+                drop trigger location_contiguous_primary_key on "Location";
+                drop trigger food_bitemporal_primary_key on "Food";
+                drop trigger food_contiguous_primary_key on "Food";
+                drop trigger food_item_bitemporal_primary_key on "Food_item";
+                drop trigger food_item_contiguous_primary_key on "Food_item";
+                drop trigger ean_number_bitemporal_primary_key on "EAN_number";
+                drop trigger ean_number_contiguous_primary_key on "EAN_number";
+
+                create or replace function user_bitemporal_primary_key() returns trigger
+                    language PLPGSQL
+                as
+                $BODY$
+                declare
+                    violating_row_count int;
+                begin
+                    select count(*)
+                    into violating_row_count
+                    from "User" as u1
+                    where u1."ID" is null
+                       or 1 &lt; (
+                        select count(*)
+                        from "User" as u2
+                        where u1."ID" = u2."ID"
+                          and u1.valid_time_start &lt; u2.valid_time_end
+                          and u2.valid_time_start &lt; u1.valid_time_end
+                          and u1.transaction_time_end = 'infinity'
+                          and u2.transaction_time_end = 'infinity');
+                    if violating_row_count != 0 then
+                        raise check_violation;
+                    end if;
+                    return new;
+                end;
+                $BODY$;;
+
+                create constraint trigger "user_bitemporal_primary_key"
+                    after insert or update or delete
+                    on "User"
+                    deferrable initially deferred
+                    for each row
+                execute function user_bitemporal_primary_key();;
+
+                create or replace function user_contiguous_primary_key() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    select count(*)
+                    into count
+                    from "User" u1,
+                         "User" u2
+                    where u1.valid_time_end &lt; u2.valid_time_end
+                      and u1."ID" = u2."ID"
+                      and u1.transaction_time_end = 'infinity'
+                      and u2.transaction_time_end = 'infinity'
+                      and not exists(
+                            select *
+                            from "User" u3
+                            where u3."ID" = u1."ID"
+                              and u3.transaction_time_end = 'infinity'
+                              and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                                and (u1.valid_time_end &lt; u3.valid_time_end))
+                                or ((u3.valid_time_start &lt; u2.valid_time_start)
+                                    and
+                                    u2.valid_time_start &lt;= u3.valid_time_end))
+                        );
+                    if count != 0 then
+                        raise check_violation;
+                    end if;
+                    return new;
+                end;
+                $$;;
+
+                create constraint trigger "user_contiguous_primary_key"
+                    after insert or update or delete
+                    on "User"
+                    deferrable initially deferred
+                    for each row
+                execute function user_contiguous_primary_key();;
+
+                create or replace function location_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+                AS
+                $$
+                declare
+                violating_row_count int;
+                begin
+                select count(*)
+                into violating_row_count
+                from "Location" as u1
+                where u1."ID" is null
+                or 1 &lt; (
+                select count(*)
+                from "Location" as u2
+                where u1."ID" = u2."ID"
+                and u1.valid_time_start &lt; u2.valid_time_end
+                and u2.valid_time_start &lt; u1.valid_time_end
+                and u1.transaction_time_end = 'infinity'
+                and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+
+                create constraint trigger "location_bitemporal_primary_key"
+                after insert or update or delete
+                on "Location"
+                deferrable initially deferred
+                for each row
+                execute function location_bitemporal_primary_key();;
+
+                create or replace function location_contiguous_primary_key() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select count(*)
+                into count
+                from "Location" u1,
+                "Location" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                and u1."ID" = u2."ID"
+                and u1.transaction_time_end = 'infinity'
+                and u2.transaction_time_end = 'infinity'
+                and not exists(
+                select *
+                from "Location" u3
+                where u3."ID" = u1."ID"
+                and u3.transaction_time_end = 'infinity'
+                and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                and (u1.valid_time_end &lt; u3.valid_time_end))
+                or ((u3.valid_time_start &lt; u2.valid_time_start)
+                and
+                u2.valid_time_start &lt;= u3.valid_time_end))
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+
+                create constraint trigger "location_contiguous_primary_key"
+                after insert or update or delete
+                on "Location"
+                deferrable initially deferred
+                for each row
+                execute function location_contiguous_primary_key();;
+
+                create or replace function food_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+                AS
+                $$
+                declare
+                violating_row_count int;
+                begin
+                select count(*)
+                into violating_row_count
+                from "Food" as u1
+                where u1."ID" is null
+                or 1 &lt; (
+                select count(*)
+                from "Food" as u2
+                where u1."ID" = u2."ID"
+                and u1.valid_time_start &lt; u2.valid_time_end
+                and u2.valid_time_start &lt; u1.valid_time_end
+                and u1.transaction_time_end = 'infinity'
+                and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+
+                create constraint trigger "food_bitemporal_primary_key"
+                after insert or update or delete
+                on "Food"
+                deferrable initially deferred
+                for each row
+                execute function food_bitemporal_primary_key();;
+
+                create or replace function food_contiguous_primary_key() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select count(*)
+                into count
+                from "Food" u1,
+                "Food" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                and u1."ID" = u2."ID"
+                and u1.transaction_time_end = 'infinity'
+                and u2.transaction_time_end = 'infinity'
+                and not exists(
+                select *
+                from "Food" u3
+                where u3."ID" = u1."ID"
+                and u3.transaction_time_end = 'infinity'
+                and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                and (u1.valid_time_end &lt; u3.valid_time_end))
+                or ((u3.valid_time_start &lt; u2.valid_time_start)
+                and
+                u2.valid_time_start &lt;= u3.valid_time_end))
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+
+                create constraint trigger "food_contiguous_primary_key"
+                after insert or update or delete
+                on "Food"
+                deferrable initially deferred
+                for each row
+                execute function food_contiguous_primary_key();;
+
+                create or replace function user_device_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+                AS
+                $$
+                declare
+                violating_row_count int;
+                begin
+                select count(*)
+                into violating_row_count
+                from "User_device" as u1
+                where u1."ID" is null
+                or 1 &lt; (
+                select count(*)
+                from "User_device" as u2
+                where u1."ID" = u2."ID"
+                and u1.valid_time_start &lt; u2.valid_time_end
+                and u2.valid_time_start &lt; u1.valid_time_end
+                and u1.transaction_time_end = 'infinity'
+                and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+
+                create constraint trigger "user_device_bitemporal_primary_key"
+                after insert or update or delete
+                on "User_device"
+                deferrable initially deferred
+                for each row
+                execute function user_device_bitemporal_primary_key();;
+
+                create or replace function user_device_contiguous_primary_key() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select count(*)
+                into count
+                from "User_device" u1,
+                "User_device" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                and u1."ID" = u2."ID"
+                and u1.transaction_time_end = 'infinity'
+                and u2.transaction_time_end = 'infinity'
+                and not exists(
+                select *
+                from "User_device" u3
+                where u3."ID" = u1."ID"
+                and u3.transaction_time_end = 'infinity'
+                and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                and (u1.valid_time_end &lt; u3.valid_time_end))
+                or ((u3.valid_time_start &lt; u2.valid_time_start)
+                and
+                u2.valid_time_start &lt;= u3.valid_time_end))
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+
+                create constraint trigger "user_device_contiguous_primary_key"
+                after insert or update or delete
+                on "User_device"
+                deferrable initially deferred
+                for each row
+                execute function user_device_contiguous_primary_key();;
+
+                create or replace function food_item_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+                AS
+                $$
+                declare
+                violating_row_count int;
+                begin
+                select count(*)
+                into violating_row_count
+                from "Food_item" as u1
+                where u1."ID" is null
+                or 1 &lt; (
+                select count(*)
+                from "Food_item" as u2
+                where u1."ID" = u2."ID"
+                and u1.valid_time_start &lt; u2.valid_time_end
+                and u2.valid_time_start &lt; u1.valid_time_end
+                and u1.transaction_time_end = 'infinity'
+                and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+
+                create constraint trigger "food_item_bitemporal_primary_key"
+                after insert or update or delete
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+                execute function food_item_bitemporal_primary_key();;
+
+                create or replace function food_item_contiguous_primary_key() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select count(*)
+                into count
+                from "Food_item" u1,
+                "Food_item" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                and u1."ID" = u2."ID"
+                and u1.transaction_time_end = 'infinity'
+                and u2.transaction_time_end = 'infinity'
+                and not exists(
+                select *
+                from "Food_item" u3
+                where u3."ID" = u1."ID"
+                and u3.transaction_time_end = 'infinity'
+                and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                and (u1.valid_time_end &lt; u3.valid_time_end))
+                or ((u3.valid_time_start &lt; u2.valid_time_start)
+                and
+                u2.valid_time_start &lt;= u3.valid_time_end))
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+
+                create constraint trigger "food_item_contiguous_primary_key"
+                after insert or update or delete
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+                execute function food_item_contiguous_primary_key();;
+
+                create or replace function ean_number_bitemporal_primary_key() returns trigger
+                language PLPGSQL
+                AS
+                $$
+                declare
+                violating_row_count int;
+                begin
+                select count(*)
+                into violating_row_count
+                from "EAN_number" as u1
+                where u1."ID" is null
+                or 1 &lt; (
+                select count(*)
+                from "EAN_number" as u2
+                where u1."ID" = u2."ID"
+                and u1.valid_time_start &lt; u2.valid_time_end
+                and u2.valid_time_start &lt; u1.valid_time_end
+                and u1.transaction_time_end = 'infinity'
+                and u2.transaction_time_end = 'infinity');
+                if violating_row_count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+
+                create constraint trigger "ean_number_bitemporal_primary_key"
+                after insert or update or delete
+                on "EAN_number"
+                deferrable initially deferred
+                for each row
+                execute function ean_number_bitemporal_primary_key();;
+
+                create or replace function ean_number_contiguous_primary_key() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select count(*)
+                into count
+                from "EAN_number" u1,
+                "EAN_number" u2
+                where u1.valid_time_end &lt; u2.valid_time_end
+                and u1."ID" = u2."ID"
+                and u1.transaction_time_end = 'infinity'
+                and u2.transaction_time_end = 'infinity'
+                and not exists(
+                select *
+                from "EAN_number" u3
+                where u3."ID" = u1."ID"
+                and u3.transaction_time_end = 'infinity'
+                and (((u3.valid_time_start &lt;= u1.valid_time_end)
+                and (u1.valid_time_end &lt; u3.valid_time_end))
+                or ((u3.valid_time_start &lt; u2.valid_time_start)
+                and
+                u2.valid_time_start &lt;= u3.valid_time_end))
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+
+                create constraint trigger "ean_number_contiguous_primary_key"
+                after insert or update or delete
+                on "EAN_number"
+                deferrable initially deferred
+                for each row
+                execute function ean_number_contiguous_primary_key();;
+
+                <!-- foreign key constraints -->
+
+                drop trigger ticket_belongs_device_ref_user_device on "Ticket";
+                drop trigger ticket_belongs_device_ref_user_device on "User_device";
+                create or replace function ticket_belongs_device_ref_user_device() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select count(*)
+                into count
+                from "Ticket" as f
+                where not exists(
+                select *
+                from "User_device" as p
+                where p."ID" = f.belongs_device
+                and p.valid_time_end = 'infinity'
+                and p.transaction_time_end = 'infinity'
+                );
+
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;;
+                create constraint trigger ticket_belongs_device_ref_user_device
+                after insert or update
+                on "Ticket"
+                deferrable initially deferred
+                for each row
+                execute function ticket_belongs_device_ref_user_device();;
+
+                create constraint trigger ticket_belongs_device_ref_user_device
+                after update or delete
+                on "User_device"
+                deferrable initially deferred
+                for each row
+                execute function ticket_belongs_device_ref_user_device();;
+
+                drop trigger user_device_belongs_to_ref_user on "User";
+                drop trigger user_device_belongs_to_ref_user on "User_device";
+                create or replace function user_device_belongs_to_ref_user() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select *
+                into count
+                from "User_device" f
+                where f.transaction_time_end = 'infinity'
+                and (
+                not exists(
+                select *
+                from "User" p
+                where f.belongs_to = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt;= f.valid_time_start
+                and f.valid_time_start &lt; p.valid_time_end
+                )
+                or not exists(
+                select *
+                from "User" p
+                where f.belongs_to = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt; f.valid_time_end
+                and f.valid_time_end &lt;= p.valid_time_end
+                )
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;
+                create constraint trigger user_device_belongs_to_ref_user
+                after update or delete
+                on "User"
+                deferrable initially deferred
+                for each row
+                execute function user_device_belongs_to_ref_user();
+                create constraint trigger user_device_belongs_to_ref_user
+                after insert or update
+                on "User_device"
+                deferrable initially deferred
+                for each row
+                execute function user_device_belongs_to_ref_user();
+
+                drop trigger ean_number_identifies_ref_food on "Food";
+                drop trigger ean_number_identifies_ref_food on "EAN_number";
+                create or replace function ean_number_identifies_ref_food() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select *
+                into count
+                from "EAN_number" f
+                where f.transaction_time_end = 'infinity'
+                and (
+                not exists(
+                select *
+                from "Food" p
+                where f.identifies = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt;= f.valid_time_start
+                and f.valid_time_start &lt; p.valid_time_end
+                )
+                or not exists(
+                select *
+                from "Food" p
+                where f.identifies = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt; f.valid_time_end
+                and f.valid_time_end &lt;= p.valid_time_end
+                )
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;
+                create constraint trigger ean_number_identifies_ref_food
+                after update or delete
+                on "Food"
+                deferrable initially deferred
+                for each row
+                execute function ean_number_identifies_ref_food();
+                create constraint trigger ean_number_identifies_ref_food
+                after insert or update
+                on "EAN_number"
+                deferrable initially deferred
+                for each row
+                execute function ean_number_identifies_ref_food();
+
+                drop trigger food_item_buys_ref_user on "User";
+                drop trigger food_item_buys_ref_user on "Food_item";
+                create or replace function food_item_buys_ref_user() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select *
+                into count
+                from "Food_item" f
+                where f.transaction_time_end = 'infinity'
+                and (
+                not exists(
+                select *
+                from "User" p
+                where f.buys = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt;= f.valid_time_start
+                and f.valid_time_start &lt; p.valid_time_end
+                )
+                or not exists(
+                select *
+                from "User" p
+                where f.buys = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt; f.valid_time_end
+                and f.valid_time_end &lt;= p.valid_time_end
+                )
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;
+                create constraint trigger food_item_buys_ref_user
+                after update or delete
+                on "User"
+                deferrable initially deferred
+                for each row
+                execute function food_item_buys_ref_user();
+                create constraint trigger food_item_buys_ref_user
+                after insert or update
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+                execute function food_item_buys_ref_user();
+
+                drop trigger food_item_of_type_ref_food on "Food";
+                drop trigger food_item_of_type_ref_food on "Food_item";
+                create or replace function food_item_of_type_ref_food() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select *
+                into count
+                from "Food_item" f
+                where f.transaction_time_end = 'infinity'
+                and (
+                not exists(
+                select *
+                from "Food" p
+                where f.of_type = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt;= f.valid_time_start
+                and f.valid_time_start &lt; p.valid_time_end
+                )
+                or not exists(
+                select *
+                from "Food" p
+                where f.of_type = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt; f.valid_time_end
+                and f.valid_time_end &lt;= p.valid_time_end
+                )
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;
+                create constraint trigger food_item_of_type_ref_food
+                after update or delete
+                on "Food"
+                deferrable initially deferred
+                for each row
+                execute function food_item_of_type_ref_food();
+                create constraint trigger food_item_of_type_ref_food
+                after insert or update
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+                execute function food_item_of_type_ref_food();
+
+                drop trigger food_item_registers_ref_user_device on "User_device";
+                drop trigger food_item_registers_ref_user_device on "Food_item";
+                create or replace function food_item_registers_ref_user_device() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select *
+                into count
+                from "Food_item" f
+                where f.transaction_time_end = 'infinity'
+                and (
+                not exists(
+                select *
+                from "User_device" p
+                where f.registers = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt;= f.valid_time_start
+                and f.valid_time_start &lt; p.valid_time_end
+                )
+                or not exists(
+                select *
+                from "User_device" u
+                where f.registers = u."ID"
+                and u.transaction_time_end = 'infinity'
+                and u.valid_time_start &lt; f.valid_time_end
+                and f.valid_time_end &lt;= u.valid_time_end
+                )
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;
+                create constraint trigger food_item_registers_ref_user_device
+                after update or delete
+                on "User_device"
+                deferrable initially deferred
+                for each row
+                execute function food_item_registers_ref_user_device();
+                create constraint trigger food_item_registers_ref_user_device
+                after insert or update
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+                execute function food_item_registers_ref_user_device();
+
+                drop trigger food_item_stored_in_ref_location on "Location";
+                drop trigger food_item_stored_in_ref_location on "Food_item";
+                create or replace function food_item_stored_in_ref_location() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select *
+                into count
+                from "Food_item" f
+                where f.transaction_time_end = 'infinity'
+                and (
+                not exists(
+                select *
+                from "Location" p
+                where f.stored_in = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt;= f.valid_time_start
+                and f.valid_time_start &lt; p.valid_time_end
+                )
+                or not exists(
+                select *
+                from "Location" p
+                where f.stored_in = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt; f.valid_time_end
+                and f.valid_time_end &lt;= p.valid_time_end
+                )
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;
+                create constraint trigger food_item_stored_in_ref_location
+                after update or delete
+                on "Location"
+                deferrable initially deferred
+                for each row
+                execute function food_item_stored_in_ref_location();
+                create constraint trigger food_item_stored_in_ref_location
+                after insert or update
+                on "Food_item"
+                deferrable initially deferred
+                for each row
+                execute function food_item_stored_in_ref_location();
+
+                drop trigger food_location_ref_location on "Location";
+                drop trigger food_location_ref_location on "Food";
+                create or replace function food_location_ref_location() returns trigger
+                language plpgsql
+                as
+                $$
+                declare
+                count int;
+                begin
+                select *
+                into count
+                from "Food" f
+                where f.transaction_time_end = 'infinity'
+                and f.location is not null
+                and (
+                not exists(
+                select *
+                from "Location" p
+                where f.location = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt;= f.valid_time_start
+                and f.valid_time_start &lt; p.valid_time_end
+                )
+                or not exists(
+                select *
+                from "Location" p
+                where f.location = p."ID"
+                and p.transaction_time_end = 'infinity'
+                and p.valid_time_start &lt; f.valid_time_end
+                and f.valid_time_end &lt;= p.valid_time_end
+                )
+                );
+                if count != 0 then
+                raise check_violation;
+                end if;
+                return new;
+                end;
+                $$;
+                create constraint trigger food_location_ref_location
+                after update or delete
+                on "Location"
+                deferrable initially deferred
+                for each row
+                execute function food_location_ref_location();
+                create constraint trigger food_location_ref_location
+                after insert or update
+                on "Food"
+                deferrable initially deferred
+                for each row
+                execute function food_location_ref_location();
+            </sql>
+        </rollback>
+    </changeSet>
+    <changeSet id="3" author="admin">
+        <sql>
+            create index user_current
+                on "user" (id asc, valid_time_start asc, valid_time_end asc)
+                where transaction_time_end = 'infinity';
+
+            create index user_device_current
+                on user_device (id asc, valid_time_start asc, valid_time_end asc)
+                where transaction_time_end = 'infinity';
+
+            create index location_current
+                on location (id asc, valid_time_start asc, valid_time_end asc)
+                where transaction_time_end = 'infinity';
+
+            create index food_current
+                on food (id asc, valid_time_start asc, valid_time_end asc)
+                where transaction_time_end = 'infinity';
+
+            create index food_item_current
+                on food_item (id asc, valid_time_start asc, valid_time_end asc)
+                where transaction_time_end = 'infinity';
+
+            create index ean_number_current
+                on ean_number (id asc, valid_time_start asc, valid_time_end asc)
+                where transaction_time_end = 'infinity';
+        </sql>
+        <rollback>
+            drop index user_current;
+            drop index user_device_current;
+            drop index location_current;
+            drop index food_current;
+            drop index food_item_current;
+            drop index ean_number_current;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
