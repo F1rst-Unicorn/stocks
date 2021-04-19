@@ -16,5 +16,8 @@ changeBuildType(RelativeId("Build")) {
         add {
             exists("env.DEPLOYMENT_VM")
         }
+        add {
+            exists("env.ANDROID_DEVICE")
+        }
     }
 }
