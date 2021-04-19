@@ -13,5 +13,8 @@ changeBuildType(RelativeId("Build")) {
         add {
             exists("env.POSTGRESQL_DB")
         }
+        add {
+            exists("env.DEPLOYMENT_VM")
+        }
     }
 }
