@@ -199,8 +199,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     cursor.getOfType(),
                     cursor.getStoredIn(),
                     cursor.getRegisters(),
-                    cursor.getBuys()
-            );
+                    cursor.getBuys(),
+                    cursor.getUnit());
         else
             return cursor -> new FoodItemForGetting(
                     cursor.getId(),
@@ -209,8 +209,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     cursor.getOfType(),
                     cursor.getStoredIn(),
                     cursor.getRegisters(),
-                    cursor.getBuys()
-            );
+                    cursor.getBuys(),
+                    cursor.getUnit());
     }
 
     @Override
@@ -222,7 +222,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                 FOOD_ITEM.STORED_IN,
                 FOOD_ITEM.REGISTERS,
                 FOOD_ITEM.BUYS,
-                FOOD_ITEM.VERSION
+                FOOD_ITEM.VERSION,
+                FOOD_ITEM.UNIT
         );
     }
 }

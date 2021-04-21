@@ -348,9 +348,9 @@
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.8.7</version>
+                <version>4.0.0</version>
                 <configuration>
-                    <changeLogFile>${basedir}/src/main/resources/migrations/master.xml</changeLogFile>
+                    <changeLogFile>src/main/resources/migrations/master.xml</changeLogFile>
                     <driver>org.postgresql.Driver</driver>
                     <url>
                         jdbc:postgresql://${de.njsm.stocks.server.v2.db.host}:${de.njsm.stocks.server.v2.db.port}/${de.njsm.stocks.server.v2.db.name}?user=${de.njsm.stocks.server.v2.db.postgres.user}&amp;password=${de.njsm.stocks.server.v2.db.postgres.password}&amp;ssl=${de.njsm.stocks.server.v2.db.postgres.ssl}&amp;sslmode=${de.njsm.stocks.server.v2.db.postgres.sslmode}&amp;sslcert=${de.njsm.stocks.server.v2.db.postgres.sslcert}&amp;sslkey=${de.njsm.stocks.server.v2.db.postgres.sslkey}&amp;sslrootcert=${de.njsm.stocks.server.v2.db.postgres.sslrootcert}&amp;

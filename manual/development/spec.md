@@ -393,6 +393,9 @@ Query parameters:
 
 * `name: String`: The name of the new food type
 
+* `unit: int`: The ID of the scaled unit of the new food type. If
+  omitted an undefined unit is assigned.
+
 Result: `application/json`, `Response`
 
 `GET /v2/food`: Get all food types in the system.
@@ -620,6 +623,9 @@ Query parameters:
 
 * `ofType: int`: The ID of the food type to which the item belongs
 
+* `unit: int`: The ID of the scaled unit of this item. If omitted an
+  undefined unit is assigned.
+
 Result: `application/json`, `Response`
 
 `GET /v2/fooditem`: Get all the food items in the system
@@ -665,6 +671,9 @@ Query parameters:
   consumed
 
 * `storedIn: int`: The ID of the new location to store the item in
+
+* `unit: int`: The ID of the new scaled unit of this item. If omitted
+  the value is unchanged.
 
 Result: `application/json`, `Response`
 

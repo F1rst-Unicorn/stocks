@@ -39,13 +39,16 @@ public class BitemporalFoodItem extends BitemporalData implements Versionable<Fo
 
     private final int buys;
 
-    public BitemporalFoodItem(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, Instant eatByDate, int ofType, int storedIn, int registers, int buys) {
+    private final int unit;
+
+    public BitemporalFoodItem(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, Instant eatByDate, int ofType, int storedIn, int registers, int buys, int unit) {
         super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
         this.eatByDate = eatByDate;
         this.ofType = ofType;
         this.storedIn = storedIn;
         this.registers = registers;
         this.buys = buys;
+        this.unit = unit;
     }
 
     @JsonSerialize(using = InstantSerialiser.class)
@@ -70,17 +73,21 @@ public class BitemporalFoodItem extends BitemporalData implements Versionable<Fo
         return buys;
     }
 
+    public int getUnit() {
+        return unit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof BitemporalFoodItem)) return false;
         if (!super.equals(o)) return false;
         BitemporalFoodItem that = (BitemporalFoodItem) o;
-        return getOfType() == that.getOfType() && getStoredIn() == that.getStoredIn() && getRegisters() == that.getRegisters() && getBuys() == that.getBuys() && getEatByDate().equals(that.getEatByDate());
+        return getOfType() == that.getOfType() && getStoredIn() == that.getStoredIn() && getRegisters() == that.getRegisters() && getBuys() == that.getBuys() && getUnit() == that.getUnit() && getEatByDate().equals(that.getEatByDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getEatByDate(), getOfType(), getStoredIn(), getRegisters(), getBuys());
+        return Objects.hash(super.hashCode(), getEatByDate(), getOfType(), getStoredIn(), getRegisters(), getBuys(), getUnit());
     }
 }

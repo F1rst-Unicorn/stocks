@@ -742,4 +742,44 @@
             drop index scaled_unit_transaction_time_start;
         </rollback>
     </changeSet>
+
+    <changeSet id="25" author="admin">
+        <sql>
+            alter table food_item add column unit int;
+            update food_item set unit = (select min(id) from scaled_unit);
+        </sql>
+        <rollback>
+            alter table food_item drop column unit;
+        </rollback>
+    </changeSet>
+    <changeSet id="26" author="admin">
+        <sql>
+            alter table food_item alter column unit set not null;
+        </sql>
+        <rollback>
+            alter table food_item alter column unit drop not null;
+        </rollback>
+    </changeSet>
+    <changeSet id="27" author="admin">
+        <sql>
+            create constraint trigger food_item_unit_ref_scaled_unit
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on food_item
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('food_item', 'unit', 'scaled_unit');
+
+            create constraint trigger food_item_unit_ref_scaled_unit
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on scaled_unit
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('food_item', 'store_unit', 'scaled_unit');
+        </sql>
+        <rollback>
+            drop trigger food_item_unit_ref_scaled_unit on food_item;
+            drop trigger food_item_unit_ref_scaled_unit on scaled_unit;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -26,6 +26,7 @@ import org.jooq.InsertSetStep;
 import org.jooq.impl.DSL;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.SCALED_UNIT;
@@ -34,18 +35,18 @@ public class FoodForInsertion implements Insertable<FoodRecord, Food> {
 
     private final String name;
 
-    private final Integer storeUnit;
+    private final Optional<Integer> storeUnit;
 
     public FoodForInsertion(String name, Integer storeUnit) {
         this.name = name;
-        this.storeUnit = storeUnit;
+        this.storeUnit = Optional.ofNullable(storeUnit);
     }
 
     public String getName() {
         return name;
     }
 
-    public Integer getStoreUnit() {
+    public Optional<Integer> getStoreUnit() {
         return storeUnit;
     }
 
@@ -54,7 +55,7 @@ public class FoodForInsertion implements Insertable<FoodRecord, Food> {
         if (this == o) return true;
         if (!(o instanceof FoodForInsertion)) return false;
         FoodForInsertion that = (FoodForInsertion) o;
-        return getName().equals(that.getName()) && Objects.equals(getStoreUnit(), that.getStoreUnit());
+        return getName().equals(that.getName()) && getStoreUnit().equals(that.getStoreUnit());
     }
 
     @Override
@@ -64,14 +65,14 @@ public class FoodForInsertion implements Insertable<FoodRecord, Food> {
 
     @Override
     public InsertOnDuplicateStep<FoodRecord> insertValue(InsertSetStep<FoodRecord> insertInto, Principals principals) {
-        if (storeUnit == null)
+        if (storeUnit.isEmpty())
             return insertInto.columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
                     .select(DSL.select(DSL.inline(name), DSL.inline(principals.getDid()), DSL.min(SCALED_UNIT.ID))
                             .from(SCALED_UNIT));
 
         else
             return insertInto.columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
-                    .values(name, principals.getDid(), storeUnit);
+                    .values(name, principals.getDid(), storeUnit.get());
     }
 }
 

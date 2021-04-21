@@ -80,7 +80,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void testInserting() {
-        FoodItemForInsertion item = new FoodItemForInsertion(Instant.EPOCH, 2, 1, 1, 1);
+        FoodItemForInsertion item = new FoodItemForInsertion(Instant.EPOCH, 2, 1, 1, 1, unit);
 
         Validation<StatusCode, Integer> result = uut.add(item);
 
@@ -98,9 +98,9 @@ public class FoodItemHandlerTest extends DbTestCase {
         assertTrue(result.isSuccess());
         List<FoodItem> list = result.success().collect(Collectors.toList());
         assertEquals(3, list.size());
-        assertEquals(new FoodItemForGetting(1, 0, Instant.EPOCH, 2, 1, 3, 2), list.get(0));
-        assertEquals(new FoodItemForGetting(2, 0, Instant.EPOCH, 2, 1, 3, 2), list.get(1));
-        assertEquals(new FoodItemForGetting(3, 0, Instant.EPOCH, 2, 1, 3, 2), list.get(2));
+        assertEquals(new FoodItemForGetting(1, 0, Instant.EPOCH, 2, 1, 3, 2, unit), list.get(0));
+        assertEquals(new FoodItemForGetting(2, 0, Instant.EPOCH, 2, 1, 3, 2, unit), list.get(1));
+        assertEquals(new FoodItemForGetting(3, 0, Instant.EPOCH, 2, 1, 3, 2, unit), list.get(2));
     }
 
     @Test
@@ -133,7 +133,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void validEditingHappens() {
-        FoodItemForEditing item = new FoodItemForEditing(1, 0, Instant.ofEpochMilli(42), 2);
+        FoodItemForEditing item = new FoodItemForEditing(1, 0, Instant.ofEpochMilli(42), 2, unit);
 
         StatusCode result = uut.edit(item);
 
@@ -143,12 +143,12 @@ public class FoodItemHandlerTest extends DbTestCase {
         assertTrue(items.isSuccess());
         List<FoodItem> list = items.success().collect(Collectors.toList());
         assertEquals(3, list.size());
-        assertThat(list, hasItem(new FoodItemForGetting(1, 1, item.getEatBy(), 2, item.getStoredIn(), 3, 2)));
+        assertThat(list, hasItem(new FoodItemForGetting(1, 1, item.getEatBy(), 2, item.getStoredIn(), 3, 2, unit)));
     }
 
     @Test
     public void editingWrongVersionIsReported() {
-        FoodItemForEditing item = new FoodItemForEditing(1, 99, Instant.ofEpochMilli(42), 2);
+        FoodItemForEditing item = new FoodItemForEditing(1, 99, Instant.ofEpochMilli(42), 2, unit);
 
         StatusCode result = uut.edit(item);
 
@@ -157,7 +157,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void editingUnknownIdIsReported() {
-        FoodItemForEditing item = new FoodItemForEditing(100, 0, Instant.ofEpochMilli(42), 2);
+        FoodItemForEditing item = new FoodItemForEditing(100, 0, Instant.ofEpochMilli(42), 2, unit);
 
         StatusCode result = uut.edit(item);
 

@@ -59,7 +59,8 @@ public class FoodItemEndpoint extends Endpoint implements
     public Response putItem(@Context HttpServletRequest request,
                             @QueryParam("eatByDate") String expirationDate,
                             @QueryParam("storedIn") int storedIn,
-                            @QueryParam("ofType") int ofType) throws IOException {
+                            @QueryParam("ofType") int ofType,
+                            @QueryParam("unit") Integer unit) throws IOException {
 
         if (isValid(storedIn, "storedIn") &&
                 isValid(ofType, "ofType") &&
@@ -69,7 +70,7 @@ public class FoodItemEndpoint extends Endpoint implements
             Principals user = getPrincipals(request);
             manager.setPrincipals(user);
             Validation<StatusCode, Integer> status = manager.add(new FoodItemForInsertion(eatByDate,
-                    ofType, storedIn, user.getDid(), user.getUid()));
+                    ofType, storedIn, user.getDid(), user.getUid(), unit));
             return new Response(status);
 
         } else {
@@ -84,7 +85,8 @@ public class FoodItemEndpoint extends Endpoint implements
                              @QueryParam("id") int id,
                              @QueryParam("version") int version,
                              @QueryParam("eatByDate") String expirationDate,
-                             @QueryParam("storedIn") int storedIn) throws IOException {
+                             @QueryParam("storedIn") int storedIn,
+                             @QueryParam("unit") Integer unit) throws IOException {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValidInstant(expirationDate, "eatByDate") &&
@@ -94,7 +96,7 @@ public class FoodItemEndpoint extends Endpoint implements
             Principals user = getPrincipals(request);
             manager.setPrincipals(user);
             StatusCode result = manager.edit(new FoodItemForEditing(id, version,
-                    eatByDate, storedIn));
+                    eatByDate, storedIn, unit));
 
             return new Response(result);
         } else {

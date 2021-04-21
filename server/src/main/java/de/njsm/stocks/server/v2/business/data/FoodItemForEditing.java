@@ -21,6 +21,7 @@ package de.njsm.stocks.server.v2.business.data;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 
 public class FoodItemForEditing extends VersionedData implements Versionable<FoodItem> {
 
@@ -28,10 +29,13 @@ public class FoodItemForEditing extends VersionedData implements Versionable<Foo
 
     private final int storedIn;
 
-    public FoodItemForEditing(int id, int version, Instant eatBy, int storedIn) {
+    private final Optional<Integer> unit;
+
+    public FoodItemForEditing(int id, int version, Instant eatBy, int storedIn, Integer unit) {
         super(id, version);
         this.eatBy = eatBy;
         this.storedIn = storedIn;
+        this.unit = Optional.ofNullable(unit);
     }
 
     public Instant getEatBy() {
@@ -42,17 +46,21 @@ public class FoodItemForEditing extends VersionedData implements Versionable<Foo
         return storedIn;
     }
 
+    public Optional<Integer> getUnitOptional() {
+        return unit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof FoodItemForEditing)) return false;
         if (!super.equals(o)) return false;
         FoodItemForEditing that = (FoodItemForEditing) o;
-        return getStoredIn() == that.getStoredIn() && getEatBy().equals(that.getEatBy());
+        return getStoredIn() == that.getStoredIn() && getEatBy().equals(that.getEatBy()) && unit.equals(that.unit);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getEatBy(), getStoredIn());
+        return Objects.hash(super.hashCode(), getEatBy(), getStoredIn(), unit);
     }
 }

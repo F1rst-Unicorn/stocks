@@ -69,7 +69,7 @@ public class FoodHandlerTest extends DbTestCase {
         assertTrue(dbData.isSuccess());
 
         assertTrue(dbData.success().anyMatch(f -> f.getName().equals(data.getName())
-                && f.getStoreUnit() == data.getStoreUnit()));
+                && f.getStoreUnit() == data.getStoreUnit().orElseThrow()));
     }
 
     @Test

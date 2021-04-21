@@ -80,7 +80,7 @@ public class FoodItemManagerTest {
 
     @Test
     public void testAddingItem() {
-        FoodItemForInsertion data = new FoodItemForInsertion(Instant.now(), 2, 2, 3, 3);
+        FoodItemForInsertion data = new FoodItemForInsertion(Instant.now(), 2, 2, 3, 3, unit);
         Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
         Mockito.when(foodHandler.setToBuyStatus(any(), eq(false))).thenReturn(StatusCode.SUCCESS);
 
@@ -94,7 +94,7 @@ public class FoodItemManagerTest {
 
     @Test
     public void testRenamingItem() {
-        FoodItemForEditing data = new FoodItemForEditing(1, 2, Instant.now(), 3);
+        FoodItemForEditing data = new FoodItemForEditing(1, 2, Instant.now(), 3, unit);
         Mockito.when(backend.edit(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.edit(data);

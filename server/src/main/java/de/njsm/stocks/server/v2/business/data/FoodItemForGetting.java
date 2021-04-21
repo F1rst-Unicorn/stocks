@@ -39,13 +39,16 @@ public class FoodItemForGetting extends VersionedData implements Versionable<Foo
 
     private final int buys;
 
-    public FoodItemForGetting(int id, int version, Instant eatByDate, int ofType, int storedIn, int registers, int buys) {
+    private final int unit;
+
+    public FoodItemForGetting(int id, int version, Instant eatByDate, int ofType, int storedIn, int registers, int buys, int unit) {
         super(id, version);
         this.eatByDate = eatByDate;
         this.ofType = ofType;
         this.storedIn = storedIn;
         this.registers = registers;
         this.buys = buys;
+        this.unit = unit;
     }
 
     @JsonSerialize(using = InstantSerialiser.class)
@@ -68,6 +71,10 @@ public class FoodItemForGetting extends VersionedData implements Versionable<Foo
 
     public int getBuys() {
         return buys;
+    }
+
+    public int getUnit() {
+        return unit;
     }
 
     @Override

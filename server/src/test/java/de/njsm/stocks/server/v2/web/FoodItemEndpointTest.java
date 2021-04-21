@@ -117,7 +117,7 @@ public class FoodItemEndpointTest {
     public void validInsertHappens() throws IOException {
         FoodItemForInsertion expected = new FoodItemForInsertion(Instant.EPOCH, 2, 2,
                 PrincipalFilterTest.TEST_USER.getDid(),
-                PrincipalFilterTest.TEST_USER.getUid());
+                PrincipalFilterTest.TEST_USER.getUid(), unit);
         Mockito.when(manager.add(expected)).thenReturn(Validation.success(5));
 
         Response result = uut.putItem(Util.createMockRequest(), DATE, expected.getStoredIn(), expected.getOfType());
@@ -161,7 +161,7 @@ public class FoodItemEndpointTest {
 
     @Test
     public void validEditingHappens() throws IOException {
-        FoodItemForEditing expected = new FoodItemForEditing(2, 2, Instant.EPOCH, 2);
+        FoodItemForEditing expected = new FoodItemForEditing(2, 2, Instant.EPOCH, 2, unit);
         Mockito.when(manager.edit(expected)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.editItem(Util.createMockRequest(),
