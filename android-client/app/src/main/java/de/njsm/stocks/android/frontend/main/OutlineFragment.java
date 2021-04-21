@@ -72,7 +72,7 @@ public class OutlineFragment extends BaseFragment {
 
     private boolean initialised = false;
 
-    private ScanBroadcaseReceiver receiver;
+    private ScanBroadcastReceiver receiver;
 
     private FoodViewModel foodViewModel;
 
@@ -182,7 +182,7 @@ public class OutlineFragment extends BaseFragment {
                 return true;
             }
             if (receiver == null) {
-                receiver = new ScanBroadcaseReceiver(this::goToScannedFood);
+                receiver = new ScanBroadcastReceiver(this::goToScannedFood);
             }
             IntentFilter filter = new IntentFilter(MainActivity.ACTION_QR_CODE_SCANNED);
             LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiver, filter);
