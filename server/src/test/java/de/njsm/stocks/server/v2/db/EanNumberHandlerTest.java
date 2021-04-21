@@ -68,6 +68,9 @@ public class EanNumberHandlerTest extends DbTestCase {
         assertNotNull(sample.getValidTimeEnd());
         assertNotNull(sample.getTransactionTimeStart());
         assertNotNull(sample.getTransactionTimeEnd());
+
+        assertEquals(2, sample.getIdentifiesFood());
+        assertEquals(1, sample.getInitiates());
     }
 
     @Test
