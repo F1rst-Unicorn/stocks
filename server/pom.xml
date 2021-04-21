@@ -294,9 +294,9 @@
             <properties>
                 <de.njsm.stocks.server.v2.db.host>db.j.njsm.de</de.njsm.stocks.server.v2.db.host>
                 <de.njsm.stocks.server.v2.db.port>5432</de.njsm.stocks.server.v2.db.port>
-                <de.njsm.stocks.server.v2.db.name>stocks-teamcity-rivendell</de.njsm.stocks.server.v2.db.name>
+                <de.njsm.stocks.server.v2.db.name>${env.POSTGRESQL_DB}</de.njsm.stocks.server.v2.db.name>
                 <de.njsm.stocks.server.v2.circuitbreaker.timeout>2000</de.njsm.stocks.server.v2.circuitbreaker.timeout>
-                <de.njsm.stocks.server.v2.db.postgres.user>stocks-teamcity-rivendell</de.njsm.stocks.server.v2.db.postgres.user>
+                <de.njsm.stocks.server.v2.db.postgres.user>${env.POSTGRESQL_DB}</de.njsm.stocks.server.v2.db.postgres.user>
                 <de.njsm.stocks.server.v2.db.postgres.password>linux</de.njsm.stocks.server.v2.db.postgres.password>
                 <de.njsm.stocks.server.v2.db.postgres.ssl>true</de.njsm.stocks.server.v2.db.postgres.ssl>
                 <de.njsm.stocks.server.v2.db.postgres.sslmode>verify-ca</de.njsm.stocks.server.v2.db.postgres.sslmode>
