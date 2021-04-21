@@ -25,10 +25,21 @@ import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
 
 public class FoodTest {
+
+    @Test
+    public void testBitemporalFood() {
+        addFoodType("testBitemporalFood");
+
+        assertOnFood(true)
+                .body("data.validTimeStart", not(emptyIterable()))
+                .body("data.validTimeEnd", not(emptyIterable()))
+                .body("data.transactionTimeStart", not(emptyIterable()))
+                .body("data.transactionTimeEnd", not(emptyIterable()))
+                .body("data.toBuy", hasItem(false));
+    }
 
     @Test
     public void addAnItem() {
@@ -210,9 +221,14 @@ public class FoodTest {
     }
 
     private static ValidatableResponse assertOnFood() {
+        return assertOnFood(false);
+    }
+
+    private static ValidatableResponse assertOnFood(boolean bitemporal) {
         return
         given()
-                .log().ifValidationFails().
+                .log().ifValidationFails()
+                .queryParam("bitemporal", bitemporal ? 1 : 0).
         when()
                 .get(TestSuite.DOMAIN + "/v2/food").
         then()
