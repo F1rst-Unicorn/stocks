@@ -21,7 +21,7 @@
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
 SERVER="${SERVER:-dp-server-ci.j.njsm.de}"
-DEVICE=emulator-5554
+DEVICE="${ANDROID_DEVICE:-emulator-5554}"
 
 DEVICE_ID=$(cat $STOCKS_ROOT/server-test/target/02_id)
 TICKET_VALUE=$(cat $STOCKS_ROOT/server-test/target/02_ticket)
@@ -34,12 +34,6 @@ LOGCAT=$STOCKS_ROOT/android-client/app/build/android-app.log
 mkdir -p $STOCKS_ROOT/android-client/app/build
 rm -rf $LOGCAT
 rm -rf $STOCKS_ROOT/android-client/app/build/android-server.log
-
-if [[ -z $CI_SERVER ]] ; then
-        EMULATOR_ARGS=
-else
-        EMULATOR_ARGS="-no-window"
-fi
 
 if [[ -z $ANDROID_SDK_ROOT ]] ; then
         echo "ANDROID_SDK_ROOT is not set!"
