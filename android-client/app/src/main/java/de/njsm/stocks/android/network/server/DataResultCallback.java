@@ -27,6 +27,7 @@ import de.njsm.stocks.android.frontend.device.ServerTicket;
 import de.njsm.stocks.android.network.server.data.DataResponse;
 import de.njsm.stocks.android.repo.Synchroniser;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 import fj.data.Validation;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,14 +36,20 @@ public class DataResultCallback implements Callback<DataResponse<ServerTicket>> 
 
     private static final Logger LOG = new Logger(DataResultCallback.class);
 
-    private MediatorLiveData<Validation<StatusCode, ServerTicket>> data;
+    private final MediatorLiveData<Validation<StatusCode, ServerTicket>> data;
 
-    private Synchroniser synchroniser;
+    private final Synchroniser synchroniser;
+
+    private final IdlingResource idlingResource;
 
     public DataResultCallback(MediatorLiveData<Validation<StatusCode, ServerTicket>> data,
-                              Synchroniser synchroniser) {
+                              Synchroniser synchroniser,
+                              IdlingResource idlingResource) {
         this.data = data;
         this.synchroniser = synchroniser;
+        this.idlingResource = idlingResource;
+
+        idlingResource.increment();
     }
 
     @Override
@@ -61,6 +68,8 @@ public class DataResultCallback implements Callback<DataResponse<ServerTicket>> 
         } else {
             data.setValue(result);
         }
+
+        idlingResource.decrement();
     }
 
     @Override
@@ -68,5 +77,6 @@ public class DataResultCallback implements Callback<DataResponse<ServerTicket>> 
                           @NonNull Throwable t) {
         LOG.e("Network error", t);
         data.setValue(Validation.fail(StatusCode.GENERAL_ERROR));
+        idlingResource.decrement();
     }
 }

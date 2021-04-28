@@ -21,25 +21,13 @@ package de.njsm.stocks.android.test.system;
 
 
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
 
-import org.junit.After;
-import org.junit.Rule;
 import org.junit.Test;
 
-import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.test.system.screen.OutlineScreen;
 
 @LargeTest
-public class LocationAddTest {
-
-    @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
-
-    @After
-    public void tearDown() throws Exception {
-        mActivityRule.finishActivity();
-    }
+public class LocationAddTest extends SystemTest {
 
     @Test
     public void addLocation() throws Exception {

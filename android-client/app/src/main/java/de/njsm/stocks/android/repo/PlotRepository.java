@@ -41,7 +41,7 @@ public class PlotRepository {
 
     private static final Logger LOG = new Logger(PlotRepository.class);
 
-    private PlotDao plotDao;
+    private final PlotDao plotDao;
 
     @Inject
     public PlotRepository(PlotDao plotDao) {

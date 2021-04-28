@@ -35,25 +35,30 @@ import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.Principals;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 import fj.data.Validation;
 
 public class UserDeviceRepository {
 
     private static final Logger LOG = new Logger(UserDeviceRepository.class);
 
-    private UserDeviceDao userDeviceDao;
+    private final UserDeviceDao userDeviceDao;
 
-    private ServerClient webClient;
+    private final ServerClient webClient;
 
-    private Synchroniser synchroniser;
+    private final Synchroniser synchroniser;
+
+    private final IdlingResource idlingResource;
 
     @Inject
     public UserDeviceRepository(UserDeviceDao userDeviceDao,
                                 ServerClient webClient,
-                                Synchroniser synchroniser) {
+                                Synchroniser synchroniser,
+                                IdlingResource idlingResource) {
         this.userDeviceDao = userDeviceDao;
         this.webClient = webClient;
         this.synchroniser = synchroniser;
+        this.idlingResource = idlingResource;
     }
 
     public LiveData<List<UserDevice>> getUserDevices(int userId) {
@@ -71,7 +76,7 @@ public class UserDeviceRepository {
         }
 
         webClient.addDevice(name, userId)
-                .enqueue(new DataResultCallback(data, synchroniser));
+                .enqueue(new DataResultCallback(data, synchroniser, idlingResource));
         return data;
     }
 
@@ -79,7 +84,7 @@ public class UserDeviceRepository {
         LOG.d("deleting user device" + entity);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.deleteDevice(entity.id, entity.version)
-                .enqueue(new StatusCodeCallback(data, synchroniser));
+                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
 }

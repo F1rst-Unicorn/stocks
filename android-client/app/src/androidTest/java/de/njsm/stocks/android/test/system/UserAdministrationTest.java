@@ -21,28 +21,17 @@ package de.njsm.stocks.android.test.system;
 
 
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
 
-import org.junit.After;
-import org.junit.Rule;
 import org.junit.Test;
 
-import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.test.system.screen.OutlineScreen;
 
 @LargeTest
-public class UserAdministrationTest {
-    @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
+public class UserAdministrationTest extends SystemTest {
 
     private String username = "Juliette";
 
     private String deviceName = "Mobile";
-
-    @After
-    public void tearDown() throws Exception {
-        mActivityRule.finishActivity();
-    }
 
     @Test
     public void addNewUserAndDevice() throws Exception {

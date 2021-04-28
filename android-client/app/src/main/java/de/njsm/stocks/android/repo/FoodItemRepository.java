@@ -35,24 +35,29 @@ import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 
 public class FoodItemRepository {
 
     private static final Logger LOG = new Logger(FoodItemRepository.class);
 
-    private FoodItemDao foodItemDao;
+    private final FoodItemDao foodItemDao;
 
-    private ServerClient webClient;
+    private final ServerClient webClient;
 
-    private Synchroniser synchroniser;
+    private final Synchroniser synchroniser;
+
+    private final IdlingResource idlingResource;
 
     @Inject
     public FoodItemRepository(FoodItemDao foodItemDao,
                               ServerClient webClient,
-                              Synchroniser synchroniser) {
+                              Synchroniser synchroniser,
+                              IdlingResource idlingResource) {
         this.foodItemDao = foodItemDao;
         this.webClient = webClient;
         this.synchroniser = synchroniser;
+        this.idlingResource = idlingResource;
     }
 
     public LiveData<List<FoodItemView>> getItemsOfType(int foodId) {
@@ -64,7 +69,7 @@ public class FoodItemRepository {
         LOG.d("deleting item " + t);
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
         webClient.deleteFoodItem(t.id, t.version)
-                .enqueue(new StatusCodeCallback(result, synchroniser));
+                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
         return result;
     }
 
@@ -77,7 +82,7 @@ public class FoodItemRepository {
         LOG.d("adding item of type " + foodId + ", location " + locationId + ", eat by " + eatBy);
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
         webClient.addFoodItem(Config.API_DATE_FORMAT.format(eatBy), locationId, foodId)
-                .enqueue(new StatusCodeCallback(result, synchroniser));
+                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
         return result;
     }
 
@@ -90,7 +95,7 @@ public class FoodItemRepository {
         LOG.d("editing item " + id);
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
         webClient.editFoodItem(id, version, Config.API_DATE_FORMAT.format(eatBy), locationId)
-                .enqueue(new StatusCodeCallback(result, synchroniser));
+                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
         return result;
     }
 

@@ -20,13 +20,12 @@
 package de.njsm.stocks.android.repo;
 
 import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import de.njsm.stocks.android.frontend.crashlog.CrashLog;
-import de.njsm.stocks.android.util.Logger;
+
 import org.apache.commons.io.IOUtils;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,13 +35,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import javax.inject.Inject;
+
+import de.njsm.stocks.android.frontend.crashlog.CrashLog;
+import de.njsm.stocks.android.util.Logger;
+
 public class CrashLogRepository {
 
     private static final Logger LOG = new Logger(CrashLogRepository.class);
 
-    private Executor executor;
+    private final Executor executor;
 
-    private Context context;
+    private final Context context;
 
     private MutableLiveData<List<CrashLog>> data;
 

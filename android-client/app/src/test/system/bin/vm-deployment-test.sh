@@ -22,6 +22,7 @@ STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
 SERVER="${SERVER:-dp-server-ci.j.njsm.de}"
 DEVICE="${ANDROID_DEVICE:-emulator-5554}"
+PROPERTIES=$STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/android/test/system/Properties.java
 
 DEVICE_ID=$(cat $STOCKS_ROOT/server-test/target/02_id)
 TICKET_VALUE=$(cat $STOCKS_ROOT/server-test/target/02_ticket)
@@ -56,7 +57,7 @@ sed -i "s/deviceId = 0/deviceId = $DEVICE_ID/g; \
     s/ticket = \"\"/ticket = \"$TICKET_VALUE\"/g; \
     s/server = \"\"/server = \"$SERVER\"/g; \
     s/fingerprint = \"\"/fingerprint = \"$FINGERPRINT\"/g" \
-    $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java
+    $PROPERTIES
 
 RC=0
 $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
@@ -64,7 +65,7 @@ $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
         -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.android.test.system.SystemTestSuite
 RC=$?
 
-git checkout $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java
+git checkout $PROPERTIES
 
 kill $LOGCAT_PID
 killall adb

@@ -35,6 +35,7 @@ import dagger.android.HasActivityInjector;
 import dagger.android.HasContentProviderInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import de.njsm.stocks.android.dagger.DaggerRootComponent;
+import de.njsm.stocks.android.dagger.RootComponent;
 import de.njsm.stocks.android.util.ExceptionHandler;
 
 public class Application
@@ -50,15 +51,19 @@ public class Application
     @Override public void onCreate() {
         super.onCreate();
         AndroidThreeTen.init(this);
-        DaggerRootComponent
-                .builder()
-                .application(this)
-                .build()
-            .inject(this);
+        buildDaggerComponent()
+                .inject(this);
 
         if (! (Thread.getDefaultUncaughtExceptionHandler() instanceof ExceptionHandler))
             Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(getFilesDir(),
                     Thread.getDefaultUncaughtExceptionHandler()));
+    }
+
+    protected RootComponent buildDaggerComponent() {
+        return DaggerRootComponent
+                .builder()
+                .application(this)
+                .build();
     }
 
     @Inject

@@ -21,33 +21,40 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import de.njsm.stocks.android.db.dao.EanNumberDao;
 import de.njsm.stocks.android.db.entities.EanNumber;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
-
-import javax.inject.Inject;
-import java.util.List;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 
 public class EanNumberRepository {
 
     private static final Logger LOG = new Logger(EanNumberRepository.class);
 
-    private EanNumberDao eanNumberDao;
+    private final EanNumberDao eanNumberDao;
 
-    private ServerClient webClient;
+    private final ServerClient webClient;
 
-    private Synchroniser synchroniser;
+    private final Synchroniser synchroniser;
+
+    private final IdlingResource idlingResource;
 
     @Inject
     public EanNumberRepository(EanNumberDao eanNumberDao,
                                ServerClient webClient,
-                               Synchroniser synchroniser) {
+                               Synchroniser synchroniser,
+                               IdlingResource idlingResource) {
         this.eanNumberDao = eanNumberDao;
         this.webClient = webClient;
         this.synchroniser = synchroniser;
+        this.idlingResource = idlingResource;
     }
 
     public LiveData<List<EanNumber>> getEanCodesOf(int id) {
@@ -60,7 +67,7 @@ public class EanNumberRepository {
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
 
         webClient.addEanNumber(code, identifies)
-                .enqueue(new StatusCodeCallback(data, synchroniser));
+                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
 
@@ -68,7 +75,7 @@ public class EanNumberRepository {
         LOG.d("deleting number " + number);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.deleteEanNumber(number.id, number.version)
-                .enqueue(new StatusCodeCallback(data, synchroniser));
+                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
 }

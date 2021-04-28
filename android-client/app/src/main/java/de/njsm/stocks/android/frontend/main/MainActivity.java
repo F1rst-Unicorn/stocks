@@ -50,6 +50,7 @@ import dagger.android.AndroidInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
 
     private Executor executor;
+
+    private IdlingResource resource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,5 +192,14 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     public void setExecutor(Executor executor) {
         this.executor = executor;
+    }
+
+    @Inject
+    public void setResource(IdlingResource resource) {
+        this.resource = resource;
+    }
+
+    public IdlingResource getResource() {
+        return resource;
     }
 }

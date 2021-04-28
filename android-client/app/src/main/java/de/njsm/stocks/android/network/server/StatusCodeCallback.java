@@ -30,6 +30,7 @@ import de.njsm.stocks.android.network.server.data.DataResponse;
 import de.njsm.stocks.android.network.server.data.Response;
 import de.njsm.stocks.android.repo.Synchroniser;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 import fj.data.Validation;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -44,10 +45,16 @@ public class StatusCodeCallback implements Callback<Response> {
 
     private final Synchroniser synchroniser;
 
+    private final IdlingResource idlingResource;
+
     public StatusCodeCallback(MediatorLiveData<StatusCode> data,
-                              Synchroniser synchroniser) {
+                              Synchroniser synchroniser,
+                              IdlingResource idlingResource) {
         this.data = data;
         this.synchroniser = synchroniser;
+        this.idlingResource = idlingResource;
+
+        idlingResource.increment();
     }
 
     @Override
@@ -65,6 +72,7 @@ public class StatusCodeCallback implements Callback<Response> {
             LiveData<StatusCode> syncResult = synchroniser.synchronise();
             data.addSource(syncResult, data::setValue);
         }
+        idlingResource.decrement();
     }
 
     @Override
@@ -72,6 +80,7 @@ public class StatusCodeCallback implements Callback<Response> {
                           @NonNull Throwable t) {
         LOG.e("Network error", t);
         data.setValue(StatusCode.GENERAL_ERROR);
+        idlingResource.decrement();
     }
 
     static <T extends Response> StatusCode handleResponse(retrofit2.Response<T> response) {

@@ -20,13 +20,14 @@
 package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
-import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
 
+import de.njsm.stocks.android.network.server.StatusCode;
+
 public class RefreshRepository {
 
-    private Synchroniser synchroniser;
+    private final Synchroniser synchroniser;
 
     @Inject
     RefreshRepository(Synchroniser synchroniser) {

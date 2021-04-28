@@ -32,24 +32,29 @@ import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 
 public class LocationRepository {
 
     private static final Logger LOG = new Logger(LocationRepository.class);
 
-    private LocationDao locationDao;
+    private final LocationDao locationDao;
 
-    private ServerClient webClient;
+    private final ServerClient webClient;
 
-    private Synchroniser synchroniser;
+    private final Synchroniser synchroniser;
+
+    private final IdlingResource idlingResource;
 
     @Inject
     public LocationRepository(LocationDao locationDao,
                               ServerClient webClient,
-                              Synchroniser synchroniser) {
+                              Synchroniser synchroniser,
+                              IdlingResource idlingResource) {
         this.locationDao = locationDao;
         this.webClient = webClient;
         this.synchroniser = synchroniser;
+        this.idlingResource = idlingResource;
     }
 
     public LiveData<List<Location>> getLocations() {
@@ -67,7 +72,7 @@ public class LocationRepository {
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
 
         webClient.addLocation(name)
-                .enqueue(new StatusCodeCallback(data, synchroniser));
+                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
 
@@ -75,7 +80,7 @@ public class LocationRepository {
         LOG.d("renaming location " + entity + " to " + newName);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.renameLocation(entity.id, entity.version, newName)
-                .enqueue(new StatusCodeCallback(data, synchroniser));
+                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
 
@@ -83,7 +88,7 @@ public class LocationRepository {
         LOG.d("editing description of location " + id);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.setLocationDescription(id, version, description)
-                .enqueue(new StatusCodeCallback(data, synchroniser));
+                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
 
@@ -91,7 +96,7 @@ public class LocationRepository {
         LOG.d("deleting location " + entity);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.deleteLocation(entity.id, entity.version, cascade ? 1 : 0)
-                .enqueue(new StatusCodeCallback(data, synchroniser));
+                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
 

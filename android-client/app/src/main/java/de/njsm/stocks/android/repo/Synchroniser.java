@@ -49,6 +49,7 @@ import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.network.server.data.ListResponse;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 import retrofit2.Call;
 
 public class Synchroniser {
@@ -73,6 +74,8 @@ public class Synchroniser {
 
     private Executor executor;
 
+    private final IdlingResource idlingResource;
+
     @Inject
     Synchroniser(ServerClient serverClient,
                  UserDao userDao,
@@ -82,7 +85,8 @@ public class Synchroniser {
                  FoodItemDao foodItemDao,
                  EanNumberDao eanNumberDao,
                  UpdateDao updateDao,
-                 Executor executor) {
+                 Executor executor,
+                 IdlingResource idlingResource) {
         this.serverClient = serverClient;
         this.userDao = userDao;
         this.userDeviceDao = userDeviceDao;
@@ -92,6 +96,7 @@ public class Synchroniser {
         this.eanNumberDao = eanNumberDao;
         this.updateDao = updateDao;
         this.executor = executor;
+        this.idlingResource = idlingResource;
     }
 
     public LiveData<StatusCode> synchroniseFully() {
@@ -105,6 +110,7 @@ public class Synchroniser {
     private LiveData<StatusCode> synchronise(boolean full) {
         MutableLiveData<StatusCode> result = new MutableLiveData<>();
         LOG.i("Starting" + (full ? " full " : " ") + "synchronisation");
+        idlingResource.increment();
         executor.execute(() -> {
 
             LOG.d("Synchronising");
@@ -118,10 +124,10 @@ public class Synchroniser {
                 Update[] localUpdates = updateDao.getAll();
                 updateTables(serverUpdates, localUpdates);
                 result.postValue(StatusCode.SUCCESS);
-
             } catch (StatusCodeException e) {
                 result.postValue(e.getCode());
             }
+            idlingResource.decrement();
         });
         return result;
     }

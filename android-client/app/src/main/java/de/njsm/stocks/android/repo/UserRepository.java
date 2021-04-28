@@ -21,34 +21,41 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import de.njsm.stocks.android.util.Principals;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import de.njsm.stocks.android.db.dao.UserDao;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
-
-import javax.inject.Inject;
-import java.util.List;
+import de.njsm.stocks.android.util.Principals;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 
 public class UserRepository {
 
     private static final Logger LOG = new Logger(UserRepository.class);
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
-    private ServerClient webClient;
+    private final ServerClient webClient;
 
-    private Synchroniser synchroniser;
+    private final Synchroniser synchroniser;
+
+    private final IdlingResource idlingResource;
 
     @Inject
     public UserRepository(UserDao userDao,
                           ServerClient webClient,
-                          Synchroniser synchroniser) {
+                          Synchroniser synchroniser,
+                          IdlingResource idlingResource) {
         this.userDao = userDao;
         this.webClient = webClient;
         this.synchroniser = synchroniser;
+        this.idlingResource = idlingResource;
     }
 
     public LiveData<List<User>> getUsers() {
@@ -71,7 +78,7 @@ public class UserRepository {
         }
 
         webClient.addUser(name)
-                .enqueue(new StatusCodeCallback(data, synchroniser));
+                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
 
@@ -79,7 +86,7 @@ public class UserRepository {
         LOG.d("deleting user " + entity);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.deleteUser(entity.id, entity.version)
-                .enqueue(new StatusCodeCallback(data, synchroniser));
+                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
 }

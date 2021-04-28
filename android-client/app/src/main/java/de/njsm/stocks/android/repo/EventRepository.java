@@ -34,7 +34,7 @@ public class EventRepository {
 
     private static final Logger LOG = new Logger(EventRepository.class);
 
-    private EventDao eventDao;
+    private final EventDao eventDao;
 
     @Inject
     public EventRepository(EventDao eventDao) {

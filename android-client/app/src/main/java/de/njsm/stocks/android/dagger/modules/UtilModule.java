@@ -21,13 +21,17 @@ package de.njsm.stocks.android.dagger.modules;
 
 import android.app.Application;
 import android.content.Context;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+import javax.inject.Singleton;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-
-import javax.inject.Singleton;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import de.njsm.stocks.android.util.idling.IdlingResource;
+import de.njsm.stocks.android.util.idling.NullIdlingResource;
 
 @Module
 public abstract class UtilModule {
@@ -40,4 +44,8 @@ public abstract class UtilModule {
 
     @Binds
     abstract Context getContext(Application a);
+
+    @Binds
+    @Singleton
+    abstract IdlingResource getIdlingResource(NullIdlingResource v);
 }

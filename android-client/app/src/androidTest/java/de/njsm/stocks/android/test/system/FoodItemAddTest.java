@@ -21,27 +21,15 @@ package de.njsm.stocks.android.test.system;
 
 
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
 
-import org.junit.After;
-import org.junit.Rule;
 import org.junit.Test;
 import org.threeten.bp.LocalDate;
 
-import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.test.system.screen.FoodScreen;
 import de.njsm.stocks.android.test.system.screen.OutlineScreen;
 
 @LargeTest
-public class FoodItemAddTest {
-
-    @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
-
-    @After
-    public void tearDown() throws Exception {
-        mActivityRule.finishActivity();
-    }
+public class FoodItemAddTest extends SystemTest {
 
     @Test
     public void addFoodItems() throws Exception {
