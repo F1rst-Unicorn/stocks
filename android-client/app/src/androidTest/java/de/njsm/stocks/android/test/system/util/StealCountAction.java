@@ -17,40 +17,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-buildscript {
+package de.njsm.stocks.android.test.system.util;
 
-    repositories {
-        jcenter()
-        mavenCentral()
-        google()
+
+import android.view.View;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
+
+public class StealCountAction implements ViewAction {
+
+    private int count;
+
+    @Override
+    public Matcher<View> getConstraints() {
+        return CoreMatchers.instanceOf(RecyclerView.class);
     }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.0"
+    @Override
+    public String getDescription() {
+        return "Steal count action";
     }
 
-}
-
-allprojects {
-    repositories {
-        jcenter()
-
-        mavenCentral()
-
-        mavenLocal()
-
-        maven {
-            url "https://jitpack.io"
-        }
-
-        maven {
-            url "http://dl.bintray.com/journeyapps/maven"
-        }
-        google()
+    @Override
+    public void perform(UiController uiController, View view) {
+        count = ((RecyclerView) view).getAdapter().getItemCount();
     }
-}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    public int getCount() {
+        return count;
+    }
 }

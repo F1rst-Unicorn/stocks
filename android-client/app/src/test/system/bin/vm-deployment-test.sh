@@ -61,7 +61,7 @@ sed -i "s/deviceId = 0/deviceId = $DEVICE_ID/g; \
 RC=0
 $STOCKS_ROOT/android-client/gradlew -p $STOCKS_ROOT/android-client \
         connectedDebugAndroidTest \
-        -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.SystemTestSuite
+        -Pandroid.testInstrumentationRunnerArguments.class=de.njsm.stocks.android.test.system.SystemTestSuite
 RC=$?
 
 git checkout $STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/Properties.java

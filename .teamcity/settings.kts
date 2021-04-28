@@ -25,6 +25,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.v2018_2.projectFeatures.youtrack
 import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.schedule
 import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.vcs
+import jetbrains.buildServer.configs.kotlin.v2018_2.ui.add
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -201,6 +202,18 @@ object Build : BuildType({
             enabled = false
             param("hour", "1")
             param("revisionRuleDependsOn", "Stocks_Build")
+        }
+    }
+
+    requirements {
+        add {
+            exists("env.POSTGRESQL_DB")
+        }
+        add {
+            exists("env.DEPLOYMENT_VM")
+        }
+        add {
+            exists("env.ANDROID_DEVICE")
         }
     }
 

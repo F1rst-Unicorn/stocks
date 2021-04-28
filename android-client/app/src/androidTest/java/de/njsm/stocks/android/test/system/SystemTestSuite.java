@@ -17,40 +17,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-buildscript {
+package de.njsm.stocks.android.test.system;
 
-    repositories {
-        jcenter()
-        mavenCentral()
-        google()
-    }
+import androidx.test.filters.LargeTest;
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.0"
-    }
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-}
+@RunWith(Suite.class)
+@Suite.SuiteClasses({SetupTest.class,
+        FoodAddTest.class,
+        LocationAddTest.class,
+        FoodItemAddTest.class,
+        EanAdminTest.class,
+        SearchTest.class,
+        ShoppingListTest.class,
+        EanScanTest.class,
+        UserAdministrationTest.class,
+        FoodEditTest.class,
+        FoodConsumptionTest.class
+        })
+@LargeTest
+public class SystemTestSuite {
 
-allprojects {
-    repositories {
-        jcenter()
-
-        mavenCentral()
-
-        mavenLocal()
-
-        maven {
-            url "https://jitpack.io"
-        }
-
-        maven {
-            url "http://dl.bintray.com/journeyapps/maven"
-        }
-        google()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    public static final int LOOP_BREAKER = 30;
 }

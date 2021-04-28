@@ -17,40 +17,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-buildscript {
+package de.njsm.stocks.android.test.system;
 
-    repositories {
-        jcenter()
-        mavenCentral()
-        google()
-    }
+public class Properties {
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.0"
-    }
-
-}
-
-allprojects {
-    repositories {
-        jcenter()
-
-        mavenCentral()
-
-        mavenLocal()
-
-        maven {
-            url "https://jitpack.io"
-        }
-
-        maven {
-            url "http://dl.bintray.com/journeyapps/maven"
-        }
-        google()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    public static final int deviceId = 0;
+    public static final String server = "";
+    public static final String ticket = "";
+    public static final String fingerprint = "";
 }
