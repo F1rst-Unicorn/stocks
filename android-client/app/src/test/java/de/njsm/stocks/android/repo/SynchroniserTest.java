@@ -19,15 +19,24 @@
 
 package de.njsm.stocks.android.repo;
 
-import de.njsm.stocks.android.db.dao.*;
-import de.njsm.stocks.android.db.entities.Update;
-import de.njsm.stocks.android.network.server.ServerClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.threeten.bp.Instant;
 
 import java.util.concurrent.Executor;
+
+import de.njsm.stocks.android.db.dao.EanNumberDao;
+import de.njsm.stocks.android.db.dao.FoodDao;
+import de.njsm.stocks.android.db.dao.FoodItemDao;
+import de.njsm.stocks.android.db.dao.LocationDao;
+import de.njsm.stocks.android.db.dao.UpdateDao;
+import de.njsm.stocks.android.db.dao.UserDao;
+import de.njsm.stocks.android.db.dao.UserDeviceDao;
+import de.njsm.stocks.android.db.entities.Update;
+import de.njsm.stocks.android.network.server.ServerClient;
+import de.njsm.stocks.android.util.idling.IdlingResource;
+import de.njsm.stocks.android.util.idling.NullIdlingResource;
 
 public class SynchroniserTest {
 
@@ -62,8 +71,9 @@ public class SynchroniserTest {
         foodItemDao = Mockito.mock(FoodItemDao.class);
         eanNumberDao = Mockito.mock(EanNumberDao.class);
         executor = Mockito.mock(Executor.class);
+        IdlingResource idlingResource = new NullIdlingResource();
 
-        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, updateDao, executor);
+        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, updateDao, executor, idlingResource);
     }
 
     @Test
