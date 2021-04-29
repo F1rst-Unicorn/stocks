@@ -22,6 +22,18 @@ package de.njsm.stocks.android.dagger.modules;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+
+import javax.inject.Singleton;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.android.network.server.HostnameInterceptor;
@@ -31,16 +43,6 @@ import de.njsm.stocks.android.util.Logger;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-
-import javax.inject.Singleton;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.security.KeyStore;
-import java.security.SecureRandom;
 
 
 @Module

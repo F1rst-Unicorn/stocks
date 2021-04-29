@@ -23,6 +23,8 @@ import android.app.Application;
 
 import androidx.room.Room;
 
+import java.util.concurrent.Executor;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -46,10 +48,12 @@ public abstract class DbModule {
 
     @Provides
     @Singleton
-    static StocksDatabase provideDatabase(Application context) {
+    static StocksDatabase provideDatabase(Application context, Executor executor) {
         return Room.databaseBuilder(context, StocksDatabase.class, "stocks.db")
                 .addMigrations(new Migration_31_to_32())
                 .addMigrations(new Migration_32_to_33())
+                .setQueryExecutor(executor)
+                .setTransactionExecutor(executor)
                 .build();
     }
 

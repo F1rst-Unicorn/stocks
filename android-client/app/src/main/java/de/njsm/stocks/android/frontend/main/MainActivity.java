@@ -97,9 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            executor.execute(() -> {
-                RecentSearchSuggestionsProvider.saveSearchTerm(this, query);
-            });
+            executor.execute(() -> RecentSearchSuggestionsProvider.saveSearchTerm(this, query));
             OutlineFragmentDirections.ActionNavFragmentOutlineToNavFragmentSearch args =
                     OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentSearch(query);
             navController.navigate(args);
@@ -192,6 +190,10 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     public void setExecutor(Executor executor) {
         this.executor = executor;
+    }
+
+    public Executor getExecutor() {
+        return executor;
     }
 
     @Inject

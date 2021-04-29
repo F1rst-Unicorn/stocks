@@ -22,8 +22,10 @@ package de.njsm.stocks.android.dagger.modules;
 import android.app.Application;
 import android.content.Context;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -39,7 +41,7 @@ public abstract class UtilModule {
     @Provides
     @Singleton
     static Executor provideExecutor() {
-        return Executors.newFixedThreadPool(1);
+        return new ThreadPoolExecutor(1, 100, 1, TimeUnit.MINUTES, new ArrayBlockingQueue<>(100));
     }
 
     @Binds
