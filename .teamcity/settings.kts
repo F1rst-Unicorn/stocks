@@ -80,14 +80,17 @@ object Build : BuildType({
     name = "Full Build"
 
     artifactRules = """
-        deploy-server/target/stocks-server-*-any.pkg.tar.zst
-        deploy-client/target/stocks-*-any.pkg.tar.zst
+        deploy-server/stocks-server-*-any.pkg.tar.zst
+        deploy-client/stocks-*-any.pkg.tar.zst
         android-client/app/build/outputs/apk/app-release-unsigned.apk
+        android-client/app/build/outputs/apk/debug/app-debug.apk
+        android-client/app/build/outputs/apk/release/app-release-unsigned.apk
         server/target/server.log
         client/target/client-client.log
         client/target/client-server.log
         android-client/app/build/android-app.log
         android-client/app/build/android-server.log
+        android-client/app/build/reports/androidTests/connected/flavors/debugAndroidTest/**/*
     """.trimIndent()
     maxRunningBuilds = 2
 
