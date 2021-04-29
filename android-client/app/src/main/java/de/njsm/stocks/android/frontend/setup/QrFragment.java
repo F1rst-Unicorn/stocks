@@ -72,6 +72,7 @@ public class QrFragment extends BaseFragment {
         } else {
             if (probeForCameraPermission()) {
                 LOG.i("Starting QR code reader");
+                ((MainActivity) getActivity()).getResource().increment();
                 IntentIntegrator integrator = new IntentIntegrator(getActivity());
                 integrator.initiateScan();
             }

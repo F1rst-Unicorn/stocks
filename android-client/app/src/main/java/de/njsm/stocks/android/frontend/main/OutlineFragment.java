@@ -44,7 +44,6 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -60,6 +59,7 @@ import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 
 public class OutlineFragment extends BaseFragment {
 
@@ -76,7 +76,7 @@ public class OutlineFragment extends BaseFragment {
 
     private FoodViewModel foodViewModel;
 
-    private SwipeRefreshLayout swiper;
+    private IdlingResource resource;
 
     @Override
     public void onAttach(Context context) {
@@ -100,7 +100,6 @@ public class OutlineFragment extends BaseFragment {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(R.id.nav_fragment_startup);
         } else {
 
-            swiper = result.findViewById(R.id.fragment_outline_swipe);
             RefreshViewModel refresher = initialiseSwipeRefresh(result, R.id.fragment_outline_swipe, viewModelFactory);
             refresher.refresh();
 
@@ -184,6 +183,7 @@ public class OutlineFragment extends BaseFragment {
             if (receiver == null) {
                 receiver = new ScanBroadcastReceiver(this::goToScannedFood);
             }
+            resource.increment();
             IntentFilter filter = new IntentFilter(MainActivity.ACTION_QR_CODE_SCANNED);
             LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiver, filter);
             LOG.i("Starting QR code reader");
@@ -217,5 +217,10 @@ public class OutlineFragment extends BaseFragment {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
         });
+    }
+
+    @Inject
+    public void setResource(IdlingResource resource) {
+        this.resource = resource;
     }
 }

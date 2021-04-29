@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -33,7 +34,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.zxing.integration.android.IntentIntegrator;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
@@ -42,8 +47,7 @@ import de.njsm.stocks.android.frontend.interactor.EanNumberDeletionInteractor;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
-
-import javax.inject.Inject;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 
 public class EanNumberFragment extends BaseFragment {
 
@@ -58,6 +62,8 @@ public class EanNumberFragment extends BaseFragment {
     private EanNumberBroadcastReceiver receiver;
 
     private EanNumberFragmentArgs input;
+
+    private IdlingResource resource;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -107,6 +113,7 @@ public class EanNumberFragment extends BaseFragment {
     private void startScanning(View dummy) {
         LOG.i("Starting QR code reader");
         if (probeForCameraPermission()) {
+            resource.increment();
             IntentIntegrator integrator = new IntentIntegrator(getActivity());
             integrator.initiateScan();
         }
@@ -122,5 +129,10 @@ public class EanNumberFragment extends BaseFragment {
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         this.viewModelFactory = viewModelFactory;
+    }
+
+    @Inject
+    public void setResource(IdlingResource resource) {
+        this.resource = resource;
     }
 }

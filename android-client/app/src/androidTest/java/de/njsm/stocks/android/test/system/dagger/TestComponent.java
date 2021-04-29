@@ -26,8 +26,8 @@ public abstract class TestComponent implements RootComponent {
     public interface Builder {
 
         @BindsInstance
-        public Builder application(android.app.Application a);
+        Builder application(android.app.Application a);
 
-        public RootComponent build();
+        RootComponent build();
     }
 }
