@@ -129,7 +129,7 @@ object Build : BuildType({
             coverageEngine = idea {
                 includeClasses = "de.njsm.*"
                 excludeClasses = """
-                    *Test"
+                    *Test
                     de.njsm.stocks.BuildConfig
                     de.njsm.stocks.NavigationGraphDirections
                     de.njsm.stocks.android.Application_MembersInjector
