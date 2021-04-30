@@ -23,6 +23,7 @@ import android.view.Gravity;
 
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 
 import de.njsm.stocks.R;
 
@@ -34,6 +35,7 @@ import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerActions.open;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -97,14 +99,20 @@ public class OutlineScreen extends AbstractScreen {
     }
 
     public FoodScreen scanSuccessful() {
-        onView(withId(R.id.fragment_outline_options_scan)).perform(click());
-        sleep(1000);
+        performFlakyAction((__) -> {
+            onView(withId(R.id.fragment_outline_options_scan)).perform(click());
+            sleep(1000);
+            onView(withId(R.id.fragment_food_item_list_list)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        });
         return new FoodScreen();
     }
 
     public AllFoodScreen scanFailing() {
-        onView(withId(R.id.fragment_outline_options_scan)).perform(click());
-        sleep(500);
+        performFlakyAction((__) -> {
+            onView(withId(R.id.fragment_outline_options_scan)).perform(click());
+            sleep(500);
+            onView(withId(R.id.template_swipe_list_list)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        });
         return new AllFoodScreen();
     }
 
