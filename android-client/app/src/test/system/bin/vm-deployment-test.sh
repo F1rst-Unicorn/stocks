@@ -50,7 +50,7 @@ done
 
 adb -s $DEVICE uninstall de.njsm.stocks || true
 adb -s $DEVICE uninstall de.njsm.stocks.test || true
-adb -s $DEVICE logcat | grep --line-buffered ' [VDIWEF] de\.njsm\.stocks\.' > $LOGCAT &
+adb -s $DEVICE logcat | egrep --line-buffered ' [VDIWEF] ((de\.njsm\.stocks\.)|(CountingIdlingResource)|(IdlingResourceRegistry)|(ViewInteraction))' > $LOGCAT &
 LOGCAT_PID=$!
 
 sed -i "s/deviceId = 0/deviceId = $DEVICE_ID/g; \
