@@ -34,6 +34,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 
 public class QrFragment extends BaseFragment {
 
@@ -50,7 +51,9 @@ public class QrFragment extends BaseFragment {
         assert getArguments() != null;
         input = QrFragmentArgs.fromBundle(getArguments());
 
-        receiver = new SetupBroadcastReceiver(this);
+        IdlingResource resource = ((MainActivity) getActivity()).getResource();
+
+        receiver = new SetupBroadcastReceiver(this, resource);
         IntentFilter filter = new IntentFilter(MainActivity.ACTION_QR_CODE_SCANNED);
         LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(receiver, filter);
 
@@ -72,7 +75,7 @@ public class QrFragment extends BaseFragment {
         } else {
             if (probeForCameraPermission()) {
                 LOG.i("Starting QR code reader");
-                ((MainActivity) getActivity()).getResource().increment();
+                resource.increment();
                 IntentIntegrator integrator = new IntentIntegrator(getActivity());
                 integrator.initiateScan();
             }

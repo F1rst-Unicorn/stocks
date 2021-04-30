@@ -97,7 +97,7 @@ public class EanNumberFragment extends BaseFragment {
         EanNumberDeletionInteractor deleter = new EanNumberDeletionInteractor(this, result, v -> adapter.notifyDataSetChanged(), viewModel::deleteEanNumber);
         addSwipeToDelete(list, viewModel.getData(), deleter::initiateDeletion);
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(this::startScanning);
-        receiver = new EanNumberBroadcastReceiver(this::addEanNumber);
+        receiver = new EanNumberBroadcastReceiver(resource, this::addEanNumber);
         IntentFilter filter = new IntentFilter(MainActivity.ACTION_QR_CODE_SCANNED);
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiver, filter);
         initialiseSwipeRefresh(result, viewModelFactory);

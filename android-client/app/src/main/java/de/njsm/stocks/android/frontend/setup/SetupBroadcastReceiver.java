@@ -24,20 +24,25 @@ import android.content.Context;
 import android.content.Intent;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 
 public class SetupBroadcastReceiver extends BroadcastReceiver {
 
     private static final Logger LOG = new Logger(SetupBroadcastReceiver.class);
 
-    private QrFragment fragment;
+    private final QrFragment fragment;
 
-    public SetupBroadcastReceiver(QrFragment fragment) {
+    private final IdlingResource resource;
+
+    public SetupBroadcastReceiver(QrFragment fragment, IdlingResource resource) {
         this.fragment = fragment;
+        this.resource = resource;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         LOG.d("Received action " + intent.getAction());
         fragment.getQrResult(intent.getStringExtra(MainActivity.PARAM_QR_CONTENT));
+        resource.decrement();
     }
 }

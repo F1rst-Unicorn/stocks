@@ -22,14 +22,16 @@ package de.njsm.stocks.android.frontend.main;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.core.util.Consumer;
+
 import de.njsm.stocks.android.util.Logger;
 
 public class ScanBroadcastReceiver extends BroadcastReceiver {
 
     private static final Logger LOG = new Logger(ScanBroadcastReceiver.class);
 
-    private Consumer<String> consumer;
+    private final Consumer<String> consumer;
 
     public ScanBroadcastReceiver(Consumer<String> consumer) {
         this.consumer = consumer;

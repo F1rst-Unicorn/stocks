@@ -25,20 +25,25 @@ import android.content.Intent;
 import androidx.core.util.Consumer;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.idling.IdlingResource;
 
 public class EanNumberBroadcastReceiver extends BroadcastReceiver {
 
     private static final Logger LOG = new Logger(EanNumberBroadcastReceiver.class);
 
-    private Consumer<String> eanNumberCreator;
+    private final Consumer<String> eanNumberCreator;
 
-    public EanNumberBroadcastReceiver(Consumer<String> eanNumberCreator) {
+    private final IdlingResource resource;
+
+    public EanNumberBroadcastReceiver(IdlingResource resource, Consumer<String> eanNumberCreator) {
         this.eanNumberCreator = eanNumberCreator;
+        this.resource = resource;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         LOG.d("Received action " + intent.getAction());
         eanNumberCreator.accept(intent.getStringExtra(MainActivity.PARAM_QR_CONTENT));
+        resource.decrement();
     }
 }

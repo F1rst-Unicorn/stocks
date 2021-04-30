@@ -194,13 +194,17 @@ public class OutlineFragment extends BaseFragment {
     }
 
     private void goToScannedFood(String s) {
-        if (getContext() == null)
+        if (getContext() == null) {
+            resource.decrement();
             return;
+        }
 
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiver);
 
-        if (s == null)
+        if (s == null) {
+            resource.decrement();
             return;
+        }
 
         LiveData<Food> scannedFood = foodViewModel.getFoodByEanNumber(s);
         scannedFood.observe(this, f -> {
@@ -216,6 +220,7 @@ public class OutlineFragment extends BaseFragment {
 
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
+            resource.decrement();
         });
     }
 
