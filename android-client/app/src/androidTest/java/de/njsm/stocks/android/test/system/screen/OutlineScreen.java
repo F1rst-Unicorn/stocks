@@ -98,7 +98,7 @@ public class OutlineScreen extends AbstractScreen {
 
     public FoodScreen scanSuccessful() {
         onView(withId(R.id.fragment_outline_options_scan)).perform(click());
-        sleep(500);
+        sleep(1000);
         return new FoodScreen();
     }
 

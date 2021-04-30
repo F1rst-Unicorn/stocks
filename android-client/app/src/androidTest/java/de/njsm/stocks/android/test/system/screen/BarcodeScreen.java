@@ -34,7 +34,7 @@ public class BarcodeScreen extends AbstractListPresentingScreen {
 
     public BarcodeScreen recordNewBarcode() {
         onView(withId(R.id.template_swipe_list_fab)).perform(click());
-        sleep(200);
+        sleep(1000);
         return this;
     }
 

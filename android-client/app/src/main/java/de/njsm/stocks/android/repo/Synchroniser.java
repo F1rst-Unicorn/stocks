@@ -109,11 +109,11 @@ public class Synchroniser {
 
     private LiveData<StatusCode> synchronise(boolean full) {
         MutableLiveData<StatusCode> result = new MutableLiveData<>();
-        LOG.i("Starting" + (full ? " full " : " ") + "synchronisation");
         idlingResource.increment();
         executor.execute(() -> {
 
-            LOG.d("Synchronising");
+            LOG.i("Starting" + (full ? " full " : " ") + "synchronisation");
+
             if (full)
                 updateDao.reset();
 
@@ -168,8 +168,6 @@ public class Synchroniser {
                 if (localUpdate.isBefore(update.lastUpdate)) {
                     LOG.d("Refreshing " + update.table + " starting from " + Config.API_DATE_FORMAT.format(localUpdate));
                     refresh(update.table, localUpdate);
-                } else {
-                    LOG.v("Table " + update.table + " is up to date");
                 }
             } else
                 LOG.v("Table " + update.table + " not found");

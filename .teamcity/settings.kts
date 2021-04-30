@@ -90,7 +90,7 @@ object Build : BuildType({
         client/target/client-server.log
         android-client/app/build/android-app.log
         android-client/app/build/android-server.log
-        android-client/app/build/reports/androidTests/connected/flavors/debugAndroidTest/**/*
+        android-client/app/build/reports/androidTests/connected/flavors/debugAndroidTest/**/* => android-test-report
     """.trimIndent()
     maxRunningBuilds = 2
 

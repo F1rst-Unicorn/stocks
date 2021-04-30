@@ -15,10 +15,12 @@ public class CounterIdlingResource implements IdlingResource {
 
     public void increment() {
         resource.increment();
+        resource.dumpStateToLogs();
     }
 
     public void decrement() {
         resource.decrement();
+        resource.dumpStateToLogs();
     }
 
     @Override
