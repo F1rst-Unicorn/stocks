@@ -19,16 +19,17 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.server.v2.business.ScaledUnitManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.UnitManager;
-import de.njsm.stocks.server.v2.business.data.UnitForInsertion;
-import de.njsm.stocks.server.v2.business.data.UnitForRenaming;
+import de.njsm.stocks.server.v2.business.data.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.web.data.Response;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.math.BigDecimal;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
@@ -37,16 +38,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class UnitEndpointTest {
+public class ScaledUnitEndpointTest {
 
-    private UnitEndpoint uut;
+    private ScaledUnitEndpoint uut;
 
-    private UnitManager manager;
+    private ScaledUnitManager manager;
 
     @Before
     public void setup() {
-        manager = Mockito.mock(UnitManager.class);
-        uut = new UnitEndpoint(manager);
+        manager = Mockito.mock(ScaledUnitManager.class);
+        uut = new ScaledUnitEndpoint(manager);
     }
 
     @After
@@ -55,25 +56,25 @@ public class UnitEndpointTest {
     }
 
     @Test
-    public void puttingInvalidNameIsRejected() {
-        Response response = uut.put(createMockRequest(), "", "abbreviation");
+    public void puttingInvalidScaleIsRejected() {
+        Response response = uut.put(createMockRequest(), "hi there", 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
 
     @Test
-    public void puttingInvalidAbbreviationIsRejected() {
-        Response response = uut.put(createMockRequest(), "name", "");
+    public void puttingInvalidUnitIsRejected() {
+        Response response = uut.put(createMockRequest(), BigDecimal.ONE.toPlainString(), 0);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
 
     @Test
     public void validPuttingIsDone() {
-        UnitForInsertion input = new UnitForInsertion("name", "abbreviation");
+        ScaledUnitForInsertion input = new ScaledUnitForInsertion(BigDecimal.ONE, 1);
         when(manager.add(any())).thenReturn(Validation.success(1));
 
-        Response response = uut.put(createMockRequest(), input.getName(), input.getAbbreviation());
+        Response response = uut.put(createMockRequest(), input.getScale().toPlainString(), input.getUnit());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).add(input);
@@ -82,65 +83,13 @@ public class UnitEndpointTest {
 
     @Test
     public void invalidBusinessPuttingIsPropagated() {
-        UnitForInsertion input = new UnitForInsertion("name", "abbreviation");
+        ScaledUnitForInsertion input = new ScaledUnitForInsertion(BigDecimal.ONE, 1);
         when(manager.add(any())).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
 
-        Response response = uut.put(createMockRequest(), input.getName(), input.getAbbreviation());
+        Response response = uut.put(createMockRequest(), input.getScale().toPlainString(), input.getUnit());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).add(input);
-        verify(manager).setPrincipals(TEST_USER);
-    }
-
-    @Test
-    public void renamingInvalidIdIsRejected() {
-        Response response = uut.rename(createMockRequest(), -1, 0, "name", "abbreviation");
-
-        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
-    }
-
-    @Test
-    public void renamingInvalidVersionIsRejected() {
-        Response response = uut.rename(createMockRequest(), 1, -1, "name", "abbreviation");
-
-        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
-    }
-
-    @Test
-    public void renamingInvalidNameIsRejected() {
-        Response response = uut.rename(createMockRequest(), 1, 0, "", "abbreviation");
-
-        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
-    }
-
-    @Test
-    public void renamingInvalidAbbreviationIsRejected() {
-        Response response = uut.rename(createMockRequest(), 1, 0, "name", "");
-
-        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
-    }
-
-    @Test
-    public void invalidBusinessRenamingIsPropagated() {
-        UnitForRenaming input = new UnitForRenaming(1, 1, "name", "abbreviation");
-        when(manager.rename(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
-
-        Response response = uut.rename(createMockRequest(), input.getId(), input.getVersion(), input.getName(), input.getAbbreviation());
-
-        assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
-        verify(manager).rename(input);
-        verify(manager).setPrincipals(TEST_USER);
-    }
-
-    @Test
-    public void validRenamingWorks() {
-        UnitForRenaming input = new UnitForRenaming(1, 1, "name", "abbreviation");
-        when(manager.rename(any())).thenReturn(StatusCode.SUCCESS);
-
-        Response response = uut.rename(createMockRequest(), input.getId(), input.getVersion(), input.getName(), input.getAbbreviation());
-
-        assertEquals(StatusCode.SUCCESS, response.getStatus());
-        verify(manager).rename(input);
         verify(manager).setPrincipals(TEST_USER);
     }
 }

@@ -129,4 +129,23 @@ public class EndpointTest {
     public void invalidInstantGivesEmptyOptional() {
         assertFalse(uut.parseToInstant("invalid", "name").isPresent());
     }
+
+    @Test
+    public void invalidBigDecimalIsRejected() {
+        assertFalse(uut.isValidBigDecimal(null, "number"));
+        assertFalse(uut.isValidBigDecimal("", "number"));
+        assertFalse(uut.isValidBigDecimal("null", "number"));
+        assertFalse(uut.isValidBigDecimal("hi there", "number"));
+        assertFalse(uut.isValidBigDecimal("';select * from user", "number"));
+        assertFalse(uut.isValidBigDecimal("1.O", "number"));
+        assertFalse(uut.isValidBigDecimal("five", "number"));
+        assertFalse(uut.isValidBigDecimal("42.424242424242424242", "number"));
+    }
+
+    @Test
+    public void validBigDecimalIsAccepted() {
+        assertTrue(uut.isValidBigDecimal("1", "number"));
+        assertTrue(uut.isValidBigDecimal("1.0", "number"));
+        assertTrue(uut.isValidBigDecimal("42.42424242424242424", "number"));
+    }
 }

@@ -752,6 +752,57 @@ Query parameters:
 
 Result: `application/json`, `Response`
 
+#### Scaled Units
+
+`PUT /v2/scaledunit`: Create a new scaled unit of measure in the system.
+
+Query parameters:
+
+* `scale: BigDecimal`: The string representation of a BigDecimal
+
+* `unit: int`: The unit scaled by this scaled unit
+
+Result: `application/json`, `Response`
+
+`GET /v2/scaledunit`: Get all scaled units in the system
+
+Query parameters:
+
+* `bitemporal: int`: Set to 1 to include bitemporal data. 0 yields the
+  current state of the data as best known.
+
+* `startingFrom: Timestamp`: Only include the latest changes to the
+  data since `startingFrom`. For useful interpretation of the data
+  `bitemporal` SHOULD be set to 1.
+
+Result: `application/json`
+
+```
+{
+    status: StatusCode
+    data: List<ScaledUnit>
+}
+
+Unit {
+	id: int
+	version: int
+	scale: BigDecimal
+	unit: int
+}
+
+```
+
+`DELETE /v2/scaledunit`: Delete a scaled unit. Deleting a unit used by a food,
+food item, ingredient or product is restricted, raising status code 4.
+
+Query parameters:
+
+* `id: int`: The ID to delete
+
+* `version: int`: The version to delete
+
+Result: `application/json`, `Response`
+
 ## License
 
 Copyright (C)  2019  The stocks developers
