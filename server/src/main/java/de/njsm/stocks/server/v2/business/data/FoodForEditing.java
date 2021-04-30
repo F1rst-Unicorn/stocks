@@ -65,4 +65,12 @@ public class FoodForEditing extends VersionedData implements Versionable<Food> {
     public int hashCode() {
         return Objects.hash(super.hashCode(), getNewName(), getExpirationOffsetOptional(), getLocationOptional());
     }
+
+    @Override
+    public boolean isContainedIn(Food item) {
+        return Versionable.super.isContainedIn(item) &&
+                newName.equals(item.getName()) &&
+                location.map(v -> v.equals(item.getLocation())).orElse(true) &&
+                expirationOffset.map(v -> v.equals(item.getExpirationOffset())).orElse(true);
+    }
 }

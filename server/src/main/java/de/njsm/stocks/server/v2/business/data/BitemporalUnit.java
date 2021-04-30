@@ -21,7 +21,7 @@ package de.njsm.stocks.server.v2.business.data;
 
 import java.time.Instant;
 
-public class BitemporalUnit extends BitemporalData implements Unit {
+public class BitemporalUnit extends BitemporalData implements Unit, Bitemporal<Unit> {
 
     private final String name;
 
@@ -41,5 +41,12 @@ public class BitemporalUnit extends BitemporalData implements Unit {
     @Override
     public String getAbbreviation() {
         return abbreviation;
+    }
+
+    @Override
+    public boolean isContainedIn(Unit item) {
+        return Bitemporal.super.isContainedIn(item) &&
+                name.equals(item.getName()) &&
+                abbreviation.equals(item.getAbbreviation());
     }
 }

@@ -91,4 +91,15 @@ public class FoodForGetting extends VersionedData implements Food {
     public int hashCode() {
         return Objects.hash(super.hashCode(), getName(), isToBuy(), getExpirationOffset(), getLocation(), getDescription());
     }
+
+    @Override
+    public boolean isContainedIn(Food item) {
+        return Food.super.isContainedIn(item) &&
+                name.equals(item.getName()) &&
+                toBuy == item.isToBuy() &&
+                expirationOffset.equals(item.getExpirationOffset()) &&
+                (location == null) ? location == item.getLocation() : location.equals(item.getLocation()) &&
+                description.equals(item.getDescription()) &&
+                storeUnit == item.getStoreUnit();
+    }
 }

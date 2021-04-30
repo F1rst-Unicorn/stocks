@@ -45,6 +45,12 @@ public class UnitForInsertion implements Insertable<UnitRecord, Unit> {
                 .values(name, abbreviation, principals.getDid());
     }
 
+    @Override
+    public boolean isContainedIn(Unit entity) {
+        return name.equals(entity.getName()) &&
+                abbreviation.equals(entity.getAbbreviation());
+    }
+
     public String getName() {
         return name;
     }

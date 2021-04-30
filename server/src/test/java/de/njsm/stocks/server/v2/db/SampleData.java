@@ -32,6 +32,10 @@ class SampleData {
             "delete from \"user\" where id != 1",
             "delete from location",
             "delete from unit where id != 1",
+            "delete from scaled_unit where id != 1",
+            "delete from recipe",
+            "delete from recipe_ingredient",
+            "delete from recipe_product",
 
             "alter sequence \"Food_item_ID_seq\" restart",
             "alter sequence \"Food_ID_seq\" restart",
@@ -41,6 +45,10 @@ class SampleData {
             "alter sequence \"Ticket_ID_seq\" restart",
             "alter sequence \"EAN_number_ID_seq\" restart",
             "alter sequence unit_id_seq restart with 2",
+            "alter sequence scaled_unit_id_seq restart with 2",
+            "alter sequence recipe_id_seq restart",
+            "alter sequence recipe_ingredient_id_seq restart",
+            "alter sequence recipe_product_id_seq restart",
 
             "insert into location (name, description, initiates) values " +
                     "('Fridge', 'fridge description', 1), " +
@@ -58,14 +66,18 @@ class SampleData {
                     "('mobile2', 2, 1), " +
                     "('laptop', 3, 1), " +
                     "('pending_device', 3, 1)",
-            "insert into food_item (eat_by, registers, buys, stored_in, of_type, initiates) values" +
-                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1)," +
-                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1)," +
-                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1)",
+            "insert into food_item (eat_by, registers, buys, stored_in, of_type, initiates, unit) values" +
+                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)," +
+                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)," +
+                    "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)",
             "insert into ticket (ticket, belongs_device) values " +
                     "('AAAA', 5)",
             "insert into ean_number (number, identifies, initiates) values " +
                     "('EAN BEER', 2, 1)",
+            "insert into unit (name, abbreviation, initiates) values" +
+                    "('Liter', 'l', 1)",
+            "insert into scaled_unit (scale, unit, initiates) values" +
+                    "(1, 2, 1)"
     };
 
     static void insertSampleData(Connection c) throws SQLException {

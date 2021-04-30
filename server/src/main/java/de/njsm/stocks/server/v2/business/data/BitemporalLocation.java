@@ -22,7 +22,7 @@ package de.njsm.stocks.server.v2.business.data;
 import java.time.Instant;
 import java.util.Objects;
 
-public class BitemporalLocation extends BitemporalData implements Versionable<Location>, Location {
+public class BitemporalLocation extends BitemporalData implements Bitemporal<Location>, Location {
 
     private final String name;
 
@@ -34,10 +34,12 @@ public class BitemporalLocation extends BitemporalData implements Versionable<Lo
         this.description = description;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
@@ -54,5 +56,12 @@ public class BitemporalLocation extends BitemporalData implements Versionable<Lo
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getName(), getDescription());
+    }
+
+    @Override
+    public boolean isContainedIn(Location item) {
+        return Bitemporal.super.isContainedIn(item) &&
+                name.equals(item.getName()) &&
+                description.equals(item.getDescription());
     }
 }

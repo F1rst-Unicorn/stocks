@@ -73,7 +73,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     DSL.inline(item.getStoredIn()),
                     FOOD_ITEM.REGISTERS,
                     FOOD_ITEM.BUYS,
-                    FOOD_ITEM.VERSION.add(1)
+                    FOOD_ITEM.VERSION.add(1),
+                    FOOD_ITEM.UNIT
                     ),
                     FOOD_ITEM.ID.eq(item.getId())
                             .and(FOOD_ITEM.VERSION.eq(item.getVersion()))
@@ -103,7 +104,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.STORED_IN,
                     DSL.inline(to.getId()),
                     FOOD_ITEM.BUYS,
-                    FOOD_ITEM.VERSION.add(1)
+                    FOOD_ITEM.VERSION.add(1),
+                    FOOD_ITEM.UNIT
                     ),
                     FOOD_ITEM.REGISTERS.eq(from.getId()))
                     .map(this::notFoundIsOk);
@@ -136,7 +138,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.STORED_IN,
                     DSL.inline(toDevice.getId()),
                     DSL.inline(to.getId()),
-                    FOOD_ITEM.VERSION.add(1)
+                    FOOD_ITEM.VERSION.add(1),
+                    FOOD_ITEM.UNIT
                     ),
                     FOOD_ITEM.BUYS.eq(from.getId())
                             .and(FOOD_ITEM.REGISTERS.in(deviceIds)))

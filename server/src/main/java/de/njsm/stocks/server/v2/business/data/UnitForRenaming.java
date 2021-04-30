@@ -54,4 +54,11 @@ public class UnitForRenaming extends VersionedData implements Versionable<Unit> 
     public int hashCode() {
         return Objects.hash(super.hashCode(), getName(), getAbbreviation());
     }
+
+    @Override
+    public boolean isContainedIn(Unit item) {
+        return Versionable.super.isContainedIn(item) &&
+                name.equals(item.getName()) &&
+                abbreviation.equals(item.getAbbreviation());
+    }
 }

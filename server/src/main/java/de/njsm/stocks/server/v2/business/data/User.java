@@ -19,4 +19,6 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-public interface User extends Entity<User> {}
+public interface User extends Entity<User> {
+    String getName();
+}

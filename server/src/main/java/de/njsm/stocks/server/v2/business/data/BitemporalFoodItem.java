@@ -27,7 +27,7 @@ import de.njsm.stocks.server.v2.business.json.InstantSerialiser;
 import java.time.Instant;
 import java.util.Objects;
 
-public class BitemporalFoodItem extends BitemporalData implements Versionable<FoodItem>, FoodItem {
+public class BitemporalFoodItem extends BitemporalData implements Bitemporal<FoodItem>, FoodItem {
 
     private final Instant eatByDate;
 
@@ -57,22 +57,27 @@ public class BitemporalFoodItem extends BitemporalData implements Versionable<Fo
         return eatByDate;
     }
 
+    @Override
     public int getOfType() {
         return ofType;
     }
 
+    @Override
     public int getStoredIn() {
         return storedIn;
     }
 
+    @Override
     public int getRegisters() {
         return registers;
     }
 
+    @Override
     public int getBuys() {
         return buys;
     }
 
+    @Override
     public int getUnit() {
         return unit;
     }
@@ -89,5 +94,16 @@ public class BitemporalFoodItem extends BitemporalData implements Versionable<Fo
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getEatByDate(), getOfType(), getStoredIn(), getRegisters(), getBuys(), getUnit());
+    }
+
+    @Override
+    public boolean isContainedIn(FoodItem item) {
+        return Bitemporal.super.isContainedIn(item) &&
+                eatByDate.equals(item.getEatByDate()) &&
+                ofType == item.getOfType() &&
+                storedIn == item.getStoredIn() &&
+                registers == item.getRegisters() &&
+                buys == item.getBuys() &&
+                unit == item.getUnit();
     }
 }

@@ -74,5 +74,10 @@ public class FoodForInsertion implements Insertable<FoodRecord, Food> {
             return insertInto.columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
                     .values(name, principals.getDid(), storeUnit.get());
     }
-}
 
+    @Override
+    public boolean isContainedIn(Food entity) {
+        return name.equals(entity.getName()) &&
+                storeUnit.map(v -> v.equals(entity.getStoreUnit())).orElse(true);
+    }
+}

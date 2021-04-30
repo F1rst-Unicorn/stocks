@@ -40,4 +40,11 @@ public class UnitForGetting extends VersionedData implements Unit {
     public String getAbbreviation() {
         return abbreviation;
     }
+
+    @Override
+    public boolean isContainedIn(Unit item) {
+        return Unit.super.isContainedIn(item) &&
+                name.equals(item.getName()) &&
+                abbreviation.equals(item.getAbbreviation());
+    }
 }

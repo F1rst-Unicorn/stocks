@@ -19,6 +19,19 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
+import java.time.Instant;
+
 public interface FoodItem extends Entity<FoodItem> {
+
     int getRegisters();
+
+    Instant getEatByDate();
+
+    int getOfType();
+
+    int getStoredIn();
+
+    int getBuys();
+
+    int getUnit();
 }

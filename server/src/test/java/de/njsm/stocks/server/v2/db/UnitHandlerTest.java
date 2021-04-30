@@ -30,9 +30,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class UnitHandlerTest extends DbTestCase {
 
@@ -47,17 +51,48 @@ public class UnitHandlerTest extends DbTestCase {
     }
 
     @Test
+    public void insertingWorks() {
+        UnitForInsertion data = new UnitForInsertion("name", "abbreviation");
+
+        Validation<StatusCode, Integer> result = uut.add(data);
+
+        assertTrue(result.isSuccess());
+        assertEquals(Integer.valueOf(3), result.success());
+        Validation<StatusCode, Stream<Unit>> units = uut.get(false, Instant.EPOCH);
+        List<Unit> list = units.success().collect(Collectors.toList());
+        assertTrue(units.isSuccess());
+        assertEquals(3, list.size());
+        assertThat(list, hasItem(matchesInsertable(data)));
+    }
+
+    @Test
+    public void bitemporalDataIsPresentWhenDesired() {
+
+        Validation<StatusCode, Stream<Unit>> result = uut.get(true, Instant.EPOCH);
+
+        BitemporalUnit sample = (BitemporalUnit) result.success().findAny().get();
+        assertNotNull(sample.getValidTimeStart());
+        assertNotNull(sample.getValidTimeEnd());
+        assertNotNull(sample.getTransactionTimeStart());
+        assertNotNull(sample.getTransactionTimeEnd());
+    }
+
+    @Test
     public void renamingWorks() {
         UnitForRenaming data = new UnitForRenaming(1, 0, "name", "abbreviation");
 
         StatusCode result = uut.rename(data);
 
         assertEquals(StatusCode.SUCCESS, result);
+
+        Validation<StatusCode, Stream<Unit>> dbData = uut.get(false, Instant.EPOCH);
+        List<Unit> records = dbData.success().collect(Collectors.toList());
+        assertThat(records, hasItem(matchesVersionable(data)));
     }
 
     @Test
     public void missingWhileRenamingIsReported() {
-        UnitForRenaming data = new UnitForRenaming(2, 0, "name", "abbreviation");
+        UnitForRenaming data = new UnitForRenaming(999, 0, "name", "abbreviation");
 
         StatusCode result = uut.rename(data);
 

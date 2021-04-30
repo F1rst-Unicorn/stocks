@@ -65,4 +65,10 @@ public class UserDeviceForInsertion implements Insertable<UserDeviceRecord, User
         return insertInto.columns(USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.INITIATES)
                 .values(name, belongsTo, principals.getDid());
     }
+
+    @Override
+    public boolean isContainedIn(UserDevice entity) {
+        return name.equals(entity.getName()) &&
+                belongsTo == entity.getBelongsTo();
+    }
 }

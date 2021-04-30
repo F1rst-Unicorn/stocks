@@ -19,11 +19,31 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-public interface Versionable<T extends Entity<T>> extends Identifiable<T> {
-    int getVersion();
+import java.time.Instant;
 
+public interface Bitemporal<T extends Entity<T>> extends Versionable<T> {
+
+    Instant getValidTimeStart();
+
+    Instant getValidTimeEnd();
+
+    Instant getTransactionTimeStart();
+
+    Instant getTransactionTimeEnd();
+
+    int getInitiates();
+
+    @Override
     default boolean isContainedIn(T item) {
-        return getId() == item.getId() &&
-                getVersion() + 1 == item.getVersion();
+        if (item instanceof Bitemporal) {
+            Bitemporal<T> castedItem = (Bitemporal) item;
+            return Versionable.super.isContainedIn(item) &&
+                    getValidTimeStart().equals(castedItem.getValidTimeStart()) &&
+                    getValidTimeEnd().equals(castedItem.getValidTimeEnd()) &&
+                    getTransactionTimeStart().equals(castedItem.getTransactionTimeStart()) &&
+                    getTransactionTimeEnd().equals(castedItem.getTransactionTimeEnd());
+        } else {
+            return false;
+        }
     }
 }

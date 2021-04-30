@@ -44,6 +44,9 @@ public class EanNumberForGetting extends VersionedData implements Versionable<Ea
         return eanNumber;
     }
 
+    /**
+     * JSON property name. Keep for backward compatibility
+     */
     public String getEanCode() {
         return eanNumber;
     }
@@ -60,5 +63,12 @@ public class EanNumberForGetting extends VersionedData implements Versionable<Ea
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getIdentifiesFood(), getEanNumber());
+    }
+
+    @Override
+    public boolean isContainedIn(EanNumber item) {
+        return EanNumber.super.isContainedIn(item) &&
+                identifiesFood == item.getIdentifiesFood() &&
+                eanNumber.equals(item.getEanNumber());
     }
 }

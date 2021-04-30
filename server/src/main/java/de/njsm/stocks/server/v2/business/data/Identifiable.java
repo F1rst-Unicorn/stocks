@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-public interface Identifiable<T extends Entity> {
-
+public interface Identifiable<T extends Entity<T>> {
     int getId();
 }

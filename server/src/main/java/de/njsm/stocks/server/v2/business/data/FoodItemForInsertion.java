@@ -134,4 +134,14 @@ public class FoodItemForInsertion implements Insertable<FoodItemRecord, FoodItem
                             unit.get());
 
     }
+
+    @Override
+    public boolean isContainedIn(FoodItem entity) {
+        return eatByDate.equals(entity.getEatByDate()) &&
+                ofType == entity.getOfType() &&
+                storedIn == entity.getStoredIn() &&
+                registers == entity.getRegisters() &&
+                buys == entity.getBuys() &&
+                unit.map(v -> v.equals(entity.getUnit())).orElse(true);
+    }
 }

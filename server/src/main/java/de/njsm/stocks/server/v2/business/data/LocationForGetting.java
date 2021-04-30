@@ -54,4 +54,11 @@ public class LocationForGetting extends VersionedData implements Versionable<Loc
     public int hashCode() {
         return Objects.hash(super.hashCode(), getName(), getDescription());
     }
+
+    @Override
+    public boolean isContainedIn(Location item) {
+        return Location.super.isContainedIn(item) &&
+                name.equals(item.getName()) &&
+                description.equals(item.getDescription());
+    }
 }

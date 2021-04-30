@@ -43,6 +43,9 @@ public class UserDeviceForGetting extends VersionedData implements Versionable<U
         return belongsTo;
     }
 
+    /**
+     * JSON property name. Keep for backward compatibility
+     */
     public int getUserId() {
         return belongsTo;
     }
@@ -59,5 +62,12 @@ public class UserDeviceForGetting extends VersionedData implements Versionable<U
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getName(), getBelongsTo());
+    }
+
+    @Override
+    public boolean isContainedIn(UserDevice item) {
+        return UserDevice.super.isContainedIn(item) &&
+                name.equals(item.getName()) &&
+                belongsTo == item.getBelongsTo();
     }
 }

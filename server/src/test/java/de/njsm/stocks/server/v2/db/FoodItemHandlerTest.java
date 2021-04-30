@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -80,14 +81,17 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void testInserting() {
-        FoodItemForInsertion item = new FoodItemForInsertion(Instant.EPOCH, 2, 1, 1, 1, unit);
+        FoodItemForInsertion item = new FoodItemForInsertion(Instant.EPOCH, 2, 1, 1, 1, 1);
 
         Validation<StatusCode, Integer> result = uut.add(item);
 
         Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
         assertTrue(result.isSuccess());
         assertTrue(items.isSuccess());
-        assertEquals(4, items.success().count());
+
+        List<FoodItem> list = items.success().collect(Collectors.toList());
+        assertEquals(4, list.size());
+        assertThat(list, hasItem(matchesInsertable(item)));
     }
 
     @Test
@@ -98,9 +102,9 @@ public class FoodItemHandlerTest extends DbTestCase {
         assertTrue(result.isSuccess());
         List<FoodItem> list = result.success().collect(Collectors.toList());
         assertEquals(3, list.size());
-        assertEquals(new FoodItemForGetting(1, 0, Instant.EPOCH, 2, 1, 3, 2, unit), list.get(0));
-        assertEquals(new FoodItemForGetting(2, 0, Instant.EPOCH, 2, 1, 3, 2, unit), list.get(1));
-        assertEquals(new FoodItemForGetting(3, 0, Instant.EPOCH, 2, 1, 3, 2, unit), list.get(2));
+        assertEquals(new FoodItemForGetting(1, 0, Instant.EPOCH, 2, 1, 3, 2, 1), list.get(0));
+        assertEquals(new FoodItemForGetting(2, 0, Instant.EPOCH, 2, 1, 3, 2, 1), list.get(1));
+        assertEquals(new FoodItemForGetting(3, 0, Instant.EPOCH, 2, 1, 3, 2, 1), list.get(2));
     }
 
     @Test
@@ -133,7 +137,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void validEditingHappens() {
-        FoodItemForEditing item = new FoodItemForEditing(1, 0, Instant.ofEpochMilli(42), 2, unit);
+        FoodItemForEditing item = new FoodItemForEditing(1, 0, Instant.ofEpochMilli(42), 2, 2);
 
         StatusCode result = uut.edit(item);
 
@@ -143,12 +147,12 @@ public class FoodItemHandlerTest extends DbTestCase {
         assertTrue(items.isSuccess());
         List<FoodItem> list = items.success().collect(Collectors.toList());
         assertEquals(3, list.size());
-        assertThat(list, hasItem(new FoodItemForGetting(1, 1, item.getEatBy(), 2, item.getStoredIn(), 3, 2, unit)));
+        assertThat(list, hasItem(new FoodItemForGetting(1, 1, item.getEatBy(), 2, item.getStoredIn(), 3, 2, 2)));
     }
 
     @Test
     public void editingWrongVersionIsReported() {
-        FoodItemForEditing item = new FoodItemForEditing(1, 99, Instant.ofEpochMilli(42), 2, unit);
+        FoodItemForEditing item = new FoodItemForEditing(1, 99, Instant.ofEpochMilli(42), 2, 1);
 
         StatusCode result = uut.edit(item);
 
@@ -157,7 +161,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void editingUnknownIdIsReported() {
-        FoodItemForEditing item = new FoodItemForEditing(100, 0, Instant.ofEpochMilli(42), 2, unit);
+        FoodItemForEditing item = new FoodItemForEditing(100, 0, Instant.ofEpochMilli(42), 2, 1);
 
         StatusCode result = uut.edit(item);
 

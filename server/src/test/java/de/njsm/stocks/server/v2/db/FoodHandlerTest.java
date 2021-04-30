@@ -27,9 +27,13 @@ import org.junit.Test;
 
 import java.time.Instant;
 import java.time.Period;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 public class FoodHandlerTest extends DbTestCase {
@@ -67,9 +71,8 @@ public class FoodHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
 
         assertTrue(dbData.isSuccess());
-
-        assertTrue(dbData.success().anyMatch(f -> f.getName().equals(data.getName())
-                && f.getStoreUnit() == data.getStoreUnit().orElseThrow()));
+        assertThat(dbData.success().collect(Collectors.toList()),
+                hasItem(matchesInsertable(data)));
     }
 
     @Test

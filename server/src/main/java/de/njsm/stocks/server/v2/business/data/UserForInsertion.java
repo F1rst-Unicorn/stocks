@@ -59,4 +59,9 @@ public class UserForInsertion implements Insertable<UserRecord, User> {
         return insertInto.columns(USER.NAME, USER.INITIATES)
                 .values(name, principals.getDid());
     }
+
+    @Override
+    public boolean isContainedIn(User entity) {
+        return name.equals(entity.getName());
+    }
 }

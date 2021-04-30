@@ -58,4 +58,9 @@ public class LocationForInsertion implements Insertable<LocationRecord, Location
         return arg.columns(LOCATION.NAME, LOCATION.INITIATES)
                 .values(name, principals.getDid());
     }
+
+    @Override
+    public boolean isContainedIn(Location entity) {
+        return name.equals(entity.getName());
+    }
 }

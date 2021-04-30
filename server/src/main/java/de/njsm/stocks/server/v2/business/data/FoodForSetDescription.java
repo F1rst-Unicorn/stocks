@@ -47,4 +47,10 @@ public class FoodForSetDescription extends VersionedData implements Versionable<
     public int hashCode() {
         return Objects.hash(super.hashCode(), getDescription());
     }
+
+    @Override
+    public boolean isContainedIn(Food item) {
+        return Versionable.super.isContainedIn(item) &&
+                description.equals(item.getDescription());
+    }
 }

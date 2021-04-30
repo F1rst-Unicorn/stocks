@@ -92,7 +92,7 @@ public class FoodItemEndpointTest {
     @Test
     public void insertInvalidLocationIdIsReported() throws IOException {
 
-        Response result = uut.putItem(Util.createMockRequest(), DATE, 0, 2);
+        Response result = uut.putItem(Util.createMockRequest(), DATE, 0, 2, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -100,7 +100,7 @@ public class FoodItemEndpointTest {
     @Test
     public void insertInvalidTypeIdIsReported() throws IOException {
 
-        Response result = uut.putItem(Util.createMockRequest(), DATE, 2, 0);
+        Response result = uut.putItem(Util.createMockRequest(), DATE, 2, 0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -108,7 +108,7 @@ public class FoodItemEndpointTest {
     @Test
     public void insertInvalidExpirationIdIsReported() throws IOException {
 
-        Response result = uut.putItem(Util.createMockRequest(), "invalid date", 2, 0);
+        Response result = uut.putItem(Util.createMockRequest(), "invalid date", 2, 0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -117,10 +117,10 @@ public class FoodItemEndpointTest {
     public void validInsertHappens() throws IOException {
         FoodItemForInsertion expected = new FoodItemForInsertion(Instant.EPOCH, 2, 2,
                 PrincipalFilterTest.TEST_USER.getDid(),
-                PrincipalFilterTest.TEST_USER.getUid(), unit);
+                PrincipalFilterTest.TEST_USER.getUid(), 1);
         Mockito.when(manager.add(expected)).thenReturn(Validation.success(5));
 
-        Response result = uut.putItem(Util.createMockRequest(), DATE, expected.getStoredIn(), expected.getOfType());
+        Response result = uut.putItem(Util.createMockRequest(), DATE, expected.getStoredIn(), expected.getOfType(), expected.getUnit().get());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).add(expected);
@@ -130,7 +130,7 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidIdIsReported() throws IOException {
 
-        Response result = uut.editItem(Util.createMockRequest(), 0, 2, DATE, 2);
+        Response result = uut.editItem(Util.createMockRequest(), 0, 2, DATE, 2, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -138,7 +138,7 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidVersionIdIsReported() throws IOException {
 
-        Response result = uut.editItem(Util.createMockRequest(), 1, -1, DATE, 2);
+        Response result = uut.editItem(Util.createMockRequest(), 1, -1, DATE, 2, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -146,7 +146,7 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidDateIsReported() throws IOException {
 
-        Response result = uut.editItem(Util.createMockRequest(), 2, 2, "invalid", 2);
+        Response result = uut.editItem(Util.createMockRequest(), 2, 2, "invalid", 2, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -154,18 +154,18 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidLocationIsReported() throws IOException {
 
-        Response result = uut.editItem(Util.createMockRequest(), 2, 2, DATE, 0);
+        Response result = uut.editItem(Util.createMockRequest(), 2, 2, DATE, 0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test
     public void validEditingHappens() throws IOException {
-        FoodItemForEditing expected = new FoodItemForEditing(2, 2, Instant.EPOCH, 2, unit);
+        FoodItemForEditing expected = new FoodItemForEditing(2, 2, Instant.EPOCH, 2, 1);
         Mockito.when(manager.edit(expected)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.editItem(Util.createMockRequest(),
-                expected.getId(), expected.getVersion(), DATE, expected.getStoredIn());
+                expected.getId(), expected.getVersion(), DATE, expected.getStoredIn(), expected.getUnitOptional().get());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).edit(expected);

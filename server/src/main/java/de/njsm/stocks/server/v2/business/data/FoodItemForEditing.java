@@ -63,4 +63,12 @@ public class FoodItemForEditing extends VersionedData implements Versionable<Foo
     public int hashCode() {
         return Objects.hash(super.hashCode(), getEatBy(), getStoredIn(), unit);
     }
+
+    @Override
+    public boolean isContainedIn(FoodItem item) {
+        return Versionable.super.isContainedIn(item) &&
+                eatBy.equals(item.getEatByDate()) &&
+                storedIn == item.getStoredIn() &&
+                unit.map(v -> v.equals(item.getUnit())).orElse(true);
+    }
 }

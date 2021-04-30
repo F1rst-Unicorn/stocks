@@ -774,7 +774,7 @@
                 on scaled_unit
                 deferrable initially deferred
                 for each row
-            execute function bitemporal_foreign_key('food_item', 'store_unit', 'scaled_unit');
+            execute function bitemporal_foreign_key('food_item', 'unit', 'scaled_unit');
         </sql>
         <rollback>
             drop trigger food_item_unit_ref_scaled_unit on food_item;

@@ -23,7 +23,7 @@ import de.njsm.stocks.server.v2.business.data.Entity;
 import de.njsm.stocks.server.v2.business.data.Identifiable;
 import org.jooq.DSLContext;
 
-public interface PresenceChecker<T extends Entity> {
+public interface PresenceChecker<T extends Entity<T>> {
 
     boolean isCurrentlyMissing(Identifiable<T> item, DSLContext context);
 }

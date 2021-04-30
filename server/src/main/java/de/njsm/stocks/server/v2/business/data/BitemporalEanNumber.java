@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.Instant;
 import java.util.Objects;
 
-public class BitemporalEanNumber extends BitemporalData implements Versionable<EanNumber>, EanNumber {
+public class BitemporalEanNumber extends BitemporalData implements Bitemporal<EanNumber>, EanNumber {
 
     private final int identifiesFood;
 
@@ -36,15 +36,20 @@ public class BitemporalEanNumber extends BitemporalData implements Versionable<E
         this.eanNumber = eanNumber;
     }
 
+    @Override
     public int getIdentifiesFood() {
         return identifiesFood;
     }
 
+    @Override
     @JsonIgnore
     public String getEanNumber() {
         return eanNumber;
     }
 
+    /**
+     * JSON property name. Keep for backward compatibility
+     */
     public String getEanCode() {
         return eanNumber;
     }
@@ -61,5 +66,12 @@ public class BitemporalEanNumber extends BitemporalData implements Versionable<E
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getIdentifiesFood(), getEanNumber());
+    }
+
+    @Override
+    public boolean isContainedIn(EanNumber item) {
+        return Bitemporal.super.isContainedIn(item) &&
+                identifiesFood == item.getIdentifiesFood() &&
+                eanNumber.equals(item.getEanNumber());
     }
 }

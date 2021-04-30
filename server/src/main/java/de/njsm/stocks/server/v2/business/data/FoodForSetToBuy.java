@@ -47,4 +47,10 @@ public class FoodForSetToBuy extends VersionedData implements Versionable<Food> 
     public int hashCode() {
         return Objects.hash(super.hashCode(), isToBuy());
     }
+
+    @Override
+    public boolean isContainedIn(Food item) {
+        return Versionable.super.isContainedIn(item) &&
+                toBuy == item.isToBuy();
+    }
 }

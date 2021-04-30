@@ -23,7 +23,7 @@ package de.njsm.stocks.server.v2.business.data;
 import java.time.Instant;
 import java.util.Objects;
 
-public class BitemporalUser extends BitemporalData implements Versionable<User>, User {
+public class BitemporalUser extends BitemporalData implements Bitemporal<User>, User {
 
     private final String name;
 
@@ -32,6 +32,7 @@ public class BitemporalUser extends BitemporalData implements Versionable<User>,
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -48,5 +49,11 @@ public class BitemporalUser extends BitemporalData implements Versionable<User>,
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getName());
+    }
+
+    @Override
+    public boolean isContainedIn(User item) {
+        return Bitemporal.super.isContainedIn(item) &&
+                name.equals(item.getName());
     }
 }

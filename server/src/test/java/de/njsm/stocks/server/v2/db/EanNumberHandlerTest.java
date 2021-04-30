@@ -26,10 +26,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class EanNumberHandlerTest extends DbTestCase {
 
@@ -50,12 +56,13 @@ public class EanNumberHandlerTest extends DbTestCase {
         Validation<StatusCode, Integer> code = uut.add(data);
 
         assertTrue(code.isSuccess());
+        assertEquals(Integer.valueOf(2), code.success());
 
         Validation<StatusCode, Stream<EanNumber>> dbData = uut.get(false, Instant.EPOCH);
 
         assertTrue(dbData.isSuccess());
-
-        assertTrue(dbData.success().map(EanNumber::getEanNumber).anyMatch(name -> name.equals(data.getEanNumber())));
+        assertThat(dbData.success().collect(Collectors.toList()),
+                hasItem(matchesInsertable(data)));
     }
 
     @Test

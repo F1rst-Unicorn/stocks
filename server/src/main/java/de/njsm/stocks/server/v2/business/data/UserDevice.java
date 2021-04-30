@@ -19,4 +19,8 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-public interface UserDevice extends Entity<UserDevice> {}
+public interface UserDevice extends Entity<UserDevice> {
+    String getName();
+
+    int getBelongsTo();
+}

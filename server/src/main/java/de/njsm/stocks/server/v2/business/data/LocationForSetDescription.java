@@ -47,4 +47,10 @@ public class LocationForSetDescription extends VersionedData implements Versiona
     public int hashCode() {
         return Objects.hash(super.hashCode(), getDescription());
     }
+
+    @Override
+    public boolean isContainedIn(Location item) {
+        return Versionable.super.isContainedIn(item) &&
+                description.equals(item.getDescription());
+    }
 }

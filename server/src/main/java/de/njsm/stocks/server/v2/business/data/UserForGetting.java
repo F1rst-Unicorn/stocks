@@ -48,4 +48,10 @@ public class UserForGetting extends VersionedData implements Versionable<User>, 
     public int hashCode() {
         return Objects.hash(super.hashCode(), getName());
     }
+
+    @Override
+    public boolean isContainedIn(User item) {
+        return User.super.isContainedIn(item) &&
+                name.equals(item.getName());
+    }
 }

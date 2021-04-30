@@ -47,4 +47,10 @@ public class LocationForRenaming extends VersionedData implements Versionable<Lo
     public int hashCode() {
         return Objects.hash(super.hashCode(), getNewName());
     }
+
+    @Override
+    public boolean isContainedIn(Location item) {
+        return Versionable.super.isContainedIn(item) &&
+                newName.equals(item.getName());
+    }
 }

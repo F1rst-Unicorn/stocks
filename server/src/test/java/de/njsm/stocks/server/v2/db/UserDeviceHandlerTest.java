@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -91,7 +92,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
         assertEquals(6, list.size());
-        assertThat(list, hasItem(new UserDeviceForGetting(6, 0, device.getName(), device.getBelongsTo())));
+        assertThat(list, hasItem(matchesInsertable(device)));
     }
 
     @Test

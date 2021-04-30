@@ -24,7 +24,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.Instant;
 import java.util.Objects;
 
-public class BitemporalUserDevice extends BitemporalData implements Versionable<UserDevice>, UserDevice {
+public class BitemporalUserDevice extends BitemporalData implements Bitemporal<UserDevice>, UserDevice {
+
     private final String name;
 
     private final int belongsTo;
@@ -35,19 +36,23 @@ public class BitemporalUserDevice extends BitemporalData implements Versionable<
         this.belongsTo = belongsTo;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
     @JsonIgnore
+    @Override
     public int getBelongsTo() {
         return belongsTo;
     }
 
+    /**
+     * JSON property name. Keep for backward compatibility
+     */
     public int getUserId() {
         return belongsTo;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -61,5 +66,12 @@ public class BitemporalUserDevice extends BitemporalData implements Versionable<
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getName(), getBelongsTo());
+    }
+
+    @Override
+    public boolean isContainedIn(UserDevice item) {
+        return Bitemporal.super.isContainedIn(item) &&
+                name.equals(item.getName()) &&
+                belongsTo == item.getBelongsTo();
     }
 }
