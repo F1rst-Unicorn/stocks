@@ -92,7 +92,7 @@ public class UpdateChangeTest {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0))
-                .body("data", iterableWithSize(6))
+                .body("data", iterableWithSize(11))
                 .body("data.table", hasItem("Location"))
                 .extract()
                 .response();

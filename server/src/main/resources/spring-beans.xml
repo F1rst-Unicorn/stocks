@@ -93,6 +93,12 @@
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
     </bean>
 
+    <bean name="scaledUnitBackend" class="de.njsm.stocks.server.v2.db.ScaledUnitHandler" scope="request">
+        <constructor-arg index="0" ref="connectionFactory" />
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+    </bean>
+
     <!-- Business Layer -->
     <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" scope="request">
         <constructor-arg index="0" ref="authAdmin"/>
@@ -147,6 +153,10 @@
         <constructor-arg index="0" ref="unitBackend" />
     </bean>
 
+    <bean name="scaledUnitManager" class="de.njsm.stocks.server.v2.business.ScaledUnitManager" scope="request">
+        <constructor-arg index="0" ref="scaledUnitBackend" />
+    </bean>
+
     <!-- Web Layer -->
     <bean name="updateEndpoint" class="de.njsm.stocks.server.v2.web.UpdateEndpoint" scope="request">
         <constructor-arg index="0" ref="updateManager" />
@@ -186,5 +196,9 @@
 
     <bean name="unitEndpoint" class="de.njsm.stocks.server.v2.web.UnitEndpoint" scope="request">
         <constructor-arg index="0" ref="unitManager" />
+    </bean>
+
+    <bean name="scaledUnitEndpoint" class="de.njsm.stocks.server.v2.web.ScaledUnitEndpoint" scope="request">
+        <constructor-arg index="0" ref="scaledUnitManager" />
     </bean>
 </beans>

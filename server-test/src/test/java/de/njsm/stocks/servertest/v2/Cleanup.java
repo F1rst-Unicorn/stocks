@@ -152,6 +152,25 @@ public class Cleanup {
 
 
     @Test
+    public void cleanScaledUnits() {
+        List<Data> ids = getIds("/v2/scaledunit");
+
+        for (Data d : ids) {
+            if (d.id == 1) continue;
+            given()
+                    .log().ifValidationFails()
+                    .queryParam("id", d.id)
+                    .queryParam("version", d.version).
+            when()
+                    .delete(TestSuite.DOMAIN + "/v2/scaledunit").
+            then()
+                    .log().ifValidationFails()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON);
+        }
+    }
+
+    @Test
     public void cleanUnits() {
         List<Data> ids = getIds("/v2/unit");
 
