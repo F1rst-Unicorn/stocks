@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import java.time.Period;
+import java.time.Duration;
 import java.util.Objects;
 
 public class RecipeForGetting extends VersionedData implements Recipe {
@@ -28,9 +28,9 @@ public class RecipeForGetting extends VersionedData implements Recipe {
 
     private final String instructions;
 
-    private final Period duration;
+    private final Duration duration;
 
-    public RecipeForGetting(int id, int version, String name, String instructions, Period duration) {
+    public RecipeForGetting(int id, int version, String name, String instructions, Duration duration) {
         super(id, version);
         this.name = name;
         this.instructions = instructions;
@@ -48,7 +48,7 @@ public class RecipeForGetting extends VersionedData implements Recipe {
     }
 
     @Override
-    public Period getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 

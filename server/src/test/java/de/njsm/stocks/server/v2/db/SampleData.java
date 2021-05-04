@@ -77,7 +77,10 @@ class SampleData {
             "insert into unit (name, abbreviation, initiates) values" +
                     "('Liter', 'l', 1)",
             "insert into scaled_unit (scale, unit, initiates) values" +
-                    "(3, 2, 1)"
+                    "(3, 2, 1)",
+            "insert into recipe (name, instructions, duration, initiates) values " +
+                    "('Cake', 'Mix flour and sugar. Bake directly', interval '1 hour', 1)"
+
     };
 
     static void insertSampleData(Connection c) throws SQLException {

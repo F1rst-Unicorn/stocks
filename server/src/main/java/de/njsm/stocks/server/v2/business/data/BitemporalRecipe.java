@@ -20,7 +20,7 @@
 package de.njsm.stocks.server.v2.business.data;
 
 import java.time.Instant;
-import java.time.Period;
+import java.time.Duration;
 import java.util.Objects;
 
 public class BitemporalRecipe extends BitemporalData implements Bitemporal<Recipe>, Recipe {
@@ -29,9 +29,9 @@ public class BitemporalRecipe extends BitemporalData implements Bitemporal<Recip
 
     private final String instructions;
 
-    private final Period duration;
+    private final Duration duration;
 
-    public BitemporalRecipe(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, String name, String instructions, Period duration) {
+    public BitemporalRecipe(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, String name, String instructions, Duration duration) {
         super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
         this.name = name;
         this.instructions = instructions;
@@ -49,7 +49,7 @@ public class BitemporalRecipe extends BitemporalData implements Bitemporal<Recip
     }
 
     @Override
-    public Period getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 

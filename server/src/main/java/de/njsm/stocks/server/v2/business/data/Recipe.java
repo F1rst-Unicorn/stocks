@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import java.time.Period;
+import java.time.Duration;
 
 public interface Recipe extends Entity<Recipe> {
 
@@ -27,5 +27,5 @@ public interface Recipe extends Entity<Recipe> {
 
     String getInstructions();
 
-    Period getDuration();
+    Duration getDuration();
 }

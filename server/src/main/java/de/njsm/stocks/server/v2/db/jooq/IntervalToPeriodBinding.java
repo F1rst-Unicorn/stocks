@@ -31,7 +31,7 @@ import java.util.Locale;
 /**
  * Only supports `INTERVAL YEAR MONTH DAY` type
  */
-public class IntervalBinding implements Binding<Object, Period> {
+public class IntervalToPeriodBinding implements Binding<Object, Period> {
 
     @Override
     public Converter<Object, Period> converter() {

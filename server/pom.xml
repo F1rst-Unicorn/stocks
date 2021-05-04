@@ -444,8 +444,15 @@
                             </properties>
                             <forcedTypes>
                                 <forcedType>
+                                    <userType>java.time.Duration</userType>
+                                    <binding>de.njsm.stocks.server.v2.db.jooq.IntervalToDurationBinding</binding>
+                                    <expression>public.recipe.duration</expression>
+                                    <types>INTERVAL</types>
+                                </forcedType>
+                                <forcedType>
                                     <userType>java.time.Period</userType>
-                                    <binding>de.njsm.stocks.server.v2.db.jooq.IntervalBinding</binding>
+                                    <binding>de.njsm.stocks.server.v2.db.jooq.IntervalToPeriodBinding</binding>
+                                    <expression>public.food.expiration_offset</expression>
                                     <types>INTERVAL</types>
                                 </forcedType>
                                 <forcedType>

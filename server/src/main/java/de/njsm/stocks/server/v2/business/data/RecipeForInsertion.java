@@ -24,7 +24,7 @@ import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import org.jooq.InsertOnDuplicateStep;
 import org.jooq.InsertSetStep;
 
-import java.time.Period;
+import java.time.Duration;
 import java.util.Objects;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE;
@@ -35,9 +35,9 @@ public class RecipeForInsertion implements Insertable<RecipeRecord, Recipe> {
 
     private final String instructions;
 
-    private final Period duration;
+    private final Duration duration;
 
-    public RecipeForInsertion(String name, String instructions, Period duration) {
+    public RecipeForInsertion(String name, String instructions, Duration duration) {
         this.name = name;
         this.instructions = instructions;
         this.duration = duration;
@@ -51,7 +51,7 @@ public class RecipeForInsertion implements Insertable<RecipeRecord, Recipe> {
         return instructions;
     }
 
-    public Period getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
