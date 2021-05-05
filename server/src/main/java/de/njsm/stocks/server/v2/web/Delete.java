@@ -19,10 +19,12 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.server.v2.business.BusinessDeletable;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.Entity;
 import de.njsm.stocks.server.v2.business.data.Versionable;
 import de.njsm.stocks.server.v2.web.data.Response;
+import org.glassfish.jersey.internal.util.Producer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
@@ -31,10 +33,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import static de.njsm.stocks.server.v2.web.Endpoint.isValid;
-import static de.njsm.stocks.server.v2.web.Endpoint.isValidVersion;
+import static de.njsm.stocks.server.v2.web.Endpoint.*;
 
-public interface Delete<T extends Versionable<U>, U extends Entity<U>> extends MetaDelete<T, U> {
+public interface Delete<T extends Versionable<U>, U extends Entity<U>> {
+
+    BusinessDeletable<T, U> getManager();
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
@@ -50,4 +53,11 @@ public interface Delete<T extends Versionable<U>, U extends Entity<U>> extends M
     }
 
     T wrapParameters(int id, int version);
+
+    default Response delete(HttpServletRequest request,
+                            Producer<T> producer) {
+        getManager().setPrincipals(getPrincipals(request));
+        StatusCode status = getManager().delete(producer.call());
+        return new Response(status);
+    }
 }

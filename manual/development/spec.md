@@ -783,7 +783,7 @@ Result: `application/json`
     data: List<ScaledUnit>
 }
 
-Unit {
+ScaledUnit {
 	id: int
 	version: int
 	scale: BigDecimal
@@ -794,6 +794,91 @@ Unit {
 
 `DELETE /v2/scaledunit`: Delete a scaled unit. Deleting a unit used by a food,
 food item, ingredient or product is restricted, raising status code 4.
+
+Query parameters:
+
+* `id: int`: The ID to delete
+
+* `version: int`: The version to delete
+
+Result: `application/json`, `Response`
+
+#### Recipes
+
+`GET /v2/recipe`: Get all recipes in the system
+
+Query parameters:
+
+* `bitemporal: int`: Set to 1 to include bitemporal data. 0 yields the
+  current state of the data as best known.
+
+* `startingFrom: Timestamp`: Only include the latest changes to the
+  data since `startingFrom`. For useful interpretation of the data
+  `bitemporal` SHOULD be set to 1.
+
+Result: `application/json`
+
+```
+{
+    status: StatusCode
+    data: List<Recipe>
+}
+
+Recipe {
+	id: int
+	version: int
+	name: String
+	instructions: String
+	duration: String
+}
+
+```
+
+`DELETE /v2/recipe`: Delete a recipe. Deleting a recipe used by a recipe
+ingredient or product restricted, raising status code 4.
+
+Query parameters:
+
+* `id: int`: The ID to delete
+
+* `version: int`: The version to delete
+
+Result: `application/json`, `Response`
+
+#### Recipe Ingredients
+
+`GET /v2/recipeingredient`: Get all recipe ingredients in the system
+
+Query parameters:
+
+* `bitemporal: int`: Set to 1 to include bitemporal data. 0 yields the
+  current state of the data as best known.
+
+* `startingFrom: Timestamp`: Only include the latest changes to the
+  data since `startingFrom`. For useful interpretation of the data
+  `bitemporal` SHOULD be set to 1.
+
+Result: `application/json`
+
+```
+{
+    status: StatusCode
+    data: List<RecipeIngredient>
+}
+
+RecipeIngredient {
+	id: int
+	version: int
+	amount: int
+	ingredient: int
+	recipe: int
+	unit: int
+}
+
+```
+
+`DELETE /v2/recipe`: Delete a recipe. Deleting a recipe used by a recipe
+ingredient or product restricted, raising status code 4.
 
 Query parameters:
 

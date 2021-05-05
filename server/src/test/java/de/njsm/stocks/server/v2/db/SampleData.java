@@ -79,7 +79,9 @@ class SampleData {
             "insert into scaled_unit (scale, unit, initiates) values" +
                     "(3, 2, 1)",
             "insert into recipe (name, instructions, duration, initiates) values " +
-                    "('Cake', 'Mix flour and sugar. Bake directly', interval '1 hour', 1)"
+                    "('Cake', 'Mix flour and sugar. Bake directly', interval '1 hour', 1)",
+            "insert into recipe_ingredient (amount, ingredient, recipe, unit, initiates) values " +
+                    "(2, 3, 1, 2, 1)"
 
     };
 
