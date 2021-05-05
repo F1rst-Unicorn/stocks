@@ -116,6 +116,7 @@ object Build : BuildType({
                     de.njsm.*.*Test
                     de.njsm.stocks.server.v2.db.jooq.*
                     de.njsm.stocks.client.storage.jooq.*
+                    de.njsm.stocks.server.v2.matchers.*
                 """.trimIndent()
             }
         }
