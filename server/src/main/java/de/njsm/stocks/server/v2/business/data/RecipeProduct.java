@@ -17,27 +17,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.web;
+package de.njsm.stocks.server.v2.business.data;
 
-import de.njsm.stocks.server.v2.business.RecipeIngredientManager;
-import de.njsm.stocks.server.v2.business.data.RecipeIngredient;
-import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
+public interface RecipeProduct extends Entity<RecipeProduct> {
 
-import javax.inject.Inject;
-import javax.ws.rs.Path;
+    int getAmount();
 
-@Path("v2/recipe-ingredient")
-public class RecipeIngredientEndpoint extends Endpoint implements Get<RecipeIngredientRecord, RecipeIngredient> {
+    int getProduct();
 
-    private final RecipeIngredientManager manager;
+    int getRecipe();
 
-    @Inject
-    public RecipeIngredientEndpoint(RecipeIngredientManager manager) {
-        this.manager = manager;
-    }
-
-    @Override
-    public RecipeIngredientManager getManager() {
-        return manager;
-    }
+    int getUnit();
 }

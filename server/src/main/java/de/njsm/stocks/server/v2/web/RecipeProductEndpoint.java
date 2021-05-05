@@ -19,25 +19,25 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.RecipeIngredientManager;
-import de.njsm.stocks.server.v2.business.data.RecipeIngredient;
-import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
+import de.njsm.stocks.server.v2.business.RecipeProductManager;
+import de.njsm.stocks.server.v2.business.data.RecipeProduct;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeProductRecord;
 
 import javax.inject.Inject;
 import javax.ws.rs.Path;
 
-@Path("v2/recipe-ingredient")
-public class RecipeIngredientEndpoint extends Endpoint implements Get<RecipeIngredientRecord, RecipeIngredient> {
+@Path("v2/recipe-product")
+public class RecipeProductEndpoint extends Endpoint implements Get<RecipeProductRecord, RecipeProduct> {
 
-    private final RecipeIngredientManager manager;
+    private final RecipeProductManager manager;
 
     @Inject
-    public RecipeIngredientEndpoint(RecipeIngredientManager manager) {
+    public RecipeProductEndpoint(RecipeProductManager manager) {
         this.manager = manager;
     }
 
     @Override
-    public RecipeIngredientManager getManager() {
+    public RecipeProductManager getManager() {
         return manager;
     }
 }

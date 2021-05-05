@@ -19,25 +19,25 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.RecipeIngredientManager;
-import de.njsm.stocks.server.v2.business.data.RecipeIngredient;
-import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
+import de.njsm.stocks.server.v2.business.BusinessDeletable;
+import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.server.v2.business.data.Entity;
+import de.njsm.stocks.server.v2.business.data.Versionable;
+import de.njsm.stocks.server.v2.web.data.Response;
+import org.glassfish.jersey.internal.util.Producer;
 
-import javax.inject.Inject;
-import javax.ws.rs.Path;
+import javax.servlet.http.HttpServletRequest;
 
-@Path("v2/recipe-ingredient")
-public class RecipeIngredientEndpoint extends Endpoint implements Get<RecipeIngredientRecord, RecipeIngredient> {
+import static de.njsm.stocks.server.v2.web.Endpoint.*;
 
-    private final RecipeIngredientManager manager;
+public interface MetaDelete<T extends Versionable<U>, U extends Entity<U>> {
 
-    @Inject
-    public RecipeIngredientEndpoint(RecipeIngredientManager manager) {
-        this.manager = manager;
+    default Response delete(HttpServletRequest request,
+                            Producer<T> producer) {
+        getManager().setPrincipals(getPrincipals(request));
+        StatusCode status = getManager().delete(producer.call());
+        return new Response(status);
     }
 
-    @Override
-    public RecipeIngredientManager getManager() {
-        return manager;
-    }
+    BusinessDeletable<T, U> getManager();
 }

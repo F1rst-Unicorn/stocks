@@ -76,7 +76,7 @@ public class ScaledUnitTest implements Deleter {
                 .queryParam("scale", scale)
                 .queryParam("unit", unit).
         when()
-                .put(TestSuite.DOMAIN + "/v2/scaledunit").
+                .put(TestSuite.DOMAIN + "/v2/scaled-unit").
         then()
                 .log().ifValidationFails()
                 .statusCode(200)
@@ -96,7 +96,7 @@ public class ScaledUnitTest implements Deleter {
         given()
                 .log().ifValidationFails().
         when()
-                .get(TestSuite.DOMAIN + "/v2/scaledunit").
+                .get(TestSuite.DOMAIN + "/v2/scaled-unit").
         then()
                 .log().ifValidationFails()
                 .statusCode(200)
@@ -106,6 +106,6 @@ public class ScaledUnitTest implements Deleter {
 
     @Override
     public String getEndpoint() {
-        return "/v2/scaledunit";
+        return "/v2/scaled-unit";
     }
 }

@@ -38,7 +38,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.math.BigDecimal;
 
-@Path("v2/scaledunit")
+@Path("v2/scaled-unit")
 public class ScaledUnitEndpoint extends Endpoint implements Get<ScaledUnitRecord, ScaledUnit>, Delete<ScaledUnitForDeletion, ScaledUnit> {
 
     private final ScaledUnitManager manager;
