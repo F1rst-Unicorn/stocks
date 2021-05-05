@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## [5.4.0.0]
+
+### Added
+
+* STOCKS-115: Extend data model for recipes and related data types. Extend API
+  to allow managing units and scaled units
+
+* STOCKS-115: Add DB indices for improved performance
+
+### Changed
+
+* STOCKS-115: Use lowercase names for all DB tables
+
 ### Fixed
 
 * STOCKS-129: Allow empty food and location descriptions
