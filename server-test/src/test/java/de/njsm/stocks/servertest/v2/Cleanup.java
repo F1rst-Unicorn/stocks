@@ -153,7 +153,7 @@ public class Cleanup {
 
     @Test
     public void cleanScaledUnits() {
-        List<Data> ids = getIds("/v2/scaledunit");
+        List<Data> ids = getIds("/v2/scaled-unit");
 
         for (Data d : ids) {
             if (d.id == 1) continue;
@@ -162,7 +162,7 @@ public class Cleanup {
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
             when()
-                    .delete(TestSuite.DOMAIN + "/v2/scaledunit").
+                    .delete(TestSuite.DOMAIN + "/v2/scaled-unit").
             then()
                     .log().ifValidationFails()
                     .statusCode(200)
