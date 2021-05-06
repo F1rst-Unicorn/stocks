@@ -20,25 +20,13 @@
 package de.njsm.stocks.android.network.server;
 
 
-import de.njsm.stocks.android.db.entities.EanNumber;
-import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.db.entities.FoodItem;
-import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.db.entities.Update;
-import de.njsm.stocks.android.db.entities.User;
-import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.db.entities.*;
 import de.njsm.stocks.android.frontend.device.ServerTicket;
 import de.njsm.stocks.android.network.server.data.DataResponse;
 import de.njsm.stocks.android.network.server.data.ListResponse;
 import de.njsm.stocks.android.network.server.data.Response;
 import retrofit2.Call;
-import retrofit2.http.DELETE;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.PUT;
-import retrofit2.http.Query;
+import retrofit2.http.*;
 
 public interface ServerClient {
 
@@ -152,4 +140,7 @@ public interface ServerClient {
     Call<Response> deleteEanNumber(@Query("id") int id,
                                    @Query("version") int version);
 
+    @GET("/v2/unit")
+    Call<ListResponse<Unit>> getUnits(@Query("bitemporal") int bitemporal,
+                                      @Query("startingFrom") String startingFrom);
 }

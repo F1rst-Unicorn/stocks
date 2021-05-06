@@ -868,7 +868,7 @@ RecipeIngredient {
 
 #### Recipe Product
 
-`GET /v2/recipeproduct`: Get all recipe ingredients in the system
+`GET /v2/recipe-product`: Get all recipe products in the system
 
 Query parameters:
 
@@ -884,14 +884,14 @@ Result: `application/json`
 ```
 {
     status: StatusCode
-    data: List<RecipeIngredient>
+    data: List<RecipeProduct>
 }
 
-RecipeIngredient {
+RecipeProduct {
 	id: int
 	version: int
 	amount: int
-	ingredient: int
+	product: int
 	recipe: int
 	unit: int
 }

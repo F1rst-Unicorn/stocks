@@ -29,7 +29,7 @@ import de.njsm.stocks.android.db.entities.UserDevice;
 public class UserDeviceWithUser extends UserDevice {
 
     @ColumnInfo(name = "username")
-    private String username;
+    private final String username;
 
     public UserDeviceWithUser(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, int userId, String username) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, userId);

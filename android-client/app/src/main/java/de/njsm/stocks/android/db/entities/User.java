@@ -70,10 +70,4 @@ public class User extends VersionedData {
     public int hashCode() {
         return Objects.hash(id, version, name);
     }
-
-    @Override
-    @NonNull
-    public String toString() {
-        return "User (" + id + ", " + version + ", " + name + ")";
-    }
 }

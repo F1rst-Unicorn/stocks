@@ -60,7 +60,7 @@ public abstract class Data {
     @Override
     public String toString() {
         try {
-            return new ObjectMapper().writeValueAsString(this);
+            return getClass().getSimpleName() + " " + new ObjectMapper().writeValueAsString(this);
         } catch (JsonProcessingException e) {
             return "<jackson exception>";
         }

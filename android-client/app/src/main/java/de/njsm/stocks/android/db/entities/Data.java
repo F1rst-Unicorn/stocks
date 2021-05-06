@@ -22,11 +22,12 @@ package de.njsm.stocks.android.db.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Ignore;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -57,4 +58,14 @@ public abstract class Data implements Positionable {
     public void setPosition(int position) {
         this.position = position;
     }
+
+    @Override
+    public String toString() {
+        try {
+            return getClass().getSimpleName() + " " + new ObjectMapper().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return "<jackson exception>";
+        }
+    }
+
 }

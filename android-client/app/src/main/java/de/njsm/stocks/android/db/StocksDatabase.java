@@ -34,7 +34,8 @@ import de.njsm.stocks.android.db.entities.*;
         FoodItem.class,
         EanNumber.class,
         SearchSuggestion.class,
-}, version = 33)
+        Unit.class,
+}, version = 34)
 @TypeConverters(de.njsm.stocks.android.db.TypeConverters.class)
 public abstract class StocksDatabase extends RoomDatabase {
 
@@ -68,4 +69,6 @@ public abstract class StocksDatabase extends RoomDatabase {
     public abstract EventDao eventDao();
 
     public abstract PlotDao plotDao();
+
+    public abstract UnitDao unitDao();
 }

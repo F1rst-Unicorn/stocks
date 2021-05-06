@@ -74,10 +74,4 @@ public class UserDevice extends VersionedData {
         result = 31 * result + userId;
         return result;
     }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "Device (" + id + ", " + name + ")";
-    }
 }

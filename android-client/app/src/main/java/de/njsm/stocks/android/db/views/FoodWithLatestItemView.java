@@ -28,19 +28,19 @@ import de.njsm.stocks.android.db.entities.VersionedData;
 
 public class FoodWithLatestItemView extends VersionedData {
 
-    private int amount;
+    private final int amount;
 
-    private Instant eatBy;
+    private final Instant eatBy;
 
-    private String name;
+    private final String name;
 
-    private boolean toBuy;
+    private final boolean toBuy;
 
-    private int expirationOffset;
+    private final int expirationOffset;
 
-    private int location;
+    private final int location;
 
-    private String description;
+    private final String description;
 
     public FoodWithLatestItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, int amount, Instant eatBy, String name, boolean toBuy, int expirationOffset, int location, String description) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, version);
@@ -99,16 +99,5 @@ public class FoodWithLatestItemView extends VersionedData {
         result = 31 * result + eatBy.hashCode();
         result = 31 * result + name.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "FoodView{" +
-                "amount=" + amount +
-                ", eatBy=" + eatBy +
-                ", name='" + name + '\'' +
-                ", version=" + version +
-                ", id=" + id +
-                '}';
     }
 }

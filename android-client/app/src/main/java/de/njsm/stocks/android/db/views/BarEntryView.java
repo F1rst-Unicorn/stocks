@@ -23,9 +23,9 @@ import com.github.mikephil.charting.data.BarEntry;
 
 public class BarEntryView {
 
-    private float x;
+    private final float x;
 
-    private float y;
+    private final float y;
 
     public BarEntryView(float x, float y) {
         this.x = x;

@@ -142,6 +142,18 @@ object Build : BuildType({
                 """.trimIndent()
             }
         }
+        gradle {
+            name = "Android Client Instrumented Test"
+            tasks = "connectedDebugAndroidTest"
+            buildFile = "android-client/build.gradle"
+            gradleHome = "/usr/bin/gradle"
+            gradleWrapperPath = "android-client"
+            enableStacktrace = true
+            // https://developer.android.com/reference/android/support/test/runner/AndroidJUnitRunner.html
+            gradleParams = """
+                -Pandroid.testInstrumentationRunnerArguments.notPackage=de.njsm.stocks.android.test.system
+            """.trimIndent()
+        }
         exec {
             name = "Package server"
             workingDir = "deploy-server"

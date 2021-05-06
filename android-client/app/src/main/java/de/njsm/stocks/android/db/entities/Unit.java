@@ -19,15 +19,14 @@
 
 package de.njsm.stocks.android.db.entities;
 
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import org.threeten.bp.Instant;
 
 import java.util.Objects;
@@ -39,36 +38,58 @@ import java.util.Objects;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @Entity(primaryKeys = {"_id", "version", "transaction_time_start"})
-public class Location extends VersionedData {
+public class Unit extends VersionedData {
 
     @ColumnInfo(name = "name")
+    @NonNull
     public String name;
 
-    @ColumnInfo(name = "description", defaultValue = "")
+    @ColumnInfo(name = "abbreviation")
     @NonNull
-    public String description;
+    public String abbreviation;
 
-    public Location(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, @NonNull String description) {
+    public Unit(String name, String abbreviation) {
+        this.name = name;
+        this.abbreviation = abbreviation;
+    }
+
+    public Unit(int position, int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, String abbreviation) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.name = name;
-        this.description = description;
+        this.abbreviation = abbreviation;
+        setPosition(position);
     }
 
     @Ignore
-    public Location() {}
+    public Unit() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Location other = (Location) o;
-        return id == other.id &&
-                version == other.version &&
-                Objects.equals(name, other.name);
+        if (!(o instanceof Unit)) return false;
+        Unit unit = (Unit) o;
+        return getName().equals(unit.getName()) && getAbbreviation().equals(unit.getAbbreviation());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, version);
+        return Objects.hash(getName(), getAbbreviation());
     }
 }

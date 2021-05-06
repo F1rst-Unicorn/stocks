@@ -95,9 +95,4 @@ public class FoodItem extends VersionedData {
     public int hashCode() {
         return Objects.hash(eatByDate, ofType, storedIn, registers, buys);
     }
-
-    @Override
-    public String toString() {
-        return "FoodItem (" + id + ", " + version + ", " + eatByDate + ", " + ofType + ", " + storedIn + ", " + registers + ", " + buys + ")";
-    }
 }

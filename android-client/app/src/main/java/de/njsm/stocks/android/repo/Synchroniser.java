@@ -21,27 +21,8 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import org.threeten.bp.Instant;
-
-import java.util.concurrent.Executor;
-
-import javax.inject.Inject;
-
-import de.njsm.stocks.android.db.dao.EanNumberDao;
-import de.njsm.stocks.android.db.dao.FoodDao;
-import de.njsm.stocks.android.db.dao.FoodItemDao;
-import de.njsm.stocks.android.db.dao.LocationDao;
-import de.njsm.stocks.android.db.dao.UpdateDao;
-import de.njsm.stocks.android.db.dao.UserDao;
-import de.njsm.stocks.android.db.dao.UserDeviceDao;
-import de.njsm.stocks.android.db.entities.EanNumber;
-import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.db.entities.FoodItem;
-import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.db.entities.Update;
-import de.njsm.stocks.android.db.entities.User;
-import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.db.dao.*;
+import de.njsm.stocks.android.db.entities.*;
 import de.njsm.stocks.android.error.StatusCodeException;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
@@ -50,29 +31,35 @@ import de.njsm.stocks.android.network.server.data.ListResponse;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
+import org.threeten.bp.Instant;
 import retrofit2.Call;
+
+import javax.inject.Inject;
+import java.util.concurrent.Executor;
 
 public class Synchroniser {
 
     private static final Logger LOG = new Logger(Synchroniser.class);
 
-    private ServerClient serverClient;
+    private final ServerClient serverClient;
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
-    private UserDeviceDao userDeviceDao;
+    private final UserDeviceDao userDeviceDao;
 
-    private LocationDao locationDao;
+    private final LocationDao locationDao;
 
-    private FoodDao foodDao;
+    private final FoodDao foodDao;
 
-    private FoodItemDao foodItemDao;
+    private final FoodItemDao foodItemDao;
 
-    private EanNumberDao eanNumberDao;
+    private final EanNumberDao eanNumberDao;
 
-    private UpdateDao updateDao;
+    private final UnitDao unitDao;
 
-    private Executor executor;
+    private final UpdateDao updateDao;
+
+    private final Executor executor;
 
     private final IdlingResource idlingResource;
 
@@ -84,6 +71,7 @@ public class Synchroniser {
                  FoodDao foodDao,
                  FoodItemDao foodItemDao,
                  EanNumberDao eanNumberDao,
+                 UnitDao unitDao,
                  UpdateDao updateDao,
                  Executor executor,
                  IdlingResource idlingResource) {
@@ -94,6 +82,7 @@ public class Synchroniser {
         this.foodDao = foodDao;
         this.foodItemDao = foodItemDao;
         this.eanNumberDao = eanNumberDao;
+        this.unitDao = unitDao;
         this.updateDao = updateDao;
         this.executor = executor;
         this.idlingResource = idlingResource;
@@ -110,26 +99,27 @@ public class Synchroniser {
     private LiveData<StatusCode> synchronise(boolean full) {
         MutableLiveData<StatusCode> result = new MutableLiveData<>();
         idlingResource.increment();
-        executor.execute(() -> {
-
-            LOG.i("Starting" + (full ? " full " : " ") + "synchronisation");
-
-            if (full)
-                updateDao.reset();
-
-            try {
-                Call<ListResponse<Update>> call = serverClient.getUpdates();
-                Update[] serverUpdates = StatusCodeCallback.executeCall(call);
-                enumerateServerUpdates(serverUpdates);
-                Update[] localUpdates = updateDao.getAll();
-                updateTables(serverUpdates, localUpdates);
-                result.postValue(StatusCode.SUCCESS);
-            } catch (StatusCodeException e) {
-                result.postValue(e.getCode());
-            }
-            idlingResource.decrement();
-        });
+        executor.execute(() -> synchroniseInThread(full, result));
         return result;
+    }
+
+    void synchroniseInThread(boolean full, MutableLiveData<StatusCode> result) {
+        LOG.i("Starting" + (full ? " full " : " ") + "synchronisation");
+
+        if (full)
+            updateDao.reset();
+
+        try {
+            Call<ListResponse<Update>> call = serverClient.getUpdates();
+            Update[] serverUpdates = StatusCodeCallback.executeCall(call);
+            enumerateServerUpdates(serverUpdates);
+            Update[] localUpdates = updateDao.getAll();
+            updateTables(serverUpdates, localUpdates);
+            result.postValue(StatusCode.SUCCESS);
+        } catch (StatusCodeException e) {
+            result.postValue(e.getCode());
+        }
+        idlingResource.decrement();
     }
 
     // Room needs primary keys on entities, but server doesn't provide IDs here
@@ -159,6 +149,7 @@ public class Synchroniser {
         refreshFood();
         refreshFoodItems();
         refreshEanNumbers();
+        refreshUnits();
     }
 
     void refreshOutdatedTables(Update[] serverUpdates, Update[] localUpdates) throws StatusCodeException {
@@ -176,18 +167,20 @@ public class Synchroniser {
 
     private void refresh(String table, Instant localUpdate) throws StatusCodeException {
         String rawLocalUpdate = Config.API_DATE_FORMAT.format(localUpdate);
-        if (table.equals("User")) {
+        if (table.equalsIgnoreCase("User")) {
             refreshUsers(rawLocalUpdate);
-        } else if (table.equals("User_device")) {
+        } else if (table.equalsIgnoreCase("User_device")) {
             refreshUserDevices(rawLocalUpdate);
-        } else if (table.equals("Location")) {
+        } else if (table.equalsIgnoreCase("Location")) {
             refreshLocations(rawLocalUpdate);
-        } else if (table.equals("Food")) {
+        } else if (table.equalsIgnoreCase("Food")) {
             refreshFood(rawLocalUpdate);
-        } else if (table.equals("Food_item")) {
+        } else if (table.equalsIgnoreCase("Food_item")) {
             refreshFoodItems(rawLocalUpdate);
-        } else if (table.equals("EAN_number")) {
+        } else if (table.equalsIgnoreCase("EAN_number")) {
             refreshEanNumbers(rawLocalUpdate);
+        } else if (table.equalsIgnoreCase("unit")) {
+            refreshUnits(rawLocalUpdate);
         }
     }
 
@@ -221,6 +214,11 @@ public class Synchroniser {
         eanNumberDao.synchronise(u);
     }
 
+    private void refreshUnits() throws StatusCodeException {
+        Unit[] u = StatusCodeCallback.executeCall(serverClient.getUnits(1, null));
+        unitDao.synchronise(u);
+    }
+
     private void refreshUsers(String startingFrom) throws StatusCodeException {
         User[] u = StatusCodeCallback.executeCall(serverClient.getUsers(1, startingFrom));
         userDao.insert(u);
@@ -249,6 +247,11 @@ public class Synchroniser {
     private void refreshEanNumbers(String startingFrom) throws StatusCodeException {
         EanNumber[] u = StatusCodeCallback.executeCall(serverClient.getEanNumbers(1, startingFrom));
         eanNumberDao.insert(u);
+    }
+
+    private void refreshUnits(String startingFrom) throws StatusCodeException {
+        Unit[] u = StatusCodeCallback.executeCall(serverClient.getUnits(1, startingFrom));
+        unitDao.insert(u);
     }
 
     private Instant getLatestLocalUpdate(Update[] localUpdates, Update update) {

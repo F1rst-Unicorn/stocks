@@ -29,7 +29,7 @@ import de.njsm.stocks.android.db.entities.EanNumber;
 public class EanNumberView extends EanNumber {
 
     @ColumnInfo(name = "identified_food_name")
-    private String identifiedFoodName;
+    private final String identifiedFoodName;
 
     public EanNumberView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String eanCode, int identifiesFood, String identifiedFoodName) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, eanCode, identifiesFood);

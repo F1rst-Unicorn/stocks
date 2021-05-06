@@ -19,24 +19,27 @@
 
 package de.njsm.stocks.android.repo;
 
+import androidx.lifecycle.MutableLiveData;
+import de.njsm.stocks.android.db.dao.*;
+import de.njsm.stocks.android.db.entities.*;
+import de.njsm.stocks.android.network.server.ServerClient;
+import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.android.network.server.data.ListResponse;
+import de.njsm.stocks.android.util.Config;
+import de.njsm.stocks.android.util.idling.IdlingResource;
+import de.njsm.stocks.android.util.idling.NullIdlingResource;
+import okhttp3.Request;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.threeten.bp.Instant;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.concurrent.Executor;
 
-import de.njsm.stocks.android.db.dao.EanNumberDao;
-import de.njsm.stocks.android.db.dao.FoodDao;
-import de.njsm.stocks.android.db.dao.FoodItemDao;
-import de.njsm.stocks.android.db.dao.LocationDao;
-import de.njsm.stocks.android.db.dao.UpdateDao;
-import de.njsm.stocks.android.db.dao.UserDao;
-import de.njsm.stocks.android.db.dao.UserDeviceDao;
-import de.njsm.stocks.android.db.entities.Update;
-import de.njsm.stocks.android.network.server.ServerClient;
-import de.njsm.stocks.android.util.idling.IdlingResource;
-import de.njsm.stocks.android.util.idling.NullIdlingResource;
+import static org.mockito.ArgumentMatchers.eq;
 
 public class SynchroniserTest {
 
@@ -58,6 +61,8 @@ public class SynchroniserTest {
 
     private UpdateDao updateDao;
 
+    private UnitDao unitDao;
+
     private Executor executor;
 
     @Before
@@ -70,10 +75,11 @@ public class SynchroniserTest {
         foodDao = Mockito.mock(FoodDao.class);
         foodItemDao = Mockito.mock(FoodItemDao.class);
         eanNumberDao = Mockito.mock(EanNumberDao.class);
+        unitDao = Mockito.mock(UnitDao.class);
         executor = Mockito.mock(Executor.class);
         IdlingResource idlingResource = new NullIdlingResource();
 
-        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, updateDao, executor, idlingResource);
+        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, unitDao, updateDao, executor, idlingResource);
     }
 
     @Test
@@ -102,5 +108,94 @@ public class SynchroniserTest {
         };
 
         uut.refreshOutdatedTables(serverUpdates, localUpdates);
+    }
+
+    @Test
+    public void gettingUnitsWorks() {
+        Update[] localUpdates = new Update[] {
+                new Update(1, "unit", Instant.EPOCH)
+        };
+        Update[] remoteUpdates = new Update[] {
+                new Update(1, "unit", Instant.MAX)
+        };
+        Mockito.when(updateDao.getAll()).thenReturn(localUpdates);
+
+        Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
+        Unit[] data = new Unit[]{};
+        Mockito.when(serverClient.getUnits(1, Config.API_DATE_FORMAT.format(localUpdates[0].lastUpdate)))
+                .thenReturn(createMockCall(data));
+        MutableLiveData<StatusCode> result = new MutableLiveData<>();
+
+        uut.synchroniseInThread(false, result);
+
+        Mockito.verify(unitDao).insert(data);
+    }
+
+
+    @Test
+    public void gettingAllSynchronisesUnits() {
+        Update[] localUpdates = new Update[] {
+        };
+        Update[] remoteUpdates = new Update[] {
+                new Update(1, "unit", Instant.MAX)
+        };
+        Mockito.when(updateDao.getAll()).thenReturn(localUpdates);
+
+        Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
+        mockAllEntityResponses();
+        MutableLiveData<StatusCode> result = new MutableLiveData<>();
+
+        uut.synchroniseInThread(false, result);
+
+        Mockito.verify(unitDao).synchronise(eq(new Unit[]{}));
+    }
+
+    private void mockAllEntityResponses() {
+        Mockito.when(serverClient.getUsers(1, null)).thenReturn(createMockCall(new User[]{}));
+        Mockito.when(serverClient.getDevices(1, null)).thenReturn(createMockCall(new UserDevice[]{}));
+        Mockito.when(serverClient.getFood(1, null)).thenReturn(createMockCall(new Food[]{}));
+        Mockito.when(serverClient.getFoodItems(1, null)).thenReturn(createMockCall(new FoodItem[]{}));
+        Mockito.when(serverClient.getLocations(1, null)).thenReturn(createMockCall(new Location[]{}));
+        Mockito.when(serverClient.getEanNumbers(1, null)).thenReturn(createMockCall(new EanNumber[]{}));
+        Mockito.when(serverClient.getUnits(1, null)).thenReturn(createMockCall(new Unit[]{}));
+    }
+
+    private <T> Call<ListResponse<T>> createMockCall(T[] input) {
+        return new Call<ListResponse<T>>() {
+            @Override
+            public Response<ListResponse<T>> execute() {
+                return Response.success(new ListResponse<T>(StatusCode.SUCCESS, input));
+            }
+
+            @Override
+            public void enqueue(Callback<ListResponse<T>> callback) {
+
+            }
+
+            @Override
+            public boolean isExecuted() {
+                return true;
+            }
+
+            @Override
+            public void cancel() {
+
+            }
+
+            @Override
+            public boolean isCanceled() {
+                return false;
+            }
+
+            @Override
+            public Call<ListResponse<T>> clone() {
+                return null;
+            }
+
+            @Override
+            public Request request() {
+                return null;
+            }
+        };
     }
 }

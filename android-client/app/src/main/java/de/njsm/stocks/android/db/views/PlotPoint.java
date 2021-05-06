@@ -23,9 +23,9 @@ import org.threeten.bp.Instant;
 
 public class PlotPoint {
 
-    private Instant time;
+    private final Instant time;
 
-    private int value;
+    private final int value;
 
     public PlotPoint(Instant time, int value) {
         this.time = time;

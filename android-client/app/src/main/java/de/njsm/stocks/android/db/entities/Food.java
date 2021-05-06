@@ -98,16 +98,4 @@ public class Food extends VersionedData {
         result = 31 * result + location;
         return result;
     }
-
-    @Override
-    public String toString() {
-        return "Food{" +
-                "name='" + name + '\'' +
-                ", toBuy=" + toBuy +
-                ", expirationOffset=" + expirationOffset +
-                ", location=" + location +
-                ", version=" + version +
-                ", id=" + id +
-                '}';
-    }
 }

@@ -20,28 +20,16 @@
 package de.njsm.stocks.android.dagger.modules;
 
 import android.app.Application;
-
 import androidx.room.Room;
-
-import java.util.concurrent.Executor;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.android.db.StocksDatabase;
-import de.njsm.stocks.android.db.dao.EanNumberDao;
-import de.njsm.stocks.android.db.dao.EventDao;
-import de.njsm.stocks.android.db.dao.FoodDao;
-import de.njsm.stocks.android.db.dao.FoodItemDao;
-import de.njsm.stocks.android.db.dao.LocationDao;
-import de.njsm.stocks.android.db.dao.PlotDao;
-import de.njsm.stocks.android.db.dao.SearchSuggestionDao;
-import de.njsm.stocks.android.db.dao.UpdateDao;
-import de.njsm.stocks.android.db.dao.UserDao;
-import de.njsm.stocks.android.db.dao.UserDeviceDao;
+import de.njsm.stocks.android.db.dao.*;
 import de.njsm.stocks.android.db.migrations.Migration_31_to_32;
 import de.njsm.stocks.android.db.migrations.Migration_32_to_33;
+
+import javax.inject.Singleton;
+import java.util.concurrent.Executor;
 
 @Module
 public abstract class DbModule {
@@ -105,5 +93,10 @@ public abstract class DbModule {
     @Provides
     static PlotDao providePlotDao(StocksDatabase database) {
         return database.plotDao();
+    }
+
+    @Provides
+    static UnitDao provideUnitDao(StocksDatabase database) {
+        return database.unitDao();
     }
 }
