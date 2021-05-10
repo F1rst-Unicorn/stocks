@@ -63,6 +63,8 @@ public class SynchroniserTest {
 
     private UnitDao unitDao;
 
+    private ScaledUnitDao scaledUnitDao;
+
     private Executor executor;
 
     @Before
@@ -76,10 +78,11 @@ public class SynchroniserTest {
         foodItemDao = Mockito.mock(FoodItemDao.class);
         eanNumberDao = Mockito.mock(EanNumberDao.class);
         unitDao = Mockito.mock(UnitDao.class);
+        scaledUnitDao = Mockito.mock(ScaledUnitDao.class);
         executor = Mockito.mock(Executor.class);
         IdlingResource idlingResource = new NullIdlingResource();
 
-        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, unitDao, updateDao, executor, idlingResource);
+        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, unitDao, scaledUnitDao, updateDao, executor, idlingResource);
     }
 
     @Test
@@ -150,6 +153,45 @@ public class SynchroniserTest {
         Mockito.verify(unitDao).synchronise(eq(new Unit[]{}));
     }
 
+    @Test
+    public void gettingScaledUnitsWorks() {
+        Update[] localUpdates = new Update[] {
+                new Update(1, "scaled_unit", Instant.EPOCH)
+        };
+        Update[] remoteUpdates = new Update[] {
+                new Update(1, "scaled_unit", Instant.MAX)
+        };
+        Mockito.when(updateDao.getAll()).thenReturn(localUpdates);
+
+        Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
+        ScaledUnit[] data = new ScaledUnit[]{};
+        Mockito.when(serverClient.getScaledUnits(1, Config.API_DATE_FORMAT.format(localUpdates[0].lastUpdate)))
+                .thenReturn(createMockCall(data));
+        MutableLiveData<StatusCode> result = new MutableLiveData<>();
+
+        uut.synchroniseInThread(false, result);
+
+        Mockito.verify(scaledUnitDao).insert(data);
+    }
+
+    @Test
+    public void gettingAllSynchronisesScaledUnits() {
+        Update[] localUpdates = new Update[] {
+        };
+        Update[] remoteUpdates = new Update[] {
+                new Update(1, "unit", Instant.MAX)
+        };
+        Mockito.when(updateDao.getAll()).thenReturn(localUpdates);
+
+        Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
+        mockAllEntityResponses();
+        MutableLiveData<StatusCode> result = new MutableLiveData<>();
+
+        uut.synchroniseInThread(false, result);
+
+        Mockito.verify(scaledUnitDao).synchronise(eq(new ScaledUnit[]{}));
+    }
+
     private void mockAllEntityResponses() {
         Mockito.when(serverClient.getUsers(1, null)).thenReturn(createMockCall(new User[]{}));
         Mockito.when(serverClient.getDevices(1, null)).thenReturn(createMockCall(new UserDevice[]{}));
@@ -158,6 +200,7 @@ public class SynchroniserTest {
         Mockito.when(serverClient.getLocations(1, null)).thenReturn(createMockCall(new Location[]{}));
         Mockito.when(serverClient.getEanNumbers(1, null)).thenReturn(createMockCall(new EanNumber[]{}));
         Mockito.when(serverClient.getUnits(1, null)).thenReturn(createMockCall(new Unit[]{}));
+        Mockito.when(serverClient.getScaledUnits(1, null)).thenReturn(createMockCall(new ScaledUnit[]{}));
     }
 
     private <T> Call<ListResponse<T>> createMockCall(T[] input) {

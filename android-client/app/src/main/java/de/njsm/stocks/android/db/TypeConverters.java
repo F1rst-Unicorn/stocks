@@ -20,14 +20,12 @@
 package de.njsm.stocks.android.db;
 
 import androidx.room.TypeConverter;
-
+import de.njsm.stocks.android.util.Config;
 import org.threeten.bp.Instant;
 
-import de.njsm.stocks.android.util.Config;
+import java.math.BigDecimal;
 
-import static de.njsm.stocks.android.util.Config.DATABASE_DATE_FORMAT;
-import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
-import static de.njsm.stocks.android.util.Config.API_INFINITY;
+import static de.njsm.stocks.android.util.Config.*;
 
 public class TypeConverters {
 
@@ -51,5 +49,15 @@ public class TypeConverters {
         } else {
             return result;
         }
+    }
+
+    @TypeConverter
+    public String bigDecimalToDb(BigDecimal bigDecimal) {
+        return bigDecimal.toString();
+    }
+
+    @TypeConverter
+    public BigDecimal dbToBigDecimal(String rawBigDecimal) {
+        return new BigDecimal(rawBigDecimal);
     }
 }

@@ -99,4 +99,9 @@ public abstract class DbModule {
     static UnitDao provideUnitDao(StocksDatabase database) {
         return database.unitDao();
     }
+
+    @Provides
+    static ScaledUnitDao provideScaledUnitDao(StocksDatabase database) {
+        return database.scaledUnitDao();
+    }
 }

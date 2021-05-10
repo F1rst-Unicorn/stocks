@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.android.db.entities;
 
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -29,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.threeten.bp.Instant;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -37,53 +37,54 @@ import java.util.Objects;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity(primaryKeys = {"_id", "version", "transaction_time_start"})
-public class Unit extends VersionedData {
+@Entity(tableName = "scaled_unit",
+        primaryKeys = {"_id", "version", "transaction_time_start"})
+public class ScaledUnit extends VersionedData {
 
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "scale")
     @NonNull
-    public String name;
+    public BigDecimal scale;
 
-    @ColumnInfo(name = "abbreviation")
+    @ColumnInfo(name = "unit")
     @NonNull
-    public String abbreviation;
+    public int unit;
 
-    public Unit(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, String abbreviation) {
+    public ScaledUnit(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, @NonNull BigDecimal scale, int unit) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
-        this.name = name;
-        this.abbreviation = abbreviation;
+        this.scale = scale;
+        this.unit = unit;
     }
 
     @Ignore
-    public Unit() {
+    public ScaledUnit() {}
+
+    @NonNull
+    public BigDecimal getScale() {
+        return scale;
     }
 
-    public String getName() {
-        return name;
+    public void setScale(@NonNull BigDecimal scale) {
+        this.scale = scale;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public int getUnit() {
+        return unit;
     }
 
-    public String getAbbreviation() {
-        return abbreviation;
-    }
-
-    public void setAbbreviation(String abbreviation) {
-        this.abbreviation = abbreviation;
+    public void setUnit(int unit) {
+        this.unit = unit;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Unit)) return false;
-        Unit unit = (Unit) o;
-        return getName().equals(unit.getName()) && getAbbreviation().equals(unit.getAbbreviation());
+        if (!(o instanceof ScaledUnit)) return false;
+        ScaledUnit that = (ScaledUnit) o;
+        return getUnit() == that.getUnit() && getScale().equals(that.getScale());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getAbbreviation());
+        return Objects.hash(getScale(), getUnit());
     }
 }

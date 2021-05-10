@@ -143,4 +143,8 @@ public interface ServerClient {
     @GET("/v2/unit")
     Call<ListResponse<Unit>> getUnits(@Query("bitemporal") int bitemporal,
                                       @Query("startingFrom") String startingFrom);
+
+    @GET("/v2/scaled-unit")
+    Call<ListResponse<ScaledUnit>> getScaledUnits(@Query("bitemporal") int bitemporal,
+                                                  @Query("startingFrom") String startingFrom);
 }

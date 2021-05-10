@@ -57,6 +57,8 @@ public class Synchroniser {
 
     private final UnitDao unitDao;
 
+    private final ScaledUnitDao scaledUnitDao;
+
     private final UpdateDao updateDao;
 
     private final Executor executor;
@@ -72,6 +74,7 @@ public class Synchroniser {
                  FoodItemDao foodItemDao,
                  EanNumberDao eanNumberDao,
                  UnitDao unitDao,
+                 ScaledUnitDao scaledUnitDao,
                  UpdateDao updateDao,
                  Executor executor,
                  IdlingResource idlingResource) {
@@ -83,6 +86,7 @@ public class Synchroniser {
         this.foodItemDao = foodItemDao;
         this.eanNumberDao = eanNumberDao;
         this.unitDao = unitDao;
+        this.scaledUnitDao = scaledUnitDao;
         this.updateDao = updateDao;
         this.executor = executor;
         this.idlingResource = idlingResource;
@@ -150,6 +154,7 @@ public class Synchroniser {
         refreshFoodItems();
         refreshEanNumbers();
         refreshUnits();
+        refreshScaledUnits();
     }
 
     void refreshOutdatedTables(Update[] serverUpdates, Update[] localUpdates) throws StatusCodeException {
@@ -181,6 +186,8 @@ public class Synchroniser {
             refreshEanNumbers(rawLocalUpdate);
         } else if (table.equalsIgnoreCase("unit")) {
             refreshUnits(rawLocalUpdate);
+        } else if (table.equalsIgnoreCase("scaled_unit")) {
+            refreshScaledUnits(rawLocalUpdate);
         }
     }
 
@@ -219,6 +226,11 @@ public class Synchroniser {
         unitDao.synchronise(u);
     }
 
+    private void refreshScaledUnits() throws StatusCodeException {
+        ScaledUnit[] u = StatusCodeCallback.executeCall(serverClient.getScaledUnits(1, null));
+        scaledUnitDao.synchronise(u);
+    }
+
     private void refreshUsers(String startingFrom) throws StatusCodeException {
         User[] u = StatusCodeCallback.executeCall(serverClient.getUsers(1, startingFrom));
         userDao.insert(u);
@@ -252,6 +264,11 @@ public class Synchroniser {
     private void refreshUnits(String startingFrom) throws StatusCodeException {
         Unit[] u = StatusCodeCallback.executeCall(serverClient.getUnits(1, startingFrom));
         unitDao.insert(u);
+    }
+
+    private void refreshScaledUnits(String startingFrom) throws StatusCodeException {
+        ScaledUnit[] u = StatusCodeCallback.executeCall(serverClient.getScaledUnits(1, startingFrom));
+        scaledUnitDao.insert(u);
     }
 
     private Instant getLatestLocalUpdate(Update[] localUpdates, Update update) {
