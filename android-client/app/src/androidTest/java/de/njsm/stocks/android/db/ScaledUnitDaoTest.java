@@ -19,25 +19,21 @@
 
 package de.njsm.stocks.android.db;
 
-import androidx.lifecycle.LiveData;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import de.njsm.stocks.android.db.dao.Inserter;
 import de.njsm.stocks.android.db.dao.ScaledUnitDao;
 import de.njsm.stocks.android.db.entities.ScaledUnit;
 import de.njsm.stocks.android.util.Config;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.threeten.bp.Instant;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
 
 import static java.math.BigDecimal.ONE;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class ScaledUnitDaoTest extends DbTestCase {
+public class ScaledUnitDaoTest extends InsertionTest<ScaledUnit> {
 
     private ScaledUnitDao uut;
 
@@ -46,40 +42,28 @@ public class ScaledUnitDaoTest extends DbTestCase {
         uut = stocksDatabase.scaledUnitDao();
     }
 
-    @Test
-    public void insertionWorks() {
-        ScaledUnit data = new ScaledUnit(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, ONE, 1);
-
-        uut.insert(new ScaledUnit[]{data});
-
-        LiveData<List<ScaledUnit>> actual = uut.getAll();
-        actual.observeForever(v -> assertEquals(Collections.singletonList(data), v));
+    @Override
+    Inserter<ScaledUnit> getDao() {
+        return uut;
     }
 
-    @Test
-    public void insertionWithConflictReplaces() {
-        ScaledUnit dataToBeTerminated = new ScaledUnit(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, ONE, 1);
-        uut.insert(new ScaledUnit[]{dataToBeTerminated});
-        Instant now = Instant.now();
-        dataToBeTerminated.transactionTimeEnd = now;
-        ScaledUnit terminatedData = new ScaledUnit(1, Instant.EPOCH, now, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, ONE, 1);
-
-        uut.insert(new ScaledUnit[] {dataToBeTerminated, terminatedData});
-
-        setArtificialDbNow(now);
-        LiveData<List<ScaledUnit>> actual = uut.getAll();
-        actual.observeForever(v -> assertEquals(Collections.emptyList(), v));
+    @Override
+    ScaledUnit getDto() {
+        return new ScaledUnit(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, ONE, 1);
     }
 
-    @Test
-    public void synchronisingWorks() {
-        ScaledUnit data = new ScaledUnit(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, ONE, 1);
-        uut.insert(new ScaledUnit[]{data});
+    @Override
+    void alterDto(ScaledUnit data) {
         data.scale = BigDecimal.TEN;
+    }
 
-        uut.synchronise(new ScaledUnit[]{data});
+    @Override
+    ScaledUnit[] toArray(ScaledUnit data) {
+        return new ScaledUnit[] {data};
+    }
 
-        LiveData<List<ScaledUnit>> actual = uut.getAll();
-        actual.observeForever(v -> assertEquals(Collections.singletonList(data), v));
+    @Override
+    ScaledUnit[] toArray(ScaledUnit data, ScaledUnit data2) {
+        return new ScaledUnit[] {data, data2};
     }
 }

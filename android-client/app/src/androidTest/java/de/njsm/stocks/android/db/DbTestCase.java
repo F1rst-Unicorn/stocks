@@ -56,7 +56,7 @@ public class DbTestCase {
      *
      * @see de.njsm.stocks.android.db.StocksDatabase.NOW
      */
-    void setArtificialDbNow(Instant now) {
+    public void setArtificialDbNow(Instant now) {
         Update update = new Update(99999, "artificial_db_now", now);
 
         stocksDatabase.updateDao().reset();

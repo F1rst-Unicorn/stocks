@@ -56,4 +56,16 @@ public abstract class UserDeviceDao implements Inserter<UserDevice> {
 
     @Query("delete from User_device")
     abstract void delete();
+
+    @Override
+    public LiveData<List<UserDevice>> getAll() {
+        return getAll(DATABASE_INFINITY);
+    }
+
+    @Query("select * " +
+            "from User_device " +
+            "where valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = :infinity")
+    abstract LiveData<List<UserDevice>> getAll(Instant infinity);
 }

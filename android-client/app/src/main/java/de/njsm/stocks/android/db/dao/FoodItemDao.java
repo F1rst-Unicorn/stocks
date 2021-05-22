@@ -20,18 +20,12 @@
 package de.njsm.stocks.android.db.dao;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Transaction;
-
+import androidx.room.*;
+import de.njsm.stocks.android.db.entities.FoodItem;
+import de.njsm.stocks.android.db.views.FoodItemView;
 import org.threeten.bp.Instant;
 
 import java.util.List;
-
-import de.njsm.stocks.android.db.entities.FoodItem;
-import de.njsm.stocks.android.db.views.FoodItemView;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
@@ -64,6 +58,16 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
         return countItemsOfType(foodId, DATABASE_INFINITY);
     }
 
+    public LiveData<List<FoodItem>> getAll() {
+        return getAll(DATABASE_INFINITY);
+    }
+
+    @Query("select * " +
+            "from FoodItem " +
+            "where valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = :infinity")
+    abstract LiveData<List<FoodItem>> getAll(Instant infinity);
 
     @Query("select i._id as _id, i.version as version, u.name as userName, " +
             "d.name as deviceName, l.name as location, i.eat_by as eatByDate, i.valid_time_start," +

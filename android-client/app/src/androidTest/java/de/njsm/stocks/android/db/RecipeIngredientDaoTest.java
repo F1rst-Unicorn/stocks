@@ -21,46 +21,45 @@ package de.njsm.stocks.android.db;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import de.njsm.stocks.android.db.dao.Inserter;
-import de.njsm.stocks.android.db.dao.RecipeDao;
-import de.njsm.stocks.android.db.entities.Recipe;
+import de.njsm.stocks.android.db.dao.RecipeIngredientDao;
+import de.njsm.stocks.android.db.entities.RecipeIngredient;
 import de.njsm.stocks.android.util.Config;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 
 @RunWith(AndroidJUnit4.class)
-public class RecipeDaoTest extends InsertionTest<Recipe> {
+public class RecipeIngredientDaoTest extends InsertionTest<RecipeIngredient> {
 
-    private RecipeDao recipeDao;
+    private RecipeIngredientDao recipeIngredientDao;
 
     @Before
     public void setup() {
-        recipeDao = stocksDatabase.recipeDao();
+        recipeIngredientDao = stocksDatabase.recipeIngredientDao();
     }
 
     @Override
-    public Inserter<Recipe> getDao() {
-        return recipeDao;
+    Inserter<RecipeIngredient> getDao() {
+        return recipeIngredientDao;
     }
 
     @Override
-    public Recipe getDto() {
-        return new Recipe(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, "name", "instructions", Duration.ofHours(1));
+    RecipeIngredient getDto() {
+        return new RecipeIngredient(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, 2, 3, 4, 5);
     }
 
     @Override
-    public void alterDto(Recipe data) {
-        data.instructions = "altered instructions";
+    void alterDto(RecipeIngredient data) {
+        data.unit = 7;
     }
 
     @Override
-    public Recipe[] toArray(Recipe data) {
-        return new Recipe[] {data};
+    RecipeIngredient[] toArray(RecipeIngredient data) {
+        return new RecipeIngredient[] {data};
     }
 
     @Override
-    public Recipe[] toArray(Recipe data, Recipe data2) {
-        return new Recipe[] {data, data2};
+    RecipeIngredient[] toArray(RecipeIngredient data, RecipeIngredient data2) {
+        return new RecipeIngredient[] {data, data2};
     }
 }

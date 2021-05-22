@@ -19,9 +19,15 @@
 
 package de.njsm.stocks.android.db.dao;
 
+import androidx.lifecycle.LiveData;
+
+import java.util.List;
+
 public interface Inserter<T> {
 
     void insert(T[] data);
 
     void synchronise(T[] data);
+
+    LiveData<List<T>> getAll();
 }

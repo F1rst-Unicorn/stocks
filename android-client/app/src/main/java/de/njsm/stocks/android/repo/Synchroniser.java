@@ -63,6 +63,8 @@ public class Synchroniser {
 
     private final RecipeDao recipeDao;
 
+    private final RecipeIngredientDao recipeIngredientDao;
+
     private final UpdateDao updateDao;
 
     private final Executor executor;
@@ -80,6 +82,7 @@ public class Synchroniser {
                  UnitDao unitDao,
                  ScaledUnitDao scaledUnitDao,
                  RecipeDao recipeDao,
+                 RecipeIngredientDao recipeIngredientDao,
                  UpdateDao updateDao,
                  Executor executor,
                  IdlingResource idlingResource) {
@@ -93,6 +96,7 @@ public class Synchroniser {
         this.unitDao = unitDao;
         this.scaledUnitDao = scaledUnitDao;
         this.recipeDao = recipeDao;
+        this.recipeIngredientDao = recipeIngredientDao;
         this.updateDao = updateDao;
         this.executor = executor;
         this.idlingResource = idlingResource;
@@ -162,7 +166,8 @@ public class Synchroniser {
                 UpdateChain.of(serverClient.getEanNumbers(1, null), eanNumberDao),
                 UpdateChain.of(serverClient.getUnits(1, null), unitDao),
                 UpdateChain.of(serverClient.getScaledUnits(1, null), scaledUnitDao),
-                UpdateChain.of(serverClient.getRecipes(1, null), recipeDao)
+                UpdateChain.of(serverClient.getRecipes(1, null), recipeDao),
+                UpdateChain.of(serverClient.getRecipeIngredients(1, null), recipeIngredientDao)
         );
 
         for (UpdateChain<? extends VersionedData> chain : entities) {
@@ -203,6 +208,8 @@ public class Synchroniser {
             UpdateChain.of(serverClient.getScaledUnits(1, rawLocalUpdate), scaledUnitDao).refresh();
         } else if (table.equalsIgnoreCase("recipe")) {
             UpdateChain.of(serverClient.getRecipes(1, rawLocalUpdate), recipeDao).refresh();
+        } else if (table.equalsIgnoreCase("recipe_ingredient")) {
+            UpdateChain.of(serverClient.getRecipeIngredients(1, rawLocalUpdate), recipeIngredientDao).refresh();
         }
     }
 

@@ -19,65 +19,47 @@
 
 package de.njsm.stocks.android.db;
 
-import androidx.lifecycle.LiveData;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import de.njsm.stocks.android.db.dao.Inserter;
 import de.njsm.stocks.android.db.dao.UnitDao;
 import de.njsm.stocks.android.db.entities.Unit;
 import de.njsm.stocks.android.util.Config;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.threeten.bp.Instant;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-
 @RunWith(AndroidJUnit4.class)
-public class UnitDaoTest extends DbTestCase {
+public class UnitDaoTest extends InsertionTest<Unit> {
 
-    private UnitDao unitDao;
+    private UnitDao uut;
 
     @Before
     public void setup() {
-        unitDao = stocksDatabase.unitDao();
+        uut = stocksDatabase.unitDao();
     }
 
-    @Test
-    public void insertionWorks() {
-        Unit data = new Unit(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, "name", "abbreviation");
-
-        unitDao.insert(new Unit[]{data});
-
-        LiveData<List<Unit>> actual = unitDao.getAll();
-        actual.observeForever(v -> assertEquals(Collections.singletonList(data), v));
+    @Override
+    Inserter<Unit> getDao() {
+        return uut;
     }
 
-    @Test
-    public void insertionWithConflictReplaces() {
-        Unit dataToBeTerminated = new Unit(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, "name", "abbreviation");
-        unitDao.insert(new Unit[]{dataToBeTerminated});
-        Instant now = Instant.now();
-        dataToBeTerminated.transactionTimeEnd = now;
-        Unit terminatedData = new Unit(1, Instant.EPOCH, now, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, "name", "abbreviation");
-
-        unitDao.insert(new Unit[] {dataToBeTerminated, terminatedData});
-
-        setArtificialDbNow(now);
-        LiveData<List<Unit>> actual = unitDao.getAll();
-        actual.observeForever(v -> assertEquals(Collections.emptyList(), v));
+    @Override
+    Unit getDto() {
+        return new Unit(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, "name", "abbreviation");
     }
 
-    @Test
-    public void synchronisingWorks() {
-        Unit data = new Unit(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, "name", "abbreviation");
-        unitDao.insert(new Unit[]{data});
+    @Override
+    void alterDto(Unit data) {
         data.abbreviation = "altered abbreviation";
+    }
 
-        unitDao.synchronise(new Unit[]{data});
+    @Override
+    Unit[] toArray(Unit data) {
+        return new Unit[] {data};
+    }
 
-        LiveData<List<Unit>> actual = unitDao.getAll();
-        actual.observeForever(v -> assertEquals(Collections.singletonList(data), v));
+    @Override
+    Unit[] toArray(Unit data, Unit data2) {
+        return new Unit[] {data, data2};
     }
 }

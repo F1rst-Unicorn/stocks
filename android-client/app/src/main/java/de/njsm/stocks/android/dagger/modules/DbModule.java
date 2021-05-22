@@ -109,4 +109,9 @@ public abstract class DbModule {
     static RecipeDao provideRecipeDao(StocksDatabase database) {
         return database.recipeDao();
     }
+
+    @Provides
+    static RecipeIngredientDao provideRecipeIngredientDao(StocksDatabase database) {
+        return database.recipeIngredientDao();
+    }
 }

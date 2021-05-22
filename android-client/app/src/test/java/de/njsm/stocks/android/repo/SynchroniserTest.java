@@ -66,6 +66,8 @@ public class SynchroniserTest {
 
     private RecipeDao recipeDao;
 
+    private RecipeIngredientDao recipeIngredientDao;
+
     private Executor executor;
 
     @Before
@@ -81,10 +83,11 @@ public class SynchroniserTest {
         unitDao = Mockito.mock(UnitDao.class);
         scaledUnitDao = Mockito.mock(ScaledUnitDao.class);
         recipeDao = Mockito.mock(RecipeDao.class);
+        recipeIngredientDao = Mockito.mock(RecipeIngredientDao.class);
         executor = Mockito.mock(Executor.class);
         IdlingResource idlingResource = new NullIdlingResource();
 
-        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, unitDao, scaledUnitDao, recipeDao, updateDao, executor, idlingResource);
+        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, unitDao, scaledUnitDao, recipeDao, recipeIngredientDao, updateDao, executor, idlingResource);
     }
 
     @Test
@@ -179,6 +182,13 @@ public class SynchroniserTest {
     }
 
     @Test
+    public void gettingRecipeIngredientsWorks() {
+        RecipeIngredient[] data = new RecipeIngredient[]{};
+        Mockito.when(serverClient.getRecipeIngredients(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
+        gettingEntityDataWorks("recipe_ingredient", recipeIngredientDao, data);
+    }
+
+    @Test
     public void gettingAllSynchronisesUsers() {
         gettingAllSynchronises(userDao, User.class);
     }
@@ -221,6 +231,11 @@ public class SynchroniserTest {
     @Test
     public void gettingAllSynchronisesRecipes() {
         gettingAllSynchronises(recipeDao, Recipe.class);
+    }
+
+    @Test
+    public void gettingAllSynchronisesRecipeIngredients() {
+        gettingAllSynchronises(recipeIngredientDao, RecipeIngredient.class);
     }
 
     public <T> void gettingEntityDataWorks(String entityName, Inserter<T> dao, T[] data) {
@@ -266,6 +281,7 @@ public class SynchroniserTest {
         Mockito.when(serverClient.getUnits(1, null)).thenReturn(createMockCall(new Unit[]{}));
         Mockito.when(serverClient.getScaledUnits(1, null)).thenReturn(createMockCall(new ScaledUnit[]{}));
         Mockito.when(serverClient.getRecipes(1, null)).thenReturn(createMockCall(new Recipe[]{}));
+        Mockito.when(serverClient.getRecipeIngredients(1, null)).thenReturn(createMockCall(new RecipeIngredient[]{}));
     }
 
     private <T> Call<ListResponse<T>> createMockCall(T[] input) {

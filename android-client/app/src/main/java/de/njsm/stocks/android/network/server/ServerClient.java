@@ -151,4 +151,9 @@ public interface ServerClient {
     @GET("/v2/recipe")
     Call<ListResponse<Recipe>> getRecipes(@Query("bitemporal") int bitemporal,
                                           @Query("startingFrom") String startingFrom);
+
+    @GET("/v2/recipe-ingredient")
+    Call<ListResponse<RecipeIngredient>> getRecipeIngredients(@Query("bitemporal") int bitemporal,
+                                                              @Query("startingFrom") String startingFrom);
+
 }

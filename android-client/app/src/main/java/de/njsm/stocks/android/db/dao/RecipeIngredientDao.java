@@ -21,50 +21,37 @@ package de.njsm.stocks.android.db.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
-import de.njsm.stocks.android.db.entities.EanNumber;
+import de.njsm.stocks.android.db.entities.RecipeIngredient;
+import de.njsm.stocks.android.util.Config;
 import org.threeten.bp.Instant;
 
 import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
-import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
-public abstract class EanNumberDao implements Inserter<EanNumber> {
+public abstract class RecipeIngredientDao implements Inserter<RecipeIngredient> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(EanNumber[] food);
-
-    public LiveData<List<EanNumber>> getEanNumbersOf(int foodId) {
-        return getEanNumbersOf(foodId, DATABASE_INFINITY);
-    }
+    public abstract void insert(RecipeIngredient[] data);
 
     @Transaction
-    public void synchronise(EanNumber[] food) {
+    public void synchronise(RecipeIngredient[] data) {
         delete();
-        insert(food);
+        insert(data);
     }
 
-    public LiveData<List<EanNumber>> getAll() {
-        return getAll(DATABASE_INFINITY);
+    @Query("delete from recipe_ingredient")
+    abstract void delete();
+
+    public LiveData<List<RecipeIngredient>> getAll() {
+        return getAll(Config.DATABASE_INFINITY);
     }
 
     @Query("select * " +
-            "from EanNumber " +
+            "from recipe_ingredient " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity")
-    abstract LiveData<List<EanNumber>> getAll(Instant infinity);
-
-    @Query("select * " +
-            "from EanNumber " +
-            "where identifies = :foodId " +
-            "and valid_time_start <= " + NOW +
-            "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity " +
-            "order by number")
-    abstract LiveData<List<EanNumber>> getEanNumbersOf(int foodId, Instant infinity);
-
-    @Query("delete from EanNumber")
-    abstract void delete();
+    abstract LiveData<List<RecipeIngredient>> getAll(Instant infinity);
 }
