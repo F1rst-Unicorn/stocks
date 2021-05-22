@@ -111,6 +111,12 @@
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
     </bean>
 
+    <bean name="recipeProductBackend" class="de.njsm.stocks.server.v2.db.RecipeProductHandler" scope="request">
+        <constructor-arg index="0" ref="connectionFactory" />
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+    </bean>
+
     <!-- Business Layer -->
     <bean name="ticketAuthoriser" class="de.njsm.stocks.server.v2.business.TicketAuthoriser" scope="request">
         <constructor-arg index="0" ref="authAdmin"/>
@@ -177,6 +183,10 @@
         <constructor-arg index="0" ref="recipeIngredientBackend" />
     </bean>
 
+    <bean name="recipeProductManager" class="de.njsm.stocks.server.v2.business.RecipeProductManager" scope="request">
+        <constructor-arg index="0" ref="recipeProductBackend" />
+    </bean>
+
     <!-- Web Layer -->
     <bean name="updateEndpoint" class="de.njsm.stocks.server.v2.web.UpdateEndpoint" scope="request">
         <constructor-arg index="0" ref="updateManager" />
@@ -228,5 +238,9 @@
 
     <bean name="recipeIngredientEndpoint" class="de.njsm.stocks.server.v2.web.RecipeIngredientEndpoint" scope="request">
         <constructor-arg index="0" ref="recipeIngredientManager" />
+    </bean>
+
+    <bean name="recipeProductEndpoint" class="de.njsm.stocks.server.v2.web.RecipeProductEndpoint" scope="request">
+        <constructor-arg index="0" ref="recipeProductManager" />
     </bean>
 </beans>
