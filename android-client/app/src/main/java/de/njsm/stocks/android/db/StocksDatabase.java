@@ -38,6 +38,7 @@ import de.njsm.stocks.android.db.entities.*;
         ScaledUnit.class,
         Recipe.class,
         RecipeIngredient.class,
+        RecipeProduct.class,
 }, version = 34)
 @TypeConverters(de.njsm.stocks.android.db.TypeConverters.class)
 public abstract class StocksDatabase extends RoomDatabase {
@@ -80,4 +81,6 @@ public abstract class StocksDatabase extends RoomDatabase {
     public abstract RecipeDao recipeDao();
 
     public abstract RecipeIngredientDao recipeIngredientDao();
+
+    public abstract RecipeProductDao recipeProductDao();
 }

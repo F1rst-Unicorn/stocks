@@ -65,6 +65,8 @@ public class Synchroniser {
 
     private final RecipeIngredientDao recipeIngredientDao;
 
+    private final RecipeProductDao recipeProductDao;
+
     private final UpdateDao updateDao;
 
     private final Executor executor;
@@ -83,6 +85,7 @@ public class Synchroniser {
                  ScaledUnitDao scaledUnitDao,
                  RecipeDao recipeDao,
                  RecipeIngredientDao recipeIngredientDao,
+                 RecipeProductDao recipeProductDao,
                  UpdateDao updateDao,
                  Executor executor,
                  IdlingResource idlingResource) {
@@ -97,6 +100,7 @@ public class Synchroniser {
         this.scaledUnitDao = scaledUnitDao;
         this.recipeDao = recipeDao;
         this.recipeIngredientDao = recipeIngredientDao;
+        this.recipeProductDao = recipeProductDao;
         this.updateDao = updateDao;
         this.executor = executor;
         this.idlingResource = idlingResource;
@@ -167,7 +171,8 @@ public class Synchroniser {
                 UpdateChain.of(serverClient.getUnits(1, null), unitDao),
                 UpdateChain.of(serverClient.getScaledUnits(1, null), scaledUnitDao),
                 UpdateChain.of(serverClient.getRecipes(1, null), recipeDao),
-                UpdateChain.of(serverClient.getRecipeIngredients(1, null), recipeIngredientDao)
+                UpdateChain.of(serverClient.getRecipeIngredients(1, null), recipeIngredientDao),
+                UpdateChain.of(serverClient.getRecipeProducts(1, null), recipeProductDao)
         );
 
         for (UpdateChain<? extends VersionedData> chain : entities) {
@@ -210,6 +215,8 @@ public class Synchroniser {
             UpdateChain.of(serverClient.getRecipes(1, rawLocalUpdate), recipeDao).refresh();
         } else if (table.equalsIgnoreCase("recipe_ingredient")) {
             UpdateChain.of(serverClient.getRecipeIngredients(1, rawLocalUpdate), recipeIngredientDao).refresh();
+        } else if (table.equalsIgnoreCase("recipe_product")) {
+            UpdateChain.of(serverClient.getRecipeProducts(1, rawLocalUpdate), recipeProductDao).refresh();
         }
     }
 
@@ -220,7 +227,7 @@ public class Synchroniser {
 
     private Update getLocalUpdate(Update[] localUpdates, String table) {
         for (Update u : localUpdates) {
-            if (u.table.equals(table)) {
+            if (u.table.equalsIgnoreCase(table)) {
                 return u;
             }
         }
