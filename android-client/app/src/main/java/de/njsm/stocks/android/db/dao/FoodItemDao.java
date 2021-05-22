@@ -37,7 +37,7 @@ import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
-public abstract class FoodItemDao {
+public abstract class FoodItemDao implements Inserter<FoodItem> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(FoodItem[] food);

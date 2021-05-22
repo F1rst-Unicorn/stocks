@@ -104,4 +104,9 @@ public abstract class DbModule {
     static ScaledUnitDao provideScaledUnitDao(StocksDatabase database) {
         return database.scaledUnitDao();
     }
+
+    @Provides
+    static RecipeDao provideRecipeDao(StocksDatabase database) {
+        return database.recipeDao();
+    }
 }

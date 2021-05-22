@@ -35,6 +35,8 @@ import org.threeten.bp.Instant;
 import retrofit2.Call;
 
 import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class Synchroniser {
@@ -59,6 +61,8 @@ public class Synchroniser {
 
     private final ScaledUnitDao scaledUnitDao;
 
+    private final RecipeDao recipeDao;
+
     private final UpdateDao updateDao;
 
     private final Executor executor;
@@ -75,6 +79,7 @@ public class Synchroniser {
                  EanNumberDao eanNumberDao,
                  UnitDao unitDao,
                  ScaledUnitDao scaledUnitDao,
+                 RecipeDao recipeDao,
                  UpdateDao updateDao,
                  Executor executor,
                  IdlingResource idlingResource) {
@@ -87,6 +92,7 @@ public class Synchroniser {
         this.eanNumberDao = eanNumberDao;
         this.unitDao = unitDao;
         this.scaledUnitDao = scaledUnitDao;
+        this.recipeDao = recipeDao;
         this.updateDao = updateDao;
         this.executor = executor;
         this.idlingResource = idlingResource;
@@ -147,14 +153,21 @@ public class Synchroniser {
     }
 
     private void refreshAll() throws StatusCodeException {
-        refreshUsers();
-        refreshUserDevices();
-        refreshLocations();
-        refreshFood();
-        refreshFoodItems();
-        refreshEanNumbers();
-        refreshUnits();
-        refreshScaledUnits();
+        List<UpdateChain<? extends VersionedData>> entities = Arrays.asList(
+                UpdateChain.of(serverClient.getUsers(1, null), userDao),
+                UpdateChain.of(serverClient.getDevices(1, null), userDeviceDao),
+                UpdateChain.of(serverClient.getLocations(1, null), locationDao),
+                UpdateChain.of(serverClient.getFood(1, null), foodDao),
+                UpdateChain.of(serverClient.getFoodItems(1, null), foodItemDao),
+                UpdateChain.of(serverClient.getEanNumbers(1, null), eanNumberDao),
+                UpdateChain.of(serverClient.getUnits(1, null), unitDao),
+                UpdateChain.of(serverClient.getScaledUnits(1, null), scaledUnitDao),
+                UpdateChain.of(serverClient.getRecipes(1, null), recipeDao)
+        );
+
+        for (UpdateChain<? extends VersionedData> chain : entities) {
+            chain.refreshFully();
+        }
     }
 
     void refreshOutdatedTables(Update[] serverUpdates, Update[] localUpdates) throws StatusCodeException {
@@ -173,102 +186,24 @@ public class Synchroniser {
     private void refresh(String table, Instant localUpdate) throws StatusCodeException {
         String rawLocalUpdate = Config.API_DATE_FORMAT.format(localUpdate);
         if (table.equalsIgnoreCase("User")) {
-            refreshUsers(rawLocalUpdate);
+            UpdateChain.of(serverClient.getUsers(1, rawLocalUpdate), userDao).refresh();
         } else if (table.equalsIgnoreCase("User_device")) {
-            refreshUserDevices(rawLocalUpdate);
+            UpdateChain.of(serverClient.getDevices(1, rawLocalUpdate), userDeviceDao).refresh();
         } else if (table.equalsIgnoreCase("Location")) {
-            refreshLocations(rawLocalUpdate);
+            UpdateChain.of(serverClient.getLocations(1, rawLocalUpdate), locationDao).refresh();
         } else if (table.equalsIgnoreCase("Food")) {
-            refreshFood(rawLocalUpdate);
+            UpdateChain.of(serverClient.getFood(1, rawLocalUpdate), foodDao).refresh();
         } else if (table.equalsIgnoreCase("Food_item")) {
-            refreshFoodItems(rawLocalUpdate);
+            UpdateChain.of(serverClient.getFoodItems(1, rawLocalUpdate), foodItemDao).refresh();
         } else if (table.equalsIgnoreCase("EAN_number")) {
-            refreshEanNumbers(rawLocalUpdate);
+            UpdateChain.of(serverClient.getEanNumbers(1, rawLocalUpdate), eanNumberDao).refresh();
         } else if (table.equalsIgnoreCase("unit")) {
-            refreshUnits(rawLocalUpdate);
+            UpdateChain.of(serverClient.getUnits(1, rawLocalUpdate), unitDao).refresh();
         } else if (table.equalsIgnoreCase("scaled_unit")) {
-            refreshScaledUnits(rawLocalUpdate);
+            UpdateChain.of(serverClient.getScaledUnits(1, rawLocalUpdate), scaledUnitDao).refresh();
+        } else if (table.equalsIgnoreCase("recipe")) {
+            UpdateChain.of(serverClient.getRecipes(1, rawLocalUpdate), recipeDao).refresh();
         }
-    }
-
-    private void refreshUsers() throws StatusCodeException {
-        User[] u = StatusCodeCallback.executeCall(serverClient.getUsers(1, null));
-        userDao.synchronise(u);
-    }
-
-    private void refreshLocations() throws StatusCodeException {
-        Location[] u = StatusCodeCallback.executeCall(serverClient.getLocations(1, null));
-        locationDao.synchronise(u);
-    }
-
-    private void refreshUserDevices() throws StatusCodeException {
-        UserDevice[] u = StatusCodeCallback.executeCall(serverClient.getDevices(1, null));
-        userDeviceDao.synchronise(u);
-    }
-
-    private void refreshFood() throws StatusCodeException {
-        Food[] u = StatusCodeCallback.executeCall(serverClient.getFood(1, null));
-        foodDao.synchronise(u);
-    }
-
-    private void refreshFoodItems() throws StatusCodeException {
-        FoodItem[] u = StatusCodeCallback.executeCall(serverClient.getFoodItems(1, null));
-        foodItemDao.synchronise(u);
-    }
-
-    private void refreshEanNumbers() throws StatusCodeException {
-        EanNumber[] u = StatusCodeCallback.executeCall(serverClient.getEanNumbers(1, null));
-        eanNumberDao.synchronise(u);
-    }
-
-    private void refreshUnits() throws StatusCodeException {
-        Unit[] u = StatusCodeCallback.executeCall(serverClient.getUnits(1, null));
-        unitDao.synchronise(u);
-    }
-
-    private void refreshScaledUnits() throws StatusCodeException {
-        ScaledUnit[] u = StatusCodeCallback.executeCall(serverClient.getScaledUnits(1, null));
-        scaledUnitDao.synchronise(u);
-    }
-
-    private void refreshUsers(String startingFrom) throws StatusCodeException {
-        User[] u = StatusCodeCallback.executeCall(serverClient.getUsers(1, startingFrom));
-        userDao.insert(u);
-    }
-
-    private void refreshLocations(String startingFrom) throws StatusCodeException {
-        Location[] u = StatusCodeCallback.executeCall(serverClient.getLocations(1, startingFrom));
-        locationDao.insert(u);
-    }
-
-    private void refreshUserDevices(String startingFrom) throws StatusCodeException {
-        UserDevice[] u = StatusCodeCallback.executeCall(serverClient.getDevices(1, startingFrom));
-        userDeviceDao.insert(u);
-    }
-
-    private void refreshFood(String startingFrom) throws StatusCodeException {
-        Food[] u = StatusCodeCallback.executeCall(serverClient.getFood(1, startingFrom));
-        foodDao.insert(u);
-    }
-
-    private void refreshFoodItems(String startingFrom) throws StatusCodeException {
-        FoodItem[] u = StatusCodeCallback.executeCall(serverClient.getFoodItems(1, startingFrom));
-        foodItemDao.insert(u);
-    }
-
-    private void refreshEanNumbers(String startingFrom) throws StatusCodeException {
-        EanNumber[] u = StatusCodeCallback.executeCall(serverClient.getEanNumbers(1, startingFrom));
-        eanNumberDao.insert(u);
-    }
-
-    private void refreshUnits(String startingFrom) throws StatusCodeException {
-        Unit[] u = StatusCodeCallback.executeCall(serverClient.getUnits(1, startingFrom));
-        unitDao.insert(u);
-    }
-
-    private void refreshScaledUnits(String startingFrom) throws StatusCodeException {
-        ScaledUnit[] u = StatusCodeCallback.executeCall(serverClient.getScaledUnits(1, startingFrom));
-        scaledUnitDao.insert(u);
     }
 
     private Instant getLatestLocalUpdate(Update[] localUpdates, Update update) {
@@ -283,5 +218,31 @@ public class Synchroniser {
             }
         }
         return null;
+    }
+
+    private static class UpdateChain<T> {
+
+        private final Call<ListResponse<T>> call;
+
+        private final Inserter<T> dao;
+
+        static <T> UpdateChain<T> of(Call<ListResponse<T>> call, Inserter<T> data) {
+            return new UpdateChain<>(call, data);
+        }
+
+        public UpdateChain(Call<ListResponse<T>> call, Inserter<T> dao) {
+            this.call = call;
+            this.dao = dao;
+        }
+
+        private void refreshFully() throws StatusCodeException {
+            T[] data = StatusCodeCallback.executeCall(call);
+            dao.synchronise(data);
+        }
+
+        private void refresh() throws StatusCodeException {
+            T[] data = StatusCodeCallback.executeCall(call);
+            dao.insert(data);
+        }
     }
 }

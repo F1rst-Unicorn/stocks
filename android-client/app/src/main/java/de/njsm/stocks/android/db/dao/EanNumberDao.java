@@ -20,23 +20,17 @@
 package de.njsm.stocks.android.db.dao;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Transaction;
-
+import androidx.room.*;
+import de.njsm.stocks.android.db.entities.EanNumber;
 import org.threeten.bp.Instant;
 
 import java.util.List;
-
-import de.njsm.stocks.android.db.entities.EanNumber;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
-public abstract class EanNumberDao {
+public abstract class EanNumberDao implements Inserter<EanNumber> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(EanNumber[] food);

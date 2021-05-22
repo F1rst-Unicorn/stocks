@@ -21,7 +21,7 @@ package de.njsm.stocks.android.db.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
-import de.njsm.stocks.android.db.entities.Unit;
+import de.njsm.stocks.android.db.entities.Recipe;
 import de.njsm.stocks.android.util.Config;
 import org.threeten.bp.Instant;
 
@@ -30,28 +30,28 @@ import java.util.List;
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 
 @Dao
-public abstract class UnitDao implements Inserter<Unit> {
+public abstract class RecipeDao implements Inserter<Recipe> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(Unit[] data);
+    public abstract void insert(Recipe[] recipes);
+
+    public LiveData<List<Recipe>> getAll() {
+        return getAll(Config.DATABASE_INFINITY);
+    }
 
     @Transaction
-    public void synchronise(Unit[] data) {
+    public void synchronise(Recipe[] data) {
         delete();
         insert(data);
     }
 
-    @Query("delete from unit")
+    @Query("delete from recipe")
     abstract void delete();
 
-    public LiveData<List<Unit>> getAll() {
-        return getAll(Config.DATABASE_INFINITY);
-    }
-
     @Query("select * " +
-            "from unit " +
+            "from recipe " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity")
-    abstract LiveData<List<Unit>> getAll(Instant infinity);
+    abstract LiveData<List<Recipe>> getAll(Instant infinity);
 }

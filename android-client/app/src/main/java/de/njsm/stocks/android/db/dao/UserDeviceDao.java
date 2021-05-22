@@ -20,23 +20,17 @@
 package de.njsm.stocks.android.db.dao;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Transaction;
-
+import androidx.room.*;
+import de.njsm.stocks.android.db.entities.UserDevice;
 import org.threeten.bp.Instant;
 
 import java.util.List;
-
-import de.njsm.stocks.android.db.entities.UserDevice;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
-public abstract class UserDeviceDao {
+public abstract class UserDeviceDao implements Inserter<UserDevice> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(UserDevice[] users);

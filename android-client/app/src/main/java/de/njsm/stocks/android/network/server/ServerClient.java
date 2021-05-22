@@ -147,4 +147,8 @@ public interface ServerClient {
     @GET("/v2/scaled-unit")
     Call<ListResponse<ScaledUnit>> getScaledUnits(@Query("bitemporal") int bitemporal,
                                                   @Query("startingFrom") String startingFrom);
+
+    @GET("/v2/recipe")
+    Call<ListResponse<Recipe>> getRecipes(@Query("bitemporal") int bitemporal,
+                                          @Query("startingFrom") String startingFrom);
 }

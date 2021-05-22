@@ -37,9 +37,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import java.lang.reflect.Array;
 import java.util.concurrent.Executor;
-
-import static org.mockito.ArgumentMatchers.eq;
 
 public class SynchroniserTest {
 
@@ -65,6 +64,8 @@ public class SynchroniserTest {
 
     private ScaledUnitDao scaledUnitDao;
 
+    private RecipeDao recipeDao;
+
     private Executor executor;
 
     @Before
@@ -79,10 +80,11 @@ public class SynchroniserTest {
         eanNumberDao = Mockito.mock(EanNumberDao.class);
         unitDao = Mockito.mock(UnitDao.class);
         scaledUnitDao = Mockito.mock(ScaledUnitDao.class);
+        recipeDao = Mockito.mock(RecipeDao.class);
         executor = Mockito.mock(Executor.class);
         IdlingResource idlingResource = new NullIdlingResource();
 
-        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, unitDao, scaledUnitDao, updateDao, executor, idlingResource);
+        uut = new Synchroniser(serverClient, userDao, userDeviceDao, locationDao, foodDao, foodItemDao, eanNumberDao, unitDao, scaledUnitDao, recipeDao, updateDao, executor, idlingResource);
     }
 
     @Test
@@ -114,82 +116,144 @@ public class SynchroniserTest {
     }
 
     @Test
-    public void gettingUnitsWorks() {
-        Update[] localUpdates = new Update[] {
-                new Update(1, "unit", Instant.EPOCH)
-        };
-        Update[] remoteUpdates = new Update[] {
-                new Update(1, "unit", Instant.MAX)
-        };
-        Mockito.when(updateDao.getAll()).thenReturn(localUpdates);
-
-        Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
-        Unit[] data = new Unit[]{};
-        Mockito.when(serverClient.getUnits(1, Config.API_DATE_FORMAT.format(localUpdates[0].lastUpdate)))
-                .thenReturn(createMockCall(data));
-        MutableLiveData<StatusCode> result = new MutableLiveData<>();
-
-        uut.synchroniseInThread(false, result);
-
-        Mockito.verify(unitDao).insert(data);
+    public void gettingUsersWorks() {
+        User[] data = new User[]{};
+        Mockito.when(serverClient.getUsers(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
+        gettingEntityDataWorks("user", userDao, data);
     }
 
+    @Test
+    public void gettingUserDevicesWorks() {
+        UserDevice[] data = new UserDevice[]{};
+        Mockito.when(serverClient.getDevices(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
+        gettingEntityDataWorks("User_device", userDeviceDao, data);
+    }
 
     @Test
-    public void gettingAllSynchronisesUnits() {
-        Update[] localUpdates = new Update[] {
-        };
-        Update[] remoteUpdates = new Update[] {
-                new Update(1, "unit", Instant.MAX)
-        };
-        Mockito.when(updateDao.getAll()).thenReturn(localUpdates);
+    public void gettingLocationsWorks() {
+        Location[] data = new Location[]{};
+        Mockito.when(serverClient.getLocations(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
+        gettingEntityDataWorks("Location", locationDao, data);
+    }
 
-        Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
-        mockAllEntityResponses();
-        MutableLiveData<StatusCode> result = new MutableLiveData<>();
+    @Test
+    public void gettingFoodsWorks() {
+        Food[] data = new Food[]{};
+        Mockito.when(serverClient.getFood(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
+        gettingEntityDataWorks("Food", foodDao, data);
+    }
 
-        uut.synchroniseInThread(false, result);
+    @Test
+    public void gettingFoodItemsWorks() {
+        FoodItem[] data = new FoodItem[]{};
+        Mockito.when(serverClient.getFoodItems(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
+        gettingEntityDataWorks("Food_item", foodItemDao, data);
+    }
 
-        Mockito.verify(unitDao).synchronise(eq(new Unit[]{}));
+    @Test
+    public void gettingEanNumbersWorks() {
+        EanNumber[] data = new EanNumber[]{};
+        Mockito.when(serverClient.getEanNumbers(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
+        gettingEntityDataWorks("EAN_number", eanNumberDao, data);
+    }
+
+    @Test
+    public void gettingUnitsWorks() {
+        Unit[] data = new Unit[]{};
+        Mockito.when(serverClient.getUnits(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
+        gettingEntityDataWorks("unit", unitDao, data);
     }
 
     @Test
     public void gettingScaledUnitsWorks() {
-        Update[] localUpdates = new Update[] {
-                new Update(1, "scaled_unit", Instant.EPOCH)
-        };
-        Update[] remoteUpdates = new Update[] {
-                new Update(1, "scaled_unit", Instant.MAX)
-        };
-        Mockito.when(updateDao.getAll()).thenReturn(localUpdates);
-
-        Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
         ScaledUnit[] data = new ScaledUnit[]{};
-        Mockito.when(serverClient.getScaledUnits(1, Config.API_DATE_FORMAT.format(localUpdates[0].lastUpdate)))
-                .thenReturn(createMockCall(data));
-        MutableLiveData<StatusCode> result = new MutableLiveData<>();
+        Mockito.when(serverClient.getScaledUnits(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
+        gettingEntityDataWorks("scaled_unit", scaledUnitDao, data);
+    }
 
-        uut.synchroniseInThread(false, result);
+    @Test
+    public void gettingRecipesWorks() {
+        Recipe[] data = new Recipe[]{};
+        Mockito.when(serverClient.getRecipes(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
+        gettingEntityDataWorks("recipe", recipeDao, data);
+    }
 
-        Mockito.verify(scaledUnitDao).insert(data);
+    @Test
+    public void gettingAllSynchronisesUsers() {
+        gettingAllSynchronises(userDao, User.class);
+    }
+
+    @Test
+    public void gettingAllSynchronisesUserDevices() {
+        gettingAllSynchronises(userDeviceDao, UserDevice.class);
+    }
+
+    @Test
+    public void gettingAllSynchronisesLocations() {
+        gettingAllSynchronises(locationDao, Location.class);
+    }
+
+    @Test
+    public void gettingAllSynchronisesFoods() {
+        gettingAllSynchronises(foodDao, Food.class);
+    }
+
+    @Test
+    public void gettingAllSynchronisesFoodItems() {
+        gettingAllSynchronises(foodItemDao, FoodItem.class);
+    }
+
+    @Test
+    public void gettingAllSynchronisesEanNumbers() {
+        gettingAllSynchronises(eanNumberDao, EanNumber.class);
+    }
+
+    @Test
+    public void gettingAllSynchronisesUnits() {
+        gettingAllSynchronises(unitDao, Unit.class);
     }
 
     @Test
     public void gettingAllSynchronisesScaledUnits() {
+        gettingAllSynchronises(scaledUnitDao, ScaledUnit.class);
+    }
+
+    @Test
+    public void gettingAllSynchronisesRecipes() {
+        gettingAllSynchronises(recipeDao, Recipe.class);
+    }
+
+    public <T> void gettingEntityDataWorks(String entityName, Inserter<T> dao, T[] data) {
         Update[] localUpdates = new Update[] {
+                new Update(1, entityName, Instant.EPOCH)
         };
         Update[] remoteUpdates = new Update[] {
-                new Update(1, "unit", Instant.MAX)
+                new Update(1, entityName, Instant.MAX)
         };
         Mockito.when(updateDao.getAll()).thenReturn(localUpdates);
 
+        Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
+        MutableLiveData<StatusCode> result = new MutableLiveData<>();
+
+        uut.synchroniseInThread(false, result);
+
+        Mockito.verify(dao).insert(data);
+    }
+
+    public <T> void gettingAllSynchronises(Inserter<T> dao, Class<T> clazz) {
+        Update[] emptyUpdates = new Update[] {};
+        Update[] remoteUpdates = new Update[] {
+                new Update(1, "", Instant.MAX)
+        };
+
+        Mockito.when(updateDao.getAll()).thenReturn(emptyUpdates);
         Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
         mockAllEntityResponses();
         MutableLiveData<StatusCode> result = new MutableLiveData<>();
 
         uut.synchroniseInThread(false, result);
 
-        Mockito.verify(scaledUnitDao).synchronise(eq(new ScaledUnit[]{}));
+        Mockito.verify(dao).synchronise((T[]) Array.newInstance(clazz, 0));
     }
 
     private void mockAllEntityResponses() {
@@ -201,13 +265,14 @@ public class SynchroniserTest {
         Mockito.when(serverClient.getEanNumbers(1, null)).thenReturn(createMockCall(new EanNumber[]{}));
         Mockito.when(serverClient.getUnits(1, null)).thenReturn(createMockCall(new Unit[]{}));
         Mockito.when(serverClient.getScaledUnits(1, null)).thenReturn(createMockCall(new ScaledUnit[]{}));
+        Mockito.when(serverClient.getRecipes(1, null)).thenReturn(createMockCall(new Recipe[]{}));
     }
 
     private <T> Call<ListResponse<T>> createMockCall(T[] input) {
         return new Call<ListResponse<T>>() {
             @Override
             public Response<ListResponse<T>> execute() {
-                return Response.success(new ListResponse<T>(StatusCode.SUCCESS, input));
+                return Response.success(new ListResponse<>(StatusCode.SUCCESS, input));
             }
 
             @Override

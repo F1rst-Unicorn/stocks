@@ -21,6 +21,7 @@ package de.njsm.stocks.android.db;
 
 import androidx.room.TypeConverter;
 import de.njsm.stocks.android.util.Config;
+import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 
 import java.math.BigDecimal;
@@ -59,5 +60,15 @@ public class TypeConverters {
     @TypeConverter
     public BigDecimal dbToBigDecimal(String rawBigDecimal) {
         return new BigDecimal(rawBigDecimal);
+    }
+
+    @TypeConverter
+    public String durationToDb(Duration d) {
+        return d.toString();
+    }
+
+    @TypeConverter
+    public Duration dbToDuration(String rawDuration) {
+        return Duration.parse(rawDuration);
     }
 }

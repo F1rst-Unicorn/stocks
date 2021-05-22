@@ -30,7 +30,7 @@ import java.util.List;
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 
 @Dao
-public abstract class ScaledUnitDao {
+public abstract class ScaledUnitDao implements Inserter<ScaledUnit> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(ScaledUnit[] data);
