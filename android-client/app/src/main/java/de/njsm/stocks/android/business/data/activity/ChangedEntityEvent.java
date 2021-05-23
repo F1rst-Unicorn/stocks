@@ -19,12 +19,15 @@
 
 package de.njsm.stocks.android.business.data.activity;
 
-import org.threeten.bp.Instant;
-
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.entities.VersionedData;
+import org.threeten.bp.Instant;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.IntFunction;
 
 public abstract class ChangedEntityEvent<T extends VersionedData> extends EntityEvent<T> {
 
@@ -37,6 +40,44 @@ public abstract class ChangedEntityEvent<T extends VersionedData> extends Entity
         this.oldEntity = oldEntity;
         this.newEntity = newEntity;
     }
+
+    @Override
+    public String describe(IntFunction<String> stringResourceResolver) {
+        SentenceObject object = new SentenceObject(getExplicitObject(),
+                stringResourceResolver.apply(R.string.event_enumeration_undefined_object),
+                String.format(stringResourceResolver.apply(R.string.event_enumeration_undefined_object_genitive), getExplicitObject()));
+
+        ArrayList<String> partialSentences = new ArrayList<>();
+        for (PartialDiffGenerator<T> differ : getDiffers(stringResourceResolver, object)) {
+            differ.generate(partialSentences::add);
+        }
+
+        StringBuilder result = new StringBuilder();
+        result.append(initiatorUser.name);
+        result.append(" ");
+
+        String enumerationSeparator = stringResourceResolver.apply(R.string.event_enumeration_item_divider);
+        for (int i = 0; i < partialSentences.size() - 1; i++) {
+            result.append(partialSentences.get(i));
+            result.append(enumerationSeparator);
+            result.append(" ");
+        }
+
+        if (partialSentences.size() > 1) {
+            result.deleteCharAt(result.length() - 2);
+            result.append(stringResourceResolver.apply(R.string.event_enumeration_item_divider_last));
+            result.append(" ");
+        }
+
+        result.append(partialSentences.get(partialSentences.size() - 1));
+        result.append(stringResourceResolver.apply(R.string.event_end_of_sentence));
+
+        return result.toString();
+    }
+
+    protected abstract List<PartialDiffGenerator<T>> getDiffers(IntFunction<String> stringResourceResolver, SentenceObject object);
+
+    protected abstract String getExplicitObject();
 
     @Override
     public Instant getTime() {

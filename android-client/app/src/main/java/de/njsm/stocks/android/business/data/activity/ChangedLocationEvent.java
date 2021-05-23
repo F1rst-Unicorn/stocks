@@ -19,13 +19,15 @@
 
 package de.njsm.stocks.android.business.data.activity;
 
-import java.util.ArrayList;
-import java.util.function.IntFunction;
-
-import de.njsm.stocks.R;
+import de.njsm.stocks.android.business.data.activity.differ.LocationDescriptionChangedGenerator;
+import de.njsm.stocks.android.business.data.activity.differ.LocationNameChangedGenerator;
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.IntFunction;
 
 public class ChangedLocationEvent extends ChangedEntityEvent<Location> implements LocationIconResourceProvider {
 
@@ -34,45 +36,16 @@ public class ChangedLocationEvent extends ChangedEntityEvent<Location> implement
     }
 
     @Override
-    public String describe(IntFunction<String> stringResourceResolver) {
-        String template;
-        String description;
-        ArrayList<String> partialSentences = new ArrayList<>();
+    protected List<PartialDiffGenerator<Location>> getDiffers(IntFunction<String> stringResourceResolver, SentenceObject object) {
+        List<PartialDiffGenerator<Location>> differs = new ArrayList<>();
+        differs.add(new LocationNameChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new LocationDescriptionChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        return differs;
+    }
 
-        if (!oldEntity.name.equals(newEntity.name)) {
-            template = stringResourceResolver.apply(R.string.event_location_renamed);
-            description = String.format(template, initiatorUser.name, oldEntity.name, newEntity.name);
-            partialSentences.add(description);
-        }
-
-        if (!oldEntity.description.equals(newEntity.description)) {
-            if (partialSentences.size() == 0) {
-                template = stringResourceResolver.apply(R.string.event_location_description_changed);
-                description = String.format(template, initiatorUser.name, oldEntity.name);
-            } else {
-                description = stringResourceResolver.apply(R.string.event_location_description_changed_addendum);
-            }
-            partialSentences.add(description);
-        }
-
-        StringBuilder result = new StringBuilder();
-        String enumerationSeparator = stringResourceResolver.apply(R.string.event_enumeration_item_divider);
-        for (int i = 0; i < partialSentences.size() - 1; i++) {
-            result.append(partialSentences.get(i));
-            result.append(enumerationSeparator);
-            result.append(" ");
-        }
-
-        if (partialSentences.size() > 1) {
-            result.deleteCharAt(result.length() - 2);
-            result.append(stringResourceResolver.apply(R.string.event_enumeration_item_divider_last));
-            result.append(" ");
-        }
-
-        result.append(partialSentences.get(partialSentences.size() - 1));
-        result.append(stringResourceResolver.apply(R.string.event_end_of_sentence));
-
-        return result.toString();
+    @Override
+    protected String getExplicitObject() {
+        return oldEntity.name;
     }
 
     @Override

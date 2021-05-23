@@ -655,6 +655,7 @@ FoodItem {
 	ofType: int           // Food ID
 	registers: int        // Device ID
 	buys: int             // User ID
+	unit: int             // Unit ID
 }
 
 ```

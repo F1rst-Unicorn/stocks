@@ -19,13 +19,15 @@
 
 package de.njsm.stocks.android.business.data.activity;
 
-import java.util.ArrayList;
-import java.util.function.IntFunction;
-
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.business.data.activity.differ.*;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.views.FoodWithLocationName;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.IntFunction;
 
 public class ChangedFoodEvent extends ChangedEntityEvent<FoodWithLocationName> implements FoodIconResourceProvider {
 
@@ -44,105 +46,22 @@ public class ChangedFoodEvent extends ChangedEntityEvent<FoodWithLocationName> i
     }
 
     @Override
-    public String describe(IntFunction<String> stringResourceResolver) {
-        String template;
-        String description;
-        ArrayList<String> partialSentences = new ArrayList<>();
+    protected List<PartialDiffGenerator<FoodWithLocationName>> getDiffers(IntFunction<String> stringResourceResolver, SentenceObject object) {
+        List<PartialDiffGenerator<FoodWithLocationName>> differs = new ArrayList<>();
+        differs.add(new FoodRenameGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodNoMoreToBuyGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodToBuyGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodDefaultLocationSetGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodDefaultLocationUnsetGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodDefaultLocationChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodExpirationOffsetChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodDescriptionChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        return differs;
+    }
 
-        if (!oldEntity.name.equals(newEntity.name)) {
-            template = stringResourceResolver.apply(R.string.event_food_renamed);
-            description = String.format(template, initiatorUser.name, oldEntity.name, newEntity.name);
-            partialSentences.add(description);
-        }
-
-        if (oldEntity.toBuy && !newEntity.toBuy) {
-            if (partialSentences.size() == 0) {
-                template = stringResourceResolver.apply(R.string.event_food_to_buy_unset);
-                description = String.format(template, initiatorUser.name, oldEntity.name);
-            } else {
-                description = stringResourceResolver.apply(R.string.event_food_to_buy_unset_addendum);
-            }
-            partialSentences.add(description);
-        }
-
-        if (!oldEntity.toBuy && newEntity.toBuy) {
-            if (partialSentences.size() == 0) {
-                template = stringResourceResolver.apply(R.string.event_food_to_buy_set);
-                description = String.format(template, initiatorUser.name, oldEntity.name);
-            } else {
-                description = stringResourceResolver.apply(R.string.event_food_to_buy_set_addendum);
-            }
-            partialSentences.add(description);
-        }
-
-        if (oldEntity.location == 0 && newEntity.location != 0) {
-            if (partialSentences.size() == 0) {
-                template = stringResourceResolver.apply(R.string.event_food_location_set);
-                description = String.format(template, initiatorUser.name, oldEntity.name, newEntity.locationName);
-            } else {
-                template = stringResourceResolver.apply(R.string.event_food_location_set_addendum);
-                description = String.format(template, newEntity.locationName);
-            }
-            partialSentences.add(description);
-        } else if (oldEntity.location != 0 && newEntity.location == 0) {
-            if (partialSentences.size() == 0) {
-                template = stringResourceResolver.apply(R.string.event_food_location_unset);
-                description = String.format(template, initiatorUser.name, oldEntity.locationName, oldEntity.name);
-            } else {
-                template = stringResourceResolver.apply(R.string.event_food_location_unset_addendum);
-                description = String.format(template, oldEntity.locationName);
-            }
-            partialSentences.add(description);
-        } else if (oldEntity.location != newEntity.location) {
-            if (partialSentences.size() == 0) {
-                template = stringResourceResolver.apply(R.string.event_food_location_changed);
-                description = String.format(template, initiatorUser.name, oldEntity.name, oldEntity.locationName, newEntity.locationName);
-            } else {
-                template = stringResourceResolver.apply(R.string.event_food_location_changed_addendum);
-                description = String.format(template, oldEntity.locationName, newEntity.locationName);
-            }
-            partialSentences.add(description);
-        }
-
-        if (oldEntity.expirationOffset != newEntity.expirationOffset) {
-            if (partialSentences.size() == 0) {
-                template = stringResourceResolver.apply(R.string.event_food_expiration_offset_set);
-                description = String.format(template, initiatorUser.name, oldEntity.name, newEntity.expirationOffset);
-            } else {
-                template = stringResourceResolver.apply(R.string.event_food_expiration_offset_set_addendum);
-                description = String.format(template, newEntity.expirationOffset);
-            }
-            partialSentences.add(description);
-        }
-
-        if (!oldEntity.description.equals(newEntity.description)) {
-            if (partialSentences.size() == 0) {
-                template = stringResourceResolver.apply(R.string.event_food_description_changed);
-                description = String.format(template, initiatorUser.name, oldEntity.name);
-            } else {
-                description = stringResourceResolver.apply(R.string.event_food_description_changed_addendum);
-            }
-            partialSentences.add(description);
-        }
-
-        StringBuilder result = new StringBuilder();
-        String enumerationSeparator = stringResourceResolver.apply(R.string.event_enumeration_item_divider);
-        for (int i = 0; i < partialSentences.size() - 1; i++) {
-            result.append(partialSentences.get(i));
-            result.append(enumerationSeparator);
-            result.append(" ");
-        }
-
-        if (partialSentences.size() > 1) {
-            result.deleteCharAt(result.length() - 2);
-            result.append(stringResourceResolver.apply(R.string.event_enumeration_item_divider_last));
-            result.append(" ");
-        }
-
-        result.append(partialSentences.get(partialSentences.size() - 1));
-        result.append(stringResourceResolver.apply(R.string.event_end_of_sentence));
-
-        return result.toString();
+    @Override
+    protected String getExplicitObject() {
+        return oldEntity.name;
     }
 
     @Override

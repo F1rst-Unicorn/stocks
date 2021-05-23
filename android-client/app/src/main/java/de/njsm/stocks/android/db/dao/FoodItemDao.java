@@ -72,11 +72,14 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
     @Query("select i._id as _id, i.version as version, u.name as userName, " +
             "d.name as deviceName, l.name as location, i.eat_by as eatByDate, i.valid_time_start," +
             "i.valid_time_end, i.transaction_time_start, i.transaction_time_end, i.initiates, " +
-            "i.of_type as ofType, i.stored_in as storedIn " +
+            "i.of_type as ofType, i.stored_in as storedIn, unit.abbreviation as unitAbbreviation, " +
+            "scaled_unit.scale as scale, scaled_unit._id as scaledUnit " +
             "from FoodItem i " +
             "inner join User u on i.buys = u._id " +
             "inner join User_device d on i.registers = d._id " +
             "inner join Location l on i.stored_in = l._id " +
+            "inner join scaled_unit on i.unit = scaled_unit._id " +
+            "inner join unit on scaled_unit.unit = unit._id " +
             "where i.of_type = :foodId " +
             "and i.valid_time_start <= " + NOW +
             "and " + NOW + " < i.valid_time_end " +
@@ -90,17 +93,27 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
             "and l.valid_time_start <= " + NOW +
             "and " + NOW + " < l.valid_time_end " +
             "and l.transaction_time_end = :infinity " +
+            "and scaled_unit.valid_time_start <= " + NOW +
+            "and " + NOW + " < scaled_unit.valid_time_end " +
+            "and scaled_unit.transaction_time_end = :infinity " +
+            "and unit.valid_time_start <= " + NOW +
+            "and " + NOW + " < unit.valid_time_end " +
+            "and unit.transaction_time_end = :infinity " +
             "order by i.eat_by")
     abstract LiveData<List<FoodItemView>> getItemsOfType(int foodId, Instant infinity);
 
     @Query("select i._id as _id, i.version as version, u.name as userName, " +
             "d.name as deviceName, l.name as location, i.eat_by as eatByDate, " +
             "i.of_type as ofType, i.stored_in as storedIn, i.valid_time_start," +
-            "i.valid_time_end, i.transaction_time_start, i.transaction_time_end, i.initiates " +
+            "i.valid_time_end, i.transaction_time_start, i.transaction_time_end, i.initiates, " +
+            "scaled_unit.scale as scale, unit.abbreviation as unitAbbreviation, " +
+            "scaled_unit._id as scaledUnit " +
             "from FoodItem i " +
             "inner join User u on i.buys = u._id " +
             "inner join User_device d on i.registers = d._id " +
             "inner join Location l on i.stored_in = l._id " +
+            "inner join scaled_unit on i.unit = scaled_unit._id " +
+            "inner join unit on scaled_unit.unit = unit._id " +
             "where i._id = :id " +
             "and i.valid_time_start <= " + NOW +
             "and " + NOW + " < i.valid_time_end " +
@@ -113,7 +126,13 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
             "and d.transaction_time_end = :infinity " +
             "and l.valid_time_start <= " + NOW +
             "and " + NOW + " < l.valid_time_end " +
-            "and l.transaction_time_end = :infinity")
+            "and l.transaction_time_end = :infinity " +
+            "and scaled_unit.valid_time_start <= " + NOW +
+            "and " + NOW + " < scaled_unit.valid_time_end " +
+            "and scaled_unit.transaction_time_end = :infinity " +
+            "and unit.valid_time_start <= " + NOW +
+            "and " + NOW + " < unit.valid_time_end " +
+            "and unit.transaction_time_end = :infinity")
     abstract LiveData<FoodItemView> getItem(int id, Instant infinity);
 
     @Query("select max(i.eat_by) " +

@@ -42,6 +42,7 @@ public abstract class DbModule {
                 .addMigrations(new Migration_32_to_33())
                 .setQueryExecutor(executor)
                 .setTransactionExecutor(executor)
+                .fallbackToDestructiveMigration()
                 .build();
     }
 

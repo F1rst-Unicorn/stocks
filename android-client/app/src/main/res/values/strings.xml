@@ -74,7 +74,8 @@
     <string name="action_undo">UNDO</string>
     <string name="action_back">Back</string>
     <string name="action_shopping_list">Shopping List</string>
-    <string name="action_events">Aktivität</string>
+    <string name="action_events">Activity</string>
+    <string name="action_units">Units of Measure</string>
 
     <string name="hint_servername">Server host name</string>
     <string name="hint_expert">Expert options</string>
@@ -179,38 +180,33 @@
     <string name="event_enumeration_item_divider">,</string>
     <string name="event_enumeration_item_divider_last">and</string>
 
+    <string name="event_enumeration_undefined_object">it</string>
+    <string name="event_enumeration_undefined_object_genitive">of %s</string>
+
     <string name="event_location_created">%s has entered %s.</string>
-    <string name="event_location_renamed">%s has renamed %s to %s.</string>
     <string name="event_location_deleted">%s has deleted %s.</string>
-    <string name="event_location_description_changed">%s has changed the description of %s</string>
-    <string name="event_location_description_changed_addendum">has changed the description</string>
+    <string name="event_location_renamed">has renamed %s to %s.</string>
+    <string name="event_location_description_changed">has changed the description%s</string>
     <string name="event_eannumber_created">%s has added a barcode (%s) for %s.</string>
     <string name="event_eannumber_deleted">%s has deleted a barcode (%s) for %s.</string>
     <string name="event_food_created">%s has entered %s.</string>
     <string name="event_food_deleted">%s has deleted %s.</string>
-    <string name="event_food_renamed">%s has renamed %s to %s</string>
-    <string name="event_food_to_buy_set">%s has added %s to the shopping list</string>
-    <string name="event_food_to_buy_set_addendum">has added it to the shopping list</string>
-    <string name="event_food_to_buy_unset">%s has removed %s from the shopping list</string>
-    <string name="event_food_to_buy_unset_addendum">has removed it from the shopping list</string>
-    <string name="event_food_location_set">%s has set the default location of %s to %s</string>
-    <string name="event_food_location_set_addendum">has set the default location to %s</string>
-    <string name="event_food_location_unset">%s has removed the default location (%s) of %s</string>
-    <string name="event_food_location_unset_addendum">has removed the default location (%s)</string>
-    <string name="event_food_location_changed">%s has set the default location of %s from %s to %s</string>
-    <string name="event_food_location_changed_addendum">has set the default location from %s to %s</string>
-    <string name="event_food_expiration_offset_set">%s has set the expiration time of %s to %d days</string>
-    <string name="event_food_expiration_offset_set_addendum">has set the expiration time to %d days</string>
-    <string name="event_food_description_changed">%s has changed the description of %s</string>
-    <string name="event_food_description_changed_addendum">has changed the description</string>
+    <string name="event_food_renamed">has renamed %s to %s</string>
+    <string name="event_food_to_buy_set">has added %s to the shopping list</string>
+    <string name="event_food_to_buy_unset">has removed %s from the shopping list</string>
+    <string name="event_food_location_set">has set the default location%s to %s</string>
+    <string name="event_food_location_unset">has removed the default location (%s)%s</string>
+    <string name="event_food_location_changed">has set the default location%s from %s to %s</string>
+    <string name="event_food_expiration_offset_set">has set the expiration time%s to %d days</string>
+    <string name="event_food_description_changed">has changed the description%s</string>
     <string name="event_user_created">%s has invited %s.</string>
     <string name="event_user_deleted">%s has deleted %s.</string>
     <string name="event_user_device_created">%s has registered %s of %s.</string>
     <string name="event_user_device_deleted">%s has deleted %s of %s.</string>
-    <string name="event_food_item_added">%s has bought a new %s and put it into %s. Consume it by %s.</string>
+    <string name="event_food_item_added">%s has bought %s%s %s and put it into %s. Consume it by %s.</string>
     <string name="event_food_item_deleted">%s has consumed a %s.</string>
-    <string name="event_food_item_changed_location">%s has moved a %s from %s to %s.</string>
-    <string name="event_food_item_changed_eat_by_addendum">It should now be consumed by %s instead of %s.</string>
-    <string name="event_food_item_changed_eat_by">%s has changed the expiration date of a %s from %s to %s.</string>
+    <string name="event_food_item_changed_location">has moved %s from %s to %s</string>
+    <string name="event_food_item_changed_eat_by">has changed the expiration date%s from %s to %s</string>
+    <string name="event_food_item_changed_scaled_unit">has changed the unit%s from %s%s to %s%s</string>
 
 </resources>

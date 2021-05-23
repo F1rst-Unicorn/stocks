@@ -225,8 +225,8 @@ public abstract class EventDao {
     abstract PositionalDataSource.Factory<Integer, UserDeviceHistoryView> getUserDeviceHistory(Instant infinity);
 
     @Query("select " +
-            "d1.name as version1_deviceName, u1.name as version1_userName, i1.name as version1_location, f1.name as version1_food_name, l1.of_type as version1_ofType, l1.stored_in as version1_storedIn, l1.eat_by as version1_eatByDate, " +
-            "d2.name as version2_deviceName, u2.name as version2_userName, i2.name as version2_location, f2.name as version2_food_name, l2.of_type as version2_ofType, l2.stored_in as version2_storedIn, l2.eat_by as version2_eatByDate, " +
+            "d1.name as version1_deviceName, u1.name as version1_userName, i1.name as version1_location, f1.name as version1_food_name, l1.of_type as version1_ofType, l1.stored_in as version1_storedIn, l1.eat_by as version1_eatByDate, scaled_unit_1.scale as version1_scale, unit_1.abbreviation as version1_unitAbbreviation, scaled_unit_1._id as version1_scaledUnit, " +
+            "d2.name as version2_deviceName, u2.name as version2_userName, i2.name as version2_location, f2.name as version2_food_name, l2.of_type as version2_ofType, l2.stored_in as version2_storedIn, l2.eat_by as version2_eatByDate, scaled_unit_2.scale as version2_scale, unit_2.abbreviation as version2_unitAbbreviation, scaled_unit_2._id as version2_scaledUnit, " +
             INITIATOR_COLUMNS +
             TIME_COLUMNS_FOOD_ITEM +
             "from fooditem l1 " +
@@ -239,6 +239,10 @@ public abstract class EventDao {
             "left outer join user u2 on l2.buys = u2._id and u2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < u2.valid_time_end and u2.transaction_time_end = :infinity " +
             "join user_device d1 on l1.registers = d1._id and d1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < d1.valid_time_end and d1.transaction_time_end = :infinity " +
             "left outer join user_device d2 on l2.registers = d2._id and d2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < d2.valid_time_end and d2.transaction_time_end = :infinity " +
+            "join scaled_unit scaled_unit_1 on l1.unit = scaled_unit_1._id and scaled_unit_1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < scaled_unit_1.valid_time_end and scaled_unit_1.transaction_time_end = :infinity " +
+            "left outer join scaled_unit scaled_unit_2 on l2.unit = scaled_unit_2._id and scaled_unit_2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < scaled_unit_2.valid_time_end and scaled_unit_2.transaction_time_end = :infinity " +
+            "join unit unit_1 on unit_1._id = scaled_unit_1.unit and unit_1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < unit_1.valid_time_end and unit_1.transaction_time_end = :infinity " +
+            "left outer join unit unit_2 on unit_2._id = scaled_unit_2.unit and unit_2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < unit_2.valid_time_end and unit_2.transaction_time_end = :infinity " +
             JOIN_INITIATOR +
             WHERE_VALID_FOOD_ITEM +
             "order by l1.transaction_time_start desc")
@@ -260,8 +264,8 @@ public abstract class EventDao {
     abstract PositionalDataSource.Factory<Integer, FoodHistoryView> getFoodHistoryOfSingleFood(int id, Instant infinity);
 
     @Query("select " +
-            "d1.name as version1_deviceName, u1.name as version1_userName, i1.name as version1_location, f1.name as version1_food_name, l1.of_type as version1_ofType, l1.stored_in as version1_storedIn, l1.eat_by as version1_eatByDate, " +
-            "d2.name as version2_deviceName, u2.name as version2_userName, i2.name as version2_location, f2.name as version2_food_name, l2.of_type as version2_ofType, l2.stored_in as version2_storedIn, l2.eat_by as version2_eatByDate, " +
+            "d1.name as version1_deviceName, u1.name as version1_userName, i1.name as version1_location, f1.name as version1_food_name, l1.of_type as version1_ofType, l1.stored_in as version1_storedIn, l1.eat_by as version1_eatByDate, scaled_unit_1.scale as version1_scale, unit_1.abbreviation as version1_unitAbbreviation, scaled_unit_1._id as version1_scaledUnit, " +
+            "d2.name as version2_deviceName, u2.name as version2_userName, i2.name as version2_location, f2.name as version2_food_name, l2.of_type as version2_ofType, l2.stored_in as version2_storedIn, l2.eat_by as version2_eatByDate, scaled_unit_2.scale as version2_scale, unit_2.abbreviation as version2_unitAbbreviation, scaled_unit_2._id as version2_scaledUnit, " +
             INITIATOR_COLUMNS +
             TIME_COLUMNS_FOOD_ITEM +
             "from fooditem l1 " +
@@ -274,6 +278,10 @@ public abstract class EventDao {
             "left outer join user u2 on l2.buys = u2._id and u2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < u2.valid_time_end and u2.transaction_time_end = :infinity " +
             "join user_device d1 on l1.registers = d1._id and d1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < d1.valid_time_end and d1.transaction_time_end = :infinity " +
             "left outer join user_device d2 on l2.registers = d2._id and d2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < d2.valid_time_end and d2.transaction_time_end = :infinity " +
+            "join scaled_unit scaled_unit_1 on l1.unit = scaled_unit_1._id and scaled_unit_1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < scaled_unit_1.valid_time_end and scaled_unit_1.transaction_time_end = :infinity " +
+            "left outer join scaled_unit scaled_unit_2 on l2.unit = scaled_unit_2._id and scaled_unit_2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < scaled_unit_2.valid_time_end and scaled_unit_2.transaction_time_end = :infinity " +
+            "join unit unit_1 on unit_1._id = scaled_unit_1.unit and unit_1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < unit_1.valid_time_end and unit_1.transaction_time_end = :infinity " +
+            "left outer join unit unit_2 on unit_2._id = scaled_unit_2.unit and unit_2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < unit_2.valid_time_end and unit_2.transaction_time_end = :infinity " +
             JOIN_INITIATOR +
             WHERE_VALID_FOOD_ITEM +
             "and l1.of_type = :id " +
@@ -296,8 +304,8 @@ public abstract class EventDao {
     abstract PositionalDataSource.Factory<Integer, EanNumberHistoryView> getEanNumberHistoryOfSingleFood(int id, Instant infinity);
 
     @Query("select " +
-            "d1.name as version1_deviceName, u1.name as version1_userName, i1.name as version1_location, f1.name as version1_food_name, l1.of_type as version1_ofType, l1.stored_in as version1_storedIn, l1.eat_by as version1_eatByDate, " +
-            "d2.name as version2_deviceName, u2.name as version2_userName, i2.name as version2_location, f2.name as version2_food_name, l2.of_type as version2_ofType, l2.stored_in as version2_storedIn, l2.eat_by as version2_eatByDate, " +
+            "d1.name as version1_deviceName, u1.name as version1_userName, i1.name as version1_location, f1.name as version1_food_name, l1.of_type as version1_ofType, l1.stored_in as version1_storedIn, l1.eat_by as version1_eatByDate, scaled_unit_1.scale as version1_scale, unit_1.abbreviation as version1_unitAbbreviation, scaled_unit_1._id as version1_scaledUnit, " +
+            "d2.name as version2_deviceName, u2.name as version2_userName, i2.name as version2_location, f2.name as version2_food_name, l2.of_type as version2_ofType, l2.stored_in as version2_storedIn, l2.eat_by as version2_eatByDate, scaled_unit_2.scale as version2_scale, unit_2.abbreviation as version2_unitAbbreviation, scaled_unit_2._id as version2_scaledUnit, " +
             INITIATOR_COLUMNS +
             TIME_COLUMNS_FOOD_ITEM +
             "from fooditem l1 " +
@@ -310,6 +318,10 @@ public abstract class EventDao {
             "left outer join user u2 on l2.buys = u2._id and u2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < u2.valid_time_end and u2.transaction_time_end = :infinity " +
             "join user_device d1 on l1.registers = d1._id and d1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < d1.valid_time_end and d1.transaction_time_end = :infinity " +
             "left outer join user_device d2 on l2.registers = d2._id and d2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < d2.valid_time_end and d2.transaction_time_end = :infinity " +
+            "join scaled_unit scaled_unit_1 on l1.unit = scaled_unit_1._id and scaled_unit_1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < scaled_unit_1.valid_time_end and scaled_unit_1.transaction_time_end = :infinity " +
+            "left outer join scaled_unit scaled_unit_2 on l2.unit = scaled_unit_2._id and scaled_unit_2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < scaled_unit_2.valid_time_end and scaled_unit_2.transaction_time_end = :infinity " +
+            "join unit unit_1 on unit_1._id = scaled_unit_1.unit and unit_1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < unit_1.valid_time_end and unit_1.transaction_time_end = :infinity " +
+            "left outer join unit unit_2 on unit_2._id = scaled_unit_2.unit and unit_2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < unit_2.valid_time_end and unit_2.transaction_time_end = :infinity " +
             JOIN_INITIATOR +
             WHERE_VALID_FOOD_ITEM +
             "and l1.stored_in = :id or l2.stored_in = :id " +

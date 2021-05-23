@@ -39,7 +39,13 @@ public class FoodItemView extends VersionedData {
 
     private final int storedIn;
 
-    public FoodItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String userName, String deviceName, Instant eatByDate, String location, int ofType, int storedIn) {
+    private final int scaledUnit;
+
+    private final int scale;
+
+    private final String unitAbbreviation;
+
+    public FoodItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String userName, String deviceName, Instant eatByDate, String location, int ofType, int storedIn, int scaledUnit, int scale, String unitAbbreviation) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.userName = userName;
         this.deviceName = deviceName;
@@ -47,6 +53,9 @@ public class FoodItemView extends VersionedData {
         this.location = location;
         this.ofType = ofType;
         this.storedIn = storedIn;
+        this.scaledUnit = scaledUnit;
+        this.scale = scale;
+        this.unitAbbreviation = unitAbbreviation;
     }
 
     public String getUserName() {
@@ -71,6 +80,18 @@ public class FoodItemView extends VersionedData {
 
     public int getStoredIn() {
         return storedIn;
+    }
+
+    public int getScaledUnit() {
+        return scaledUnit;
+    }
+
+    public int getScale() {
+        return scale;
+    }
+
+    public String getUnitAbbreviation() {
+        return unitAbbreviation;
     }
 
     @Override

@@ -19,55 +19,35 @@
 
 package de.njsm.stocks.android.business.data.activity;
 
-import java.util.function.IntFunction;
-
-import de.njsm.stocks.R;
+import de.njsm.stocks.android.business.data.activity.differ.FoodItemExpirationChangedGenerator;
+import de.njsm.stocks.android.business.data.activity.differ.FoodItemLocationChangedGenerator;
+import de.njsm.stocks.android.business.data.activity.differ.FoodItemUnitChangedGenerator;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.views.FoodItemWithFoodNameView;
-import de.njsm.stocks.android.util.Config;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.IntFunction;
 
 public class ChangedFoodItemEvent extends ChangedEntityEvent<FoodItemWithFoodNameView> implements FoodItemIconResourceProvider {
-
 
     public ChangedFoodItemEvent(User initiatorUser, UserDevice initiatorDevice, FoodItemWithFoodNameView oldEntity, FoodItemWithFoodNameView newEntity) {
         super(initiatorUser, initiatorDevice, oldEntity, newEntity);
     }
 
     @Override
-    public String describe(IntFunction<String> stringResourceResolver) {
-        StringBuilder result = new StringBuilder();
-        String template;
-        String message;
+    protected List<PartialDiffGenerator<FoodItemWithFoodNameView>> getDiffers(IntFunction<String> stringResourceResolver, SentenceObject object) {
+        List<PartialDiffGenerator<FoodItemWithFoodNameView>> differs = new ArrayList<>();
+        differs.add(new FoodItemLocationChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodItemExpirationChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodItemUnitChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        return differs;
+    }
 
-        if (!oldEntity.getLocation().equals(newEntity.getLocation())) {
-            template = stringResourceResolver.apply(R.string.event_food_item_changed_location);
-            message = String.format(template,
-                    initiatorUser.name,
-                    oldEntity.getFoodName(),
-                    oldEntity.getLocation(),
-                    newEntity.getLocation());
-            result.append(message);
-        }
-
-        if (!oldEntity.getEatByDate().equals(newEntity.getEatByDate())) {
-            if (result.length() == 0) {
-                template = stringResourceResolver.apply(R.string.event_food_item_changed_eat_by);
-                message = String.format(template,
-                        initiatorUser.name,
-                        oldEntity.getFoodName(),
-                        Config.PRETTY_DATE_FORMAT.format(oldEntity.getEatByDate()),
-                        Config.PRETTY_DATE_FORMAT.format(newEntity.getEatByDate()));
-            } else {
-                template = " " + stringResourceResolver.apply(R.string.event_food_item_changed_eat_by_addendum);
-                message = String.format(template,
-                        Config.PRETTY_DATE_FORMAT.format(newEntity.getEatByDate()),
-                        Config.PRETTY_DATE_FORMAT.format(oldEntity.getEatByDate()));
-            }
-            result.append(message);
-        }
-
-        return result.toString();
+    @Override
+    protected String getExplicitObject() {
+        return oldEntity.getFoodName();
     }
 
     @Override

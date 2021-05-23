@@ -19,13 +19,13 @@
 
 package de.njsm.stocks.android.business.data.activity;
 
-import java.util.function.IntFunction;
-
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.views.FoodItemWithFoodNameView;
 import de.njsm.stocks.android.util.Config;
+
+import java.util.function.IntFunction;
 
 public class NewFoodItemEvent extends NewEntityEvent<FoodItemWithFoodNameView> implements FoodItemIconResourceProvider {
 
@@ -39,6 +39,8 @@ public class NewFoodItemEvent extends NewEntityEvent<FoodItemWithFoodNameView> i
         String template = stringResourceResolver.apply(R.string.event_food_item_added);
         return String.format(template,
                 entity.getUserName(),
+                entity.getScale(),
+                entity.getUnitAbbreviation(),
                 entity.getFoodName(),
                 entity.getLocation(),
                 Config.PRETTY_DATE_FORMAT.format(entity.getEatByDate()));

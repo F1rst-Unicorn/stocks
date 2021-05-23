@@ -29,21 +29,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.threeten.bp.Duration;
-import org.threeten.bp.Instant;
-
-import java.util.List;
-
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.frontend.BaseAdapter;
 import de.njsm.stocks.android.util.Config;
+import org.threeten.bp.Duration;
+import org.threeten.bp.Instant;
+
+import java.util.List;
 
 public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.ViewHolder> {
 
@@ -53,17 +50,19 @@ public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.V
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private RelativeLayout view;
+        private final RelativeLayout view;
 
-        private TextView date;
+        private final TextView date;
 
-        private TextView location;
+        private final TextView location;
 
-        private TextView buyer;
+        private final TextView buyer;
 
-        private TextView device;
+        private final TextView device;
 
-        private ImageView icon;
+        private final ImageView icon;
+
+        private final TextView amount;
 
         ViewHolder(@NonNull RelativeLayout itemView) {
             super(itemView);
@@ -73,6 +72,7 @@ public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.V
             buyer = view.findViewById(R.id.item_food_item_user);
             device = view.findViewById(R.id.item_food_item_device);
             icon = view.findViewById(R.id.item_food_item_icon);
+            amount = view.findViewById(R.id.item_food_item_amount);
         }
 
         public void setDate(CharSequence c) {
@@ -93,6 +93,10 @@ public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.V
 
         public void setIcon(Drawable icon) {
             this.icon.setImageDrawable(icon);
+        }
+
+        public void setAmount(String amount) {
+            this.amount.setText(amount);
         }
     }
 
@@ -123,6 +127,7 @@ public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.V
         holder.setLocation(data.getLocation());
         holder.setDate(Config.PRETTY_DATE_FORMAT.format(data.getEatByDate()));
         holder.setIcon(computeIcon(data.getEatByDate(), Instant.now()));
+        holder.setAmount(data.getScale() + data.getUnitAbbreviation());
     }
 
     @Override
@@ -131,6 +136,7 @@ public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.V
         holder.setDevice("");
         holder.setBuyer("");
         holder.setDate("");
+        holder.setAmount("");
     }
 
     private Drawable computeIcon(Instant expiration, Instant now) {
