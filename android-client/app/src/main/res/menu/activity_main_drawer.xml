@@ -32,6 +32,10 @@
             android:icon="@drawable/baseline_kitchen_black_24"
             android:title="@string/action_locations" />
         <item
+            android:id="@+id/activity_main_drawer_units"
+            android:icon="@drawable/ic_weight_black_24"
+            android:title="@string/action_units" />
+        <item
             android:id="@+id/activity_main_drawer_users"
             android:icon="@drawable/ic_people_black_24dp"
             android:title="@string/action_users" />

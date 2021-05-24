@@ -21,11 +21,6 @@ package de.njsm.stocks.android.dagger.modules;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-
-import java.util.Map;
-
-import javax.inject.Provider;
-
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
@@ -45,19 +40,14 @@ import de.njsm.stocks.android.frontend.main.EventViewModel;
 import de.njsm.stocks.android.frontend.search.SearchViewModel;
 import de.njsm.stocks.android.frontend.settings.SettingsUpdaterViewModel;
 import de.njsm.stocks.android.frontend.shoppinglist.FoodToBuyViewModel;
+import de.njsm.stocks.android.frontend.units.UnitViewModel;
 import de.njsm.stocks.android.frontend.user.UserViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.network.server.HostnameInterceptor;
-import de.njsm.stocks.android.repo.CrashLogRepository;
-import de.njsm.stocks.android.repo.EanNumberRepository;
-import de.njsm.stocks.android.repo.EventRepository;
-import de.njsm.stocks.android.repo.FoodItemRepository;
-import de.njsm.stocks.android.repo.FoodRepository;
-import de.njsm.stocks.android.repo.LocationRepository;
-import de.njsm.stocks.android.repo.PlotRepository;
-import de.njsm.stocks.android.repo.RefreshRepository;
-import de.njsm.stocks.android.repo.UserDeviceRepository;
-import de.njsm.stocks.android.repo.UserRepository;
+import de.njsm.stocks.android.repo.*;
+
+import javax.inject.Provider;
+import java.util.Map;
 
 @Module
 public class ViewModelModule {
@@ -205,5 +195,14 @@ public class ViewModelModule {
     @ViewModelKey(PlotViewModel.class)
     ViewModel providePlotViewModel(PlotRepository repo) {
         return new PlotViewModel(repo);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UnitViewModel.class)
+    ViewModel provideUnitViewModel(UnitRepository repo) {
+        UnitViewModel result = new UnitViewModel(repo);
+        result.init();
+        return result;
     }
 }

@@ -29,9 +29,9 @@ import java.util.List;
 
 public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    private LiveData<List<T>> data;
+    private final LiveData<List<T>> data;
 
-    private Consumer<View> onClickListener;
+    private final Consumer<View> onClickListener;
 
     private Consumer<View> onLongClickListener;
 

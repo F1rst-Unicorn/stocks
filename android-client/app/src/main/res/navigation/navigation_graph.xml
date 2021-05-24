@@ -570,6 +570,12 @@
             android:name="locationId"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_units"
+        android:name="de.njsm.stocks.android.frontend.units.UnitFragment"
+        android:label="@string/title_units"
+        tools:layout="@layout/template_swipe_list">
+    </fragment>
     <action
         android:id="@+id/action_global_nav_fragment_settings"
         app:destination="@id/nav_fragment_settings"
@@ -597,6 +603,14 @@
     <action
         android:id="@+id/action_global_nav_fragment_shopping_list"
         app:destination="@id/nav_fragment_shopping_list"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/nav_fragment_outline" />
+    <action
+        android:id="@+id/action_global_nav_fragment_units"
+        app:destination="@id/nav_fragment_units"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
