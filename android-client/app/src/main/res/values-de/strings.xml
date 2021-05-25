@@ -213,5 +213,10 @@
     <string name="event_food_item_changed_location">hat %s von %s nach %s verlegt</string>
     <string name="event_food_item_changed_eat_by">hat das Mindesthaltbarkeitsdatum%s von %s zu %s geändert</string>
     <string name="event_food_item_changed_scaled_unit">hat die Maßeinheit%s von %s%s zu %s%s geändert</string>
+    <string name="event_unit_created">%s hat %s (%s) erstellt.</string>
+    <string name="event_unit_deleted">%s hat %s (%s) gelöscht.</string>
+    <string name="event_unit_renamed">hat %s zu %s umbenannt</string>
+    <string name="event_unit_abbreviation_changed">hat die Abkürzung%s von %s zu %s geändert</string>
+
 
 </resources>

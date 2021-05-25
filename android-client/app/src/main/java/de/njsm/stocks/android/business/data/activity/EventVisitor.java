@@ -84,4 +84,16 @@ public interface EventVisitor<I, O> {
     default O deletedEanNumberEvent(DeletedEanNumberEvent e, I arg) {
         throw new RuntimeException("not implemented");
     }
+
+    default O newUnitEvent(I arg) {
+        throw new RuntimeException("not implemented");
+    }
+
+    default O changedUnitEvent(I arg) {
+        throw new RuntimeException("not implemented");
+    }
+
+    default O deletedUnitEvent(I arg) {
+        throw new RuntimeException("not implemented");
+    }
 }

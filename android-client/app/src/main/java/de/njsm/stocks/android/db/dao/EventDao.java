@@ -23,17 +23,9 @@ import androidx.paging.DataSource;
 import androidx.paging.PositionalDataSource;
 import androidx.room.Dao;
 import androidx.room.Query;
-
-import org.threeten.bp.Instant;
-
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
-import de.njsm.stocks.android.db.views.AbstractHistoryView;
-import de.njsm.stocks.android.db.views.EanNumberHistoryView;
-import de.njsm.stocks.android.db.views.FoodHistoryView;
-import de.njsm.stocks.android.db.views.FoodItemHistoryView;
-import de.njsm.stocks.android.db.views.LocationHistoryView;
-import de.njsm.stocks.android.db.views.UserDeviceHistoryView;
-import de.njsm.stocks.android.db.views.UserHistoryView;
+import de.njsm.stocks.android.db.views.*;
+import org.threeten.bp.Instant;
 
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
@@ -103,6 +95,10 @@ public abstract class EventDao {
             "where not (l1.version != (select min(version) from eannumber x where x._id = l1._id) and l2._id is null and l1.transaction_time_end != :infinity) " +
             "and (not (l1.valid_time_end = :infinity and l1.transaction_time_end = l1.valid_time_end) or l1.version = (select min(version) from eannumber x where x._id = l1._id))";
 
+    private static final String WHERE_VALID_UNIT =
+            "where not (l1.version != (select min(version) from unit x where x._id = l1._id) and l2._id is null and l1.transaction_time_end != :infinity) " +
+            "and (not (l1.valid_time_end = :infinity and l1.transaction_time_end = l1.valid_time_end) or l1.version = (select min(version) from unit x where x._id = l1._id))";
+
     public DataSource.Factory<Integer, EntityEvent<?>> getLocationHistory() {
         return getLocationHistory(DATABASE_INFINITY)
                 .map(AbstractHistoryView::mapToEvent);
@@ -130,6 +126,11 @@ public abstract class EventDao {
 
     public DataSource.Factory<Integer, EntityEvent<?>> getFoodItemHistory() {
         return getFoodItemHistory(DATABASE_INFINITY)
+                .map(AbstractHistoryView::mapToEvent);
+    }
+
+    public DataSource.Factory<Integer, EntityEvent<?>> getUnitHistory() {
+        return getUnitHistory(DATABASE_INFINITY)
                 .map(AbstractHistoryView::mapToEvent);
     }
 
@@ -340,4 +341,16 @@ public abstract class EventDao {
             "and l1._id = :id " +
             "order by l1.transaction_time_start desc")
     abstract PositionalDataSource.Factory<Integer, LocationHistoryView> getLocationHistoryOfSingleLocation(int id, Instant infinity);
+
+    @Query("select " +
+            "l1.name as version1_name, l1.abbreviation as version1_abbreviation, " +
+            "l2.name as version2_name, l2.abbreviation as version2_abbreviation, " +
+            INITIATOR_COLUMNS +
+            TIME_COLUMNS_LOCATION +
+            "from unit l1 " +
+            "left outer join unit l2 " + ON_CHRONOLOGY +
+            JOIN_INITIATOR +
+            WHERE_VALID_UNIT +
+            "order by l1.transaction_time_start desc")
+    abstract PositionalDataSource.Factory<Integer, UnitHistoryView> getUnitHistory(Instant infinity);
 }

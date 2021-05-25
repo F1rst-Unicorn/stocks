@@ -213,5 +213,9 @@
     <string name="event_food_item_changed_location">has moved %s from %s to %s</string>
     <string name="event_food_item_changed_eat_by">has changed the expiration date%s from %s to %s</string>
     <string name="event_food_item_changed_scaled_unit">has changed the unit%s from %s%s to %s%s</string>
+    <string name="event_unit_created">%s has created %s (%s).</string>
+    <string name="event_unit_deleted">%s has deleted %s (%s).</string>
+    <string name="event_unit_renamed">has renamed %s to %s</string>
+    <string name="event_unit_abbreviation_changed">has changed the abbreviation%s from %s to %s</string>
 
 </resources>

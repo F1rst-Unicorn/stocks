@@ -20,26 +20,9 @@
 package de.njsm.stocks.android.frontend.main;
 
 import androidx.navigation.NavDirections;
+import de.njsm.stocks.android.business.data.activity.*;
 
 import java.util.Optional;
-
-import de.njsm.stocks.android.business.data.activity.ChangedFoodEvent;
-import de.njsm.stocks.android.business.data.activity.ChangedFoodItemEvent;
-import de.njsm.stocks.android.business.data.activity.ChangedLocationEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedEanNumberEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedFoodEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedFoodItemEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedLocationEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedUserDeviceEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedUserEvent;
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
-import de.njsm.stocks.android.business.data.activity.EventVisitor;
-import de.njsm.stocks.android.business.data.activity.NewEanNumberEvent;
-import de.njsm.stocks.android.business.data.activity.NewFoodEvent;
-import de.njsm.stocks.android.business.data.activity.NewFoodItemEvent;
-import de.njsm.stocks.android.business.data.activity.NewLocationEvent;
-import de.njsm.stocks.android.business.data.activity.NewUserDeviceEvent;
-import de.njsm.stocks.android.business.data.activity.NewUserEvent;
 
 public class OutlineEventVisitor implements EventVisitor<Void, Optional<NavDirections>> {
 
@@ -124,5 +107,20 @@ public class OutlineEventVisitor implements EventVisitor<Void, Optional<NavDirec
     @Override
     public Optional<NavDirections> deletedEanNumberEvent(DeletedEanNumberEvent e, Void arg) {
         return Optional.of(OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentEanNumber(e.getEntity().identifiesFood));
+    }
+
+    @Override
+    public Optional<NavDirections> newUnitEvent(Void arg) {
+        return Optional.of(OutlineFragmentDirections.actionGlobalNavFragmentUnits());
+    }
+
+    @Override
+    public Optional<NavDirections> changedUnitEvent(Void arg) {
+        return Optional.of(OutlineFragmentDirections.actionGlobalNavFragmentUnits());
+    }
+
+    @Override
+    public Optional<NavDirections> deletedUnitEvent(Void arg) {
+        return Optional.of(OutlineFragmentDirections.actionGlobalNavFragmentUnits());
     }
 }

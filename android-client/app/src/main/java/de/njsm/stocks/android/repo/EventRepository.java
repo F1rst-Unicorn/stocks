@@ -22,13 +22,12 @@ package de.njsm.stocks.android.repo;
 import androidx.lifecycle.LiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
-
-import javax.inject.Inject;
-
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
-import de.njsm.stocks.android.util.paging.MergingDataSourceFactory;
 import de.njsm.stocks.android.db.dao.EventDao;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.paging.MergingDataSourceFactory;
+
+import javax.inject.Inject;
 
 public class EventRepository {
 
@@ -50,7 +49,8 @@ public class EventRepository {
                         eventDao.getFoodHistory(),
                         eventDao.getUserHistory(),
                         eventDao.getUserDeviceHistory(),
-                        eventDao.getLocationHistory())
+                        eventDao.getLocationHistory(),
+                        eventDao.getUnitHistory())
                 , 7).build();
     }
 
