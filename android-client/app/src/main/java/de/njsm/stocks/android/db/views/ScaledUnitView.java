@@ -20,23 +20,32 @@
 package de.njsm.stocks.android.db.views;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-
+import androidx.room.Embedded;
+import de.njsm.stocks.android.db.entities.ScaledUnit;
+import de.njsm.stocks.android.db.entities.Unit;
 import org.threeten.bp.Instant;
 
 import java.math.BigDecimal;
 
-public class FoodItemWithFoodNameView extends FoodItemView {
+public class ScaledUnitView extends ScaledUnit {
 
-    @ColumnInfo(name = "food_name")
-    private final String foodName;
+    @Embedded(prefix = "unit_")
+    Unit unitEntity;
 
-    public FoodItemWithFoodNameView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String userName, String deviceName, Instant eatByDate, String location, int ofType, int storedIn, String foodName, BigDecimal scale, String unitAbbreviation, int scaledUnit) {
-        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, userName, deviceName, eatByDate, location, ofType, storedIn, scaledUnit, scale, unitAbbreviation);
-        this.foodName = foodName;
+    public ScaledUnitView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, @NonNull BigDecimal scale, int unitEntity, Unit unit1) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, scale, unitEntity);
+        this.unitEntity = unit1;
     }
 
-    public String getFoodName() {
-        return foodName;
+    public ScaledUnitView() {
+        unitEntity = new Unit();
+    }
+
+    public Unit getUnitEntity() {
+        return unitEntity;
+    }
+
+    public void setUnitEntity(Unit unitEntity) {
+        this.unitEntity = unitEntity;
     }
 }

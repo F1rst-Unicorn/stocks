@@ -40,6 +40,7 @@ import de.njsm.stocks.android.frontend.main.EventViewModel;
 import de.njsm.stocks.android.frontend.search.SearchViewModel;
 import de.njsm.stocks.android.frontend.settings.SettingsUpdaterViewModel;
 import de.njsm.stocks.android.frontend.shoppinglist.FoodToBuyViewModel;
+import de.njsm.stocks.android.frontend.units.ScaledUnitViewModel;
 import de.njsm.stocks.android.frontend.units.UnitViewModel;
 import de.njsm.stocks.android.frontend.user.UserViewModel;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
@@ -202,6 +203,15 @@ public class ViewModelModule {
     @ViewModelKey(UnitViewModel.class)
     ViewModel provideUnitViewModel(UnitRepository repo) {
         UnitViewModel result = new UnitViewModel(repo);
+        result.init();
+        return result;
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ScaledUnitViewModel.class)
+    ViewModel provideScaledUnitViewModel(ScaledUnitRepository repo) {
+        ScaledUnitViewModel result = new ScaledUnitViewModel(repo);
         result.init();
         return result;
     }

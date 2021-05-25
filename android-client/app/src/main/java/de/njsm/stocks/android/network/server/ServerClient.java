@@ -172,4 +172,17 @@ public interface ServerClient {
     @PUT("/v2/unit")
     Call<Response> addUnit(@Query("name") String name,
                              @Query("abbreviation") String abbreviation);
+
+    @DELETE("/v2/scaled-unit")
+    Call<Response> deleteScaledUnit(@Query("id") int id,
+                                    @Query("version") int version);
+
+    @PUT("/v2/scaled-unit/rename")
+    Call<Response> editScaledUnit(@Query("id") int id,
+                                  @Query("version") int version,
+                                  @Query("scale") String scale,
+                                  @Query("unit") int unit);
+    @PUT("/v2/scaled-unit")
+    Call<Response> addScaledUnit(@Query("scale") String scale,
+                                 @Query("unit") int unit);
 }

@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -26,7 +27,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -38,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Unit;
+import de.njsm.stocks.android.db.views.ScaledUnitView;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.interactor.DeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.Editor;
@@ -45,14 +49,20 @@ import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class UnitFragment extends BaseFragment implements Editor<Unit> {
+public class ScaledUnitFragment extends BaseFragment implements Editor<ScaledUnitView> {
 
     private ViewModelProvider.Factory viewModelFactory;
 
-    UnitViewModel viewModel;
+    ScaledUnitViewModel viewModel;
 
-    RecyclerView.Adapter<UnitAdapter.ViewHolder> adapter;
+    UnitViewModel unitViewModel;
+
+    RecyclerView.Adapter<ScaledUnitAdapter.ViewHolder> adapter;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -69,31 +79,38 @@ public class UnitFragment extends BaseFragment implements Editor<Unit> {
         RecyclerView list = result.findViewById(R.id.fragment_units_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(UnitViewModel.class);
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ScaledUnitViewModel.class);
+        unitViewModel = ViewModelProviders.of(this, viewModelFactory).get(UnitViewModel.class);
 
-        adapter = new UnitAdapter(viewModel.getUnits(),
+        adapter = new ScaledUnitAdapter(viewModel.getUnits(),
                 v -> initiateEditing(v, viewModel.getUnits(), R.string.dialog_edit),
                 this::doNothing);
         viewModel.getUnits().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
-        DeletionInteractor<Unit> deletionInteractor = new DeletionInteractor<>(this, viewModel::delete);
+        DeletionInteractor<ScaledUnitView> deletionInteractor = new DeletionInteractor<>(this, viewModel::delete);
         addSwipeToDelete(list, viewModel.getUnits(), deletionInteractor::initiateDeletion);
 
         return result;
     }
 
     private void addUnit(View view) {
-        View form = getEditLayout(new Unit(), getLayoutInflater());
+        View form = getEditLayout(null, getLayoutInflater());
 
         new AlertDialog.Builder(requireActivity())
                 .setTitle(getResources().getString(R.string.dialog_new_unit))
                 .setView(form)
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
-                    String name = ((EditText) form.findViewById(R.id.form_unit_name)).getText().toString();
-                    String abbreviation = ((EditText) form.findViewById(R.id.form_unit_abbreviation)).getText().toString();
-                    LiveData<StatusCode> result = viewModel.add(name, abbreviation);
-                    result.observe(this, this::maybeShowAddError);
+                    String scale = ((EditText) form.findViewById(R.id.form_scaled_unit_scale)).getText().toString();
+                    Spinner spinner = form.findViewById(R.id.form_scaled_unit_unit);
+                    int selected = spinner.getSelectedItemPosition();
+
+                    List<Unit> units = unitViewModel.getUnits().getValue();
+                    if (units != null) {
+                        Unit unit = units.get(selected);
+                        LiveData<StatusCode> result = viewModel.add(unit.id, new BigDecimal(scale));
+                        result.observe(this, this::maybeShowAddError);
+                    }
                 })
                 .show();
     }
@@ -104,26 +121,48 @@ public class UnitFragment extends BaseFragment implements Editor<Unit> {
     }
 
     @Override
-    public LiveData<StatusCode> edit(Unit item, DialogInterface dialog, View view) {
-        String newName = ((EditText) view.findViewById(R.id.form_unit_name)).getText().toString();
-        String newAbbreviation = ((EditText) view.findViewById(R.id.form_unit_abbreviation)).getText().toString();
-        return viewModel.edit(item, newName, newAbbreviation);
+    public LiveData<StatusCode> edit(ScaledUnitView item, DialogInterface dialog, View view) {
+        String scale = ((EditText) view.findViewById(R.id.form_scaled_unit_scale)).getText().toString();
+        Spinner spinner = view.findViewById(R.id.form_scaled_unit_unit);
+        Unit unit = (Unit) spinner.getSelectedItem();
+        return viewModel.edit(item, unit.id, new BigDecimal(scale));
     }
 
     @Override
-    public View getEditLayout(Unit item, LayoutInflater layoutInflater) {
-        View result = layoutInflater.inflate(R.layout.form_unit, null);
-        EditText nameField = result.findViewById(R.id.form_unit_name);
-        nameField.setText(item.getName());
-        nameField.addTextChangedListener(new NonEmptyValidator(nameField, this::showEmptyInputError));
-        EditText abbreviationField = result.findViewById(R.id.form_unit_abbreviation);
-        abbreviationField.setText(item.getAbbreviation());
-        abbreviationField.addTextChangedListener(new NonEmptyValidator(abbreviationField, this::showEmptyInputError));
+    public View getEditLayout(ScaledUnitView item, LayoutInflater layoutInflater) {
+        View result = layoutInflater.inflate(R.layout.form_scaled_unit, null);
+        EditText scaleField = result.findViewById(R.id.form_scaled_unit_scale);
+
+        if (item != null)
+            scaleField.setText(String.format("%s", item.getScale()));
+
+        scaleField.addTextChangedListener(new NonEmptyValidator(scaleField, this::showEmptyInputError));
+        Spinner unitField = result.findViewById(R.id.form_scaled_unit_unit);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(),
+                R.layout.item_unit_spinner, R.id.item_unit_spinner_name,
+                new ArrayList<>());
+        unitField.setAdapter(adapter);
+        unitViewModel.getUnits().observe(getViewLifecycleOwner(), v -> {
+            if (v == null)
+                return;
+
+            List<String> data = v.stream().map(i -> i.name).collect(Collectors.toList());
+            adapter.clear();
+            adapter.addAll(data);
+            adapter.notifyDataSetChanged();
+
+            if (item != null) {
+                int selectionIndex = v.indexOf(item.getUnitEntity());
+                if (selectionIndex != -1)
+                    unitField.setSelection(selectionIndex);
+            }
+        });
+
         return result;
     }
 
     @Override
-    public void treatStatusCode(Unit item, StatusCode statusCode) {
+    public void treatStatusCode(ScaledUnitView item, StatusCode statusCode) {
         maybeShowEditError(statusCode);
     }
 }

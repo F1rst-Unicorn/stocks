@@ -44,6 +44,6 @@ public class LocationNameChangedGenerator extends PartialDiffGenerator<Location>
 
     @Override
     protected Object[] getFormatArguments() {
-        return new Object[] { getObject().getGenitive(), getNewEntity().name };
+        return new Object[] { getObject().get(), getNewEntity().name };
     }
 }

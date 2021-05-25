@@ -98,6 +98,8 @@
     <string name="hint_local">Deine Änderung</string>
     <string name="hint_name">Name</string>
     <string name="hint_abbreviation">Abkürzung</string>
+    <string name="hint_scale">Skalierung</string>
+    <string name="hint_unit">Einheit</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>
@@ -190,7 +192,7 @@
 
     <string name="event_location_created">%s hat %s erfasst.</string>
     <string name="event_location_deleted">%s hat %s gelöscht.</string>
-    <string name="event_location_renamed">hat %s zu %s umbenannt.</string>
+    <string name="event_location_renamed">hat %s zu %s umbenannt</string>
     <string name="event_location_description_changed">hat die Beschreibung%s geändert</string>
     <string name="event_eannumber_created">%s hat einen Strichcode (%s) für %s hinzugefügt.</string>
     <string name="event_eannumber_deleted">%s hat einen Strichcode (%s) für %s gelöscht.</string>

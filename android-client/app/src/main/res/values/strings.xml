@@ -98,6 +98,8 @@
     <string name="hint_local">Your Change</string>
     <string name="hint_name">Name</string>
     <string name="hint_abbreviation">Abbreviation</string>
+    <string name="hint_scale">Scale</string>
+    <string name="hint_unit">Unit</string>
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>
@@ -190,7 +192,7 @@
 
     <string name="event_location_created">%s has entered %s.</string>
     <string name="event_location_deleted">%s has deleted %s.</string>
-    <string name="event_location_renamed">has renamed %s to %s.</string>
+    <string name="event_location_renamed">has renamed %s to %s</string>
     <string name="event_location_description_changed">has changed the description%s</string>
     <string name="event_eannumber_created">%s has added a barcode (%s) for %s.</string>
     <string name="event_eannumber_deleted">%s has deleted a barcode (%s) for %s.</string>

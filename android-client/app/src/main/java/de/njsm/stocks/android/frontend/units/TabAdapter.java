@@ -34,7 +34,7 @@ public class TabAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         Fragment fragment;
         if (position == 0) {
-            fragment = new UnitFragment();
+            fragment = new ScaledUnitFragment();
         } else {
             fragment = new UnitFragment();
         }
