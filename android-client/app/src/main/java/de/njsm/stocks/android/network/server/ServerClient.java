@@ -169,4 +169,7 @@ public interface ServerClient {
                             @Query("version") int version,
                             @Query("name") String newName,
                             @Query("abbreviation") String newAbbreviation);
+    @PUT("/v2/unit")
+    Call<Response> addUnit(@Query("name") String name,
+                             @Query("abbreviation") String abbreviation);
 }

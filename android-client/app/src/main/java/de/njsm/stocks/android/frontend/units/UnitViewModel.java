@@ -60,4 +60,8 @@ public class UnitViewModel extends ViewModel {
     public LiveData<StatusCode> edit(Unit item, String newName, String newAbbreviation) {
         return unitRepository.edit(item, newName, newAbbreviation);
     }
+
+    public LiveData<StatusCode> add(String name, String abbreviation) {
+        return unitRepository.add(name, abbreviation);
+    }
 }

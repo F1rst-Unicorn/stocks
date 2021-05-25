@@ -80,4 +80,13 @@ public class UnitRepository {
 
         return result;
     }
+
+    public LiveData<StatusCode> add(String name, String abbreviation) {
+        LOG.d("adding unit " + name + ", " + abbreviation);
+        MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
+
+        webClient.addUnit(name, abbreviation)
+                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+        return data;
+    }
 }

@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -40,6 +41,7 @@ import de.njsm.stocks.android.db.entities.Unit;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.interactor.DeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.Editor;
+import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
@@ -63,6 +65,7 @@ public class UnitFragment extends BaseFragment implements Editor<Unit> {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
+        result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(this::addUnit);
         RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
@@ -82,6 +85,21 @@ public class UnitFragment extends BaseFragment implements Editor<Unit> {
         return result;
     }
 
+    private void addUnit(View view) {
+        View form = getEditLayout(new Unit(), getLayoutInflater());
+
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(getResources().getString(R.string.dialog_new_unit))
+                .setView(form)
+                .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
+                    String name = ((EditText) form.findViewById(R.id.form_unit_name)).getText().toString();
+                    String abbreviation = ((EditText) form.findViewById(R.id.form_unit_abbreviation)).getText().toString();
+                    LiveData<StatusCode> result = viewModel.add(name, abbreviation);
+                    result.observe(this, this::maybeShowAddError);
+                })
+                .show();
+    }
+
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         this.viewModelFactory = viewModelFactory;
@@ -97,8 +115,12 @@ public class UnitFragment extends BaseFragment implements Editor<Unit> {
     @Override
     public View getEditLayout(Unit item, LayoutInflater layoutInflater) {
         View result = layoutInflater.inflate(R.layout.form_unit, null);
-        ((EditText) result.findViewById(R.id.form_unit_name)).setText(item.getName());
-        ((EditText) result.findViewById(R.id.form_unit_abbreviation)).setText(item.getAbbreviation());
+        EditText nameField = result.findViewById(R.id.form_unit_name);
+        nameField.setText(item.getName());
+        nameField.addTextChangedListener(new NonEmptyValidator(nameField, this::showEmptyInputError));
+        EditText abbreviationField = result.findViewById(R.id.form_unit_abbreviation);
+        abbreviationField.setText(item.getAbbreviation());
+        abbreviationField.addTextChangedListener(new NonEmptyValidator(abbreviationField, this::showEmptyInputError));
         return result;
     }
 
