@@ -91,6 +91,32 @@ public class UnitHandlerTest extends DbTestCase {
     }
 
     @Test
+    public void renamingOnlyNameWorks() {
+        UnitForRenaming data = new UnitForRenaming(1, 0, "Default", "new abbreviation");
+
+        StatusCode result = uut.rename(data);
+
+        assertEquals(StatusCode.SUCCESS, result);
+
+        Validation<StatusCode, Stream<Unit>> dbData = uut.get(false, Instant.EPOCH);
+        List<Unit> records = dbData.success().collect(Collectors.toList());
+        assertThat(records, hasItem(matchesVersionable(data)));
+    }
+
+    @Test
+    public void renamingOnlyAbbreviationWorks() {
+        UnitForRenaming data = new UnitForRenaming(1, 0, "new name", "default");
+
+        StatusCode result = uut.rename(data);
+
+        assertEquals(StatusCode.SUCCESS, result);
+
+        Validation<StatusCode, Stream<Unit>> dbData = uut.get(false, Instant.EPOCH);
+        List<Unit> records = dbData.success().collect(Collectors.toList());
+        assertThat(records, hasItem(matchesVersionable(data)));
+    }
+
+    @Test
     public void missingWhileRenamingIsReported() {
         UnitForRenaming data = new UnitForRenaming(999, 0, "name", "abbreviation");
 

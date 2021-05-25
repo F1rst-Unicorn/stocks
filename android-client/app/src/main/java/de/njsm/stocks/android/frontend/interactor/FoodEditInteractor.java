@@ -30,7 +30,7 @@ import java.util.function.BiFunction;
 
 public class FoodEditInteractor extends EditInteractor<Food, String> {
 
-    private Function<Integer, LiveData<Food>> updater;
+    private final Function<Integer, LiveData<Food>> updater;
 
     public FoodEditInteractor(BaseFragment owner,
                               BiFunction<Food, String, LiveData<StatusCode>> editor,

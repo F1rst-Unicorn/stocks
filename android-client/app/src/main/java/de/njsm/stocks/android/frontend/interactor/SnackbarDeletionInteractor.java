@@ -47,6 +47,7 @@ public abstract class SnackbarDeletionInteractor<T> extends DeletionInteractor<T
         this.snackbarParent = snackbarParent;
     }
 
+    @Override
     public void initiateDeletion(T item) {
         showDeletionSnackbar(item);
     }

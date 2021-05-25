@@ -50,7 +50,7 @@ public class FoodItemDeletionInteractor extends DeletionInteractor<FoodItemView>
                 }
             });
         } else
-            owner.maybeShowDeleteError(code);
+            super.treatErrorCode(code, item);
     }
 
     private void compareFood(FoodItemView item, FoodItemView newItem) {

@@ -41,9 +41,4 @@ public class EanNumberDeletionInteractor extends SnackbarDeletionInteractor<EanN
     protected int getSnackbarMessageId() {
         return R.string.dialog_ean_was_deleted;
     }
-
-    @Override
-    protected void treatErrorCode(StatusCode code, EanNumber item) {
-        owner.maybeShowDeleteError(code);
-    }
 }

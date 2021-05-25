@@ -22,6 +22,7 @@ package de.njsm.stocks.android.frontend.units;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.entities.Unit;
+import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.UnitRepository;
 import de.njsm.stocks.android.util.Logger;
 
@@ -50,5 +51,13 @@ public class UnitViewModel extends ViewModel {
 
     public LiveData<List<Unit>> getUnits() {
         return units;
+    }
+
+    public LiveData<StatusCode> delete(Unit unit) {
+        return unitRepository.delete(unit);
+    }
+
+    public LiveData<StatusCode> edit(Unit item, String newName, String newAbbreviation) {
+        return unitRepository.edit(item, newName, newAbbreviation);
     }
 }

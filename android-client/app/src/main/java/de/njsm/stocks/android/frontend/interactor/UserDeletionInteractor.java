@@ -41,9 +41,4 @@ public class UserDeletionInteractor extends SnackbarDeletionInteractor<User> {
     protected int getSnackbarMessageId() {
         return R.string.dialog_user_was_deleted;
     }
-
-    @Override
-    protected void treatErrorCode(StatusCode code, User item) {
-        owner.maybeShowDeleteError(code);
-    }
 }

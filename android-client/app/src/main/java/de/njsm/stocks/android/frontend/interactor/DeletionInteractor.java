@@ -26,7 +26,7 @@ import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
 
-public abstract class DeletionInteractor<T> {
+public class DeletionInteractor<T> {
 
     private static final Logger LOG = new Logger(DeletionInteractor.class);
 
@@ -34,7 +34,7 @@ public abstract class DeletionInteractor<T> {
 
     protected BaseFragment owner;
 
-    protected DeletionInteractor(BaseFragment owner,
+    public DeletionInteractor(BaseFragment owner,
                                  Function<T, LiveData<StatusCode>> deleter) {
         this.deleter = deleter;
         this.owner = owner;
@@ -49,5 +49,7 @@ public abstract class DeletionInteractor<T> {
         result.observe(owner, code -> treatErrorCode(code, item));
     }
 
-    protected abstract void treatErrorCode(StatusCode code, T item);
+    protected void treatErrorCode(StatusCode code, T item) {
+        owner.maybeShowDeleteError(code);
+    }
 }

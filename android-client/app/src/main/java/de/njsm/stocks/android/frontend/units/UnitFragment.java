@@ -21,23 +21,30 @@ package de.njsm.stocks.android.frontend.units;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.Unit;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.interactor.DeletionInteractor;
+import de.njsm.stocks.android.frontend.interactor.Editor;
+import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
 
-public class UnitFragment extends BaseFragment {
+public class UnitFragment extends BaseFragment implements Editor<Unit> {
 
     private ViewModelProvider.Factory viewModelFactory;
 
@@ -62,10 +69,13 @@ public class UnitFragment extends BaseFragment {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(UnitViewModel.class);
 
         adapter = new UnitAdapter(viewModel.getUnits(),
-                this::doNothing,
+                v -> initiateEditing(v, viewModel.getUnits(), R.string.dialog_edit),
                 this::doNothing);
         viewModel.getUnits().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
+
+        DeletionInteractor<Unit> deletionInteractor = new DeletionInteractor<>(this, viewModel::delete);
+        addSwipeToDelete(list, viewModel.getUnits(), deletionInteractor::initiateDeletion);
 
         initialiseSwipeRefresh(result, viewModelFactory);
 
@@ -75,5 +85,25 @@ public class UnitFragment extends BaseFragment {
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         this.viewModelFactory = viewModelFactory;
+    }
+
+    @Override
+    public LiveData<StatusCode> edit(Unit item, DialogInterface dialog, View view) {
+        String newName = ((EditText) view.findViewById(R.id.form_unit_name)).getText().toString();
+        String newAbbreviation = ((EditText) view.findViewById(R.id.form_unit_abbreviation)).getText().toString();
+        return viewModel.edit(item, newName, newAbbreviation);
+    }
+
+    @Override
+    public View getEditLayout(Unit item, LayoutInflater layoutInflater) {
+        View result = layoutInflater.inflate(R.layout.form_unit, null);
+        ((EditText) result.findViewById(R.id.form_unit_name)).setText(item.getName());
+        ((EditText) result.findViewById(R.id.form_unit_abbreviation)).setText(item.getAbbreviation());
+        return result;
+    }
+
+    @Override
+    public void treatStatusCode(Unit item, StatusCode statusCode) {
+        maybeShowEditError(statusCode);
     }
 }

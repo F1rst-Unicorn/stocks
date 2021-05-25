@@ -41,9 +41,4 @@ public class DeviceDeletionInteractor extends SnackbarDeletionInteractor<UserDev
     protected int getSnackbarMessageId() {
         return R.string.dialog_device_was_deleted;
     }
-
-    @Override
-    protected void treatErrorCode(StatusCode code, UserDevice item) {
-        owner.maybeShowDeleteError(code);
-    }
 }

@@ -30,7 +30,7 @@ import java.util.function.BiFunction;
 
 public class LocationEditInteractor extends EditInteractor<Location, String> {
 
-    private Function<Integer, LiveData<Location>> updater;
+    private final Function<Integer, LiveData<Location>> updater;
 
     public LocationEditInteractor(BaseFragment owner,
                                   BiFunction<Location, String, LiveData<StatusCode>> editor,

@@ -60,8 +60,8 @@ public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
 
                     UNIT.ID.eq(unit.getId())
                             .and(UNIT.VERSION.eq(unit.getVersion()))
-                            .and(UNIT.NAME.ne(unit.getName()))
-                            .and(UNIT.ABBREVIATION.ne(unit.getAbbreviation()))
+                            .and(UNIT.NAME.ne(unit.getName())
+                                    .or(UNIT.ABBREVIATION.ne(unit.getAbbreviation())))
             ).map(this::notFoundMeansInvalidVersion);
 
         });

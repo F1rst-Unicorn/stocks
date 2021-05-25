@@ -68,4 +68,6 @@ public class Logger {
     public void e(String message) {
         Log.e(tag.getCanonicalName(), message);
     }
+
+
 }

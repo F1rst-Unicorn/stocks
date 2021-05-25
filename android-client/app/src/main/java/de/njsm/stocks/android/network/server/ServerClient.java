@@ -160,4 +160,13 @@ public interface ServerClient {
     Call<ListResponse<RecipeProduct>> getRecipeProducts(@Query("bitemporal") int bitemporal,
                                                         @Query("startingFrom") String startingFrom);
 
+    @DELETE("/v2/unit")
+    Call<Response> deleteUnit(@Query("id") int id,
+                              @Query("version") int version);
+
+    @PUT("/v2/unit/rename")
+    Call<Response> editUnit(@Query("id") int id,
+                            @Query("version") int version,
+                            @Query("name") String newName,
+                            @Query("abbreviation") String newAbbreviation);
 }

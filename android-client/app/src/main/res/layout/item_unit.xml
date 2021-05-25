@@ -24,10 +24,7 @@
                 android:layout_height="wrap_content"
 
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/list_item_padding"
-                android:paddingTop="@dimen/list_item_padding"
-                android:paddingRight="@dimen/list_item_padding"
-                android:paddingBottom="@dimen/list_item_padding">
+                android:padding="@dimen/list_item_padding_large">
 
     <TextView
               android:id="@+id/item_unit_name"
@@ -38,10 +35,6 @@
               android:drawableStart="@drawable/ic_weight_black_24"
               android:drawablePadding="@dimen/text_margin"
               android:gravity="center_vertical"
-              android:minHeight="?android:attr/listPreferredItemHeightSmall"
-              android:paddingTop="@dimen/list_item_padding_large"
-              android:paddingBottom="@dimen/list_item_padding_large"
-              android:paddingStart="?android:attr/listPreferredItemPaddingStart"
               android:text="Litre"/>
     
     <TextView
@@ -51,8 +44,7 @@
               android:layout_height="wrap_content"
 
               android:layout_alignParentEnd="true"
-              android:minHeight="?android:attr/listPreferredItemHeightSmall"
-              android:padding="@dimen/list_item_padding_large"
+              android:gravity="center_vertical"
               android:text="l"/>
 
 

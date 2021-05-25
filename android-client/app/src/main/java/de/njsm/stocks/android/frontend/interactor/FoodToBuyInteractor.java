@@ -29,7 +29,7 @@ import java.util.function.BiFunction;
 
 public class FoodToBuyInteractor extends EditInteractor<Food, Boolean> {
 
-    private Function<Integer, LiveData<Food>> updater;
+    private final Function<Integer, LiveData<Food>> updater;
 
     public FoodToBuyInteractor(BaseFragment owner,
                                BiFunction<Food, Boolean, LiveData<StatusCode>> editor,

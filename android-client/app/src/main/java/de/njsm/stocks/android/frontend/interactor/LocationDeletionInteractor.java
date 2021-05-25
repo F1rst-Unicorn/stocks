@@ -63,7 +63,7 @@ public class LocationDeletionInteractor extends SnackbarDeletionInteractor<Locat
         } else if (code == StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION)
             offerCascadingDeletion(item);
         else
-            owner.maybeShowDeleteError(code);
+            super.treatErrorCode(code, item);
     }
 
     private void compareLocations(Location item, Location upstreamItem) {

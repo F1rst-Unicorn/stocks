@@ -69,7 +69,7 @@ public class FoodDeletionInteractor extends SnackbarDeletionInteractor<Food> {
                 }
             });
         } else
-            owner.maybeShowDeleteError(code);
+            super.treatErrorCode(code, item);
     }
 
     private void compareFood(Food item, Food upstreamItem) {

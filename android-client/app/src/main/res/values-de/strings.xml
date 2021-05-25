@@ -96,6 +96,8 @@
     <string name="hint_original">Original</string>
     <string name="hint_remote">Andere Änderung</string>
     <string name="hint_local">Deine Änderung</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_abbreviation">Abkürzung</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>
@@ -142,6 +144,7 @@
     <string name="dialog_rename_location">Ort umbenennen</string>
     <string name="dialog_food_was_deleted">Lebensmittel wurde gelöscht</string>
     <string name="dialog_rename_food">Lebensmittel umbenennen</string>
+    <string name="dialog_edit">Bearbeiten</string>
     <string name="dialog_item_both_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt und das Haltbarkeitsdatum vom %3$s zum %4$s geändert. Möchtest du es immer noch essen?</string>
     <string name="dialog_item_date_changed">Das Haltbarkeitsdatum wurde vom %1$s zum %2$s geändert. Möchtest du es immer noch essen?</string>
     <string name="dialog_item_location_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt. Möchtest du es immer noch essen?</string>

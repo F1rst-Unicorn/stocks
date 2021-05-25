@@ -27,7 +27,7 @@ import java.util.function.BiFunction;
 
 public abstract class EditInteractor<T, E> {
 
-    private BiFunction<T, E, LiveData<StatusCode>> editor;
+    private final BiFunction<T, E, LiveData<StatusCode>> editor;
 
     protected BaseFragment owner;
 

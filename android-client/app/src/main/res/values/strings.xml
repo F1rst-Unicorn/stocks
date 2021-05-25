@@ -96,6 +96,8 @@
     <string name="hint_original">Original</string>
     <string name="hint_remote">Other Change</string>
     <string name="hint_local">Your Change</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_abbreviation">Abbreviation</string>
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>
@@ -144,6 +146,7 @@
     <string name="dialog_default_location">Set default location</string>
     <string name="dialog_food_was_deleted">Food was deleted</string>
     <string name="dialog_rename_food">Rename Food</string>
+    <string name="dialog_edit">Edit</string>
     <string name="dialog_item_location_changed" >The item was moved from %1$s to %2$s. Do you still want to eat it?</string>
     <string name="dialog_item_date_changed" >The item\'s expiration date was changed from %1$s to %2$s. Do you still want to eat it?</string>
     <string name="dialog_item_both_changed" >The item was moved from %1$s to %2$s and the expiration date was changed from %3s to %4$s. Do you still want to eat it?</string>
@@ -160,7 +163,7 @@
     <string name="error_location_changed">The location was renamed from %1$s to %2$s. Do you still want to delete it?</string>
     <string name="error_location_changed_twice">The location with original name %1$s was renamed to %2$s by you and to %3$s by someone else. Do you want to apply your name?</string>
     <string name="error_food_changed" >The food was renamed from %1$s to %2$s. Do you still want to delete it?</string>
-    <string name="error_food_changed_twice" >The food was with original name %1$s was renamed to %2$s by you and to %3$s by someone else. Do you want to apply your name?</string>
+    <string name="error_food_changed_twice" >The food with original name %1$s was renamed to %2$s by you and to %3$s by someone else. Do you want to apply your name?</string>
 
     <string name="text_show_qr_code_friend">Let your new device read this code:</string>
     <string name="text_amount">Amount:</string>
