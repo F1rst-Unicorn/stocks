@@ -64,6 +64,10 @@ public abstract class EventDao {
             TIME_COLUMNS +
             "l1.transaction_time_start = (select min(transaction_time_start) from eannumber x where x._id = l1._id) as is_first ";
 
+    private static final String TIME_COLUMNS_UNIT =
+            TIME_COLUMNS +
+                    "l1.transaction_time_start = (select min(transaction_time_start) from unit x where x._id = l1._id) as is_first ";
+
     private static final String ON_CHRONOLOGY =
             "on l1.transaction_time_start = l2.transaction_time_start and l1.version + 1 = l2.version and l1._id = l2._id ";
 
@@ -346,7 +350,7 @@ public abstract class EventDao {
             "l1.name as version1_name, l1.abbreviation as version1_abbreviation, " +
             "l2.name as version2_name, l2.abbreviation as version2_abbreviation, " +
             INITIATOR_COLUMNS +
-            TIME_COLUMNS_LOCATION +
+            TIME_COLUMNS_UNIT +
             "from unit l1 " +
             "left outer join unit l2 " + ON_CHRONOLOGY +
             JOIN_INITIATOR +

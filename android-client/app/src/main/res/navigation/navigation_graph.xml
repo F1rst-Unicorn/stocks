@@ -572,9 +572,9 @@
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_units"
-        android:name="de.njsm.stocks.android.frontend.units.UnitFragment"
+        android:name="de.njsm.stocks.android.frontend.units.UnitPagingFragment"
         android:label="@string/title_units"
-        tools:layout="@layout/template_swipe_list">
+        tools:layout="@layout/fragment_unit_pager">
     </fragment>
     <action
         android:id="@+id/action_global_nav_fragment_settings"

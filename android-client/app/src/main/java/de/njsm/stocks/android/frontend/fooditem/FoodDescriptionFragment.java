@@ -25,33 +25,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
+import com.github.mikephil.charting.data.*;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
+
+import javax.inject.Inject;
+import java.util.List;
 
 public class FoodDescriptionFragment extends BaseFragment {
 
@@ -97,7 +88,7 @@ public class FoodDescriptionFragment extends BaseFragment {
         TextView amount = result.findViewById(R.id.fragment_food_description_amount);
 
         foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
-                description.setText(String.valueOf(f.description)));
+                description.setText(f.description));
 
         foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
                 expiration.setText(String.valueOf(f.expirationOffset)));
