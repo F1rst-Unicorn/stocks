@@ -31,11 +31,14 @@ public class FoodForEditing extends VersionedData implements Versionable<Food> {
 
     private final Optional<Integer> location;
 
-    public FoodForEditing(int id, int version, String newName, Period expirationOffset, Integer location) {
+    private final Optional<String> description;
+
+    public FoodForEditing(int id, int version, String newName, Period expirationOffset, Integer location, String description) {
         super(id, version);
         this.newName = newName;
         this.expirationOffset = Optional.ofNullable(expirationOffset);
         this.location = Optional.ofNullable(location);
+        this.description = Optional.ofNullable(description);
     }
 
     public String getNewName() {
@@ -50,6 +53,10 @@ public class FoodForEditing extends VersionedData implements Versionable<Food> {
         return expirationOffset;
     }
 
+    public Optional<String> getDescription() {
+        return description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,12 +65,13 @@ public class FoodForEditing extends VersionedData implements Versionable<Food> {
         FoodForEditing that = (FoodForEditing) o;
         return getExpirationOffsetOptional().equals(that.getExpirationOffsetOptional())
                 && getLocationOptional().equals(that.getLocationOptional())
-                && getNewName().equals(that.getNewName());
+                && getNewName().equals(that.getNewName())
+                && getDescription().equals(that.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getNewName(), getExpirationOffsetOptional(), getLocationOptional());
+        return Objects.hash(super.hashCode(), getNewName(), getExpirationOffsetOptional(), getLocationOptional(), getDescription());
     }
 
     @Override
@@ -71,6 +79,7 @@ public class FoodForEditing extends VersionedData implements Versionable<Food> {
         return Versionable.super.isContainedIn(item) &&
                 newName.equals(item.getName()) &&
                 location.map(v -> v.equals(item.getLocation())).orElse(true) &&
-                expirationOffset.map(v -> v.equals(item.getExpirationOffset())).orElse(true);
+                expirationOffset.map(v -> v.equals(item.getExpirationOffset())).orElse(true) &&
+                description.map(v -> v.equals(item.getDescription())).orElse(true);
     }
 }

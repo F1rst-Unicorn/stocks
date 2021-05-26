@@ -67,6 +67,25 @@ public class FoodTest implements Deleter {
     }
 
     @Test
+    public void renameFoodWithDescription() {
+        String name = "Cake";
+        String newName = "Cabal";
+        int id = createNewFoodType(name);
+        int locationId = LocationTest.createNewLocationType("renamefood");
+        String description = "description";
+
+        assertOnRename(id, 0, newName, 42, locationId, description)
+                .statusCode(200)
+                .body("status", equalTo(0));
+
+        assertOnFood()
+                .body("data.name", hasItem(newName))
+                .body("data.expirationOffset", hasItem(42))
+                .body("data.description", hasItem(description))
+                .body("data.location", hasItem(locationId));
+    }
+
+    @Test
     public void alterFoodDescription() {
         String name = "Cake";
         String newDescription = "new description";
@@ -185,6 +204,23 @@ public class FoodTest implements Deleter {
                 .queryParam("new", newName)
                 .queryParam("expirationoffset", expirationOffset)
                 .queryParam("location", location).
+        when()
+                .put(TestSuite.DOMAIN + "/v2/food/rename").
+        then()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON);
+    }
+
+    private ValidatableResponse assertOnRename(int id, int version, String newName, int expirationOffset, int location, String description) {
+        return
+        given()
+                .log().ifValidationFails()
+                .queryParam("id", id)
+                .queryParam("version", version)
+                .queryParam("new", newName)
+                .queryParam("expirationoffset", expirationOffset)
+                .queryParam("location", location)
+                .formParam("description", description).
         when()
                 .put(TestSuite.DOMAIN + "/v2/food/rename").
         then()

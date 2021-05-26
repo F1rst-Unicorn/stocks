@@ -61,13 +61,15 @@ public class FoodEndpoint extends Endpoint implements
 
     @PUT
     @Path("rename")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response renameFood(@Context HttpServletRequest request,
                                @QueryParam("id") int id,
                                @QueryParam("version") int version,
                                @QueryParam("new") String newName,
                                @QueryParam("expirationoffset") Integer expirationOffset,
-                               @QueryParam("location") Integer location) {
+                               @QueryParam("location") Integer location,
+                               @FormParam("description") String description) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
@@ -79,7 +81,8 @@ public class FoodEndpoint extends Endpoint implements
                             version,
                             newName,
                             expirationOffset == null ? null : Period.ofDays(expirationOffset),
-                            location));
+                            location,
+                            description));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

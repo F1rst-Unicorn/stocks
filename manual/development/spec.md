@@ -444,6 +444,11 @@ Query parameters:
   Pass 0 for unsetting the default location. If omitted this value won't be
   changed.
 
+Form parameters:
+
+* `description: String`: The new description to set. If omitted this value won't
+  be changed.
+
 Result: `application/json`, `Response`
 
 `PUT /v2/food/buy`: Set the buy status of an existing food
