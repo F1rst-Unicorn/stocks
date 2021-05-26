@@ -215,4 +215,13 @@ public class ViewModelModule {
         result.init();
         return result;
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(de.njsm.stocks.android.frontend.unithistory.EventViewModel.class)
+    ViewModel provideUnitEventViewModel(EventRepository repo) {
+        de.njsm.stocks.android.frontend.unithistory.EventViewModel result = new de.njsm.stocks.android.frontend.unithistory.EventViewModel(repo);
+        result.init();
+        return result;
+    }
 }

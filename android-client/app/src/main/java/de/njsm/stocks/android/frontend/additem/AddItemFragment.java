@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.android.frontend.additem;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.ArrayAdapter;
@@ -32,11 +31,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
@@ -53,15 +51,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class AddItemFragment extends BaseFragment {
+public class AddItemFragment extends InjectedFragment {
 
     private static final Logger LOG = new Logger(AddItemFragment.class);
 
     private DatePicker date;
 
     private Spinner location;
-
-    private ViewModelProvider.Factory viewModelFactory;
 
     private FoodItemViewModel viewModel;
 
@@ -70,12 +66,6 @@ public class AddItemFragment extends BaseFragment {
     private LocationViewModel locationViewModel;
 
     private ArrayAdapter<String> adapter;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -222,10 +212,5 @@ public class AddItemFragment extends BaseFragment {
             return 0;
         else
             return data.get(position).id;
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 }

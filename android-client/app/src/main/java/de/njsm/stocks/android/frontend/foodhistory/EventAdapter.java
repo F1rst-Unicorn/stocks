@@ -26,36 +26,34 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.function.IntFunction;
-
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
 import de.njsm.stocks.android.util.Config;
+
+import java.util.function.IntFunction;
 
 public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.ViewHolder> {
 
     private final IntFunction<String> stringResourceProvider;
 
-    private Resources resources;
+    private final Resources resources;
 
-    private Resources.Theme theme;
+    private final Resources.Theme theme;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView date;
+        private final TextView date;
 
-        private TextView description;
+        private final TextView description;
 
-        private ImageView entityIcon;
+        private final ImageView entityIcon;
 
-        private ImageView eventIcon;
+        private final ImageView eventIcon;
 
         ViewHolder(@NonNull RelativeLayout itemView) {
             super(itemView);

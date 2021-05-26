@@ -19,36 +19,21 @@
 
 package de.njsm.stocks.android.frontend.locationhistory;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.foodhistory.EventAdapter;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 
-public class LocationHistoryFragment extends BaseFragment {
-
-    private ViewModelProvider.Factory viewModelFactory;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
+public class LocationHistoryFragment extends InjectedFragment {
 
     @Nullable
     @Override
@@ -73,10 +58,5 @@ public class LocationHistoryFragment extends BaseFragment {
 
         initialiseSwipeRefresh(result, viewModelFactory);
         return result;
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 }

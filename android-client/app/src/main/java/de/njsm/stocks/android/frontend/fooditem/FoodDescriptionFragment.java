@@ -19,7 +19,6 @@
 
 package de.njsm.stocks.android.frontend.fooditem;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,23 +27,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.*;
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 
-import javax.inject.Inject;
 import java.util.List;
 
-public class FoodDescriptionFragment extends BaseFragment {
+public class FoodDescriptionFragment extends InjectedFragment {
 
     private FoodViewModel foodViewModel;
 
@@ -52,17 +48,9 @@ public class FoodDescriptionFragment extends BaseFragment {
 
     private LocationViewModel locationViewModel;
 
-    private ViewModelProvider.Factory viewModelFactory;
-
     private FoodItemFragmentArgs input;
 
     private SwipeListener swiper;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -187,11 +175,6 @@ public class FoodDescriptionFragment extends BaseFragment {
         maxXx = maxXx + (86400L - maxXx % 86400L);
         chart.getXAxis().setAxisMaximum(maxXx);
         chart.invalidate();
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 
     public void setSwiper(SwipeListener swiper) {

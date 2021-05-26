@@ -36,7 +36,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.db.views.FoodItemView;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
@@ -52,15 +52,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class EditItemFragment extends BaseFragment {
+public class EditItemFragment extends InjectedFragment {
 
     private static final Logger LOG = new Logger(EditItemFragment.class);
 
     private DatePicker date;
 
     private Spinner location;
-
-    private ViewModelProvider.Factory viewModelFactory;
 
     private FoodItemViewModel viewModel;
 
@@ -73,12 +71,6 @@ public class EditItemFragment extends BaseFragment {
     private LiveData<FoodItemView> foodItem;
 
     private LiveData<List<Location>> locations;
-
-    @Override
-    public void onAttach(Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -191,10 +183,5 @@ public class EditItemFragment extends BaseFragment {
             return 0;
         else
             return data.get(position).id;
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 }

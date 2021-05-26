@@ -19,45 +19,25 @@
 
 package de.njsm.stocks.android.frontend.editdescription;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.EditText;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-public class LocationEditDescriptionFragment extends BaseFragment {
-
-    private ViewModelProvider.Factory viewModelFactory;
+public class LocationEditDescriptionFragment extends InjectedFragment {
 
     private LocationViewModel locationViewModel;
 
     private EditText editText;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -139,10 +119,5 @@ public class LocationEditDescriptionFragment extends BaseFragment {
                 showErrorMessage(requireActivity(), code.getEditErrorMessage());
             }
         });
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 }

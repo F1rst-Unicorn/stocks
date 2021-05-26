@@ -26,14 +26,8 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.LiveData;
@@ -44,12 +38,8 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
-
-import javax.inject.Inject;
-
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.business.data.activity.EntityEvent;
@@ -60,6 +50,8 @@ import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
+
+import javax.inject.Inject;
 
 public class OutlineFragment extends BaseFragment {
 

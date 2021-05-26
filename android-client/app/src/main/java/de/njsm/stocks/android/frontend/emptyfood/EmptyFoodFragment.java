@@ -19,45 +19,30 @@
 
 package de.njsm.stocks.android.frontend.emptyfood;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodToBuyInteractor;
 
-public class EmptyFoodFragment extends BaseFragment {
+import java.util.List;
+
+public class EmptyFoodFragment extends InjectedFragment {
 
     FoodAdapter adapter;
 
     EmptyFoodViewModel viewModel;
-
-    private ViewModelProvider.Factory viewModelFactory;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -101,11 +86,6 @@ public class EmptyFoodFragment extends BaseFragment {
         initialiseSwipeRefresh(result, viewModelFactory);
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(v -> this.addFood(viewModel));
         return result;
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 
     private void onListItemClicked(View view) {

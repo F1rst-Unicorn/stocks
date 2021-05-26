@@ -19,49 +19,34 @@
 
 package de.njsm.stocks.android.frontend.user;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.UserDeletionInteractor;
 import de.njsm.stocks.android.frontend.util.NameValidator;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-public class UserFragment extends BaseFragment {
+import java.util.List;
+
+public class UserFragment extends InjectedFragment {
 
     RecyclerView.Adapter<UserAdapter.ViewHolder> adapter;
 
     UserViewModel viewModel;
-
-    private ViewModelProvider.Factory viewModelFactory;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -93,11 +78,6 @@ public class UserFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         viewModel.getUsers().removeObservers(this);
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 
     private void onListItemClick(View view) {

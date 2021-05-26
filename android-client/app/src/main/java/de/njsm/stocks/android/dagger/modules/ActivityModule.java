@@ -44,6 +44,7 @@ import de.njsm.stocks.android.frontend.search.SearchFragment;
 import de.njsm.stocks.android.frontend.settings.SettingsFragment;
 import de.njsm.stocks.android.frontend.shoppinglist.ShoppingListFragment;
 import de.njsm.stocks.android.frontend.startup.StartupFragment;
+import de.njsm.stocks.android.frontend.unithistory.UnitHistoryFragment;
 import de.njsm.stocks.android.frontend.units.ScaledUnitFragment;
 import de.njsm.stocks.android.frontend.units.UnitFragment;
 import de.njsm.stocks.android.frontend.units.UnitPagingFragment;
@@ -126,6 +127,9 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract ScaledUnitFragment contributeScaledUnitFragment();
+
+    @ContributesAndroidInjector
+    abstract UnitHistoryFragment contributeUnitHistoryFragment();
 
     @ContributesAndroidInjector
     abstract MainActivity contributeMainActivity();

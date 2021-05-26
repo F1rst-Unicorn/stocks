@@ -19,18 +19,11 @@
 
 package de.njsm.stocks.android.frontend.fooditem;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -39,41 +32,29 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
-
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-public class FoodItemFragment extends BaseFragment implements SwipeListener {
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class FoodItemFragment extends InjectedFragment implements SwipeListener {
 
     private FoodViewModel foodViewModel;
 
     private EanNumberViewModel eanNumberViewModel;
 
-    private ViewModelProvider.Factory viewModelFactory;
-
     private FoodItemFragmentArgs input;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -274,11 +255,6 @@ public class FoodItemFragment extends BaseFragment implements SwipeListener {
                 .setNegativeButton(android.R.string.cancel, (d, b) -> {
                 })
                 .show();
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 
     public void setEnabled(boolean value) {

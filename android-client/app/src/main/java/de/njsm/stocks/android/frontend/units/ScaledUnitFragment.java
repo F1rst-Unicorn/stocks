@@ -21,7 +21,6 @@
 package de.njsm.stocks.android.frontend.units;
 
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,40 +34,29 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Unit;
 import de.njsm.stocks.android.db.views.ScaledUnitView;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.DeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.Editor;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ScaledUnitFragment extends BaseFragment implements Editor<ScaledUnitView> {
-
-    private ViewModelProvider.Factory viewModelFactory;
+public class ScaledUnitFragment extends InjectedFragment implements Editor<ScaledUnitView> {
 
     ScaledUnitViewModel viewModel;
 
     UnitViewModel unitViewModel;
 
     RecyclerView.Adapter<ScaledUnitAdapter.ViewHolder> adapter;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -113,11 +101,6 @@ public class ScaledUnitFragment extends BaseFragment implements Editor<ScaledUni
                     }
                 })
                 .show();
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 
     @Override

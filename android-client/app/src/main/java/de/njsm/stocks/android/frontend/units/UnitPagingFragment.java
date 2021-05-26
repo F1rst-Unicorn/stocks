@@ -20,32 +20,19 @@
 package de.njsm.stocks.android.frontend.units;
 
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 
-import javax.inject.Inject;
-
-public class UnitPagingFragment extends BaseFragment {
-
-    private ViewModelProvider.Factory viewModelFactory;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
+public class UnitPagingFragment extends InjectedFragment {
 
     @Nullable
     @Override
@@ -70,12 +57,23 @@ public class UnitPagingFragment extends BaseFragment {
         ).attach();
 
         initialiseSwipeRefresh(result, R.id.fragment_unit_pager_swipe, viewModelFactory);
+        setHasOptionsMenu(true);
 
         return result;
     }
 
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_unit_paging_options, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.fragment_unit_paging_options_events) {
+            NavDirections directions = UnitPagingFragmentDirections.actionNavFragmentUnitsToNavFragmentUnitEvents();
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(directions);
+        }
+        return true;
     }
 }

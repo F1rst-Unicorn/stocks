@@ -19,47 +19,32 @@
 
 package de.njsm.stocks.android.frontend.allfood;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.StringListAdapter;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 
-public class AllFoodFragment extends BaseFragment {
+import java.util.List;
 
-    private ViewModelProvider.Factory viewModelFactory;
+public class AllFoodFragment extends InjectedFragment {
 
     private FoodAdapter adapter;
 
     private AllFoodFragmentArgs input;
 
     private FoodViewModel viewModel;
-
-    @Override
-    public void onAttach(Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -95,10 +80,5 @@ public class AllFoodFragment extends BaseFragment {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
         }
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 }

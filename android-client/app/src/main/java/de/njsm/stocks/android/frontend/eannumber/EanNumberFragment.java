@@ -19,29 +19,21 @@
 
 package de.njsm.stocks.android.frontend.eannumber;
 
-import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.zxing.integration.android.IntentIntegrator;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.EanNumberDeletionInteractor;
 import de.njsm.stocks.android.frontend.main.MainActivity;
@@ -49,11 +41,11 @@ import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
 
-public class EanNumberFragment extends BaseFragment {
+import javax.inject.Inject;
+
+public class EanNumberFragment extends InjectedFragment {
 
     private static final Logger LOG = new Logger(EanNumberFragment.class);
-
-    private ViewModelProvider.Factory viewModelFactory;
 
     private EanNumberViewModel viewModel;
 
@@ -64,12 +56,6 @@ public class EanNumberFragment extends BaseFragment {
     private EanNumberFragmentArgs input;
 
     private IdlingResource resource;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -124,11 +110,6 @@ public class EanNumberFragment extends BaseFragment {
             LiveData<StatusCode> result = viewModel.addEanNumber(code, input.getFoodId());
             result.observe(this, this::maybeShowAddError);
         }
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 
     @Inject

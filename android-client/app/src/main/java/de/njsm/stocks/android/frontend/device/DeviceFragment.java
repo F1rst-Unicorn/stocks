@@ -20,52 +20,37 @@
 package de.njsm.stocks.android.frontend.device;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.DeviceDeletionInteractor;
 import de.njsm.stocks.android.frontend.util.NameValidator;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 import fj.data.Validation;
 
-public class DeviceFragment extends BaseFragment {
+public class DeviceFragment extends InjectedFragment {
 
     private DeviceFragmentArgs input;
-
-    private ViewModelProvider.Factory viewModelFactory;
 
     UserDeviceViewModel viewModel;
 
     private SingleUserViewModel singleUserViewModel;
 
     DeviceAdapter adapter;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -139,10 +124,5 @@ public class DeviceFragment extends BaseFragment {
                     );
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(args);
         }
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 }

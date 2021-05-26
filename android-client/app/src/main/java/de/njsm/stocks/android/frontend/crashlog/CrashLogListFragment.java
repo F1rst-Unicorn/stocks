@@ -20,7 +20,6 @@
 package de.njsm.stocks.android.frontend.crashlog;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,14 +33,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 
-import javax.inject.Inject;
 import java.util.List;
 
-public class CrashLogListFragment extends BaseFragment {
+public class CrashLogListFragment extends InjectedFragment {
 
     private RecyclerView list;
 
@@ -49,17 +46,9 @@ public class CrashLogListFragment extends BaseFragment {
 
     private ProgressBar progressBar;
 
-    private ViewModelProvider.Factory viewModelFactory;
-
     private CrashLogViewModel viewModel;
 
     private CrashLogAdapter adapter;
-
-    @Override
-    public void onAttach(Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -80,11 +69,6 @@ public class CrashLogListFragment extends BaseFragment {
         viewModel.getData().observe(this, this::maybeShowList);
         list.setAdapter(adapter);
         return result;
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 
     private void maybeShowList(List<CrashLog> crashLogs) {

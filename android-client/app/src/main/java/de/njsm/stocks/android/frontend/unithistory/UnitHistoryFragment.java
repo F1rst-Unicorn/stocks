@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -17,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.foodhistory;
+package de.njsm.stocks.android.frontend.unithistory;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,33 +31,25 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.InjectedFragment;
-import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
+import de.njsm.stocks.android.frontend.foodhistory.EventAdapter;
 
-public class FoodHistoryFragment extends InjectedFragment {
+public class UnitHistoryFragment extends InjectedFragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
-        assert getArguments() != null;
-        FoodHistoryFragmentArgs input = FoodHistoryFragmentArgs.fromBundle(getArguments());
-
         result.findViewById(R.id.template_swipe_list_fab).setVisibility(View.GONE);
 
         RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
         EventViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(EventViewModel.class);
-        viewModel.init(input.getFoodId());
         EventAdapter adapter = new EventAdapter(getResources(), requireActivity().getTheme(), requireContext()::getString);
         viewModel.getHistory().observe(getViewLifecycleOwner(), adapter::submitList);
         list.setAdapter(adapter);
 
-        FoodViewModel foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-        foodViewModel.initFood(input.getFoodId());
-        foodViewModel.getFood().observe(getViewLifecycleOwner(), u -> requireActivity().setTitle(u == null ? "" : String.format(getString(R.string.title_food_activity), u.name)));
-
-        initialiseSwipeRefresh(result, R.id.template_swipe_list_swipe, viewModelFactory);
+        initialiseSwipeRefresh(result, viewModelFactory);
         return result;
     }
 }

@@ -19,15 +19,8 @@
 
 package de.njsm.stocks.android.frontend.food;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
+import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -36,34 +29,23 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodToBuyInteractor;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 
-public class FoodFragment extends BaseFragment {
+import javax.inject.Inject;
+import java.util.List;
 
-    private ViewModelProvider.Factory viewModelFactory;
+public class FoodFragment extends InjectedFragment {
 
     private FoodViewModel viewModel;
 
     private FoodFragmentArgs input;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -166,10 +148,5 @@ public class FoodFragment extends BaseFragment {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigate(args);
         }
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 }

@@ -60,6 +60,7 @@
     <string name="title_food_histogram">How long before expiration were how many items consumed?</string>
     <string name="title_description">Edit description</string>
     <string name="title_units">Units of Measure</string>
+    <string name="title_unit_activity">Activity on Units of Measure</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>

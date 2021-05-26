@@ -20,7 +20,6 @@
 package de.njsm.stocks.android.frontend.units;
 
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,34 +30,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Unit;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.DeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.Editor;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-import javax.inject.Inject;
-
-public class UnitFragment extends BaseFragment implements Editor<Unit> {
-
-    private ViewModelProvider.Factory viewModelFactory;
+public class UnitFragment extends InjectedFragment implements Editor<Unit> {
 
     UnitViewModel viewModel;
 
     RecyclerView.Adapter<UnitAdapter.ViewHolder> adapter;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -96,11 +83,6 @@ public class UnitFragment extends BaseFragment implements Editor<Unit> {
                     result.observe(this, this::maybeShowAddError);
                 })
                 .show();
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 
     @Override

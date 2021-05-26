@@ -575,6 +575,15 @@
         android:name="de.njsm.stocks.android.frontend.units.UnitPagingFragment"
         android:label="@string/title_units"
         tools:layout="@layout/fragment_unit_pager">
+        <action
+                android:id="@+id/action_nav_fragment_units_to_nav_fragment_unit_events"
+                app:destination="@id/nav_fragment_unit_events"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_unit_events"
+        android:name="de.njsm.stocks.android.frontend.unithistory.UnitHistoryFragment"
+        android:label="@string/title_unit_activity"
+        tools:layout="@layout/template_swipe_list">
     </fragment>
     <action
         android:id="@+id/action_global_nav_fragment_settings"

@@ -20,49 +20,34 @@
 package de.njsm.stocks.android.frontend.locations;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.LocationDeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.LocationEditInteractor;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-public class LocationFragment extends BaseFragment {
+import java.util.List;
 
-    private ViewModelProvider.Factory viewModelFactory;
+public class LocationFragment extends InjectedFragment {
 
     LocationViewModel viewModel;
 
     RecyclerView.Adapter<LocationAdapter.ViewHolder> adapter;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -101,11 +86,6 @@ public class LocationFragment extends BaseFragment {
         initialiseSwipeRefresh(result, viewModelFactory);
 
         return result;
-    }
-
-    @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        this.viewModelFactory = viewModelFactory;
     }
 
     private void addLocation(View view) {

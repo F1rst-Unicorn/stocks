@@ -60,6 +60,7 @@
     <string name="title_food_histogram">Wie lange vor Ablauf wurden wieviel Stück gegessen?</string>
     <string name="title_description">Beschreibung ändern</string>
     <string name="title_units">Maßeinheiten</string>
+    <string name="title_unit_activity">Aktivität bei Maßeinheiten</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>
