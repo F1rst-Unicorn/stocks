@@ -31,7 +31,6 @@ import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
 
 import javax.inject.Inject;
-import java.math.BigDecimal;
 import java.util.List;
 
 public class ScaledUnitRepository {
@@ -68,26 +67,26 @@ public class ScaledUnitRepository {
         return result;
     }
 
-    public LiveData<StatusCode> edit(ScaledUnit item, int unit, BigDecimal scale) {
+    public LiveData<StatusCode> edit(ScaledUnit item, int unit, String scale) {
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
-        if (item.getScale().equals(scale) &&
+        if (item.getScale().toString().equals(scale) &&
                 item.getUnit() == unit) {
             LOG.d("nothing to edit");
             result.setValue(StatusCode.SUCCESS);
 
         } else {
-            webClient.editScaledUnit(item.id, item.version, scale.toString(), unit)
+            webClient.editScaledUnit(item.id, item.version, scale, unit)
                     .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
         }
 
         return result;
     }
 
-    public LiveData<StatusCode> add(int unit, BigDecimal scale) {
+    public LiveData<StatusCode> add(int unit, String scale) {
         LOG.d("adding scaled unit " + unit + ", " + scale);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
 
-        webClient.addScaledUnit(scale.toString(), unit)
+        webClient.addScaledUnit(scale, unit)
                 .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }

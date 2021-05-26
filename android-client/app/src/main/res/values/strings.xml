@@ -219,5 +219,9 @@
     <string name="event_unit_deleted">%s has deleted %s (%s).</string>
     <string name="event_unit_renamed">has renamed %s to %s</string>
     <string name="event_unit_abbreviation_changed">has changed the abbreviation%s from %s to %s</string>
+    <string name="event_scaled_unit_created">%s has created %s%s.</string>
+    <string name="event_scaled_unit_deleted">%s has deleted %s%s.</string>
+    <string name="event_scaled_unit_scale_changed">has set the scale%s from %s to %s</string>
+    <string name="event_scaled_unit_unit_changed">has set the unit%s from %s to %s</string>
 
 </resources>

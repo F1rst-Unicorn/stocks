@@ -28,7 +28,6 @@ import de.njsm.stocks.android.repo.ScaledUnitRepository;
 import de.njsm.stocks.android.util.Logger;
 
 import javax.inject.Inject;
-import java.math.BigDecimal;
 import java.util.List;
 
 public class ScaledUnitViewModel extends ViewModel {
@@ -59,11 +58,11 @@ public class ScaledUnitViewModel extends ViewModel {
         return scaledUnitRepository.delete(unit);
     }
 
-    public LiveData<StatusCode> edit(ScaledUnit item, int unit, BigDecimal scale) {
+    public LiveData<StatusCode> edit(ScaledUnit item, int unit, String scale) {
         return scaledUnitRepository.edit(item, unit, scale);
     }
 
-    public LiveData<StatusCode> add(int unit, BigDecimal scale) {
+    public LiveData<StatusCode> add(int unit, String scale) {
         return scaledUnitRepository.add(unit, scale);
     }
 }

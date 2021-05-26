@@ -22,9 +22,6 @@ package de.njsm.stocks.android.network.server;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-
-import java.io.IOException;
-
 import de.njsm.stocks.android.error.StatusCodeException;
 import de.njsm.stocks.android.network.server.data.DataResponse;
 import de.njsm.stocks.android.network.server.data.Response;
@@ -36,6 +33,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import java.io.IOException;
 
 public class StatusCodeCallback implements Callback<Response> {
 

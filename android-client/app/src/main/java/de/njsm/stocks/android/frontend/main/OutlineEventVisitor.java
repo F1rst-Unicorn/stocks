@@ -123,4 +123,19 @@ public class OutlineEventVisitor implements EventVisitor<Void, Optional<NavDirec
     public Optional<NavDirections> deletedUnitEvent(Void arg) {
         return Optional.of(OutlineFragmentDirections.actionGlobalNavFragmentUnits());
     }
+
+    @Override
+    public Optional<NavDirections> newScaledUnitEvent(Void arg) {
+        return Optional.of(OutlineFragmentDirections.actionGlobalNavFragmentUnits());
+    }
+
+    @Override
+    public Optional<NavDirections> changedScaledUnitEvent(Void arg) {
+        return Optional.of(OutlineFragmentDirections.actionGlobalNavFragmentUnits());
+    }
+
+    @Override
+    public Optional<NavDirections> deletedScaledUnitEvent(Void arg) {
+        return Optional.of(OutlineFragmentDirections.actionGlobalNavFragmentUnits());
+    }
 }

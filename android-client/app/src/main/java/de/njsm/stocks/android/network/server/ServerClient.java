@@ -177,7 +177,7 @@ public interface ServerClient {
     Call<Response> deleteScaledUnit(@Query("id") int id,
                                     @Query("version") int version);
 
-    @PUT("/v2/scaled-unit/rename")
+    @PUT("/v2/scaled-unit/edit")
     Call<Response> editScaledUnit(@Query("id") int id,
                                   @Query("version") int version,
                                   @Query("scale") String scale,

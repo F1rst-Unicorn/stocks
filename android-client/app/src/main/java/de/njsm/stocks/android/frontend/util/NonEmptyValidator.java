@@ -29,7 +29,7 @@ public class NonEmptyValidator implements TextWatcher {
 
     private final EditText view;
 
-    private BiConsumer<EditText, Boolean> errorTextResourceSetter;
+    private final BiConsumer<EditText, Boolean> errorTextResourceSetter;
 
     public NonEmptyValidator(EditText v, BiConsumer<EditText, Boolean> errorTextResourceSetter) {
         this.errorTextResourceSetter = errorTextResourceSetter;

@@ -219,6 +219,10 @@
     <string name="event_unit_deleted">%s hat %s (%s) gelöscht.</string>
     <string name="event_unit_renamed">hat %s zu %s umbenannt</string>
     <string name="event_unit_abbreviation_changed">hat die Abkürzung%s von %s zu %s geändert</string>
+    <string name="event_scaled_unit_created">%s hat %s%s erstellt.</string>
+    <string name="event_scaled_unit_deleted">%s hat %s%s gelöscht.</string>
+    <string name="event_scaled_unit_scale_changed">hat die Skalierung%s von %s auf %s gesetzt</string>
+    <string name="event_scaled_unit_unit_changed">hat die Einheit%s von %s auf %s gesetzt</string>
 
 
 </resources>

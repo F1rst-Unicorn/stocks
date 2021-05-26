@@ -96,4 +96,16 @@ public interface EventVisitor<I, O> {
     default O deletedUnitEvent(I arg) {
         throw new RuntimeException("not implemented");
     }
+
+    default O newScaledUnitEvent(I arg) {
+        throw new RuntimeException("not implemented");
+    }
+
+    default O changedScaledUnitEvent(I arg) {
+        throw new RuntimeException("not implemented");
+    }
+
+    default O deletedScaledUnitEvent(I arg) {
+        throw new RuntimeException("not implemented");
+    }
 }

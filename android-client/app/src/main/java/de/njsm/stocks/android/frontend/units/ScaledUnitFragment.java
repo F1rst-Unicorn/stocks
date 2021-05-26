@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,7 +50,6 @@ import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.network.server.StatusCode;
 
 import javax.inject.Inject;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -103,12 +103,12 @@ public class ScaledUnitFragment extends BaseFragment implements Editor<ScaledUni
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
                     String scale = ((EditText) form.findViewById(R.id.form_scaled_unit_scale)).getText().toString();
                     Spinner spinner = form.findViewById(R.id.form_scaled_unit_unit);
-                    int selected = spinner.getSelectedItemPosition();
 
+                    int selected = spinner.getSelectedItemPosition();
                     List<Unit> units = unitViewModel.getUnits().getValue();
                     if (units != null) {
                         Unit unit = units.get(selected);
-                        LiveData<StatusCode> result = viewModel.add(unit.id, new BigDecimal(scale));
+                        LiveData<StatusCode> result = viewModel.add(unit.id, scale);
                         result.observe(this, this::maybeShowAddError);
                     }
                 })
@@ -124,8 +124,16 @@ public class ScaledUnitFragment extends BaseFragment implements Editor<ScaledUni
     public LiveData<StatusCode> edit(ScaledUnitView item, DialogInterface dialog, View view) {
         String scale = ((EditText) view.findViewById(R.id.form_scaled_unit_scale)).getText().toString();
         Spinner spinner = view.findViewById(R.id.form_scaled_unit_unit);
-        Unit unit = (Unit) spinner.getSelectedItem();
-        return viewModel.edit(item, unit.id, new BigDecimal(scale));
+        int selected = spinner.getSelectedItemPosition();
+        List<Unit> units = unitViewModel.getUnits().getValue();
+        if (units != null) {
+            Unit unit = units.get(selected);
+            return viewModel.edit(item, unit.id, scale);
+        } else {
+            MutableLiveData<StatusCode> data = new MutableLiveData<>();
+            data.setValue(StatusCode.SUCCESS);
+            return data;
+        }
     }
 
     @Override

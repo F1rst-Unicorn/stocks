@@ -68,6 +68,10 @@ public abstract class EventDao {
             TIME_COLUMNS +
                     "l1.transaction_time_start = (select min(transaction_time_start) from unit x where x._id = l1._id) as is_first ";
 
+    private static final String TIME_COLUMNS_SCALED_UNIT =
+            TIME_COLUMNS +
+                    "l1.transaction_time_start = (select min(transaction_time_start) from scaled_unit x where x._id = l1._id) as is_first ";
+
     private static final String ON_CHRONOLOGY =
             "on l1.transaction_time_start = l2.transaction_time_start and l1.version + 1 = l2.version and l1._id = l2._id ";
 
@@ -103,6 +107,10 @@ public abstract class EventDao {
             "where not (l1.version != (select min(version) from unit x where x._id = l1._id) and l2._id is null and l1.transaction_time_end != :infinity) " +
             "and (not (l1.valid_time_end = :infinity and l1.transaction_time_end = l1.valid_time_end) or l1.version = (select min(version) from unit x where x._id = l1._id))";
 
+    private static final String WHERE_VALID_SCALED_UNIT =
+            "where not (l1.version != (select min(version) from scaled_unit x where x._id = l1._id) and l2._id is null and l1.transaction_time_end != :infinity) " +
+            "and (not (l1.valid_time_end = :infinity and l1.transaction_time_end = l1.valid_time_end) or l1.version = (select min(version) from scaled_unit x where x._id = l1._id))";
+
     public DataSource.Factory<Integer, EntityEvent<?>> getLocationHistory() {
         return getLocationHistory(DATABASE_INFINITY)
                 .map(AbstractHistoryView::mapToEvent);
@@ -135,6 +143,11 @@ public abstract class EventDao {
 
     public DataSource.Factory<Integer, EntityEvent<?>> getUnitHistory() {
         return getUnitHistory(DATABASE_INFINITY)
+                .map(AbstractHistoryView::mapToEvent);
+    }
+
+    public DataSource.Factory<Integer, EntityEvent<?>> getScaledUnitHistory() {
+        return getScaledUnitHistory(DATABASE_INFINITY)
                 .map(AbstractHistoryView::mapToEvent);
     }
 
@@ -357,4 +370,20 @@ public abstract class EventDao {
             WHERE_VALID_UNIT +
             "order by l1.transaction_time_start desc")
     abstract PositionalDataSource.Factory<Integer, UnitHistoryView> getUnitHistory(Instant infinity);
+
+    @Query("select " +
+            "l1.scale as version1_scale, l1.unit as version1_unit, " +
+            "l2.scale as version2_scale, l2.unit as version2_unit, " +
+            "u1._id as version1_unit__id, u1.version as version1_unit_version, u1.valid_time_start as version1_unit_valid_time_start, u1.valid_time_end as version1_unit_valid_time_end, u1.transaction_time_start as version1_unit_transaction_time_start, u1.transaction_time_end as version1_unit_transaction_time_end, u1.initiates as version1_unit_initiates, u1.name as version1_unit_name, u1.abbreviation as version1_unit_abbreviation, " +
+            "u2._id as version2_unit__id, u2.version as version2_unit_version, u2.valid_time_start as version2_unit_valid_time_start, u2.valid_time_end as version2_unit_valid_time_end, u2.transaction_time_start as version2_unit_transaction_time_start, u2.transaction_time_end as version2_unit_transaction_time_end, u2.initiates as version2_unit_initiates, u2.name as version2_unit_name, u2.abbreviation as version2_unit_abbreviation, " +
+            INITIATOR_COLUMNS +
+            TIME_COLUMNS_SCALED_UNIT +
+            "from scaled_unit l1 " +
+            "left outer join scaled_unit l2 " + ON_CHRONOLOGY +
+            "join unit u1 on l1.unit = u1._id and u1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < u1.valid_time_end and u1.transaction_time_end = :infinity " +
+            "left outer join unit u2 on l2.unit = u2._id and u2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < u2.valid_time_end and u2.transaction_time_end = :infinity " +
+            JOIN_INITIATOR +
+            WHERE_VALID_SCALED_UNIT +
+            "order by l1.transaction_time_start desc")
+    abstract PositionalDataSource.Factory<Integer, ScaledUnitHistoryView> getScaledUnitHistory(Instant infinity);
 }
