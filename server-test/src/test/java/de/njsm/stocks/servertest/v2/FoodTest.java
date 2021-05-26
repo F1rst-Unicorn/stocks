@@ -74,7 +74,7 @@ public class FoodTest implements Deleter {
         int locationId = LocationTest.createNewLocationType("renamefood");
         String description = "description";
 
-        assertOnRename(id, 0, newName, 42, locationId, description)
+        assertOnEdit(id, 0, newName, 42, locationId, description)
                 .statusCode(200)
                 .body("status", equalTo(0));
 
@@ -211,7 +211,7 @@ public class FoodTest implements Deleter {
                 .contentType(ContentType.JSON);
     }
 
-    private ValidatableResponse assertOnRename(int id, int version, String newName, int expirationOffset, int location, String description) {
+    private ValidatableResponse assertOnEdit(int id, int version, String newName, int expirationOffset, int location, String description) {
         return
         given()
                 .log().ifValidationFails()
@@ -222,7 +222,7 @@ public class FoodTest implements Deleter {
                 .queryParam("location", location)
                 .formParam("description", description).
         when()
-                .put(TestSuite.DOMAIN + "/v2/food/rename").
+                .put(TestSuite.DOMAIN + "/v2/food/edit").
         then()
                 .log().ifValidationFails()
                 .contentType(ContentType.JSON);

@@ -60,16 +60,16 @@ public class FoodEndpoint extends Endpoint implements
     }
 
     @PUT
-    @Path("rename")
+    @Path("edit")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response renameFood(@Context HttpServletRequest request,
-                               @QueryParam("id") int id,
-                               @QueryParam("version") int version,
-                               @QueryParam("new") String newName,
-                               @QueryParam("expirationoffset") Integer expirationOffset,
-                               @QueryParam("location") Integer location,
-                               @FormParam("description") String description) {
+    public Response edit(@Context HttpServletRequest request,
+                         @QueryParam("id") int id,
+                         @QueryParam("version") int version,
+                         @QueryParam("new") String newName,
+                         @QueryParam("expirationoffset") Integer expirationOffset,
+                         @QueryParam("location") Integer location,
+                         @FormParam("description") String description) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
@@ -87,6 +87,18 @@ public class FoodEndpoint extends Endpoint implements
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
         }
+    }
+
+    @PUT
+    @Path("rename")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response renameFood(@Context HttpServletRequest request,
+                               @QueryParam("id") int id,
+                               @QueryParam("version") int version,
+                               @QueryParam("new") String newName,
+                               @QueryParam("expirationoffset") Integer expirationOffset,
+                               @QueryParam("location") Integer location) {
+        return edit(request, id, version, newName, expirationOffset, location, null);
     }
 
     @PUT

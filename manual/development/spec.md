@@ -444,6 +444,25 @@ Query parameters:
   Pass 0 for unsetting the default location. If omitted this value won't be
   changed.
 
+Result: `application/json`, `Response`
+
+`PUT /v2/food/edit`: Edit an existing food type.
+
+Query parameters:
+
+* `id: int`: The ID of the food type to rename
+
+* `version: int`: The version of the food type
+
+* `new: String`: The name to which the food type shall be renamed
+
+* `expirationoffset: int`: The number of days to use as default offset for
+  the expiration date of new items. If omitted, this value won't be changed.
+
+* `location: int`: The default location where new food items will be placed in.
+  Pass 0 for unsetting the default location. If omitted this value won't be
+  changed.
+
 Form parameters:
 
 * `description: String`: The new description to set. If omitted this value won't

@@ -84,7 +84,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidIdIsInvalid() {
 
-        Response result = uut.renameFood(createMockRequest(), 0, 1, "fdsa", 0, 1, "");
+        Response result = uut.edit(createMockRequest(), 0, 1, "fdsa", 0, 1, "");
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
@@ -92,7 +92,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidVersionIsInvalid() {
 
-        Response result = uut.renameFood(createMockRequest(), 1, -1, "fdsa", 0, 1, "");
+        Response result = uut.edit(createMockRequest(), 1, -1, "fdsa", 0, 1, "");
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
@@ -100,7 +100,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingToInvalidNameIsInvalid() {
 
-        Response result = uut.renameFood(createMockRequest(), 1, 1, "", 0, 1, "");
+        Response result = uut.edit(createMockRequest(), 1, 1, "", 0, 1, "");
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
@@ -176,11 +176,11 @@ public class FoodEndpointTest {
     }
 
     @Test
-    public void renameFoodWorks() {
+    public void editWorks() {
         FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, 2, "new description");
         when(manager.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameFood(createMockRequest(),
+        Response response = uut.edit(createMockRequest(),
                 data.getId(),
                 data.getVersion(),
                 data.getNewName(),
@@ -194,11 +194,11 @@ public class FoodEndpointTest {
     }
 
     @Test
-    public void renameFoodWithoutLocationWorks() {
+    public void editWithoutLocationWorks() {
         FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, 0, "new description");
         when(manager.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameFood(createMockRequest(),
+        Response response = uut.edit(createMockRequest(),
                 data.getId(),
                 data.getVersion(),
                 data.getNewName(),
@@ -212,11 +212,11 @@ public class FoodEndpointTest {
     }
 
     @Test
-    public void renameFoodWithoutLocationYieldsNullAndMapsCorrectly() {
+    public void editWithoutLocationYieldsNullAndMapsCorrectly() {
         FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, null, "new description");
         when(manager.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameFood(createMockRequest(),
+        Response response = uut.edit(createMockRequest(),
                 data.getId(),
                 data.getVersion(),
                 data.getNewName(),
@@ -230,11 +230,11 @@ public class FoodEndpointTest {
     }
 
     @Test
-    public void renameFoodWithoutExpirationOffsetYieldsNullAndMapsCorrectly() {
+    public void editWithoutExpirationOffsetYieldsNullAndMapsCorrectly() {
         FoodForEditing data = new FoodForEditing(1, 2, "Bread", null, 2, "new description");
         when(manager.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameFood(createMockRequest(),
+        Response response = uut.edit(createMockRequest(),
                 data.getId(),
                 data.getVersion(),
                 data.getNewName(),
