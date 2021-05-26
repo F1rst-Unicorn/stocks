@@ -21,6 +21,7 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
 import de.njsm.stocks.server.v2.business.data.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.web.data.Response;
 import fj.data.Validation;
@@ -91,5 +92,53 @@ public class ScaledUnitEndpointTest {
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).add(input);
         verify(manager).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void validEditingWorks() {
+        ScaledUnitForEditing data = new ScaledUnitForEditing(1, 0, BigDecimal.ONE, 2);
+        when(manager.edit(data)).thenReturn(StatusCode.SUCCESS);
+
+        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+
+        assertEquals(StatusCode.SUCCESS, response.getStatus());
+        verify(manager).edit(data);
+        verify(manager).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void invalidVersionWhenEditingIsRejected() {
+        ScaledUnitForEditing data = new ScaledUnitForEditing(1, -1, BigDecimal.ONE, 2);
+
+        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
+    }
+
+    @Test
+    public void invalidScaleWhenEditingIsRejected() {
+        ScaledUnitForEditing data = new ScaledUnitForEditing(1, 0, BigDecimal.ONE, 2);
+
+        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), "not a number", data.getUnit());
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
+    }
+
+    @Test
+    public void invalidIdWhenEditingIsRejected() {
+        ScaledUnitForEditing data = new ScaledUnitForEditing(0, 0, BigDecimal.ONE, 2);
+
+        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
+    }
+
+    @Test
+    public void invalidUnitWhenEditingIsRejected() {
+        ScaledUnitForEditing data = new ScaledUnitForEditing(1, 0, BigDecimal.ONE, 0);
+
+        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
 }

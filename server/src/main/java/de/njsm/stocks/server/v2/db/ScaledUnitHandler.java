@@ -19,13 +19,16 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.BitemporalScaledUnit;
 import de.njsm.stocks.server.v2.business.data.ScaledUnit;
+import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
 import de.njsm.stocks.server.v2.business.data.ScaledUnitForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +44,28 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
                              String resourceIdentifier,
                              int timeout) {
         super(connectionFactory, resourceIdentifier, timeout);
+    }
+
+    public StatusCode edit(ScaledUnitForEditing data) {
+        return runCommand(context -> {
+            if (isCurrentlyMissing(data, context))
+                return StatusCode.NOT_FOUND;
+
+            return currentUpdate(context,
+                    Arrays.asList(
+                            SCALED_UNIT.ID,
+                            SCALED_UNIT.VERSION.add(1),
+                            DSL.inline(data.getScale()),
+                            DSL.inline(data.getUnit())
+                    ),
+                    getIdField().eq(data.getId())
+                            .and(getVersionField().eq(data.getVersion()))
+                            .and(SCALED_UNIT.SCALE.ne(data.getScale())
+                                    .or(SCALED_UNIT.UNIT.ne(data.getUnit())))
+
+            )
+                    .map(this::notFoundMeansInvalidVersion);
+        });
     }
 
     @Override

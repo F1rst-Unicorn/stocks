@@ -39,7 +39,7 @@ public class Endpoint {
         return (Principals) request.getAttribute(PrincipalFilter.STOCKS_PRINCIPAL);
     }
 
-    protected boolean isValid(String parameter, String name) {
+    protected static boolean isValid(String parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter != null && ! parameter.isEmpty()) {
@@ -101,7 +101,7 @@ public class Endpoint {
         }
     }
 
-    protected boolean isValidBigDecimal(String rawNumber, String name) {
+    protected static boolean isValidBigDecimal(String rawNumber, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (!isValid(rawNumber, name)) {

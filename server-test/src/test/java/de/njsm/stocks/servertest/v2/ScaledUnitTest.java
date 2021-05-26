@@ -40,6 +40,15 @@ public class ScaledUnitTest implements Deleter {
     }
 
     @Test
+    public void editAnItem() {
+        int id = createNew(1409);
+
+        assertOnEdit(id, 0, 1410)
+                .statusCode(200)
+                .body("status", equalTo(0));
+    }
+
+    @Test
     public void delete() {
         int id = createNew(43);
 
@@ -102,6 +111,21 @@ public class ScaledUnitTest implements Deleter {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(0));
+    }
+
+    private ValidatableResponse assertOnEdit(int id, int version, int scale) {
+        return
+        given()
+                .log().ifValidationFails()
+                .queryParam("id", id)
+                .queryParam("version", version)
+                .queryParam("scale", scale)
+                .queryParam("unit", 1).
+        when()
+                .put(TestSuite.DOMAIN + "/v2/scaled-unit/edit").
+        then()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON);
     }
 
     @Override

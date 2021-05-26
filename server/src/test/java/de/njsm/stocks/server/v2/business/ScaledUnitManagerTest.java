@@ -20,10 +20,13 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.ScaledUnitForDeletion;
+import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
 import de.njsm.stocks.server.v2.db.ScaledUnitHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.math.BigDecimal;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.Assert.assertEquals;
@@ -47,6 +50,18 @@ public class ScaledUnitManagerTest {
     public void tearDown() {
         verify(dbHandler).setPrincipals(TEST_USER);
         verifyNoMoreInteractions(dbHandler);
+    }
+
+    @Test
+    public void editingWorks() {
+        ScaledUnitForEditing data = new ScaledUnitForEditing(1, 2, BigDecimal.ONE, 1);
+        when(dbHandler.edit(data)).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.edit(data);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        verify(dbHandler).edit(data);
+        verify(dbHandler).commit();
     }
 
     @Test

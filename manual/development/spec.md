@@ -793,6 +793,20 @@ ScaledUnit {
 
 ```
 
+`PUT /v2/scaled-unit/edit`: Edit a scaled unit.
+
+Query parameters:
+
+* `id: int`: The ID to edit
+
+* `version: int`: The version to edit
+
+* `scale: BigDecimal`: The new scale to set
+
+* `unit: int`: The new unit to set
+
+Result: `application/json`, `Response`
+
 `DELETE /v2/scaled-unit`: Delete a scaled unit. Deleting a unit used by a food,
 food item, ingredient or product is restricted, raising status code 4.
 

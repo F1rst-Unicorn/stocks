@@ -21,6 +21,7 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.v2.business.data.ScaledUnit;
 import de.njsm.stocks.server.v2.business.data.ScaledUnitForDeletion;
+import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
 import de.njsm.stocks.server.v2.db.ScaledUnitHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 
@@ -34,6 +35,10 @@ public class ScaledUnitManager extends BusinessObject<ScaledUnitRecord, ScaledUn
     public ScaledUnitManager(ScaledUnitHandler dbHandler) {
         super(dbHandler);
         this.dbHandler = dbHandler;
+    }
+
+    public StatusCode edit(ScaledUnitForEditing data) {
+        return runOperation(() -> dbHandler.edit(data));
     }
 
     public StatusCode delete(ScaledUnitForDeletion ScaledUnit) {

@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -112,5 +113,27 @@ public class ScaledUnitHandlerTest extends DbTestCase {
                 .bind(uut::commit);
 
         assertEquals(StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION, result);
+    }
+
+    @Test
+    public void editingScaleWorks() {
+        ScaledUnitForEditing input = new ScaledUnitForEditing(1, 0, new BigDecimal(2), 1);
+
+        StatusCode result = uut.edit(input);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        List<ScaledUnit> data = uut.get(false, Instant.EPOCH).success().collect(Collectors.toList());
+        assertThat(data, hasItem(matchesVersionable(input)));
+    }
+
+    @Test
+    public void editingUnitWorks() {
+        ScaledUnitForEditing input = new ScaledUnitForEditing(1, 0, new BigDecimal(1), 2);
+
+        StatusCode result = uut.edit(input);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        List<ScaledUnit> data = uut.get(false, Instant.EPOCH).success().collect(Collectors.toList());
+        assertThat(data, hasItem(matchesVersionable(input)));
     }
 }

@@ -23,6 +23,7 @@ import de.njsm.stocks.server.v2.business.ScaledUnitManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.ScaledUnit;
 import de.njsm.stocks.server.v2.business.data.ScaledUnitForDeletion;
+import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
 import de.njsm.stocks.server.v2.business.data.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import de.njsm.stocks.server.v2.web.data.Response;
@@ -56,6 +57,26 @@ public class ScaledUnitEndpoint extends Endpoint implements Get<ScaledUnitRecord
         if (isValidBigDecimal(scale, "scale") && isValid(unit, "unit")) {
             manager.setPrincipals(getPrincipals(request));
             Validation<StatusCode, Integer> status = manager.add(new ScaledUnitForInsertion(new BigDecimal(scale), unit));
+            return new Response(status);
+        } else {
+            return new Response(StatusCode.INVALID_ARGUMENT);
+        }
+    }
+
+    @PUT
+    @Path("edit")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response edit(@Context HttpServletRequest request,
+                         @QueryParam("id") int id,
+                         @QueryParam("version") int version,
+                         @QueryParam("scale") String scale,
+                         @QueryParam("unit") int unit) {
+        if (isValid(id, "id") &&
+                isValidVersion(version, "version") &&
+                isValidBigDecimal(scale, "scale") &&
+                isValid(unit, "unit")) {
+            manager.setPrincipals(getPrincipals(request));
+            StatusCode status = manager.edit(new ScaledUnitForEditing(id, version, new BigDecimal(scale), unit));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
