@@ -438,8 +438,8 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_nav_fragment_food_item_to_nav_fragment_edit_food_description"
-            app:destination="@id/nav_fragment_edit_food_description"
+            android:id="@+id/action_nav_fragment_food_item_to_nav_fragment_food_edit"
+            app:destination="@id/nav_fragment_edit_food"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -462,12 +462,30 @@
             app:argType="integer" />
     </fragment>
     <fragment
-        android:id="@+id/nav_fragment_edit_food_description"
-        android:name="de.njsm.stocks.android.frontend.editdescription.FoodEditDescriptionFragment"
-        tools:layout="@layout/fragment_edit_description">
+        android:id="@+id/nav_fragment_edit_food"
+        android:name="de.njsm.stocks.android.frontend.editfood.FoodEditFragment"
+        tools:layout="@layout/fragment_food_edit">
         <argument
             android:name="foodId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_nav_fragment_food_edit_to_nav_fragment_food_conflict"
+            app:destination="@id/nav_fragment_food_conflict"
+            app:popUpTo="@id/nav_fragment_edit_food"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_food_conflict"
+        android:name="de.njsm.stocks.android.frontend.editfood.FoodConflictFragment"
+        tools:layout="@layout/fragment_food_edit">
+        <argument
+            android:name="food"
+            app:argType="de.njsm.stocks.android.frontend.editfood.FoodInConflict" />
+        <action
+                android:id="@+id/action_nav_fragment_food_conflict_to_nav_fragment_food_conflict"
+                app:destination="@id/nav_fragment_food_conflict"
+                app:popUpTo="@id/nav_fragment_food_conflict"
+                app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_ean_number"
@@ -564,7 +582,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_location_description"
-        android:name="de.njsm.stocks.android.frontend.editdescription.LocationEditDescriptionFragment"
+        android:name="de.njsm.stocks.android.frontend.editlocation.LocationEditDescriptionFragment"
         tools:layout="@layout/template_swipe_list">
         <argument
             android:name="locationId"

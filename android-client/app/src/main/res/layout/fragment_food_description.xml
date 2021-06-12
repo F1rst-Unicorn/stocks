@@ -111,12 +111,37 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_unit"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": "
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/fragment_food_description_standard_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1000g" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/fragment_food_description_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
-            android:text=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sit amet elit ac leo scelerisque auctor. Integer eu nibh malesuada, maximus lacus eu, rhoncus ante. Praesent non lectus commodo, ornare lacus eget, consequat magna. Nullam rhoncus, odio eget pretium ultrices, nibh nisl interdum dolor, nec volutpat nulla lectus ac erat. Cras interdum sem vel mi tristique, sit amet malesuada purus ultricies. Etiam rhoncus pharetra nisl. Proin ut justo erat. " />
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sit amet elit ac leo scelerisque auctor. Integer eu nibh malesuada, maximus lacus eu, rhoncus ante. Praesent non lectus commodo, ornare lacus eget, consequat magna. Nullam rhoncus, odio eget pretium ultrices, nibh nisl interdum dolor, nec volutpat nulla lectus ac erat. Cras interdum sem vel mi tristique, sit amet malesuada purus ultricies. Etiam rhoncus pharetra nisl. Proin ut justo erat. " />
 
 
         <LinearLayout

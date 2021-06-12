@@ -33,12 +33,15 @@ public class FoodForEditing extends VersionedData implements Versionable<Food> {
 
     private final Optional<String> description;
 
-    public FoodForEditing(int id, int version, String newName, Period expirationOffset, Integer location, String description) {
+    private final Optional<Integer> storeUnit;
+
+    public FoodForEditing(int id, int version, String newName, Period expirationOffset, Integer location, String description, Integer storeUnit) {
         super(id, version);
         this.newName = newName;
         this.expirationOffset = Optional.ofNullable(expirationOffset);
         this.location = Optional.ofNullable(location);
         this.description = Optional.ofNullable(description);
+        this.storeUnit = Optional.ofNullable(storeUnit);
     }
 
     public String getNewName() {
@@ -57,6 +60,10 @@ public class FoodForEditing extends VersionedData implements Versionable<Food> {
         return description;
     }
 
+    public Optional<Integer> getStoreUnit() {
+        return storeUnit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,15 +78,18 @@ public class FoodForEditing extends VersionedData implements Versionable<Food> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getNewName(), getExpirationOffsetOptional(), getLocationOptional(), getDescription());
+        return Objects.hash(super.hashCode(), getNewName(), getExpirationOffsetOptional(), getLocationOptional(), getDescription(), getStoreUnit());
     }
 
     @Override
     public boolean isContainedIn(Food item) {
         return Versionable.super.isContainedIn(item) &&
                 newName.equals(item.getName()) &&
-                location.map(v -> v.equals(item.getLocation())).orElse(true) &&
+                location.map(v -> v.equals(item.getLocation()) || (
+                        v == 0 && item.getLocation() == null
+                        )).orElse(true) &&
                 expirationOffset.map(v -> v.equals(item.getExpirationOffset())).orElse(true) &&
-                description.map(v -> v.equals(item.getDescription())).orElse(true);
+                description.map(v -> v.equals(item.getDescription())).orElse(true) &&
+                storeUnit.map(v -> v.equals(item.getStoreUnit())).orElse(true);
     }
 }

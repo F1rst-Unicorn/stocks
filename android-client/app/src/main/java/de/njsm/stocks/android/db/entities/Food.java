@@ -24,12 +24,12 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import org.threeten.bp.Instant;
+
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -56,21 +56,27 @@ public class Food extends VersionedData {
     @NonNull
     public String description;
 
-    public Food(String name, boolean toBuy, int expirationOffset, int location, @NonNull String description) {
+    @ColumnInfo(name = "store_unit", defaultValue = "1")
+    @NonNull
+    public int storeUnit;
+
+    public Food(String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit) {
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;
         this.location = location;
         this.description = description;
+        this.storeUnit = storeUnit;
     }
 
-    public Food(int position, int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description) {
+    public Food(int position, int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.name = name;
         this.toBuy = toBuy;
         this.expirationOffset = expirationOffset;
         this.location = location;
         this.description = description;
+        this.storeUnit = storeUnit;
         setPosition(position);
     }
 
@@ -80,22 +86,18 @@ public class Food extends VersionedData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Food)) return false;
         Food food = (Food) o;
-
-        if (toBuy != food.toBuy) return false;
-        if (expirationOffset != food.expirationOffset) return false;
-        if (location != food.location) return false;
-        return name.equals(food.name);
+        return toBuy == food.toBuy && expirationOffset == food.expirationOffset && location == food.location && name.equals(food.name) && description.equals(food.description) && storeUnit == food.storeUnit;
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + (toBuy ? 1 : 0);
-        result = 31 * result + expirationOffset;
-        result = 31 * result + location;
-        return result;
+        return Objects.hash(name, toBuy, expirationOffset, location, description, storeUnit);
+    }
+
+    @NonNull
+    public Food copy() {
+        return new Food(position, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
     }
 }

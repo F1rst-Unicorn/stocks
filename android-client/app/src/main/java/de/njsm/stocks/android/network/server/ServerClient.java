@@ -86,23 +86,20 @@ public interface ServerClient {
     @PUT("/v2/food")
     Call<Response> addFood(@Query("name") String name);
 
-    @PUT("/v2/food/rename")
-    Call<Response> renameFood(@Query("id") int id,
-                              @Query("version") int version,
-                              @Query("new") String newName,
-                              @Query("expirationoffset") int expirationOffset,
-                              @Query("location") int location);
+    @FormUrlEncoded
+    @PUT("/v2/food/edit")
+    Call<Response> editFood(@Query("id") int id,
+                            @Query("version") int version,
+                            @Query("new") String newName,
+                            @Query("expirationoffset") int expirationOffset,
+                            @Query("location") int location,
+                            @Field("description") String description,
+                            @Query("storeunit") int storeUnit);
 
     @PUT("/v2/food/buy")
     Call<Response> setToBuyStatus(@Query("id") int id,
                                   @Query("version") int version,
                                   @Query("buy") int toBuy);
-
-    @FormUrlEncoded
-    @POST("/v2/food/description")
-    Call<Response> setFoodDescription(@Query("id") int id,
-                                  @Query("version") int version,
-                                  @Field("description") String description);
 
     @DELETE("/v2/food")
     Call<Response> deleteFood(@Query("id") int id,

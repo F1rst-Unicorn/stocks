@@ -21,11 +21,6 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import de.njsm.stocks.android.db.dao.FoodDao;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
@@ -34,6 +29,10 @@ import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
+import org.threeten.bp.Instant;
+
+import javax.inject.Inject;
+import java.util.List;
 
 public class FoodRepository {
 
@@ -85,10 +84,10 @@ public class FoodRepository {
         return data;
     }
 
-    public LiveData<StatusCode> renameFood(Food item, String name) {
-        LOG.d("renaming food " + item + " to " + name);
+    public LiveData<StatusCode> editFood(Food item) {
+        LOG.d("editing food " + item);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
-        webClient.renameFood(item.id, item.version, name, item.expirationOffset, item.location)
+        webClient.editFood(item.id, item.version, item.name, item.expirationOffset, item.location, item.description, item.storeUnit)
                 .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
@@ -102,32 +101,6 @@ public class FoodRepository {
         } else {
             data.setValue(StatusCode.SUCCESS);
         }
-        return data;
-    }
-
-    public LiveData<StatusCode> setFoodExpirationOffset(Food item, int newOffset) {
-        LOG.d("setting food expiration offset of " + item + " to " + newOffset);
-        MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
-        webClient.renameFood(item.id, item.version, item.name, newOffset, item.location)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
-        return data;
-
-    }
-
-    public LiveData<StatusCode> setFoodDefaultLocation(Food item, int location) {
-        LOG.d("setting food default of " + item + " to " + location);
-        MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
-        webClient.renameFood(item.id, item.version, item.name, item.expirationOffset, location)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
-        return data;
-
-    }
-
-    public LiveData<StatusCode> setFoodDescription(int foodId, int foodVersion, String description) {
-        LOG.d("setting food description of " + foodId);
-        MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
-        webClient.setFoodDescription(foodId, foodVersion, description)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         return data;
     }
 
@@ -154,5 +127,9 @@ public class FoodRepository {
 
     public LiveData<List<Food>> getFood() {
         return foodDao.getAll();
+    }
+
+    public LiveData<Food> getFoodNowAsKnownBy(int id, Instant transactionTimeStart) {
+        return foodDao.getFoodNowAsKnownBy(id, transactionTimeStart);
     }
 }

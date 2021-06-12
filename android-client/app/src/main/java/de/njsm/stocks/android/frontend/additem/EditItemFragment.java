@@ -51,6 +51,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.njsm.stocks.android.util.Utility.find;
+
 
 public class EditItemFragment extends InjectedFragment {
 
@@ -128,13 +130,7 @@ public class EditItemFragment extends InjectedFragment {
         List<Location> data = locations.getValue();
         FoodItemView foodItem = this.foodItem.getValue();
         if (foodItem != null && data != null) {
-            int position = 0;
-            for (Location l : data) {
-                if (l.id == foodItem.getStoredIn()) {
-                    location.setSelection(position);
-                }
-                position++;
-            }
+            find(foodItem.getStoredIn(), data).ifPresent(location::setSelection);
         }
     }
 

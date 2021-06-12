@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -17,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.editdescription;
+package de.njsm.stocks.android.frontend.editlocation;
 
 import android.os.Bundle;
 import android.view.*;
@@ -28,14 +29,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.frontend.InjectedFragment;
-import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
+import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.network.server.StatusCode;
 
-public class FoodEditDescriptionFragment extends InjectedFragment {
+public class LocationEditDescriptionFragment extends InjectedFragment {
 
-    private FoodViewModel foodViewModel;
+    private LocationViewModel locationViewModel;
 
     private EditText editText;
 
@@ -45,16 +46,16 @@ public class FoodEditDescriptionFragment extends InjectedFragment {
         View result = inflater.inflate(R.layout.fragment_edit_description, container, false);
 
         assert getArguments() != null;
-        FoodEditDescriptionFragmentArgs input = FoodEditDescriptionFragmentArgs.fromBundle(getArguments());
+        LocationEditDescriptionFragmentArgs input = LocationEditDescriptionFragmentArgs.fromBundle(getArguments());
 
         editText = result.findViewById(R.id.fragment_edit_description_text);
 
-        foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-        foodViewModel.initFood(input.getFoodId());
-        foodViewModel.getFood().observe(getViewLifecycleOwner(), f -> {
+        locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
+        locationViewModel.init(input.getLocationId());
+        locationViewModel.getPreparedLocation().observe(getViewLifecycleOwner(), f -> {
+            locationViewModel.getPreparedLocation().removeObservers(getViewLifecycleOwner());
             editText.setText(f.description);
             editText.setSelection(f.description.length());
-            foodViewModel.getFood().removeObservers(getViewLifecycleOwner());
         });
 
         setHasOptionsMenu(true);
@@ -63,30 +64,30 @@ public class FoodEditDescriptionFragment extends InjectedFragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_edit_description_options, menu);
+        inflater.inflate(R.menu.fragment_food_edit_options, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         String text = editText.getText().toString().trim();
 
-        foodViewModel.getFood().removeObservers(getViewLifecycleOwner());
-        foodViewModel.getFood().observe(getViewLifecycleOwner(), f -> {
-            foodViewModel.getFood().removeObservers(getViewLifecycleOwner());
-            setDescription(text, f);
+        locationViewModel.getPreparedLocation().removeObservers(getViewLifecycleOwner());
+        locationViewModel.getPreparedLocation().observe(getViewLifecycleOwner(), l -> {
+            locationViewModel.getPreparedLocation().removeObservers(getViewLifecycleOwner());
+            setDescription(text, l);
         });
 
         return true;
     }
 
-    private void setDescription(String text, Food food) {
-        if (text.equals(food.description)) {
+    private void setDescription(String text, Location location) {
+        if (text.equals(location.description)) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                     .navigateUp();
             return;
         }
 
-        LiveData<StatusCode> result = foodViewModel.setFoodDescription(food.id, food.version, text);
+        LiveData<StatusCode> result = locationViewModel.setLocationDescription(location.id, location.version, text);
         result.observe(getViewLifecycleOwner(), code -> {
             result.removeObservers(getViewLifecycleOwner());
 
@@ -95,22 +96,22 @@ public class FoodEditDescriptionFragment extends InjectedFragment {
                         .navigateUp();
 
             } else if (code == StatusCode.INVALID_DATA_VERSION) {
-                foodViewModel.getFood().observe(getViewLifecycleOwner(), newFood -> {
-                    if (newFood.version != food.version) {
-                        foodViewModel.getFood().removeObservers(getViewLifecycleOwner());
-                        if (!food.description.equals(newFood.description)) {
+                locationViewModel.getPreparedLocation().observe(getViewLifecycleOwner(), newLocation -> {
+                    if (newLocation.version != location.version) {
+                        locationViewModel.getPreparedLocation().removeObservers(getViewLifecycleOwner());
+                        if (!location.description.equals(newLocation.description)) {
                             String newText = String.format("%s:\n%s\n\n%s:\n%s\n\n%s:\n%s",
                                     getString(R.string.hint_original),
-                                    food.description,
+                                    location.description,
                                     getString(R.string.hint_local),
                                     text,
                                     getString(R.string.hint_remote),
-                                    newFood.description);
+                                    newLocation.description);
                             editText.setText(newText);
                             editText.setSelection(newText.length());
                             showErrorMessage(requireActivity(), R.string.dialog_conflicting_description);
                         } else {
-                            setDescription(text, newFood);
+                            setDescription(text, newLocation);
                         }
                     }
                 });

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/button_padding">
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_food_edit_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/list_item_padding"
+                android:hint="@string/hint_name"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_name_original_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_name"
+                android:text="@string/hint_original"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_name_original"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_name"
+                android:layout_toEndOf="@id/fragment_food_edit_name_original_label"
+                android:text="Butternut"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_name_remote_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_name_original"
+                android:text="@string/hint_remote"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_name_remote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_name_original"
+                android:layout_toEndOf="@id/fragment_food_edit_name_remote_label"
+                android:text="Cucumber"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_name_local_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_name_remote"
+                android:text="@string/hint_local"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_name_local"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_name_remote"
+                android:layout_toEndOf="@id/fragment_food_edit_name_local_label"
+                android:text="Lettuce"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_food_edit_expiration_offset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_name_local"
+                android:padding="@dimen/list_item_padding"
+                android:hint="@string/hint_expiration_offset"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_expiration_offset_original_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_expiration_offset"
+                android:text="@string/hint_original"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_expiration_offset_original"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_expiration_offset"
+                android:layout_toEndOf="@id/fragment_food_edit_expiration_offset_original_label"
+                android:text="5"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_expiration_offset_remote_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_expiration_offset_original"
+                android:text="@string/hint_remote"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_expiration_offset_remote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_expiration_offset_original"
+                android:layout_toEndOf="@id/fragment_food_edit_expiration_offset_remote_label"
+                android:text="2"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_expiration_offset_local_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_expiration_offset_remote"
+                android:text="@string/hint_local"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_expiration_offset_local"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_expiration_offset_remote"
+                android:layout_toEndOf="@id/fragment_food_edit_expiration_offset_local_label"
+                android:text="8"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+        <Spinner
+                android:id="@+id/fragment_food_edit_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_expiration_offset_local"
+                android:padding="@dimen/list_item_padding"
+                android:hint="@string/dialog_default_location"/>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_location_original_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_location"
+                android:text="@string/hint_original"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_location_original"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_location"
+                android:layout_toEndOf="@id/fragment_food_edit_location_original_label"
+                android:text="5"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_location_remote_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_location_original"
+                android:text="@string/hint_remote"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_location_remote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_location_original"
+                android:layout_toEndOf="@id/fragment_food_edit_location_remote_label"
+                android:text="2"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_location_local_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_location_remote"
+                android:text="@string/hint_local"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_location_local"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_location_remote"
+                android:layout_toEndOf="@id/fragment_food_edit_location_local_label"
+                android:text="8"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+        <Spinner
+                android:id="@+id/fragment_food_edit_unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_location_local"
+                android:padding="@dimen/list_item_padding"
+                android:hint="@string/hint_unit"/>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_unit_original_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_unit"
+                android:text="@string/hint_original"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_unit_original"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_unit"
+                android:layout_toEndOf="@id/fragment_food_edit_unit_original_label"
+                android:text="5"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_unit_remote_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_unit_original"
+                android:text="@string/hint_remote"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_unit_remote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_unit_original"
+                android:layout_toEndOf="@id/fragment_food_edit_unit_remote_label"
+                android:text="2"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+        <TextView
+                android:id="@+id/fragment_food_edit_unit_local_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_unit_remote"
+                android:text="@string/hint_local"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/list_item_padding"/>
+        <TextView
+                android:id="@+id/fragment_food_edit_unit_local"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_unit_remote"
+                android:layout_toEndOf="@id/fragment_food_edit_unit_local_label"
+                android:text="8"
+                android:paddingEnd="@dimen/list_item_padding"/>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_food_edit_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_food_edit_unit_local"
+                android:padding="@dimen/list_item_padding"
+                android:hint="@string/hint_description"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </RelativeLayout>
+</ScrollView>

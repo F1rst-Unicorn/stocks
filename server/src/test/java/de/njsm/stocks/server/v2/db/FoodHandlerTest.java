@@ -79,101 +79,78 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void editAFood() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ofDays(3), 2, null);
+        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ofDays(3), 2, null, 1);
 
         StatusCode result = uut.edit(data);
 
-        assertEquals(StatusCode.SUCCESS, result);
+        assertEditingWorked(data, result);
+    }
 
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
+    @Test
+    public void editFoodStoreUnit() {
+        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ofDays(3), 2, null, 2);
 
-        assertTrue(dbData.isSuccess());
+        StatusCode result = uut.edit(data);
 
-        assertTrue(dbData.success()
-                .anyMatch(f -> f.getName().equals(data.getNewName())
-                        && f.getExpirationOffset().equals(data.getExpirationOffsetOptional().get())
-                        && f.getLocation().equals(data.getLocationOptional().get())));
+        assertEditingWorked(data, result);
     }
 
     @Test
     public void editAFoodDefaultLocation() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ZERO.plusDays(2), 2, null);
+        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ZERO.plusDays(2), 2, null, 1);
 
         StatusCode result = uut.edit(data);
 
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success()
-                .anyMatch(f -> f.getName().equals(data.getNewName())
-                        && f.getExpirationOffset().equals(data.getExpirationOffsetOptional().get())
-                        && f.getLocation().equals(data.getLocationOptional().get())));
+        assertEditingWorked(data, result);
     }
 
     @Test
     public void editAFoodDefaultLocationBySettingNull() {
-        FoodForEditing data = new FoodForEditing(3, 0, "Cheese", Period.ZERO.plusDays(3), 0, null);
+        FoodForEditing data = new FoodForEditing(3, 0, "Cheese", Period.ZERO.plusDays(3), 0, null, 1);
 
         StatusCode result = uut.edit(data);
 
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success()
-                .anyMatch(f -> f.getName().equals(data.getNewName())
-                        && f.getExpirationOffset().equals(data.getExpirationOffsetOptional().get())
-                        && f.getLocation() == null));
+        assertEditingWorked(data, result);
     }
 
     @Test
     public void editAFoodExpirationOffset() {
-        FoodForEditing data = new FoodForEditing(3, 0, "Cheese", Period.ZERO.plusDays(2), 1, null);
+        FoodForEditing data = new FoodForEditing(3, 0, "Cheese", Period.ZERO.plusDays(2), 1, null, 1);
 
         StatusCode result = uut.edit(data);
 
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success()
-                .anyMatch(f -> f.getName().equals(data.getNewName())
-                        && f.getExpirationOffset().equals(data.getExpirationOffsetOptional().get())
-                        && f.getLocation().equals(data.getLocationOptional().get())));
+        assertEditingWorked(data, result);
     }
 
     @Test
     public void editAFoodWithoutExpirationOrDefaultLocationDoesntUpdateThem() {
-        FoodForEditing data = new FoodForEditing(3, 0, "Cheddar", null, null, null);
+        FoodForEditing data = new FoodForEditing(3, 0, "Cheddar", null, null, null, null);
 
         StatusCode result = uut.edit(data);
 
-        assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success()
-                .anyMatch(f -> f.getName().equals(data.getNewName())
-                        && f.getExpirationOffset().equals(Period.ZERO.plusDays(3))
-                        && f.getLocation() == 1));
+        assertEditingWorked(data, result);
     }
 
     @Test
     public void editingDescriptionWorks() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", null, null, "new description");
+        FoodForEditing data = new FoodForEditing(2, 0, "Beer", null, null, "new description", 1);
 
         StatusCode result = uut.edit(data);
 
+        assertEditingWorked(data, result);
+    }
+
+    private void assertEditingWorked(FoodForEditing data, StatusCode result) {
         assertEquals(StatusCode.SUCCESS, result);
         Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
         assertTrue(dbData.isSuccess());
-        List<Food> dbFood = dbData.success().collect(Collectors.toList());
-        assertThat(dbFood, hasItem(matchesVersionable(data)));
+        List<Food> currentFood = dbData.success().collect(Collectors.toList());
+        assertThat(currentFood, hasItem(matchesVersionable(data)));
     }
 
     @Test
     public void wrongVersionIsNotRenamed() {
-        FoodForEditing data = new FoodForEditing(2, 100, "Wine", Period.ZERO, 2, "new description");
+        FoodForEditing data = new FoodForEditing(2, 100, "Wine", Period.ZERO, 2, "new description", 1);
 
         StatusCode result = uut.edit(data);
 
@@ -182,7 +159,7 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void unknownIsReported() {
-        FoodForEditing data = new FoodForEditing(100, 0, "Wine", Period.ZERO, 2, "new description");
+        FoodForEditing data = new FoodForEditing(100, 0, "Wine", Period.ZERO, 2, "new description", 1);
 
         StatusCode result = uut.edit(data);
 

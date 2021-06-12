@@ -84,7 +84,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidIdIsInvalid() {
 
-        Response result = uut.edit(createMockRequest(), 0, 1, "fdsa", 0, 1, "");
+        Response result = uut.edit(createMockRequest(), 0, 1, "fdsa", 0, 1, "", 1);
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
@@ -92,7 +92,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingInvalidVersionIsInvalid() {
 
-        Response result = uut.edit(createMockRequest(), 1, -1, "fdsa", 0, 1, "");
+        Response result = uut.edit(createMockRequest(), 1, -1, "fdsa", 0, 1, "", 1);
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
@@ -100,7 +100,7 @@ public class FoodEndpointTest {
     @Test
     public void renamingToInvalidNameIsInvalid() {
 
-        Response result = uut.edit(createMockRequest(), 1, 1, "", 0, 1, "");
+        Response result = uut.edit(createMockRequest(), 1, 1, "", 0, 1, "", 1);
 
         assertEquals(INVALID_ARGUMENT, result.getStatus());
     }
@@ -177,7 +177,7 @@ public class FoodEndpointTest {
 
     @Test
     public void editWorks() {
-        FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, 2, "new description");
+        FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, 2, "new description", 1);
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
@@ -186,7 +186,8 @@ public class FoodEndpointTest {
                 data.getNewName(),
                 data.getExpirationOffsetOptional().get().getDays(),
                 data.getLocationOptional().get(),
-                data.getDescription().get());
+                data.getDescription().get(),
+                data.getStoreUnit().get());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).rename(data);
@@ -195,7 +196,7 @@ public class FoodEndpointTest {
 
     @Test
     public void editWithoutLocationWorks() {
-        FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, 0, "new description");
+        FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, 0, "new description", 1);
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
@@ -204,7 +205,8 @@ public class FoodEndpointTest {
                 data.getNewName(),
                 data.getExpirationOffsetOptional().get().getDays(),
                 data.getLocationOptional().get(),
-                data.getDescription().get());
+                data.getDescription().get(),
+                data.getStoreUnit().get());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).rename(data);
@@ -213,7 +215,7 @@ public class FoodEndpointTest {
 
     @Test
     public void editWithoutLocationYieldsNullAndMapsCorrectly() {
-        FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, null, "new description");
+        FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, null, "new description", 1);
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
@@ -222,7 +224,8 @@ public class FoodEndpointTest {
                 data.getNewName(),
                 data.getExpirationOffsetOptional().get().getDays(),
                 null,
-                data.getDescription().get());
+                data.getDescription().get(),
+                data.getStoreUnit().get());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).rename(data);
@@ -231,7 +234,7 @@ public class FoodEndpointTest {
 
     @Test
     public void editWithoutExpirationOffsetYieldsNullAndMapsCorrectly() {
-        FoodForEditing data = new FoodForEditing(1, 2, "Bread", null, 2, "new description");
+        FoodForEditing data = new FoodForEditing(1, 2, "Bread", null, 2, "new description", 1);
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
@@ -240,7 +243,8 @@ public class FoodEndpointTest {
                 data.getNewName(),
                 null,
                 data.getLocationOptional().get(),
-                data.getDescription().get());
+                data.getDescription().get(),
+                data.getStoreUnit().get());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).rename(data);

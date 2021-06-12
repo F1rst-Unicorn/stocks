@@ -20,18 +20,12 @@
 package de.njsm.stocks.android.db.dao;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Transaction;
-
+import androidx.room.*;
+import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import org.threeten.bp.Instant;
 
 import java.util.List;
-
-import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
@@ -120,7 +114,8 @@ public abstract class FoodDao implements Inserter<Food> {
             "select f._id, f.version, f.initiates, f.name as name, f.to_buy as toBuy, i.eatBy as eatBy, " +
             "i.amount as amount, f.expiration_offset as expirationOffset, f.location as location, " +
             "f.description as description, " +
-            "f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end " +
+            "f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end," +
+            "f.store_unit as storeUnit " +
             "from Food f " +
             "inner join least_item i on i.of_type = f._id " +
             "where f.valid_time_start <= " + NOW +
@@ -138,7 +133,7 @@ public abstract class FoodDao implements Inserter<Food> {
                 "and i.transaction_time_end = :infinity " +
                 "group by i.of_type " +
                 "having i.eat_by = MIN(i.eat_by)) " +
-            "select f._id, f.version, f.initiates, f.name as name, f.to_buy as toBuy, i.eatBy as eatBy, i.amount as amount, f.expiration_offset as expirationOffset, f.location as location, f.description as description, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end " +
+            "select f._id, f.version, f.initiates, f.name as name, f.to_buy as toBuy, i.eatBy as eatBy, i.amount as amount, f.expiration_offset as expirationOffset, f.location as location, f.description as description, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end, f.store_unit as storeUnit " +
             "from Food f " +
             "inner join least_item i on i.of_type = f._id " +
             "and f.valid_time_start <= " + NOW +
@@ -147,7 +142,7 @@ public abstract class FoodDao implements Inserter<Food> {
             "order by eatBy")
     abstract LiveData<List<FoodWithLatestItemView>> getFoodByLocation(int location, Instant infinity);
 
-    @Query("select f._id, f.version, f.initiates, f.name, f.to_buy, f.expiration_offset, f.location as location, f.description as description, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end " +
+    @Query("select f._id, f.version, f.initiates, f.name, f.to_buy, f.expiration_offset, f.location as location, f.description as description, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end, f.store_unit " +
             "from Food f " +
             "inner join EanNumber n on n.identifies = f._id " +
             "where n.number = :s " +
@@ -160,7 +155,7 @@ public abstract class FoodDao implements Inserter<Food> {
             "limit 1")
     abstract LiveData<Food> getFoodByEanNumber(String s, Instant infinity);
 
-    @Query(     "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, count(*) as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
+    @Query(     "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, count(*) as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end, f.store_unit as storeUnit " +
                 "from Food f " +
                 "inner join FoodItem i on f._id = i.of_type " +
                 "where f.name like :searchTerm " +
@@ -172,7 +167,7 @@ public abstract class FoodDao implements Inserter<Food> {
                 "and i.transaction_time_end = :infinity " +
                 "group by f.name " +
             "union all " +
-                "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, 0 as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
+                "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, 0 as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end, f.store_unit as storeUnit " +
                 "from Food f " +
                 "where f.name like :searchTerm " +
                 "and f.valid_time_start <= " + NOW +
@@ -187,7 +182,7 @@ public abstract class FoodDao implements Inserter<Food> {
             "order by name")
     abstract LiveData<List<FoodWithLatestItemView>> getFoodBySubString(String searchTerm, Instant infinity);
 
-    @Query(     "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, count(*) as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
+    @Query(     "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, count(*) as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end, f.store_unit as storeUnit " +
                 "from Food f " +
                 "inner join FoodItem i on f._id = i.of_type " +
                 "where f.to_buy " +
@@ -199,7 +194,7 @@ public abstract class FoodDao implements Inserter<Food> {
                 "and i.transaction_time_end = :infinity " +
                 "group by f.name " +
             "union all " +
-                "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, 0 as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end " +
+                "select f._id as _id, f.version as version, f.initiates as initiates, f.name as name, f.to_buy as toBuy, f.expiration_offset as expirationOffset, f.location as location, f.description as description, 0 as amount, f.valid_time_start as valid_time_start, f.valid_time_end as valid_time_end, f.transaction_time_start as transaction_time_start, f.transaction_time_end as transaction_time_end, f.store_unit as storeUnit " +
                 "from Food f " +
                 "where f.to_buy " +
                 "and f.valid_time_start <= " + NOW +
@@ -216,4 +211,13 @@ public abstract class FoodDao implements Inserter<Food> {
 
     @Query("delete from Food")
     abstract void delete();
+
+    @Query("select * " +
+            "from food " +
+            "where _id = :id " +
+            "and valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_start <= :transactionTimeStart " +
+            "and :transactionTimeStart < transaction_time_end")
+    public abstract LiveData<Food> getFoodNowAsKnownBy(int id, Instant transactionTimeStart);
 }

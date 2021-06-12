@@ -57,6 +57,11 @@ public class ScaledUnitRepository {
         return scaledUnitDao.getAllView();
     }
 
+    public LiveData<ScaledUnitView> getUnit(int id) {
+        LOG.d("getting scaled unit " + id);
+        return scaledUnitDao.getScaledUnitView(id);
+    }
+
     public LiveData<StatusCode> delete(ScaledUnit unit) {
         LOG.i("deleting " + unit);
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();

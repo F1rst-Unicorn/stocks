@@ -61,6 +61,8 @@
     <string name="title_description">Beschreibung ändern</string>
     <string name="title_units">Maßeinheiten</string>
     <string name="title_unit_activity">Aktivität bei Maßeinheiten</string>
+    <string name="title_default_unit">Standardeinheit</string>
+    <string name="title_unit">Maßeinheit</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>
@@ -100,7 +102,9 @@
     <string name="hint_name">Name</string>
     <string name="hint_abbreviation">Abkürzung</string>
     <string name="hint_scale">Skalierung</string>
-    <string name="hint_unit">Einheit</string>
+    <string name="hint_unit">Maßeinheit</string>
+    <string name="hint_expiration_offset">Standardhaltbarkeit (Tage)</string>
+    <string name="hint_description">Beschreibung</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>
@@ -155,7 +159,7 @@
     <string name="dialog_food_item_was_deleted">Lebensmittel wurde gegessen</string>
     <string name="dialog_food_was_removed_from_shopping_list">Lebensmittel vom Einkaufszettel entfernt</string>
     <string name="dialog_default_expiration_offset">Standardablaufdauer setzen</string>
-    <string name="dialog_default_location">Standardort setzen</string>
+    <string name="dialog_default_location">Standardort</string>
     <string name="dialog_conflicting_description">Die Beschreibung wurde von jemand anderem geändert. Führe den originalen Text, die Änderungen der anderen Person und deinen eigenen Text jetzt zusammen.</string>
     <string name="dialog_new_unit">Neue Einheit erstellen</string>
 
@@ -207,6 +211,7 @@
     <string name="event_food_location_changed">hat den Standardort%s von %s auf %s gesetzt</string>
     <string name="event_food_expiration_offset_set">hat die Haltbarkeit%s auf %d Tage gesetzt</string>
     <string name="event_food_description_changed">hat die Beschreibung%s geändert</string>
+    <string name="event_food_store_unit_changed">hat die Standardeinheit%s von %s%s zu %s%s geändert</string>
     <string name="event_user_created">%s hat %s eingeladen.</string>
     <string name="event_user_deleted">%s hat %s entfernt.</string>
     <string name="event_user_device_created">%s hat %s von %s registriert.</string>

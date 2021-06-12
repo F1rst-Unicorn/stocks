@@ -106,6 +106,10 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     .map(v -> (Field<String>) DSL.inline(v))
                     .orElse(FOOD.DESCRIPTION);
 
+            Field<?> storeUnitField = item.getStoreUnit()
+                    .map(v -> (Field<Integer>) DSL.inline(v))
+                    .orElse(FOOD.STORE_UNIT);
+
             Condition locationCondition = item.getLocationOptional()
                     .map(FOOD.LOCATION::isDistinctFrom)
                     .orElseGet(DSL::falseCondition);
@@ -118,6 +122,10 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     .map(FOOD.DESCRIPTION::ne)
                     .orElseGet(DSL::falseCondition);
 
+            Condition storeUnitCondition = item.getStoreUnit()
+                    .map(FOOD.STORE_UNIT::ne)
+                    .orElseGet(DSL::falseCondition);
+
             return currentUpdate(context, Arrays.asList(
                     FOOD.ID,
                     DSL.inline(item.getNewName()),
@@ -126,13 +134,14 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     expirationOffsetField,
                     locationField,
                     descriptionField,
-                    FOOD.STORE_UNIT),
+                    storeUnitField),
                     getIdField().eq(item.getId())
                             .and(getVersionField().eq(item.getVersion())
                                     .and(FOOD.NAME.ne(item.getNewName())
                                             .or(expirationOffsetCondition)
                                             .or(locationCondition)
-                                            .or(descriptionCondition))
+                                            .or(descriptionCondition)
+                                            .or(storeUnitCondition))
                             )
             )
                     .map(this::notFoundMeansInvalidVersion);

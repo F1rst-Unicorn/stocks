@@ -48,4 +48,8 @@ public class ScaledUnitView extends ScaledUnit {
     public void setUnitEntity(Unit unitEntity) {
         this.unitEntity = unitEntity;
     }
+
+    public String getPrettyName() {
+        return scale.toPlainString() + getUnitEntity().getAbbreviation();
+    }
 }

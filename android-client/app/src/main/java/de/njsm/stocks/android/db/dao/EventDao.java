@@ -203,14 +203,18 @@ public abstract class EventDao {
     abstract PositionalDataSource.Factory<Integer, EanNumberHistoryView> getEanHistory(Instant infinity);
 
     @Query("select " +
-            "l1.name as version1_name, l1.location as version1_location, l1.to_buy as version1_to_buy, l1.expiration_offset as version1_expiration_offset, l1.location as version1_location, f1.name as version1_location_name, l1.description as version1_description, " +
-            "l2.name as version2_name, l2.location as version2_location, l2.to_buy as version2_to_buy, l2.expiration_offset as version2_expiration_offset, l2.location as version2_location, f2.name as version2_location_name, l2.description as version2_description, " +
+            "l1.name as version1_name, l1.location as version1_location, l1.to_buy as version1_to_buy, l1.expiration_offset as version1_expiration_offset, l1.location as version1_location, f1.name as version1_location_name, l1.description as version1_description, unit_1.abbreviation as version1_unit_abbreviation, scaled_unit_1.scale as version1_scale, l1.store_unit as version1_store_unit, " +
+            "l2.name as version2_name, l2.location as version2_location, l2.to_buy as version2_to_buy, l2.expiration_offset as version2_expiration_offset, l2.location as version2_location, f2.name as version2_location_name, l2.description as version2_description, unit_2.abbreviation as version2_unit_abbreviation, scaled_unit_2.scale as version2_scale, l2.store_unit as version2_store_unit, " +
             INITIATOR_COLUMNS +
             TIME_COLUMNS_FOOD +
             "from food l1 " +
             "left outer join food l2 " + ON_CHRONOLOGY +
             "left outer join location f1 on l1.location = f1._id and f1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < f1.valid_time_end and f1.transaction_time_end = :infinity " +
             "left outer join location f2 on l2.location = f2._id and f2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < f2.valid_time_end and f2.transaction_time_end = :infinity " +
+            "join scaled_unit scaled_unit_1 on l1.store_unit = scaled_unit_1._id and scaled_unit_1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < scaled_unit_1.valid_time_end and scaled_unit_1.transaction_time_end = :infinity " +
+            "left outer join scaled_unit scaled_unit_2 on l2.store_unit = scaled_unit_2._id and scaled_unit_2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < scaled_unit_2.valid_time_end and scaled_unit_2.transaction_time_end = :infinity " +
+            "join unit unit_1 on unit_1._id = scaled_unit_1.unit and unit_1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < unit_1.valid_time_end and unit_1.transaction_time_end = :infinity " +
+            "left outer join unit unit_2 on unit_2._id = scaled_unit_2.unit and unit_2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < unit_2.valid_time_end and unit_2.transaction_time_end = :infinity " +
             JOIN_INITIATOR +
             WHERE_VALID_FOOD +
             "order by l1.transaction_time_start desc")
@@ -267,14 +271,18 @@ public abstract class EventDao {
     abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistory(Instant infinity);
 
     @Query("select " +
-            "l1.name as version1_name, l1.location as version1_location, l1.to_buy as version1_to_buy, l1.expiration_offset as version1_expiration_offset, l1.location as version1_location, f1.name as version1_location_name, l1.description as version1_description, " +
-            "l2.name as version2_name, l2.location as version2_location, l2.to_buy as version2_to_buy, l2.expiration_offset as version2_expiration_offset, l2.location as version2_location, f2.name as version2_location_name, l2.description as version1_description, " +
+            "l1.name as version1_name, l1.location as version1_location, l1.to_buy as version1_to_buy, l1.expiration_offset as version1_expiration_offset, l1.location as version1_location, f1.name as version1_location_name, l1.description as version1_description, unit_1.abbreviation as version1_unit_abbreviation, scaled_unit_1.scale as version1_scale, l1.store_unit as version1_store_unit, " +
+            "l2.name as version2_name, l2.location as version2_location, l2.to_buy as version2_to_buy, l2.expiration_offset as version2_expiration_offset, l2.location as version2_location, f2.name as version2_location_name, l2.description as version2_description, unit_2.abbreviation as version2_unit_abbreviation, scaled_unit_2.scale as version2_scale, l2.store_unit as version2_store_unit, " +
             INITIATOR_COLUMNS +
             TIME_COLUMNS_FOOD +
             "from food l1 " +
             "left outer join food l2 " + ON_CHRONOLOGY +
             "left outer join location f1 on l1.location = f1._id and f1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < f1.valid_time_end and f1.transaction_time_end = :infinity " +
             "left outer join location f2 on l2.location = f2._id and f2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < f2.valid_time_end and f2.transaction_time_end = :infinity " +
+            "join scaled_unit scaled_unit_1 on l1.store_unit = scaled_unit_1._id and scaled_unit_1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < scaled_unit_1.valid_time_end and scaled_unit_1.transaction_time_end = :infinity " +
+            "left outer join scaled_unit scaled_unit_2 on l2.store_unit = scaled_unit_2._id and scaled_unit_2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < scaled_unit_2.valid_time_end and scaled_unit_2.transaction_time_end = :infinity " +
+            "join unit unit_1 on unit_1._id = scaled_unit_1.unit and unit_1.valid_time_start <= l1.transaction_time_start and l1.transaction_time_start < unit_1.valid_time_end and unit_1.transaction_time_end = :infinity " +
+            "left outer join unit unit_2 on unit_2._id = scaled_unit_2.unit and unit_2.valid_time_start <= l2.transaction_time_start and l2.transaction_time_start < unit_2.valid_time_end and unit_2.transaction_time_end = :infinity " +
             JOIN_INITIATOR +
             WHERE_VALID_FOOD +
             "and l1._id = :id " +

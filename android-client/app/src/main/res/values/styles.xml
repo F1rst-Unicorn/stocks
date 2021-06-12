@@ -22,10 +22,14 @@
 
 
     <!-- Base application theme. -->
-    <style name="StocksTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="StocksTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+        <item name="colorOnSecondary">@android:color/white</item>
         <item name="textAppearanceSearchResultTitle">@style/StocksTheme.AutoCompleteTextView</item>
         <item name="autoCompleteTextViewStyle">@style/StocksTheme.SearchDropdownBackground</item>
     </style>

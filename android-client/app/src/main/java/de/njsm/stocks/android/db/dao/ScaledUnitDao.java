@@ -53,6 +53,23 @@ public abstract class ScaledUnitDao implements Inserter<ScaledUnit> {
         return getAllView(Config.DATABASE_INFINITY);
     }
 
+    public LiveData<ScaledUnitView> getScaledUnitView(int id) {
+        return getScaledUnitView(id, Config.DATABASE_INFINITY);
+    }
+
+    @Query("select su.*, " +
+            "u._id as unit__id, u.version as unit_version, u.valid_time_start as unit_valid_time_start, u.valid_time_end as unit_valid_time_end, u.transaction_time_start as unit_transaction_time_start, u.transaction_time_end as unit_transaction_time_end, u.initiates as unit_initiates, u.abbreviation as unit_abbreviation, u.name as unit_name " +
+            "from scaled_unit su " +
+            "inner join unit u on su.unit = u._id " +
+            "where su.valid_time_start <= " + NOW +
+            "and " + NOW + " < su.valid_time_end " +
+            "and su.transaction_time_end = :infinity " +
+            "and u.valid_time_start <= " + NOW +
+            "and " + NOW + " < u.valid_time_end " +
+            "and u.transaction_time_end = :infinity " +
+            "and su._id = :id")
+    protected abstract LiveData<ScaledUnitView> getScaledUnitView(int id, Instant infinity);
+
     @Query("select * " +
             "from scaled_unit " +
             "where valid_time_start <= " + NOW +
@@ -69,6 +86,7 @@ public abstract class ScaledUnitDao implements Inserter<ScaledUnit> {
             "and su.transaction_time_end = :infinity " +
             "and u.valid_time_start <= " + NOW +
             "and " + NOW + " < u.valid_time_end " +
-            "and u.transaction_time_end = :infinity")
+            "and u.transaction_time_end = :infinity " +
+            "order by unit_abbreviation")
     abstract LiveData<List<ScaledUnitView>> getAllView(Instant infinity);
 }

@@ -69,7 +69,8 @@ public class FoodEndpoint extends Endpoint implements
                          @QueryParam("new") String newName,
                          @QueryParam("expirationoffset") Integer expirationOffset,
                          @QueryParam("location") Integer location,
-                         @FormParam("description") String description) {
+                         @FormParam("description") String description,
+                         @QueryParam("storeunit") Integer storeUnit) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
@@ -82,7 +83,8 @@ public class FoodEndpoint extends Endpoint implements
                             newName,
                             expirationOffset == null ? null : Period.ofDays(expirationOffset),
                             location,
-                            description));
+                            description,
+                            storeUnit));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -97,8 +99,9 @@ public class FoodEndpoint extends Endpoint implements
                                @QueryParam("version") int version,
                                @QueryParam("new") String newName,
                                @QueryParam("expirationoffset") Integer expirationOffset,
-                               @QueryParam("location") Integer location) {
-        return edit(request, id, version, newName, expirationOffset, location, null);
+                               @QueryParam("location") Integer location,
+                               @QueryParam("storeunit") Integer storeUnit) {
+        return edit(request, id, version, newName, expirationOffset, location, null, storeUnit);
     }
 
     @PUT

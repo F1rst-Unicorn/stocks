@@ -61,6 +61,8 @@
     <string name="title_description">Edit description</string>
     <string name="title_units">Units of Measure</string>
     <string name="title_unit_activity">Activity on Units of Measure</string>
+    <string name="title_default_unit">Default Unit</string>
+    <string name="title_unit">Unit of Measure</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>
@@ -101,6 +103,8 @@
     <string name="hint_abbreviation">Abbreviation</string>
     <string name="hint_scale">Scale</string>
     <string name="hint_unit">Unit</string>
+    <string name="hint_expiration_offset">Default expiration (days)</string>
+    <string name="hint_description">Description</string>
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>
@@ -207,6 +211,7 @@
     <string name="event_food_location_changed">has set the default location%s from %s to %s</string>
     <string name="event_food_expiration_offset_set">has set the expiration time%s to %d days</string>
     <string name="event_food_description_changed">has changed the description%s</string>
+    <string name="event_food_store_unit_changed">has changed the default unit%s from %s%s to %s%s</string>
     <string name="event_user_created">%s has invited %s.</string>
     <string name="event_user_deleted">%s has deleted %s.</string>
     <string name="event_user_device_created">%s has registered %s of %s.</string>

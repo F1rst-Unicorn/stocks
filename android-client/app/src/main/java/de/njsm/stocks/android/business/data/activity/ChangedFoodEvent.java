@@ -56,6 +56,7 @@ public class ChangedFoodEvent extends ChangedEntityEvent<FoodWithLocationName> i
         differs.add(new FoodDefaultLocationChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
         differs.add(new FoodExpirationOffsetChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
         differs.add(new FoodDescriptionChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodStoreUnitChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
         return differs;
     }
 

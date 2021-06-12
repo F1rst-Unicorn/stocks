@@ -27,6 +27,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -37,6 +38,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
+import de.njsm.stocks.android.frontend.units.ScaledUnitViewModel;
 
 import java.util.List;
 
@@ -47,6 +49,8 @@ public class FoodDescriptionFragment extends InjectedFragment {
     private FoodItemViewModel foodItemViewModel;
 
     private LocationViewModel locationViewModel;
+
+    private ScaledUnitViewModel scaledUnitViewModel;
 
     private FoodItemFragmentArgs input;
 
@@ -60,11 +64,12 @@ public class FoodDescriptionFragment extends InjectedFragment {
         assert getArguments() != null;
         input = FoodItemFragmentArgs.fromBundle(getArguments());
 
-        foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
+        foodViewModel = new ViewModelProvider(this, viewModelFactory).get(FoodViewModel.class);
         foodViewModel.initFood(input.getFoodId());
 
-        foodItemViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodItemViewModel.class);
-        locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
+        foodItemViewModel = new ViewModelProvider(this, viewModelFactory).get(FoodItemViewModel.class);
+        locationViewModel = new ViewModelProvider(this, viewModelFactory).get(LocationViewModel.class);
+        scaledUnitViewModel = new ViewModelProvider(this, viewModelFactory).get(ScaledUnitViewModel.class);
 
         result.findViewById(R.id.fragment_food_description_scroller).setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             swiper.setEnabled(scrollY == 0);
@@ -74,6 +79,7 @@ public class FoodDescriptionFragment extends InjectedFragment {
         TextView expiration = result.findViewById(R.id.fragment_food_description_standard_expiration);
         TextView location = result.findViewById(R.id.fragment_food_description_location);
         TextView amount = result.findViewById(R.id.fragment_food_description_amount);
+        TextView storeUnit = result.findViewById(R.id.fragment_food_description_standard_unit);
 
         foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
                 description.setText(f.description));
@@ -84,6 +90,10 @@ public class FoodDescriptionFragment extends InjectedFragment {
         foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
                 foodItemViewModel.countItemsOfType(f.id).observe(getViewLifecycleOwner(), i ->
                         amount.setText(String.valueOf(i))));
+
+        foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
+                scaledUnitViewModel.getUnit(f.storeUnit).observe(getViewLifecycleOwner(), i ->
+                        storeUnit.setText(i.getPrettyName())));
 
         foodViewModel.getFood().observe(getViewLifecycleOwner(), f -> {
                 if (f.location != 0) {

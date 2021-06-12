@@ -21,18 +21,26 @@ package de.njsm.stocks.android.db.views;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
-
+import de.njsm.stocks.android.db.entities.Food;
 import org.threeten.bp.Instant;
 
-import de.njsm.stocks.android.db.entities.Food;
+import java.math.BigDecimal;
 
 public class FoodWithLocationName extends Food {
 
     @ColumnInfo(name = "location_name")
     public final String locationName;
 
-    public FoodWithLocationName(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, String locationName, String description) {
-        super(0, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description);
+    @ColumnInfo(name = "unit_abbreviation")
+    public final String unitAbbreviation;
+
+    @ColumnInfo(name = "scale")
+    public final BigDecimal scale;
+
+    public FoodWithLocationName(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, String locationName, String description, int storeUnit, String unitAbbreviation, BigDecimal scale) {
+        super(0, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
         this.locationName = locationName;
+        this.unitAbbreviation = unitAbbreviation;
+        this.scale = scale;
     }
 }

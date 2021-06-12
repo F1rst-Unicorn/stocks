@@ -24,7 +24,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/fragment_edit_description_save"
+        android:id="@+id/fragment_food_edit_save"
         android:icon="@drawable/ic_check_white_24dp"
         android:orderInCategory="100"
         android:title="@string/action_save"

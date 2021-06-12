@@ -50,6 +50,10 @@ public class ScaledUnitViewModel extends ViewModel {
         }
     }
 
+    public LiveData<ScaledUnitView> getUnit(int id) {
+        return scaledUnitRepository.getUnit(id);
+    }
+
     public LiveData<List<ScaledUnitView>> getUnits() {
         return units;
     }

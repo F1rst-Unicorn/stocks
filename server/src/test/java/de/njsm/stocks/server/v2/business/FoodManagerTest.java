@@ -95,7 +95,7 @@ public class FoodManagerTest {
     @Test
     public void testRenamingItem() {
         String newName = "Sausage";
-        FoodForEditing data = new FoodForEditing(1, 2, newName, Period.ZERO, 1, "new description");
+        FoodForEditing data = new FoodForEditing(1, 2, newName, Period.ZERO, 1, "new description", 1);
         Mockito.when(backend.edit(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.rename(data);

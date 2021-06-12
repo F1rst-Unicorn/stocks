@@ -21,15 +21,14 @@ package de.njsm.stocks.android.frontend.emptyfood;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.FoodRepository;
+import org.threeten.bp.Instant;
+
+import javax.inject.Inject;
+import java.util.List;
 
 public class FoodViewModel extends ViewModel {
 
@@ -66,8 +65,14 @@ public class FoodViewModel extends ViewModel {
         return foodRepository.getFood(id);
     }
 
-    public LiveData<StatusCode> renameFood(Food item, String name) {
-        return foodRepository.renameFood(item, name);
+    public LiveData<StatusCode> edit(Food item) {
+        return foodRepository.editFood(item);
+    }
+
+    public LiveData<StatusCode> renameFood(Food item, String newName) {
+        Food editedFood = item.copy();
+        editedFood.name = newName;
+        return foodRepository.editFood(editedFood);
     }
 
     public LiveData<StatusCode> setToBuyStatus(Food item, boolean status) {
@@ -102,15 +107,7 @@ public class FoodViewModel extends ViewModel {
         return foodRepository.getFoodByEanNumber(s);
     }
 
-    public LiveData<StatusCode> setFoodExpirationOffset(Food food, int newOffset) {
-        return foodRepository.setFoodExpirationOffset(food, newOffset);
-    }
-
-    public LiveData<StatusCode> setFoodDefaultLocation(Food food, int location) {
-        return foodRepository.setFoodDefaultLocation(food, location);
-    }
-
-    public LiveData<StatusCode> setFoodDescription(int foodId, int foodVersion, String description) {
-        return foodRepository.setFoodDescription(foodId, foodVersion, description);
+    public LiveData<Food> getFoodNowAsKnownBy(int id, Instant transactionTimeStart) {
+        return foodRepository.getFoodNowAsKnownBy(id, transactionTimeStart);
     }
 }
