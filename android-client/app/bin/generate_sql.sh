@@ -70,20 +70,15 @@ for table in "${tables[@]}" ; do
     String ${table^^}_PREFIX = "${table}_";
 
     String ${table^^}_JOIN_INITIATOR =
-            "join user_device initiator_device on ${table^^}_1.initiates = initiator_device._id " +
+            "join user_device initiator_device on main_table_1.initiates = initiator_device._id " +
             "join user initiator_user on initiator_user._id = initiator_device.belongs_to ";
 
-    String ${table^^}_ON_CHRONOLOGY =
-            "on ${table}_1.transaction_time_start = ${table}_2.transaction_time_start and ${table}_1.version + 1 = ${table}_2.version and ${table}_1._id = ${table}_2._id ";
-
     String ${table^^}_TIME_COLUMNS =
-            "${table}_1._id as version1__id, ${table}_1.version as version1_version, ${table}_1.initiates as version1_initiates, ${table}_1.valid_time_start as version1_valid_time_start, ${table}_1.valid_time_end as version1_valid_time_end, ${table}_1.transaction_time_start as version1_transaction_time_start, ${table}_1.transaction_time_end as version1_transaction_time_end, " +
-            "${table}_2._id as version2__id, ${table}_2.version as version2_version, ${table}_2.initiates as version2_initiates, ${table}_2.valid_time_start as version2_valid_time_start, ${table}_2.valid_time_end as version2_valid_time_end, ${table}_2.transaction_time_start as version2_transaction_time_start, ${table}_2.transaction_time_end as version2_transaction_time_end, " +
-            "${table}_1.transaction_time_start = (select min(transaction_time_start) from ${table} x where x._id = ${table}_1._id) as is_first ";
+            "main_table_1.transaction_time_start = (select min(transaction_time_start) from ${table} x where x._id = main_table_1._id) as is_first ";
 
     String ${table^^}_WHERE_VALID =
-            "where not (${table}_1.version != (select min(version) from ${table} x where x._id = ${table}_1._id) and ${table}_2._id is null and ${table}_1.transaction_time_end != :infinity) " +
-            "and (not (${table}_1.valid_time_end = :infinity and ${table}_1.transaction_time_end = ${table}_1.valid_time_end) or ${table}_1.version = (select min(version) from ${table} x where x._id = ${table}_1._id))";
+            "where not (main_table_1.version != (select min(version) from ${table} x where x._id = main_table_1._id) and main_table_2._id is null and main_table_1.transaction_time_end != :infinity) " +
+            "and (not (main_table_1.valid_time_end = :infinity and main_table_1.transaction_time_end = main_table_1.valid_time_end) or main_table_1.version = (select min(version) from ${table} x where x._id = main_table_1._id))";
 
 EOF
 done
@@ -146,7 +141,7 @@ EOF
 
     for field in "${!array}" ; do
         cat <<EOF >>"${OUTPUT_FILE}"
-            ${table^^}_TABLE + "_1.${field} as version1_${field}, " +
+            "main_table_1.${field} as version1_${field}, " +
 EOF
     done
     echo "            \"\";" >>"${OUTPUT_FILE}"
@@ -158,7 +153,7 @@ EOF
 
     for field in "${!array}" ; do
         cat <<EOF >>"${OUTPUT_FILE}"
-            ${table^^}_TABLE + "_2.${field} as version2_${field}, " +
+            "main_table_2.${field} as version2_${field}, " +
 EOF
     done
     echo "            \"\";" >>"${OUTPUT_FILE}"
@@ -204,29 +199,57 @@ EOF
     String ${table^^}_EVENT_1_JOIN_${primary_table^^} =
             "join " + ${primary_table^^}_TABLE + " " + ${primary_table^^}_TABLE + "_1 " +
             "on " + ${primary_table^^}_TABLE + "_1._id = " + ${table^^}_TABLE + "_1.${field} " +
-            "and " + ${primary_table^^}_TABLE + "_1.valid_time_start <= " + ${table^^}_TABLE + "_1.transaction_time_start " +
-            "and " + ${table^^}_TABLE + "_1.transaction_time_start < " + ${primary_table^^}_TABLE + "_1.valid_time_end " +
+            "and " + ${primary_table^^}_TABLE + "_1.valid_time_start <= main_table_1.transaction_time_start " +
+            "and main_table_1.transaction_time_start < " + ${primary_table^^}_TABLE + "_1.valid_time_end " +
             "and " + ${primary_table^^}_TABLE + "_1.transaction_time_end = :infinity ";
 
     String ${primary_table^^}_EVENT_1_JOIN_${table^^} =
             "join " + ${table^^}_TABLE + " " + ${table^^}_TABLE + "_1 " +
             "on " + ${table^^}_TABLE + "_1.${field} = " + ${primary_table^^}_TABLE + "_1._id " +
-            "and " + ${table^^}_TABLE + "_1.valid_time_start <= " + ${primary_table^^}_TABLE + "_1.transaction_time_start " +
-            "and " + ${primary_table^^}_TABLE + "_1.transaction_time_start < " + ${table^^}_TABLE + "_1.valid_time_end " +
+            "and " + ${table^^}_TABLE + "_1.valid_time_start <= main_table_1.transaction_time_start " +
+            "and main_table_1.transaction_time_start < " + ${table^^}_TABLE + "_1.valid_time_end " +
             "and " + ${table^^}_TABLE + "_1.transaction_time_end = :infinity ";
 
     String ${table^^}_EVENT_2_JOIN_${primary_table^^} =
             "left outer join " + ${primary_table^^}_TABLE + " " + ${primary_table^^}_TABLE + "_2 " +
             "on " + ${primary_table^^}_TABLE + "_2._id = " + ${table^^}_TABLE + "_2.${field} " +
-            "and " + ${primary_table^^}_TABLE + "_2.valid_time_start <= " + ${table^^}_TABLE + "_2.transaction_time_start " +
-            "and " + ${table^^}_TABLE + "_2.transaction_time_start < " + ${primary_table^^}_TABLE + "_2.valid_time_end " +
+            "and " + ${primary_table^^}_TABLE + "_2.valid_time_start <= main_table_2.transaction_time_start " +
+            "and main_table_2.transaction_time_start < " + ${primary_table^^}_TABLE + "_2.valid_time_end " +
             "and " + ${primary_table^^}_TABLE + "_2.transaction_time_end = :infinity ";
 
     String ${primary_table^^}_EVENT_2_JOIN_${table^^} =
             "left outer join " + ${table^^}_TABLE + " " + ${table^^}_TABLE + "_2 " +
             "on " + ${table^^}_TABLE + "_2.${field} = " + ${primary_table^^}_TABLE + "_2._id " +
-            "and " + ${table^^}_TABLE + "_2.valid_time_start <= " + ${primary_table^^}_TABLE + "_2.transaction_time_start " +
-            "and " + ${primary_table^^}_TABLE + "_2.transaction_time_start < " + ${table^^}_TABLE + "_2.valid_time_end " +
+            "and " + ${table^^}_TABLE + "_2.valid_time_start <= main_table_2.transaction_time_start " +
+            "and main_table_2.transaction_time_start < " + ${table^^}_TABLE + "_2.valid_time_end " +
+            "and " + ${table^^}_TABLE + "_2.transaction_time_end = :infinity ";
+
+    String ${table^^}_EVENT_1_JOIN_${primary_table^^}_MAIN =
+            "join " + ${primary_table^^}_TABLE + " " + ${primary_table^^}_TABLE + "_1 " +
+            "on " + ${primary_table^^}_TABLE + "_1._id = main_table_1.${field} " +
+            "and " + ${primary_table^^}_TABLE + "_1.valid_time_start <= main_table_1.transaction_time_start " +
+            "and main_table_1.transaction_time_start < " + ${primary_table^^}_TABLE + "_1.valid_time_end " +
+            "and " + ${primary_table^^}_TABLE + "_1.transaction_time_end = :infinity ";
+
+    String ${primary_table^^}_EVENT_1_JOIN_${table^^}_MAIN =
+            "join " + ${table^^}_TABLE + " " + ${table^^}_TABLE + "_1 " +
+            "on main_table_1.${field} = " + ${primary_table^^}_TABLE + "_1._id " +
+            "and " + ${table^^}_TABLE + "_1.valid_time_start <= main_table_1.transaction_time_start " +
+            "and main_table_1.transaction_time_start < " + ${table^^}_TABLE + "_1.valid_time_end " +
+            "and " + ${table^^}_TABLE + "_1.transaction_time_end = :infinity ";
+
+    String ${table^^}_EVENT_2_JOIN_${primary_table^^}_MAIN =
+            "left outer join " + ${primary_table^^}_TABLE + " " + ${primary_table^^}_TABLE + "_2 " +
+            "on " + ${primary_table^^}_TABLE + "_2._id = main_table_2.${field} " +
+            "and " + ${primary_table^^}_TABLE + "_2.valid_time_start <= main_table_2.transaction_time_start " +
+            "and main_table_2.transaction_time_start < " + ${primary_table^^}_TABLE + "_2.valid_time_end " +
+            "and " + ${primary_table^^}_TABLE + "_2.transaction_time_end = :infinity ";
+
+    String ${primary_table^^}_EVENT_2_JOIN_${table^^}_MAIN =
+            "left outer join " + ${table^^}_TABLE + " " + ${table^^}_TABLE + "_2 " +
+            "on main_table_2.${field} = " + ${primary_table^^}_TABLE + "_2._id " +
+            "and " + ${table^^}_TABLE + "_2.valid_time_start <= main_table_2.transaction_time_start " +
+            "and main_table_2.transaction_time_start < " + ${table^^}_TABLE + "_2.valid_time_end " +
             "and " + ${table^^}_TABLE + "_2.transaction_time_end = :infinity ";
 
 EOF

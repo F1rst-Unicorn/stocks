@@ -43,6 +43,8 @@ public abstract class EventDao {
             "l1._id as version1__id, l1.version as version1_version, l1.initiates as version1_initiates, l1.valid_time_start as version1_valid_time_start, l1.valid_time_end as version1_valid_time_end, l1.transaction_time_start as version1_transaction_time_start, l1.transaction_time_end as version1_transaction_time_end, " +
             "l2._id as version2__id, l2.version as version2_version, l2.initiates as version2_initiates, l2.valid_time_start as version2_valid_time_start, l2.valid_time_end as version2_valid_time_end, l2.transaction_time_start as version2_transaction_time_start, l2.transaction_time_end as version2_transaction_time_end, ";
 
+    private static final String MAIN_ON_CHRONOLOGY = "on main_table_1.transaction_time_start = main_table_2.transaction_time_start and main_table_1.version + 1 = main_table_2.version and main_table_1._id = main_table_2._id ";
+
     private static final String TIME_COLUMNS_FOOD =
             TIME_COLUMNS +
             "l1.transaction_time_start = (select min(transaction_time_start) from food x where x._id = l1._id) as is_first ";
@@ -254,19 +256,19 @@ public abstract class EventDao {
             Sql.UNIT_FIELDS_VERSION_2 +
             INITIATOR_COLUMNS +
             Sql.FOODITEM_TIME_COLUMNS +
-            "from fooditem fooditem_1 " +
-            "left outer join fooditem fooditem_2 " + Sql.FOODITEM_ON_CHRONOLOGY +
-            Sql.FOODITEM_EVENT_1_JOIN_FOOD +
-            Sql.FOODITEM_EVENT_2_JOIN_FOOD +
-            Sql.FOODITEM_EVENT_1_JOIN_LOCATION +
-            Sql.FOODITEM_EVENT_2_JOIN_LOCATION +
-            Sql.FOODITEM_EVENT_1_JOIN_SCALED_UNIT +
-            Sql.FOODITEM_EVENT_2_JOIN_SCALED_UNIT +
+            "from fooditem main_table_1 " +
+            "left outer join fooditem main_table_2 " + MAIN_ON_CHRONOLOGY +
+            Sql.FOODITEM_EVENT_1_JOIN_FOOD_MAIN +
+            Sql.FOODITEM_EVENT_2_JOIN_FOOD_MAIN +
+            Sql.FOODITEM_EVENT_1_JOIN_LOCATION_MAIN +
+            Sql.FOODITEM_EVENT_2_JOIN_LOCATION_MAIN +
+            Sql.FOODITEM_EVENT_1_JOIN_SCALED_UNIT_MAIN +
+            Sql.FOODITEM_EVENT_2_JOIN_SCALED_UNIT_MAIN +
             Sql.SCALED_UNIT_EVENT_1_JOIN_UNIT +
             Sql.SCALED_UNIT_EVENT_2_JOIN_UNIT +
             Sql.FOODITEM_JOIN_INITIATOR +
             Sql.FOODITEM_WHERE_VALID +
-            "order by fooditem_1.transaction_time_start desc")
+            "order by main_table_1.transaction_time_start desc")
     abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistory(Instant infinity);
 
     @Query("select " +
@@ -301,20 +303,20 @@ public abstract class EventDao {
             Sql.UNIT_FIELDS_VERSION_2 +
             INITIATOR_COLUMNS +
             Sql.FOODITEM_TIME_COLUMNS +
-            "from fooditem fooditem_1 " +
-            "left outer join fooditem fooditem_2 " + Sql.FOODITEM_ON_CHRONOLOGY +
-            Sql.FOODITEM_EVENT_1_JOIN_FOOD +
-            Sql.FOODITEM_EVENT_2_JOIN_FOOD +
-            Sql.FOODITEM_EVENT_1_JOIN_LOCATION +
-            Sql.FOODITEM_EVENT_2_JOIN_LOCATION +
-            Sql.FOODITEM_EVENT_1_JOIN_SCALED_UNIT +
-            Sql.FOODITEM_EVENT_2_JOIN_SCALED_UNIT +
+            "from fooditem main_table_1 " +
+            "left outer join fooditem main_table_2 " + MAIN_ON_CHRONOLOGY +
+            Sql.FOODITEM_EVENT_1_JOIN_FOOD_MAIN +
+            Sql.FOODITEM_EVENT_2_JOIN_FOOD_MAIN +
+            Sql.FOODITEM_EVENT_1_JOIN_LOCATION_MAIN +
+            Sql.FOODITEM_EVENT_2_JOIN_LOCATION_MAIN +
+            Sql.FOODITEM_EVENT_1_JOIN_SCALED_UNIT_MAIN +
+            Sql.FOODITEM_EVENT_2_JOIN_SCALED_UNIT_MAIN +
             Sql.SCALED_UNIT_EVENT_1_JOIN_UNIT +
             Sql.SCALED_UNIT_EVENT_2_JOIN_UNIT +
             Sql.FOODITEM_JOIN_INITIATOR +
             Sql.FOODITEM_WHERE_VALID +
-            "and fooditem_1.of_type = :id " +
-            "order by fooditem_1.transaction_time_start desc")
+            "and main_table_1.of_type = :id " +
+            "order by main_table_1.transaction_time_start desc")
     abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistoryOfSingleFood(int id, Instant infinity);
 
     @Query("select " +
@@ -345,20 +347,20 @@ public abstract class EventDao {
             Sql.UNIT_FIELDS_VERSION_2 +
             INITIATOR_COLUMNS +
             Sql.FOODITEM_TIME_COLUMNS +
-            "from fooditem fooditem_1 " +
-            "left outer join fooditem fooditem_2 " + Sql.FOODITEM_ON_CHRONOLOGY +
-            Sql.FOODITEM_EVENT_1_JOIN_FOOD +
-            Sql.FOODITEM_EVENT_2_JOIN_FOOD +
-            Sql.FOODITEM_EVENT_1_JOIN_LOCATION +
-            Sql.FOODITEM_EVENT_2_JOIN_LOCATION +
-            Sql.FOODITEM_EVENT_1_JOIN_SCALED_UNIT +
-            Sql.FOODITEM_EVENT_2_JOIN_SCALED_UNIT +
+            "from fooditem main_table_1 " +
+            "left outer join fooditem main_table_2 " + MAIN_ON_CHRONOLOGY +
+            Sql.FOODITEM_EVENT_1_JOIN_FOOD_MAIN +
+            Sql.FOODITEM_EVENT_2_JOIN_FOOD_MAIN +
+            Sql.FOODITEM_EVENT_1_JOIN_LOCATION_MAIN +
+            Sql.FOODITEM_EVENT_2_JOIN_LOCATION_MAIN +
+            Sql.FOODITEM_EVENT_1_JOIN_SCALED_UNIT_MAIN +
+            Sql.FOODITEM_EVENT_2_JOIN_SCALED_UNIT_MAIN +
             Sql.SCALED_UNIT_EVENT_1_JOIN_UNIT +
             Sql.SCALED_UNIT_EVENT_2_JOIN_UNIT +
             Sql.FOODITEM_JOIN_INITIATOR +
             Sql.FOODITEM_WHERE_VALID +
-            "and fooditem_1.stored_in = :id or fooditem_2.stored_in = :id " +
-            "order by fooditem_1.transaction_time_start desc")
+            "and main_table_1.stored_in = :id or main_table_2.stored_in = :id " +
+            "order by main_table_1.transaction_time_start desc")
     abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistoryOfSingleLocation(int id, Instant infinity);
 
     @Query("select " +

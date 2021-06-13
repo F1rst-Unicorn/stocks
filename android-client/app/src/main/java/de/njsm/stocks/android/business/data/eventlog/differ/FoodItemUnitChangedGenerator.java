@@ -34,7 +34,7 @@ public class FoodItemUnitChangedGenerator extends PartialDiffGenerator<FoodItemV
 
     @Override
     protected boolean entitiesDiffer() {
-        return getOldEntity().getScaledUnit() != getNewEntity().getScaledUnit();
+        return !getOldEntity().getScaledUnit().equals(getNewEntity().getScaledUnit());
     }
 
     @Override
