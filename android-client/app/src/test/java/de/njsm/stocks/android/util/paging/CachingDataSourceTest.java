@@ -32,7 +32,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
 
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

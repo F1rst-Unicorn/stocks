@@ -23,7 +23,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.paging.PagedList;
 
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
 import de.njsm.stocks.android.repo.EventRepository;
 
 public class EventViewModel extends ViewModel {

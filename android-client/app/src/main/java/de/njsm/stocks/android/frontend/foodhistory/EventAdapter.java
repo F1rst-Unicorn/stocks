@@ -32,7 +32,7 @@ import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
 import de.njsm.stocks.android.util.Config;
 
 import java.util.function.IntFunction;

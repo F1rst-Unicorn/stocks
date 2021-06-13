@@ -42,7 +42,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;

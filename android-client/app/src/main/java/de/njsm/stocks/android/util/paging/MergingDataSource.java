@@ -25,7 +25,7 @@ import androidx.paging.ItemKeyedDataSource;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
 
 import static de.njsm.stocks.android.util.paging.CachingDataSource.Direction.BACKWARD;
 import static de.njsm.stocks.android.util.paging.CachingDataSource.Direction.FORWARD;

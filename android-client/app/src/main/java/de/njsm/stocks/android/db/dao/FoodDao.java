@@ -217,7 +217,7 @@ public abstract class FoodDao implements Inserter<Food> {
             "where _id = :id " +
             "and valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
-            "and transaction_time_start <= :transactionTimeStart " +
-            "and :transactionTimeStart < transaction_time_end")
-    public abstract LiveData<Food> getFoodNowAsKnownBy(int id, Instant transactionTimeStart);
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end")
+    public abstract LiveData<Food> getFoodNowAsKnownBy(int id, Instant transactionTime);
 }

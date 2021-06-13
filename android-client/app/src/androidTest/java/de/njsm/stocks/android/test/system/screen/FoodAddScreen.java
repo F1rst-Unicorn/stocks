@@ -37,7 +37,7 @@ import static org.hamcrest.CoreMatchers.anything;
 public class FoodAddScreen extends AbstractScreen {
 
     public FoodAddScreen selectLocation(int itemIndex) {
-        onView(withId(R.id.fragment_add_food_item_spinner)).perform(click());
+        onView(withId(R.id.fragment_add_food_item_location)).perform(click());
         onData(anything()).atPosition(itemIndex).perform(click());
         return this;
     }

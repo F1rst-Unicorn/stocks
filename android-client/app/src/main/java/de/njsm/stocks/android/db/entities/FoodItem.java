@@ -41,7 +41,7 @@ import java.util.Objects;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity(primaryKeys = {"_id", "version", "transaction_time_start"})
+@Entity(tableName = "fooditem", primaryKeys = {"_id", "version", "transaction_time_start"})
 public class FoodItem extends VersionedData {
 
     @JsonSerialize(using = InstantSerialiser.class)
@@ -70,7 +70,19 @@ public class FoodItem extends VersionedData {
     @NonNull
     public int unit;
 
-    public FoodItem(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, Instant eatByDate, int ofType, int storedIn, int registers, int buys, int unit) {
+    public FoodItem(int id,
+                    @NonNull Instant validTimeStart,
+                    @NonNull Instant validTimeEnd,
+                    @NonNull Instant transactionTimeStart,
+                    @NonNull Instant transactionTimeEnd,
+                    int version,
+                    int initiates,
+                    Instant eatByDate,
+                    int ofType,
+                    int storedIn,
+                    int registers,
+                    int buys,
+                    int unit) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.eatByDate = eatByDate;
         this.ofType = ofType;
@@ -82,6 +94,55 @@ public class FoodItem extends VersionedData {
 
     @Ignore
     public FoodItem() {}
+
+    @NonNull
+    public Instant getEatByDate() {
+        return eatByDate;
+    }
+
+    public void setEatByDate(@NonNull Instant eatByDate) {
+        this.eatByDate = eatByDate;
+    }
+
+    public int getOfType() {
+        return ofType;
+    }
+
+    public void setOfType(int ofType) {
+        this.ofType = ofType;
+    }
+
+    public int getStoredIn() {
+        return storedIn;
+    }
+
+    public void setStoredIn(int storedIn) {
+        this.storedIn = storedIn;
+    }
+
+    public int getRegisters() {
+        return registers;
+    }
+
+    public void setRegisters(int registers) {
+        this.registers = registers;
+    }
+
+    public int getBuys() {
+        return buys;
+    }
+
+    public void setBuys(int buys) {
+        this.buys = buys;
+    }
+
+    public int getUnit() {
+        return unit;
+    }
+
+    public void setUnit(int unit) {
+        this.unit = unit;
+    }
 
     @Override
     public boolean equals(Object o) {

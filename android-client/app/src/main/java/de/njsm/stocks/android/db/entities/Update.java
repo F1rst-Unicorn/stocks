@@ -41,7 +41,7 @@ import de.njsm.stocks.android.network.server.util.InstantSerialiser;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity(tableName = "Updates", primaryKeys = {"_id"})
+@Entity(tableName = "updates", primaryKeys = {"_id"})
 public class Update extends Data {
 
     @ColumnInfo(name = "name")

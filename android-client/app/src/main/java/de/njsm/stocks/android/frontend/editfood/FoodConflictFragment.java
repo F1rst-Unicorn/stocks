@@ -22,16 +22,26 @@ package de.njsm.stocks.android.frontend.editfood;
 
 import android.view.View;
 import android.widget.TextView;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.navigation.Navigation;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.business.data.conflict.FoodComparison;
+import de.njsm.stocks.android.business.data.conflict.FoodInConflict;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.util.livedata.ThreeWayJoiningLiveData;
 
-import static de.njsm.stocks.android.util.Utility.find;
-
 public class FoodConflictFragment extends FoodEditFragment {
+
+    private final MutableLiveData<Integer> locationPreselection;
+
+    private final MutableLiveData<Integer> storeUnitPreselection;
+
+    public FoodConflictFragment() {
+        locationPreselection = new MutableLiveData<>();
+        storeUnitPreselection = new MutableLiveData<>();
+    }
 
     @Override
     void initialiseForm(View view) {
@@ -53,7 +63,7 @@ public class FoodConflictFragment extends FoodEditFragment {
 
         fillLocationSpinner();
         fillStoreUnitSpinner();
-        hideDiffLabels();
+        hideConflictLabels();
 
         foodVersions.observe(getViewLifecycleOwner(), versions -> {
             FoodComparison comparison = new FoodComparison(versions.t1, versions.t2, versions.t3);
@@ -64,7 +74,7 @@ public class FoodConflictFragment extends FoodEditFragment {
             anyManualResolutionRequired |= comparison.compareDescription(this::getString, this::setDescription);
 
             if (!anyManualResolutionRequired) {
-                startEditing();
+                startFormSubmission();
             }
         });
     }
@@ -112,11 +122,7 @@ public class FoodConflictFragment extends FoodEditFragment {
     }
 
     private void setLocation(int locationId, boolean visible) {
-        locationViewModel.getLocations().observe(getViewLifecycleOwner(), locations -> {
-            locationViewModel.getLocations().removeObservers(getViewLifecycleOwner());
-            find(locationId, locations).ifPresent(position -> locationSpinner.setSelection(position + 1));
-        });
-
+        locationPreselection.setValue(locationId);
         if (visible) {
             setLocationVisibility(View.VISIBLE);
         } else {
@@ -125,11 +131,7 @@ public class FoodConflictFragment extends FoodEditFragment {
     }
 
     private void setStoreUnit(int storeUnitId, boolean visible) {
-        scaledUnitViewModel.getUnits().observe(getViewLifecycleOwner(), units -> {
-            scaledUnitViewModel.getUnits().removeObservers(getViewLifecycleOwner());
-            find(storeUnitId, units).ifPresent(position -> unitSpinner.setSelection(position));
-        });
-
+        storeUnitPreselection.setValue(storeUnitId);
         if (visible) {
             setUnitVisibility(View.VISIBLE);
         } else {
@@ -153,6 +155,16 @@ public class FoodConflictFragment extends FoodEditFragment {
         } else {
             nameField.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    LiveData<Integer> getLocationPreselection() {
+        return locationPreselection;
+    }
+
+    @Override
+    LiveData<Integer> getStoreUnitPreselection() {
+        return storeUnitPreselection;
     }
 
     @Override

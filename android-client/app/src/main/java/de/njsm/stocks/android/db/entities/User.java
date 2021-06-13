@@ -39,7 +39,7 @@ import java.util.Objects;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity(primaryKeys = {"_id", "version", "transaction_time_start"})
+@Entity(tableName = "user", primaryKeys = {"_id", "version", "transaction_time_start"})
 public class User extends VersionedData {
 
     @ColumnInfo(name = "name")

@@ -22,6 +22,7 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.ScaledUnit;
+import de.njsm.stocks.android.db.entities.Sql;
 import de.njsm.stocks.android.db.views.ScaledUnitView;
 import de.njsm.stocks.android.util.Config;
 import org.threeten.bp.Instant;
@@ -57,17 +58,15 @@ public abstract class ScaledUnitDao implements Inserter<ScaledUnit> {
         return getScaledUnitView(id, Config.DATABASE_INFINITY);
     }
 
-    @Query("select su.*, " +
-            "u._id as unit__id, u.version as unit_version, u.valid_time_start as unit_valid_time_start, u.valid_time_end as unit_valid_time_end, u.transaction_time_start as unit_transaction_time_start, u.transaction_time_end as unit_transaction_time_end, u.initiates as unit_initiates, u.abbreviation as unit_abbreviation, u.name as unit_name " +
-            "from scaled_unit su " +
-            "inner join unit u on su.unit = u._id " +
-            "where su.valid_time_start <= " + NOW +
-            "and " + NOW + " < su.valid_time_end " +
-            "and su.transaction_time_end = :infinity " +
-            "and u.valid_time_start <= " + NOW +
-            "and " + NOW + " < u.valid_time_end " +
-            "and u.transaction_time_end = :infinity " +
-            "and su._id = :id")
+    @Query("select " +
+            Sql.SCALED_UNIT_FIELDS +
+            Sql.UNIT_FIELDS_QUALIFIED +
+            "1 from scaled_unit scaled_unit " +
+            Sql.UNIT_JOIN_SCALED_UNIT +
+            "where scaled_unit._id = :id " +
+            "and scaled_unit.valid_time_start <= " + NOW +
+            "and " + NOW + " < scaled_unit.valid_time_end " +
+            "and scaled_unit.transaction_time_end = :infinity")
     protected abstract LiveData<ScaledUnitView> getScaledUnitView(int id, Instant infinity);
 
     @Query("select * " +
@@ -77,16 +76,14 @@ public abstract class ScaledUnitDao implements Inserter<ScaledUnit> {
             "and transaction_time_end = :infinity")
     abstract LiveData<List<ScaledUnit>> getAll(Instant infinity);
 
-    @Query("select su.*, " +
-            "u._id as unit__id, u.version as unit_version, u.valid_time_start as unit_valid_time_start, u.valid_time_end as unit_valid_time_end, u.transaction_time_start as unit_transaction_time_start, u.transaction_time_end as unit_transaction_time_end, u.initiates as unit_initiates, u.abbreviation as unit_abbreviation, u.name as unit_name " +
-            "from scaled_unit su " +
-            "inner join unit u on su.unit = u._id " +
-            "where su.valid_time_start <= " + NOW +
-            "and " + NOW + " < su.valid_time_end " +
-            "and su.transaction_time_end = :infinity " +
-            "and u.valid_time_start <= " + NOW +
-            "and " + NOW + " < u.valid_time_end " +
-            "and u.transaction_time_end = :infinity " +
-            "order by unit_abbreviation")
+    @Query("select " +
+            Sql.SCALED_UNIT_FIELDS +
+            Sql.UNIT_FIELDS_QUALIFIED +
+            "1 from scaled_unit scaled_unit " +
+            Sql.UNIT_JOIN_SCALED_UNIT +
+            "where scaled_unit.valid_time_start <= " + NOW +
+            "and " + NOW + " < scaled_unit.valid_time_end " +
+            "and scaled_unit.transaction_time_end = :infinity " +
+            "order by unit.abbreviation")
     abstract LiveData<List<ScaledUnitView>> getAllView(Instant infinity);
 }

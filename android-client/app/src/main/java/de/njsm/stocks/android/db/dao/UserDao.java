@@ -50,7 +50,7 @@ public abstract class UserDao implements Inserter<User> {
     }
 
     @Query("select * " +
-            "from User " +
+            "from user " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity " +
@@ -58,13 +58,13 @@ public abstract class UserDao implements Inserter<User> {
     abstract LiveData<List<User>> getAll(Instant infinity);
 
     @Query("select * " +
-            "from User " +
+            "from user " +
             "where _id = :userId " +
             "and valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity")
     abstract LiveData<User> getUser(int userId, Instant infinity);
 
-    @Query("delete from User")
+    @Query("delete from user")
     abstract void delete();
 }

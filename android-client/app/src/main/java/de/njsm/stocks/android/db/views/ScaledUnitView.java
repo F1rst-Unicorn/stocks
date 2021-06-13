@@ -50,6 +50,10 @@ public class ScaledUnitView extends ScaledUnit {
     }
 
     public String getPrettyName() {
-        return scale.toPlainString() + getUnitEntity().getAbbreviation();
+        return getPrettyName(this, unitEntity);
+    }
+
+    public static String getPrettyName(ScaledUnit scaledUnit, Unit unit) {
+        return scaledUnit.getScale().toPlainString() + unit.getAbbreviation();
     }
 }

@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
 
 public class MergingDataSourceFactory extends DataSource.Factory<Key, EntityEvent<?>> {
 

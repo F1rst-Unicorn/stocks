@@ -19,18 +19,18 @@
 
 package de.njsm.stocks.android.db.views;
 
-import de.njsm.stocks.android.business.data.activity.ChangedEntityEvent;
-import de.njsm.stocks.android.business.data.activity.ChangedFoodItemEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedEntityEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedFoodItemEvent;
-import de.njsm.stocks.android.business.data.activity.NewEntityEvent;
-import de.njsm.stocks.android.business.data.activity.NewFoodItemEvent;
+import de.njsm.stocks.android.business.data.eventlog.ChangedEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.ChangedFoodItemEvent;
+import de.njsm.stocks.android.business.data.eventlog.DeletedEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.DeletedFoodItemEvent;
+import de.njsm.stocks.android.business.data.eventlog.NewEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.NewFoodItemEvent;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 
-public class FoodItemHistoryView extends AbstractHistoryView<FoodItemWithFoodNameView> {
+public class FoodItemHistoryView extends AbstractHistoryView<FoodItemViewWithFood> {
 
-    public FoodItemHistoryView(FoodItemWithFoodNameView version1, FoodItemWithFoodNameView version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
+    public FoodItemHistoryView(FoodItemViewWithFood version1, FoodItemViewWithFood version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
         super(version1, version2, isFirst, initiatorUser, initiatorUserDevice);
     }
 

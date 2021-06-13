@@ -38,7 +38,7 @@ import java.util.Objects;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity(primaryKeys = {"_id", "version", "transaction_time_start"})
+@Entity(tableName = "location", primaryKeys = {"_id", "version", "transaction_time_start"})
 public class Location extends VersionedData {
 
     @ColumnInfo(name = "name")
@@ -56,6 +56,15 @@ public class Location extends VersionedData {
 
     @Ignore
     public Location() {}
+
+    public String getName() {
+        return name;
+    }
+
+    @NonNull
+    public String getDescription() {
+        return description;
+    }
 
     @Override
     public boolean equals(Object o) {

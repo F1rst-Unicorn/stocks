@@ -27,10 +27,12 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.business.data.conflict.FoodInConflict;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.db.views.ScaledUnitView;
@@ -38,14 +40,12 @@ import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.frontend.units.ScaledUnitViewModel;
+import de.njsm.stocks.android.frontend.util.SpinnerSynchroniser;
 import de.njsm.stocks.android.network.server.StatusCode;
-import de.njsm.stocks.android.util.livedata.JoiningLiveData;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static de.njsm.stocks.android.util.Utility.find;
 
 public class FoodEditFragment extends InjectedFragment {
 
@@ -104,36 +104,30 @@ public class FoodEditFragment extends InjectedFragment {
 
         fillLocationSpinner();
         fillStoreUnitSpinner();
-        hideDiffLabels();
-
-        initialiseCurrentSpinnerValues();
-    }
-
-    void initialiseCurrentSpinnerValues() {
-        JoiningLiveData<Food, List<Location>> currentLocationData = new JoiningLiveData<>(foodViewModel.getFood(), locationViewModel.getLocations());
-        currentLocationData.observe(getViewLifecycleOwner(), p -> {
-            currentLocationData.removeObservers(getViewLifecycleOwner());
-            find(p.first.location, p.second).ifPresent(v -> locationSpinner.setSelection(v + 1));
-        });
-
-        JoiningLiveData<Food, List<ScaledUnitView>> currentUnitData = new JoiningLiveData<>(foodViewModel.getFood(), scaledUnitViewModel.getUnits());
-        currentUnitData.observe(getViewLifecycleOwner(), p -> {
-            currentUnitData.removeObservers(getViewLifecycleOwner());
-            find(p.first.storeUnit, p.second).ifPresent(unitSpinner::setSelection);
-        });
+        hideConflictLabels();
     }
 
     void fillStoreUnitSpinner() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(),
-                R.layout.item_unit_spinner, R.id.item_unit_spinner_name,
+                R.layout.item_scaled_unit_spinner, R.id.item_scaled_unit_spinner_name,
                 new ArrayList<>());
         unitSpinner.setAdapter(adapter);
-        scaledUnitViewModel.getUnits().observe(getViewLifecycleOwner(), l -> {
+        LiveData<List<ScaledUnitView>> liveData = scaledUnitViewModel.getUnits();
+        liveData.observe(getViewLifecycleOwner(), l -> {
             List<String> data = l.stream().map(ScaledUnitView::getPrettyName).collect(Collectors.toList());
             adapter.clear();
             adapter.addAll(data);
             adapter.notifyDataSetChanged();
         });
+
+        new SpinnerSynchroniser<>(getViewLifecycleOwner(),
+                liveData,
+                getStoreUnitPreselection(),
+                unitSpinner::setSelection);
+    }
+
+    LiveData<Integer> getStoreUnitPreselection() {
+        return Transformations.map(foodViewModel.getFood(), Food::getStoreUnit);
     }
 
     void fillLocationSpinner() {
@@ -141,13 +135,23 @@ public class FoodEditFragment extends InjectedFragment {
                 R.layout.item_location, R.id.item_location_name,
                 new ArrayList<>());
         locationSpinner.setAdapter(adapter);
-        locationViewModel.getLocations().observe(getViewLifecycleOwner(), l -> {
+        LiveData<List<Location>> liveData = locationViewModel.getLocations();
+        liveData.observe(getViewLifecycleOwner(), l -> {
             List<String> data = l.stream().map(i -> i.name).collect(Collectors.toList());
             adapter.clear();
             adapter.add("---");
             adapter.addAll(data);
             adapter.notifyDataSetChanged();
         });
+
+        new SpinnerSynchroniser<>(getViewLifecycleOwner(),
+                liveData,
+                getLocationPreselection(),
+                v -> locationSpinner.setSelection(v + 1));
+    }
+
+    LiveData<Integer> getLocationPreselection() {
+        return Transformations.map(foodViewModel.getFood(), Food::getLocation);
     }
 
     @Override
@@ -157,19 +161,19 @@ public class FoodEditFragment extends InjectedFragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        startEditing();
+        startFormSubmission();
         return true;
     }
 
-    void startEditing() {
+    void startFormSubmission() {
         foodViewModel.getFood().removeObservers(getViewLifecycleOwner());
         foodViewModel.getFood().observe(getViewLifecycleOwner(), f -> {
             foodViewModel.getFood().removeObservers(getViewLifecycleOwner());
-            edit(f);
+            submitForm(f);
         });
     }
 
-    private void edit(Food food) {
+    private void submitForm(Food food) {
         Food editedFood = food.copy();
         editedFood.description = getDescriptionText();
         editedFood.name = getNameText();
@@ -238,7 +242,7 @@ public class FoodEditFragment extends InjectedFragment {
         return nameField.getEditText().getText().toString().trim();
     }
 
-    void hideDiffLabels() {
+    void hideConflictLabels() {
         setNameVisibility(View.GONE);
         setExpirationOffsetVisibility(View.GONE);
         setLocationVisibility(View.GONE);

@@ -34,9 +34,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -148,6 +149,23 @@ public class FoodItemHandlerTest extends DbTestCase {
         List<FoodItem> list = items.success().collect(Collectors.toList());
         assertEquals(3, list.size());
         assertThat(list, hasItem(new FoodItemForGetting(1, 1, item.getEatBy(), 2, item.getStoredIn(), 3, 2, 2)));
+    }
+
+    @Test
+    public void editingUnitWorks() {
+        FoodItemForEditing data = new FoodItemForEditing(1, 0, Instant.EPOCH, 1, 2);
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    private void assertEditingWorked(FoodItemForEditing data, StatusCode result) {
+        assertEquals(StatusCode.SUCCESS, result);
+        Validation<StatusCode, Stream<FoodItem>> dbData = uut.get(false, Instant.EPOCH);
+        assertTrue(dbData.isSuccess());
+        List<FoodItem> currentData = dbData.success().collect(Collectors.toList());
+        assertThat(currentData, hasItem(matchesVersionable(data)));
     }
 
     @Test

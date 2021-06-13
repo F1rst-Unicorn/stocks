@@ -46,7 +46,7 @@ public abstract class UserDeviceDao implements Inserter<UserDevice> {
     }
 
     @Query("select * " +
-            "from User_device " +
+            "from user_device " +
             "where belongs_to = :userId " +
             "and valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
@@ -54,7 +54,7 @@ public abstract class UserDeviceDao implements Inserter<UserDevice> {
             "order by name")
     abstract LiveData<List<UserDevice>> getCurrentDevicesOfUser(int userId, Instant infinity);
 
-    @Query("delete from User_device")
+    @Query("delete from user_device")
     abstract void delete();
 
     @Override
@@ -63,7 +63,7 @@ public abstract class UserDeviceDao implements Inserter<UserDevice> {
     }
 
     @Query("select * " +
-            "from User_device " +
+            "from user_device " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity")

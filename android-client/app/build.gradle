@@ -19,6 +19,7 @@
 
 apply plugin: 'com.android.application'
 apply plugin: "androidx.navigation.safeargs"
+String customGeneratedSources = "generated/source/custom/"
 
 android {
 
@@ -39,6 +40,11 @@ android {
                 arguments = ["room.schemaLocation":
                                      "$projectDir/schemas".toString()]
             }
+        }
+    }
+    sourceSets {
+        main {
+            java.srcDir "${buildDir}/${customGeneratedSources}"
         }
     }
     buildTypes {
@@ -149,4 +155,14 @@ dependencies {
     androidTestImplementation 'org.mockito:mockito-core:2.27.0'
     androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:2.22.1"
 
+}
+
+task generateSqlSnippets(type: Exec) {
+    outputs.dir("${buildDir}/${customGeneratedSources}")
+    mkdir "${buildDir}/${customGeneratedSources}"
+    commandLine('bin/generate_sql.sh', "${buildDir}/${customGeneratedSources}/de/njsm/stocks/android/db/entities/Sql.java")
+}
+
+tasks.withType(JavaCompile) {
+    compileTask -> compileTask.dependsOn generateSqlSnippets
 }

@@ -28,17 +28,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.Location;
+import de.njsm.stocks.android.db.views.ScaledUnitView;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
+import de.njsm.stocks.android.frontend.units.ScaledUnitViewModel;
+import de.njsm.stocks.android.frontend.util.SpinnerSynchroniser;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.android.util.livedata.Transformator;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Period;
@@ -53,96 +58,151 @@ public class AddItemFragment extends InjectedFragment {
 
     private static final Logger LOG = new Logger(AddItemFragment.class);
 
-    private DatePicker date;
+    DatePicker dateField;
 
-    private Spinner location;
+    Spinner locationField;
 
-    private FoodItemViewModel viewModel;
+    Spinner unitField;
 
-    private FoodViewModel foodViewModel;
+    FoodItemViewModel viewModel;
 
-    private LocationViewModel locationViewModel;
+    FoodViewModel foodViewModel;
 
-    private ArrayAdapter<String> adapter;
+    ScaledUnitViewModel scaledUnitViewModel;
+
+    LocationViewModel locationViewModel;
+
+    private AddItemFragmentArgs input;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_add_food_item, container, false);
 
-        assert getArguments() != null;
-        AddItemFragmentArgs input = AddItemFragmentArgs.fromBundle(getArguments());
+        dateField = result.findViewById(R.id.fragment_add_food_item_date);
+        locationField = result.findViewById(R.id.fragment_add_food_item_location);
+        unitField = result.findViewById(R.id.fragment_add_food_item_unit);
 
-        date = result.findViewById(R.id.fragment_add_food_item_date);
-        LocalDate now = LocalDate.now();
-        initialiseDatePicker(now);
-
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodItemViewModel.class);
-        foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-        locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
-
-        location = result.findViewById(R.id.fragment_add_food_item_spinner);
-        adapter = new ArrayAdapter<>(requireActivity(),
-                R.layout.item_location, R.id.item_location_name,
-                new ArrayList<>());
-        location.setAdapter(adapter);
-
-        foodViewModel.initFood(input.getFoodId());
-        LiveData<Food> food = foodViewModel.getFood();
-        food.observe(getViewLifecycleOwner(), f -> {
-            food.removeObservers(getViewLifecycleOwner());
-            locationViewModel.getLocations().observe(getViewLifecycleOwner(), l -> {
-                locationViewModel.getLocations().removeObservers(getViewLifecycleOwner());
-                LiveData<Location> defaultLocation;
-                if (f != null && f.location != 0) {
-                    defaultLocation = locationViewModel.getLocation(f.location);
-                } else {
-                    defaultLocation = locationViewModel.getLocationWithMostItemsOfType(input.getFoodId());
-                }
-                defaultLocation.observe(getViewLifecycleOwner(), lo -> {
-                    defaultLocation.removeObservers(getViewLifecycleOwner());
-                    this.setDefaultLocation(lo);
-
-                });
-                List<String> data = l.stream().map(i -> i.name).collect(Collectors.toList());
-                adapter.clear();
-                adapter.addAll(data);
-                adapter.notifyDataSetChanged();
-            });
-            String title = getString(R.string.title_add_item, f.name);
-            requireActivity().setTitle(title);
-            if (f.expirationOffset != 0) {
-                initialiseDatePicker(now.plus(Period.ofDays(f.expirationOffset)));
-            } else {
-                initialiseDatePickerFromExistingFood(input);
-            }
-        });
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(FoodItemViewModel.class);
+        foodViewModel = new ViewModelProvider(this, viewModelFactory).get(FoodViewModel.class);
+        locationViewModel = new ViewModelProvider(this, viewModelFactory).get(LocationViewModel.class);
+        scaledUnitViewModel = new ViewModelProvider(this, viewModelFactory).get(ScaledUnitViewModel.class);
 
         setHasOptionsMenu(true);
         return result;
     }
 
-    private void initialiseDatePickerFromExistingFood(AddItemFragmentArgs input) {
-        LiveData<Instant> latestExpiration = viewModel.getLatestExpirationOf(input.getFoodId());
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initialiseForm(view);
+    }
+
+    void initialiseForm(View view) {
+        assert getArguments() != null;
+        input = AddItemFragmentArgs.fromBundle(getArguments());
+        foodViewModel.initFood(input.getFoodId());
+
+        fillLocationSpinner();
+        fillUnitSpinner();
+        hideConflictLabels();
+
+        LiveData<Food> food = foodViewModel.getFood();
+        food.observe(getViewLifecycleOwner(), f -> {
+            food.removeObservers(getViewLifecycleOwner());
+            String title = getString(R.string.title_add_item, f.name);
+            requireActivity().setTitle(title);
+
+            setDatePicker(f);
+        });
+    }
+
+    private void setDatePicker(Food f) {
+        LocalDate now = LocalDate.now();
+        setDateField(now);
+        if (f.expirationOffset != 0) {
+            setDateField(now.plus(Period.ofDays(f.expirationOffset)));
+        } else {
+            initialiseDatePickerFromExistingFood(input.getFoodId());
+        }
+    }
+
+    void fillUnitSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(),
+                R.layout.item_scaled_unit_spinner, R.id.item_scaled_unit_spinner_name,
+                new ArrayList<>());
+        unitField.setAdapter(adapter);
+        LiveData<List<ScaledUnitView>> liveData = scaledUnitViewModel.getUnits();
+        liveData.observe(getViewLifecycleOwner(), l -> {
+            List<String> data = l.stream().map(ScaledUnitView::getPrettyName).collect(Collectors.toList());
+            adapter.clear();
+            adapter.addAll(data);
+            adapter.notifyDataSetChanged();
+        });
+
+        new SpinnerSynchroniser<>(getViewLifecycleOwner(),
+                liveData,
+                getUnitPreselection(),
+                unitField::setSelection);
+    }
+
+    LiveData<Integer> getUnitPreselection() {
+        return Transformations.map(foodViewModel.getFood(), Food::getStoreUnit);
+    }
+
+
+    void fillLocationSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(),
+                R.layout.item_location, R.id.item_location_name,
+                new ArrayList<>());
+        locationField.setAdapter(adapter);
+        LiveData<List<Location>> liveData = locationViewModel.getLocations();
+        liveData.observe(getViewLifecycleOwner(), locations -> {
+            List<String> data = locations
+                    .stream()
+                    .map(i -> i.name)
+                    .collect(Collectors.toList());
+            adapter.clear();
+            adapter.addAll(data);
+            adapter.notifyDataSetChanged();
+        });
+
+        new SpinnerSynchroniser<>(getViewLifecycleOwner(),
+                liveData,
+                getLocationPreselection(),
+                locationField::setSelection);
+    }
+
+    LiveData<Integer> getLocationPreselection() {
+        return Transformations.switchMap(foodViewModel.getFood(), food -> {
+            LiveData<Location> defaultLocation;
+            if (food != null && food.location != 0) {
+                defaultLocation = locationViewModel.getLocation(food.location);
+            } else {
+                defaultLocation = locationViewModel.getLocationWithMostItemsOfType(input.getFoodId());
+            }
+            defaultLocation = Transformator.noNull(defaultLocation);
+            return Transformations.map(defaultLocation, Location::getId);
+        });
+    }
+
+    private void initialiseDatePickerFromExistingFood(int foodId) {
+        LiveData<Instant> latestExpiration = viewModel.getLatestExpirationOf(foodId);
         latestExpiration.observe(getViewLifecycleOwner(), i -> {
             if (i != null) {
                 LocalDate date = LocalDate.from(i.atZone(ZoneId.systemDefault()));
-                initialiseDatePicker(date);
+                setDateField(date);
                 latestExpiration.removeObservers(getViewLifecycleOwner());
             }
         });
     }
 
-    private void initialiseDatePicker(LocalDate date) {
-        this.date.init(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(), null);
+    void setDateField(LocalDate date) {
+        this.dateField.init(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(), null);
     }
 
-    private void setDefaultLocation(Location l) {
-        List<Location> data = locationViewModel.getLocations().getValue();
-        if (l != null && data != null) {
-            int position = data.indexOf(l);
-            location.setSelection(position);
-        }
+    void setDateField(Instant date) {
+        setDateField(date.atZone(ZoneId.systemDefault()).toLocalDate());
     }
 
     @Override
@@ -154,21 +214,20 @@ public class AddItemFragment extends InjectedFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.fragment_add_item_options_done:
-                addItem();
+                startFormSubmission();
                 Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                         .navigateUp();
                 break;
             case R.id.fragment_add_item_options_add_more:
-                addItem();
+                startFormSubmission();
                 break;
         }
         return true;
     }
 
-    private void addItem() {
-        LOG.d("adding new item");
+    void startFormSubmission() {
         LocalDate finalDate = readDateFromPicker();
-        int locId = readLocationId();
+        int locId = readLocation();
 
         if (locId == 0) {
             LOG.d("no location selected");
@@ -183,32 +242,62 @@ public class AddItemFragment extends InjectedFragment {
             return;
         }
 
-        sendItem(finalDate, locId);
-        LOG.d("item sent");
+        submitForm(finalDate, locId);
     }
 
-    private void sendItem(LocalDate finalDate, int locId) {
+    private void submitForm(LocalDate finalDate, int locId) {
         Instant i = Instant.from(finalDate.atStartOfDay().atZone(ZoneId.of("UTC")));
         Food f = foodViewModel.getFood().getValue();
         if (f != null) {
-            LiveData<StatusCode> result = viewModel.addItem(f.id, locId, i);
+            LiveData<StatusCode> result = viewModel.addItem(f.id, locId, i, readScaledUnit());
             result.observe(this, this::maybeShowAddError);
         }
     }
 
-    private LocalDate readDateFromPicker() {
+    LocalDate readDateFromPicker() {
         return LocalDate.of(
-                date.getYear(),
-                date.getMonth()+1,
-                date.getDayOfMonth());
+                dateField.getYear(),
+                dateField.getMonth()+1,
+                dateField.getDayOfMonth());
     }
 
-    private int readLocationId() {
-        int position = location.getSelectedItemPosition();
-        List<Location> data = locationViewModel.getLocations().getValue();
-        if (position == -1 || data == null || data.size() <= position)
+    int readLocation() {
+        int position = locationField.getSelectedItemPosition();
+        List<Location> locations = locationViewModel.getLocations().getValue();
+        if (locations != null && position != -1 && position < locations.size()) {
+            return locations.get(position).id;
+        } else {
             return 0;
-        else
-            return data.get(position).id;
+        }
     }
+
+    int readScaledUnit() {
+        int position = unitField.getSelectedItemPosition();
+        List<ScaledUnitView> scaledUnits = scaledUnitViewModel.getUnits().getValue();
+        if (scaledUnits != null && position != -1 && position < scaledUnits.size()) {
+            return scaledUnits.get(position).id;
+        } else {
+            return 0;
+        }
+    }
+
+    void hideConflictLabels() {
+        setDateVisibility(View.GONE);
+        setLocationVisibility(View.GONE);
+        setUnitVisibility(View.GONE);
+    }
+
+    void setUnitVisibility(int visibility) {
+        requireView().findViewById(R.id.fragment_add_food_item_unit_conflict).setVisibility(visibility);
+    }
+
+    void setLocationVisibility(int visibility) {
+        requireView().findViewById(R.id.fragment_add_food_item_location_conflict).setVisibility(visibility);
+    }
+
+    void setDateVisibility(int visibility) {
+        requireView().findViewById(R.id.fragment_add_food_item_date_conflict).setVisibility(visibility);
+    }
+
+
 }

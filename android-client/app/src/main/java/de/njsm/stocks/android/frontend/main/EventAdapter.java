@@ -37,7 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.function.IntFunction;
 
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
 import de.njsm.stocks.android.util.Config;
 
 public class EventAdapter extends PagedListAdapter<EntityEvent<?>, RecyclerView.ViewHolder> {

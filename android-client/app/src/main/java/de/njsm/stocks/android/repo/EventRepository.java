@@ -22,7 +22,7 @@ package de.njsm.stocks.android.repo;
 import androidx.lifecycle.LiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
 import de.njsm.stocks.android.db.dao.EventDao;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.paging.MergingDataSourceFactory;

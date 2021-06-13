@@ -20,101 +20,73 @@
 package de.njsm.stocks.android.db.views;
 
 import androidx.annotation.NonNull;
-
+import androidx.room.Embedded;
+import de.njsm.stocks.android.db.entities.*;
 import org.threeten.bp.Instant;
 
-import de.njsm.stocks.android.db.entities.VersionedData;
+import java.util.Objects;
 
-import java.math.BigDecimal;
+public class FoodItemView extends FoodItem {
 
-public class FoodItemView extends VersionedData {
+    @Embedded(prefix = Sql.USER_PREFIX)
+    User user;
 
-    private final String userName;
+    @Embedded(prefix = Sql.USER_DEVICE_PREFIX)
+    UserDevice userDevice;
 
-    private final String deviceName;
+    @Embedded(prefix = Sql.LOCATION_PREFIX)
+    Location location;
 
-    private final Instant eatByDate;
+    @Embedded(prefix = Sql.SCALED_UNIT_PREFIX)
+    ScaledUnit scaledUnit;
 
-    private final String location;
+    @Embedded(prefix = Sql.UNIT_PREFIX)
+    Unit unitEntity;
 
-    private final int ofType;
-
-    private final int storedIn;
-
-    private final int scaledUnit;
-
-    private final BigDecimal scale;
-
-    private final String unitAbbreviation;
-
-    public FoodItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String userName, String deviceName, Instant eatByDate, String location, int ofType, int storedIn, int scaledUnit, BigDecimal scale, String unitAbbreviation) {
-        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
-        this.userName = userName;
-        this.deviceName = deviceName;
-        this.eatByDate = eatByDate;
+    public FoodItemView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, Instant eatByDate, int ofType, int storedIn, int registers, int buys, int unit, User user, UserDevice userDevice, Location location, ScaledUnit scaledUnit, Unit unitEntity) {
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, eatByDate, ofType, storedIn, registers, buys, unit);
+        this.user = user;
+        this.userDevice = userDevice;
         this.location = location;
-        this.ofType = ofType;
-        this.storedIn = storedIn;
         this.scaledUnit = scaledUnit;
-        this.scale = scale;
-        this.unitAbbreviation = unitAbbreviation;
+        this.unitEntity = unitEntity;
     }
 
-    public String getUserName() {
-        return userName;
+    public User getUser() {
+        return user;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public UserDevice getUserDevice() {
+        return userDevice;
     }
 
-    public Instant getEatByDate() {
-        return eatByDate;
-    }
-
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public int getOfType() {
-        return ofType;
-    }
-
-    public int getStoredIn() {
-        return storedIn;
-    }
-
-    public int getScaledUnit() {
+    public ScaledUnit getScaledUnit() {
         return scaledUnit;
     }
 
-    public BigDecimal getScale() {
-        return scale;
-    }
-
-    public String getUnitAbbreviation() {
-        return unitAbbreviation;
+    public Unit getUnitEntity() {
+        return unitEntity;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof FoodItemView)) return false;
+        if (!super.equals(o)) return false;
         FoodItemView that = (FoodItemView) o;
-
-        if (!userName.equals(that.userName)) return false;
-        if (!deviceName.equals(that.deviceName)) return false;
-        if (!eatByDate.equals(that.eatByDate)) return false;
-        return location.equals(that.location);
+        return getUser().equals(that.getUser()) && getUserDevice().equals(that.getUserDevice()) && getLocation().equals(that.getLocation()) && getScaledUnit().equals(that.getScaledUnit());
     }
 
     @Override
     public int hashCode() {
-        int result = userName.hashCode();
-        result = 31 * result + deviceName.hashCode();
-        result = 31 * result + eatByDate.hashCode();
-        result = 31 * result + location.hashCode();
-        return result;
+        return Objects.hash(super.hashCode(), getUser(), getUserDevice(), getLocation(), getScaledUnit());
+    }
+
+    public FoodItemView copy() {
+        return new FoodItemView(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, eatByDate, ofType, storedIn, registers, buys, unit, user, userDevice, location, scaledUnit, unitEntity);
     }
 }

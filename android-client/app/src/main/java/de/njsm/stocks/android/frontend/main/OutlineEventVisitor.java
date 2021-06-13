@@ -20,7 +20,7 @@
 package de.njsm.stocks.android.frontend.main;
 
 import androidx.navigation.NavDirections;
-import de.njsm.stocks.android.business.data.activity.*;
+import de.njsm.stocks.android.business.data.eventlog.*;
 
 import java.util.Optional;
 

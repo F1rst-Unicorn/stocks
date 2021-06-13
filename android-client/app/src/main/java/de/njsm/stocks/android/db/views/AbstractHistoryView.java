@@ -22,10 +22,10 @@ package de.njsm.stocks.android.db.views;
 import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 
-import de.njsm.stocks.android.business.data.activity.ChangedEntityEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedEntityEvent;
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
-import de.njsm.stocks.android.business.data.activity.NewEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.ChangedEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.DeletedEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.NewEntityEvent;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.entities.VersionedData;

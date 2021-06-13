@@ -37,7 +37,7 @@ import org.threeten.bp.Instant;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity(tableName = "User_device", primaryKeys = {"_id", "version", "transaction_time_start"})
+@Entity(tableName = "user_device", primaryKeys = {"_id", "version", "transaction_time_start"})
 public class UserDevice extends VersionedData {
 
     @ColumnInfo(name = "name")

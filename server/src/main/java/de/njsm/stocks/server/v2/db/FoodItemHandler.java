@@ -20,14 +20,12 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.server.v2.business.data.User;
 import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Table;
-import org.jooq.TableField;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 
 import java.time.OffsetDateTime;
@@ -66,6 +64,14 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
 
             OffsetDateTime newEatByDate = item.getEatBy().atOffset(ZoneOffset.UTC);
 
+            Field<?> unitField = item.getUnitOptional()
+                    .map(v -> (Field<Integer>) DSL.inline(v))
+                    .orElse(FOOD_ITEM.UNIT);
+
+            Condition unitCondition = item.getUnitOptional()
+                    .map(FOOD_ITEM.UNIT::ne)
+                    .orElseGet(DSL::falseCondition);
+
             return currentUpdate(context, Arrays.asList(
                     FOOD_ITEM.ID,
                     DSL.inline(OffsetDateTime.from(newEatByDate)),
@@ -74,12 +80,13 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.REGISTERS,
                     FOOD_ITEM.BUYS,
                     FOOD_ITEM.VERSION.add(1),
-                    FOOD_ITEM.UNIT
+                    unitField
                     ),
                     FOOD_ITEM.ID.eq(item.getId())
                             .and(FOOD_ITEM.VERSION.eq(item.getVersion()))
                             .and(FOOD_ITEM.EAT_BY.ne(newEatByDate)
                                     .or(FOOD_ITEM.STORED_IN.ne(item.getStoredIn()))
+                                    .or(unitCondition)
                             )
             )
                     .map(this::notFoundMeansInvalidVersion);

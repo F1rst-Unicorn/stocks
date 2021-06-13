@@ -28,7 +28,7 @@ import androidx.paging.PositionalDataSource;
 import java.util.Collections;
 import java.util.List;
 
-import de.njsm.stocks.android.business.data.activity.EntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
 
 public class CachingDataSource {
 

@@ -19,11 +19,11 @@
 
 package de.njsm.stocks.android.db.views;
 
-import de.njsm.stocks.android.business.data.activity.ChangedEntityEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedEntityEvent;
-import de.njsm.stocks.android.business.data.activity.DeletedUserDeviceEvent;
-import de.njsm.stocks.android.business.data.activity.NewEntityEvent;
-import de.njsm.stocks.android.business.data.activity.NewUserDeviceEvent;
+import de.njsm.stocks.android.business.data.eventlog.ChangedEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.DeletedEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.DeletedUserDeviceEvent;
+import de.njsm.stocks.android.business.data.eventlog.NewEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.NewUserDeviceEvent;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 

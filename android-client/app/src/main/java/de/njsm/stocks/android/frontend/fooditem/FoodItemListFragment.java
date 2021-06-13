@@ -57,7 +57,7 @@ public class FoodItemListFragment extends InjectedFragment {
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodItemViewModel.class);
-        viewModel.init(input.getFoodId());
+        viewModel.initList(input.getFoodId());
 
         adapter = new FoodItemAdapter(getResources(), requireActivity().getTheme(),
                 viewModel.getFoodItems(), this::editItem);

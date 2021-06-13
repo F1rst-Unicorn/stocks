@@ -21,13 +21,6 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-
-import org.threeten.bp.Instant;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import de.njsm.stocks.android.db.dao.FoodItemDao;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.network.server.ServerClient;
@@ -36,6 +29,10 @@ import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
+import org.threeten.bp.Instant;
+
+import javax.inject.Inject;
+import java.util.List;
 
 public class FoodItemRepository {
 
@@ -78,10 +75,10 @@ public class FoodItemRepository {
         return foodItemDao.getItem(id);
     }
 
-    public LiveData<StatusCode> addItem(int foodId, int locationId, Instant eatBy) {
+    public LiveData<StatusCode> addItem(int foodId, int locationId, Instant eatBy, int unit) {
         LOG.d("adding item of type " + foodId + ", location " + locationId + ", eat by " + eatBy);
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
-        webClient.addFoodItem(Config.API_DATE_FORMAT.format(eatBy), locationId, foodId)
+        webClient.addFoodItem(Config.API_DATE_FORMAT.format(eatBy), locationId, foodId, unit)
                 .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
         return result;
     }
@@ -91,10 +88,15 @@ public class FoodItemRepository {
         return foodItemDao.getLatestExpirationOf(foodId);
     }
 
-    public LiveData<StatusCode> editItem(int id, int version, int locationId, Instant eatBy) {
-        LOG.d("editing item " + id);
+    public LiveData<StatusCode> editItem(FoodItemView item) {
+        LOG.d("editing " + item);
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
-        webClient.editFoodItem(id, version, Config.API_DATE_FORMAT.format(eatBy), locationId)
+        webClient.editFoodItem(
+                item.getId(),
+                item.getVersion(),
+                Config.API_DATE_FORMAT.format(item.getEatByDate()),
+                item.getStoredIn(),
+                item.getUnit())
                 .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
         return result;
     }
@@ -102,5 +104,9 @@ public class FoodItemRepository {
     public LiveData<Integer> countItemsOfType(int foodId) {
         LOG.d("editing items of type " + foodId);
         return foodItemDao.countItemsOfType(foodId);
+    }
+
+    public LiveData<FoodItemView> getNowAsKnownBy(int id, Instant transactionTime) {
+        return foodItemDao.getNowAsKnownBy(id, transactionTime);
     }
 }

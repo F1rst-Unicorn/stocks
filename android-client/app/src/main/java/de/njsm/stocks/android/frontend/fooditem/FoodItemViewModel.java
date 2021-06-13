@@ -21,14 +21,12 @@ package de.njsm.stocks.android.frontend.fooditem;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-
-import org.threeten.bp.Instant;
-
-import java.util.List;
-
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.FoodItemRepository;
+import org.threeten.bp.Instant;
+
+import java.util.List;
 
 public class FoodItemViewModel extends ViewModel {
 
@@ -36,13 +34,21 @@ public class FoodItemViewModel extends ViewModel {
 
     private LiveData<List<FoodItemView>> data;
 
+    private LiveData<FoodItemView> item;
+
     public FoodItemViewModel(FoodItemRepository foodItemRepository) {
         this.foodItemRepository = foodItemRepository;
     }
 
-    public void init(int foodId) {
+    public void initList(int foodId) {
         if (data == null) {
             data = foodItemRepository.getItemsOfType(foodId);
+        }
+    }
+
+    public void init(int foodItemId) {
+        if (item == null) {
+            item = foodItemRepository.getItem(foodItemId);
         }
     }
 
@@ -58,8 +64,12 @@ public class FoodItemViewModel extends ViewModel {
         return foodItemRepository.getItem(id);
     }
 
-    public LiveData<StatusCode> addItem(int foodId, int locationId, Instant eatBy) {
-        return foodItemRepository.addItem(foodId, locationId, eatBy);
+    public LiveData<FoodItemView> getItem() {
+        return item;
+    }
+
+    public LiveData<StatusCode> addItem(int foodId, int locationId, Instant eatBy, int unit) {
+        return foodItemRepository.addItem(foodId, locationId, eatBy, unit);
     }
 
     public LiveData<Instant> getLatestExpirationOf(int foodId) {
@@ -70,7 +80,11 @@ public class FoodItemViewModel extends ViewModel {
         return foodItemRepository.countItemsOfType(foodId);
     }
 
-    public LiveData<StatusCode> editItem(int id, int version, int locationId, Instant eatBy) {
-        return foodItemRepository.editItem(id, version, locationId, eatBy);
+    public LiveData<StatusCode> edit(FoodItemView item) {
+        return foodItemRepository.editItem(item);
+    }
+
+    public LiveData<FoodItemView> getNowAsKnownBy(int id, Instant transactionTime) {
+        return foodItemRepository.getNowAsKnownBy(id, transactionTime);
     }
 }

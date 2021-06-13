@@ -113,13 +113,15 @@ public interface ServerClient {
     @PUT("/v2/fooditem")
     Call<Response> addFoodItem(@Query("eatByDate") String eatByDate,
                                @Query("storedIn") int storedIn,
-                               @Query("ofType") int ofType);
+                               @Query("ofType") int ofType,
+                               @Query("unit") int unit);
 
     @PUT("/v2/fooditem/edit")
     Call<Response> editFoodItem(@Query("id") int id,
                                 @Query("version") int version,
                                 @Query("eatByDate") String eatByDate,
-                                @Query("storedIn") int storedIn);
+                                @Query("storedIn") int storedIn,
+                                @Query("unit") int unit);
 
     @DELETE("/v2/fooditem")
     Call<Response> deleteFoodItem(@Query("id") int id,

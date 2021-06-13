@@ -22,6 +22,7 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.Location;
+import de.njsm.stocks.android.db.entities.Sql;
 import org.threeten.bp.Instant;
 
 import java.util.List;
@@ -54,33 +55,30 @@ public abstract class LocationDao implements Inserter<Location> {
     }
 
     @Query("select * " +
-            "from Location " +
+            "from location " +
             "where _id = :locationId " +
             "and valid_time_start <= " + NOW +
             "and " + NOW + "< valid_time_end " +
             "and transaction_time_end = :infinity")
     abstract LiveData<Location> getLocation(int locationId, Instant infinity);
 
-    @Query("select l._id, l.version, l.name, l.description, l.valid_time_start, " +
-            "l.valid_time_end, l.transaction_time_start, " +
-            "l.transaction_time_end, l.initiates, count(*) as amount " +
-            "from Location l " +
-            "inner join FoodItem i on i.stored_in = l._id " +
-            "where i.of_type = :food " +
-            "and l.valid_time_start <= " + NOW +
-            "and " + NOW + "< l.valid_time_end " +
-            "and l.transaction_time_end = :infinity " +
-            "and i.valid_time_start <= " + NOW +
-            "and " + NOW + "< i.valid_time_end " +
-            "and i.transaction_time_end = :infinity " +
-            "group by l._id " +
+    @Query("select " +
+            Sql.LOCATION_FIELDS +
+            "count(*) as amount " +
+            "from location location " +
+            Sql.FOODITEM_JOIN_LOCATION +
+            "where fooditem.of_type = :food " +
+            "and location.valid_time_start <= " + NOW +
+            "and " + NOW + "< location.valid_time_end " +
+            "and location.transaction_time_end = :infinity " +
+            "group by location._id " +
             "order by amount desc " +
             "limit 1")
     abstract LiveData<Location> getLocationWithMostItemsOfType(int food, Instant infinity);
 
 
     @Query("select * " +
-            "from Location " +
+            "from location " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity " +

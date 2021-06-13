@@ -59,6 +59,10 @@ public abstract class Data implements Positionable {
         this.position = position;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         try {

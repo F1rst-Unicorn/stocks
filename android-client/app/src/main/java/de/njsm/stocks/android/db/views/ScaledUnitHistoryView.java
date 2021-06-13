@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.android.db.views;
 
-import de.njsm.stocks.android.business.data.activity.*;
+import de.njsm.stocks.android.business.data.eventlog.*;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 

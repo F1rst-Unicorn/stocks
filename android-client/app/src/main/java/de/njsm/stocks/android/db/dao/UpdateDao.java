@@ -26,7 +26,7 @@ import de.njsm.stocks.android.db.entities.Update;
 @Dao
 public abstract class UpdateDao {
 
-    @Query("SELECT * FROM Updates")
+    @Query("SELECT * FROM updates")
     public abstract Update[] getAll();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -37,7 +37,7 @@ public abstract class UpdateDao {
         delete();
     }
 
-    @Query("DELETE FROM Updates")
+    @Query("delete from updates")
     abstract void delete();
 
 }

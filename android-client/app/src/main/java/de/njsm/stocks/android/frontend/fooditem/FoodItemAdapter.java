@@ -35,6 +35,7 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodItemView;
+import de.njsm.stocks.android.db.views.ScaledUnitView;
 import de.njsm.stocks.android.frontend.BaseAdapter;
 import de.njsm.stocks.android.util.Config;
 import org.threeten.bp.Duration;
@@ -122,12 +123,12 @@ public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.V
 
     @Override
     protected void bindConcrete(ViewHolder holder, FoodItemView data) {
-        holder.setBuyer(data.getUserName());
-        holder.setDevice(data.getDeviceName());
-        holder.setLocation(data.getLocation());
+        holder.setBuyer(data.getUser().name);
+        holder.setDevice(data.getUserDevice().name);
+        holder.setLocation(data.getLocation().name);
         holder.setDate(Config.PRETTY_DATE_FORMAT.format(data.getEatByDate()));
         holder.setIcon(computeIcon(data.getEatByDate(), Instant.now()));
-        holder.setAmount(data.getScale() + data.getUnitAbbreviation());
+        holder.setAmount(ScaledUnitView.getPrettyName(data.getScaledUnit(), data.getUnitEntity()));
     }
 
     @Override

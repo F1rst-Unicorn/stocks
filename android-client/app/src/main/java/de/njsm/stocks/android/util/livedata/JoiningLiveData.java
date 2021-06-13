@@ -21,6 +21,7 @@
 package de.njsm.stocks.android.util.livedata;
 
 import androidx.core.util.Pair;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 
 public class JoiningLiveData<T1, T2> extends LiveData<Pair<T1, T2>> {
@@ -32,6 +33,11 @@ public class JoiningLiveData<T1, T2> extends LiveData<Pair<T1, T2>> {
     public JoiningLiveData(LiveData<T1> liveData1, LiveData<T2> liveData2) {
         liveData1.observeForever(this::updateT1);
         liveData2.observeForever(this::updateT2);
+    }
+
+    public JoiningLiveData(LifecycleOwner owner, LiveData<T1> liveData1, LiveData<T2> liveData2) {
+        liveData1.observe(owner, this::updateT1);
+        liveData2.observe(owner, this::updateT2);
     }
 
     private void updateT1(T1 t1) {

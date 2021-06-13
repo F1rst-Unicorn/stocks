@@ -22,6 +22,7 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.FoodItem;
+import de.njsm.stocks.android.db.entities.Sql;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import org.threeten.bp.Instant;
 
@@ -31,6 +32,7 @@ import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
+@RewriteQueriesToDropUnusedColumns
 public abstract class FoodItemDao implements Inserter<FoodItem> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -63,80 +65,53 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
     }
 
     @Query("select * " +
-            "from FoodItem " +
+            "from fooditem " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity")
     abstract LiveData<List<FoodItem>> getAll(Instant infinity);
 
-    @Query("select i._id as _id, i.version as version, u.name as userName, " +
-            "d.name as deviceName, l.name as location, i.eat_by as eatByDate, i.valid_time_start," +
-            "i.valid_time_end, i.transaction_time_start, i.transaction_time_end, i.initiates, " +
-            "i.of_type as ofType, i.stored_in as storedIn, unit.abbreviation as unitAbbreviation, " +
-            "scaled_unit.scale as scale, scaled_unit._id as scaledUnit " +
-            "from FoodItem i " +
-            "inner join User u on i.buys = u._id " +
-            "inner join User_device d on i.registers = d._id " +
-            "inner join Location l on i.stored_in = l._id " +
-            "inner join scaled_unit on i.unit = scaled_unit._id " +
-            "inner join unit on scaled_unit.unit = unit._id " +
-            "where i.of_type = :foodId " +
-            "and i.valid_time_start <= " + NOW +
-            "and " + NOW + " < i.valid_time_end " +
-            "and i.transaction_time_end = :infinity " +
-            "and u.valid_time_start <= " + NOW +
-            "and " + NOW + " < u.valid_time_end " +
-            "and u.transaction_time_end = :infinity " +
-            "and d.valid_time_start <= " + NOW +
-            "and " + NOW + " < d.valid_time_end " +
-            "and d.transaction_time_end = :infinity " +
-            "and l.valid_time_start <= " + NOW +
-            "and " + NOW + " < l.valid_time_end " +
-            "and l.transaction_time_end = :infinity " +
-            "and scaled_unit.valid_time_start <= " + NOW +
-            "and " + NOW + " < scaled_unit.valid_time_end " +
-            "and scaled_unit.transaction_time_end = :infinity " +
-            "and unit.valid_time_start <= " + NOW +
-            "and " + NOW + " < unit.valid_time_end " +
-            "and unit.transaction_time_end = :infinity " +
-            "order by i.eat_by")
+    @Query("select " +
+            Sql.USER_FIELDS_QUALIFIED +
+            Sql.USER_DEVICE_FIELDS_QUALIFIED +
+            Sql.LOCATION_FIELDS_QUALIFIED +
+            Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+            Sql.UNIT_FIELDS_QUALIFIED +
+            Sql.FOODITEM_FIELDS +
+            "1 from fooditem fooditem " +
+            Sql.USER_JOIN_FOODITEM +
+            Sql.USER_DEVICE_JOIN_FOODITEM +
+            Sql.LOCATION_JOIN_FOODITEM +
+            Sql.SCALED_UNIT_JOIN_FOODITEM +
+            Sql.UNIT_JOIN_SCALED_UNIT +
+            "where fooditem.of_type = :foodId " +
+            "and fooditem.valid_time_start <= " + NOW +
+            "and " + NOW + " < fooditem.valid_time_end " +
+            "and fooditem.transaction_time_end = :infinity " +
+            "order by fooditem.eat_by")
     abstract LiveData<List<FoodItemView>> getItemsOfType(int foodId, Instant infinity);
 
-    @Query("select i._id as _id, i.version as version, u.name as userName, " +
-            "d.name as deviceName, l.name as location, i.eat_by as eatByDate, " +
-            "i.of_type as ofType, i.stored_in as storedIn, i.valid_time_start," +
-            "i.valid_time_end, i.transaction_time_start, i.transaction_time_end, i.initiates, " +
-            "scaled_unit.scale as scale, unit.abbreviation as unitAbbreviation, " +
-            "scaled_unit._id as scaledUnit " +
-            "from FoodItem i " +
-            "inner join User u on i.buys = u._id " +
-            "inner join User_device d on i.registers = d._id " +
-            "inner join Location l on i.stored_in = l._id " +
-            "inner join scaled_unit on i.unit = scaled_unit._id " +
-            "inner join unit on scaled_unit.unit = unit._id " +
-            "where i._id = :id " +
-            "and i.valid_time_start <= " + NOW +
-            "and " + NOW + " < i.valid_time_end " +
-            "and i.transaction_time_end = :infinity " +
-            "and u.valid_time_start <= " + NOW +
-            "and " + NOW + " < u.valid_time_end " +
-            "and u.transaction_time_end = :infinity " +
-            "and d.valid_time_start <= " + NOW +
-            "and " + NOW + " < d.valid_time_end " +
-            "and d.transaction_time_end = :infinity " +
-            "and l.valid_time_start <= " + NOW +
-            "and " + NOW + " < l.valid_time_end " +
-            "and l.transaction_time_end = :infinity " +
-            "and scaled_unit.valid_time_start <= " + NOW +
-            "and " + NOW + " < scaled_unit.valid_time_end " +
-            "and scaled_unit.transaction_time_end = :infinity " +
-            "and unit.valid_time_start <= " + NOW +
-            "and " + NOW + " < unit.valid_time_end " +
-            "and unit.transaction_time_end = :infinity")
+    @Query("select " +
+            Sql.USER_FIELDS_QUALIFIED +
+            Sql.USER_DEVICE_FIELDS_QUALIFIED +
+            Sql.LOCATION_FIELDS_QUALIFIED +
+            Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+            Sql.UNIT_FIELDS_QUALIFIED +
+            Sql.FOODITEM_FIELDS +
+            "1 from fooditem fooditem " +
+            Sql.USER_JOIN_FOODITEM +
+            Sql.USER_DEVICE_JOIN_FOODITEM +
+            Sql.LOCATION_JOIN_FOODITEM +
+            Sql.SCALED_UNIT_JOIN_FOODITEM +
+            Sql.UNIT_JOIN_SCALED_UNIT +
+            "where fooditem._id = :id " +
+            "and fooditem.valid_time_start <= " + NOW +
+            "and " + NOW + " < fooditem.valid_time_end " +
+            "and fooditem.transaction_time_end = :infinity")
     abstract LiveData<FoodItemView> getItem(int id, Instant infinity);
 
     @Query("select max(i.eat_by) " +
-            "from FoodItem i " +
+            "from fooditem i " +
             "where i.of_type = :foodType " +
             "and i.valid_time_start <= " + NOW +
             "and " + NOW + " < i.valid_time_end " +
@@ -144,7 +119,7 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
             "group by null " +
             "union all " +
             "select max(i.eat_by) " +
-            "from FoodItem i " +
+            "from fooditem i " +
             "where i.of_type = :foodType " +
             "and i.transaction_time_end = :infinity " +
             "and i.version = (select max(i2.version) from fooditem i2 where i2._id = i._id) " +
@@ -153,13 +128,33 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
     abstract LiveData<Instant> getLatestExpirationOf(int foodType, Instant infinity);
 
     @Query("select count(*) " +
-            "from FoodItem i " +
+            "from fooditem i " +
             "where i.of_type = :foodId " +
             "and i.valid_time_start <= " + NOW +
             "and " + NOW + " < i.valid_time_end " +
             "and i.transaction_time_end = :infinity")
     abstract LiveData<Integer> countItemsOfType(int foodId, Instant infinity);
 
-    @Query("delete from FoodItem")
+    @Query("delete from fooditem")
     abstract void delete();
+
+    @Query("select " +
+            Sql.USER_FIELDS_QUALIFIED +
+            Sql.USER_DEVICE_FIELDS_QUALIFIED +
+            Sql.LOCATION_FIELDS_QUALIFIED +
+            Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+            Sql.UNIT_FIELDS_QUALIFIED +
+            Sql.FOODITEM_FIELDS +
+            "1 from fooditem fooditem " +
+            Sql.USER_JOIN_FOODITEM_AT_TRANSACTION_TIME +
+            Sql.USER_DEVICE_JOIN_FOODITEM_AT_TRANSACTION_TIME +
+            Sql.LOCATION_JOIN_FOODITEM_AT_TRANSACTION_TIME +
+            Sql.SCALED_UNIT_JOIN_FOODITEM_AT_TRANSACTION_TIME +
+            Sql.UNIT_JOIN_SCALED_UNIT_AT_TRANSACTION_TIME +
+            "where fooditem._id = :id " +
+            "and fooditem.valid_time_start <= " + NOW +
+            "and " + NOW + " < fooditem.valid_time_end " +
+            "and fooditem.transaction_time_start <= :transactionTime " +
+            "and :transactionTime < fooditem.transaction_time_end")
+    public abstract LiveData<FoodItemView> getNowAsKnownBy(int id, Instant transactionTime);
 }

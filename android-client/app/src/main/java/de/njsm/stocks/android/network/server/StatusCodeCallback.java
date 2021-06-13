@@ -59,10 +59,11 @@ public class StatusCodeCallback implements Callback<Response> {
     @Override
     public void onResponse(@NonNull Call<Response> call,
                            @NonNull retrofit2.Response<Response> response) {
-        LOG.d("Got result for " + call.request().method() + " to " +
-                call.request().url().encodedPath());
-
         StatusCode result = handleResponse(response);
+
+        LOG.d("Got result for " + call.request().method() + " to " +
+                call.request().url().encodedPath() + ": " + result);
+
         data.setValue(result);
         if (result == StatusCode.SUCCESS ||
                 result == StatusCode.INVALID_DATA_VERSION ||

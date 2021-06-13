@@ -19,119 +19,60 @@
 
 package de.njsm.stocks.android.frontend.additem;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.*;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-import android.widget.Spinner;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Transformations;
 import androidx.navigation.Navigation;
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.business.data.conflict.FoodItemInConflict;
 import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.db.views.FoodItemView;
-import de.njsm.stocks.android.frontend.InjectedFragment;
-import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
-import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
-import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.network.server.StatusCode;
-import de.njsm.stocks.android.util.Logger;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static de.njsm.stocks.android.util.Utility.find;
+public class EditItemFragment extends AddItemFragment {
 
-
-public class EditItemFragment extends InjectedFragment {
-
-    private static final Logger LOG = new Logger(EditItemFragment.class);
-
-    private DatePicker date;
-
-    private Spinner location;
-
-    private FoodItemViewModel viewModel;
-
-    private FoodViewModel foodViewModel;
-
-    private ArrayAdapter<String> adapter;
-
-    private LiveData<Food> food;
-
-    private LiveData<FoodItemView> foodItem;
-
-    private LiveData<List<Location>> locations;
-
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.fragment_add_food_item, container, false);
-
+    void initialiseForm(View view) {
         assert getArguments() != null;
         EditItemFragmentArgs input = EditItemFragmentArgs.fromBundle(getArguments());
 
-        date = result.findViewById(R.id.fragment_add_food_item_date);
-        LocalDate now = LocalDate.now();
-        date.init(now.getYear(), now.getMonthValue() - 1, now.getDayOfMonth(), null);
+        viewModel.init(input.getFoodItemId());
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodItemViewModel.class);
-        foodViewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
-        LocationViewModel locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
+        setDateField(LocalDate.now());
+        fillLocationSpinner();
+        fillUnitSpinner();
+        hideConflictLabels();
 
-        foodItem = viewModel.getItem(input.getFoodItemId());
-
-        location = result.findViewById(R.id.fragment_add_food_item_spinner);
-        adapter = new ArrayAdapter<>(requireActivity(),
-                R.layout.item_location, R.id.item_location_name,
-                new ArrayList<>());
-        location.setAdapter(adapter);
-
-        locations = locationViewModel.getLocations();
-        locations.observe(this, l -> {
-            List<String> data = l.stream().map(i -> i.name).collect(Collectors.toList());
-            adapter.clear();
-            adapter.addAll(data);
-            adapter.notifyDataSetChanged();
-            setDefaultLocation();
-        });
-
-        foodItem.observe(this, i -> {
+        viewModel.getItem().observe(this, i -> {
             LocalDate date = LocalDate.from(i.getEatByDate().atZone(ZoneId.systemDefault()));
-            this.date.init(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(), null);
-            setDefaultLocation();
+            setDateField(date);
         });
 
-        foodItem.observe(this, i -> {
-            food = foodViewModel.getFood(i.getOfType());
+        viewModel.getItem().observe(this, i -> {
+            LiveData<Food> food = foodViewModel.getFood(i.getOfType());
             food.observe(this, f -> {
+                food.removeObservers(this);
                 String title = getString(R.string.title_edit_item, f.name);
                 requireActivity().setTitle(title);
-                food.removeObservers(this);
             });
         });
-
-        setHasOptionsMenu(true);
-        return result;
     }
 
-    private void setDefaultLocation() {
-        List<Location> data = locations.getValue();
-        FoodItemView foodItem = this.foodItem.getValue();
-        if (foodItem != null && data != null) {
-            find(foodItem.getStoredIn(), data).ifPresent(location::setSelection);
-        }
+    @Override
+    LiveData<Integer> getLocationPreselection() {
+        return Transformations.map(viewModel.getItem(), FoodItemView::getStoredIn);
+    }
+
+    @Override
+    LiveData<Integer> getUnitPreselection() {
+        return Transformations.map(viewModel.getItem(), FoodItemView::getUnit);
     }
 
     @Override
@@ -141,43 +82,50 @@ public class EditItemFragment extends InjectedFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        editItem();
-        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
-                .navigateUp();
+        startFormSubmission();
         return true;
     }
 
-    private void editItem() {
-        LOG.d("editing item");
-        LocalDate finalDate = readDateFromPicker();
-        int locId = readLocationId();
-
-        sendItem(finalDate, locId);
-        LOG.d("item sent");
+    @Override
+    void startFormSubmission() {
+        viewModel.getItem().observe(getViewLifecycleOwner(), f -> {
+            viewModel.getItem().removeObservers(getViewLifecycleOwner());
+            submitForm(f);
+        });
     }
 
-    private void sendItem(LocalDate finalDate, int locId) {
-        Instant i = Instant.from(finalDate.atStartOfDay().atZone(ZoneId.of("UTC")));
-        FoodItemView f = foodItem.getValue();
-        if (f != null) {
-            LiveData<StatusCode> result = viewModel.editItem(f.id, f.version, locId, i);
-            result.observe(this, this::maybeShowEditError);
+    private void submitForm(FoodItemView item) {
+        FoodItemView editedItem = item.copy();
+        editedItem.setEatByDate(Instant.from(readDateFromPicker().atStartOfDay().atZone(ZoneId.of("UTC"))));
+        editedItem.setStoredIn(readLocation());
+        editedItem.setUnit(readScaledUnit());
+
+        if (editedItem.equals(item)) {
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigateUp();
+            return;
         }
+
+        LiveData<StatusCode> result = viewModel.edit(editedItem);
+        result.observe(getViewLifecycleOwner(), code -> {
+            result.removeObservers(getViewLifecycleOwner());
+
+            if (code == StatusCode.SUCCESS) {
+                Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                        .navigateUp();
+
+            } else if (code == StatusCode.INVALID_DATA_VERSION) {
+                resolveConflict(editedItem);
+            } else {
+                showErrorMessage(requireActivity(), code.getEditErrorMessage());
+            }
+        });
     }
 
-    private LocalDate readDateFromPicker() {
-        return LocalDate.of(
-                date.getYear(),
-                date.getMonth()+1,
-                date.getDayOfMonth());
-    }
-
-    private int readLocationId() {
-        int position = location.getSelectedItemPosition();
-        List<Location> data = locations.getValue();
-        if (position == -1 || data == null || data.size() <= position)
-            return 0;
-        else
-            return data.get(position).id;
+    void resolveConflict(FoodItemView editedItem) {
+        EditItemFragmentDirections.ActionNavFragmentEditFoodItemToNavFragmentEditFoodItemConflict args =
+                EditItemFragmentDirections.actionNavFragmentEditFoodItemToNavFragmentEditFoodItemConflict(FoodItemInConflict.from(editedItem));
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                .navigate(args);
     }
 }

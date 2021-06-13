@@ -83,6 +83,31 @@ public class Food extends VersionedData {
     @Ignore
     public Food() {}
 
+    public String getName() {
+        return name;
+    }
+
+    public boolean isToBuy() {
+        return toBuy;
+    }
+
+    public int getExpirationOffset() {
+        return expirationOffset;
+    }
+
+    public int getLocation() {
+        return location;
+    }
+
+    @NonNull
+    public String getDescription() {
+        return description;
+    }
+
+    public int getStoreUnit() {
+        return storeUnit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

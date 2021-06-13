@@ -75,4 +75,32 @@ public class VersionedData extends Data {
         this.version = version;
         this.initiates = initiates;
     }
+
+    @NonNull
+    public Instant getValidTimeStart() {
+        return validTimeStart;
+    }
+
+    @NonNull
+    public Instant getValidTimeEnd() {
+        return validTimeEnd;
+    }
+
+    @NonNull
+    public Instant getTransactionTimeStart() {
+        return transactionTimeStart;
+    }
+
+    @NonNull
+    public Instant getTransactionTimeEnd() {
+        return transactionTimeEnd;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public int getInitiates() {
+        return initiates;
+    }
 }

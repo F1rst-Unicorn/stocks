@@ -50,14 +50,14 @@ public abstract class EanNumberDao implements Inserter<EanNumber> {
     }
 
     @Query("select * " +
-            "from EanNumber " +
+            "from eannumber " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity")
     abstract LiveData<List<EanNumber>> getAll(Instant infinity);
 
     @Query("select * " +
-            "from EanNumber " +
+            "from eannumber " +
             "where identifies = :foodId " +
             "and valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
@@ -65,6 +65,6 @@ public abstract class EanNumberDao implements Inserter<EanNumber> {
             "order by number")
     abstract LiveData<List<EanNumber>> getEanNumbersOf(int foodId, Instant infinity);
 
-    @Query("delete from EanNumber")
+    @Query("delete from eannumber")
     abstract void delete();
 }
