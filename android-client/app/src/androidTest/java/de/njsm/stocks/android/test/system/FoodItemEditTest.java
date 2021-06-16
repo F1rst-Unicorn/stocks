@@ -27,7 +27,7 @@ import org.junit.Test;
 import de.njsm.stocks.android.test.system.screen.OutlineScreen;
 
 @LargeTest
-public class FoodEditTest extends SystemTest {
+public class FoodItemEditTest extends SystemTest {
 
     @Test
     public void editLastItemInList() {

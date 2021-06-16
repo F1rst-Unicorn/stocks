@@ -66,12 +66,16 @@ public class FoodItemFragment extends InjectedFragment implements SwipeListener 
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> {
                     int iconId;
+                    String tag;
                     if (position == 0) {
                         iconId = R.drawable.baseline_room_service_black_24;
+                        tag = "0";
                     } else {
                         iconId = R.drawable.baseline_insert_chart_black_24;
+                        tag = "1";
                     }
                     tab.setIcon(iconId);
+                    tab.view.setTag(tag);
                 }
         ).attach();
 

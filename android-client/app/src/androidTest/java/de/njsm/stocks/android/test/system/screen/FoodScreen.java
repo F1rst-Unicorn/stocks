@@ -21,46 +21,29 @@ package de.njsm.stocks.android.test.system.screen;
 
 
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.NumberPicker;
-
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
-
-import org.hamcrest.Description;
+import de.njsm.stocks.R;
+import de.njsm.stocks.android.test.system.SystemTestSuite;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.Locale;
 
-import de.njsm.stocks.R;
-import de.njsm.stocks.android.test.system.SystemTestSuite;
-
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.swipeRight;
-import static androidx.test.espresso.action.ViewActions.swipeUp;
+import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withChild;
-import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static de.njsm.stocks.android.test.system.Matchers.childAtPosition;
 import static de.njsm.stocks.android.test.system.util.Matchers.atPosition;
 import static junit.framework.TestCase.fail;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.core.AllOf.allOf;
 
 public class FoodScreen extends AbstractListPresentingScreen {
@@ -75,19 +58,19 @@ public class FoodScreen extends AbstractListPresentingScreen {
         return this;
     }
 
-    public FoodAddScreen addItems() {
+    public FoodItemAddScreen addItems() {
         onView(withId(R.id.fragment_food_item_list_fab)).perform(click());
-        return new FoodAddScreen();
+        return new FoodItemAddScreen();
     }
 
-    public FoodAddScreen longClick(int index) {
+    public FoodItemAddScreen longClick(int index) {
         checkIndex(index);
         onView(withId(R.id.fragment_food_item_list_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(index, ViewActions.longClick()));
-        return new FoodAddScreen();
+        return new FoodItemAddScreen();
     }
 
-    public FoodAddScreen longClickLast() {
+    public FoodItemAddScreen longClickLast() {
         return longClick(getListCount()-1);
     }
 
@@ -110,12 +93,10 @@ public class FoodScreen extends AbstractListPresentingScreen {
         return this;
     }
 
-    public FoodScreen setExpirationOffset(int offset) {
+    public FoodEditScreen edit() {
         openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
-        onView(withText(R.string.title_expiration_offset)).perform(click());
-        onView(withId(R.id.number_picker_picker)).perform(setNumber(offset));
-        onView(withText("OK")).perform(click());
-        return this;
+        onView(withText(R.string.dialog_edit)).perform(click());
+        return new FoodEditScreen();
     }
 
     public FoodScreen assertDefaultLocation(String location) {
@@ -130,23 +111,6 @@ public class FoodScreen extends AbstractListPresentingScreen {
                         0),
                 isDisplayed())).check(matches(withChild(withText(location))));
         onView(anyOf(withText("CANCEL"), withText("ABBRECHEN"))).perform(click());
-        return this;
-    }
-
-    public FoodScreen setDefaultLocation(int index) {
-        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
-        onView(allOf(withId(R.id.title), anyOf(withText("Default Location"), withText("Standardort")))).perform(click());
-        sleep(1000);
-        onView(allOf(withId(R.id.spinner_spinner),
-                        childAtPosition(
-                                allOf(withId(R.id.custom),
-                                        childAtPosition(
-                                                withId(R.id.customPanel),
-                                                0)),
-                                0),
-                        isDisplayed())).perform(click());
-        onData(anything()).inRoot(isPlatformPopup()).atPosition(index).perform(click());
-        onView(withText("OK")).perform(click());
         return this;
     }
 
@@ -192,43 +156,10 @@ public class FoodScreen extends AbstractListPresentingScreen {
         return this;
     }
 
-    public static ViewAction setNumber(final int num) {
-        return new ViewAction() {
-            @Override
-            public void perform(UiController uiController, View view) {
-                NumberPicker np = (NumberPicker) view;
-                np.setValue(num);
-            }
-
-            @Override
-            public String getDescription() {
-                return "Set the passed number into the NumberPicker";
-            }
-
-            @Override
-            public Matcher<View> getConstraints() {
-                return ViewMatchers.isAssignableFrom(NumberPicker.class);
-            }
-        };
+    public FoodDescriptionScreen goToFoodDescription() {
+        Matcher<View> matcher = allOf(withTagValue(is("1")),
+                isDescendantOfA(withId(R.id.fragment_food_item_tabs)));
+        onView(matcher).perform(click());
+        return new FoodDescriptionScreen();
     }
-
-    private static Matcher<View> childAtPosition(
-            final Matcher<View> parentMatcher, final int position) {
-
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
-    }
-
 }

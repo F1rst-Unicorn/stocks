@@ -34,7 +34,7 @@ import org.junit.runners.Suite;
         ShoppingListTest.class,
         EanScanTest.class,
         UserAdministrationTest.class,
-        FoodEditTest.class,
+        FoodItemEditTest.class,
         FoodConsumptionTest.class
         })
 @LargeTest

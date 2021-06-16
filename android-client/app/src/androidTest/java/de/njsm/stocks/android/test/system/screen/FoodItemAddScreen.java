@@ -34,21 +34,21 @@ import static de.njsm.stocks.android.test.system.util.Matchers.matchesDate;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.anything;
 
-public class FoodAddScreen extends AbstractScreen {
+public class FoodItemAddScreen extends AbstractScreen {
 
-    public FoodAddScreen selectLocation(int itemIndex) {
+    public FoodItemAddScreen selectLocation(int itemIndex) {
         onView(withId(R.id.fragment_add_food_item_location)).perform(click());
         onData(anything()).atPosition(itemIndex).perform(click());
         return this;
     }
 
-    public FoodAddScreen assertLocation(String text) {
+    public FoodItemAddScreen assertLocation(String text) {
         onView(withId(R.id.item_location_name))
                 .check(matches(allOf(withText(text), withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))));
         return this;
     }
 
-    public FoodAddScreen selectDate(int year, int month, int day) {
+    public FoodItemAddScreen selectDate(int year, int month, int day) {
         sleep(100);
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(year, month, day));
@@ -58,7 +58,7 @@ public class FoodAddScreen extends AbstractScreen {
         return this;
     }
 
-    public FoodAddScreen assertDate(int year, int month, int day) {
+    public FoodItemAddScreen assertDate(int year, int month, int day) {
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .check(matches(matchesDate(year, month, day)));
         return this;
@@ -69,7 +69,7 @@ public class FoodAddScreen extends AbstractScreen {
         return new FoodScreen();
     }
 
-    public FoodAddScreen addItem() {
+    public FoodItemAddScreen addItem() {
         onView(withId(R.id.fragment_add_item_options_add_more)).perform(click());
         return this;
     }
@@ -85,7 +85,7 @@ public class FoodAddScreen extends AbstractScreen {
         return new FoodScreen();
     }
 
-    public FoodAddScreen addManyItems(int number) {
+    public FoodItemAddScreen addManyItems(int number) {
         for (int i = 0; i < number; i++) {
             addItem();
         }
