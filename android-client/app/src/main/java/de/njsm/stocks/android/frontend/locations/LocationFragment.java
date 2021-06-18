@@ -29,7 +29,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -58,7 +57,7 @@ public class LocationFragment extends InjectedFragment {
         RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
+        viewModel = getViewModelProvider().get(LocationViewModel.class);
 
         LocationEditInteractor editor = new LocationEditInteractor(
                 this,

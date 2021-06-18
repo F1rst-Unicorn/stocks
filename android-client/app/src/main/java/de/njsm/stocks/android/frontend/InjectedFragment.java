@@ -30,6 +30,8 @@ public class InjectedFragment extends BaseFragment {
 
     protected ViewModelProvider.Factory viewModelFactory;
 
+    private ViewModelProvider viewModelProvider;
+
     @Override
     public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
@@ -39,5 +41,10 @@ public class InjectedFragment extends BaseFragment {
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         this.viewModelFactory = viewModelFactory;
+        this.viewModelProvider = new ViewModelProvider(this, viewModelFactory);
+    }
+
+    public ViewModelProvider getViewModelProvider() {
+        return viewModelProvider;
     }
 }

@@ -33,7 +33,6 @@ import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -143,7 +142,7 @@ public class BaseFragment extends Fragment {
                                           int swiperId,
                                           ViewModelProvider.Factory viewModelFactory) {
         SwipeRefreshLayout refresher = view.findViewById(swiperId);
-        RefreshViewModel refreshViewModel = ViewModelProviders.of(this, viewModelFactory).get(RefreshViewModel.class);
+        RefreshViewModel refreshViewModel = new ViewModelProvider(this, viewModelFactory).get(RefreshViewModel.class);
         refresher.setOnRefreshListener(new SwipeSyncCallback(this, refresher, refreshViewModel));
         return refreshViewModel;
     }

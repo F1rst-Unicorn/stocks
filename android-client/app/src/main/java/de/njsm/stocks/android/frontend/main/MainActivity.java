@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         setIntent(intent);
         handleIntent(intent);
     }
@@ -134,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.activity_main_drawer_units:
                 navController.navigate(R.id.action_global_nav_fragment_units);
                 break;
+            case R.id.activity_main_drawer_recipes:
+                navController.navigate(R.id.action_global_nav_fragment_recipes);
+                break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -161,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0
                 && permissions[0].equals(Manifest.permission.CAMERA)
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -172,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanResult != null) {
             LOG.d("Got QR code from intent");
