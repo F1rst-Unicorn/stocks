@@ -154,6 +154,7 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'org.mockito:mockito-core:2.27.0'
+    androidTestImplementation "androidx.navigation:navigation-testing:2.3.5"
     androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:2.22.1"
 
 }

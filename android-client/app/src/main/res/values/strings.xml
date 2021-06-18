@@ -63,6 +63,10 @@
     <string name="title_unit_activity">Activity on Units of Measure</string>
     <string name="title_default_unit">Default Unit</string>
     <string name="title_unit">Unit of Measure</string>
+    <string name="title_recipes">Recipes</string>
+    <string name="title_ingredients">Ingredients</string>
+    <string name="title_add_recipe">Add Recipe</string>
+    <string name="title_products">Products</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>
@@ -82,6 +86,7 @@
     <string name="action_units">Units of Measure</string>
     <string name="action_today">TODAY</string>
     <string name="action_predict">PREDICT</string>
+    <string name="action_recipes">Recipes</string>
 
     <string name="hint_servername">Server host name</string>
     <string name="hint_expert">Expert options</string>
@@ -107,6 +112,8 @@
     <string name="hint_unit">Unit</string>
     <string name="hint_expiration_offset">Default expiration (days)</string>
     <string name="hint_description">Description</string>
+    <string name="hint_duration">Duration (min)</string>
+    <string name="hint_amount">Amount</string>
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>

@@ -63,6 +63,10 @@
     <string name="title_unit_activity">Aktivität bei Maßeinheiten</string>
     <string name="title_default_unit">Standardeinheit</string>
     <string name="title_unit">Maßeinheit</string>
+    <string name="title_recipes">Rezepte</string>
+    <string name="title_ingredients">Zutaten</string>
+    <string name="title_add_recipe">Rezept hinzufügen</string>
+    <string name="title_products">Produkte</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>
@@ -82,6 +86,7 @@
     <string name="action_units">Maßeinheiten</string>
     <string name="action_today">HEUTE</string>
     <string name="action_predict">RATEN</string>
+    <string name="action_recipes">Rezepte</string>
 
     <string name="hint_servername">Server Hostname</string>
     <string name="hint_expert">Expertenoptionen</string>
@@ -107,6 +112,8 @@
     <string name="hint_unit">Maßeinheit</string>
     <string name="hint_expiration_offset">Standardhaltbarkeit (Tage)</string>
     <string name="hint_description">Beschreibung</string>
+    <string name="hint_duration">Dauer (min)</string>
+    <string name="hint_amount">Menge</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>
