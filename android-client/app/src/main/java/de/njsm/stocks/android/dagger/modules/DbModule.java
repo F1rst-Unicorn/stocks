@@ -27,6 +27,7 @@ import de.njsm.stocks.android.db.StocksDatabase;
 import de.njsm.stocks.android.db.dao.*;
 import de.njsm.stocks.android.db.migrations.Migration_31_to_32;
 import de.njsm.stocks.android.db.migrations.Migration_32_to_33;
+import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 
 import javax.inject.Singleton;
 import java.util.concurrent.Executor;
@@ -43,6 +44,7 @@ public abstract class DbModule {
                 .setQueryExecutor(executor)
                 .setTransactionExecutor(executor)
                 .fallbackToDestructiveMigration()
+                .openHelperFactory(new RequerySQLiteOpenHelperFactory())
                 .build();
     }
 

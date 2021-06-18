@@ -135,9 +135,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.activity_main_drawer_units:
                 navController.navigate(R.id.action_global_nav_fragment_units);
                 break;
-            case R.id.activity_main_drawer_recipes:
-                navController.navigate(R.id.action_global_nav_fragment_recipes);
-                break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

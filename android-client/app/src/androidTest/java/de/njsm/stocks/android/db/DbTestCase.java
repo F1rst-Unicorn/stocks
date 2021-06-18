@@ -24,6 +24,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import de.njsm.stocks.android.db.entities.Update;
+import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -36,7 +37,9 @@ public class DbTestCase {
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
-        stocksDatabase = Room.inMemoryDatabaseBuilder(context, StocksDatabase.class).build();
+        stocksDatabase = Room.inMemoryDatabaseBuilder(context, StocksDatabase.class)
+                .openHelperFactory(new RequerySQLiteOpenHelperFactory())
+                .build();
     }
 
     @After
