@@ -55,13 +55,10 @@ public class Config {
      */
     public static final Instant API_INFINITY = Instant.ofEpochMilli(9223372036825200000L);
 
-    public static final DateTimeFormatter DATABASE_DATE_FORMAT;
-    public static final Instant DATABASE_INFINITY;
+    public static final DateTimeFormatter DATABASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS").withZone(ZoneId.of("UTC"));
+    public static final String DATABASE_INFINITY_STRING = "9999-12-31 23:59:59.999999";
+    public static final Instant DATABASE_INFINITY = DATABASE_DATE_FORMAT.parse(DATABASE_INFINITY_STRING, Instant::from);
 
-    static {
-        DATABASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS").withZone(ZoneId.of("UTC"));
-        DATABASE_INFINITY = DATABASE_DATE_FORMAT.parse("9999-12-31 23:59:59.999999", Instant::from);
-    }
 
     public static String formatServerUrl(SharedPreferences prefs) {
         return formatServerUrl(prefs.getString(Config.SERVER_NAME_CONFIG, ""),

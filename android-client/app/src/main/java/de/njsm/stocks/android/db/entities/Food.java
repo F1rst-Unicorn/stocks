@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -37,7 +38,13 @@ import java.util.Objects;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         creatorVisibility = JsonAutoDetect.Visibility.NONE)
-@Entity(primaryKeys = {"_id", "version", "transaction_time_start"})
+@Entity(primaryKeys = {"_id", "version", "transaction_time_start"},
+        indices = {
+                @Index(value = {"_id", "valid_time_start", "valid_time_end"}, name = "food_current"),
+                @Index(value = {"_id"}, name = "food_pkey"),
+                @Index(value = {"transaction_time_start"}, name = "food_transaction_time_start"),
+                @Index(value = {"transaction_time_end"}, name = "food_transaction_time_end"),
+        })
 public class Food extends VersionedData {
 
     @ColumnInfo(name = "name")

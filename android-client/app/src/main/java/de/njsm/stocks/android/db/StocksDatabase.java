@@ -39,7 +39,7 @@ import de.njsm.stocks.android.db.entities.*;
         Recipe.class,
         RecipeIngredient.class,
         RecipeProduct.class,
-}, version = 37)
+}, version = 38)
 @TypeConverters(de.njsm.stocks.android.db.TypeConverters.class)
 public abstract class StocksDatabase extends RoomDatabase {
 
