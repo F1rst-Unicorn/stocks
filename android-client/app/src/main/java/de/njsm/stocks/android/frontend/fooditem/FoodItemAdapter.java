@@ -104,8 +104,8 @@ public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.V
     FoodItemAdapter(Resources resources,
                     Resources.Theme theme,
                     LiveData<List<FoodItemView>> data,
-                    Consumer<View> onLongClickListener) {
-        super(data, onLongClickListener, onLongClickListener);
+                    Consumer<View> onClickListener) {
+        super(data, onClickListener);
         this.resources = resources;
         this.theme = theme;
     }
@@ -117,7 +117,7 @@ public class FoodItemAdapter extends BaseAdapter<FoodItemView, FoodItemAdapter.V
                 .inflate(R.layout.item_food_item, viewGroup, false);
         ViewHolder result =  new FoodItemAdapter.ViewHolder(v);
         v.setTag(result);
-        v.setOnLongClickListener(this::onLongClick);
+        v.setOnClickListener(this::onClick);
         return result;
     }
 

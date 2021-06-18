@@ -39,11 +39,9 @@ import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
-import static de.njsm.stocks.android.test.system.Matchers.childAtPosition;
 import static de.njsm.stocks.android.test.system.util.Matchers.atPosition;
 import static junit.framework.TestCase.fail;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.core.AllOf.allOf;
 
 public class FoodScreen extends AbstractListPresentingScreen {
@@ -63,15 +61,15 @@ public class FoodScreen extends AbstractListPresentingScreen {
         return new FoodItemAddScreen();
     }
 
-    public FoodItemAddScreen longClick(int index) {
+    public FoodItemAddScreen editItem(int index) {
         checkIndex(index);
         onView(withId(R.id.fragment_food_item_list_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition(index, ViewActions.longClick()));
+                .perform(RecyclerViewActions.actionOnItemAtPosition(index, ViewActions.click()));
         return new FoodItemAddScreen();
     }
 
-    public FoodItemAddScreen longClickLast() {
-        return longClick(getListCount()-1);
+    public FoodItemAddScreen editLastItem() {
+        return editItem(getListCount()-1);
     }
 
     public BarcodeScreen goToBarCodes() {
@@ -85,33 +83,10 @@ public class FoodScreen extends AbstractListPresentingScreen {
         return this;
     }
 
-    public FoodScreen assertExpirationOffset(int offset) {
-        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
-        onView(withText(R.string.title_expiration_offset)).perform(click());
-        onView(withId(R.id.number_picker_picker)).check(matches(withChild(withText(String.valueOf(offset)))));
-        onView(anyOf(withText("CANCEL"), withText("ABBRECHEN"))).perform(click());
-        return this;
-    }
-
     public FoodEditScreen edit() {
         openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
         onView(withText(R.string.dialog_edit)).perform(click());
         return new FoodEditScreen();
-    }
-
-    public FoodScreen assertDefaultLocation(String location) {
-        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext());
-        onView(allOf(withId(R.id.title), anyOf(withText("Default Location"), withText("Standardort")))).perform(click());
-        onView(allOf(withId(R.id.spinner_spinner),
-                childAtPosition(
-                        allOf(withId(R.id.custom),
-                                childAtPosition(
-                                        withId(R.id.customPanel),
-                                        0)),
-                        0),
-                isDisplayed())).check(matches(withChild(withText(location))));
-        onView(anyOf(withText("CANCEL"), withText("ABBRECHEN"))).perform(click());
-        return this;
     }
 
     public FoodScreen eatAllButOne() {
@@ -119,7 +94,6 @@ public class FoodScreen extends AbstractListPresentingScreen {
         while (getListCount() > 1) {
             onView(withId(R.id.fragment_food_item_list_list))
                     .perform(
-                            RecyclerViewActions.actionOnItemAtPosition(0, click()),
                             RecyclerViewActions.actionOnItemAtPosition(0, swipeUp()),
                             RecyclerViewActions.actionOnItemAtPosition(0, swipeRight()));
 
@@ -131,7 +105,7 @@ public class FoodScreen extends AbstractListPresentingScreen {
         return this;
     }
 
-    public FoodScreen assertItem(int index, String user, String device, String date, String location) {
+    public void assertItem(int index, String user, String device, String date, String location) {
         checkIndex(index);
         ViewInteraction item = onView(withId(R.id.fragment_food_item_list_list))
                 .perform(RecyclerViewActions.scrollToPosition(index));
@@ -144,11 +118,10 @@ public class FoodScreen extends AbstractListPresentingScreen {
                                  withText(device))))));
         item.check(matches(atPosition(0, withChild(allOf(withId(R.id.item_food_item_location),
                                  withText(location))))));
-        return this;
     }
 
-    public FoodScreen assertItem(int index, String user, String device, LocalDate date, String location) {
-        return assertItem(index, user, device, DateTimeFormatter.ofPattern("dd.MM.yy", Locale.US).format(date), location);
+    public void assertItem(int index, String user, String device, LocalDate date, String location) {
+        assertItem(index, user, device, DateTimeFormatter.ofPattern("dd.MM.yy", Locale.US).format(date), location);
     }
 
     public FoodScreen assertLastItem(String user, String device, String date, String location) {

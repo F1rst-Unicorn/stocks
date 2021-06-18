@@ -80,6 +80,8 @@
     <string name="action_shopping_list">Einkaufsliste</string>
     <string name="action_events">Aktivität</string>
     <string name="action_units">Maßeinheiten</string>
+    <string name="action_today">HEUTE</string>
+    <string name="action_predict">RATEN</string>
 
     <string name="hint_servername">Server Hostname</string>
     <string name="hint_expert">Expertenoptionen</string>

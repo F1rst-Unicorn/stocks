@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,7 +55,7 @@ public class FoodItemListFragment extends InjectedFragment {
         RecyclerView list = result.findViewById(R.id.fragment_food_item_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodItemViewModel.class);
+        viewModel = getViewModelProvider().get(FoodItemViewModel.class);
         viewModel.initList(input.getFoodId());
 
         adapter = new FoodItemAdapter(getResources(), requireActivity().getTheme(),

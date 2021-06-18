@@ -88,6 +88,8 @@ public class AddItemFragment extends InjectedFragment {
         locationViewModel = new ViewModelProvider(this, viewModelFactory).get(LocationViewModel.class);
         scaledUnitViewModel = new ViewModelProvider(this, viewModelFactory).get(ScaledUnitViewModel.class);
 
+        result.findViewById(R.id.fragment_add_food_item_today).setOnClickListener(v -> setDateField(LocalDate.now()));
+
         setHasOptionsMenu(true);
         return result;
     }
@@ -106,6 +108,7 @@ public class AddItemFragment extends InjectedFragment {
         fillLocationSpinner();
         fillUnitSpinner();
         hideConflictLabels();
+        initialisePredictionButton();
 
         LiveData<Food> food = foodViewModel.getFood();
         food.observe(getViewLifecycleOwner(), f -> {
@@ -113,11 +116,18 @@ public class AddItemFragment extends InjectedFragment {
             String title = getString(R.string.title_add_item, f.name);
             requireActivity().setTitle(title);
 
-            setDatePicker(f);
+            setDateFieldBasedOn(f);
         });
     }
 
-    private void setDatePicker(Food f) {
+    void initialisePredictionButton() {
+        foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
+            requireView().findViewById(R.id.fragment_add_food_item_predict)
+                    .setOnClickListener(v ->
+                            setDateFieldBasedOn(f)));
+    }
+
+    private void setDateFieldBasedOn(Food f) {
         LocalDate now = LocalDate.now();
         setDateField(now);
         if (f.expirationOffset != 0) {

@@ -56,12 +56,14 @@ public class EditItemFragment extends AddItemFragment {
         });
 
         viewModel.getItem().observe(this, i -> {
-            LiveData<Food> food = foodViewModel.getFood(i.getOfType());
+            foodViewModel.initFood(i.getOfType());
+            LiveData<Food> food = foodViewModel.getFood();
             food.observe(this, f -> {
                 food.removeObservers(this);
                 String title = getString(R.string.title_edit_item, f.name);
                 requireActivity().setTitle(title);
             });
+            initialisePredictionButton();
         });
     }
 

@@ -38,12 +38,30 @@
         android:datePickerMode="spinner"
     />
 
+    <Button
+            android:id="@+id/fragment_add_food_item_today"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_add_food_item_date"
+            android:text="@string/action_today"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_alignParentEnd="true"/>
+
+    <Button
+            android:id="@+id/fragment_add_food_item_predict"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_add_food_item_date"
+            android:layout_toStartOf="@id/fragment_add_food_item_today"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="@string/action_predict"/>
+
     <include
             android:id="@+id/fragment_add_food_item_date_conflict"
             layout="@layout/template_conflict_labels"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/fragment_add_food_item_date" />
+            android:layout_below="@id/fragment_add_food_item_today" />
 
     <Spinner
         android:id="@+id/fragment_add_food_item_location"

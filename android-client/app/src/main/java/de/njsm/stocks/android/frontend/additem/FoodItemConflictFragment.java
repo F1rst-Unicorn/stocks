@@ -82,6 +82,8 @@ public class FoodItemConflictFragment extends EditItemFragment {
 
     private void setRemoteDiffLabels(View view, FoodItemConflictFragmentArgs input) {
         viewModel.getItem().observe(getViewLifecycleOwner(), remote -> {
+            foodViewModel.initFood(remote.getOfType());
+            initialisePredictionButton();
             if (remote.version != input.getFoodItem().getVersion()) {
                 ((TextView) view.findViewById(R.id.fragment_add_food_item_date_conflict)
                         .findViewById(R.id.template_conflict_labels_remote)).setText(Config.PRETTY_DATE_FORMAT.format(remote.getEatByDate()));
@@ -122,6 +124,8 @@ public class FoodItemConflictFragment extends EditItemFragment {
             setDateVisibility(View.VISIBLE);
         } else {
             dateField.setVisibility(View.GONE);
+            requireView().findViewById(R.id.fragment_add_food_item_today).setVisibility(View.GONE);
+            requireView().findViewById(R.id.fragment_add_food_item_predict).setVisibility(View.GONE);
         }
     }
 
