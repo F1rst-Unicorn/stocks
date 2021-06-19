@@ -24,13 +24,11 @@ import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
@@ -38,7 +36,6 @@ import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodToBuyInteractor;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 
-import javax.inject.Inject;
 import java.util.List;
 
 public class FoodFragment extends InjectedFragment {
@@ -55,22 +52,22 @@ public class FoodFragment extends InjectedFragment {
         RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        LocationViewModel locationViewModel = ViewModelProviders.of(this, viewModelFactory).get(LocationViewModel.class);
+        LocationViewModel locationViewModel = getViewModelProvider().get(LocationViewModel.class);
 
-        LiveData<List<FoodWithLatestItemView>> data;
+        LiveData<List<FoodSummaryView>> data;
 
         if (getArguments() != null) {
             input = FoodFragmentArgs.fromBundle(getArguments());
             if (input.getLocation() != 0) {
                 setHasOptionsMenu(true);
 
-                viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodViewModel.class);
+                viewModel = getViewModelProvider().get(FoodViewModel.class);
                 viewModel.initFoodByLocation(input.getLocation());
                 data = viewModel.getFoodByLocation();
                 locationViewModel.getLocation(input.getLocation()).observe(getViewLifecycleOwner(),
                         d -> requireActivity().setTitle(d.name));
             } else {
-                FoodToEatViewModel viewModel = ViewModelProviders.of(this, viewModelFactory).get(FoodToEatViewModel.class);
+                FoodToEatViewModel viewModel = getViewModelProvider().get(FoodToEatViewModel.class);
                 data = viewModel.getFoodToEat();
                 this.viewModel = viewModel;
                 requireActivity().setTitle(R.string.action_eat_next);
@@ -89,7 +86,7 @@ public class FoodFragment extends InjectedFragment {
                 requireActivity().getTheme(),
                 this::onClick,
                 v -> editInternally(v, data, R.string.dialog_rename_food,
-                        (f,s) -> editor.observeEditing(f.mapToFood(), s))
+                        editor::observeEditing)
         );
         data.observe(getViewLifecycleOwner(), i -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
@@ -108,8 +105,8 @@ public class FoodFragment extends InjectedFragment {
                 viewModel::getFood);
 
         addBidirectionalSwiper(list, data, R.drawable.ic_add_shopping_cart_white_24,
-                v -> interactor.initiateDeletion(v.mapToFood()),
-                v -> buyInteractor.observeEditing(v.mapToFood(), true));
+                interactor::initiateDeletion,
+                v -> buyInteractor.observeEditing(v, true));
 
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(v -> addFood(viewModel));
         initialiseSwipeRefresh(result, viewModelFactory);
@@ -140,7 +137,7 @@ public class FoodFragment extends InjectedFragment {
     private void onClick(View view) {
         FoodAdapter.ViewHolder holder = (FoodAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodWithLatestItemView> data = viewModel.getCurrentFoodSubset().getValue();
+        List<FoodSummaryView> data = viewModel.getCurrentFoodSubset().getValue();
         if (data != null) {
             int id = data.get(position).id;
             FoodFragmentDirections.ActionNavFragmentFoodToNavFragmentFoodItem args =

@@ -21,8 +21,10 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.Transformations;
 import de.njsm.stocks.android.db.dao.FoodDao;
 import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
@@ -104,12 +106,12 @@ public class FoodRepository {
         return data;
     }
 
-    public LiveData<List<FoodWithLatestItemView>> getFoodToEat() {
-        return foodDao.getFoodToEat();
+    public LiveData<List<FoodSummaryView>> getFoodToEat() {
+        return Transformations.map(foodDao.getFoodToEatSummary(), new FoodSummaryView.Mapper());
     }
 
-    public LiveData<List<FoodWithLatestItemView>> getFoodByLocation(int location) {
-        return foodDao.getFoodByLocation(location);
+    public LiveData<List<FoodSummaryView>> getFoodByLocationSummary(int location) {
+        return Transformations.map(foodDao.getFoodByLocationSummary(location), new FoodSummaryView.Mapper());
     }
 
     public LiveData<Food> getFoodByEanNumber(String s) {

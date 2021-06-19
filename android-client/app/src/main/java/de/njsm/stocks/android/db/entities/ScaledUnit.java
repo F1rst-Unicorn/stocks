@@ -185,4 +185,8 @@ public class ScaledUnit extends VersionedData {
     public int hashCode() {
         return Objects.hash(getScale(), getUnit());
     }
+
+    public ScaledUnit copy() {
+        return new ScaledUnit(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, scale, unit);
+    }
 }

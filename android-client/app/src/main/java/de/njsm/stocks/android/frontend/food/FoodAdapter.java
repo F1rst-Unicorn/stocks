@@ -28,30 +28,28 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
-
+import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
+import de.njsm.stocks.android.frontend.BaseAdapter;
+import de.njsm.stocks.android.frontend.fooditem.FoodItemAdapter;
 import org.threeten.bp.Instant;
 
 import java.util.List;
-
-import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
-import de.njsm.stocks.android.frontend.BaseAdapter;
-import de.njsm.stocks.android.frontend.fooditem.FoodItemAdapter;
+import java.util.StringJoiner;
 
 import static android.view.View.GONE;
 
-public class FoodAdapter extends BaseAdapter<FoodWithLatestItemView, FoodAdapter.ViewHolder> {
+public class FoodAdapter extends BaseAdapter<FoodSummaryView, FoodAdapter.ViewHolder> {
 
     private Resources resources;
 
     private Resources.Theme theme;
 
-    public FoodAdapter(LiveData<List<FoodWithLatestItemView>> data,
+    public FoodAdapter(LiveData<List<FoodSummaryView>> data,
                        Resources resources,
                        Resources.Theme theme,
                        Consumer<View> onClickListener,
@@ -119,12 +117,17 @@ public class FoodAdapter extends BaseAdapter<FoodWithLatestItemView, FoodAdapter
     }
 
     @Override
-    protected void bindConcrete(ViewHolder holder, FoodWithLatestItemView data) {
-        holder.setAmount(String.valueOf(data.getAmount()));
+    protected void bindConcrete(ViewHolder holder, FoodSummaryView data) {
+        StringJoiner joiner = new StringJoiner(", ");
+        data.getAmounts()
+                .stream()
+                .map(FoodSummaryView.ScaledAmount::getPrettyString)
+                .forEach(joiner::add);
+        holder.setAmount(joiner.toString());
         holder.setDate(mapToRelativeDate(data.getEatBy()));
         holder.setName(data.getName());
         holder.setIcon(FoodItemAdapter.computeIcon(resources, theme, data.getEatBy(), Instant.now()));
-        holder.setBuyStatus(data.getToBuy());
+        holder.setBuyStatus(data.isToBuy());
     }
 
     @Override

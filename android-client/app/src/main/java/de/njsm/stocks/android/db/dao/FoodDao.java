@@ -22,12 +22,15 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.entities.Sql;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import org.threeten.bp.Instant;
 
 import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.db.entities.Sql.FOOD_FIELDS;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
@@ -54,12 +57,12 @@ public abstract class FoodDao implements Inserter<Food> {
         return getEmptyFood(DATABASE_INFINITY);
     }
 
-    public LiveData<List<FoodWithLatestItemView>> getFoodToEat() {
-        return getFoodToEat(DATABASE_INFINITY);
+    public LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodToEatSummary() {
+        return getFoodToEatSummary(DATABASE_INFINITY);
     }
 
-    public LiveData<List<FoodWithLatestItemView>> getFoodByLocation(int location) {
-        return getFoodByLocation(location, DATABASE_INFINITY);
+    public LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodByLocationSummary(int location) {
+        return getFoodByLocationSummary(location, DATABASE_INFINITY);
     }
 
     public LiveData<Food> getFoodByEanNumber(String s) {
@@ -103,44 +106,71 @@ public abstract class FoodDao implements Inserter<Food> {
             "order by _id")
     abstract LiveData<List<Food>> getEmptyFood(Instant infinity);
 
-    @Query("with least_item as (" +
-                "select i.of_type, count(*) as amount, i.eat_by as eatBy " +
+    @Query("with least_eat_by_date as (" +
+                "select i.of_type as of_type, i.eat_by as eatBy " +
                 "from FoodItem i " +
                 "where i.valid_time_start <= " + NOW +
                 "and " + NOW + " < i.valid_time_end " +
                 "and i.transaction_time_end = :infinity " +
                 "group by i.of_type " +
-                "having i.eat_by = MIN(i.eat_by)) " +
-            "select f._id, f.version, f.initiates, f.name as name, f.to_buy as toBuy, i.eatBy as eatBy, " +
-            "i.amount as amount, f.expiration_offset as expirationOffset, f.location as location, " +
-            "f.description as description, " +
-            "f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end," +
-            "f.store_unit as storeUnit " +
-            "from Food f " +
-            "inner join least_item i on i.of_type = f._id " +
-            "where f.valid_time_start <= " + NOW +
-            "and " + NOW + " < f.valid_time_end " +
-            "and transaction_time_end = :infinity " +
-            "order by eatBy")
-    abstract LiveData<List<FoodWithLatestItemView>> getFoodToEat(Instant infinity);
+                "having i.eat_by = MIN(i.eat_by)), " +
+            "scaled_amount as (" +
+                "select " +
+                Sql.UNIT_FIELDS_QUALIFIED +
+                Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+                "fooditem.of_type as of_type, count(*) as amount " +
+                "from fooditem fooditem " +
+                Sql.SCALED_UNIT_JOIN_FOODITEM +
+                Sql.UNIT_JOIN_SCALED_UNIT +
+                "where fooditem.valid_time_start <= " + NOW +
+                "and " + NOW + " < fooditem.valid_time_end " +
+                "and fooditem.transaction_time_end = :infinity " +
+                "group by fooditem.of_type, fooditem.unit" +
+            ") " +
+            "select " +
+            FOOD_FIELDS +
+            "least_eat_by_date.eatBy as eatBy, scaled_amount.* " +
+            "from food food " +
+            "inner join least_eat_by_date on least_eat_by_date.of_type = food._id " +
+            "inner join scaled_amount on scaled_amount.of_type = food._id " +
+            "where food.valid_time_start <= " + NOW +
+            "and " + NOW + " < food.valid_time_end " +
+            "and food.transaction_time_end = :infinity ")
+    abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodToEatSummary(Instant infinity);
 
-    @Query("with least_item as (" +
-                "select i.of_type, count(*) as amount, i.eat_by as eatBy " +
-                "from FoodItem i " +
-                "where i.stored_in = :location " +
-                "and i.valid_time_start <= " + NOW +
-                "and " + NOW + " < i.valid_time_end " +
-                "and i.transaction_time_end = :infinity " +
-                "group by i.of_type " +
-                "having i.eat_by = MIN(i.eat_by)) " +
-            "select f._id, f.version, f.initiates, f.name as name, f.to_buy as toBuy, i.eatBy as eatBy, i.amount as amount, f.expiration_offset as expirationOffset, f.location as location, f.description as description, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end, f.store_unit as storeUnit " +
-            "from Food f " +
-            "inner join least_item i on i.of_type = f._id " +
-            "and f.valid_time_start <= " + NOW +
-            "and " + NOW + " < f.valid_time_end " +
-            "and f.transaction_time_end = :infinity " +
-            "order by eatBy")
-    abstract LiveData<List<FoodWithLatestItemView>> getFoodByLocation(int location, Instant infinity);
+    @Query("with least_eat_by_date as (" +
+                "select fooditem.of_type as of_type, fooditem.eat_by as eatBy " +
+                "from FoodItem fooditem " +
+                "where fooditem.valid_time_start <= " + NOW +
+                "and fooditem.stored_in = :location " +
+                "and " + NOW + " < fooditem.valid_time_end " +
+                "and fooditem.transaction_time_end = :infinity " +
+                "group by fooditem.of_type " +
+                "having fooditem.eat_by = MIN(fooditem.eat_by)), " +
+            "scaled_amount as (" +
+                "select " +
+                Sql.UNIT_FIELDS_QUALIFIED +
+                Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+                "fooditem.of_type as of_type, count(*) as amount " +
+                "from fooditem fooditem " +
+                Sql.SCALED_UNIT_JOIN_FOODITEM +
+                Sql.UNIT_JOIN_SCALED_UNIT +
+                "where fooditem.valid_time_start <= " + NOW +
+                "and " + NOW + " < fooditem.valid_time_end " +
+                "and fooditem.transaction_time_end = :infinity " +
+                "and fooditem.stored_in = :location " +
+                "group by fooditem.of_type, fooditem.unit" +
+            ") " +
+            "select " +
+            FOOD_FIELDS +
+            "least_eat_by_date.eatBy as eatBy, scaled_amount.* " +
+            "from food food " +
+            "inner join least_eat_by_date on least_eat_by_date.of_type = food._id " +
+            "inner join scaled_amount on scaled_amount.of_type = food._id " +
+            "where food.valid_time_start <= " + NOW +
+            "and " + NOW + " < food.valid_time_end " +
+            "and food.transaction_time_end = :infinity ")
+    abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodByLocationSummary(int location, Instant infinity);
 
     @Query("select f._id, f.version, f.initiates, f.name, f.to_buy, f.expiration_offset, f.location as location, f.description as description, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end, f.store_unit " +
             "from Food f " +
