@@ -22,7 +22,6 @@ package de.njsm.stocks.android.frontend.units;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
@@ -38,22 +37,15 @@ public class ScaledUnitAdapter extends BaseAdapter<ScaledUnitView, ScaledUnitAda
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView scale;
+        private final TextView content;
 
-        private final TextView unit;
-
-        ViewHolder(RelativeLayout layout) {
-            super(layout);
-            this.scale = layout.findViewById(R.id.item_scaled_unit_scale);
-            this.unit = layout.findViewById(R.id.item_scaled_unit_unit);
+        ViewHolder(TextView content) {
+            super(content);
+            this.content = content;
         }
 
-        public void setScale(CharSequence c) {
-            scale.setText(c);
-        }
-
-        public void setUnit(CharSequence c) {
-            unit.setText(c);
+        public void setContent(CharSequence c) {
+            content.setText(c);
         }
     }
 
@@ -66,7 +58,7 @@ public class ScaledUnitAdapter extends BaseAdapter<ScaledUnitView, ScaledUnitAda
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        RelativeLayout v = (RelativeLayout) LayoutInflater.from(viewGroup.getContext())
+        TextView v = (TextView) LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_scaled_unit, viewGroup, false);
         ViewHolder result =  new ScaledUnitAdapter.ViewHolder(v);
         v.setTag(result);
@@ -77,13 +69,11 @@ public class ScaledUnitAdapter extends BaseAdapter<ScaledUnitView, ScaledUnitAda
 
     @Override
     protected void bindConcrete(ViewHolder holder, ScaledUnitView data) {
-        holder.setScale(data.getScale().toString());
-        holder.setUnit(data.getUnitEntity().getAbbreviation());
+        holder.setContent(data.getPrettyName());
     }
 
     @Override
     protected void bindVoid(ViewHolder holder) {
-        holder.setScale("");
-        holder.setUnit("");
+        holder.setContent("");
     }
 }

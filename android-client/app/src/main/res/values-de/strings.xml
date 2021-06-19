@@ -218,17 +218,17 @@
     <string name="event_user_deleted">%s hat %s entfernt.</string>
     <string name="event_user_device_created">%s hat %s von %s registriert.</string>
     <string name="event_user_device_deleted">%s hat %s von %s entfernt.</string>
-    <string name="event_food_item_added">%s hat %s%s %s gekauft und hat es nach %s gelegt. Verbraucht es bis %s.</string>
+    <string name="event_food_item_added">%s hat %s %s gekauft und hat es nach %s gelegt. Verbraucht es bis %s.</string>
     <string name="event_food_item_deleted">%s hat ein %s konsumiert.</string>
     <string name="event_food_item_changed_location">hat %s von %s nach %s verlegt</string>
     <string name="event_food_item_changed_eat_by">hat das Mindesthaltbarkeitsdatum%s von %s zu %s geändert</string>
-    <string name="event_food_item_changed_scaled_unit">hat die Maßeinheit%s von %s%s zu %s%s geändert</string>
+    <string name="event_food_item_changed_scaled_unit">hat die Maßeinheit%s von %s zu %s geändert</string>
     <string name="event_unit_created">%s hat %s (%s) erstellt.</string>
     <string name="event_unit_deleted">%s hat %s (%s) gelöscht.</string>
     <string name="event_unit_renamed">hat %s zu %s umbenannt</string>
     <string name="event_unit_abbreviation_changed">hat die Abkürzung%s von %s zu %s geändert</string>
-    <string name="event_scaled_unit_created">%s hat %s%s erstellt.</string>
-    <string name="event_scaled_unit_deleted">%s hat %s%s gelöscht.</string>
+    <string name="event_scaled_unit_created">%s hat %s erstellt.</string>
+    <string name="event_scaled_unit_deleted">%s hat %s gelöscht.</string>
     <string name="event_scaled_unit_scale_changed">hat die Skalierung%s von %s auf %s gesetzt</string>
     <string name="event_scaled_unit_unit_changed">hat die Einheit%s von %s auf %s gesetzt</string>
 

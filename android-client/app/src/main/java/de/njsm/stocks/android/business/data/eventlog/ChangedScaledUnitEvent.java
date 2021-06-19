@@ -46,7 +46,7 @@ public class ChangedScaledUnitEvent extends ChangedEntityEvent<ScaledUnitView> i
 
     @Override
     protected String getExplicitObject() {
-        return oldEntity.getScale() + oldEntity.getUnitEntity().getAbbreviation();
+        return oldEntity.getPrettyName();
     }
 
     @Override

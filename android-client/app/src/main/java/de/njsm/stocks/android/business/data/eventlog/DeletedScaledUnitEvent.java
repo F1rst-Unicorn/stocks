@@ -37,8 +37,7 @@ public class DeletedScaledUnitEvent extends DeletedEntityEvent<ScaledUnitView> i
         String template = stringResourceResolver.apply(R.string.event_scaled_unit_deleted);
         return String.format(template,
                 initiatorUser.name,
-                entity.getScale(),
-                entity.getUnitEntity().getAbbreviation());
+                entity.getPrettyName());
     }
 
     @Override

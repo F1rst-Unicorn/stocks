@@ -23,6 +23,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.business.data.eventlog.PartialDiffGenerator;
 import de.njsm.stocks.android.business.data.eventlog.SentenceObject;
 import de.njsm.stocks.android.db.views.FoodItemViewWithFood;
+import de.njsm.stocks.android.db.views.ScaledUnitView;
 
 import java.util.function.IntFunction;
 
@@ -46,10 +47,8 @@ public class FoodItemUnitChangedGenerator extends PartialDiffGenerator<FoodItemV
     protected Object[] getFormatArguments() {
         return new Object[] {
                 getObject().getGenitive(),
-                getOldEntity().getScaledUnit().getScale(),
-                getOldEntity().getUnitEntity().getAbbreviation(),
-                getNewEntity().getScaledUnit().getScale(),
-                getNewEntity().getUnitEntity().getAbbreviation(),
+                ScaledUnitView.getPrettyName(getOldEntity().getScaledUnit(), getOldEntity().getUnitEntity()),
+                ScaledUnitView.getPrettyName(getNewEntity().getScaledUnit(), getNewEntity().getUnitEntity()),
         };
     }
 }

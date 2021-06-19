@@ -19,33 +19,15 @@
     along with this program.  If not, see https://www.gnu.org/licenses/.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+<TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item_scaled_unit"
+        style="@style/StocksTheme.TextLarge"
+        android:padding="@dimen/list_item_padding_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
 
-                android:orientation="vertical"
-                android:padding="@dimen/list_item_padding_large">
-
-    <TextView
-              android:id="@+id/item_scaled_unit_scale"
-              style="@style/StocksTheme.TextLarge"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-
-              android:drawableStart="@drawable/ic_weight_numbered_black_24"
-              android:drawablePadding="@dimen/text_margin"
-              android:gravity="center_vertical"
-              android:text="500"/>
-
-    <TextView
-              android:id="@+id/item_scaled_unit_unit"
-              style="@style/StocksTheme.TextLarge"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-
-              android:layout_toEndOf="@id/item_scaled_unit_scale"
-              android:gravity="center_vertical"
-              android:text="l"/>
-
-
-</RelativeLayout>
+        android:drawableStart="@drawable/ic_weight_numbered_black_24"
+        android:drawablePadding="@dimen/text_margin"
+        android:gravity="center_vertical"
+        android:text="500ml"/>

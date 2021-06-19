@@ -37,8 +37,7 @@ public class NewScaledUnitEvent extends NewEntityEvent<ScaledUnitView> implement
         String template = stringResourceResolver.apply(R.string.event_scaled_unit_created);
         return String.format(template,
                 initiatorUser.name,
-                entity.getScale(),
-                entity.getUnitEntity().getAbbreviation());
+                entity.getPrettyName());
     }
 
     @Override

@@ -23,6 +23,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.views.FoodItemViewWithFood;
+import de.njsm.stocks.android.db.views.ScaledUnitView;
 import de.njsm.stocks.android.util.Config;
 
 import java.util.function.IntFunction;
@@ -39,8 +40,7 @@ public class NewFoodItemEvent extends NewEntityEvent<FoodItemViewWithFood> imple
         String template = stringResourceResolver.apply(R.string.event_food_item_added);
         return String.format(template,
                 initiatorUser.name,
-                entity.getScaledUnit().getScale(),
-                entity.getUnitEntity().getAbbreviation(),
+                ScaledUnitView.getPrettyName(entity.getScaledUnit(), entity.getUnitEntity()),
                 entity.getFood().getName(),
                 entity.getLocation().getName(),
                 Config.PRETTY_DATE_FORMAT.format(entity.getEatByDate()));
