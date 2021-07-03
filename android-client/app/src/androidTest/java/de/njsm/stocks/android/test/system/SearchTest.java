@@ -42,7 +42,7 @@ public class SearchTest extends SystemTest {
         OutlineScreen.test()
                 .search("Beer")
                 .assertResultCount(1)
-                .assertItemContent(0, searchText, 2)
+                .assertItemContent(0, searchText, 2, "default")
                 .click(0)
                 .assertTitle(searchText);
     }

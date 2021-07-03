@@ -36,7 +36,7 @@ public class SearchScreen extends AbstractListPresentingScreen {
         return this;
     }
 
-    public SearchScreen assertItemContent(int itemIndex, String name, int count) {
+    public SearchScreen assertItemContent(int itemIndex, String name, int count, String unit) {
         checkIndex(itemIndex);
 
         onView(withId(R.id.template_swipe_list_list))
@@ -44,7 +44,7 @@ public class SearchScreen extends AbstractListPresentingScreen {
                 .check(matches(atPosition(itemIndex, withChild(withText(name)))));
         onView(withId(R.id.template_swipe_list_list))
                 .perform(RecyclerViewActions.scrollToPosition(itemIndex))
-                .check(matches(atPosition(itemIndex, withChild(withText(String.valueOf(count))))));
+                .check(matches(atPosition(itemIndex, withChild(withText(count + unit)))));
         return this;
     }
 
