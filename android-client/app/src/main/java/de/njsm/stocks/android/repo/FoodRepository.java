@@ -25,7 +25,7 @@ import androidx.lifecycle.Transformations;
 import de.njsm.stocks.android.db.dao.FoodDao;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.views.FoodSummaryView;
-import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
+import de.njsm.stocks.android.db.views.FoodSummaryWithExpirationView;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
@@ -106,25 +106,25 @@ public class FoodRepository {
         return data;
     }
 
-    public LiveData<List<FoodSummaryView>> getFoodToEat() {
-        return Transformations.map(foodDao.getFoodToEatSummary(), new FoodSummaryView.Mapper());
+    public LiveData<List<FoodSummaryWithExpirationView>> getFoodToEat() {
+        return Transformations.map(foodDao.getFoodToEatSummary(), new FoodSummaryWithExpirationView.Mapper());
     }
 
-    public LiveData<List<FoodSummaryView>> getFoodByLocationSummary(int location) {
-        return Transformations.map(foodDao.getFoodByLocationSummary(location), new FoodSummaryView.Mapper());
+    public LiveData<List<FoodSummaryWithExpirationView>> getFoodByLocationSummary(int location) {
+        return Transformations.map(foodDao.getFoodByLocationSummary(location), new FoodSummaryWithExpirationView.Mapper());
     }
 
     public LiveData<Food> getFoodByEanNumber(String s) {
         return foodDao.getFoodByEanNumber(s);
     }
 
-    public LiveData<List<FoodWithLatestItemView>> getFoodToBuy() {
-        return foodDao.getFoodToBuy();
+    public LiveData<List<FoodSummaryView>> getFoodToBuy() {
+        return Transformations.map(foodDao.getFoodToBuy(), new FoodSummaryView.Mapper());
     }
 
-    public LiveData<List<FoodWithLatestItemView>> getFoodBySubString(String searchTerm) {
+    public LiveData<List<FoodSummaryView>> getFoodBySubString(String searchTerm) {
         LOG.d("searching for %" + searchTerm + "%");
-        return foodDao.getFoodBySubString("%" + searchTerm + "%");
+        return Transformations.map(foodDao.getFoodBySubString("%" + searchTerm + "%"), new FoodSummaryView.Mapper());
     }
 
     public LiveData<List<Food>> getFood() {

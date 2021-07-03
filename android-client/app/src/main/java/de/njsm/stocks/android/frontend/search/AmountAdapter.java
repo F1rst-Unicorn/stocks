@@ -24,21 +24,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
+import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
+import de.njsm.stocks.android.frontend.BaseAdapter;
 
 import java.util.List;
 
-import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
-import de.njsm.stocks.android.frontend.BaseAdapter;
-
 import static android.view.View.GONE;
 
-public class AmountAdapter extends BaseAdapter<FoodWithLatestItemView, AmountAdapter.ViewHolder> {
+public class AmountAdapter extends BaseAdapter<FoodSummaryView, AmountAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -71,7 +69,7 @@ public class AmountAdapter extends BaseAdapter<FoodWithLatestItemView, AmountAda
         }
     }
 
-    public AmountAdapter(LiveData<List<FoodWithLatestItemView>> data, Consumer<View> onClickListener, Consumer<View> onLongClickListener) {
+    public AmountAdapter(LiveData<List<FoodSummaryView>> data, Consumer<View> onClickListener, Consumer<View> onLongClickListener) {
         super(data, onClickListener, onLongClickListener);
     }
 
@@ -88,10 +86,10 @@ public class AmountAdapter extends BaseAdapter<FoodWithLatestItemView, AmountAda
     }
 
     @Override
-    protected void bindConcrete(ViewHolder holder, FoodWithLatestItemView data) {
+    protected void bindConcrete(ViewHolder holder, FoodSummaryView data) {
         holder.setName(data.getName());
-        holder.setAmount(String.valueOf(data.getAmount()));
-        holder.setBuyStatus(data.getToBuy());
+        holder.setAmount(data.printAmounts());
+        holder.setBuyStatus(data.isToBuy());
     }
 
     @Override

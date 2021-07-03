@@ -28,7 +28,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodSummaryView;
+import de.njsm.stocks.android.db.views.FoodSummaryWithExpirationView;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
@@ -54,7 +54,7 @@ public class FoodFragment extends InjectedFragment {
 
         LocationViewModel locationViewModel = getViewModelProvider().get(LocationViewModel.class);
 
-        LiveData<List<FoodSummaryView>> data;
+        LiveData<List<FoodSummaryWithExpirationView>> data;
 
         if (getArguments() != null) {
             input = FoodFragmentArgs.fromBundle(getArguments());
@@ -137,7 +137,7 @@ public class FoodFragment extends InjectedFragment {
     private void onClick(View view) {
         FoodAdapter.ViewHolder holder = (FoodAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodSummaryView> data = viewModel.getCurrentFoodSubset().getValue();
+        List<FoodSummaryWithExpirationView> data = viewModel.getCurrentFoodSubset().getValue();
         if (data != null) {
             int id = data.get(position).id;
             FoodFragmentDirections.ActionNavFragmentFoodToNavFragmentFoodItem args =

@@ -30,7 +30,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodToBuyInteractor;
@@ -58,7 +58,7 @@ public class ShoppingListFragment extends InjectedFragment {
         AmountAdapter adapter = new AmountAdapter(
                 viewModel.getFoodToBuy(),
                 this::onClick,
-                v -> editInternally(v, viewModel.getFoodToBuy(), R.string.dialog_rename_food, (f,s) -> editor.observeEditing(f.mapToFood(), s)));
+                v -> editInternally(v, viewModel.getFoodToBuy(), R.string.dialog_rename_food, editor::observeEditing));
         viewModel.getFoodToBuy().observe(getViewLifecycleOwner(), i -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
@@ -68,7 +68,7 @@ public class ShoppingListFragment extends InjectedFragment {
                     return viewModel.setToBuyStatus(f, s);
                 },
                 viewModel::getFood);
-        addSwipeToDelete(list, viewModel.getFoodToBuy(), R.drawable.ic_remove_shopping_cart_white_24, v -> buyInteractor.observeEditing(v.mapToFood(), false));
+        addSwipeToDelete(list, viewModel.getFoodToBuy(), R.drawable.ic_remove_shopping_cart_white_24, v -> buyInteractor.observeEditing(v, false));
 
         result.findViewById(R.id.template_swipe_list_fab).setVisibility(View.GONE);
         initialiseSwipeRefresh(result, viewModelFactory);
@@ -78,7 +78,7 @@ public class ShoppingListFragment extends InjectedFragment {
     private void onClick(View view) {
         AmountAdapter.ViewHolder holder = (AmountAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodWithLatestItemView> data = viewModel.getFoodToBuy().getValue();
+        List<FoodSummaryView> data = viewModel.getFoodToBuy().getValue();
         if (data != null) {
             int id = data.get(position).id;
             ShoppingListFragmentDirections.ActionNavFragmentShoppingListToNavFragmentFoodItem args =

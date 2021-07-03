@@ -4,33 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
 import androidx.room.Embedded;
 import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.db.entities.ScaledUnit;
-import de.njsm.stocks.android.db.entities.Sql;
-import de.njsm.stocks.android.db.entities.Unit;
 import org.threeten.bp.Instant;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class FoodSummaryView extends Food {
 
-    private final Instant eatBy;
-
     private final List<ScaledAmount> amounts;
 
-    public FoodSummaryView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit, Instant eatBy) {
+    public FoodSummaryView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit) {
         super(0, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
-        this.eatBy = eatBy;
         this.amounts = new ArrayList<>();
-    }
-
-    public Instant getEatBy() {
-        return eatBy;
     }
 
     public List<ScaledAmount> getAmounts() {
@@ -42,91 +33,72 @@ public class FoodSummaryView extends Food {
         return this;
     }
 
-    public static class SingleFoodSummaryView extends Food {
+    public String printAmounts() {
+        StringJoiner joiner = new StringJoiner(", ");
+        getAmounts()
+                .stream()
+                .map(ScaledAmount::getPrettyString)
+                .forEach(joiner::add);
+        return joiner.toString();
+    }
 
-        private final Instant eatBy;
+    public static class SingleFoodSummaryView extends Food {
 
         @Embedded
         private final ScaledAmount amount;
 
-        public SingleFoodSummaryView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit, Instant eatBy, ScaledAmount amount) {
+        public SingleFoodSummaryView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit, ScaledAmount amount) {
             super(0, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
-            this.eatBy = eatBy;
             this.amount = amount;
         }
 
-        public FoodSummaryView into() {
-            FoodSummaryView result = new FoodSummaryView(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit, eatBy);
-            result.getAmounts().add(amount);
-            return result;
-        }
-    }
-
-    public static class ScaledAmount {
-
-        private final int amount;
-
-        @Embedded(prefix = Sql.SCALED_UNIT_PREFIX)
-        private final ScaledUnit scaledUnit;
-
-        @Embedded(prefix = Sql.UNIT_PREFIX)
-        private final Unit unit;
-
-        public ScaledAmount(int amount, ScaledUnit scaledUnit, Unit unit) {
-            this.amount = amount;
-            this.scaledUnit = scaledUnit;
-            this.unit = unit;
-        }
-
-        public int getAmount() {
+        public ScaledAmount getAmount() {
             return amount;
         }
 
-        public ScaledUnit getScaledUnit() {
-            return scaledUnit;
-        }
-
-        public Unit getUnit() {
-            return unit;
-        }
-
-        public String getPrettyString() {
-            ScaledUnit copy = getScaledUnit().copy();
-            copy.setScale(copy.getScale().multiply(new BigDecimal(getAmount())));
-            return ScaledUnitView.getPrettyName(copy, getUnit());
+        public FoodSummaryView into() {
+            FoodSummaryView result = new FoodSummaryView(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
+            result.getAmounts().add(amount);
+            return result;
         }
     }
 
     public static class Mapper implements Function<List<SingleFoodSummaryView>, List<FoodSummaryView>> {
         @Override
         public List<FoodSummaryView> apply(List<SingleFoodSummaryView> foodSummaryView) {
-            return StreamSupport.stream(new Spliterator(foodSummaryView.iterator()), false)
+            return StreamSupport.stream(new Spliterator<>(foodSummaryView.iterator(), SingleFoodSummaryView::into, (i, o) -> o.merge(i)), false)
                     .collect(Collectors.toList());
         }
     }
 
-    private static class Spliterator implements java.util.Spliterator<FoodSummaryView> {
+    public static class Spliterator<I extends SingleFoodSummaryView, O extends FoodSummaryView> implements java.util.Spliterator<O> {
 
-        private final Iterator<SingleFoodSummaryView> iterator;
+        private final Iterator<I> iterator;
 
-        private FoodSummaryView current;
+        private final Function<I, O> base;
 
-        public Spliterator(Iterator<SingleFoodSummaryView> iterator) {
+        private final BiFunction<I, O, O> folder;
+
+        private O current;
+
+        public Spliterator(Iterator<I> iterator, Function<I, O> base, BiFunction<I, O, O> folder) {
             this.iterator = iterator;
+            this.base = base;
+            this.folder = folder;
         }
 
         @Override
-        public boolean tryAdvance(Consumer<? super FoodSummaryView> action) {
+        public boolean tryAdvance(Consumer<? super O> action) {
             while (iterator.hasNext()) {
-                SingleFoodSummaryView r = iterator.next();
+                I r = iterator.next();
                 if (current == null) {
-                    current = r.into();
+                    current = base.apply(r);
                 } else {
                     if (current.getId() == r.getId()) {
-                        current = current.merge(r);
+                        current = folder.apply(r, current);
                     } else {
                         action.accept(current);
-                        current = r.into();
+                        current = base.apply(r);
                         return true;
                     }
                 }
@@ -142,7 +114,7 @@ public class FoodSummaryView extends Food {
         }
 
         @Override
-        public java.util.Spliterator<FoodSummaryView> trySplit() {
+        public java.util.Spliterator<O> trySplit() {
             return null;
         }
 
@@ -153,6 +125,7 @@ public class FoodSummaryView extends Food {
 
         @Override
         public int characteristics() {
-            return ORDERED | NONNULL | IMMUTABLE;        }
+            return ORDERED | NONNULL | IMMUTABLE;
+        }
     }
 }

@@ -32,6 +32,7 @@ recipe_ingredient_join_fooditem=()
 unit_join_fooditem=()
 scaled_unit_join_fooditem=(unit)
 unit_join_scaled_unit=(unit)
+scaled_unit_join_food=(store_unit)
 
 cat <<EOF >"${OUTPUT_FILE}"
 /*

@@ -30,7 +30,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
@@ -66,7 +66,7 @@ public class SearchFragment extends InjectedFragment {
                 this::onClick,
                 v -> editInternally(v,
                         viewModel.getFoundData(),
-                        R.string.dialog_rename_food, (f,s) -> editor.observeEditing(f.mapToFood(), s)));
+                        R.string.dialog_rename_food, editor::observeEditing));
         viewModel.getFoundData().observe(getViewLifecycleOwner(), v -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
@@ -84,8 +84,8 @@ public class SearchFragment extends InjectedFragment {
                 viewModel::getFood);
 
         addBidirectionalSwiper(list, viewModel.getFoundData(), R.drawable.ic_add_shopping_cart_white_24,
-                v -> interactor.initiateDeletion(v.mapToFood()),
-                v -> buyInteractor.observeEditing(v.mapToFood(), true));
+                interactor::initiateDeletion,
+                v -> buyInteractor.observeEditing(v, true));
 
         initialiseSwipeRefresh(result, viewModelFactory);
         result.findViewById(R.id.template_swipe_list_fab).setVisibility(View.GONE);
@@ -95,9 +95,9 @@ public class SearchFragment extends InjectedFragment {
     private void onClick(View view) {
         AmountAdapter.ViewHolder holder = (AmountAdapter.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<FoodWithLatestItemView> list = viewModel.getFoundData().getValue();
+        List<FoodSummaryView> list = viewModel.getFoundData().getValue();
         if (list != null) {
-            int id = list.get(position).id;
+            int id = list.get(position).getId();
             SearchFragmentDirections.ActionNavFragmentSearchToNavFragmentFoodItem args =
                     SearchFragmentDirections.actionNavFragmentSearchToNavFragmentFoodItem(id);
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)

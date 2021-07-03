@@ -22,7 +22,7 @@ package de.njsm.stocks.android.frontend.emptyfood;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.db.views.FoodSummaryView;
+import de.njsm.stocks.android.db.views.FoodSummaryWithExpirationView;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.FoodRepository;
 import org.threeten.bp.Instant;
@@ -38,7 +38,7 @@ public class FoodViewModel extends ViewModel {
 
     private LiveData<List<Food>> allFood;
 
-    protected LiveData<List<FoodSummaryView>> foodByLocation;
+    protected LiveData<List<FoodSummaryWithExpirationView>> foodByLocation;
 
     @Inject
     public FoodViewModel(FoodRepository foodRepository) {
@@ -85,11 +85,11 @@ public class FoodViewModel extends ViewModel {
         }
     }
 
-    public LiveData<List<FoodSummaryView>> getCurrentFoodSubset() {
+    public LiveData<List<FoodSummaryWithExpirationView>> getCurrentFoodSubset() {
         return foodByLocation;
     }
 
-    public LiveData<List<FoodSummaryView>> getFoodByLocation() {
+    public LiveData<List<FoodSummaryWithExpirationView>> getFoodByLocation() {
         return foodByLocation;
     }
 

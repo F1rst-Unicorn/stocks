@@ -20,7 +20,7 @@
 package de.njsm.stocks.android.frontend.shoppinglist;
 
 import androidx.lifecycle.LiveData;
-import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.repo.FoodRepository;
 
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class FoodToBuyViewModel extends FoodViewModel {
 
-    private LiveData<List<FoodWithLatestItemView>> data;
+    private LiveData<List<FoodSummaryView>> data;
 
     public FoodToBuyViewModel(FoodRepository foodRepository) {
         super(foodRepository);
@@ -40,7 +40,7 @@ public class FoodToBuyViewModel extends FoodViewModel {
         }
     }
 
-    public LiveData<List<FoodWithLatestItemView>> getFoodToBuy() {
+    public LiveData<List<FoodSummaryView>> getFoodToBuy() {
         return data;
     }
 }
