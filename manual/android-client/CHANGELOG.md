@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [3.10.0.0]
+
+### Added
+
+* STOCKS-115: Support for units of measurement
+
 ## [3.9.0.2]
 
 ### Fixed
