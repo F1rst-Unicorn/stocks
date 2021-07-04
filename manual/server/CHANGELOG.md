@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [5.5.0.0]
+
+* STOCKS-115: Extend API to support food and food item unit editing
+
+* STOCKS-115: Extend API to support editing of units and scaled units
+
 ## [5.4.0.0]
 
 ### Added
