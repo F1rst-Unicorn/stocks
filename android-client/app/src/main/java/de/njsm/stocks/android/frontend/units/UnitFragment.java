@@ -77,8 +77,8 @@ public class UnitFragment extends InjectedFragment implements Editor<Unit> {
                 .setTitle(getResources().getString(R.string.dialog_new_unit))
                 .setView(form)
                 .setPositiveButton(getResources().getString(R.string.dialog_ok), (dialog, whichButton) -> {
-                    String name = ((EditText) form.findViewById(R.id.form_unit_name)).getText().toString();
-                    String abbreviation = ((EditText) form.findViewById(R.id.form_unit_abbreviation)).getText().toString();
+                    String name = ((EditText) form.findViewById(R.id.form_unit_name)).getText().toString().trim();
+                    String abbreviation = ((EditText) form.findViewById(R.id.form_unit_abbreviation)).getText().toString().trim();
                     LiveData<StatusCode> result = viewModel.add(name, abbreviation);
                     result.observe(this, this::maybeShowAddError);
                 })
@@ -87,8 +87,8 @@ public class UnitFragment extends InjectedFragment implements Editor<Unit> {
 
     @Override
     public LiveData<StatusCode> edit(Unit item, DialogInterface dialog, View view) {
-        String newName = ((EditText) view.findViewById(R.id.form_unit_name)).getText().toString();
-        String newAbbreviation = ((EditText) view.findViewById(R.id.form_unit_abbreviation)).getText().toString();
+        String newName = ((EditText) view.findViewById(R.id.form_unit_name)).getText().toString().trim();
+        String newAbbreviation = ((EditText) view.findViewById(R.id.form_unit_abbreviation)).getText().toString().trim();
         return viewModel.edit(item, newName, newAbbreviation);
     }
 
