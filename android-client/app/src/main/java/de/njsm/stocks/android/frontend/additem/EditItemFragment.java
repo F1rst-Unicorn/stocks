@@ -38,6 +38,10 @@ import org.threeten.bp.ZoneId;
 
 public class EditItemFragment extends AddItemFragment {
 
+    MenuItem submitButton;
+
+    MenuItem indicator;
+
     @Override
     void initialiseForm(View view) {
         assert getArguments() != null;
@@ -80,16 +84,24 @@ public class EditItemFragment extends AddItemFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_edit_item_options, menu);
+        indicator = menu.findItem(R.id.fragment_edit_item_options_indicator);
+        indicator.setActionView(R.layout.template_progress_indicator);
+        indicator.setVisible(false);
+        submitButton = menu.findItem(R.id.fragment_edit_item_options_done);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startFormSubmission();
+        if (item.getItemId() == R.id.fragment_edit_item_options_done) {
+            startFormSubmission();
+        }
         return true;
     }
 
     @Override
     void startFormSubmission() {
+        indicator.setVisible(true);
+        submitButton.setVisible(false);
         viewModel.getItem().observe(getViewLifecycleOwner(), f -> {
             viewModel.getItem().removeObservers(getViewLifecycleOwner());
             submitForm(f);

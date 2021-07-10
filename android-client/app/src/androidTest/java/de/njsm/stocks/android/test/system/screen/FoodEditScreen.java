@@ -52,7 +52,7 @@ public class FoodEditScreen extends AbstractScreen {
     }
 
     public FoodScreen save() {
-        onView(withId(R.id.fragment_food_edit_save)).perform(click());
+        onView(withId(R.id.fragment_food_edit_options_save)).perform(click());
         return new FoodScreen();
     }
 }

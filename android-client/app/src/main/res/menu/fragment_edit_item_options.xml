@@ -30,4 +30,11 @@
         android:title="@string/action_save"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/fragment_edit_item_options_indicator"
+        android:title=""
+        android:orderInCategory="101"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+
 </menu>

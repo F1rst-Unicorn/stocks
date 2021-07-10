@@ -65,6 +65,10 @@ public class FoodEditFragment extends InjectedFragment {
 
     Spinner unitSpinner;
 
+    MenuItem submitButton;
+
+    MenuItem indicator;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -157,15 +161,23 @@ public class FoodEditFragment extends InjectedFragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_food_edit_options, menu);
+        indicator = menu.findItem(R.id.fragment_food_edit_options_indicator);
+        indicator.setActionView(R.layout.template_progress_indicator);
+        indicator.setVisible(false);
+        submitButton = menu.findItem(R.id.fragment_food_edit_options_save);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        startFormSubmission();
+        if (item.getItemId() == R.id.fragment_food_edit_options_save) {
+            startFormSubmission();
+        }
         return true;
     }
 
     void startFormSubmission() {
+        indicator.setVisible(true);
+        submitButton.setVisible(false);
         foodViewModel.getFood().removeObservers(getViewLifecycleOwner());
         foodViewModel.getFood().observe(getViewLifecycleOwner(), f -> {
             foodViewModel.getFood().removeObservers(getViewLifecycleOwner());
