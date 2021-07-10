@@ -54,6 +54,11 @@ public class ScaledUnitView extends ScaledUnit {
     }
 
     public static String getPrettyName(ScaledUnit scaledUnit, Unit unit) {
-        return scaledUnit.normalise() + unit.getAbbreviation();
+        String abbreviation = unit.getAbbreviation();
+        if (Character.isLowerCase(abbreviation.charAt(0))) {
+            return scaledUnit.normalise() + abbreviation;
+        } else {
+            return scaledUnit.normalise() + " " + abbreviation;
+        }
     }
 }
