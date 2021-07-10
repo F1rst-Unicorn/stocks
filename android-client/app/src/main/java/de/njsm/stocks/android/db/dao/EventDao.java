@@ -134,7 +134,7 @@ public abstract class EventDao {
     }
 
     public DataSource.Factory<Integer, EntityEvent<?>> getFoodItemHistory() {
-        return getFoodItemHistory(DATABASE_INFINITY)
+        return getFoodItemHistoryInternally()
                 .map(AbstractHistoryView::mapToEvent);
     }
 
@@ -154,7 +154,7 @@ public abstract class EventDao {
     }
 
     public DataSource.Factory<Integer, EntityEvent<?>> getFoodItemHistoryOfSingleFood(int id) {
-        return getFoodItemHistoryOfSingleFood(id, DATABASE_INFINITY)
+        return getFoodItemHistoryOfSingleFoodInternally(id)
                 .map(AbstractHistoryView::mapToEvent);
     }
 
@@ -169,7 +169,7 @@ public abstract class EventDao {
     }
 
     public DataSource.Factory<Integer, EntityEvent<?>> getFoodItemHistoryOfSingleLocation(int id) {
-        return getFoodItemHistoryOfSingleLocation(id, DATABASE_INFINITY)
+        return getFoodItemHistoryOfSingleLocationInternally(id)
                 .map(AbstractHistoryView::mapToEvent);
     }
 
@@ -269,7 +269,7 @@ public abstract class EventDao {
             Sql.FOODITEM_JOIN_INITIATOR +
             Sql.FOODITEM_WHERE_VALID +
             "order by main_table_1.transaction_time_start desc")
-    abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistory(Instant infinity);
+    abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistoryInternally();
 
     @Query("select " +
             "l1.name as version1_name, l1.location as version1_location, l1.to_buy as version1_to_buy, l1.expiration_offset as version1_expiration_offset, l1.location as version1_location, f1.name as version1_location_name, l1.description as version1_description, unit_1.abbreviation as version1_unit_abbreviation, scaled_unit_1.scale as version1_scale, l1.store_unit as version1_store_unit, " +
@@ -317,7 +317,7 @@ public abstract class EventDao {
             Sql.FOODITEM_WHERE_VALID +
             "and main_table_1.of_type = :id " +
             "order by main_table_1.transaction_time_start desc")
-    abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistoryOfSingleFood(int id, Instant infinity);
+    abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistoryOfSingleFoodInternally(int id);
 
     @Query("select " +
             "f1.name as version1_identified_food_name, l1.number as version1_number, l1.identifies as version1_identifies," +
@@ -361,7 +361,7 @@ public abstract class EventDao {
             Sql.FOODITEM_WHERE_VALID +
             "and main_table_1.stored_in = :id or main_table_2.stored_in = :id " +
             "order by main_table_1.transaction_time_start desc")
-    abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistoryOfSingleLocation(int id, Instant infinity);
+    abstract PositionalDataSource.Factory<Integer, FoodItemHistoryView> getFoodItemHistoryOfSingleLocationInternally(int id);
 
     @Query("select " +
             "l1.name as version1_name, l1.description as version1_description, " +

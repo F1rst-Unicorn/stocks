@@ -111,7 +111,7 @@ public abstract class FoodDao implements Inserter<Food> {
             "where food.valid_time_start <= " + NOW +
             "and " + NOW + " < food.valid_time_end " +
             "and food.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
-            "order by eatBy, food._id")
+            "order by eatBy, food._id, scaled_amount.unit__id")
     public abstract LiveData<List<FoodSummaryWithExpirationView.SingleFoodSummaryView>> getFoodToEatSummary();
 
     @Query("with least_eat_by_date as (" +
@@ -146,7 +146,7 @@ public abstract class FoodDao implements Inserter<Food> {
             "where food.valid_time_start <= " + NOW +
             "and " + NOW + " < food.valid_time_end " +
             "and food.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
-            "order by eatBy, food._id")
+            "order by eatBy, food._id, scaled_amount.unit__id")
     public abstract LiveData<List<FoodSummaryWithExpirationView.SingleFoodSummaryView>> getFoodByLocationSummary(int location);
 
     @Query("select f._id, f.version, f.initiates, f.name, f.to_buy, f.expiration_offset, f.location as location, f.description as description, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end, f.store_unit " +
@@ -204,7 +204,7 @@ public abstract class FoodDao implements Inserter<Food> {
                 "where fooditem.valid_time_start <= " + NOW +
                 "and " + NOW + " < fooditem.valid_time_end " +
                 "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "') " +
-        "order by name"
+        "order by food.name, food._id, unit__id"
     )
     public abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodToBuy();
 
@@ -250,7 +250,7 @@ public abstract class FoodDao implements Inserter<Food> {
                 "where fooditem.valid_time_start <= " + NOW +
                 "and " + NOW + " < fooditem.valid_time_end " +
                 "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "') " +
-        "order by name"
+        "order by food.name, food._id, unit__id"
     )
     public abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodBySubString(String searchTerm);
 
