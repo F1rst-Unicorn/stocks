@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## [3.10.0.1]
+
+### Added
+
+* Aggregate amounts with common unit
+
+* Sort units alphabetically
+
+* Trim unit names before adding them
+
+### Fixed
+
+* Display food amounts with unit in all places now
+
 ## [3.10.0.0]
 
 ### Added
