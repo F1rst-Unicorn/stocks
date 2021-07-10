@@ -64,7 +64,7 @@ public class FoodRepository {
         return foodDao.getFood(id);
     }
 
-    public LiveData<List<Food>> getEmptyFood() {
+    public LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getEmptyFood() {
         LOG.d("getting empty food");
         return foodDao.getEmptyFood();
     }

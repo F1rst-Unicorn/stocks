@@ -25,39 +25,44 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
+import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
+import de.njsm.stocks.android.frontend.BaseAdapter;
 
 import java.util.List;
 
-import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.entities.Food;
-import de.njsm.stocks.android.frontend.BaseAdapter;
-
 import static android.view.View.GONE;
 
-public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
+public class FoodAdapter extends BaseAdapter<FoodSummaryView.SingleFoodSummaryView, FoodAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private RelativeLayout view;
 
-        private TextView textView;
+        private TextView name;
+
+        private TextView amount;
 
         private ImageView shoppingCart;
 
         ViewHolder(@NonNull RelativeLayout itemView) {
             super(itemView);
             view = itemView;
-            textView = view.findViewById(R.id.item_empty_food_outline_name);
+            name = view.findViewById(R.id.item_empty_food_outline_name);
+            amount = view.findViewById(R.id.item_empty_food_outline_amount_number);
             shoppingCart = view.findViewById(R.id.item_empty_food_outline_shopping_flag);
         }
 
-        public void setText(CharSequence c) {
-            textView.setText(c);
+        public void setName(CharSequence c) {
+            name.setText(c);
+        }
+
+        public void setAmount(String amount) {
+            this.amount.setText(amount);
         }
 
         public void setBuyStatus(boolean toBuy) {
@@ -68,7 +73,7 @@ public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
         }
     }
 
-    FoodAdapter(LiveData<List<Food>> data, Consumer<View> onClickListener, Consumer<View> onLongClickListener) {
+    FoodAdapter(LiveData<List<FoodSummaryView.SingleFoodSummaryView>> data, Consumer<View> onClickListener, Consumer<View> onLongClickListener) {
         super(data, onClickListener, onLongClickListener);
     }
 
@@ -85,14 +90,16 @@ public class FoodAdapter extends BaseAdapter<Food, FoodAdapter.ViewHolder> {
     }
 
     @Override
-    protected void bindConcrete(ViewHolder holder, Food data) {
-        holder.setText(data.name);
+    protected void bindConcrete(ViewHolder holder, FoodSummaryView.SingleFoodSummaryView data) {
+        holder.setName(data.name);
+        holder.setAmount(data.getAmount().getPrettyString());
         holder.setBuyStatus(data.toBuy);
     }
 
     @Override
     protected void bindVoid(ViewHolder holder) {
-        holder.setText("");
+        holder.setName("");
+        holder.setAmount("");
         holder.setBuyStatus(false);
     }
 }

@@ -30,7 +30,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.FoodDeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.FoodEditInteractor;
@@ -91,9 +91,9 @@ public class EmptyFoodFragment extends InjectedFragment {
     private void onListItemClicked(View view) {
         RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) view.getTag();
         int position = holder.getAdapterPosition();
-        List<Food> data = viewModel.getEmptyFood().getValue();
+        List<FoodSummaryView.SingleFoodSummaryView> data = viewModel.getEmptyFood().getValue();
         if (data != null) {
-            int id = data.get(position).id;
+            int id = data.get(position).getId();
             EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentFoodItem args =
                     EmptyFoodFragmentDirections.actionNavFragmentEmptyFoodToNavFragmentFoodItem(id);
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)

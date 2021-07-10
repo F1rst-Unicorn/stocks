@@ -25,7 +25,6 @@ import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.Sql;
 import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.db.views.FoodSummaryWithExpirationView;
-import de.njsm.stocks.android.db.views.FoodWithLatestItemView;
 import org.threeten.bp.Instant;
 
 import java.util.List;
@@ -54,7 +53,7 @@ public abstract class FoodDao implements Inserter<Food> {
         insert(food);
     }
 
-    public LiveData<List<Food>> getEmptyFood() {
+    public LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getEmptyFood() {
         return getEmptyFood(DATABASE_INFINITY);
     }
 
@@ -94,18 +93,25 @@ public abstract class FoodDao implements Inserter<Food> {
             "order by name")
     abstract LiveData<List<Food>> getAll(Instant infinity);
 
-    @Query("select * " +
-            "from Food f " +
-            "where f.valid_time_start <= " + NOW +
-            "and " + NOW + " < f.valid_time_end " +
-            "and f.transaction_time_end = :infinity " +
-            "and _id not in " +
-            "(select distinct of_type from FoodItem i " +
-            "where i.valid_time_start <= " + NOW +
-            "and " + NOW + " < i.valid_time_end " +
-            "and i.transaction_time_end = :infinity) " +
-            "order by _id")
-    abstract LiveData<List<Food>> getEmptyFood(Instant infinity);
+    @Query("select " +
+            FOOD_FIELDS +
+            UNIT_FIELDS_QUALIFIED +
+            SCALED_UNIT_FIELDS_QUALIFIED +
+            "0 as amount " +
+            "from food food " +
+            SCALED_UNIT_JOIN_FOOD +
+            UNIT_JOIN_SCALED_UNIT +
+            "where food.valid_time_start <= " + NOW +
+            "and " + NOW + " < food.valid_time_end " +
+            "and food.transaction_time_end = :infinity " +
+            "and food._id not in (" +
+                "select distinct of_type " +
+                "from fooditem fooditem " +
+                "where fooditem.valid_time_start <= " + NOW +
+                "and " + NOW + " < fooditem.valid_time_end " +
+                "and fooditem.transaction_time_end = :infinity) " +
+            "order by food._id")
+    abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getEmptyFood(Instant infinity);
 
     @Query("with least_eat_by_date as (" +
                 "select i.of_type as of_type, i.eat_by as eatBy " +

@@ -20,7 +20,7 @@
 package de.njsm.stocks.android.frontend.emptyfood;
 
 import androidx.lifecycle.LiveData;
-import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.repo.FoodRepository;
 import de.njsm.stocks.android.util.Logger;
 
@@ -31,7 +31,7 @@ public class EmptyFoodViewModel extends FoodViewModel {
 
     private static final Logger LOG = new Logger(EmptyFoodViewModel.class);
 
-    private LiveData<List<Food>> food;
+    private LiveData<List<FoodSummaryView.SingleFoodSummaryView>> food;
 
     @Inject
     public EmptyFoodViewModel(FoodRepository foodRepository) {
@@ -45,7 +45,7 @@ public class EmptyFoodViewModel extends FoodViewModel {
         }
     }
 
-    LiveData<List<Food>> getEmptyFood() {
+    LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getEmptyFood() {
         return food;
     }
 
