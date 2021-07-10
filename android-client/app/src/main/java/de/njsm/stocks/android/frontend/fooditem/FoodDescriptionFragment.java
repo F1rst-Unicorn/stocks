@@ -35,6 +35,7 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.*;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.views.ScaledAmount;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
@@ -89,7 +90,7 @@ public class FoodDescriptionFragment extends InjectedFragment {
 
         foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
                 foodItemViewModel.countItemsOfType(f.id).observe(getViewLifecycleOwner(), i ->
-                        amount.setText(String.valueOf(i))));
+                        amount.setText(ScaledAmount.getPrettyString(i))));
 
         foodViewModel.getFood().observe(getViewLifecycleOwner(), f ->
                 scaledUnitViewModel.getUnit(f.storeUnit).observe(getViewLifecycleOwner(), i ->

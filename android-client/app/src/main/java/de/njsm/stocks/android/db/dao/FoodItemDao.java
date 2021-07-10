@@ -24,10 +24,12 @@ import androidx.room.*;
 import de.njsm.stocks.android.db.entities.FoodItem;
 import de.njsm.stocks.android.db.entities.Sql;
 import de.njsm.stocks.android.db.views.FoodItemView;
+import de.njsm.stocks.android.db.views.ScaledAmount;
 import org.threeten.bp.Instant;
 
 import java.util.List;
 
+import static de.njsm.stocks.android.db.entities.Sql.*;
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
@@ -56,7 +58,7 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
         return getItem(id, DATABASE_INFINITY);
     }
 
-    public LiveData<Integer> countItemsOfType(int foodId) {
+    public LiveData<List<ScaledAmount>> countItemsOfType(int foodId) {
         return countItemsOfType(foodId, DATABASE_INFINITY);
     }
 
@@ -127,13 +129,20 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
             "limit 1")
     abstract LiveData<Instant> getLatestExpirationOf(int foodType, Instant infinity);
 
-    @Query("select count(*) " +
-            "from fooditem i " +
-            "where i.of_type = :foodId " +
-            "and i.valid_time_start <= " + NOW +
-            "and " + NOW + " < i.valid_time_end " +
-            "and i.transaction_time_end = :infinity")
-    abstract LiveData<Integer> countItemsOfType(int foodId, Instant infinity);
+    @Query("select " +
+            SCALED_UNIT_FIELDS_QUALIFIED +
+            UNIT_FIELDS_QUALIFIED +
+            "count(*) as amount " +
+            "from fooditem fooditem " +
+            SCALED_UNIT_JOIN_FOODITEM +
+            UNIT_JOIN_SCALED_UNIT +
+            "where fooditem.of_type = :foodId " +
+            "and fooditem.valid_time_start <= " + NOW +
+            "and " + NOW + " < fooditem.valid_time_end " +
+            "and fooditem.transaction_time_end = :infinity " +
+            "group by scaled_unit._id " +
+            "order by unit._id")
+    abstract LiveData<List<ScaledAmount>> countItemsOfType(int foodId, Instant infinity);
 
     @Query("delete from fooditem")
     abstract void delete();

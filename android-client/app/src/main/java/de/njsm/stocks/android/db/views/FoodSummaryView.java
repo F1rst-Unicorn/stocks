@@ -4,14 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
 import androidx.room.Embedded;
 import de.njsm.stocks.android.db.entities.Food;
+import de.njsm.stocks.android.db.util.Aggregator;
 import org.threeten.bp.Instant;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -34,12 +33,7 @@ public class FoodSummaryView extends Food {
     }
 
     public String printAmounts() {
-        StringJoiner joiner = new StringJoiner(", ");
-        getAmounts()
-                .stream()
-                .map(ScaledAmount::getPrettyString)
-                .forEach(joiner::add);
-        return joiner.toString();
+        return ScaledAmount.getPrettyString(getAmounts());
     }
 
     public static class SingleFoodSummaryView extends Food {
@@ -71,61 +65,31 @@ public class FoodSummaryView extends Food {
         }
     }
 
-    public static class Spliterator<I extends SingleFoodSummaryView, O extends FoodSummaryView> implements java.util.Spliterator<O> {
-
-        private final Iterator<I> iterator;
+    public static class Spliterator<I extends SingleFoodSummaryView, O extends FoodSummaryView> extends Aggregator<I, O> {
 
         private final Function<I, O> base;
 
         private final BiFunction<I, O, O> folder;
 
-        private O current;
-
         public Spliterator(Iterator<I> iterator, Function<I, O> base, BiFunction<I, O, O> folder) {
-            this.iterator = iterator;
+            super(iterator);
             this.base = base;
             this.folder = folder;
         }
 
         @Override
-        public boolean tryAdvance(Consumer<? super O> action) {
-            while (iterator.hasNext()) {
-                I r = iterator.next();
-                if (current == null) {
-                    current = base.apply(r);
-                } else {
-                    if (current.getId() == r.getId()) {
-                        current = folder.apply(r, current);
-                    } else {
-                        action.accept(current);
-                        current = base.apply(r);
-                        return true;
-                    }
-                }
-            }
-
-            if (current != null) {
-                action.accept(current);
-                current = null;
-                return true;
-            } else {
-                return false;
-            }
+        public O base(I input) {
+            return base.apply(input);
         }
 
         @Override
-        public java.util.Spliterator<O> trySplit() {
-            return null;
+        public boolean sameGroup(O current, I input) {
+            return current.getId() == input.getId();
         }
 
         @Override
-        public long estimateSize() {
-            return iterator.hasNext() ? Long.MAX_VALUE : 0;
-        }
-
-        @Override
-        public int characteristics() {
-            return ORDERED | NONNULL | IMMUTABLE;
+        public O merge(O current, I input) {
+            return folder.apply(input, current);
         }
     }
 }

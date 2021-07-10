@@ -22,6 +22,7 @@ package de.njsm.stocks.android.frontend.fooditem;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.views.FoodItemView;
+import de.njsm.stocks.android.db.views.ScaledAmount;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.FoodItemRepository;
 import org.threeten.bp.Instant;
@@ -76,7 +77,7 @@ public class FoodItemViewModel extends ViewModel {
         return foodItemRepository.getLatestExpirationOf(foodId);
     }
 
-    public LiveData<Integer> countItemsOfType(int foodId) {
+    public LiveData<List<ScaledAmount>> countItemsOfType(int foodId) {
         return foodItemRepository.countItemsOfType(foodId);
     }
 

@@ -26,6 +26,10 @@ import de.njsm.stocks.android.db.entities.Sql;
 import de.njsm.stocks.android.db.entities.Unit;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.StreamSupport;
 
 public class ScaledAmount {
 
@@ -59,5 +63,34 @@ public class ScaledAmount {
         ScaledUnit copy = getScaledUnit().copy();
         copy.setScale(copy.getScale().multiply(new BigDecimal(getAmount())));
         return ScaledUnitView.getPrettyName(copy, getUnit());
+    }
+
+    public static String getPrettyString(List<ScaledAmount> amounts) {
+        StringJoiner joiner = new StringJoiner(", ");
+        StreamSupport.stream(new Aggregator(amounts.iterator()), false)
+                .map(ScaledAmount::getPrettyString)
+                .forEach(joiner::add);
+        return joiner.toString();
+    }
+
+    private static class Aggregator extends de.njsm.stocks.android.db.util.SingleTypeAggregator<ScaledAmount> {
+
+        public Aggregator(Iterator<ScaledAmount> iterator) {
+            super(iterator);
+        }
+
+        @Override
+        public boolean sameGroup(ScaledAmount current, ScaledAmount input) {
+            return current.getUnit().getId() == input.getUnit().getId();
+        }
+
+        @Override
+        public ScaledAmount merge(ScaledAmount current, ScaledAmount input) {
+            BigDecimal total = input.getScaledUnit().getScale().multiply(new BigDecimal(input.getAmount()))
+                    .add(current.getScaledUnit().getScale().multiply(new BigDecimal(current.getAmount())));
+            ScaledUnit newScaledUnit = current.scaledUnit.copy();
+            newScaledUnit.setScale(total);
+            return new ScaledAmount(1, newScaledUnit, current.getUnit());
+        }
     }
 }

@@ -23,6 +23,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import de.njsm.stocks.android.db.dao.FoodItemDao;
 import de.njsm.stocks.android.db.views.FoodItemView;
+import de.njsm.stocks.android.db.views.ScaledAmount;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
@@ -101,8 +102,8 @@ public class FoodItemRepository {
         return result;
     }
 
-    public LiveData<Integer> countItemsOfType(int foodId) {
-        LOG.d("editing items of type " + foodId);
+    public LiveData<List<ScaledAmount>> countItemsOfType(int foodId) {
+        LOG.d("counting items of type " + foodId);
         return foodItemDao.countItemsOfType(foodId);
     }
 
