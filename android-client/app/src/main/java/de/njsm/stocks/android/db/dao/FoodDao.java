@@ -31,7 +31,7 @@ import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.db.entities.Sql.*;
-import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY_STRING;
 
 @Dao
 public abstract class FoodDao implements Inserter<Food> {
@@ -39,42 +39,10 @@ public abstract class FoodDao implements Inserter<Food> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(Food[] food);
 
-    public LiveData<List<Food>> getAll() {
-        return getAll(DATABASE_INFINITY);
-    }
-
-    public LiveData<Food> getFood(int id) {
-        return getFood(id, DATABASE_INFINITY);
-    }
-
     @Transaction
     public void synchronise(Food[] food) {
         delete();
         insert(food);
-    }
-
-    public LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getEmptyFood() {
-        return getEmptyFood(DATABASE_INFINITY);
-    }
-
-    public LiveData<List<FoodSummaryWithExpirationView.SingleFoodSummaryView>> getFoodToEatSummary() {
-        return getFoodToEatSummary(DATABASE_INFINITY);
-    }
-
-    public LiveData<List<FoodSummaryWithExpirationView.SingleFoodSummaryView>> getFoodByLocationSummary(int location) {
-        return getFoodByLocationSummary(location, DATABASE_INFINITY);
-    }
-
-    public LiveData<Food> getFoodByEanNumber(String s) {
-        return getFoodByEanNumber(s, DATABASE_INFINITY);
-    }
-
-    public LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodBySubString(String searchTerm) {
-        return getFoodBySubString(DATABASE_INFINITY, searchTerm);
-    }
-
-    public LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodToBuy() {
-        return getFoodToBuy(DATABASE_INFINITY);
     }
 
     @Query("select * " +
@@ -82,16 +50,16 @@ public abstract class FoodDao implements Inserter<Food> {
             "where _id = :id " +
             "and valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity")
-    abstract LiveData<Food> getFood(int id, Instant infinity);
+            "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "'")
+    public abstract LiveData<Food> getFood(int id);
 
     @Query("select * " +
             "from Food " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity " +
+            "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "order by name")
-    abstract LiveData<List<Food>> getAll(Instant infinity);
+    public abstract LiveData<List<Food>> getAll();
 
     @Query("select " +
             FOOD_FIELDS +
@@ -103,22 +71,22 @@ public abstract class FoodDao implements Inserter<Food> {
             UNIT_JOIN_SCALED_UNIT +
             "where food.valid_time_start <= " + NOW +
             "and " + NOW + " < food.valid_time_end " +
-            "and food.transaction_time_end = :infinity " +
+            "and food.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "and food._id not in (" +
                 "select distinct of_type " +
                 "from fooditem fooditem " +
                 "where fooditem.valid_time_start <= " + NOW +
                 "and " + NOW + " < fooditem.valid_time_end " +
-                "and fooditem.transaction_time_end = :infinity) " +
+                "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "') " +
             "order by food._id")
-    abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getEmptyFood(Instant infinity);
+    public abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getEmptyFood();
 
     @Query("with least_eat_by_date as (" +
                 "select i.of_type as of_type, i.eat_by as eatBy " +
                 "from FoodItem i " +
                 "where i.valid_time_start <= " + NOW +
                 "and " + NOW + " < i.valid_time_end " +
-                "and i.transaction_time_end = :infinity " +
+                "and i.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
                 "group by i.of_type " +
                 "having i.eat_by = MIN(i.eat_by)), " +
             "scaled_amount as (" +
@@ -131,7 +99,7 @@ public abstract class FoodDao implements Inserter<Food> {
                 Sql.UNIT_JOIN_SCALED_UNIT +
                 "where fooditem.valid_time_start <= " + NOW +
                 "and " + NOW + " < fooditem.valid_time_end " +
-                "and fooditem.transaction_time_end = :infinity " +
+                "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
                 "group by fooditem.of_type, fooditem.unit" +
             ") " +
             "select " +
@@ -142,9 +110,9 @@ public abstract class FoodDao implements Inserter<Food> {
             "inner join scaled_amount on scaled_amount.of_type = food._id " +
             "where food.valid_time_start <= " + NOW +
             "and " + NOW + " < food.valid_time_end " +
-            "and food.transaction_time_end = :infinity " +
+            "and food.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "order by eatBy, food._id")
-    abstract LiveData<List<FoodSummaryWithExpirationView.SingleFoodSummaryView>> getFoodToEatSummary(Instant infinity);
+    public abstract LiveData<List<FoodSummaryWithExpirationView.SingleFoodSummaryView>> getFoodToEatSummary();
 
     @Query("with least_eat_by_date as (" +
                 "select fooditem.of_type as of_type, fooditem.eat_by as eatBy " +
@@ -152,7 +120,7 @@ public abstract class FoodDao implements Inserter<Food> {
                 "where fooditem.valid_time_start <= " + NOW +
                 "and fooditem.stored_in = :location " +
                 "and " + NOW + " < fooditem.valid_time_end " +
-                "and fooditem.transaction_time_end = :infinity " +
+                "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
                 "group by fooditem.of_type " +
                 "having fooditem.eat_by = MIN(fooditem.eat_by)), " +
             "scaled_amount as (" +
@@ -165,7 +133,7 @@ public abstract class FoodDao implements Inserter<Food> {
                 Sql.UNIT_JOIN_SCALED_UNIT +
                 "where fooditem.valid_time_start <= " + NOW +
                 "and " + NOW + " < fooditem.valid_time_end " +
-                "and fooditem.transaction_time_end = :infinity " +
+                "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
                 "and fooditem.stored_in = :location " +
                 "group by fooditem.of_type, fooditem.unit" +
             ") " +
@@ -177,9 +145,9 @@ public abstract class FoodDao implements Inserter<Food> {
             "inner join scaled_amount on scaled_amount.of_type = food._id " +
             "where food.valid_time_start <= " + NOW +
             "and " + NOW + " < food.valid_time_end " +
-            "and food.transaction_time_end = :infinity " +
+            "and food.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "order by eatBy, food._id")
-    abstract LiveData<List<FoodSummaryWithExpirationView.SingleFoodSummaryView>> getFoodByLocationSummary(int location, Instant infinity);
+    public abstract LiveData<List<FoodSummaryWithExpirationView.SingleFoodSummaryView>> getFoodByLocationSummary(int location);
 
     @Query("select f._id, f.version, f.initiates, f.name, f.to_buy, f.expiration_offset, f.location as location, f.description as description, f.valid_time_start, f.valid_time_end, f.transaction_time_start, f.transaction_time_end, f.store_unit " +
             "from Food f " +
@@ -187,12 +155,12 @@ public abstract class FoodDao implements Inserter<Food> {
             "where n.number = :s " +
             "and f.valid_time_start <= " + NOW +
             "and " + NOW + " < f.valid_time_end " +
-            "and f.transaction_time_end = :infinity " +
+            "and f.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "and n.valid_time_start <= " + NOW +
             "and " + NOW + " < n.valid_time_end " +
-            "and n.transaction_time_end = :infinity " +
+            "and n.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "limit 1")
-    abstract LiveData<Food> getFoodByEanNumber(String s, Instant infinity);
+    public abstract LiveData<Food> getFoodByEanNumber(String s);
 
     @Query(
         "with scaled_amount as (" +
@@ -205,7 +173,7 @@ public abstract class FoodDao implements Inserter<Food> {
             Sql.UNIT_JOIN_SCALED_UNIT +
             "where fooditem.valid_time_start <= " + NOW +
             "and " + NOW + " < fooditem.valid_time_end " +
-            "and fooditem.transaction_time_end = :infinity " +
+            "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "group by fooditem.of_type, fooditem.unit" +
         ") " +
             "select " +
@@ -216,7 +184,7 @@ public abstract class FoodDao implements Inserter<Food> {
             "where food.to_buy " +
             "and food.valid_time_start <= " + NOW +
             "and " + NOW + " < food.valid_time_end " +
-            "and food.transaction_time_end = :infinity " +
+            "and food.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
         "union all " +
             "select " +
             FOOD_FIELDS +
@@ -229,16 +197,16 @@ public abstract class FoodDao implements Inserter<Food> {
             "where food.to_buy " +
             "and food.valid_time_start <= " + NOW +
             "and " + NOW + " < food.valid_time_end " +
-            "and food.transaction_time_end = :infinity " +
+            "and food.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "and food._id not in (" +
                 "select distinct of_type " +
                 "from fooditem fooditem " +
                 "where fooditem.valid_time_start <= " + NOW +
                 "and " + NOW + " < fooditem.valid_time_end " +
-                "and fooditem.transaction_time_end = :infinity) " +
+                "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "') " +
         "order by name"
     )
-    abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodToBuy(Instant infinity);
+    public abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodToBuy();
 
     @Query(
         "with scaled_amount as (" +
@@ -251,7 +219,7 @@ public abstract class FoodDao implements Inserter<Food> {
             Sql.UNIT_JOIN_SCALED_UNIT +
             "where fooditem.valid_time_start <= " + NOW +
             "and " + NOW + " < fooditem.valid_time_end " +
-            "and fooditem.transaction_time_end = :infinity " +
+            "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "group by fooditem.of_type, fooditem.unit" +
         ") " +
             "select " +
@@ -262,7 +230,7 @@ public abstract class FoodDao implements Inserter<Food> {
             "where food.name like :searchTerm " +
             "and food.valid_time_start <= " + NOW +
             "and " + NOW + " < food.valid_time_end " +
-            "and food.transaction_time_end = :infinity " +
+            "and food.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
         "union all " +
             "select " +
             FOOD_FIELDS +
@@ -275,16 +243,16 @@ public abstract class FoodDao implements Inserter<Food> {
             "where food.name like :searchTerm " +
             "and food.valid_time_start <= " + NOW +
             "and " + NOW + " < food.valid_time_end " +
-            "and food.transaction_time_end = :infinity " +
+            "and food.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "and food._id not in (" +
                 "select distinct of_type " +
                 "from fooditem fooditem " +
                 "where fooditem.valid_time_start <= " + NOW +
                 "and " + NOW + " < fooditem.valid_time_end " +
-                "and fooditem.transaction_time_end = :infinity) " +
+                "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "') " +
         "order by name"
     )
-    abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodBySubString(Instant infinity, String searchTerm);
+    public abstract LiveData<List<FoodSummaryView.SingleFoodSummaryView>> getFoodBySubString(String searchTerm);
 
     @Query("delete from Food")
     abstract void delete();
