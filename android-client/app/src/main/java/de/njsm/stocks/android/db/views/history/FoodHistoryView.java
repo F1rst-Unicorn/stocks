@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -17,36 +18,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.db.views;
+package de.njsm.stocks.android.db.views.history;
 
 import de.njsm.stocks.android.business.data.eventlog.ChangedEntityEvent;
-import de.njsm.stocks.android.business.data.eventlog.ChangedLocationEvent;
+import de.njsm.stocks.android.business.data.eventlog.ChangedFoodEvent;
 import de.njsm.stocks.android.business.data.eventlog.DeletedEntityEvent;
-import de.njsm.stocks.android.business.data.eventlog.DeletedLocationEvent;
+import de.njsm.stocks.android.business.data.eventlog.DeletedFoodEvent;
 import de.njsm.stocks.android.business.data.eventlog.NewEntityEvent;
-import de.njsm.stocks.android.business.data.eventlog.NewLocationEvent;
-import de.njsm.stocks.android.db.entities.Location;
+import de.njsm.stocks.android.business.data.eventlog.NewFoodEvent;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.db.views.FoodWithLocationName;
 
-public class LocationHistoryView extends AbstractHistoryView<Location> {
+public class FoodHistoryView extends AbstractHistoryView<FoodWithLocationName> {
 
-    public LocationHistoryView(Location version1, Location version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
+    public FoodHistoryView(FoodWithLocationName version1, FoodWithLocationName version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
         super(version1, version2, isFirst, initiatorUser, initiatorUserDevice);
     }
 
     @Override
     NewEntityEvent<?> getNewEntityEvent() {
-        return new NewLocationEvent(initiatorUser, initiatorUserDevice, version1);
+        return new NewFoodEvent(initiatorUser, initiatorUserDevice, version1);
     }
 
     @Override
     ChangedEntityEvent<?> getChangedEntityEvent() {
-        return new ChangedLocationEvent(initiatorUser, initiatorUserDevice, version1, version2);
+        return new ChangedFoodEvent(initiatorUser, initiatorUserDevice, version1, version2);
     }
 
     @Override
     DeletedEntityEvent<?> getDeletedEntityEvent() {
-        return new DeletedLocationEvent(initiatorUser, initiatorUserDevice, version1);
+        return new DeletedFoodEvent(initiatorUser, initiatorUserDevice, version1);
     }
 }

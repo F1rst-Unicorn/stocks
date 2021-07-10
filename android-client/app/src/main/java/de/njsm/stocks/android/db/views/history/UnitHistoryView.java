@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -17,30 +18,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.db.views;
+package de.njsm.stocks.android.db.views.history;
 
 import de.njsm.stocks.android.business.data.eventlog.*;
+import de.njsm.stocks.android.db.entities.Unit;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 
-public class ScaledUnitHistoryView extends AbstractHistoryView<ScaledUnitView> {
+public class UnitHistoryView extends AbstractHistoryView<Unit> {
 
-    public ScaledUnitHistoryView(ScaledUnitView version1, ScaledUnitView version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
+    public UnitHistoryView(Unit version1, Unit version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
         super(version1, version2, isFirst, initiatorUser, initiatorUserDevice);
     }
 
     @Override
     NewEntityEvent<?> getNewEntityEvent() {
-        return new NewScaledUnitEvent(initiatorUser, initiatorUserDevice, version1);
+        return new NewUnitEvent(initiatorUser, initiatorUserDevice, version1);
     }
 
     @Override
     ChangedEntityEvent<?> getChangedEntityEvent() {
-        return new ChangedScaledUnitEvent(initiatorUser, initiatorUserDevice, version1, version2);
+        return new ChangedUnitEvent(initiatorUser, initiatorUserDevice, version1, version2);
     }
 
     @Override
     DeletedEntityEvent<?> getDeletedEntityEvent() {
-        return new DeletedScaledUnitEvent(initiatorUser, initiatorUserDevice, version1);
+        return new DeletedUnitEvent(initiatorUser, initiatorUserDevice, version1);
     }
 }

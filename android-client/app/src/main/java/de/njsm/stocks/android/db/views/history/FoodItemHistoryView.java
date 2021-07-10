@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -17,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.db.views;
+package de.njsm.stocks.android.db.views.history;
 
 import de.njsm.stocks.android.business.data.eventlog.ChangedEntityEvent;
 import de.njsm.stocks.android.business.data.eventlog.ChangedFoodItemEvent;
@@ -27,6 +28,7 @@ import de.njsm.stocks.android.business.data.eventlog.NewEntityEvent;
 import de.njsm.stocks.android.business.data.eventlog.NewFoodItemEvent;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.db.views.FoodItemViewWithFood;
 
 public class FoodItemHistoryView extends AbstractHistoryView<FoodItemViewWithFood> {
 

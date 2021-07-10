@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -17,34 +18,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.db.views;
+package de.njsm.stocks.android.db.views.history;
 
-import de.njsm.stocks.android.business.data.eventlog.ChangedEntityEvent;
-import de.njsm.stocks.android.business.data.eventlog.DeletedEanNumberEvent;
-import de.njsm.stocks.android.business.data.eventlog.DeletedEntityEvent;
-import de.njsm.stocks.android.business.data.eventlog.NewEanNumberEvent;
-import de.njsm.stocks.android.business.data.eventlog.NewEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.*;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.db.views.ScaledUnitView;
 
-public class EanNumberHistoryView extends AbstractHistoryView<EanNumberView> {
+public class ScaledUnitHistoryView extends AbstractHistoryView<ScaledUnitView> {
 
-    public EanNumberHistoryView(EanNumberView version1, EanNumberView version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
+    public ScaledUnitHistoryView(ScaledUnitView version1, ScaledUnitView version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
         super(version1, version2, isFirst, initiatorUser, initiatorUserDevice);
     }
 
     @Override
     NewEntityEvent<?> getNewEntityEvent() {
-        return new NewEanNumberEvent(initiatorUser, initiatorUserDevice, version1);
+        return new NewScaledUnitEvent(initiatorUser, initiatorUserDevice, version1);
     }
 
     @Override
     ChangedEntityEvent<?> getChangedEntityEvent() {
-        return null;
+        return new ChangedScaledUnitEvent(initiatorUser, initiatorUserDevice, version1, version2);
     }
 
     @Override
     DeletedEntityEvent<?> getDeletedEntityEvent() {
-        return new DeletedEanNumberEvent(initiatorUser, initiatorUserDevice, version1);
+        return new DeletedScaledUnitEvent(initiatorUser, initiatorUserDevice, version1);
     }
 }

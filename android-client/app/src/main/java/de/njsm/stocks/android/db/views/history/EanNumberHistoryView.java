@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -17,25 +18,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.db.views;
+package de.njsm.stocks.android.db.views.history;
 
 import de.njsm.stocks.android.business.data.eventlog.ChangedEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.DeletedEanNumberEvent;
 import de.njsm.stocks.android.business.data.eventlog.DeletedEntityEvent;
-import de.njsm.stocks.android.business.data.eventlog.DeletedUserDeviceEvent;
+import de.njsm.stocks.android.business.data.eventlog.NewEanNumberEvent;
 import de.njsm.stocks.android.business.data.eventlog.NewEntityEvent;
-import de.njsm.stocks.android.business.data.eventlog.NewUserDeviceEvent;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.db.views.EanNumberView;
 
-public class UserDeviceHistoryView extends AbstractHistoryView<UserDeviceWithUser> {
+public class EanNumberHistoryView extends AbstractHistoryView<EanNumberView> {
 
-    public UserDeviceHistoryView(UserDeviceWithUser version1, UserDeviceWithUser version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
+    public EanNumberHistoryView(EanNumberView version1, EanNumberView version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
         super(version1, version2, isFirst, initiatorUser, initiatorUserDevice);
     }
 
     @Override
     NewEntityEvent<?> getNewEntityEvent() {
-        return new NewUserDeviceEvent(initiatorUser, initiatorUserDevice, version1);
+        return new NewEanNumberEvent(initiatorUser, initiatorUserDevice, version1);
     }
 
     @Override
@@ -45,6 +47,6 @@ public class UserDeviceHistoryView extends AbstractHistoryView<UserDeviceWithUse
 
     @Override
     DeletedEntityEvent<?> getDeletedEntityEvent() {
-        return new DeletedUserDeviceEvent(initiatorUser, initiatorUserDevice, version1);
+        return new DeletedEanNumberEvent(initiatorUser, initiatorUserDevice, version1);
     }
 }

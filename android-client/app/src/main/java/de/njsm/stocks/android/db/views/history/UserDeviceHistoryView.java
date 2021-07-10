@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -17,31 +18,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.db.views;
+package de.njsm.stocks.android.db.views.history;
 
-import de.njsm.stocks.android.business.data.eventlog.*;
-import de.njsm.stocks.android.db.entities.Unit;
+import de.njsm.stocks.android.business.data.eventlog.ChangedEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.DeletedEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.DeletedUserDeviceEvent;
+import de.njsm.stocks.android.business.data.eventlog.NewEntityEvent;
+import de.njsm.stocks.android.business.data.eventlog.NewUserDeviceEvent;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
+import de.njsm.stocks.android.db.views.UserDeviceWithUser;
 
-public class UnitHistoryView extends AbstractHistoryView<Unit> {
+public class UserDeviceHistoryView extends AbstractHistoryView<UserDeviceWithUser> {
 
-    public UnitHistoryView(Unit version1, Unit version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
+    public UserDeviceHistoryView(UserDeviceWithUser version1, UserDeviceWithUser version2, boolean isFirst, User initiatorUser, UserDevice initiatorUserDevice) {
         super(version1, version2, isFirst, initiatorUser, initiatorUserDevice);
     }
 
     @Override
     NewEntityEvent<?> getNewEntityEvent() {
-        return new NewUnitEvent(initiatorUser, initiatorUserDevice, version1);
+        return new NewUserDeviceEvent(initiatorUser, initiatorUserDevice, version1);
     }
 
     @Override
     ChangedEntityEvent<?> getChangedEntityEvent() {
-        return new ChangedUnitEvent(initiatorUser, initiatorUserDevice, version1, version2);
+        return null;
     }
 
     @Override
     DeletedEntityEvent<?> getDeletedEntityEvent() {
-        return new DeletedUnitEvent(initiatorUser, initiatorUserDevice, version1);
+        return new DeletedUserDeviceEvent(initiatorUser, initiatorUserDevice, version1);
     }
 }

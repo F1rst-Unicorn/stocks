@@ -26,7 +26,7 @@ import androidx.room.Query;
 import androidx.room.RewriteQueriesToDropUnusedColumns;
 import de.njsm.stocks.android.business.data.eventlog.EntityEvent;
 import de.njsm.stocks.android.db.entities.Sql;
-import de.njsm.stocks.android.db.views.*;
+import de.njsm.stocks.android.db.views.history.*;
 import org.threeten.bp.Instant;
 
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
