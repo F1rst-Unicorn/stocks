@@ -140,7 +140,7 @@ public class FoodEndpointTest {
     @Test
     public void foodIsAdded() {
         FoodForInsertion data = new FoodForInsertion("Banana", 1);
-        when(manager.add(data)).thenReturn(Validation.success(5));
+        when(manager.add(data)).thenReturn(SUCCESS);
 
         Response response = uut.putFood(createMockRequest(), data.getName(), data.getStoreUnit().orElseThrow());
 

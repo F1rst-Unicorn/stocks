@@ -103,6 +103,10 @@ public enum StatusCode {
         return this != SUCCESS;
     }
 
+    public boolean isSuccess() {
+        return !isFail();
+    }
+
     public Validation<StatusCode, StatusCode> toValidation() {
         if (isFail())
             return Validation.fail(this);

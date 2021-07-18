@@ -66,7 +66,7 @@ public class FoodHandlerTest extends DbTestCase {
     public void addAFood() {
         FoodForInsertion data = new FoodForInsertion("Banana", 1);
 
-        Validation<StatusCode, Integer> code = uut.add(data);
+        StatusCode code = uut.add(data);
 
         assertTrue(code.isSuccess());
 

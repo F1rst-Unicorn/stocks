@@ -24,7 +24,6 @@ import de.njsm.stocks.server.v2.business.UnitManager;
 import de.njsm.stocks.server.v2.business.data.UnitForInsertion;
 import de.njsm.stocks.server.v2.business.data.UnitForRenaming;
 import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,7 +70,7 @@ public class UnitEndpointTest {
     @Test
     public void validPuttingIsDone() {
         UnitForInsertion input = new UnitForInsertion("name", "abbreviation");
-        when(manager.add(any())).thenReturn(Validation.success(1));
+        when(manager.add(any())).thenReturn(StatusCode.SUCCESS);
 
         Response response = uut.put(createMockRequest(), input.getName(), input.getAbbreviation());
 
@@ -83,7 +82,7 @@ public class UnitEndpointTest {
     @Test
     public void invalidBusinessPuttingIsPropagated() {
         UnitForInsertion input = new UnitForInsertion("name", "abbreviation");
-        when(manager.add(any())).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+        when(manager.add(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
         Response response = uut.put(createMockRequest(), input.getName(), input.getAbbreviation());
 

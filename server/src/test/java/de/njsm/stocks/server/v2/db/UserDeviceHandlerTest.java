@@ -83,7 +83,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
     public void addingNewDeviceWorks() {
         UserDeviceForInsertion device = new UserDeviceForInsertion("newDevice", 1);
 
-        Validation<StatusCode, Integer> result = uut.add(device);
+        Validation<StatusCode, Integer> result = uut.addReturningId(device);
 
 
         Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false, Instant.EPOCH);

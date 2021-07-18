@@ -109,12 +109,12 @@ public class UserEndpointTest {
     @Test
     public void validAddingIsSuccessful() {
         String name = "user";
-        Mockito.when(userManager.addUser(any())).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(userManager.add(any())).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.putUser(createMockRequest(), name);
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
-        Mockito.verify(userManager).addUser(new UserForInsertion(name));
+        Mockito.verify(userManager).add(new UserForInsertion(name));
         Mockito.verify(userManager).setPrincipals(TEST_USER);
     }
 

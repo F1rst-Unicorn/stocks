@@ -84,7 +84,7 @@ public class FoodItemHandlerTest extends DbTestCase {
     public void testInserting() {
         FoodItemForInsertion item = new FoodItemForInsertion(Instant.EPOCH, 2, 1, 1, 1, 1);
 
-        Validation<StatusCode, Integer> result = uut.add(item);
+        StatusCode result = uut.add(item);
 
         Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
         assertTrue(result.isSuccess());

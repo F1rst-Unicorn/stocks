@@ -26,11 +26,13 @@ import de.njsm.stocks.server.v2.business.data.EanNumberForDeletion;
 import de.njsm.stocks.server.v2.business.data.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -55,7 +57,7 @@ public class EanNumberEndpoint extends Endpoint implements
                 isValid(foodId, "foodId")) {
 
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new EanNumberForInsertion(foodId, code));
+            StatusCode status = manager.add(new EanNumberForInsertion(foodId, code));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

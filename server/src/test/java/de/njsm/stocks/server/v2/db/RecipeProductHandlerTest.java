@@ -23,6 +23,7 @@ import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.BitemporalRecipeProduct;
 import de.njsm.stocks.server.v2.business.data.RecipeProduct;
 import de.njsm.stocks.server.v2.business.data.RecipeProductForDeletion;
+import de.njsm.stocks.server.v2.business.data.RecipeProductForInsertion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +55,7 @@ public class RecipeProductHandlerTest extends DbTestCase {
     public void insertingWorks() {
         RecipeProductForInsertion data = new RecipeProductForInsertion(5, 3, 1, 1);
 
-        Validation<StatusCode, Integer> result = uut.add(data);
+        Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
         assertTrue(result.isSuccess());
         assertEquals(Integer.valueOf(2), result.success());

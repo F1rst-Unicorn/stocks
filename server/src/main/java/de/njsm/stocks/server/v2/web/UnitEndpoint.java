@@ -27,11 +27,13 @@ import de.njsm.stocks.server.v2.business.data.UnitForInsertion;
 import de.njsm.stocks.server.v2.business.data.UnitForRenaming;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
 import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -52,7 +54,7 @@ public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Del
                             @QueryParam("abbreviation") String abbreviation) {
         if (isValid(name, "name") && isValid(abbreviation, "abbreviation")) {
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new UnitForInsertion(name, abbreviation));
+            StatusCode status = manager.add(new UnitForInsertion(name, abbreviation));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

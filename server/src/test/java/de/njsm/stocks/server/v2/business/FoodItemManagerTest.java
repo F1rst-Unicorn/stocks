@@ -81,10 +81,10 @@ public class FoodItemManagerTest {
     @Test
     public void testAddingItem() {
         FoodItemForInsertion data = new FoodItemForInsertion(Instant.now(), 2, 2, 3, 3, 1);
-        Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
+        Mockito.when(backend.add(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodHandler.setToBuyStatus(any(), eq(false))).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Integer> result = uut.add(data);
+        StatusCode result = uut.add(data);
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).add(data);

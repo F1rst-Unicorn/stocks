@@ -46,7 +46,7 @@ public class LocationManager extends BusinessObject<LocationRecord, Location> im
     }
 
     public StatusCode put(LocationForInsertion location) {
-        return add(location).toEither().left().orValue(StatusCode.SUCCESS);
+        return add(location);
     }
 
     public StatusCode rename(LocationForRenaming item) {

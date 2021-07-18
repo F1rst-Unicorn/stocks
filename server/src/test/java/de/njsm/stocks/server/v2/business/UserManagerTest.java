@@ -87,10 +87,10 @@ public class UserManagerTest {
     @Test
     public void successfulAddingWorks() {
         UserForInsertion input = new UserForInsertion("fdsa");
-        Mockito.when(userDbHandler.add(any())).thenReturn(Validation.success(4));
+        Mockito.when(userDbHandler.add(any())).thenReturn(StatusCode.SUCCESS);
         Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.addUser(input);
+        StatusCode result = uut.add(input);
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(userDbHandler).add(input);
@@ -100,9 +100,9 @@ public class UserManagerTest {
     @Test
     public void failingAddingWorks() {
         UserForInsertion input = new UserForInsertion("fdsa");
-        Mockito.when(userDbHandler.add(any())).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+        Mockito.when(userDbHandler.add(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        StatusCode result = uut.addUser(input);
+        StatusCode result = uut.add(input);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         Mockito.verify(userDbHandler).add(input);

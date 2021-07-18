@@ -54,7 +54,7 @@ public class UserEndpoint extends Endpoint implements Get<UserRecord, User>, Del
 
         if (isValidName(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.addUser(new UserForInsertion(name));
+            StatusCode result = manager.add(new UserForInsertion(name));
             return new Response(result);
 
         } else {

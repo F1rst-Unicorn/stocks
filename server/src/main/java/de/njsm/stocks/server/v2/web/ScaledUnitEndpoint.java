@@ -27,7 +27,6 @@ import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
 import de.njsm.stocks.server.v2.business.data.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +55,7 @@ public class ScaledUnitEndpoint extends Endpoint implements Get<ScaledUnitRecord
                             @QueryParam("unit") int unit) {
         if (isValidBigDecimal(scale, "scale") && isValid(unit, "unit")) {
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new ScaledUnitForInsertion(new BigDecimal(scale), unit));
+            StatusCode status = manager.add(new ScaledUnitForInsertion(new BigDecimal(scale), unit));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

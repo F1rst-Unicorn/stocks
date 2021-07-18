@@ -53,7 +53,7 @@ public class EanNumberHandlerTest extends DbTestCase {
     public void addAEanNumber() {
         EanNumberForInsertion data = new EanNumberForInsertion(1, "Code");
 
-        Validation<StatusCode, Integer> code = uut.add(data);
+        Validation<StatusCode, Integer> code = uut.addReturningId(data);
 
         assertTrue(code.isSuccess());
         assertEquals(Integer.valueOf(2), code.success());

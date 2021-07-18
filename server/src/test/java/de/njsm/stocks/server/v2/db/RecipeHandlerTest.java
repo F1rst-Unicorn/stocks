@@ -56,7 +56,7 @@ public class RecipeHandlerTest extends DbTestCase {
     public void insertingWorks() {
         RecipeForInsertion data = new RecipeForInsertion("Soup", "Take water and carrots", Duration.ofMinutes(30));
 
-        Validation<StatusCode, Integer> result = uut.add(data);
+        Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
         assertTrue(result.isSuccess());
         assertEquals(Integer.valueOf(2), result.success());

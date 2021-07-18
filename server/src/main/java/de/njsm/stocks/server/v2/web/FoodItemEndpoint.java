@@ -29,7 +29,6 @@ import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -69,7 +68,7 @@ public class FoodItemEndpoint extends Endpoint implements
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
             manager.setPrincipals(user);
-            Validation<StatusCode, Integer> status = manager.add(new FoodItemForInsertion(eatByDate,
+            StatusCode status = manager.add(new FoodItemForInsertion(eatByDate,
                     ofType, storedIn, user.getDid(), user.getUid(), unit));
             return new Response(status);
 

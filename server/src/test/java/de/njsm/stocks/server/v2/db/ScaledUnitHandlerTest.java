@@ -54,7 +54,7 @@ public class ScaledUnitHandlerTest extends DbTestCase {
     public void insertingWorks() {
         ScaledUnitForInsertion data = new ScaledUnitForInsertion(BigDecimal.ONE, 1);
 
-        Validation<StatusCode, Integer> result = uut.add(data);
+        Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
         assertTrue(result.isSuccess());
         assertEquals(Integer.valueOf(3), result.success());

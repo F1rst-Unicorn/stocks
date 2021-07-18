@@ -27,7 +27,6 @@ import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
-import fj.data.Validation;
 
 public class FoodItemManager extends BusinessObject<FoodItemRecord, FoodItem> implements
         BusinessGettable<FoodItemRecord, FoodItem>,
@@ -43,12 +42,9 @@ public class FoodItemManager extends BusinessObject<FoodItemRecord, FoodItem> im
         this.foodHandler = foodHandler;
     }
 
-    public Validation<StatusCode, Integer> add(FoodItemForInsertion item) {
-        return runFunction(() -> {
-            Validation<StatusCode, Integer> result = dbHandler.add(item);
-            return result.bind(v -> foodHandler.setToBuyStatus(item.getOfTypeFood(), false)
-                    .toValidation().map((__) -> v));
-        });
+    public StatusCode add(FoodItemForInsertion item) {
+        return runOperation(() -> dbHandler.add(item)
+                .bind(() -> foodHandler.setToBuyStatus(item.getOfTypeFood(), false)));
     }
 
     public StatusCode edit(FoodItemForEditing item) {

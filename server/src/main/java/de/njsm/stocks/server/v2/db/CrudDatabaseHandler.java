@@ -56,7 +56,11 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
         super.setPrincipals(principals);
     }
 
-    public Validation<StatusCode, Integer> add(Insertable<T, N> item) {
+    public StatusCode add(Insertable<T, N> item) {
+        return addReturningId(item).toEither().left().orValue(StatusCode.SUCCESS);
+    }
+
+    public Validation<StatusCode, Integer> addReturningId(Insertable<T, N> item) {
         return runFunction(context -> {
             int lastInsertId = item.insertValue(context.insertInto(getTable()), principals)
                     .returning(getIdField())

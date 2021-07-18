@@ -24,7 +24,6 @@ import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +51,7 @@ public class FoodEndpoint extends Endpoint implements
                             @QueryParam("unit") Integer storeUnit) {
         if (isValid(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new FoodForInsertion(name, storeUnit));
+            StatusCode status = manager.add(new FoodForInsertion(name, storeUnit));
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

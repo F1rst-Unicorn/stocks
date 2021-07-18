@@ -79,7 +79,7 @@ public class DeviceManagerTest {
     public void addDeviceSuccessfully() {
         int newId = 1;
         UserDeviceForInsertion device = new UserDeviceForInsertion("testdevice", 3);
-        Mockito.when(dbHandler.add(device)).thenReturn(Validation.success(newId));
+        Mockito.when(dbHandler.addReturningId(device)).thenReturn(Validation.success(newId));
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(ticketDbHandler.addTicket(eq(newId), any())).thenReturn(StatusCode.SUCCESS);
 
@@ -88,7 +88,7 @@ public class DeviceManagerTest {
         assertTrue(result.isSuccess());
         assertEquals(newId, result.success().getDeviceId());
 
-        Mockito.verify(dbHandler).add(device);
+        Mockito.verify(dbHandler).addReturningId(device);
         Mockito.verify(dbHandler).commit();
         Mockito.verify(ticketDbHandler).addTicket(eq(newId), any(String.class));
     }
@@ -96,14 +96,14 @@ public class DeviceManagerTest {
     @Test
     public void addDeviceDbErrorPropagates() {
         UserDeviceForInsertion device = new UserDeviceForInsertion("testdevice", 3);
-        Mockito.when(dbHandler.add(device)).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+        Mockito.when(dbHandler.addReturningId(device)).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
 
         Validation<StatusCode, NewDeviceTicket> result = uut.addDevice(device);
 
         assertTrue(result.isFail());
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
 
-        Mockito.verify(dbHandler).add(device);
+        Mockito.verify(dbHandler).addReturningId(device);
         Mockito.verify(dbHandler).rollback();
     }
 
@@ -111,7 +111,7 @@ public class DeviceManagerTest {
     public void addDeviceTicketErrorPropagates() {
         int newId = 3;
         UserDeviceForInsertion device = new UserDeviceForInsertion("testdevice", 3);
-        Mockito.when(dbHandler.add(device)).thenReturn(Validation.success(newId));
+        Mockito.when(dbHandler.addReturningId(device)).thenReturn(Validation.success(newId));
         Mockito.when(ticketDbHandler.addTicket(eq(newId), any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
         Validation<StatusCode, NewDeviceTicket> result = uut.addDevice(device);
@@ -119,7 +119,7 @@ public class DeviceManagerTest {
         assertTrue(result.isFail());
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
 
-        Mockito.verify(dbHandler).add(device);
+        Mockito.verify(dbHandler).addReturningId(device);
         Mockito.verify(dbHandler).rollback();
         Mockito.verify(ticketDbHandler).addTicket(eq(newId), any(String.class));
     }

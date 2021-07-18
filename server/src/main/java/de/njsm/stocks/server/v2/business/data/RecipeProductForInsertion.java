@@ -1,8 +1,6 @@
-package de.njsm.stocks.server.v2.db;
+package de.njsm.stocks.server.v2.business.data;
 
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.Insertable;
-import de.njsm.stocks.server.v2.business.data.RecipeProduct;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeProductRecord;
 import org.jooq.InsertOnDuplicateStep;
 import org.jooq.InsertSetStep;

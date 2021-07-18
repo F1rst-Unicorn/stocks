@@ -19,9 +19,12 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.server.v2.business.data.FullRecipeForInsertion;
 import de.njsm.stocks.server.v2.business.data.Recipe;
 import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
 import de.njsm.stocks.server.v2.db.RecipeHandler;
+import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;
+import de.njsm.stocks.server.v2.db.RecipeProductHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 
 public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
@@ -30,12 +33,30 @@ public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
 
     private final RecipeHandler dbHandler;
 
-    public RecipeManager(RecipeHandler dbHandler) {
+    private final RecipeIngredientHandler recipeIngredientHandler;
+
+    private final RecipeProductHandler recipeProductHandler;
+
+    public RecipeManager(RecipeHandler dbHandler, RecipeIngredientHandler ingredientHandler, RecipeProductHandler recipeProductHandler) {
         super(dbHandler);
         this.dbHandler = dbHandler;
+        recipeIngredientHandler = ingredientHandler;
+        this.recipeProductHandler = recipeProductHandler;
     }
 
     public StatusCode delete(RecipeForDeletion recipe) {
         return runOperation(() -> dbHandler.delete(recipe));
+    }
+
+    public StatusCode add(FullRecipeForInsertion fullRecipeForInsertion) {
+        return runOperation(() -> fullRecipeForInsertion.getIngredients().stream()
+                .reduce(StatusCode.SUCCESS,
+                        (code, item) -> code.bind(() -> recipeIngredientHandler.add(item)),
+                        (x, y) -> x)
+                .bind(() -> fullRecipeForInsertion.getProducts().stream()
+                        .reduce(StatusCode.SUCCESS,
+                                (code, item) -> code.bind(() -> recipeProductHandler.add(item)),
+                                (x,y) -> x))
+                .bind(() -> dbHandler.add(fullRecipeForInsertion.getRecipe())));
     }
 }

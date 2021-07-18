@@ -109,7 +109,7 @@ public class EanNumberEndpointTest {
     @Test
     public void eanNumberIsAdded() {
         EanNumberForInsertion data = new EanNumberForInsertion(2, "CODE");
-        when(manager.add(data)).thenReturn(Validation.success(5));
+        when(manager.add(data)).thenReturn(SUCCESS);
 
         Response response = uut.putEanNumber(createMockRequest(), data.getEanNumber(), data.getIdentifiesFood());
 

@@ -54,7 +54,7 @@ public class UnitHandlerTest extends DbTestCase {
     public void insertingWorks() {
         UnitForInsertion data = new UnitForInsertion("name", "abbreviation");
 
-        Validation<StatusCode, Integer> result = uut.add(data);
+        Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
         assertTrue(result.isSuccess());
         assertEquals(Integer.valueOf(3), result.success());

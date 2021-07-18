@@ -49,10 +49,6 @@ public class UserManager extends BusinessObject<UserRecord, User> implements
         this.foodItemHandler = foodItemHandler;
     }
 
-    public StatusCode addUser(UserForInsertion u) {
-        return add(u).toEither().left().orValue(StatusCode.SUCCESS);
-    }
-
     @Override
     public StatusCode delete(UserForDeletion userToDelete) {
         return runOperation(() -> {

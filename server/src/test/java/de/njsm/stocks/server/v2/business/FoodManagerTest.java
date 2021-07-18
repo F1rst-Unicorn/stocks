@@ -83,11 +83,11 @@ public class FoodManagerTest {
     @Test
     public void testAddingItem() {
         FoodForInsertion data = new FoodForInsertion("Cheese", 1);
-        Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
+        Mockito.when(backend.add(data)).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Integer> result = uut.add(data);
+        StatusCode result = uut.add(data);
 
-        assertTrue(result.isSuccess());
+        assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(backend).add(data);
         Mockito.verify(backend).commit();
     }

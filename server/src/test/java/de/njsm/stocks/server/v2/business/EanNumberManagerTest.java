@@ -72,11 +72,11 @@ public class EanNumberManagerTest {
     @Test
     public void testAddingItem() {
         EanNumberForInsertion data = new EanNumberForInsertion(2, "code");
-        Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
+        Mockito.when(backend.add(data)).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Integer> result = uut.add(data);
+        StatusCode result = uut.add(data);
 
-        assertTrue(result.isSuccess());
+        assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(backend).add(data);
         Mockito.verify(backend).commit();
     }

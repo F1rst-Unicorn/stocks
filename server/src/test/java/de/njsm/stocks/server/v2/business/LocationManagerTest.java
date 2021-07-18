@@ -70,7 +70,7 @@ public class LocationManagerTest {
     @Test
     public void puttingIsDelegated() {
         LocationForInsertion input = new LocationForInsertion("test");
-        Mockito.when(dbLayer.add(input)).thenReturn(Validation.success(1));
+        Mockito.when(dbLayer.add(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.put(input);

@@ -105,7 +105,7 @@ public class LocationHandlerTest extends DbTestCase {
     public void addALocation() {
         LocationForInsertion data = new LocationForInsertion("Fridge");
 
-        Validation<StatusCode, Integer> code = uut.add(data);
+        StatusCode code = uut.add(data);
 
         assertTrue(code.isSuccess());
 

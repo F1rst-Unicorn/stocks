@@ -61,7 +61,7 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
     public Validation<StatusCode, NewDeviceTicket> addDevice(UserDeviceForInsertion device) {
         return runFunction(() -> {
 
-            Validation<StatusCode, Integer> deviceAddResult = userDeviceHandler.add(device);
+            Validation<StatusCode, Integer> deviceAddResult = userDeviceHandler.addReturningId(device);
             if (deviceAddResult.isFail())
                 return Validation.fail(deviceAddResult.fail());
 

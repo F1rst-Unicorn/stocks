@@ -81,7 +81,7 @@ public class UserHandlerTest extends DbTestCase {
     public void addingUserWorks() {
         UserForInsertion input = new UserForInsertion("testuser");
 
-        Validation<StatusCode, Integer> result = uut.add(input);
+        Validation<StatusCode, Integer> result = uut.addReturningId(input);
 
         Validation<StatusCode, Stream<User>> users = uut.get(false, Instant.EPOCH);
         assertTrue(result.isSuccess());
