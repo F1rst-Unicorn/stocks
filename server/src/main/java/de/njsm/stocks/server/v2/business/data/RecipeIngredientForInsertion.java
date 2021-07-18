@@ -1,28 +1,21 @@
 package de.njsm.stocks.server.v2.business.data;
 
-import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
-import org.jooq.InsertOnDuplicateStep;
-import org.jooq.InsertSetStep;
+import de.njsm.stocks.server.v2.web.Endpoint;
 
 import java.util.Objects;
 
-import static de.njsm.stocks.server.v2.db.jooq.tables.RecipeIngredient.RECIPE_INGREDIENT;
-
-public class RecipeIngredientForInsertion implements Insertable<RecipeIngredientRecord, RecipeIngredient> {
+public class RecipeIngredientForInsertion
+        implements Validatable {
 
     private final int amount;
 
     private final int ingredient;
 
-    private final int recipe;
-
     private final int unit;
 
-    public RecipeIngredientForInsertion(int amount, int ingredient, int recipe, int unit) {
+    public RecipeIngredientForInsertion(int amount, int ingredient, int unit) {
         this.amount = amount;
         this.ingredient = ingredient;
-        this.recipe = recipe;
         this.unit = unit;
     }
 
@@ -34,12 +27,12 @@ public class RecipeIngredientForInsertion implements Insertable<RecipeIngredient
         return ingredient;
     }
 
-    public int getRecipe() {
-        return recipe;
-    }
-
     public int getUnit() {
         return unit;
+    }
+
+    public RecipeIngredientWithIdForInsertion withRecipe(int recipe) {
+        return new RecipeIngredientWithIdForInsertion(amount, ingredient, unit, recipe);
     }
 
     @Override
@@ -47,25 +40,17 @@ public class RecipeIngredientForInsertion implements Insertable<RecipeIngredient
         if (this == o) return true;
         if (!(o instanceof RecipeIngredientForInsertion)) return false;
         RecipeIngredientForInsertion that = (RecipeIngredientForInsertion) o;
-        return getAmount() == that.getAmount() && getIngredient() == that.getIngredient() && getRecipe() == that.getRecipe() && getUnit() == that.getUnit();
+        return getAmount() == that.getAmount() && getIngredient() == that.getIngredient() && getUnit() == that.getUnit();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAmount(), getIngredient(), getRecipe(), getUnit());
+        return Objects.hash(getAmount(), getIngredient(), getUnit());
     }
 
     @Override
-    public InsertOnDuplicateStep<RecipeIngredientRecord> insertValue(InsertSetStep<RecipeIngredientRecord> arg, Principals principals) {
-        return arg.columns(RECIPE_INGREDIENT.AMOUNT, RECIPE_INGREDIENT.INGREDIENT, RECIPE_INGREDIENT.RECIPE, RECIPE_INGREDIENT.UNIT, RECIPE_INGREDIENT.INITIATES)
-                .values(amount, ingredient, recipe, unit, principals.getDid());
-    }
-
-    @Override
-    public boolean isContainedIn(RecipeIngredient entity) {
-        return amount == entity.getAmount() &&
-                ingredient == entity.getIngredient() &&
-                recipe == entity.getRecipe() &&
-                unit == entity.getUnit();
+    public boolean isValid() {
+        return Endpoint.isValid(ingredient, "ingredient") &&
+                Endpoint.isValid(unit, "unit");
     }
 }

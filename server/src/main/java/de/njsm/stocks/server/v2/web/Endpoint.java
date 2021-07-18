@@ -20,6 +20,7 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.business.data.Validatable;
 import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import org.apache.logging.log4j.LogManager;
@@ -39,7 +40,7 @@ public class Endpoint {
         return (Principals) request.getAttribute(PrincipalFilter.STOCKS_PRINCIPAL);
     }
 
-    protected static boolean isValid(String parameter, String name) {
+    public static boolean isValid(String parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter != null && ! parameter.isEmpty()) {
@@ -50,7 +51,7 @@ public class Endpoint {
         return false;
     }
 
-    protected boolean isValidOrEmpty(String parameter, String name) {
+    public boolean isValidOrEmpty(String parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter != null) {
@@ -61,7 +62,7 @@ public class Endpoint {
         return false;
     }
 
-    protected static boolean isValid(int parameter, String name) {
+    public static boolean isValid(int parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter > 0) {
@@ -72,13 +73,13 @@ public class Endpoint {
         return false;
     }
 
-    protected boolean isValidName(String value, String name) {
+    public boolean isValidName(String value, String name) {
         LOG.debug("Checking parameter " + name);
 
         return isValid(value, name) && Principals.isNameValid(value);
     }
 
-    protected static boolean isValidVersion(int parameter, String name) {
+    public static boolean isValidVersion(int parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter >= 0) {
@@ -89,7 +90,7 @@ public class Endpoint {
         return false;
     }
 
-    protected boolean isValidInstant(String rawInstant, String name) {
+    public boolean isValidInstant(String rawInstant, String name) {
         LOG.debug("Checking parameter " + name);
 
         try {
@@ -101,7 +102,7 @@ public class Endpoint {
         }
     }
 
-    protected static boolean isValidBigDecimal(String rawNumber, String name) {
+    public static boolean isValidBigDecimal(String rawNumber, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (!isValid(rawNumber, name)) {
@@ -120,6 +121,10 @@ public class Endpoint {
             LOG.info("Request is invalid as " + name + " is not a number");
             return false;
         }
+    }
+
+    public boolean isValid(Validatable input) {
+        return input != null && input.isValid();
     }
 
     public static Optional<Instant> parseToInstant(String rawInstant, String name) {

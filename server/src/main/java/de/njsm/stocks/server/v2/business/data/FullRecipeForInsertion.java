@@ -3,7 +3,7 @@ package de.njsm.stocks.server.v2.business.data;
 import java.util.List;
 import java.util.Objects;
 
-public class FullRecipeForInsertion {
+public class FullRecipeForInsertion implements Validatable {
 
     private final RecipeForInsertion recipe;
 
@@ -40,5 +40,12 @@ public class FullRecipeForInsertion {
     @Override
     public int hashCode() {
         return Objects.hash(getRecipe());
+    }
+
+    @Override
+    public boolean isValid() {
+        return recipe != null && recipe.isValid() &&
+                ingredients != null && ingredients.stream().allMatch(RecipeIngredientForInsertion::isValid) &&
+                products != null && products.stream().allMatch(RecipeProductForInsertion::isValid);
     }
 }

@@ -20,10 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.BitemporalRecipeIngredient;
-import de.njsm.stocks.server.v2.business.data.RecipeIngredient;
-import de.njsm.stocks.server.v2.business.data.RecipeIngredientForDeletion;
-import de.njsm.stocks.server.v2.business.data.RecipeIngredientForInsertion;
+import de.njsm.stocks.server.v2.business.data.*;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +50,7 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
 
     @Test
     public void insertingWorks() {
-        RecipeIngredientForInsertion data = new RecipeIngredientForInsertion(5, 3, 1, 1);
+        RecipeIngredientWithIdForInsertion data = new RecipeIngredientWithIdForInsertion(5, 3, 1, 4);
 
         Validation<StatusCode, Integer> result = uut.addReturningId(data);
 

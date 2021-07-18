@@ -29,7 +29,7 @@ import java.util.Objects;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE;
 
-public class RecipeForInsertion implements Insertable<RecipeRecord, Recipe> {
+public class RecipeForInsertion implements Insertable<RecipeRecord, Recipe>, Validatable {
 
     private final String name;
 
@@ -79,5 +79,10 @@ public class RecipeForInsertion implements Insertable<RecipeRecord, Recipe> {
         return name.equals(entity.getName()) &&
                 instructions.equals(entity.getInstructions()) &&
                 duration.equals(entity.getDuration());
+    }
+
+    @Override
+    public boolean isValid() {
+        return name != null && instructions != null && duration != null;
     }
 }
