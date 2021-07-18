@@ -35,7 +35,7 @@ public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
         this.dbHandler = dbHandler;
     }
 
-    public StatusCode delete(RecipeForDeletion Recipe) {
-        return runOperation(() -> dbHandler.delete(Recipe));
+    public StatusCode delete(RecipeForDeletion recipe) {
+        return runOperation(() -> dbHandler.delete(recipe));
     }
 }

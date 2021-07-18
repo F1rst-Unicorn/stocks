@@ -32,7 +32,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 public class RecipeIngredientHandlerTest extends DbTestCase {
@@ -45,6 +48,21 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT);
         uut.setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void insertingWorks() {
+        RecipeIngredientForInsertion data = new RecipeIngredientForInsertion(5, 3, 1, 1);
+
+        Validation<StatusCode, Integer> result = uut.add(data);
+
+        assertTrue(result.isSuccess());
+        assertEquals(Integer.valueOf(2), result.success());
+        Validation<StatusCode, Stream<RecipeIngredient>> recipeIngredients = uut.get(false, Instant.EPOCH);
+        List<RecipeIngredient> list = recipeIngredients.success().collect(Collectors.toList());
+        assertTrue(recipeIngredients.isSuccess());
+        assertEquals(2, list.size());
+        assertThat(list, hasItem(matchesInsertable(data)));
     }
 
     @Test
