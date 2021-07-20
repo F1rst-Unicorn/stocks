@@ -19,6 +19,11 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.server.v2.business.json.DurationDeserialiser;
+import de.njsm.stocks.server.v2.business.json.DurationSerialiser;
+
 import java.time.Duration;
 import java.util.Objects;
 
@@ -28,6 +33,8 @@ public class RecipeForGetting extends VersionedData implements Recipe {
 
     private final String instructions;
 
+    @JsonSerialize(using = DurationSerialiser.class)
+    @JsonDeserialize(using = DurationDeserialiser.class)
     private final Duration duration;
 
     public RecipeForGetting(int id, int version, String name, String instructions, Duration duration) {

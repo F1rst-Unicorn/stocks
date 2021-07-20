@@ -1,11 +1,12 @@
 package de.njsm.stocks.server.v2.business.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.server.v2.web.Endpoint;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_RecipeProductForInsertion.class)
+@JsonDeserialize(builder = AutoValue_RecipeProductForInsertion.Builder.class)
 public abstract class RecipeProductForInsertion implements Validatable {
 
     public abstract int amount();
@@ -19,6 +20,7 @@ public abstract class RecipeProductForInsertion implements Validatable {
     }
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder amount(int v);
 

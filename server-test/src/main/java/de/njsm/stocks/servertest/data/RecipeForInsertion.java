@@ -17,29 +17,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.business.data;
+package de.njsm.stocks.servertest.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.json.DurationDeserialiser;
-import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
-import org.jooq.InsertOnDuplicateStep;
-import org.jooq.InsertSetStep;
+import de.njsm.stocks.servertest.data.json.DurationSerialiser;
 
 import java.time.Duration;
 
-import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RecipeForInsertion.Builder.class)
-public abstract class RecipeForInsertion implements Insertable<RecipeRecord, Recipe>, Validatable {
+public abstract class RecipeForInsertion implements Insertable<Recipe> {
 
+    @JsonProperty
     public abstract String name();
 
+    @JsonProperty
     public abstract String instructions();
 
+    @JsonProperty
+    @JsonSerialize(using = DurationSerialiser.class)
     public abstract Duration duration();
 
     public static Builder builder() {
@@ -47,23 +47,15 @@ public abstract class RecipeForInsertion implements Insertable<RecipeRecord, Rec
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder name(String v);
 
         public abstract Builder instructions(String v);
 
-        @JsonDeserialize(using = DurationDeserialiser.class)
         public abstract Builder duration(Duration v);
 
         public abstract RecipeForInsertion build();
-    }
-
-    @Override
-    public InsertOnDuplicateStep<RecipeRecord> insertValue(InsertSetStep<RecipeRecord> arg, Principals principals) {
-        return arg.columns(RECIPE.NAME, RECIPE.INSTRUCTIONS, RECIPE.DURATION, RECIPE.INITIATES)
-                .values(name(), instructions(), duration(), principals.getDid());
     }
 
     @Override
@@ -71,10 +63,5 @@ public abstract class RecipeForInsertion implements Insertable<RecipeRecord, Rec
         return name().equals(entity.getName()) &&
                 instructions().equals(entity.getInstructions()) &&
                 duration().equals(entity.getDuration());
-    }
-
-    @Override
-    public boolean isValid() {
-        return name() != null && instructions() != null && duration() != null;
     }
 }

@@ -52,6 +52,7 @@ public class RecipeEndpoint extends Endpoint implements Get<RecipeRecord, Recipe
     public Response put(@Context HttpServletRequest request,
                         FullRecipeForInsertion input) {
         if (isValid(input)) {
+            manager.setPrincipals(getPrincipals(request));
             StatusCode result = manager.add(input);
             return new Response(result);
         } else {

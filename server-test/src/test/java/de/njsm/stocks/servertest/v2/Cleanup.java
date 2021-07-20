@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.servertest.v2;
 
-import de.njsm.stocks.servertest.Data;
+import de.njsm.stocks.servertest.data.Data;
 import de.njsm.stocks.servertest.TestSuite;
 import groovy.lang.Tuple2;
 import io.restassured.http.ContentType;

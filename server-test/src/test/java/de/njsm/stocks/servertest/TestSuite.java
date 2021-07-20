@@ -36,6 +36,7 @@ import org.junit.runners.Suite;
                      ScaledUnitTest.class,
                      EanTest.class,
                      FoodItemTest.class,
+                     RecipeTest.class,
                      DeviceTest.class,
                      RegistrationTest.class,
                      Cleanup.class,

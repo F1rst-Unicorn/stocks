@@ -49,13 +49,13 @@ public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
     }
 
     public StatusCode add(FullRecipeForInsertion fullRecipeForInsertion) {
-        return runOperation(() -> dbHandler.addReturningId(fullRecipeForInsertion.getRecipe())
-                .map(recipeId -> fullRecipeForInsertion.getIngredients().stream()
+        return runOperation(() -> dbHandler.addReturningId(fullRecipeForInsertion.recipe())
+                .map(recipeId -> fullRecipeForInsertion.ingredients().stream()
                         .reduce(StatusCode.SUCCESS,
                                 (code, item) ->
                                         code.bind(() -> recipeIngredientHandler.add(item.withRecipe(recipeId))),
                                 (x, y) -> x)
-                        .bind(() -> fullRecipeForInsertion.getProducts().stream()
+                        .bind(() -> fullRecipeForInsertion.products().stream()
                                 .reduce(StatusCode.SUCCESS,
                                         (code, item) -> code.bind(() -> recipeProductHandler.add(item.withRecipe(recipeId))),
                                         (x,y) -> x))).toEither().right().orValue(() -> StatusCode.SUCCESS)

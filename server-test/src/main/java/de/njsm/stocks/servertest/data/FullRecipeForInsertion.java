@@ -1,20 +1,21 @@
-package de.njsm.stocks.server.v2.business.data;
+package de.njsm.stocks.servertest.data;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_FullRecipeForInsertion.Builder.class)
-public abstract class FullRecipeForInsertion implements Validatable {
+public abstract class FullRecipeForInsertion {
 
+    @JsonProperty
     public abstract RecipeForInsertion recipe();
 
+    @JsonProperty
     public abstract ImmutableList<RecipeIngredientForInsertion> ingredients();
 
+    @JsonProperty
     public abstract ImmutableList<RecipeProductForInsertion> products();
 
     public static Builder builder() {
@@ -22,7 +23,6 @@ public abstract class FullRecipeForInsertion implements Validatable {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder recipe(RecipeForInsertion v);
 
@@ -31,12 +31,5 @@ public abstract class FullRecipeForInsertion implements Validatable {
         public abstract Builder products(List<RecipeProductForInsertion> v);
 
         public abstract FullRecipeForInsertion build();
-    }
-
-    @Override
-    public boolean isValid() {
-        return recipe() != null && recipe().isValid() &&
-                ingredients() != null && ingredients().stream().allMatch(RecipeIngredientForInsertion::isValid) &&
-                products() != null && products().stream().allMatch(RecipeProductForInsertion::isValid);
     }
 }

@@ -19,8 +19,13 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import java.time.Instant;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.server.v2.business.json.DurationDeserialiser;
+import de.njsm.stocks.server.v2.business.json.DurationSerialiser;
+
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Objects;
 
 public class BitemporalRecipe extends BitemporalData implements Bitemporal<Recipe>, Recipe {
@@ -29,6 +34,8 @@ public class BitemporalRecipe extends BitemporalData implements Bitemporal<Recip
 
     private final String instructions;
 
+    @JsonSerialize(using = DurationSerialiser.class)
+    @JsonDeserialize(using = DurationDeserialiser.class)
     private final Duration duration;
 
     public BitemporalRecipe(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, String name, String instructions, Duration duration) {

@@ -177,6 +177,8 @@
 
     <bean name="recipeManager" class="de.njsm.stocks.server.v2.business.RecipeManager" scope="request">
         <constructor-arg index="0" ref="recipeBackend" />
+        <constructor-arg index="1" ref="recipeIngredientBackend" />
+        <constructor-arg index="2" ref="recipeProductBackend" />
     </bean>
 
     <bean name="recipeIngredientManager" class="de.njsm.stocks.server.v2.business.RecipeIngredientManager" scope="request">

@@ -19,13 +19,60 @@
 
 package de.njsm.stocks.servertest.v2;
 
+import de.njsm.stocks.servertest.TestSuite;
+import de.njsm.stocks.servertest.data.FullRecipeForInsertion;
+import de.njsm.stocks.servertest.data.RecipeForInsertion;
+import io.restassured.http.ContentType;
 import org.junit.Test;
+
+import java.time.Duration;
+import java.util.Collections;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 public class RecipeTest implements Deleter {
 
     @Test
     public void addingARecipeWorks() {
+        RecipeForInsertion recipe = RecipeForInsertion.builder()
+                .name("addingARecipeWorks")
+                .instructions("instruction")
+                .duration(Duration.ofHours(2))
+                .build();
 
+        FullRecipeForInsertion input = FullRecipeForInsertion.builder()
+                .recipe(recipe)
+                .ingredients(Collections.emptyList())
+                .products(Collections.emptyList())
+                .build();
+
+        given()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON)
+                .body(input)
+        .when()
+                .put(TestSuite.DOMAIN + getEndpoint())
+        .then()
+                .log().ifValidationFails()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(0));
+    }
+
+    @Test
+    public void invalidAddingIsRejected() {
+        given()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON)
+                .body("{\"recipe\":{\"name\":\"invalidAddingIsRejected\",\"instructions\":\"instruction\",\"duration\":\"PT2H\"}}")
+        .when()
+                .put(TestSuite.DOMAIN + getEndpoint())
+        .then()
+                .log().ifValidationFails()
+                .statusCode(400)
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(7));
     }
 
     @Override

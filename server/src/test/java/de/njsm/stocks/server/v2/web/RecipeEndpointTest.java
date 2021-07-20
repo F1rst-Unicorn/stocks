@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import java.time.Duration;
 import java.util.Collections;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.Assert.assertEquals;
 
@@ -34,27 +35,23 @@ public class RecipeEndpointTest {
     }
 
     @Test
-    public void invalidRequestIsRejected() {
-        FullRecipeForInsertion input = new FullRecipeForInsertion(null, null, null);
-
-        Response result = uut.put(createMockRequest(), input);
-
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
-    }
-
-    @Test
     public void validRequestIsForwarded() {
         RecipeForInsertion recipe = RecipeForInsertion.builder()
                 .name("")
                 .instructions("")
                 .duration(Duration.ZERO)
                 .build();
-        FullRecipeForInsertion input = new FullRecipeForInsertion(recipe, Collections.emptyList(), Collections.emptyList());
+        FullRecipeForInsertion input = FullRecipeForInsertion.builder()
+                .recipe(recipe)
+                .ingredients(Collections.emptyList())
+                .products(Collections.emptyList())
+                .build();
         Mockito.when(recipeManager.add(input)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.put(createMockRequest(), input);
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(recipeManager).add(input);
+        Mockito.verify(recipeManager).setPrincipals(TEST_USER);
     }
 }

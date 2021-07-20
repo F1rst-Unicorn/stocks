@@ -17,19 +17,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.servertest;
+package de.njsm.stocks.servertest.data.json;
 
-public class Data {
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-    public int id;
+import java.io.IOException;
+import java.time.Duration;
 
-    public int version;
+public class DurationSerialiser extends StdSerializer<Duration> {
 
-    public Data(int id, int version) {
-        this.id = id;
-        this.version = version;
+    public DurationSerialiser() {
+        this(null);
     }
 
-    public Data() {
+    public DurationSerialiser(Class<Duration> t) {
+        super(t);
+    }
+
+    @Override
+    public void serialize(Duration value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        gen.writeString(value.toString());
     }
 }
