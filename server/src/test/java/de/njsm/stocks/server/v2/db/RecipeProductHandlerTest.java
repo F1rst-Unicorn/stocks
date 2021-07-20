@@ -50,7 +50,12 @@ public class RecipeProductHandlerTest extends DbTestCase {
 
     @Test
     public void insertingWorks() {
-        RecipeProductWithIdForInsertion data = new RecipeProductWithIdForInsertion(5, 3, 1, 4);
+        RecipeProductWithIdForInsertion data = RecipeProductWithIdForInsertion.builder()
+                .amount(5)
+                .product(3)
+                .unit(1)
+                .recipe(4)
+                .build();
 
         Validation<StatusCode, Integer> result = uut.addReturningId(data);
 

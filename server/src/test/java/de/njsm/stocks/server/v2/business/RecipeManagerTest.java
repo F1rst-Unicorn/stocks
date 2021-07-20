@@ -47,7 +47,7 @@ public class RecipeManagerTest {
 
     @Test
     public void addingSimpleRecipeWorks() {
-        RecipeForInsertion recipe = new RecipeForInsertion("name", "instructions", Duration.ZERO);
+        RecipeForInsertion recipe = getTestRecipe();
         FullRecipeForInsertion fullRecipeForInsertion = new FullRecipeForInsertion(recipe, Collections.emptyList(), Collections.emptyList());
         Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(42));
         Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
@@ -62,8 +62,8 @@ public class RecipeManagerTest {
     @Test
     public void addingRecipeWithIngredientWorks() {
         int recipeId = 42;
-        List<RecipeIngredientForInsertion> ingredients = List.of(new RecipeIngredientForInsertion(2, 3, 5));
-        RecipeForInsertion recipe = new RecipeForInsertion("name", "instructions", Duration.ZERO);
+        List<RecipeIngredientForInsertion> ingredients = List.of(getTestIngredient());
+        RecipeForInsertion recipe = getTestRecipe();
         FullRecipeForInsertion fullRecipeForInsertion = new FullRecipeForInsertion(recipe, ingredients, Collections.emptyList());
         Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
         Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
@@ -82,8 +82,8 @@ public class RecipeManagerTest {
     @Test
     public void addingRecipeWithTwoFailingIngredientPropagates() {
         int recipeId = 42;
-        List<RecipeIngredientForInsertion> ingredients = List.of(new RecipeIngredientForInsertion(2, 3, 5), new RecipeIngredientForInsertion(2, 3, 5));
-        RecipeForInsertion recipe = new RecipeForInsertion("name", "instructions", Duration.ZERO);
+        List<RecipeIngredientForInsertion> ingredients = List.of(getTestIngredient(), getTestIngredient());
+        RecipeForInsertion recipe = getTestRecipe();
         FullRecipeForInsertion fullRecipeForInsertion = new FullRecipeForInsertion(recipe, ingredients, Collections.emptyList());
         Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
         Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
@@ -102,8 +102,8 @@ public class RecipeManagerTest {
     @Test
     public void addingRecipeWithThreeFailingIngredientPropagates() {
         int recipeId = 42;
-        List<RecipeIngredientForInsertion> ingredients = List.of(new RecipeIngredientForInsertion(2, 3, 5), new RecipeIngredientForInsertion(2, 3, 5), new RecipeIngredientForInsertion(2, 3, 5));
-        RecipeForInsertion recipe = new RecipeForInsertion("name", "instructions", Duration.ZERO);
+        List<RecipeIngredientForInsertion> ingredients = List.of(getTestIngredient(), getTestIngredient(), getTestIngredient());
+        RecipeForInsertion recipe = getTestRecipe();
         FullRecipeForInsertion fullRecipeForInsertion = new FullRecipeForInsertion(recipe, ingredients, Collections.emptyList());
         Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
         Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
@@ -122,9 +122,9 @@ public class RecipeManagerTest {
     @Test
     public void addingRecipeWithIngredientAndProductsWorks() {
         int recipeId = 42;
-        List<RecipeIngredientForInsertion> ingredients = List.of(new RecipeIngredientForInsertion(2, 3, 5));
-        List<RecipeProductForInsertion> products = List.of(new RecipeProductForInsertion(2, 3, 5));
-        RecipeForInsertion recipe = new RecipeForInsertion("name", "instructions", Duration.ZERO);
+        List<RecipeIngredientForInsertion> ingredients = List.of(getTestIngredient());
+        List<RecipeProductForInsertion> products = List.of(getTestProduct());
+        RecipeForInsertion recipe = getTestRecipe();
         FullRecipeForInsertion fullRecipeForInsertion = new FullRecipeForInsertion(recipe, ingredients, products);
         Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
         Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
@@ -147,9 +147,9 @@ public class RecipeManagerTest {
     @Test
     public void addingRecipeWithFailingProductPropagates() {
         int recipeId = 42;
-        List<RecipeIngredientForInsertion> ingredients = List.of(new RecipeIngredientForInsertion(2, 3, 5));
-        List<RecipeProductForInsertion> products = List.of(new RecipeProductForInsertion(2, 3, 5), new RecipeProductForInsertion(2, 3, 5));
-        RecipeForInsertion recipe = new RecipeForInsertion("name", "instructions", Duration.ZERO);
+        List<RecipeIngredientForInsertion> ingredients = List.of(getTestIngredient());
+        List<RecipeProductForInsertion> products = List.of(getTestProduct(), getTestProduct());
+        RecipeForInsertion recipe = getTestRecipe();
         FullRecipeForInsertion fullRecipeForInsertion = new FullRecipeForInsertion(recipe, ingredients, products);
         Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
         Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
@@ -167,5 +167,29 @@ public class RecipeManagerTest {
         Mockito.verify(productHandler, Mockito.times(products.size())).add(productArguments.capture());
         assertEquals(products.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), productArguments.getAllValues());
         Mockito.verify(recipeHandler).rollback();
+    }
+
+    RecipeForInsertion getTestRecipe() {
+        return RecipeForInsertion.builder()
+                .name("name")
+                .instructions("instructions")
+                .duration(Duration.ZERO)
+                .build();
+    }
+
+    RecipeIngredientForInsertion getTestIngredient() {
+        return RecipeIngredientForInsertion.builder()
+                .amount(2)
+                .ingredient(3)
+                .unit(5)
+                .build();
+    }
+
+    RecipeProductForInsertion getTestProduct() {
+        return RecipeProductForInsertion.builder()
+                .amount(2)
+                .product(3)
+                .unit(5)
+                .build();
     }
 }

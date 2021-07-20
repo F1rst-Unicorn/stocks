@@ -19,70 +19,58 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import org.jooq.InsertOnDuplicateStep;
 import org.jooq.InsertSetStep;
 
 import java.time.Duration;
-import java.util.Objects;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE;
 
-public class RecipeForInsertion implements Insertable<RecipeRecord, Recipe>, Validatable {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_RecipeForInsertion.class)
+public abstract class RecipeForInsertion implements Insertable<RecipeRecord, Recipe>, Validatable {
 
-    private final String name;
+    public abstract String name();
 
-    private final String instructions;
+    public abstract String instructions();
 
-    private final Duration duration;
+    public abstract Duration duration();
 
-    public RecipeForInsertion(String name, String instructions, Duration duration) {
-        this.name = name;
-        this.instructions = instructions;
-        this.duration = duration;
+    public static Builder builder() {
+        return new AutoValue_RecipeForInsertion.Builder();
     }
 
-    public String getName() {
-        return name;
-    }
+    @AutoValue.Builder
+    public abstract static class Builder {
 
-    public String getInstructions() {
-        return instructions;
-    }
+        public abstract Builder name(String v);
 
-    public Duration getDuration() {
-        return duration;
-    }
+        public abstract Builder instructions(String v);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof RecipeForInsertion)) return false;
-        RecipeForInsertion that = (RecipeForInsertion) o;
-        return getName().equals(that.getName()) && getInstructions().equals(that.getInstructions()) && getDuration().equals(that.getDuration());
-    }
+        public abstract Builder duration(Duration v);
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getInstructions(), getDuration());
+        public abstract RecipeForInsertion build();
     }
 
     @Override
     public InsertOnDuplicateStep<RecipeRecord> insertValue(InsertSetStep<RecipeRecord> arg, Principals principals) {
         return arg.columns(RECIPE.NAME, RECIPE.INSTRUCTIONS, RECIPE.DURATION, RECIPE.INITIATES)
-                .values(name, instructions, duration, principals.getDid());
+                .values(name(), instructions(), duration(), principals.getDid());
     }
 
     @Override
     public boolean isContainedIn(Recipe entity) {
-        return name.equals(entity.getName()) &&
-                instructions.equals(entity.getInstructions()) &&
-                duration.equals(entity.getDuration());
+        return name().equals(entity.getName()) &&
+                instructions().equals(entity.getInstructions()) &&
+                duration().equals(entity.getDuration());
     }
 
     @Override
     public boolean isValid() {
-        return name != null && instructions != null && duration != null;
+        return name() != null && instructions() != null && duration() != null;
     }
 }

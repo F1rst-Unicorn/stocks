@@ -44,7 +44,12 @@ public class RecipeEndpointTest {
 
     @Test
     public void validRequestIsForwarded() {
-        FullRecipeForInsertion input = new FullRecipeForInsertion(new RecipeForInsertion("", "", Duration.ZERO), Collections.emptyList(), Collections.emptyList());
+        RecipeForInsertion recipe = RecipeForInsertion.builder()
+                .name("")
+                .instructions("")
+                .duration(Duration.ZERO)
+                .build();
+        FullRecipeForInsertion input = new FullRecipeForInsertion(recipe, Collections.emptyList(), Collections.emptyList());
         Mockito.when(recipeManager.add(input)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.put(createMockRequest(), input);

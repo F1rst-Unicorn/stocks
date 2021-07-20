@@ -1,56 +1,46 @@
 package de.njsm.stocks.server.v2.business.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.auto.value.AutoValue;
 import de.njsm.stocks.server.v2.web.Endpoint;
 
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_RecipeIngredientForInsertion.class)
+public abstract class RecipeIngredientForInsertion implements Validatable {
 
-public class RecipeIngredientForInsertion
-        implements Validatable {
+    public abstract int amount();
 
-    private final int amount;
+    public abstract int ingredient();
 
-    private final int ingredient;
+    public abstract int unit();
 
-    private final int unit;
-
-    public RecipeIngredientForInsertion(int amount, int ingredient, int unit) {
-        this.amount = amount;
-        this.ingredient = ingredient;
-        this.unit = unit;
+    public static Builder builder() {
+        return new AutoValue_RecipeIngredientForInsertion.Builder();
     }
 
-    public int getAmount() {
-        return amount;
-    }
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder amount(int v);
 
-    public int getIngredient() {
-        return ingredient;
-    }
+        public abstract Builder ingredient(int v);
 
-    public int getUnit() {
-        return unit;
+        public abstract Builder unit(int v);
+
+        public abstract RecipeIngredientForInsertion build();
     }
 
     public RecipeIngredientWithIdForInsertion withRecipe(int recipe) {
-        return new RecipeIngredientWithIdForInsertion(amount, ingredient, unit, recipe);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof RecipeIngredientForInsertion)) return false;
-        RecipeIngredientForInsertion that = (RecipeIngredientForInsertion) o;
-        return getAmount() == that.getAmount() && getIngredient() == that.getIngredient() && getUnit() == that.getUnit();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getAmount(), getIngredient(), getUnit());
+        return RecipeIngredientWithIdForInsertion.builder()
+                .amount(amount())
+                .ingredient(ingredient())
+                .unit(unit())
+                .recipe(recipe)
+                .build();
     }
 
     @Override
     public boolean isValid() {
-        return Endpoint.isValid(ingredient, "ingredient") &&
-                Endpoint.isValid(unit, "unit");
+        return Endpoint.isValid(ingredient(), "ingredient") &&
+                Endpoint.isValid(unit(), "unit");
     }
 }

@@ -54,7 +54,11 @@ public class RecipeHandlerTest extends DbTestCase {
 
     @Test
     public void insertingWorks() {
-        RecipeForInsertion data = new RecipeForInsertion("Soup", "Take water and carrots", Duration.ofMinutes(30));
+        RecipeForInsertion data = RecipeForInsertion.builder()
+                .name("Soup")
+                .instructions("Take water and carrots")
+                .duration(Duration.ofMinutes(30))
+                .build();
 
         Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
