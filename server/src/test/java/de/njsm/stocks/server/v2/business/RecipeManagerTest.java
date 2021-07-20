@@ -80,7 +80,7 @@ public class RecipeManagerTest {
     }
 
     @Test
-    public void addingRecipeWithOneFailingIngredientPropagates() {
+    public void addingRecipeWithTwoFailingIngredientPropagates() {
         int recipeId = 42;
         List<RecipeIngredientForInsertion> ingredients = List.of(new RecipeIngredientForInsertion(2, 3, 5), new RecipeIngredientForInsertion(2, 3, 5));
         RecipeForInsertion recipe = new RecipeForInsertion("name", "instructions", Duration.ZERO);
@@ -88,6 +88,26 @@ public class RecipeManagerTest {
         Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
         Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
+
+        StatusCode result = uut.add(fullRecipeForInsertion);
+
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        Mockito.verify(recipeHandler).addReturningId(fullRecipeForInsertion.getRecipe());
+        ArgumentCaptor<RecipeIngredientWithIdForInsertion> arguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
+        Mockito.verify(ingredientHandler, Mockito.times(ingredients.size())).add(arguments.capture());
+        assertEquals(ingredients.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), arguments.getAllValues());
+        Mockito.verify(recipeHandler).rollback();
+    }
+
+    @Test
+    public void addingRecipeWithThreeFailingIngredientPropagates() {
+        int recipeId = 42;
+        List<RecipeIngredientForInsertion> ingredients = List.of(new RecipeIngredientForInsertion(2, 3, 5), new RecipeIngredientForInsertion(2, 3, 5), new RecipeIngredientForInsertion(2, 3, 5));
+        RecipeForInsertion recipe = new RecipeForInsertion("name", "instructions", Duration.ZERO);
+        FullRecipeForInsertion fullRecipeForInsertion = new FullRecipeForInsertion(recipe, ingredients, Collections.emptyList());
+        Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
+        Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
 
         StatusCode result = uut.add(fullRecipeForInsertion);
 
@@ -122,5 +142,30 @@ public class RecipeManagerTest {
         Mockito.verify(productHandler, Mockito.times(products.size())).add(productArguments.capture());
         assertEquals(products.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), productArguments.getAllValues());
         Mockito.verify(recipeHandler).commit();
+    }
+
+    @Test
+    public void addingRecipeWithFailingProductPropagates() {
+        int recipeId = 42;
+        List<RecipeIngredientForInsertion> ingredients = List.of(new RecipeIngredientForInsertion(2, 3, 5));
+        List<RecipeProductForInsertion> products = List.of(new RecipeProductForInsertion(2, 3, 5), new RecipeProductForInsertion(2, 3, 5));
+        RecipeForInsertion recipe = new RecipeForInsertion("name", "instructions", Duration.ZERO);
+        FullRecipeForInsertion fullRecipeForInsertion = new FullRecipeForInsertion(recipe, ingredients, products);
+        Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
+        Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(productHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
+
+        StatusCode result = uut.add(fullRecipeForInsertion);
+
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        Mockito.verify(recipeHandler).addReturningId(fullRecipeForInsertion.getRecipe());
+        ArgumentCaptor<RecipeIngredientWithIdForInsertion> ingredientArguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
+        Mockito.verify(ingredientHandler, Mockito.times(ingredients.size())).add(ingredientArguments.capture());
+        assertEquals(ingredients.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), ingredientArguments.getAllValues());
+        ArgumentCaptor<RecipeProductWithIdForInsertion> productArguments = ArgumentCaptor.forClass(RecipeProductWithIdForInsertion.class);
+        Mockito.verify(productHandler, Mockito.times(products.size())).add(productArguments.capture());
+        assertEquals(products.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), productArguments.getAllValues());
+        Mockito.verify(recipeHandler).rollback();
     }
 }
