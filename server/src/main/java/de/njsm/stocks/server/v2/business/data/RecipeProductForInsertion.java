@@ -7,13 +7,7 @@ import de.njsm.stocks.server.v2.web.Endpoint;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RecipeProductForInsertion.Builder.class)
-public abstract class RecipeProductForInsertion implements Validatable {
-
-    public abstract int amount();
-
-    public abstract int product();
-
-    public abstract int unit();
+public abstract class RecipeProductForInsertion implements Validatable, RecipeProductForInsertionData {
 
     public static Builder builder() {
         return new AutoValue_RecipeProductForInsertion.Builder();

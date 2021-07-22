@@ -41,17 +41,18 @@ import static io.restassured.RestAssured.when;
 public class Cleanup {
 
     @Test
-    public void cleanFoodItems() {
-        List<Data> ids = getIds("/v2/fooditem");
+    public void clean01Devices() {
+        List<Data> ids = getIds("/v2/device");
 
         for (Data d : ids) {
+            if (d.id == 1) continue;
             given()
                     .log().ifValidationFails()
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
-            when()
-                    .delete(TestSuite.DOMAIN + "/v2/fooditem").
-            then()
+                    when()
+                    .delete(TestSuite.DOMAIN + "/v2/device").
+                    then()
                     .log().ifValidationFails()
                     .statusCode(200)
                     .contentType(ContentType.JSON);
@@ -59,7 +60,7 @@ public class Cleanup {
     }
 
     @Test
-    public void cleanEan() {
+    public void clean02Ean() {
         List<Data> ids = getIds("/v2/ean");
 
         for (Data d : ids) {
@@ -67,9 +68,9 @@ public class Cleanup {
                     .log().ifValidationFails()
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
-            when()
+                    when()
                     .delete(TestSuite.DOMAIN + "/v2/ean").
-            then()
+                    then()
                     .log().ifValidationFails()
                     .statusCode(200)
                     .contentType(ContentType.JSON);
@@ -77,8 +78,26 @@ public class Cleanup {
     }
 
     @Test
-    public void cleanFood() {
-        List<Data> ids = getIds("/v2/food");
+    public void clean03FoodItems() {
+        List<Data> ids = getIds("/v2/fooditem");
+
+        for (Data d : ids) {
+            given()
+                    .log().ifValidationFails()
+                    .queryParam("id", d.id)
+                    .queryParam("version", d.version).
+                    when()
+                    .delete(TestSuite.DOMAIN + "/v2/fooditem").
+                    then()
+                    .log().ifValidationFails()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON);
+        }
+    }
+
+    @Test
+    public void clean04Recipes() {
+        List<Data> ids = getIds("/v2/recipe");
 
         for (Data d : ids) {
             given()
@@ -86,7 +105,7 @@ public class Cleanup {
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
             when()
-                    .delete(TestSuite.DOMAIN + "/v2/food").
+                    .delete(TestSuite.DOMAIN + "/v2/recipe").
             then()
                     .log().ifValidationFails()
                     .statusCode(200)
@@ -95,7 +114,25 @@ public class Cleanup {
     }
 
     @Test
-    public void cleanLocations() {
+    public void clean05Food() {
+        List<Data> ids = getIds("/v2/food");
+
+        for (Data d : ids) {
+            given()
+                    .log().ifValidationFails()
+                    .queryParam("id", d.id)
+                    .queryParam("version", d.version).
+                    when()
+                    .delete(TestSuite.DOMAIN + "/v2/food").
+                    then()
+                    .log().ifValidationFails()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON);
+        }
+    }
+
+    @Test
+    public void clean06Locations() {
         List<Data> ids = getIds("/v2/location");
 
         for (Data d : ids) {
@@ -113,46 +150,7 @@ public class Cleanup {
     }
 
     @Test
-    public void cleanDevices() {
-        List<Data> ids = getIds("/v2/device");
-
-        for (Data d : ids) {
-            if (d.id == 1) continue;
-            given()
-                    .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
-            when()
-                    .delete(TestSuite.DOMAIN + "/v2/device").
-            then()
-                    .log().ifValidationFails()
-                    .statusCode(200)
-                    .contentType(ContentType.JSON);
-        }
-    }
-
-    @Test
-    public void cleanUsers() {
-        List<Data> ids = getIds("/v2/user");
-
-        for (Data d : ids) {
-            if (d.id == 1) continue;
-            given()
-                    .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
-            when()
-                    .delete(TestSuite.DOMAIN + "/v2/user").
-            then()
-                    .log().ifValidationFails()
-                    .statusCode(200)
-                    .contentType(ContentType.JSON);
-        }
-    }
-
-
-    @Test
-    public void cleanScaledUnits() {
+    public void clean07ScaledUnits() {
         List<Data> ids = getIds("/v2/scaled-unit");
 
         for (Data d : ids) {
@@ -161,9 +159,9 @@ public class Cleanup {
                     .log().ifValidationFails()
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
-            when()
+                    when()
                     .delete(TestSuite.DOMAIN + "/v2/scaled-unit").
-            then()
+                    then()
                     .log().ifValidationFails()
                     .statusCode(200)
                     .contentType(ContentType.JSON);
@@ -171,7 +169,7 @@ public class Cleanup {
     }
 
     @Test
-    public void cleanUnits() {
+    public void clean08Units() {
         List<Data> ids = getIds("/v2/unit");
 
         for (Data d : ids) {
@@ -183,6 +181,25 @@ public class Cleanup {
             when()
                     .delete(TestSuite.DOMAIN + "/v2/unit").
             then()
+                    .log().ifValidationFails()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON);
+        }
+    }
+
+    @Test
+    public void clean09Users() {
+        List<Data> ids = getIds("/v2/user");
+
+        for (Data d : ids) {
+            if (d.id == 1) continue;
+            given()
+                    .log().ifValidationFails()
+                    .queryParam("id", d.id)
+                    .queryParam("version", d.version).
+                    when()
+                    .delete(TestSuite.DOMAIN + "/v2/user").
+                    then()
                     .log().ifValidationFails()
                     .statusCode(200)
                     .contentType(ContentType.JSON);

@@ -20,6 +20,7 @@
 package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.servertest.TestSuite;
+import de.njsm.stocks.servertest.v2.repo.FoodRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
@@ -115,7 +116,7 @@ public class LocationTest {
     @Test
     public void deleteCascadinglySucceeds() {
         int locId = createNewLocationType("cascadingTest");
-        int foodId = FoodTest.createNewFoodType("cascadingTest");
+        int foodId = FoodRepository.getAnyFoodId();
         FoodItemTest.createNewItem(Instant.EPOCH, locId, foodId);
 
         assertOnDelete(locId, 0, false)

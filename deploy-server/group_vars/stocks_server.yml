@@ -29,3 +29,4 @@ stocks_circuit_breaker_timeout: 30000
 stocks_postgresql_options:
   user: stocks
   password: linux
+stocks_log_level: debug

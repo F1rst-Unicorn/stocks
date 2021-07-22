@@ -22,7 +22,12 @@ package de.njsm.stocks.servertest.v2;
 import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.data.FullRecipeForInsertion;
 import de.njsm.stocks.servertest.data.RecipeForInsertion;
+import de.njsm.stocks.servertest.data.RecipeIngredientForInsertion;
+import de.njsm.stocks.servertest.data.RecipeProductForInsertion;
+import de.njsm.stocks.servertest.v2.repo.FoodRepository;
+import de.njsm.stocks.servertest.v2.repo.UnitRepository;
 import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 
 import java.time.Duration;
@@ -30,13 +35,15 @@ import java.util.Collections;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 
-public class RecipeTest implements Deleter {
+public class RecipeTest extends Base implements Deleter {
 
     @Test
     public void addingARecipeWorks() {
+        String name = getUniqueName("addingARecipeWorks");
         RecipeForInsertion recipe = RecipeForInsertion.builder()
-                .name("addingARecipeWorks")
+                .name(name)
                 .instructions("instruction")
                 .duration(Duration.ofHours(2))
                 .build();
@@ -47,17 +54,47 @@ public class RecipeTest implements Deleter {
                 .products(Collections.emptyList())
                 .build();
 
-        given()
-                .log().ifValidationFails()
-                .contentType(ContentType.JSON)
-                .body(input)
-        .when()
-                .put(TestSuite.DOMAIN + getEndpoint())
-        .then()
-                .log().ifValidationFails()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(0));
+        put(input);
+
+        assertOnGet()
+                .body("data.name", hasItem(equalTo(name)));
+    }
+
+    @Test
+    public void addingARecipeWithIngredientsAndProductsWorks() {
+        int foodId = FoodRepository.getAnyFoodId();
+        int unitId = UnitRepository.getAnyUnitId();
+
+        String name = "addingARecipeWithIngredientsAndProductsWorks";
+        RecipeForInsertion recipe = RecipeForInsertion.builder()
+                .name(name)
+                .instructions("instruction")
+                .duration(Duration.ofHours(2))
+                .build();
+
+        RecipeIngredientForInsertion ingredient = RecipeIngredientForInsertion.builder()
+                .ingredient(foodId)
+                .amount(1)
+                .unit(unitId)
+                .build();
+
+        RecipeProductForInsertion product = RecipeProductForInsertion.builder()
+                .product(foodId)
+                .amount(1)
+                .unit(unitId)
+                .build();
+
+        FullRecipeForInsertion input = FullRecipeForInsertion.builder()
+                .recipe(recipe)
+                .addIngredient(ingredient)
+                .addIngredient(ingredient)
+                .addProduct(product)
+                .build();
+
+        put(input);
+
+        assertOnGet()
+                .body("data.name", hasItem(equalTo(name)));
     }
 
     @Test
@@ -73,6 +110,32 @@ public class RecipeTest implements Deleter {
                 .statusCode(400)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(7));
+    }
+
+    private void put(FullRecipeForInsertion input) {
+        given()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON)
+                .body(input)
+        .when()
+                .put(TestSuite.DOMAIN + getEndpoint())
+        .then()
+                .log().ifValidationFails()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(0));
+    }
+
+    private ValidatableResponse assertOnGet() {
+        return given()
+                .log().ifValidationFails()
+                .queryParam("bitemporal", 0)
+        .when()
+                .get(TestSuite.DOMAIN + getEndpoint())
+        .then()
+                .log().ifValidationFails()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
     }
 
     @Override

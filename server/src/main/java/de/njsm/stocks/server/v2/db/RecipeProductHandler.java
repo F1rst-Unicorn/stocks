@@ -19,7 +19,9 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.BitemporalRecipeProduct;
+import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
 import de.njsm.stocks.server.v2.business.data.RecipeProduct;
 import de.njsm.stocks.server.v2.business.data.RecipeProductForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeProductRecord;
@@ -46,6 +48,11 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
     @Override
     protected Table<RecipeProductRecord> getTable() {
         return RECIPE_PRODUCT;
+    }
+
+    public StatusCode deleteAllOf(RecipeForDeletion recipe) {
+        return currentDelete(RECIPE_PRODUCT.RECIPE.eq(recipe.getId()))
+                .map(this::notFoundIsOk);
     }
 
     @Override

@@ -123,4 +123,28 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
         assertTrue(stream.isSuccess());
         assertEquals(0, stream.success().count());
     }
+
+    @Test
+    public void deletingAllOfRecipeWorks() {
+        RecipeForDeletion recipe = new RecipeForDeletion(1, 0);
+
+        StatusCode result = uut.deleteAllOf(recipe);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        Validation<StatusCode, Stream<RecipeIngredient>> stream = uut.get(false, Instant.EPOCH);
+        assertTrue(stream.isSuccess());
+        assertEquals(0, stream.success().count());
+    }
+
+    @Test
+    public void deletingAllOfAbsentRecipeWorks() {
+        RecipeForDeletion recipe = new RecipeForDeletion(2, 0);
+
+        StatusCode result = uut.deleteAllOf(recipe);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        Validation<StatusCode, Stream<RecipeIngredient>> stream = uut.get(false, Instant.EPOCH);
+        assertTrue(stream.isSuccess());
+        assertEquals(1, stream.success().count());
+    }
 }

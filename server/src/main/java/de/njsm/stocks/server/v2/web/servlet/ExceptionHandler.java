@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.server.v2.web.servlet;
 
-import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.web.data.Response;
 import org.apache.logging.log4j.LogManager;
@@ -69,7 +69,7 @@ public class ExceptionHandler {
     private Response processError(@Context HttpServletRequest request, @Context HttpServletResponse response) {
         Throwable throwable = (Throwable) request.getAttribute(EXCEPTION_KEY);
 
-        if (throwable.getCause() instanceof ValueInstantiationException) {
+        if (throwable.getCause() instanceof JsonProcessingException) {
             LOG.debug("Caught exception leaving web app", throwable);
             LOG.info("invalid input");
             return setErrorStatus(response, StatusCode.INVALID_ARGUMENT);

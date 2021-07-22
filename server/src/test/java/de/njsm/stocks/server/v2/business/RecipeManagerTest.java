@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class RecipeManagerTest {
 
@@ -41,7 +43,7 @@ public class RecipeManagerTest {
 
     @After
     public void tearDown() throws Exception {
-        Mockito.verify(recipeHandler).setPrincipals(TEST_USER);
+        verify(recipeHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(recipeHandler);
     }
 
@@ -53,14 +55,14 @@ public class RecipeManagerTest {
                 .ingredients(Collections.emptyList())
                 .products(Collections.emptyList())
                 .build();
-        Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(42));
-        Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(42));
+        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.add(fullRecipeForInsertion);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Mockito.verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
-        Mockito.verify(recipeHandler).commit();
+        verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
+        verify(recipeHandler).commit();
     }
 
     @Test
@@ -73,18 +75,18 @@ public class RecipeManagerTest {
                 .ingredients(ingredients)
                 .products(Collections.emptyList())
                 .build();
-        Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
-        Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
+        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.add(fullRecipeForInsertion);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Mockito.verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
+        verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         ArgumentCaptor<RecipeIngredientWithIdForInsertion> arguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
-        Mockito.verify(ingredientHandler, Mockito.times(ingredients.size())).add(arguments.capture());
+        verify(ingredientHandler, Mockito.times(ingredients.size())).add(arguments.capture());
         assertEquals(ingredients.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), arguments.getAllValues());
-        Mockito.verify(recipeHandler).commit();
+        verify(recipeHandler).commit();
     }
 
     @Test
@@ -97,18 +99,18 @@ public class RecipeManagerTest {
                 .ingredients(ingredients)
                 .products(Collections.emptyList())
                 .build();
-        Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
-        Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
+        when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
+        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
 
         StatusCode result = uut.add(fullRecipeForInsertion);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
-        Mockito.verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
+        verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         ArgumentCaptor<RecipeIngredientWithIdForInsertion> arguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
-        Mockito.verify(ingredientHandler, Mockito.times(ingredients.size())).add(arguments.capture());
+        verify(ingredientHandler, Mockito.times(ingredients.size())).add(arguments.capture());
         assertEquals(ingredients.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), arguments.getAllValues());
-        Mockito.verify(recipeHandler).rollback();
+        verify(recipeHandler).rollback();
     }
 
     @Test
@@ -121,18 +123,18 @@ public class RecipeManagerTest {
                 .ingredients(ingredients)
                 .products(Collections.emptyList())
                 .build();
-        Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
-        Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
+        when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
+        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
 
         StatusCode result = uut.add(fullRecipeForInsertion);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
-        Mockito.verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
+        verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         ArgumentCaptor<RecipeIngredientWithIdForInsertion> arguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
-        Mockito.verify(ingredientHandler, Mockito.times(ingredients.size())).add(arguments.capture());
+        verify(ingredientHandler, Mockito.times(ingredients.size())).add(arguments.capture());
         assertEquals(ingredients.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), arguments.getAllValues());
-        Mockito.verify(recipeHandler).rollback();
+        verify(recipeHandler).rollback();
     }
 
     @Test
@@ -146,22 +148,22 @@ public class RecipeManagerTest {
                 .ingredients(ingredients)
                 .products(products)
                 .build();
-        Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
-        Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(productHandler.add(any())).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
+        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS);
+        when(productHandler.add(any())).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.add(fullRecipeForInsertion);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Mockito.verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
+        verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         ArgumentCaptor<RecipeIngredientWithIdForInsertion> ingredientArguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
-        Mockito.verify(ingredientHandler, Mockito.times(ingredients.size())).add(ingredientArguments.capture());
+        verify(ingredientHandler, Mockito.times(ingredients.size())).add(ingredientArguments.capture());
         assertEquals(ingredients.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), ingredientArguments.getAllValues());
         ArgumentCaptor<RecipeProductWithIdForInsertion> productArguments = ArgumentCaptor.forClass(RecipeProductWithIdForInsertion.class);
-        Mockito.verify(productHandler, Mockito.times(products.size())).add(productArguments.capture());
+        verify(productHandler, Mockito.times(products.size())).add(productArguments.capture());
         assertEquals(products.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), productArguments.getAllValues());
-        Mockito.verify(recipeHandler).commit();
+        verify(recipeHandler).commit();
     }
 
     @Test
@@ -175,22 +177,87 @@ public class RecipeManagerTest {
                 .ingredients(ingredients)
                 .products(products)
                 .build();
-        Mockito.when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
-        Mockito.when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(productHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
+        when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(recipeId));
+        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS);
+        when(productHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
 
         StatusCode result = uut.add(fullRecipeForInsertion);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
-        Mockito.verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
+        verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         ArgumentCaptor<RecipeIngredientWithIdForInsertion> ingredientArguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
-        Mockito.verify(ingredientHandler, Mockito.times(ingredients.size())).add(ingredientArguments.capture());
+        verify(ingredientHandler, Mockito.times(ingredients.size())).add(ingredientArguments.capture());
         assertEquals(ingredients.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), ingredientArguments.getAllValues());
         ArgumentCaptor<RecipeProductWithIdForInsertion> productArguments = ArgumentCaptor.forClass(RecipeProductWithIdForInsertion.class);
-        Mockito.verify(productHandler, Mockito.times(products.size())).add(productArguments.capture());
+        verify(productHandler, Mockito.times(products.size())).add(productArguments.capture());
         assertEquals(products.stream().map(v -> v.withRecipe(recipeId)).collect(Collectors.toList()), productArguments.getAllValues());
-        Mockito.verify(recipeHandler).rollback();
+        verify(recipeHandler).rollback();
+    }
+
+    @Test
+    public void deletingARecipeWithIngredientsAndProductsCascades() {
+        RecipeForDeletion recipe = new RecipeForDeletion(1, 0);
+        when(ingredientHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(productHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.delete(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.delete(recipe);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        verify(ingredientHandler).deleteAllOf(recipe);
+        verify(productHandler).deleteAllOf(recipe);
+        verify(recipeHandler).delete(recipe);
+        verify(recipeHandler).commit();
+    }
+
+    @Test
+    public void failingIngredientDeletionPropagates() {
+        RecipeForDeletion recipe = new RecipeForDeletion(1, 0);
+        when(ingredientHandler.deleteAllOf(recipe)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+        when(productHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.delete(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.delete(recipe);
+
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        verify(ingredientHandler).deleteAllOf(recipe);
+        verify(recipeHandler).rollback();
+    }
+
+    @Test
+    public void failingProductDeletionPropagates() {
+        RecipeForDeletion recipe = new RecipeForDeletion(1, 0);
+        when(ingredientHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(productHandler.deleteAllOf(recipe)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+        when(recipeHandler.delete(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.delete(recipe);
+
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        verify(ingredientHandler).deleteAllOf(recipe);
+        verify(productHandler).deleteAllOf(recipe);
+        verify(recipeHandler).rollback();
+    }
+
+    @Test
+    public void failingRecipeDeletionPropagates() {
+        RecipeForDeletion recipe = new RecipeForDeletion(1, 0);
+        when(ingredientHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(productHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.delete(recipe)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.delete(recipe);
+
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        verify(ingredientHandler).deleteAllOf(recipe);
+        verify(productHandler).deleteAllOf(recipe);
+        verify(recipeHandler).delete(recipe);
+        verify(recipeHandler).rollback();
     }
 
     RecipeForInsertion getTestRecipe() {

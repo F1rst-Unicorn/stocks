@@ -28,7 +28,21 @@ public abstract class FullRecipeForInsertion {
 
         public abstract Builder ingredients(List<RecipeIngredientForInsertion> v);
 
+        public abstract ImmutableList.Builder<RecipeIngredientForInsertion> ingredientsBuilder();
+
+        public Builder addIngredient(RecipeIngredientForInsertion v) {
+            ingredientsBuilder().add(v);
+            return this;
+        }
+
         public abstract Builder products(List<RecipeProductForInsertion> v);
+
+        public abstract ImmutableList.Builder<RecipeProductForInsertion> productsBuilder();
+
+        public Builder addProduct(RecipeProductForInsertion v) {
+            productsBuilder().add(v);
+            return this;
+        }
 
         public abstract FullRecipeForInsertion build();
     }

@@ -19,7 +19,9 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.BitemporalRecipeIngredient;
+import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
 import de.njsm.stocks.server.v2.business.data.RecipeIngredient;
 import de.njsm.stocks.server.v2.business.data.RecipeIngredientForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
@@ -41,6 +43,11 @@ public class RecipeIngredientHandler extends CrudDatabaseHandler<RecipeIngredien
                                    String resourceIdentifier,
                                    int timeout) {
         super(connectionFactory, resourceIdentifier, timeout);
+    }
+
+    public StatusCode deleteAllOf(RecipeForDeletion recipe) {
+        return currentDelete(RECIPE_INGREDIENT.RECIPE.eq(recipe.getId()))
+                .map(this::notFoundIsOk);
     }
 
     @Override

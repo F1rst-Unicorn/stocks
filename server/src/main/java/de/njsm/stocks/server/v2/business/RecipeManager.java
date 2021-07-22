@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.FullRecipeForInsertion;
 import de.njsm.stocks.server.v2.business.data.Recipe;
 import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
@@ -45,7 +46,9 @@ public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
     }
 
     public StatusCode delete(RecipeForDeletion recipe) {
-        return runOperation(() -> dbHandler.delete(recipe));
+        return runOperation(() -> recipeIngredientHandler.deleteAllOf(recipe)
+                .bind(() -> recipeProductHandler.deleteAllOf(recipe))
+                .bind(() -> dbHandler.delete(recipe)));
     }
 
     public StatusCode add(FullRecipeForInsertion fullRecipeForInsertion) {
@@ -60,5 +63,12 @@ public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
                                         (code, item) -> code.bind(() -> recipeProductHandler.add(item.withRecipe(recipeId))),
                                         (x,y) -> x))).toEither().right().orValue(() -> StatusCode.SUCCESS)
         );
+    }
+
+    @Override
+    public void setPrincipals(Principals principals) {
+        super.setPrincipals(principals);
+        recipeIngredientHandler.setPrincipals(principals);
+        recipeProductHandler.setPrincipals(principals);
     }
 }

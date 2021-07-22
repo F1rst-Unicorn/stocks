@@ -9,13 +9,7 @@ import org.jooq.InsertSetStep;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE_PRODUCT;
 
 @AutoValue
-public abstract class RecipeProductWithIdForInsertion implements Insertable<RecipeProductRecord, RecipeProduct> {
-
-    public abstract int amount();
-
-    public abstract int product();
-
-    public abstract int unit();
+public abstract class RecipeProductWithIdForInsertion implements Insertable<RecipeProductRecord, RecipeProduct>, RecipeProductForInsertionData {
 
     public abstract int recipe();
 

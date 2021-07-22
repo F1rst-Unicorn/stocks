@@ -99,7 +99,7 @@ public class UnitTest implements Deleter {
                 .body("status", equalTo(2));
     }
 
-    static int createNew(String name, String abbreviation) {
+    public static int createNew(String name, String abbreviation) {
         add(name, abbreviation);
         return getIdOf(name);
     }
@@ -141,7 +141,7 @@ public class UnitTest implements Deleter {
                 .contentType(ContentType.JSON);
     }
 
-    private static ValidatableResponse assertOnData() {
+    public static ValidatableResponse assertOnData() {
         return
         given()
                 .log().ifValidationFails().

@@ -19,8 +19,12 @@
 
 package de.njsm.stocks.server.v2.web.servlet;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.web.data.Response;
+import org.glassfish.jersey.server.ContainerException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,6 +95,19 @@ public class ExceptionHandlerTest {
 
         assertEquals(StatusCode.GENERAL_ERROR, result.getStatus());
         Mockito.verify(response).setStatus(500);
+        Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
+    }
+
+    @Test
+    public void valueInstantiationExceptionYieldsInvalidInput() {
+        JsonMappingException nestedException = ValueInstantiationException.from((JsonParser) null, "test");
+        ContainerException exception = new ContainerException(nestedException);
+        Mockito.when(request.getAttribute(ExceptionHandler.EXCEPTION_KEY)).thenReturn(exception);
+
+        Response result = uut.put(request, response);
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
+        Mockito.verify(response).setStatus(400);
         Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
     }
 }
