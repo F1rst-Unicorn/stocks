@@ -35,8 +35,8 @@ public abstract class FullRecipeForInsertion implements Validatable {
 
     @Override
     public boolean isValid() {
-        return recipe() != null && recipe().isValid() &&
-                ingredients() != null && ingredients().stream().allMatch(RecipeIngredientForInsertion::isValid) &&
-                products() != null && products().stream().allMatch(RecipeProductForInsertion::isValid);
+        return recipe().isValid() &&
+                ingredients().stream().allMatch(RecipeIngredientForInsertion::isValid) &&
+                products().stream().allMatch(RecipeProductForInsertion::isValid);
     }
 }

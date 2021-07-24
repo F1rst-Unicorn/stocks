@@ -112,6 +112,17 @@ public class RecipeTest extends Base implements Deleter {
                 .body("status", equalTo(7));
     }
 
+    @Test
+    public void deletingWithoutBodyIsRejected() {
+        given()
+                .log().ifValidationFails().
+        when()
+                .delete(TestSuite.DOMAIN + "/v2/recipe").
+        then()
+                .log().ifValidationFails()
+                .statusCode(400);
+    }
+
     private void put(FullRecipeForInsertion input) {
         given()
                 .log().ifValidationFails()

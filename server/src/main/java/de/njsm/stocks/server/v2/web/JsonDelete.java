@@ -19,46 +19,33 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.RecipeManager;
+import de.njsm.stocks.server.v2.business.BusinessDeletable;
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.FullRecipeForDeletion;
-import de.njsm.stocks.server.v2.business.data.FullRecipeForInsertion;
-import de.njsm.stocks.server.v2.business.data.Recipe;
-import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
+import de.njsm.stocks.server.v2.business.data.Entity;
+import de.njsm.stocks.server.v2.business.data.Versionable;
 import de.njsm.stocks.server.v2.web.data.Response;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-@Path("v2/recipe")
-public class RecipeEndpoint extends Endpoint implements Get<RecipeRecord, Recipe>, JsonDelete<FullRecipeForDeletion, Recipe> {
+import static de.njsm.stocks.server.v2.web.Endpoint.getPrincipals;
 
-    private final RecipeManager manager;
+public interface JsonDelete<T extends Versionable<U>, U extends Entity<U>> {
 
-    @Inject
-    public RecipeEndpoint(RecipeManager manager) {
-        this.manager = manager;
-    }
-
-    @PUT
+    @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response put(@Context HttpServletRequest request,
-                        FullRecipeForInsertion input) {
-        if (isValid(input)) {
-            manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.add(input);
-            return new Response(result);
-        } else {
-            return new Response(StatusCode.INVALID_ARGUMENT);
-        }
+    default Response delete(@Context HttpServletRequest request,
+                            @NotNull T input) {
+        getManager().setPrincipals(getPrincipals(request));
+        StatusCode status = getManager().delete(input);
+        return new Response(status);
     }
 
-    @Override
-    public RecipeManager getManager() {
-        return manager;
-    }
+    BusinessDeletable<T, U> getManager();
 }

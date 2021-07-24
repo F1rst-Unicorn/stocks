@@ -19,6 +19,12 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-public interface Identifiable<T extends Entity<T>> {
+import com.google.common.base.Preconditions;
+
+public interface Identifiable<T extends Entity<T>> extends SelfValidating {
     int getId();
+
+    default void validate() {
+        Preconditions.checkState(getId() > 0, "id below 1");
+    }
 }

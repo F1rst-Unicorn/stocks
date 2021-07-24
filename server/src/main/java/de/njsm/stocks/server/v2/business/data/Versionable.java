@@ -19,11 +19,20 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-public interface Versionable<T extends Entity<T>> extends Identifiable<T> {
+import com.google.common.base.Preconditions;
+
+public interface Versionable<T extends Entity<T>> extends Identifiable<T>, SelfValidating {
+
     int getVersion();
 
     default boolean isContainedIn(T item) {
         return getId() == item.getId() &&
                 getVersion() + 1 == item.getVersion();
+    }
+
+    @Override
+    default void validate() {
+        Identifiable.super.validate();
+        Preconditions.checkState(getVersion() >= 0, "version below 0");
     }
 }

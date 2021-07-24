@@ -20,10 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.BitemporalRecipeProduct;
-import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
-import de.njsm.stocks.server.v2.business.data.RecipeProduct;
-import de.njsm.stocks.server.v2.business.data.RecipeProductForGetting;
+import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeProductRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -31,6 +28,7 @@ import org.jooq.TableField;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE_PRODUCT;
@@ -45,14 +43,26 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
         super(connectionFactory, resourceIdentifier, timeout);
     }
 
-    @Override
-    protected Table<RecipeProductRecord> getTable() {
-        return RECIPE_PRODUCT;
+    public StatusCode areEntitiesComplete(Identifiable<Recipe> recipe, Set<? extends Versionable<RecipeProduct>> products) {
+        return runCommand(context -> new CompleteEntityReferenceChecker<Recipe, RecipeProduct, RecipeProductRecord>(
+                getIdField(),
+                getVersionField(),
+                RECIPE_PRODUCT.VALID_TIME_START,
+                RECIPE_PRODUCT.VALID_TIME_END,
+                RECIPE_PRODUCT.TRANSACTION_TIME_END,
+                RECIPE_PRODUCT.RECIPE,
+                getTable()
+        ).check(context, recipe, products));
     }
 
     public StatusCode deleteAllOf(RecipeForDeletion recipe) {
         return currentDelete(RECIPE_PRODUCT.RECIPE.eq(recipe.getId()))
                 .map(this::notFoundIsOk);
+    }
+
+    @Override
+    protected Table<RecipeProductRecord> getTable() {
+        return RECIPE_PRODUCT;
     }
 
     @Override

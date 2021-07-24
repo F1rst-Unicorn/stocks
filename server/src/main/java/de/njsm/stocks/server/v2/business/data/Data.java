@@ -32,7 +32,7 @@ import java.util.Objects;
         isGetterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY,
         creatorVisibility = JsonAutoDetect.Visibility.NONE,
         fieldVisibility = JsonAutoDetect.Visibility.NONE)
-public abstract class Data {
+public abstract class Data implements Validatable {
 
     private final int id;
 
@@ -64,5 +64,10 @@ public abstract class Data {
         } catch (JsonProcessingException e) {
             return "<jackson exception>";
         }
+    }
+
+    @Override
+    public boolean isValid() {
+        return id > 0;
     }
 }

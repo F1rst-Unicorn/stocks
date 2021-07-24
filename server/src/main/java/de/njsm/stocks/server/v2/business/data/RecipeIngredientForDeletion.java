@@ -19,8 +19,21 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-public class RecipeIngredientForDeletion extends VersionedData implements Versionable<RecipeIngredient> {
-    public RecipeIngredientForDeletion(int id, int version) {
-        super(id, version);
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class RecipeIngredientForDeletion implements Versionable<RecipeIngredient> {
+
+    public static RecipeIngredientForDeletion.Builder builder() {
+        return new AutoValue_RecipeIngredientForDeletion.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends SelfValidating.Builder<RecipeIngredientForDeletion> {
+        public abstract RecipeIngredientForDeletion.Builder id(int v);
+
+        public abstract RecipeIngredientForDeletion.Builder version(int v);
     }
 }

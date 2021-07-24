@@ -21,6 +21,7 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.UnitManager;
+import de.njsm.stocks.server.v2.business.data.UnitForDeletion;
 import de.njsm.stocks.server.v2.business.data.UnitForInsertion;
 import de.njsm.stocks.server.v2.business.data.UnitForRenaming;
 import de.njsm.stocks.server.v2.web.data.Response;
@@ -141,5 +142,17 @@ public class UnitEndpointTest {
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).rename(input);
         verify(manager).setPrincipals(TEST_USER);
+    }
+
+
+    @Test
+    public void wrappingDeletionParameterWorks() {
+        int id = 1;
+        int version = 2;
+
+        UnitForDeletion result = uut.wrapParameters(id, version);
+
+        assertEquals(id, result.getId());
+        assertEquals(version, result.getVersion());
     }
 }

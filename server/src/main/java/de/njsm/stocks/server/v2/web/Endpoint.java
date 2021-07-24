@@ -123,7 +123,7 @@ public class Endpoint {
         }
     }
 
-    public boolean isValid(Validatable input) {
+    public static boolean isValid(Validatable input) {
         return input != null && input.isValid();
     }
 

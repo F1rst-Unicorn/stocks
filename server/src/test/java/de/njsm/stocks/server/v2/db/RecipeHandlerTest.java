@@ -117,7 +117,12 @@ public class RecipeHandlerTest extends DbTestCase {
 
     @Test
     public void deletingWorks() {
-        StatusCode result = uut.delete(new RecipeForDeletion(1, 0));
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+
+        StatusCode result = uut.delete(recipe);
 
         assertEquals(StatusCode.SUCCESS, result);
         Validation<StatusCode, Stream<Recipe>> stream = uut.get(false, Instant.EPOCH);

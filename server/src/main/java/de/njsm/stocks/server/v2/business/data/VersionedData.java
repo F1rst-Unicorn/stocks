@@ -21,7 +21,7 @@ package de.njsm.stocks.server.v2.business.data;
 
 import java.util.Objects;
 
-public abstract class VersionedData extends Data {
+public class VersionedData extends Data implements Validatable {
 
     private final int version;
 
@@ -46,5 +46,10 @@ public abstract class VersionedData extends Data {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getVersion());
+    }
+
+    @Override
+    public boolean isValid() {
+        return super.isValid() && version >= 0;
     }
 }

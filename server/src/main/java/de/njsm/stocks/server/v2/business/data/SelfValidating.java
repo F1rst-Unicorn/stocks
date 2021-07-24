@@ -19,21 +19,18 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+public interface SelfValidating {
 
-@AutoValue
-public abstract class RecipeProductForDeletion implements Versionable<RecipeProduct> {
+    void validate();
 
-    public static RecipeProductForDeletion.Builder builder() {
-        return new AutoValue_RecipeProductForDeletion.Builder();
-    }
+    abstract class Builder<T extends SelfValidating> {
+        abstract T autoBuild();
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends SelfValidating.Builder<RecipeProductForDeletion> {
-        public abstract RecipeProductForDeletion.Builder id(int v);
+        public final T build() {
+            T result = autoBuild();
+            result.validate();
+            return result;
+        }
 
-        public abstract RecipeProductForDeletion.Builder version(int v);
     }
 }

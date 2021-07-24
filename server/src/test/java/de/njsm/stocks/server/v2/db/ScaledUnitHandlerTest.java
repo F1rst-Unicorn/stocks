@@ -116,6 +116,15 @@ public class ScaledUnitHandlerTest extends DbTestCase {
     }
 
     @Test
+    public void editingMissingScaleIsReported() {
+        ScaledUnitForEditing input = new ScaledUnitForEditing(3, 0, new BigDecimal(2), 1);
+
+        StatusCode result = uut.edit(input);
+
+        assertEquals(StatusCode.NOT_FOUND, result);
+    }
+
+    @Test
     public void editingScaleWorks() {
         ScaledUnitForEditing input = new ScaledUnitForEditing(1, 0, new BigDecimal(2), 1);
 

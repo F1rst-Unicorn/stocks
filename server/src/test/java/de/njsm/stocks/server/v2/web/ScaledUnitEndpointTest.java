@@ -21,6 +21,7 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.server.v2.business.data.ScaledUnitForDeletion;
 import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
 import de.njsm.stocks.server.v2.business.data.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.web.data.Response;
@@ -139,5 +140,16 @@ public class ScaledUnitEndpointTest {
         Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
+    }
+
+    @Test
+    public void wrappingDeletionParameterWorks() {
+        int id = 1;
+        int version = 2;
+
+        ScaledUnitForDeletion result = uut.wrapParameters(id, version);
+
+        assertEquals(id, result.getId());
+        assertEquals(version, result.getVersion());
     }
 }

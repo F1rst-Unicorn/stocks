@@ -17,23 +17,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.server.v2.business.data;
+package de.njsm.stocks.server.v2.business.json;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import com.fasterxml.jackson.core.JsonGenerator;
+import org.junit.Before;
+import org.junit.Test;
 
-@AutoValue
-public abstract class RecipeProductForDeletion implements Versionable<RecipeProduct> {
+import java.time.Period;
 
-    public static RecipeProductForDeletion.Builder builder() {
-        return new AutoValue_RecipeProductForDeletion.Builder();
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+public class PeriodSerialiserTest {
+
+    private PeriodSerialiser uut;
+
+    private JsonGenerator generatorMock;
+
+    @Before
+    public void setup() {
+        generatorMock = mock(JsonGenerator.class);
+        uut = new PeriodSerialiser();
     }
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends SelfValidating.Builder<RecipeProductForDeletion> {
-        public abstract RecipeProductForDeletion.Builder id(int v);
+    @Test
+    public void statusCodeIsSerialisedWithoutModification() throws Exception {
+        Period input = Period.ofDays(1);
 
-        public abstract RecipeProductForDeletion.Builder version(int v);
+        uut.serialize(input, generatorMock, null);
+
+        verify(generatorMock).writeNumber(1);
     }
 }

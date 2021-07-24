@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -197,30 +198,99 @@ public class RecipeManagerTest {
 
     @Test
     public void deletingARecipeWithIngredientsAndProductsCascades() {
-        RecipeForDeletion recipe = new RecipeForDeletion(1, 0);
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        FullRecipeForDeletion input = FullRecipeForDeletion.builder()
+                .recipe(recipe)
+                .ingredients(Collections.emptySet())
+                .products(Collections.emptySet())
+                .build();
+        when(ingredientHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.SUCCESS);
         when(ingredientHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(productHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.SUCCESS);
         when(productHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
         when(recipeHandler.delete(recipe)).thenReturn(StatusCode.SUCCESS);
         when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.delete(recipe);
+        StatusCode result = uut.delete(input);
 
         assertEquals(StatusCode.SUCCESS, result);
+        verify(ingredientHandler).areEntitiesComplete(recipe, Collections.emptySet());
         verify(ingredientHandler).deleteAllOf(recipe);
+        verify(productHandler).areEntitiesComplete(recipe, Collections.emptySet());
         verify(productHandler).deleteAllOf(recipe);
         verify(recipeHandler).delete(recipe);
         verify(recipeHandler).commit();
     }
 
     @Test
+    public void deletingARecipeWithInvalidIngredientsPropagates() {
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        FullRecipeForDeletion input = FullRecipeForDeletion.builder()
+                .recipe(recipe)
+                .ingredients(Collections.emptySet())
+                .products(Collections.emptySet())
+                .build();
+        when(ingredientHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.INVALID_DATA_VERSION);
+        when(recipeHandler.rollback()).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.delete(input);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+        verify(ingredientHandler).areEntitiesComplete(recipe, Collections.emptySet());
+        verify(recipeHandler).rollback();
+    }
+
+    @Test
+    public void deletingARecipeWithInvalidProductsPropagates() {
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        FullRecipeForDeletion input = FullRecipeForDeletion.builder()
+                .recipe(recipe)
+                .ingredients(Collections.emptySet())
+                .products(Collections.emptySet())
+                .build();
+        when(ingredientHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.SUCCESS);
+        when(ingredientHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(productHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.INVALID_DATA_VERSION);
+        when(productHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.delete(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(recipeHandler.rollback()).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.delete(input);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+        verify(ingredientHandler).areEntitiesComplete(recipe, Collections.emptySet());
+        verify(productHandler).areEntitiesComplete(recipe, Collections.emptySet());
+        verify(recipeHandler).rollback();
+    }
+
+    @Test
     public void failingIngredientDeletionPropagates() {
-        RecipeForDeletion recipe = new RecipeForDeletion(1, 0);
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        FullRecipeForDeletion input = FullRecipeForDeletion.builder()
+                .recipe(recipe)
+                .ingredients(Collections.emptySet())
+                .products(Collections.emptySet())
+                .build();
+        when(ingredientHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.SUCCESS);
         when(ingredientHandler.deleteAllOf(recipe)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+        when(productHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.SUCCESS);
         when(productHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
         when(recipeHandler.delete(recipe)).thenReturn(StatusCode.SUCCESS);
         when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.delete(recipe);
+        StatusCode result = uut.delete(input);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         verify(ingredientHandler).deleteAllOf(recipe);
@@ -229,32 +299,56 @@ public class RecipeManagerTest {
 
     @Test
     public void failingProductDeletionPropagates() {
-        RecipeForDeletion recipe = new RecipeForDeletion(1, 0);
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        FullRecipeForDeletion input = FullRecipeForDeletion.builder()
+                .recipe(recipe)
+                .ingredients(Collections.emptySet())
+                .products(Collections.emptySet())
+                .build();
+        when(ingredientHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.SUCCESS);
         when(ingredientHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(productHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.SUCCESS);
         when(productHandler.deleteAllOf(recipe)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         when(recipeHandler.delete(recipe)).thenReturn(StatusCode.SUCCESS);
         when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.delete(recipe);
+        StatusCode result = uut.delete(input);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        verify(ingredientHandler).areEntitiesComplete(recipe, Collections.emptySet());
         verify(ingredientHandler).deleteAllOf(recipe);
+        verify(productHandler).areEntitiesComplete(recipe, Collections.emptySet());
         verify(productHandler).deleteAllOf(recipe);
         verify(recipeHandler).rollback();
     }
 
     @Test
     public void failingRecipeDeletionPropagates() {
-        RecipeForDeletion recipe = new RecipeForDeletion(1, 0);
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        FullRecipeForDeletion input = FullRecipeForDeletion.builder()
+                .recipe(recipe)
+                .ingredients(Collections.emptySet())
+                .products(Collections.emptySet())
+                .build();
+        when(ingredientHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.SUCCESS);
         when(ingredientHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
+        when(productHandler.areEntitiesComplete(eq(recipe), any())).thenReturn(StatusCode.SUCCESS);
         when(productHandler.deleteAllOf(recipe)).thenReturn(StatusCode.SUCCESS);
         when(recipeHandler.delete(recipe)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.delete(recipe);
+        StatusCode result = uut.delete(input);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        verify(ingredientHandler).areEntitiesComplete(recipe, Collections.emptySet());
         verify(ingredientHandler).deleteAllOf(recipe);
+        verify(productHandler).areEntitiesComplete(recipe, Collections.emptySet());
         verify(productHandler).deleteAllOf(recipe);
         verify(recipeHandler).delete(recipe);
         verify(recipeHandler).rollback();

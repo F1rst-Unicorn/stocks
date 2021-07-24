@@ -20,9 +20,9 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.business.data.FullRecipeForDeletion;
 import de.njsm.stocks.server.v2.business.data.FullRecipeForInsertion;
 import de.njsm.stocks.server.v2.business.data.Recipe;
-import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
 import de.njsm.stocks.server.v2.db.RecipeHandler;
 import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;
 import de.njsm.stocks.server.v2.db.RecipeProductHandler;
@@ -30,7 +30,7 @@ import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 
 public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
         implements BusinessGettable<RecipeRecord, Recipe>,
-                   BusinessDeletable<RecipeForDeletion, Recipe> {
+                   BusinessDeletable<FullRecipeForDeletion, Recipe> {
 
     private final RecipeHandler dbHandler;
 
@@ -45,10 +45,14 @@ public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
         this.recipeProductHandler = recipeProductHandler;
     }
 
-    public StatusCode delete(RecipeForDeletion recipe) {
-        return runOperation(() -> recipeIngredientHandler.deleteAllOf(recipe)
-                .bind(() -> recipeProductHandler.deleteAllOf(recipe))
-                .bind(() -> dbHandler.delete(recipe)));
+    @Override
+    public StatusCode delete(FullRecipeForDeletion recipe) {
+        return runOperation(
+                () -> recipeIngredientHandler.areEntitiesComplete(recipe.recipe(), recipe.ingredients())
+                        .bind(() -> recipeProductHandler.areEntitiesComplete(recipe.recipe(), recipe.products()))
+                        .bind(() -> recipeIngredientHandler.deleteAllOf(recipe.recipe()))
+                        .bind(() -> recipeProductHandler.deleteAllOf(recipe.recipe()))
+                        .bind(() -> dbHandler.delete(recipe.recipe())));
     }
 
     public StatusCode add(FullRecipeForInsertion fullRecipeForInsertion) {

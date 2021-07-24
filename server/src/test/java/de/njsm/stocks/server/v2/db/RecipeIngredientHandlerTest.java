@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -116,7 +117,12 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
 
     @Test
     public void deletingWorks() {
-        StatusCode result = uut.delete(new RecipeIngredientForDeletion(1, 0));
+        RecipeIngredientForDeletion input = RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+
+        StatusCode result = uut.delete(input);
 
         assertEquals(StatusCode.SUCCESS, result);
         Validation<StatusCode, Stream<RecipeIngredient>> stream = uut.get(false, Instant.EPOCH);
@@ -125,8 +131,97 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
     }
 
     @Test
+    public void checkingSetEqualityWorks() {
+        RecipeIngredientForDeletion ingredient = RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        Versionable<Recipe> recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        Set<Versionable<RecipeIngredient>> ingredients = Set.of(ingredient);
+
+        StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
+
+        assertEquals(StatusCode.SUCCESS, result);
+    }
+
+    @Test
+    public void moreIngredientsThanInRecipeAreRejected() {
+        RecipeIngredientForDeletion ingredient1 = RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        RecipeIngredientForDeletion ingredient2 = RecipeIngredientForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        Versionable<Recipe> recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        Set<Versionable<RecipeIngredient>> ingredients = Set.of(ingredient1, ingredient2);
+
+        StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
+
+    @Test
+    public void differentVersionIsRejected() {
+        RecipeIngredientForDeletion ingredient = RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(1)
+                .build();
+        Identifiable<Recipe> recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        Set<Versionable<RecipeIngredient>> ingredients = Set.of(ingredient);
+
+        StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
+
+    @Test
+    public void differentIdIsRejected() {
+        RecipeIngredientForDeletion ingredient = RecipeIngredientForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        Identifiable<Recipe> recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        Set<Versionable<RecipeIngredient>> ingredients = Set.of(ingredient);
+
+        StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
+
+
+    @Test
+    public void lessIngredientsThanInRecipeAreRejected() {
+        Identifiable<Recipe> recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        Set<Versionable<RecipeIngredient>> ingredients = Set.of();
+
+        StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
+
+    @Test
     public void deletingAllOfRecipeWorks() {
-        RecipeForDeletion recipe = new RecipeForDeletion(1, 0);
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
 
         StatusCode result = uut.deleteAllOf(recipe);
 
@@ -138,7 +233,10 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
 
     @Test
     public void deletingAllOfAbsentRecipeWorks() {
-        RecipeForDeletion recipe = new RecipeForDeletion(2, 0);
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
 
         StatusCode result = uut.deleteAllOf(recipe);
 

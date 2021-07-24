@@ -1,8 +1,11 @@
 package de.njsm.stocks.server.v2.web;
 
+import com.google.common.collect.ImmutableSet;
 import de.njsm.stocks.server.v2.business.RecipeManager;
 import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.server.v2.business.data.FullRecipeForDeletion;
 import de.njsm.stocks.server.v2.business.data.FullRecipeForInsertion;
+import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
 import de.njsm.stocks.server.v2.business.data.RecipeForInsertion;
 import de.njsm.stocks.server.v2.web.data.Response;
 import org.junit.After;
@@ -16,6 +19,8 @@ import java.util.Collections;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class RecipeEndpointTest {
 
@@ -46,12 +51,40 @@ public class RecipeEndpointTest {
                 .ingredients(Collections.emptyList())
                 .products(Collections.emptyList())
                 .build();
-        Mockito.when(recipeManager.add(input)).thenReturn(StatusCode.SUCCESS);
+        when(recipeManager.add(input)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.put(createMockRequest(), input);
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
-        Mockito.verify(recipeManager).add(input);
-        Mockito.verify(recipeManager).setPrincipals(TEST_USER);
+        verify(recipeManager).add(input);
+        verify(recipeManager).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void invalidRequestIsRejected() {
+
+        Response result = uut.put(createMockRequest(), null);
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
+    }
+
+    @Test
+    public void deletingRecipeIsForwarded() {
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        FullRecipeForDeletion input = FullRecipeForDeletion.builder()
+                .recipe(recipe)
+                .ingredients(ImmutableSet.of())
+                .products(ImmutableSet.of())
+                .build();
+        when(recipeManager.delete(input)).thenReturn(StatusCode.SUCCESS);
+
+        Response result = uut.delete(createMockRequest(), input);
+
+        assertEquals(StatusCode.SUCCESS, result.getStatus());
+        verify(recipeManager).setPrincipals(TEST_USER);
+        verify(recipeManager).delete(input);
     }
 }

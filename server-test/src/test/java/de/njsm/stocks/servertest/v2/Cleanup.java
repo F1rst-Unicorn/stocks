@@ -50,9 +50,9 @@ public class Cleanup {
                     .log().ifValidationFails()
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
-                    when()
+            when()
                     .delete(TestSuite.DOMAIN + "/v2/device").
-                    then()
+            then()
                     .log().ifValidationFails()
                     .statusCode(200)
                     .contentType(ContentType.JSON);
@@ -68,9 +68,9 @@ public class Cleanup {
                     .log().ifValidationFails()
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
-                    when()
+            when()
                     .delete(TestSuite.DOMAIN + "/v2/ean").
-                    then()
+            then()
                     .log().ifValidationFails()
                     .statusCode(200)
                     .contentType(ContentType.JSON);
@@ -86,9 +86,9 @@ public class Cleanup {
                     .log().ifValidationFails()
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
-                    when()
+            when()
                     .delete(TestSuite.DOMAIN + "/v2/fooditem").
-                    then()
+            then()
                     .log().ifValidationFails()
                     .statusCode(200)
                     .contentType(ContentType.JSON);
@@ -122,9 +122,9 @@ public class Cleanup {
                     .log().ifValidationFails()
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
-                    when()
+            when()
                     .delete(TestSuite.DOMAIN + "/v2/food").
-                    then()
+            then()
                     .log().ifValidationFails()
                     .statusCode(200)
                     .contentType(ContentType.JSON);
@@ -159,9 +159,9 @@ public class Cleanup {
                     .log().ifValidationFails()
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
-                    when()
+            when()
                     .delete(TestSuite.DOMAIN + "/v2/scaled-unit").
-                    then()
+            then()
                     .log().ifValidationFails()
                     .statusCode(200)
                     .contentType(ContentType.JSON);
@@ -197,9 +197,9 @@ public class Cleanup {
                     .log().ifValidationFails()
                     .queryParam("id", d.id)
                     .queryParam("version", d.version).
-                    when()
+            when()
                     .delete(TestSuite.DOMAIN + "/v2/user").
-                    then()
+            then()
                     .log().ifValidationFails()
                     .statusCode(200)
                     .contentType(ContentType.JSON);
