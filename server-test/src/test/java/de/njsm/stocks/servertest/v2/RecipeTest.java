@@ -19,11 +19,11 @@
 
 package de.njsm.stocks.servertest.v2;
 
+import de.njsm.stocks.common.api.impl.FullRecipeForInsertion;
+import de.njsm.stocks.common.api.impl.RecipeForInsertion;
+import de.njsm.stocks.common.api.impl.RecipeIngredientForInsertion;
+import de.njsm.stocks.common.api.impl.RecipeProductForInsertion;
 import de.njsm.stocks.servertest.TestSuite;
-import de.njsm.stocks.servertest.data.FullRecipeForInsertion;
-import de.njsm.stocks.servertest.data.RecipeForInsertion;
-import de.njsm.stocks.servertest.data.RecipeIngredientForInsertion;
-import de.njsm.stocks.servertest.data.RecipeProductForInsertion;
 import de.njsm.stocks.servertest.v2.repo.FoodRepository;
 import de.njsm.stocks.servertest.v2.repo.UnitRepository;
 import io.restassured.http.ContentType;

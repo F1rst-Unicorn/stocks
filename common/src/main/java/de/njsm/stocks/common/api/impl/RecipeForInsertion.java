@@ -19,12 +19,15 @@
 
 package de.njsm.stocks.common.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.common.api.Insertable;
 import de.njsm.stocks.common.api.Recipe;
 import de.njsm.stocks.common.api.serialisers.DurationDeserialiser;
+import de.njsm.stocks.common.api.serialisers.DurationSerialiser;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
 import java.time.Duration;
@@ -33,10 +36,14 @@ import java.time.Duration;
 @JsonDeserialize(builder = AutoValue_RecipeForInsertion.Builder.class)
 public abstract class RecipeForInsertion implements Insertable<Recipe>, SelfValidating {
 
+    @JsonGetter
     public abstract String name();
 
+    @JsonGetter
     public abstract String instructions();
 
+    @JsonGetter
+    @JsonSerialize(using = DurationSerialiser.class)
     public abstract Duration duration();
 
     public static Builder builder() {

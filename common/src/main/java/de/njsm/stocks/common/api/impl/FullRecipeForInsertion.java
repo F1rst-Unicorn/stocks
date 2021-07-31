@@ -1,5 +1,6 @@
 package de.njsm.stocks.common.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
@@ -11,10 +12,13 @@ import java.util.List;
 @JsonDeserialize(builder = AutoValue_FullRecipeForInsertion.Builder.class)
 public abstract class FullRecipeForInsertion implements SelfValidating {
 
+    @JsonGetter
     public abstract RecipeForInsertion recipe();
 
+    @JsonGetter
     public abstract ImmutableList<RecipeIngredientForInsertion> ingredients();
 
+    @JsonGetter
     public abstract ImmutableList<RecipeProductForInsertion> products();
 
     public static Builder builder() {
@@ -28,7 +32,21 @@ public abstract class FullRecipeForInsertion implements SelfValidating {
 
         public abstract Builder ingredients(List<RecipeIngredientForInsertion> v);
 
+        public abstract ImmutableList.Builder<RecipeIngredientForInsertion> ingredientsBuilder();
+
+        public Builder addIngredient(RecipeIngredientForInsertion v) {
+            ingredientsBuilder().add(v);
+            return this;
+        }
+
         public abstract Builder products(List<RecipeProductForInsertion> v);
+
+        public abstract ImmutableList.Builder<RecipeProductForInsertion> productsBuilder();
+
+        public Builder addProduct(RecipeProductForInsertion v) {
+            productsBuilder().add(v);
+            return this;
+        }
     }
 
     @Override

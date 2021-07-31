@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.servertest.v2;
 
-import de.njsm.stocks.servertest.data.Data;
+import de.njsm.stocks.common.api.impl.VersionedData;
 import de.njsm.stocks.servertest.TestSuite;
 import groovy.lang.Tuple2;
 import io.restassured.http.ContentType;
@@ -42,14 +42,14 @@ public class Cleanup {
 
     @Test
     public void clean01Devices() {
-        List<Data> ids = getIds("/v2/device");
+        List<VersionedData> ids = getIds("/v2/device");
 
-        for (Data d : ids) {
-            if (d.id == 1) continue;
+        for (VersionedData d : ids) {
+            if (d.getId() == 1) continue;
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
+                    .queryParam("id", d.getId())
+                    .queryParam("version", d.getVersion()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/device").
             then()
@@ -61,13 +61,13 @@ public class Cleanup {
 
     @Test
     public void clean02Ean() {
-        List<Data> ids = getIds("/v2/ean");
+        List<VersionedData> ids = getIds("/v2/ean");
 
-        for (Data d : ids) {
+        for (VersionedData d : ids) {
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
+                    .queryParam("id", d.getId())
+                    .queryParam("version", d.getVersion()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/ean").
             then()
@@ -79,13 +79,13 @@ public class Cleanup {
 
     @Test
     public void clean03FoodItems() {
-        List<Data> ids = getIds("/v2/fooditem");
+        List<VersionedData> ids = getIds("/v2/fooditem");
 
-        for (Data d : ids) {
+        for (VersionedData d : ids) {
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
+                    .queryParam("id", d.getId())
+                    .queryParam("version", d.getVersion()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/fooditem").
             then()
@@ -97,13 +97,13 @@ public class Cleanup {
 
     @Test
     public void clean04Recipes() {
-        List<Data> ids = getIds("/v2/recipe");
+        List<VersionedData> ids = getIds("/v2/recipe");
 
-        for (Data d : ids) {
+        for (VersionedData d : ids) {
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
+                    .queryParam("id", d.getId())
+                    .queryParam("version", d.getVersion()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/recipe").
             then()
@@ -115,13 +115,13 @@ public class Cleanup {
 
     @Test
     public void clean05Food() {
-        List<Data> ids = getIds("/v2/food");
+        List<VersionedData> ids = getIds("/v2/food");
 
-        for (Data d : ids) {
+        for (VersionedData d : ids) {
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
+                    .queryParam("id", d.getId())
+                    .queryParam("version", d.getVersion()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/food").
             then()
@@ -133,13 +133,13 @@ public class Cleanup {
 
     @Test
     public void clean06Locations() {
-        List<Data> ids = getIds("/v2/location");
+        List<VersionedData> ids = getIds("/v2/location");
 
-        for (Data d : ids) {
+        for (VersionedData d : ids) {
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
+                    .queryParam("id", d.getId())
+                    .queryParam("version", d.getVersion()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/location").
             then()
@@ -151,14 +151,14 @@ public class Cleanup {
 
     @Test
     public void clean07ScaledUnits() {
-        List<Data> ids = getIds("/v2/scaled-unit");
+        List<VersionedData> ids = getIds("/v2/scaled-unit");
 
-        for (Data d : ids) {
-            if (d.id == 1) continue;
+        for (VersionedData d : ids) {
+            if (d.getId() == 1) continue;
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
+                    .queryParam("id", d.getId())
+                    .queryParam("version", d.getVersion()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/scaled-unit").
             then()
@@ -170,14 +170,14 @@ public class Cleanup {
 
     @Test
     public void clean08Units() {
-        List<Data> ids = getIds("/v2/unit");
+        List<VersionedData> ids = getIds("/v2/unit");
 
-        for (Data d : ids) {
-            if (d.id == 1) continue;
+        for (VersionedData d : ids) {
+            if (d.getId() == 1) continue;
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
+                    .queryParam("id", d.getId())
+                    .queryParam("version", d.getVersion()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/unit").
             then()
@@ -189,14 +189,14 @@ public class Cleanup {
 
     @Test
     public void clean09Users() {
-        List<Data> ids = getIds("/v2/user");
+        List<VersionedData> ids = getIds("/v2/user");
 
-        for (Data d : ids) {
-            if (d.id == 1) continue;
+        for (VersionedData d : ids) {
+            if (d.getId() == 1) continue;
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.id)
-                    .queryParam("version", d.version).
+                    .queryParam("id", d.getId())
+                    .queryParam("version", d.getVersion()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/user").
             then()
@@ -224,7 +224,7 @@ public class Cleanup {
         writer.close();
     }
 
-    private List<Data> getIds(String path) {
+    private List<VersionedData> getIds(String path) {
         JsonPath jsonPath = when()
                 .get(TestSuite.DOMAIN + path).
         then()
@@ -240,9 +240,9 @@ public class Cleanup {
         Iterator<Integer> it1 = ids.iterator();
         Iterator<Integer> it2 = versions.iterator();
 
-        List<Data> result = new LinkedList<>();
+        List<VersionedData> result = new LinkedList<>();
         while (it1.hasNext()) {
-            result.add(new Data(it1.next(), it2.next()));
+            result.add(new VersionedData(it1.next(), it2.next()));
         }
         return result;
     }
