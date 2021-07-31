@@ -19,14 +19,14 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.FoodItem;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.StreamResponse;
+import de.njsm.stocks.common.api.impl.FoodItemForDeletion;
+import de.njsm.stocks.common.api.impl.FoodItemForEditing;
+import de.njsm.stocks.common.api.impl.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.business.data.FoodItemForDeletion;
-import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
-import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
-import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 import junit.framework.TestCase;
 import org.junit.After;

@@ -19,8 +19,11 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.impl.BitemporalRecipeProduct;
+import de.njsm.stocks.common.api.impl.RecipeForDeletion;
+import de.njsm.stocks.common.api.impl.RecipeProductForDeletion;
+import de.njsm.stocks.common.api.impl.RecipeProductWithIdForInsertion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +37,6 @@ import java.util.stream.Stream;
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 public class RecipeProductHandlerTest extends DbTestCase {

@@ -19,9 +19,9 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.data.BitemporalRecipe;
-import de.njsm.stocks.server.v2.business.data.Recipe;
-import de.njsm.stocks.server.v2.business.data.RecipeForGetting;
+import de.njsm.stocks.common.api.Recipe;
+import de.njsm.stocks.common.api.impl.BitemporalRecipe;
+import de.njsm.stocks.common.api.impl.RecipeForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import org.jooq.Field;
 import org.jooq.Table;

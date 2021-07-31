@@ -19,8 +19,12 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.ScaledUnit;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.BitemporalScaledUnit;
+import de.njsm.stocks.common.api.impl.ScaledUnitForDeletion;
+import de.njsm.stocks.common.api.impl.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.impl.ScaledUnitForInsertion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;

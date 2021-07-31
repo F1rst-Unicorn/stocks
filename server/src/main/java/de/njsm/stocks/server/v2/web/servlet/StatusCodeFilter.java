@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.server.v2.web.servlet;
 
-import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.common.api.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

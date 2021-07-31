@@ -19,8 +19,8 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import fj.data.Validation;
 import org.junit.After;

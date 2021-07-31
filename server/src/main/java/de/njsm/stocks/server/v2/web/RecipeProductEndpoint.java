@@ -19,8 +19,9 @@
 
 package de.njsm.stocks.server.v2.web;
 
+
+import de.njsm.stocks.common.api.RecipeProduct;
 import de.njsm.stocks.server.v2.business.RecipeProductManager;
-import de.njsm.stocks.server.v2.business.data.RecipeProduct;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeProductRecord;
 
 import javax.inject.Inject;

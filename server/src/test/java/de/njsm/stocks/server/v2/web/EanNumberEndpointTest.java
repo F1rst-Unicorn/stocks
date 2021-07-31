@@ -19,14 +19,13 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.EanNumber;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StreamResponse;
+import de.njsm.stocks.common.api.impl.EanNumberForDeletion;
+import de.njsm.stocks.common.api.impl.EanNumberForGetting;
+import de.njsm.stocks.common.api.impl.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.EanNumber;
-import de.njsm.stocks.server.v2.business.data.EanNumberForDeletion;
-import de.njsm.stocks.server.v2.business.data.EanNumberForGetting;
-import de.njsm.stocks.server.v2.business.data.EanNumberForInsertion;
-import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 import junit.framework.TestCase;
 import org.junit.After;
@@ -41,8 +40,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.njsm.stocks.server.v2.business.StatusCode.INVALID_ARGUMENT;
-import static de.njsm.stocks.server.v2.business.StatusCode.SUCCESS;
+import static de.njsm.stocks.common.api.StatusCode.INVALID_ARGUMENT;
+import static de.njsm.stocks.common.api.StatusCode.SUCCESS;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.Assert.assertEquals;
@@ -141,7 +140,7 @@ public class EanNumberEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        TestCase.assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
+        TestCase.assertEquals(INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test

@@ -19,8 +19,8 @@
 
 package de.njsm.stocks.server.v2.matchers;
 
-import de.njsm.stocks.server.v2.business.data.Entity;
-import de.njsm.stocks.server.v2.business.data.Versionable;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.Versionable;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 

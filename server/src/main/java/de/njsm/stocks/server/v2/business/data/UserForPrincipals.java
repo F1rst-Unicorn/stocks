@@ -19,6 +19,10 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
+import de.njsm.stocks.common.api.Identifiable;
+import de.njsm.stocks.common.api.User;
+import de.njsm.stocks.common.api.impl.Data;
+
 public class UserForPrincipals extends Data implements Identifiable<User> {
     public UserForPrincipals(int id) {
         super(id);

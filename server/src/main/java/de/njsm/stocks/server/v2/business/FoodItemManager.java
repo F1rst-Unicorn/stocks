@@ -19,11 +19,12 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.common.api.FoodItem;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.FoodItemForDeletion;
+import de.njsm.stocks.common.api.impl.FoodItemForEditing;
+import de.njsm.stocks.common.api.impl.FoodItemForInsertion;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.business.data.FoodItemForDeletion;
-import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
-import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;

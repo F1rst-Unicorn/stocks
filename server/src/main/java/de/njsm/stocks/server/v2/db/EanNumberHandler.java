@@ -19,8 +19,12 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.EanNumber;
+import de.njsm.stocks.common.api.Food;
+import de.njsm.stocks.common.api.Identifiable;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.BitemporalEanNumber;
+import de.njsm.stocks.common.api.impl.EanNumberForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import org.jooq.Field;
 import org.jooq.Table;

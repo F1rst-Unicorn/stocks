@@ -19,11 +19,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.BitemporalUnit;
-import de.njsm.stocks.server.v2.business.data.Unit;
-import de.njsm.stocks.server.v2.business.data.UnitForGetting;
-import de.njsm.stocks.server.v2.business.data.UnitForRenaming;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.impl.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
 import org.jooq.Field;
 import org.jooq.Table;

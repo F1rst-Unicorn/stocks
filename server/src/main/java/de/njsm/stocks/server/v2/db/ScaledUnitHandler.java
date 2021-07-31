@@ -19,11 +19,11 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.BitemporalScaledUnit;
-import de.njsm.stocks.server.v2.business.data.ScaledUnit;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForGetting;
+import de.njsm.stocks.common.api.ScaledUnit;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.BitemporalScaledUnit;
+import de.njsm.stocks.common.api.impl.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.impl.ScaledUnitForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import org.jooq.Field;
 import org.jooq.Table;

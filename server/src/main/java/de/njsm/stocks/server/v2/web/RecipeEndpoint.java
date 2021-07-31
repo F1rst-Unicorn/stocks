@@ -19,17 +19,21 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.Recipe;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.FullRecipeForDeletion;
+import de.njsm.stocks.common.api.impl.FullRecipeForInsertion;
 import de.njsm.stocks.server.v2.business.RecipeManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.FullRecipeForDeletion;
-import de.njsm.stocks.server.v2.business.data.FullRecipeForInsertion;
-import de.njsm.stocks.server.v2.business.data.Recipe;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
-import de.njsm.stocks.server.v2.web.data.Response;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -47,14 +51,10 @@ public class RecipeEndpoint extends Endpoint implements Get<RecipeRecord, Recipe
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response put(@Context HttpServletRequest request,
-                        FullRecipeForInsertion input) {
-        if (isValid(input)) {
-            manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.add(input);
-            return new Response(result);
-        } else {
-            return new Response(StatusCode.INVALID_ARGUMENT);
-        }
+                        @NotNull FullRecipeForInsertion input) {
+        manager.setPrincipals(getPrincipals(request));
+        StatusCode result = manager.add(input);
+        return new Response(result);
     }
 
     @Override

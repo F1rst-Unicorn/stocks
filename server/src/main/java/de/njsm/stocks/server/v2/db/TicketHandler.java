@@ -19,9 +19,12 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.common.api.Identifiable;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.UserDevice;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.server.v2.business.data.ClientTicket;
+import de.njsm.stocks.server.v2.business.data.ServerTicket;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.TicketRecord;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;

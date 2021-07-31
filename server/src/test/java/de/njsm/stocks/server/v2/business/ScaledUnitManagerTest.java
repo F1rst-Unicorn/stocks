@@ -19,8 +19,9 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForDeletion;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.ScaledUnitForDeletion;
+import de.njsm.stocks.common.api.impl.ScaledUnitForEditing;
 import de.njsm.stocks.server.v2.db.ScaledUnitHandler;
 import org.junit.After;
 import org.junit.Before;

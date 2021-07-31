@@ -19,9 +19,9 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.server.util.HystrixProducer;
-import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;

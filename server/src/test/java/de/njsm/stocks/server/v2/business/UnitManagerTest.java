@@ -19,8 +19,9 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.UnitForDeletion;
-import de.njsm.stocks.server.v2.business.data.UnitForRenaming;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.UnitForDeletion;
+import de.njsm.stocks.common.api.impl.UnitForRenaming;
 import de.njsm.stocks.server.v2.db.UnitHandler;
 import org.junit.After;
 import org.junit.Before;

@@ -19,8 +19,11 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.FoodItem;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.User;
+import de.njsm.stocks.common.api.UserDevice;
+import de.njsm.stocks.common.api.impl.*;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;

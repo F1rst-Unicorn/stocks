@@ -19,10 +19,10 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.DataResponse;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.business.TicketAuthoriser;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
-import de.njsm.stocks.server.v2.web.data.DataResponse;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;

@@ -19,8 +19,10 @@
 
 package de.njsm.stocks.server.v2.business;
 
+
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.Health;
 import de.njsm.stocks.server.util.AuthAdmin;
-import de.njsm.stocks.server.v2.business.data.Health;
 import de.njsm.stocks.server.v2.db.HealthHandler;
 import fj.data.Validation;
 import org.junit.Before;

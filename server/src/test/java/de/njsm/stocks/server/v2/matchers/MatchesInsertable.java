@@ -19,17 +19,16 @@
 
 package de.njsm.stocks.server.v2.matchers;
 
-import de.njsm.stocks.server.v2.business.data.Entity;
-import de.njsm.stocks.server.v2.business.data.Insertable;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.Insertable;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.jooq.Record;
 
-public class MatchesInsertable<T extends Entity<T>, R extends Record> extends BaseMatcher<Entity<T>> {
+public class MatchesInsertable<T extends Entity<T>> extends BaseMatcher<Entity<T>> {
 
-    private final Insertable<R, T> contentData;
+    private final Insertable<T> contentData;
 
-    public MatchesInsertable(Insertable<R, T> contentData) {
+    public MatchesInsertable(Insertable<T> contentData) {
         this.contentData = contentData;
     }
 

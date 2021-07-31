@@ -19,12 +19,13 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.UserDevice;
+import de.njsm.stocks.common.api.impl.UserDeviceForDeletion;
+import de.njsm.stocks.common.api.impl.UserDeviceForInsertion;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
-import de.njsm.stocks.server.v2.business.data.UserDeviceForDeletion;
-import de.njsm.stocks.server.v2.business.data.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.TicketHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;

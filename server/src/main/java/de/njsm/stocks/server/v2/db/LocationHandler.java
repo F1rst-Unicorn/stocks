@@ -19,8 +19,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.impl.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Field;

@@ -19,10 +19,10 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.StreamResponse;
+import de.njsm.stocks.common.api.impl.Update;
 import de.njsm.stocks.server.v2.business.UpdateManager;
-import de.njsm.stocks.server.v2.business.data.Update;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +33,7 @@ import org.mockito.Mockito;
 import javax.ws.rs.container.AsyncResponse;
 import java.util.stream.Stream;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
 public class UpdateEndpointTest {

@@ -19,11 +19,16 @@
 
 package de.njsm.stocks.server.v2.web;
 
+
+import de.njsm.stocks.common.api.Location;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.LocationForDeletion;
+import de.njsm.stocks.common.api.impl.LocationForInsertion;
+import de.njsm.stocks.common.api.impl.LocationForRenaming;
+import de.njsm.stocks.common.api.impl.LocationForSetDescription;
 import de.njsm.stocks.server.v2.business.LocationManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
-import de.njsm.stocks.server.v2.web.data.Response;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;

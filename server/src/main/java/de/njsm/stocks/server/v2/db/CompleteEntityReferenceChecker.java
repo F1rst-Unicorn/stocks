@@ -1,9 +1,9 @@
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Entity;
-import de.njsm.stocks.server.v2.business.data.Identifiable;
-import de.njsm.stocks.server.v2.business.data.Versionable;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.Identifiable;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.Versionable;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 

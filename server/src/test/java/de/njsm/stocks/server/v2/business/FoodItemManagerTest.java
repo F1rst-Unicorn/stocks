@@ -19,10 +19,12 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.business.data.FoodItemForDeletion;
-import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
-import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
+
+import de.njsm.stocks.common.api.FoodItem;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.FoodItemForDeletion;
+import de.njsm.stocks.common.api.impl.FoodItemForEditing;
+import de.njsm.stocks.common.api.impl.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
@@ -36,8 +38,8 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 

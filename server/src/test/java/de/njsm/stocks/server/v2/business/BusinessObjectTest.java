@@ -19,7 +19,8 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.common.api.Food;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import fj.data.Validation;

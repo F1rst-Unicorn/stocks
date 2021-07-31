@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.RecipeIngredient;
+import de.njsm.stocks.common.api.RecipeIngredient;
 import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
 

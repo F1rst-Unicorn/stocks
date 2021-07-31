@@ -1,13 +1,13 @@
 package de.njsm.stocks.server.v2.web;
 
 import com.google.common.collect.ImmutableSet;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.FullRecipeForDeletion;
+import de.njsm.stocks.common.api.impl.FullRecipeForInsertion;
+import de.njsm.stocks.common.api.impl.RecipeForDeletion;
+import de.njsm.stocks.common.api.impl.RecipeForInsertion;
 import de.njsm.stocks.server.v2.business.RecipeManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.FullRecipeForDeletion;
-import de.njsm.stocks.server.v2.business.data.FullRecipeForInsertion;
-import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
-import de.njsm.stocks.server.v2.business.data.RecipeForInsertion;
-import de.njsm.stocks.server.v2.web.data.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,14 +58,6 @@ public class RecipeEndpointTest {
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         verify(recipeManager).add(input);
         verify(recipeManager).setPrincipals(TEST_USER);
-    }
-
-    @Test
-    public void invalidRequestIsRejected() {
-
-        Response result = uut.put(createMockRequest(), null);
-
-        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
 
     @Test

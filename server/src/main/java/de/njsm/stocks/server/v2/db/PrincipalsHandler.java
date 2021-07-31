@@ -19,8 +19,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
@@ -29,9 +29,9 @@ import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static de.njsm.stocks.server.v2.db.jooq.tables.Ticket.TICKET;
 import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
 import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
-import static de.njsm.stocks.server.v2.db.jooq.tables.Ticket.TICKET;
 
 public class PrincipalsHandler extends FailSafeDatabaseHandler {
 

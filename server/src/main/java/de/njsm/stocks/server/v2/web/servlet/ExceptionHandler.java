@@ -20,8 +20,8 @@
 package de.njsm.stocks.server.v2.web.servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

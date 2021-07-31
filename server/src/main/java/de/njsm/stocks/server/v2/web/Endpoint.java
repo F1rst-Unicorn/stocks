@@ -19,9 +19,8 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.Validatable;
-import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -121,10 +120,6 @@ public class Endpoint {
             LOG.info("Request is invalid as " + name + " is not a number");
             return false;
         }
-    }
-
-    public static boolean isValid(Validatable input) {
-        return input != null && input.isValid();
     }
 
     public static Optional<Instant> parseToInstant(String rawInstant, String name) {

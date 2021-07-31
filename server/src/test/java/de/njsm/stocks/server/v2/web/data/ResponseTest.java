@@ -19,7 +19,8 @@
 
 package de.njsm.stocks.server.v2.web.data;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
 import fj.data.Validation;
 import org.junit.Test;
 
@@ -33,6 +34,6 @@ public class ResponseTest {
 
         Response uut = new Response(input);
 
-        assertEquals(StatusCode.NOT_FOUND, uut.status);
+        assertEquals(StatusCode.NOT_FOUND, uut.getStatus());
     }
 }

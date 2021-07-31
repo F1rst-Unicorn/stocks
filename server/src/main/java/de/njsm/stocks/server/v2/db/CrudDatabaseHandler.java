@@ -19,9 +19,9 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.server.v2.business.data.visitor.JooqInsertionVisitor;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,13 +56,14 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
         super.setPrincipals(principals);
     }
 
-    public StatusCode add(Insertable<T, N> item) {
+    public StatusCode add(Insertable<N> item) {
         return addReturningId(item).toEither().left().orValue(StatusCode.SUCCESS);
     }
 
-    public Validation<StatusCode, Integer> addReturningId(Insertable<T, N> item) {
+    public Validation<StatusCode, Integer> addReturningId(Insertable<N> item) {
         return runFunction(context -> {
-            int lastInsertId = item.insertValue(context.insertInto(getTable()), principals)
+            int lastInsertId = new JooqInsertionVisitor<T>()
+                    .visit(item, new JooqInsertionVisitor.Input<>(context.insertInto(getTable()), principals))
                     .returning(getIdField())
                     .fetch()
                     .getValue(0, getIdField());

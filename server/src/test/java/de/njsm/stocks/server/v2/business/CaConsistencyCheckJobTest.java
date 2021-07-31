@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.PrincipalsHandler;

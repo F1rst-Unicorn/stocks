@@ -19,14 +19,15 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+
+import de.njsm.stocks.common.api.DataResponse;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.User;
+import de.njsm.stocks.common.api.impl.UserForDeletion;
+import de.njsm.stocks.common.api.impl.UserForInsertion;
 import de.njsm.stocks.server.v2.business.UserManager;
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.UserForDeletion;
-import de.njsm.stocks.server.v2.business.data.UserForInsertion;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
-import de.njsm.stocks.server.v2.web.data.DataResponse;
-import de.njsm.stocks.server.v2.web.data.Response;
 import fj.data.Validation;
 
 import javax.inject.Inject;

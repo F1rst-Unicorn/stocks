@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 import org.jooq.impl.DSL;
 
 public class HealthHandler extends FailSafeDatabaseHandler {

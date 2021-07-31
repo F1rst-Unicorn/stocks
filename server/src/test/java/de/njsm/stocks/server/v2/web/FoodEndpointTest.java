@@ -19,11 +19,11 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.Food;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StreamResponse;
+import de.njsm.stocks.common.api.impl.*;
 import de.njsm.stocks.server.v2.business.FoodManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
-import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 import junit.framework.TestCase;
 import org.junit.After;
@@ -39,7 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.njsm.stocks.server.v2.business.StatusCode.*;
+import static de.njsm.stocks.common.api.StatusCode.*;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.Assert.assertEquals;
@@ -172,7 +172,7 @@ public class FoodEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        TestCase.assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
+        TestCase.assertEquals(INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test

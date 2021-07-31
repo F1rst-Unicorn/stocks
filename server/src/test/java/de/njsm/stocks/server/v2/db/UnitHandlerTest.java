@@ -19,8 +19,12 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.Unit;
+import de.njsm.stocks.common.api.impl.BitemporalUnit;
+import de.njsm.stocks.common.api.impl.UnitForDeletion;
+import de.njsm.stocks.common.api.impl.UnitForInsertion;
+import de.njsm.stocks.common.api.impl.UnitForRenaming;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +40,6 @@ import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
 
 public class UnitHandlerTest extends DbTestCase {
 

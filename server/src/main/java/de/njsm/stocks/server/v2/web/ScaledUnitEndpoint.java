@@ -19,14 +19,14 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.ScaledUnit;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.ScaledUnitForDeletion;
+import de.njsm.stocks.common.api.impl.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.impl.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.ScaledUnit;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForDeletion;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
-import de.njsm.stocks.server.v2.web.data.Response;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -51,8 +51,8 @@ public class ScaledUnitEndpoint extends Endpoint implements Get<ScaledUnitRecord
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response put(@Context HttpServletRequest request,
-                            @QueryParam("scale") String scale,
-                            @QueryParam("unit") int unit) {
+                        @QueryParam("scale") String scale,
+                        @QueryParam("unit") int unit) {
         if (isValidBigDecimal(scale, "scale") && isValid(unit, "unit")) {
             manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.add(new ScaledUnitForInsertion(new BigDecimal(scale), unit));

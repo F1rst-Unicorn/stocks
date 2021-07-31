@@ -19,8 +19,11 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.Food;
+import de.njsm.stocks.common.api.Identifiable;
+import de.njsm.stocks.common.api.Location;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import org.jooq.Condition;
 import org.jooq.Field;

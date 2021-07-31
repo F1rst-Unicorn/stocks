@@ -19,9 +19,11 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.User;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.impl.BitemporalFoodItem;
+import de.njsm.stocks.common.api.impl.FoodItemForEditing;
+import de.njsm.stocks.common.api.impl.FoodItemForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

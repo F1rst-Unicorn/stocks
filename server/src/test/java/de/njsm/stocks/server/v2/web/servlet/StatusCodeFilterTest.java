@@ -19,8 +19,8 @@
 
 package de.njsm.stocks.server.v2.web.servlet;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.web.data.Response;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.Mockito;

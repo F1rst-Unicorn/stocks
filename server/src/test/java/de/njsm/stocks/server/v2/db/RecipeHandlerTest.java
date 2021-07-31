@@ -19,11 +19,11 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.BitemporalRecipe;
-import de.njsm.stocks.server.v2.business.data.Recipe;
-import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
-import de.njsm.stocks.server.v2.business.data.RecipeForInsertion;
+import de.njsm.stocks.common.api.Recipe;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.BitemporalRecipe;
+import de.njsm.stocks.common.api.impl.RecipeForDeletion;
+import de.njsm.stocks.common.api.impl.RecipeForInsertion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;

@@ -19,15 +19,11 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.impl.UserDeviceForDeletion;
+import de.njsm.stocks.common.api.impl.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.business.DeviceManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
-import de.njsm.stocks.server.v2.business.data.UserDeviceForDeletion;
-import de.njsm.stocks.server.v2.business.data.UserDeviceForInsertion;
-import de.njsm.stocks.server.v2.web.data.DataResponse;
-import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;

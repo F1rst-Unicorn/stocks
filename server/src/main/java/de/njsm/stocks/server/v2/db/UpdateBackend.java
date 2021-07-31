@@ -19,8 +19,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Update;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.impl.*;
 import fj.data.Validation;
 
 import java.util.stream.Stream;

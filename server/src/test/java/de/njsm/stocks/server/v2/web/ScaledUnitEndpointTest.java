@@ -19,12 +19,12 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.ScaledUnitForDeletion;
+import de.njsm.stocks.common.api.impl.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.impl.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForDeletion;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForInsertion;
-import de.njsm.stocks.server.v2.web.data.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

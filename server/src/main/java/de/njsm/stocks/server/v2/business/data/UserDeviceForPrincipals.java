@@ -19,6 +19,10 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
+import de.njsm.stocks.common.api.UserDevice;
+import de.njsm.stocks.common.api.Versionable;
+import de.njsm.stocks.common.api.impl.Data;
+
 public class UserDeviceForPrincipals extends Data implements Versionable<UserDevice> {
     public UserDeviceForPrincipals(int id) {
         super(id);

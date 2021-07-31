@@ -19,16 +19,17 @@
 
 package de.njsm.stocks.server.v2.web;
 
+
+import de.njsm.stocks.common.api.FoodItem;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.impl.FoodItemForDeletion;
+import de.njsm.stocks.common.api.impl.FoodItemForEditing;
+import de.njsm.stocks.common.api.impl.FoodItemForInsertion;
+import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.business.data.FoodItemForDeletion;
-import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
-import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
-import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
-import de.njsm.stocks.server.v2.web.data.Response;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;

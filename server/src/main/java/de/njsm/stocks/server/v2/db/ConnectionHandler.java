@@ -19,10 +19,10 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
 import de.njsm.stocks.server.util.HystrixWrapper;
-import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 
 import java.sql.Connection;
