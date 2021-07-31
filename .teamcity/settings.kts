@@ -127,6 +127,7 @@ object Build : BuildType({
 
                     de.njsm.*.*Test
                     de.njsm.stocks.server.v2.matchers.*
+                    de.njsm.stocks.server.v2.web.Util
                 """.trimIndent()
             }
         }

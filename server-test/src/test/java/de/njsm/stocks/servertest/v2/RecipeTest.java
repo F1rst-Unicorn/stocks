@@ -102,7 +102,7 @@ public class RecipeTest extends Base implements Deleter {
         given()
                 .log().ifValidationFails()
                 .contentType(ContentType.JSON)
-                .body("{\"recipe\":{\"name\":\"invalidAddingIsRejected\",\"instructions\":\"instruction\",\"duration\":\"PT2H\"}}")
+                .body("{\"recipe\":{\"name\":\"" + getUniqueName("invalidAddingIsRejected") + "\",\"duration\":\"PT2H\"}}")
         .when()
                 .put(TestSuite.DOMAIN + getEndpoint())
         .then()
