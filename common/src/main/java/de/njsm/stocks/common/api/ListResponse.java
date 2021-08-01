@@ -19,11 +19,19 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fj.data.Validation;
 
 import java.util.List;
 
 public class ListResponse<T> extends DataResponse<List<T>> {
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public ListResponse(@JsonProperty("status") StatusCode status,
+                        @JsonProperty("data") List<T> data) {
+        super(status, data);
+    }
 
     public ListResponse(Validation<StatusCode, List<T>> option) {
         super(option);

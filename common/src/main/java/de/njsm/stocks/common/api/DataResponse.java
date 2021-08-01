@@ -33,6 +33,11 @@ public class DataResponse<T> extends Response {
 
     public T data;
 
+    public DataResponse(StatusCode status, T data) {
+        super(status);
+        this.data = data;
+    }
+
     public DataResponse(Validation<StatusCode, T> option) {
         if (option.isSuccess()) {
             status = StatusCode.SUCCESS;
