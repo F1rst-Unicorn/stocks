@@ -18,25 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
+PRETTY_BRANCH=$(echo $BRANCH | sed 's/-/ #/; s/i/I/')
 
-if [ "$BRANCH" = "master" -o \
-        "$BRANCH" = "dev-server" -o \
-        "$BRANCH" = "dev-client" -o \
-        "$BRANCH" = "dev-android" ] ; then
-        exit 0
-else
-        if ! cat $1 | head -n 1 | egrep '^Issue #[0-9]+ .*$' -q ; then
-            echo "First line must start with issue number"
-            exit 1
-        fi
-
-        if [[ "$(egrep -v '^#' $1 | wc -l)" -eq 1 ]] ; then
-            exit 0
-        fi
-
-        if ! cat $1 | head -n 2 | tail -n 1 | egrep '^$' -q ; then
-            echo "Second line must be empty"
-            exit 1
-        fi
-fi
+sed -i "1s/^/$PRETTY_BRANCH /" $COMMIT_MSG_FILE
+sed -i '2i\\' $COMMIT_MSG_FILE
