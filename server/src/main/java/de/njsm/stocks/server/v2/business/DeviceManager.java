@@ -73,7 +73,10 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
             if (ticketAddResult != StatusCode.SUCCESS)
                 return Validation.fail(ticketAddResult);
 
-            NewDeviceTicket result = new NewDeviceTicket(deviceAddResult.success(), ticket);
+            NewDeviceTicket result = NewDeviceTicket.builder()
+                    .deviceId(deviceAddResult.success())
+                    .ticket(ticket)
+                    .build();
             return Validation.success(result);
         });
     }

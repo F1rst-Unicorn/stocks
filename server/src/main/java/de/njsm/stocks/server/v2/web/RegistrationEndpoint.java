@@ -61,7 +61,11 @@ public class RegistrationEndpoint extends Endpoint {
                 isValid(token, "token") &&
                 isValid(csr, "csr")) {
 
-            Validation<StatusCode, String> response = authoriser.handleTicket(new ClientTicket(device, token, csr));
+            Validation<StatusCode, String> response = authoriser.handleTicket(ClientTicket.builder()
+                    .deviceId(device)
+                    .ticket(token)
+                    .pemFile(csr)
+                    .build());
 
             return new DataResponse<>(response);
         } else {

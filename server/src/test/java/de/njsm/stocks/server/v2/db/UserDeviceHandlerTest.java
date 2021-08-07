@@ -132,7 +132,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
 
         assertTrue(result.isSuccess());
         assertEquals(2, result.success().size());
-        assertThat(result.success(), hasItem(new UserDeviceForPrincipals(2)));
-        assertThat(result.success(), hasItem(new UserDeviceForPrincipals(3)));
+        assertThat(result.success(), hasItem(UserDeviceForPrincipals.builder().id(2).build()));
+        assertThat(result.success(), hasItem(UserDeviceForPrincipals.builder().id(3).build()));
     }
 }

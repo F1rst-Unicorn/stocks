@@ -25,9 +25,9 @@ public interface SelfValidating {
 
     abstract class Builder<T extends SelfValidating> {
 
-        abstract T autoBuild();
+        protected abstract T autoBuild();
 
-        void normalise() {}
+        protected void normalise() {}
 
         public final T build() {
             normalise();

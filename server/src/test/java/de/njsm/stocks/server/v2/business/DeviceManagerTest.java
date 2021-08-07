@@ -91,7 +91,7 @@ public class DeviceManagerTest {
         Validation<StatusCode, NewDeviceTicket> result = uut.addDevice(device);
 
         assertTrue(result.isSuccess());
-        assertEquals(newId, result.success().getDeviceId());
+        assertEquals(newId, result.success().deviceId());
 
         Mockito.verify(dbHandler).addReturningId(device);
         Mockito.verify(dbHandler).commit();

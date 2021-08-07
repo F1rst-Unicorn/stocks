@@ -74,10 +74,14 @@ public class RegistrationEndpointTest {
 
     @Test
     public void testBusinessObjectCreation() {
-        ClientTicket ticket = new ClientTicket(3, "ticket", "csr");
+        ClientTicket ticket = ClientTicket.builder()
+                .deviceId(3)
+                .ticket("ticket")
+                .pemFile("csr")
+                .build();
         Mockito.when(authoriser.handleTicket(ticket)).thenReturn(Validation.success("certificate"));
 
-        DataResponse<String> result = uut.getNewCertificate(ticket.getDeviceId(), ticket.getTicket(), ticket.getPemFile());
+        DataResponse<String> result = uut.getNewCertificate(ticket.deviceId(), ticket.ticket(), ticket.pemFile());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         assertEquals("certificate", result.data);

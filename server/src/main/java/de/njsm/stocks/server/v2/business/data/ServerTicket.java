@@ -19,54 +19,26 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
+import com.google.auto.value.AutoValue;
+
 import java.util.Date;
-import java.util.Objects;
 
-public class ServerTicket {
+@AutoValue
+public abstract class ServerTicket implements TicketData {
 
-    private final int id;
+    public abstract int id();
 
-    private final Date creationDate;
+    public abstract Date creationDate();
 
-    private final int deviceId;
-
-    private final String ticket;
-
-    public ServerTicket(int id, Date creationDate, int deviceId, String ticket) {
-        this.id = id;
-        this.creationDate = creationDate;
-        this.deviceId = deviceId;
-        this.ticket = ticket;
+    public static Builder builder() {
+        return new AutoValue_ServerTicket.Builder();
     }
 
-    public int getId() {
-        return id;
-    }
+    @AutoValue.Builder
+    public abstract static class Builder implements TicketData.Builder<Builder, ServerTicket>{
 
-    public Date getCreationDate() {
-        return creationDate;
-    }
+        public abstract Builder id(int v);
 
-    public int getDeviceId() {
-        return deviceId;
-    }
-
-    public String getTicket() {
-        return ticket;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ServerTicket that = (ServerTicket) o;
-        return id == that.id &&
-                deviceId == that.deviceId &&
-                Objects.equals(creationDate, that.creationDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, creationDate, deviceId);
+        public abstract Builder creationDate(Date v);
     }
 }

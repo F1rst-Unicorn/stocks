@@ -19,20 +19,22 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
+import com.google.auto.value.AutoValue;
+import de.njsm.stocks.common.api.SelfValidating;
 import de.njsm.stocks.common.api.UserDevice;
 import de.njsm.stocks.common.api.Versionable;
-import de.njsm.stocks.common.api.Data;
 
-public class UserDeviceForPrincipals extends Data implements Versionable<UserDevice> {
-    public UserDeviceForPrincipals(int id) {
-        super(id);
+@AutoValue
+public abstract class UserDeviceForPrincipals implements Versionable<UserDevice> {
+
+    public static Builder builder() {
+        return new AutoValue_UserDeviceForPrincipals.Builder()
+                .version(0); // UserDevices cannot change
     }
 
-    /**
-     * UserDevice is immutable, thus the version never changes
-     */
-    @Override
-    public int version() {
-        return 0;
+    @AutoValue.Builder
+    public abstract static class Builder
+            extends SelfValidating.Builder<UserDeviceForPrincipals>
+            implements Versionable.Builder<Builder> {
     }
 }

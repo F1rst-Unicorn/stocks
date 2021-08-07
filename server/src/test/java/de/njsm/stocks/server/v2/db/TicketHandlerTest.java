@@ -47,18 +47,26 @@ public class TicketHandlerTest extends DbTestCase {
 
     @Test
     public void successfulTicketRetrival() {
-        ClientTicket ticket = new ClientTicket(5, "AAAA", "csr");
+        ClientTicket ticket = ClientTicket.builder()
+                .deviceId(5)
+                .ticket("AAAA")
+                .pemFile("csr")
+                .build();
 
         Validation<StatusCode, ServerTicket> result = uut.getTicket(ticket);
 
         assertTrue(result.isSuccess());
-        assertEquals(ticket.getTicket(), result.success().getTicket());
-        assertEquals(ticket.getDeviceId(), result.success().getDeviceId());
+        assertEquals(ticket.ticket(), result.success().ticket());
+        assertEquals(ticket.deviceId(), result.success().deviceId());
     }
 
     @Test
     public void unknownTicketIsReported() {
-        ClientTicket ticket = new ClientTicket(3, "unknown", "csr");
+        ClientTicket ticket = ClientTicket.builder()
+                .deviceId(3)
+                .ticket("unknown")
+                .pemFile("csr")
+                .build();
 
         Validation<StatusCode, ServerTicket> result = uut.getTicket(ticket);
 
@@ -68,7 +76,11 @@ public class TicketHandlerTest extends DbTestCase {
 
     @Test
     public void removeATicket() {
-        ClientTicket input = new ClientTicket(3, "AAAA", "csr");
+        ClientTicket input = ClientTicket.builder()
+                .deviceId(3)
+                .ticket("AAAA")
+                .pemFile("csr")
+                .build();
         ServerTicket ticket = uut.getTicket(input).success();
 
         StatusCode result = uut.removeTicket(ticket);
@@ -78,7 +90,12 @@ public class TicketHandlerTest extends DbTestCase {
 
     @Test
     public void removingUnknownTicketIsReported() {
-        ServerTicket ticket = new ServerTicket(-1, new Date(), 0, "");
+        ServerTicket ticket = ServerTicket.builder()
+                .id(-1)
+                .creationDate(new Date())
+                .deviceId(0)
+                .ticket("")
+                .build();
 
         StatusCode result = uut.removeTicket(ticket);
 
@@ -111,10 +128,14 @@ public class TicketHandlerTest extends DbTestCase {
 
         StatusCode result = uut.addTicket(id, ticket);
 
-        Validation<StatusCode, ServerTicket> storedTicket = uut.getTicket(new ClientTicket(id, ticket, ""));
+        Validation<StatusCode, ServerTicket> storedTicket = uut.getTicket(ClientTicket.builder()
+                .deviceId(id)
+                .ticket(ticket)
+                .pemFile("")
+                .build());
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(storedTicket.isSuccess());
-        assertEquals(id, storedTicket.success().getDeviceId());
+        assertEquals(id, storedTicket.success().deviceId());
     }
 
     @Test

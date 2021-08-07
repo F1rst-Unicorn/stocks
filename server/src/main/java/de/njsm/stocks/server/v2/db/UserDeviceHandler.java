@@ -56,7 +56,9 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
                         .and(nowAsBestKnown()))
                     .fetch()
                     .stream()
-                    .map(r -> new UserDeviceForPrincipals(r.getId()))
+                    .map(r -> UserDeviceForPrincipals.builder()
+                            .id(r.getId())
+                            .build())
                     .collect(Collectors.toList());
 
             return Validation.success(result);

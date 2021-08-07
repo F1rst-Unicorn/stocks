@@ -86,7 +86,10 @@ public class DeviceEndpointTest {
     @Test
     public void addDevice() {
         UserDeviceForInsertion device = new UserDeviceForInsertion("test", 2);
-        Mockito.when(businessObject.addDevice(device)).thenReturn(Validation.success(new NewDeviceTicket(0, "")));
+        Mockito.when(businessObject.addDevice(device)).thenReturn(Validation.success(NewDeviceTicket.builder()
+                .deviceId(0)
+                .ticket("")
+                .build()));
 
         DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), device.getName(), device.getBelongsTo());
 
