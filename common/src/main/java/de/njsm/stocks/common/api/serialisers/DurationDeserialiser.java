@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.time.format.DateTimeParseException;
 
 public class DurationDeserialiser extends StdDeserializer<Duration> {
 
@@ -44,12 +43,7 @@ public class DurationDeserialiser extends StdDeserializer<Duration> {
         return parseString(((JsonNode) p.getCodec().readTree(p)).asText());
     }
 
-    public static Duration parseString(String duration) throws IOException {
-        try {
-            return Duration.parse(duration);
-        } catch (DateTimeParseException |
-                NullPointerException e) {
-            throw new IOException("Cannot parse duration value " + duration, e);
-        }
+    public static Duration parseString(String duration) {
+        return Duration.parse(duration);
     }
 }
