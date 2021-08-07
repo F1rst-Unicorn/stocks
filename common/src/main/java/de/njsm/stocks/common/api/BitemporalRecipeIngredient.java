@@ -19,68 +19,29 @@
 
 package de.njsm.stocks.common.api;
 
-import java.time.Instant;
-import java.util.Objects;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class BitemporalRecipeIngredient extends BitemporalData implements Bitemporal<RecipeIngredient>, RecipeIngredient {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_BitemporalRecipeIngredient.Builder.class)
+public abstract class BitemporalRecipeIngredient implements Bitemporal<RecipeIngredient>, RecipeIngredient {
 
-    private final int amount;
+    public static Builder builder() {
+        return new AutoValue_BitemporalRecipeIngredient.Builder();
+    }
 
-    private final int ingredient;
-
-    private final int recipe;
-
-    private final int unit;
-
-    public BitemporalRecipeIngredient(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, int amount, int ingredient, int recipe, int unit) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.amount = amount;
-        this.ingredient = ingredient;
-        this.recipe = recipe;
-        this.unit = unit;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<BitemporalRecipeIngredient>
+            implements Bitemporal.Builder<Builder>, RecipeIngredient.Builder<Builder> {
     }
 
     @Override
-    public int amount() {
-        return amount;
-    }
-
-    @Override
-    public int ingredient() {
-        return ingredient;
-    }
-
-    @Override
-    public int recipe() {
-        return recipe;
-    }
-
-    @Override
-    public int unit() {
-        return unit;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BitemporalRecipeIngredient)) return false;
-        if (!super.equals(o)) return false;
-        BitemporalRecipeIngredient that = (BitemporalRecipeIngredient) o;
-        return amount() == that.amount() && ingredient() == that.ingredient() && recipe() == that.recipe() && unit() == that.unit();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), amount(), ingredient(), recipe(), unit());
-    }
-
-    @Override
-    public boolean isContainedIn(RecipeIngredient item) {
-        return Bitemporal.super.isContainedIn(item) &&
-                amount() == item.amount() &&
-                ingredient() == item.ingredient() &&
-                recipe() == item.recipe() &&
-                unit() == item.unit();
+    public boolean isContainedIn(RecipeIngredient entity) {
+        return Bitemporal.super.isContainedIn(entity) &&
+                RecipeIngredient.super.isContainedIn(entity);
     }
 
     @Override

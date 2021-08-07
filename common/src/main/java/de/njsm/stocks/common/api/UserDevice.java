@@ -19,8 +19,34 @@
 
 package de.njsm.stocks.common.api;
 
-public interface UserDevice extends Entity<UserDevice> {
-    String getName();
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.google.common.base.Preconditions;
 
-    int getBelongsTo();
+public interface UserDevice extends Entity<UserDevice> {
+
+    @JsonGetter
+    String name();
+
+    @JsonGetter
+    int belongsTo();
+
+    interface Builder<T> {
+
+        T name(String v);
+
+        T belongsTo(int v);
+    }
+
+    @Override
+    default boolean isContainedIn(UserDevice item) {
+        return Entity.super.isContainedIn(item) &&
+                name().equals(item.name()) &&
+                belongsTo() == item.belongsTo();
+    }
+
+    @Override
+    default void validate() {
+        Entity.super.validate();
+        Preconditions.checkState(belongsTo() > 0, "belongsTo id is invalid");
+    }
 }

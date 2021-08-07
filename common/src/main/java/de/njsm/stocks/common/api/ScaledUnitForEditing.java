@@ -60,7 +60,7 @@ public class ScaledUnitForEditing extends VersionedData implements Versionable<S
     @Override
     public boolean isContainedIn(ScaledUnit item) {
         return Versionable.super.isContainedIn(item) &&
-                scale.equals(item.getScale()) &&
-                unit == item.getUnit();
+                scale.equals(item.scale()) &&
+                unit == item.unit();
     }
 }

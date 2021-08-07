@@ -19,9 +19,32 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 public interface Unit extends Entity<Unit> {
 
-    String getName();
+    @JsonGetter
+    String name();
 
-    String getAbbreviation();
+    @JsonGetter
+    String abbreviation();
+
+    interface Builder<T> {
+
+        T name(String v);
+
+        T abbreviation(String v);
+    }
+
+    @Override
+    default boolean isContainedIn(Unit item) {
+        return Entity.super.isContainedIn(item) &&
+                name().equals(item.name()) &&
+                abbreviation().equals(item.abbreviation());
+    }
+
+    @Override
+    default void validate() {
+        Entity.super.validate();
+    }
 }

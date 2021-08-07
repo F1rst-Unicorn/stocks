@@ -36,8 +36,8 @@ public class UnitForInsertion implements Insertable<Unit> {
 
     @Override
     public boolean isContainedIn(Unit entity) {
-        return name.equals(entity.getName()) &&
-                abbreviation.equals(entity.getAbbreviation());
+        return name.equals(entity.name()) &&
+                abbreviation.equals(entity.abbreviation());
     }
 
     public String getName() {

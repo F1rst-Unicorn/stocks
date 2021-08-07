@@ -19,8 +19,34 @@
 
 package de.njsm.stocks.common.api;
 
-public interface EanNumber extends Entity<EanNumber> {
-    int getIdentifiesFood();
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.google.common.base.Preconditions;
 
-    String getEanNumber();
+public interface EanNumber extends Entity<EanNumber> {
+
+    @JsonGetter
+    int identifiesFood();
+
+    @JsonGetter(value = "eanCode")
+    String eanNumber();
+
+    interface Builder<T> {
+
+        T identifiesFood(int v);
+
+        T eanNumber(String v);
+    }
+
+    @Override
+    default boolean isContainedIn(EanNumber item) {
+        return Entity.super.isContainedIn(item) &&
+                identifiesFood() == item.identifiesFood() &&
+                eanNumber().equals(item.eanNumber());
+    }
+
+    @Override
+    default void validate() {
+        Entity.super.validate();
+        Preconditions.checkState(identifiesFood() > 0, "identifiesFood id is invalid");
+    }
 }

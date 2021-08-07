@@ -91,12 +91,12 @@ public class FoodItemForInsertion implements Insertable<FoodItem> {
 
     @Override
     public boolean isContainedIn(FoodItem entity) {
-        return eatByDate.equals(entity.getEatByDate()) &&
-                ofType == entity.getOfType() &&
-                storedIn == entity.getStoredIn() &&
-                registers == entity.getRegisters() &&
-                buys == entity.getBuys() &&
-                unit.map(v -> v.equals(entity.getUnit())).orElse(true);
+        return eatByDate.equals(entity.eatByDate()) &&
+                ofType == entity.ofType() &&
+                storedIn == entity.storedIn() &&
+                registers == entity.registers() &&
+                buys == entity.buys() &&
+                unit.map(v -> v.equals(entity.unit())).orElse(true);
     }
 
     @Override

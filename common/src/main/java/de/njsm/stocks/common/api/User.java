@@ -19,6 +19,26 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 public interface User extends Entity<User> {
-    String getName();
+
+    @JsonGetter
+    String name();
+
+    interface Builder<T> {
+
+        T name(String v);
+    }
+
+    @Override
+    default boolean isContainedIn(User item) {
+        return Entity.super.isContainedIn(item) &&
+                name().equals(item.name());
+    }
+
+    @Override
+    default void validate() {
+        Entity.super.validate();
+    }
 }

@@ -31,7 +31,7 @@ public class UserForGetting extends VersionedData implements Versionable<User>, 
         this.name = name;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
@@ -41,17 +41,17 @@ public class UserForGetting extends VersionedData implements Versionable<User>, 
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         UserForGetting that = (UserForGetting) o;
-        return getName().equals(that.getName());
+        return name().equals(that.name());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getName());
+        return Objects.hash(super.hashCode(), name());
     }
 
     @Override
     public boolean isContainedIn(User item) {
         return User.super.isContainedIn(item) &&
-                name.equals(item.getName());
+                name.equals(item.name());
     }
 }

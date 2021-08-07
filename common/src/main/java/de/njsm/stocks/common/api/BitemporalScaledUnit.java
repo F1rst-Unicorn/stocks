@@ -20,48 +20,34 @@
 package de.njsm.stocks.common.api;
 
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.Objects;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class BitemporalScaledUnit extends BitemporalData implements Bitemporal<ScaledUnit>, ScaledUnit {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_BitemporalScaledUnit.Builder.class)
+public abstract class BitemporalScaledUnit implements Bitemporal<ScaledUnit>, ScaledUnit {
 
-    private final BigDecimal scale;
-
-    private final int unit;
-
-    public BitemporalScaledUnit(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, BigDecimal scale, int unit) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.scale = scale;
-        this.unit = unit;
+    public static BitemporalScaledUnit.Builder builder() {
+        return new AutoValue_BitemporalScaledUnit.Builder();
     }
 
-    public BigDecimal getScale() {
-        return scale;
-    }
-
-    public int getUnit() {
-        return unit;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<BitemporalScaledUnit>
+            implements Bitemporal.Builder<Builder>, ScaledUnit.Builder<Builder> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BitemporalScaledUnit)) return false;
-        if (!super.equals(o)) return false;
-        BitemporalScaledUnit that = (BitemporalScaledUnit) o;
-        return getUnit() == that.getUnit() && getScale().equals(that.getScale());
+    public boolean isContainedIn(ScaledUnit entity) {
+        return Bitemporal.super.isContainedIn(entity) &&
+                ScaledUnit.super.isContainedIn(entity);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getScale(), getUnit());
-    }
-
-    @Override
-    public boolean isContainedIn(ScaledUnit item) {
-        return Bitemporal.super.isContainedIn(item) &&
-                scale.equals(item.getScale()) &&
-                unit == item.getUnit();
+    public void validate() {
+        Bitemporal.super.validate();
+        ScaledUnit.super.validate();
     }
 }

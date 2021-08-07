@@ -92,8 +92,8 @@ public class ScaledUnitHandlerTest extends DbTestCase {
         assertTrue(data.stream().anyMatch(l ->
                         l.id() == 2 &&
                         l.version() == 0 &&
-                        l.getScale().equals(new BigDecimal(3)) &&
-                        l.getUnit() == 2 &&
+                        l.scale().equals(new BigDecimal(3)) &&
+                        l.unit() == 2 &&
                         l.initiates() == 1));
     }
 
@@ -107,8 +107,8 @@ public class ScaledUnitHandlerTest extends DbTestCase {
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 2 &&
                 l.version() == 0 &&
-                l.getScale().equals(new BigDecimal(3)) &&
-                l.getUnit() == 2));
+                l.scale().equals(new BigDecimal(3)) &&
+                l.unit() == 2));
     }
 
     @Test

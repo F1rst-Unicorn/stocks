@@ -20,90 +20,33 @@
 package de.njsm.stocks.common.api;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
-import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.time.Instant;
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_BitemporalFoodItem.Builder.class)
+public abstract class BitemporalFoodItem implements Bitemporal<FoodItem>, FoodItem {
 
-public class BitemporalFoodItem extends BitemporalData implements Bitemporal<FoodItem>, FoodItem {
-
-    private final Instant eatByDate;
-
-    private final int ofType;
-
-    private final int storedIn;
-
-    private final int registers;
-
-    private final int buys;
-
-    private final int unit;
-
-    public BitemporalFoodItem(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, Instant eatByDate, int ofType, int storedIn, int registers, int buys, int unit) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.eatByDate = eatByDate;
-        this.ofType = ofType;
-        this.storedIn = storedIn;
-        this.registers = registers;
-        this.buys = buys;
-        this.unit = unit;
+    public static Builder builder() {
+        return new AutoValue_BitemporalFoodItem.Builder();
     }
 
-    @JsonSerialize(using = InstantSerialiser.class)
-    @JsonDeserialize(using = InstantDeserialiser.class)
-    public Instant getEatByDate() {
-        return eatByDate;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<BitemporalFoodItem>
+            implements Bitemporal.Builder<Builder>, FoodItem.Builder<Builder> {
     }
 
     @Override
-    public int getOfType() {
-        return ofType;
+    public boolean isContainedIn(FoodItem entity) {
+        return Bitemporal.super.isContainedIn(entity) &&
+                FoodItem.super.isContainedIn(entity);
     }
 
     @Override
-    public int getStoredIn() {
-        return storedIn;
-    }
-
-    @Override
-    public int getRegisters() {
-        return registers;
-    }
-
-    @Override
-    public int getBuys() {
-        return buys;
-    }
-
-    @Override
-    public int getUnit() {
-        return unit;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BitemporalFoodItem)) return false;
-        if (!super.equals(o)) return false;
-        BitemporalFoodItem that = (BitemporalFoodItem) o;
-        return getOfType() == that.getOfType() && getStoredIn() == that.getStoredIn() && getRegisters() == that.getRegisters() && getBuys() == that.getBuys() && getUnit() == that.getUnit() && getEatByDate().equals(that.getEatByDate());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getEatByDate(), getOfType(), getStoredIn(), getRegisters(), getBuys(), getUnit());
-    }
-
-    @Override
-    public boolean isContainedIn(FoodItem item) {
-        return Bitemporal.super.isContainedIn(item) &&
-                eatByDate.equals(item.getEatByDate()) &&
-                ofType == item.getOfType() &&
-                storedIn == item.getStoredIn() &&
-                registers == item.getRegisters() &&
-                buys == item.getBuys() &&
-                unit == item.getUnit();
+    public void validate() {
+        Bitemporal.super.validate();
+        FoodItem.super.validate();
     }
 }

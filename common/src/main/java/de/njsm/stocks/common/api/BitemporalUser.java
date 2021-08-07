@@ -20,40 +20,34 @@
 package de.njsm.stocks.common.api;
 
 
-import java.time.Instant;
-import java.util.Objects;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class BitemporalUser extends BitemporalData implements Bitemporal<User>, User {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_BitemporalUser.Builder.class)
+public abstract class BitemporalUser implements Bitemporal<User>, User {
 
-    private final String name;
+    public static BitemporalUser.Builder builder() {
+        return new AutoValue_BitemporalUser.Builder();
+    }
 
-    public BitemporalUser(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, String name) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.name = name;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<BitemporalUser>
+            implements Bitemporal.Builder<Builder>, User.Builder<Builder> {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public boolean isContainedIn(User entity) {
+        return Bitemporal.super.isContainedIn(entity) &&
+                User.super.isContainedIn(entity);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        BitemporalUser that = (BitemporalUser) o;
-        return getName().equals(that.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getName());
-    }
-
-    @Override
-    public boolean isContainedIn(User item) {
-        return Bitemporal.super.isContainedIn(item) &&
-                name.equals(item.getName());
+    public void validate() {
+        Bitemporal.super.validate();
+        User.super.validate();
     }
 }

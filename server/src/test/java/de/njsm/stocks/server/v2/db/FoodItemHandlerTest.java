@@ -223,7 +223,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.allMatch(item -> (item.version() == 1) == (item.getRegisters() == to.id())));
+        assertTrue(items.allMatch(item -> (item.version() == 1) == (item.registers() == to.id())));
         Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(from), any());
         Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(to), any());
     }
@@ -274,7 +274,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.allMatch(item -> (item.version() == 1) == (item.getRegisters() == to.id())));
+        assertTrue(items.allMatch(item -> (item.version() == 1) == (item.registers() == to.id())));
         Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(from), any());
         Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(to), any());
     }

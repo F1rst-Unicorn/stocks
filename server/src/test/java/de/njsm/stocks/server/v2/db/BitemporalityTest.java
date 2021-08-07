@@ -138,13 +138,23 @@ public class BitemporalityTest extends DbTestCase {
     public void youngerDevicesAreAllowedToChangeOlderLocations() throws SQLException {
         OffsetDateTime now = OffsetDateTime.now();
         Instant nowAsInstant = now.toInstant();
-        BitemporalUserDevice youngDevice = new BitemporalUserDevice(6, 0, nowAsInstant, INFINITY.toInstant(), nowAsInstant, INFINITY.toInstant(), 1, "youngDevice", 1);
-        Principals principals = new Principals("Bob", youngDevice.getName(), 1, youngDevice.id());
+        BitemporalUserDevice youngDevice = BitemporalUserDevice.builder()
+                .id(6)
+                .version(0)
+                .validTimeStart(nowAsInstant)
+                .validTimeEnd(INFINITY.toInstant())
+                .transactionTimeStart(nowAsInstant)
+                .transactionTimeEnd(INFINITY.toInstant())
+                .initiates(1)
+                .name("youngDevice")
+                .belongsTo(1)
+                .build();
+        Principals principals = new Principals("Bob", youngDevice.name(), 1, youngDevice.id());
         uut.setPrincipals(principals);
         LocationForRenaming input = new LocationForRenaming(1, 0, "newName");
         getDSLContext().insertInto(USER_DEVICE)
                 .columns(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.VALID_TIME_START, USER_DEVICE.VALID_TIME_END, USER_DEVICE.TRANSACTION_TIME_START, USER_DEVICE.TRANSACTION_TIME_END, USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.INITIATES)
-                .values(youngDevice.id(), youngDevice.version(), now, INFINITY, now, INFINITY, youngDevice.getName(), youngDevice.getBelongsTo(), youngDevice.initiates())
+                .values(youngDevice.id(), youngDevice.version(), now, INFINITY, now, INFINITY, youngDevice.name(), youngDevice.belongsTo(), youngDevice.initiates())
                 .execute();
         getConnectionFactory().getConnection().commit();
 
@@ -153,7 +163,7 @@ public class BitemporalityTest extends DbTestCase {
 
         Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
         assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.getName().equals(input.getNewName())
+        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals(input.getNewName())
                 && f.id() == input.id()
                 && f.version() == input.version() + 1
                 && f.validTimeEnd().equals(INFINITY.toInstant())
@@ -165,13 +175,23 @@ public class BitemporalityTest extends DbTestCase {
     public void youngerDevicesAreAllowedToDeleteOlderLocations() throws SQLException {
         OffsetDateTime now = OffsetDateTime.now();
         Instant nowAsInstant = now.toInstant();
-        BitemporalUserDevice youngDevice = new BitemporalUserDevice(6, 0, nowAsInstant, INFINITY.toInstant(), nowAsInstant, INFINITY.toInstant(), 1, "youngDevice", 1);
-        Principals principals = new Principals("Bob", youngDevice.getName(), 1, youngDevice.id());
+        BitemporalUserDevice youngDevice = BitemporalUserDevice.builder()
+                .id(6)
+                .version(0)
+                .validTimeStart(nowAsInstant)
+                .validTimeEnd(INFINITY.toInstant())
+                .transactionTimeStart(nowAsInstant)
+                .transactionTimeEnd(INFINITY.toInstant())
+                .initiates(1)
+                .name("youngDevice")
+                .belongsTo(1)
+                .build();
+        Principals principals = new Principals("Bob", youngDevice.name(), 1, youngDevice.id());
         uut.setPrincipals(principals);
         LocationForDeletion input = new LocationForDeletion(2, 0);
         getDSLContext().insertInto(USER_DEVICE)
                 .columns(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.VALID_TIME_START, USER_DEVICE.VALID_TIME_END, USER_DEVICE.TRANSACTION_TIME_START, USER_DEVICE.TRANSACTION_TIME_END, USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.INITIATES)
-                .values(youngDevice.id(), youngDevice.version(), now, INFINITY, now, INFINITY, youngDevice.getName(), youngDevice.getBelongsTo(), youngDevice.initiates())
+                .values(youngDevice.id(), youngDevice.version(), now, INFINITY, now, INFINITY, youngDevice.name(), youngDevice.belongsTo(), youngDevice.initiates())
                 .execute();
         getConnectionFactory().getConnection().commit();
 
@@ -180,7 +200,7 @@ public class BitemporalityTest extends DbTestCase {
 
         Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
         assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.getName().equals("Cupboard")
+        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals("Cupboard")
                 && f.id() == input.id()
                 && f.version() == input.version()
                 && !f.validTimeEnd().equals(INFINITY.toInstant())

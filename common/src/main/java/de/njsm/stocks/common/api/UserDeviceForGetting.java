@@ -34,12 +34,12 @@ public class UserDeviceForGetting extends VersionedData implements Versionable<U
         this.belongsTo = belongsTo;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
     @JsonIgnore
-    public int getBelongsTo() {
+    public int belongsTo() {
         return belongsTo;
     }
 
@@ -56,18 +56,18 @@ public class UserDeviceForGetting extends VersionedData implements Versionable<U
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         UserDeviceForGetting that = (UserDeviceForGetting) o;
-        return getBelongsTo() == that.getBelongsTo() && getName().equals(that.getName());
+        return belongsTo() == that.belongsTo() && name().equals(that.name());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), getBelongsTo());
+        return Objects.hash(super.hashCode(), name(), belongsTo());
     }
 
     @Override
     public boolean isContainedIn(UserDevice item) {
         return UserDevice.super.isContainedIn(item) &&
-                name.equals(item.getName()) &&
-                belongsTo == item.getBelongsTo();
+                name.equals(item.name()) &&
+                belongsTo == item.belongsTo();
     }
 }

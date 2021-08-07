@@ -57,8 +57,8 @@ public class EanNumberForInsertion implements Insertable<EanNumber> {
 
     @Override
     public boolean isContainedIn(EanNumber entity) {
-        return identifiesFood == entity.getIdentifiesFood() &&
-                eanNumber.equals(entity.getEanNumber());
+        return identifiesFood == entity.identifiesFood() &&
+                eanNumber.equals(entity.eanNumber());
     }
 
     @Override

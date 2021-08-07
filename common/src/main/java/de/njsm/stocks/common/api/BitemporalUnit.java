@@ -19,34 +19,34 @@
 
 package de.njsm.stocks.common.api;
 
-import java.time.Instant;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class BitemporalUnit extends BitemporalData implements Unit, Bitemporal<Unit> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_BitemporalUnit.Builder.class)
+public abstract class BitemporalUnit implements Unit, Bitemporal<Unit> {
 
-    private final String name;
+    public static BitemporalUnit.Builder builder() {
+        return new AutoValue_BitemporalUnit.Builder();
+    }
 
-    private final String abbreviation;
-
-    public BitemporalUnit(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, String name, String abbreviation) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.name = name;
-        this.abbreviation = abbreviation;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<BitemporalUnit>
+            implements Bitemporal.Builder<Builder>, Unit.Builder<Builder> {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public boolean isContainedIn(Unit entity) {
+        return Bitemporal.super.isContainedIn(entity) &&
+                Unit.super.isContainedIn(entity);
     }
 
     @Override
-    public String getAbbreviation() {
-        return abbreviation;
-    }
-
-    @Override
-    public boolean isContainedIn(Unit item) {
-        return Bitemporal.super.isContainedIn(item) &&
-                name.equals(item.getName()) &&
-                abbreviation.equals(item.getAbbreviation());
+    public void validate() {
+        Bitemporal.super.validate();
+        Unit.super.validate();
     }
 }

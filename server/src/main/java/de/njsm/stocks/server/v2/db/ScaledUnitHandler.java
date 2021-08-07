@@ -86,17 +86,17 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
     @Override
     protected Function<ScaledUnitRecord, ScaledUnit> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalScaledUnit(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getScale(),
-                    cursor.getUnit()
-            );
+            return cursor -> BitemporalScaledUnit.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .scale(cursor.getScale())
+                    .unit(cursor.getUnit())
+                    .build();
         else
             return cursor -> new ScaledUnitForGetting(
                     cursor.getId(),

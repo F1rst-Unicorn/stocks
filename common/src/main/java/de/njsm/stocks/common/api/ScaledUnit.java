@@ -19,11 +19,36 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.google.common.base.Preconditions;
+
 import java.math.BigDecimal;
 
 public interface ScaledUnit extends Entity<ScaledUnit> {
 
-    BigDecimal getScale();
+    @JsonGetter
+    BigDecimal scale();
 
-    int getUnit();
+    @JsonGetter
+    int unit();
+
+    interface Builder<T> {
+
+        T scale(BigDecimal v);
+
+        T unit(int v);
+    }
+
+    @Override
+    default boolean isContainedIn(ScaledUnit item) {
+        return Entity.super.isContainedIn(item) &&
+                scale().equals(item.scale()) &&
+                unit() == item.unit();
+    }
+
+    @Override
+    default void validate() {
+        Entity.super.validate();
+        Preconditions.checkState(unit() > 0, "unit id is invalid");
+    }
 }

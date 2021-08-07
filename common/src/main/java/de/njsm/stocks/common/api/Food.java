@@ -51,17 +51,6 @@ public interface Food extends Entity<Food> {
     @JsonGetter
     int storeUnit();
 
-    @Override
-    default boolean isContainedIn(Food entity) {
-        return Entity.super.isContainedIn(entity) &&
-                name().equals(entity.name()) &&
-                expirationOffset().equals(entity.expirationOffset()) &&
-                location().equals(entity.location()) &&
-                toBuy() == entity.toBuy() &&
-                description().equals(entity.description()) &&
-                storeUnit() == entity.storeUnit();
-    }
-
     interface Builder<T> {
 
         T name(String v);
@@ -76,6 +65,17 @@ public interface Food extends Entity<Food> {
         T description(String v);
 
         T storeUnit(int v);
+    }
+
+    @Override
+    default boolean isContainedIn(Food entity) {
+        return Entity.super.isContainedIn(entity) &&
+                name().equals(entity.name()) &&
+                expirationOffset().equals(entity.expirationOffset()) &&
+                location().equals(entity.location()) &&
+                toBuy() == entity.toBuy() &&
+                description().equals(entity.description()) &&
+                storeUnit() == entity.storeUnit();
     }
 
     @Override

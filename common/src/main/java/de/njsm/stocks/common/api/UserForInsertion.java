@@ -51,7 +51,7 @@ public class UserForInsertion implements Insertable<User> {
 
     @Override
     public boolean isContainedIn(User entity) {
-        return name.equals(entity.getName());
+        return name.equals(entity.name());
     }
 
     @Override

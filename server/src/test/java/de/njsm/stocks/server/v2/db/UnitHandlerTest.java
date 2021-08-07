@@ -148,8 +148,8 @@ public class UnitHandlerTest extends DbTestCase {
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 1 &&
                         l.version() == 0 &&
-                        l.getName().equals("Default") &&
-                        l.getAbbreviation().equals("default") &&
+                        l.name().equals("Default") &&
+                        l.abbreviation().equals("default") &&
                         l.initiates() == 1));
     }
 
@@ -163,8 +163,8 @@ public class UnitHandlerTest extends DbTestCase {
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 1 &&
                         l.version() == 0 &&
-                        l.getName().equals("Default") &&
-                        l.getAbbreviation().equals("default")));
+                        l.name().equals("Default") &&
+                        l.abbreviation().equals("default")));
     }
 
     @Test

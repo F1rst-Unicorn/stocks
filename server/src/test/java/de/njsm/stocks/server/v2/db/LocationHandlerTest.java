@@ -66,15 +66,15 @@ public class LocationHandlerTest extends DbTestCase {
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 1 &&
                         l.version() == 0 &&
-                        l.getName().equals("Fridge") &&
-                        l.getDescription().equals("fridge description") &&
+                        l.name().equals("Fridge") &&
+                        l.description().equals("fridge description") &&
                         l.initiates() == 1));
 
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 2 &&
                         l.version() == 0 &&
-                        l.getName().equals("Cupboard") &&
-                        l.getDescription().equals("cupboard description") &&
+                        l.name().equals("Cupboard") &&
+                        l.description().equals("cupboard description") &&
                         l.initiates() == 1));
     }
 
@@ -89,14 +89,14 @@ public class LocationHandlerTest extends DbTestCase {
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 1 &&
                         l.version() == 0 &&
-                        l.getName().equals("Fridge") &&
-                        l.getDescription().equals("fridge description")));
+                        l.name().equals("Fridge") &&
+                        l.description().equals("fridge description")));
 
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 2 &&
                         l.version() == 0 &&
-                        l.getName().equals("Cupboard") &&
-                        l.getDescription().equals("cupboard description")));
+                        l.name().equals("Cupboard") &&
+                        l.description().equals("cupboard description")));
     }
 
     @Test
@@ -127,7 +127,7 @@ public class LocationHandlerTest extends DbTestCase {
         assertTrue(dbData.isSuccess());
 
         assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f ->
-                f.getName().equals("Basement")
+                f.name().equals("Basement")
                         && f.id() == 2
                         && f.version() == 1
                         && f.initiates() == TEST_USER.getDid()));
@@ -161,11 +161,11 @@ public class LocationHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
         assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(Location::getName).noneMatch(name -> name.equals("Cupboard")));
+        assertTrue(dbData.success().map(Location::name).noneMatch(name -> name.equals("Cupboard")));
 
         dbData = uut.get(true, Instant.EPOCH);
         assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.getName().equals("Cupboard")
+        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals("Cupboard")
                 && f.id() == 2
                 && f.version() == 0
                 && !f.validTimeEnd().equals(INFINITY.toInstant())
@@ -231,7 +231,7 @@ public class LocationHandlerTest extends DbTestCase {
                         .success()
                         .anyMatch(f -> f.id() == data.id() &&
                                 data.version() + 1 == f.version() &&
-                                data.getDescription().equals(f.getDescription())));
+                                data.getDescription().equals(f.description())));
     }
 
     @Test

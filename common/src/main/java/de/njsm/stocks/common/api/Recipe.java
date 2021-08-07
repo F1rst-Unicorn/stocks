@@ -39,14 +39,6 @@ public interface Recipe extends Entity<Recipe> {
     @JsonSerialize(using = DurationSerialiser.class)
     Duration duration();
 
-    @Override
-    default boolean isContainedIn(Recipe entity) {
-        return Entity.super.isContainedIn(entity) &&
-                name().equals(entity.name()) &&
-                instructions().equals(entity.instructions()) &&
-                duration().equals(entity.duration());
-    }
-
     interface Builder<T> {
 
         T name(String v);
@@ -55,6 +47,15 @@ public interface Recipe extends Entity<Recipe> {
 
         @JsonDeserialize(using = DurationDeserialiser.class)
         T duration(Duration v);
+
+    }
+
+    @Override
+    default boolean isContainedIn(Recipe entity) {
+        return Entity.super.isContainedIn(entity) &&
+                name().equals(entity.name()) &&
+                instructions().equals(entity.instructions()) &&
+                duration().equals(entity.duration());
     }
 
     @Override

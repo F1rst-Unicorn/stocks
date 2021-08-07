@@ -58,7 +58,7 @@ public class UnitForRenaming extends VersionedData implements Versionable<Unit> 
     @Override
     public boolean isContainedIn(Unit item) {
         return Versionable.super.isContainedIn(item) &&
-                name.equals(item.getName()) &&
-                abbreviation.equals(item.getAbbreviation());
+                name.equals(item.name()) &&
+                abbreviation.equals(item.abbreviation());
     }
 }

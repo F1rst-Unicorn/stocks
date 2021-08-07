@@ -19,59 +19,35 @@
 
 package de.njsm.stocks.common.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.time.Instant;
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_BitemporalUserDevice.Builder.class)
+public abstract class BitemporalUserDevice implements Bitemporal<UserDevice>, UserDevice {
 
-public class BitemporalUserDevice extends BitemporalData implements Bitemporal<UserDevice>, UserDevice {
+    public static Builder builder() {
+        return new AutoValue_BitemporalUserDevice.Builder();
+    }
 
-    private final String name;
-
-    private final int belongsTo;
-
-    public BitemporalUserDevice(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, String name, int belongsTo) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.name = name;
-        this.belongsTo = belongsTo;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<BitemporalUserDevice>
+            implements Bitemporal.Builder<Builder>, UserDevice.Builder<Builder> {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @JsonIgnore
-    @Override
-    public int getBelongsTo() {
-        return belongsTo;
-    }
-
-    /**
-     * JSON property name. Keep for backward compatibility
-     */
-    public int getUserId() {
-        return belongsTo;
+    public boolean isContainedIn(UserDevice entity) {
+        return Bitemporal.super.isContainedIn(entity) &&
+                UserDevice.super.isContainedIn(entity);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        BitemporalUserDevice that = (BitemporalUserDevice) o;
-        return getBelongsTo() == that.getBelongsTo() && getName().equals(that.getName());
+    public void validate() {
+        Bitemporal.super.validate();
+        UserDevice.super.validate();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), getBelongsTo());
-    }
-
-    @Override
-    public boolean isContainedIn(UserDevice item) {
-        return Bitemporal.super.isContainedIn(item) &&
-                name.equals(item.getName()) &&
-                belongsTo == item.getBelongsTo();
-    }
 }

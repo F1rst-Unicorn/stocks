@@ -19,10 +19,32 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 public interface Location extends Entity<Location> {
 
-    String getName();
+    @JsonGetter
+    String name();
 
-    String getDescription();
+    @JsonGetter
+    String description();
 
+    interface Builder<T> {
+
+        T name(String v);
+
+        T description(String v);
+    }
+
+    @Override
+    default boolean isContainedIn(Location item) {
+        return Entity.super.isContainedIn(item) &&
+                name().equals(item.name()) &&
+                description().equals(item.description());
+    }
+
+    @Override
+    default void validate() {
+        Entity.super.validate();
+    }
 }

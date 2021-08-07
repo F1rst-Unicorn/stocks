@@ -53,27 +53,27 @@ public class FoodItemForGetting extends VersionedData implements Versionable<Foo
 
     @JsonSerialize(using = InstantSerialiser.class)
     @JsonDeserialize(using = InstantDeserialiser.class)
-    public Instant getEatByDate() {
+    public Instant eatByDate() {
         return eatByDate;
     }
 
-    public int getOfType() {
+    public int ofType() {
         return ofType;
     }
 
-    public int getStoredIn() {
+    public int storedIn() {
         return storedIn;
     }
 
-    public int getRegisters() {
+    public int registers() {
         return registers;
     }
 
-    public int getBuys() {
+    public int buys() {
         return buys;
     }
 
-    public int getUnit() {
+    public int unit() {
         return unit;
     }
 
@@ -83,22 +83,22 @@ public class FoodItemForGetting extends VersionedData implements Versionable<Foo
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         FoodItemForGetting that = (FoodItemForGetting) o;
-        return getOfType() == that.getOfType() && getStoredIn() == that.getStoredIn() && getRegisters() == that.getRegisters() && getBuys() == that.getBuys() && getEatByDate().equals(that.getEatByDate());
+        return ofType() == that.ofType() && storedIn() == that.storedIn() && registers() == that.registers() && buys() == that.buys() && eatByDate().equals(that.eatByDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getEatByDate(), getOfType(), getStoredIn(), getRegisters(), getBuys());
+        return Objects.hash(super.hashCode(), eatByDate(), ofType(), storedIn(), registers(), buys());
     }
 
     @Override
     public boolean isContainedIn(FoodItem item) {
         return FoodItem.super.isContainedIn(item) &&
-                eatByDate.equals(item.getEatByDate()) &&
-                ofType == item.getOfType() &&
-                storedIn == item.getStoredIn() &&
-                registers == item.getRegisters() &&
-                buys == item.getBuys() &&
-                unit == item.getUnit();
+                eatByDate.equals(item.eatByDate()) &&
+                ofType == item.ofType() &&
+                storedIn == item.storedIn() &&
+                registers == item.registers() &&
+                buys == item.buys() &&
+                unit == item.unit();
     }
 }

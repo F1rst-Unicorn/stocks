@@ -34,11 +34,11 @@ public class ScaledUnitForGetting extends VersionedData implements Entity<Scaled
         this.unit = unit;
     }
 
-    public BigDecimal getScale() {
+    public BigDecimal scale() {
         return scale;
     }
 
-    public int getUnit() {
+    public int unit() {
         return unit;
     }
 
@@ -48,18 +48,18 @@ public class ScaledUnitForGetting extends VersionedData implements Entity<Scaled
         if (!(o instanceof ScaledUnitForGetting)) return false;
         if (!super.equals(o)) return false;
         ScaledUnitForGetting that = (ScaledUnitForGetting) o;
-        return getUnit() == that.getUnit() && getScale().equals(that.getScale());
+        return unit() == that.unit() && scale().equals(that.scale());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getScale(), getUnit());
+        return Objects.hash(super.hashCode(), scale(), unit());
     }
 
     @Override
     public boolean isContainedIn(ScaledUnit entity) {
         return ScaledUnit.super.isContainedIn(entity) &&
-                scale.equals(entity.getScale()) &&
-                unit == entity.getUnit();
+                scale.equals(entity.scale()) &&
+                unit == entity.unit();
     }
 }

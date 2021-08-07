@@ -81,17 +81,17 @@ public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
     @Override
     protected Function<UnitRecord, Unit> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalUnit(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getName(),
-                    cursor.getAbbreviation()
-            );
+            return cursor -> BitemporalUnit.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .name(cursor.getName())
+                    .abbreviation(cursor.getAbbreviation())
+                    .build();
         else
             return cursor -> new UnitForGetting(
                     cursor.getId(),

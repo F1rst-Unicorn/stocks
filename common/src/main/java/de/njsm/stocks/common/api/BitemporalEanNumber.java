@@ -19,59 +19,34 @@
 
 package de.njsm.stocks.common.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.time.Instant;
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_BitemporalEanNumber.Builder.class)
+public abstract class BitemporalEanNumber implements Bitemporal<EanNumber>, EanNumber {
 
-public class BitemporalEanNumber extends BitemporalData implements Bitemporal<EanNumber>, EanNumber {
+    public static BitemporalEanNumber.Builder builder() {
+        return new AutoValue_BitemporalEanNumber.Builder();
+    }
 
-    private final int identifiesFood;
-
-    private final String eanNumber;
-
-    public BitemporalEanNumber(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, int identifiesFood, String eanNumber) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.identifiesFood = identifiesFood;
-        this.eanNumber = eanNumber;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<BitemporalEanNumber>
+            implements Bitemporal.Builder<Builder>, EanNumber.Builder<Builder> {
     }
 
     @Override
-    public int getIdentifiesFood() {
-        return identifiesFood;
+    public boolean isContainedIn(EanNumber entity) {
+        return Bitemporal.super.isContainedIn(entity) &&
+                EanNumber.super.isContainedIn(entity);
     }
 
     @Override
-    @JsonIgnore
-    public String getEanNumber() {
-        return eanNumber;
-    }
-
-    /**
-     * JSON property name. Keep for backward compatibility
-     */
-    public String getEanCode() {
-        return eanNumber;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        BitemporalEanNumber that = (BitemporalEanNumber) o;
-        return getIdentifiesFood() == that.getIdentifiesFood() && getEanNumber().equals(that.getEanNumber());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getIdentifiesFood(), getEanNumber());
-    }
-
-    @Override
-    public boolean isContainedIn(EanNumber item) {
-        return Bitemporal.super.isContainedIn(item) &&
-                identifiesFood == item.getIdentifiesFood() &&
-                eanNumber.equals(item.getEanNumber());
+    public void validate() {
+        Bitemporal.super.validate();
+        EanNumber.super.validate();
     }
 }

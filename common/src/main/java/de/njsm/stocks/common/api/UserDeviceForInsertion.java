@@ -57,8 +57,8 @@ public class UserDeviceForInsertion implements Insertable<UserDevice> {
 
     @Override
     public boolean isContainedIn(UserDevice entity) {
-        return name.equals(entity.getName()) &&
-                belongsTo == entity.getBelongsTo();
+        return name.equals(entity.name()) &&
+                belongsTo == entity.belongsTo();
     }
 
     @Override

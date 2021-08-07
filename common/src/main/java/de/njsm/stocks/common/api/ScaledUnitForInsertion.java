@@ -58,8 +58,8 @@ public class ScaledUnitForInsertion implements Insertable<ScaledUnit> {
 
     @Override
     public boolean isContainedIn(ScaledUnit entity) {
-        return scale.equals(entity.getScale()) &&
-                unit == entity.getUnit();
+        return scale.equals(entity.scale()) &&
+                unit == entity.unit();
     }
 
     @Override

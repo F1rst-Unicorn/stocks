@@ -72,25 +72,24 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
     @Override
     protected Function<UserDeviceRecord, UserDevice> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalUserDevice(
+            return cursor -> BitemporalUserDevice.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .name(cursor.getName())
+                    .belongsTo(cursor.getBelongsTo())
+                    .build();
+        else
+            return cursor -> new UserDeviceForGetting(
                     cursor.getId(),
                     cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
                     cursor.getName(),
                     cursor.getBelongsTo()
             );
-
-        else
-        return cursor -> new UserDeviceForGetting(
-                cursor.getId(),
-                cursor.getVersion(),
-                cursor.getName(),
-                cursor.getBelongsTo()
-        );
     }
 
     @Override

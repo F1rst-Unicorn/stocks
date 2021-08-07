@@ -116,17 +116,17 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
     @Override
     protected Function<LocationRecord, Location> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalLocation(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getName(),
-                    cursor.getDescription()
-                    );
+            return cursor -> BitemporalLocation.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .name(cursor.getName())
+                    .description(cursor.getDescription())
+                    .build();
         else
             return cursor -> new LocationForGetting(
                     cursor.getId(),

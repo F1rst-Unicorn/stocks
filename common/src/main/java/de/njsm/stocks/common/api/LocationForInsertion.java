@@ -50,7 +50,7 @@ public class LocationForInsertion implements Insertable<Location> {
 
     @Override
     public boolean isContainedIn(Location entity) {
-        return name.equals(entity.getName());
+        return name.equals(entity.name());
     }
 
     @Override

@@ -35,12 +35,12 @@ public class EanNumberForGetting extends VersionedData implements Versionable<Ea
         this.eanNumber = eanNumber;
     }
 
-    public int getIdentifiesFood() {
+    public int identifiesFood() {
         return identifiesFood;
     }
 
     @JsonIgnore
-    public String getEanNumber() {
+    public String eanNumber() {
         return eanNumber;
     }
 
@@ -57,18 +57,18 @@ public class EanNumberForGetting extends VersionedData implements Versionable<Ea
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         EanNumberForGetting that = (EanNumberForGetting) o;
-        return getIdentifiesFood() == that.getIdentifiesFood() && getEanNumber().equals(that.getEanNumber());
+        return identifiesFood() == that.identifiesFood() && eanNumber().equals(that.eanNumber());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getIdentifiesFood(), getEanNumber());
+        return Objects.hash(super.hashCode(), identifiesFood(), eanNumber());
     }
 
     @Override
     public boolean isContainedIn(EanNumber item) {
         return EanNumber.super.isContainedIn(item) &&
-                identifiesFood == item.getIdentifiesFood() &&
-                eanNumber.equals(item.getEanNumber());
+                identifiesFood == item.identifiesFood() &&
+                eanNumber.equals(item.eanNumber());
     }
 }

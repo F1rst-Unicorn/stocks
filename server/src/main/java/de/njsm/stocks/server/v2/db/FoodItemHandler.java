@@ -199,20 +199,21 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
     @Override
     protected Function<FoodItemRecord, FoodItem> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalFoodItem(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getEatBy().toInstant(),
-                    cursor.getOfType(),
-                    cursor.getStoredIn(),
-                    cursor.getRegisters(),
-                    cursor.getBuys(),
-                    cursor.getUnit());
+            return cursor -> BitemporalFoodItem.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .eatByDate(cursor.getEatBy().toInstant())
+                    .ofType(cursor.getOfType())
+                    .storedIn(cursor.getStoredIn())
+                    .registers(cursor.getRegisters())
+                    .buys(cursor.getBuys())
+                    .unit(cursor.getUnit())
+                    .build();
         else
             return cursor -> new FoodItemForGetting(
                     cursor.getId(),

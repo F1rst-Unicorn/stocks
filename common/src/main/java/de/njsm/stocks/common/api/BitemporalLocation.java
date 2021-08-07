@@ -19,49 +19,34 @@
 
 package de.njsm.stocks.common.api;
 
-import java.time.Instant;
-import java.util.Objects;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class BitemporalLocation extends BitemporalData implements Bitemporal<Location>, Location {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_BitemporalLocation.Builder.class)
+public abstract class BitemporalLocation implements Bitemporal<Location>, Location {
 
-    private final String name;
-
-    private final String description;
-
-    public BitemporalLocation(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, String name, String description) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.name = name;
-        this.description = description;
+    public static Builder builder() {
+        return new AutoValue_BitemporalLocation.Builder();
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        BitemporalLocation that = (BitemporalLocation) o;
-        return getName().equals(that.getName()) && getDescription().equals(that.getDescription());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), getDescription());
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<BitemporalLocation>
+            implements Bitemporal.Builder<Builder>, Location.Builder<Builder> {
     }
 
     @Override
     public boolean isContainedIn(Location item) {
         return Bitemporal.super.isContainedIn(item) &&
-                name.equals(item.getName()) &&
-                description.equals(item.getDescription());
+                Location.super.isContainedIn(item);
+    }
+
+    @Override
+    public void validate() {
+        Bitemporal.super.validate();
+        Location.super.validate();
     }
 }

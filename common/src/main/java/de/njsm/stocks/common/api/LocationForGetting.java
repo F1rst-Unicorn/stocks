@@ -33,11 +33,11 @@ public class LocationForGetting extends VersionedData implements Versionable<Loc
         this.description = description;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
-    public String getDescription() {
+    public String description() {
         return description;
     }
 
@@ -47,18 +47,18 @@ public class LocationForGetting extends VersionedData implements Versionable<Loc
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         LocationForGetting that = (LocationForGetting) o;
-        return getName().equals(that.getName()) && getDescription().equals(that.getDescription());
+        return name().equals(that.name()) && description().equals(that.description());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), getDescription());
+        return Objects.hash(super.hashCode(), name(), description());
     }
 
     @Override
     public boolean isContainedIn(Location item) {
         return Location.super.isContainedIn(item) &&
-                name.equals(item.getName()) &&
-                description.equals(item.getDescription());
+                name.equals(item.name()) &&
+                description.equals(item.description());
     }
 }
