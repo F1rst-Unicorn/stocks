@@ -19,5 +19,4 @@ public class DurationDeserialiserTest {
 
         assertEquals(Duration.ZERO.plusHours(2), output.duration());
     }
-
 }

@@ -19,31 +19,39 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.auto.value.AutoValue;
 import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 
 import java.time.Instant;
 
-public class Update {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Update.Builder.class)
+public abstract class Update {
 
-    private final String table;
+    @JsonGetter
+    public abstract String table();
 
-    private final Instant lastUpdate;
-
-    public Update(String table, Instant lastUpdate) {
-        this.table = table;
-        this.lastUpdate = lastUpdate;
-    }
-
-    public String getTable() {
-        return table;
-    }
-
+    @JsonGetter
     @JsonSerialize(using = InstantSerialiser.class)
-    @JsonDeserialize(using = InstantDeserialiser.class)
-    public Instant getLastUpdate() {
-        return lastUpdate;
+    public abstract Instant lastUpdate();
+
+    public static Builder builder() {
+        return new AutoValue_Update.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+        public abstract Builder table(String v);
+
+        @JsonDeserialize(using = InstantDeserialiser.class)
+        public abstract Builder lastUpdate(Instant v);
+
+        public abstract Update build();
     }
 }

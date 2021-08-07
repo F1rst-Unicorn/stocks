@@ -39,9 +39,10 @@ public class UpdateBackend extends FailSafeDatabaseHandler {
             Stream<Update> dbResult = context
                     .selectFrom(UPDATES)
                     .stream()
-                    .map(record -> new Update(
-                            record.getTableName(),
-                            record.getLastUpdate().toInstant()));
+                    .map(record -> Update.builder()
+                            .table(record.getTableName())
+                            .lastUpdate(record.getLastUpdate().toInstant())
+                            .build());
             return Validation.success(dbResult);
         });
     }

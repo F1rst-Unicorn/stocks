@@ -19,6 +19,9 @@
 
 package de.njsm.stocks.common.api.serialisers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.njsm.stocks.common.api.Update;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -29,8 +32,12 @@ import static org.junit.Assert.assertEquals;
 public class InstantDeserialiserTest {
 
     @Test
-    public void constructorWorks() {
-        new InstantDeserialiser();
+    public void deserialisingWorks() throws JsonProcessingException {
+        String input = "{\"table\":\"table\",\"lastUpdate\":\"1970.01.01-00:00:00.000000-+0000\"}";
+
+        Update output = new ObjectMapper().readValue(input, Update.class);
+
+        assertEquals(Instant.EPOCH, output.lastUpdate());
     }
 
     @Test(expected = IOException.class)
