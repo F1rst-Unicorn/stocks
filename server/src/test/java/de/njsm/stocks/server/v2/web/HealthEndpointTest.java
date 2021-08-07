@@ -21,7 +21,7 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.common.api.DataResponse;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.Health;
+import de.njsm.stocks.common.api.Health;
 import de.njsm.stocks.server.v2.business.HealthManager;
 import fj.data.Validation;
 import org.junit.Before;

@@ -22,10 +22,10 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.Location;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.LocationForDeletion;
-import de.njsm.stocks.common.api.impl.LocationForInsertion;
-import de.njsm.stocks.common.api.impl.LocationForRenaming;
-import de.njsm.stocks.common.api.impl.LocationForSetDescription;
+import de.njsm.stocks.common.api.LocationForDeletion;
+import de.njsm.stocks.common.api.LocationForInsertion;
+import de.njsm.stocks.common.api.LocationForRenaming;
+import de.njsm.stocks.common.api.LocationForSetDescription;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;

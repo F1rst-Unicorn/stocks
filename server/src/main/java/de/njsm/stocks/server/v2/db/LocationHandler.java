@@ -20,7 +20,6 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.impl.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -59,8 +58,8 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                     LOCATION.VERSION.add(1),
                     LOCATION.DESCRIPTION
                     ),
-                    LOCATION.ID.eq(item.getId())
-                            .and(LOCATION.VERSION.eq(item.getVersion()))
+                    LOCATION.ID.eq(item.id())
+                            .and(LOCATION.VERSION.eq(item.version()))
                             .and(LOCATION.NAME.ne(item.getNewName())))
                     .map(this::notFoundMeansInvalidVersion);
         });
@@ -84,8 +83,8 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                     LOCATION.VERSION.add(1),
                     DSL.inline(input.getDescription())
                     ),
-                    LOCATION.ID.eq(input.getId())
-                            .and(LOCATION.VERSION.eq(input.getVersion()))
+                    LOCATION.ID.eq(input.id())
+                            .and(LOCATION.VERSION.eq(input.version()))
                             .and(LOCATION.DESCRIPTION.ne(input.getDescription())))
                     .map(this::notFoundMeansInvalidVersion);
         });

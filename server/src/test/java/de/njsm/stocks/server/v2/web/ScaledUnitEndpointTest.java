@@ -21,9 +21,9 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.ScaledUnitForDeletion;
-import de.njsm.stocks.common.api.impl.ScaledUnitForEditing;
-import de.njsm.stocks.common.api.impl.ScaledUnitForInsertion;
+import de.njsm.stocks.common.api.ScaledUnitForDeletion;
+import de.njsm.stocks.common.api.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
 import org.junit.After;
 import org.junit.Before;
@@ -99,7 +99,7 @@ public class ScaledUnitEndpointTest {
         ScaledUnitForEditing data = new ScaledUnitForEditing(1, 0, BigDecimal.ONE, 2);
         when(manager.edit(data)).thenReturn(StatusCode.SUCCESS);
 
-        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+        Response response = uut.edit(createMockRequest(), data.id(), data.version(), data.getScale().toString(), data.getUnit());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).edit(data);
@@ -110,7 +110,7 @@ public class ScaledUnitEndpointTest {
     public void invalidVersionWhenEditingIsRejected() {
         ScaledUnitForEditing data = new ScaledUnitForEditing(1, -1, BigDecimal.ONE, 2);
 
-        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+        Response response = uut.edit(createMockRequest(), data.id(), data.version(), data.getScale().toString(), data.getUnit());
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
@@ -119,7 +119,7 @@ public class ScaledUnitEndpointTest {
     public void invalidScaleWhenEditingIsRejected() {
         ScaledUnitForEditing data = new ScaledUnitForEditing(1, 0, BigDecimal.ONE, 2);
 
-        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), "not a number", data.getUnit());
+        Response response = uut.edit(createMockRequest(), data.id(), data.version(), "not a number", data.getUnit());
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
@@ -128,7 +128,7 @@ public class ScaledUnitEndpointTest {
     public void invalidIdWhenEditingIsRejected() {
         ScaledUnitForEditing data = new ScaledUnitForEditing(0, 0, BigDecimal.ONE, 2);
 
-        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+        Response response = uut.edit(createMockRequest(), data.id(), data.version(), data.getScale().toString(), data.getUnit());
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
@@ -137,7 +137,7 @@ public class ScaledUnitEndpointTest {
     public void invalidUnitWhenEditingIsRejected() {
         ScaledUnitForEditing data = new ScaledUnitForEditing(1, 0, BigDecimal.ONE, 0);
 
-        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+        Response response = uut.edit(createMockRequest(), data.id(), data.version(), data.getScale().toString(), data.getUnit());
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
@@ -149,7 +149,7 @@ public class ScaledUnitEndpointTest {
 
         ScaledUnitForDeletion result = uut.wrapParameters(id, version);
 
-        assertEquals(id, result.getId());
-        assertEquals(version, result.getVersion());
+        assertEquals(id, result.id());
+        assertEquals(version, result.version());
     }
 }

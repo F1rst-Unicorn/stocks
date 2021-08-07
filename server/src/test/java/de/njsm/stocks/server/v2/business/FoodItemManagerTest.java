@@ -22,9 +22,9 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.FoodItem;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.FoodItemForDeletion;
-import de.njsm.stocks.common.api.impl.FoodItemForEditing;
-import de.njsm.stocks.common.api.impl.FoodItemForInsertion;
+import de.njsm.stocks.common.api.FoodItemForDeletion;
+import de.njsm.stocks.common.api.FoodItemForEditing;
+import de.njsm.stocks.common.api.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;

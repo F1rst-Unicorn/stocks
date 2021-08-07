@@ -19,10 +19,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.Identifiable;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.UserDevice;
-import de.njsm.stocks.common.api.impl.*;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
 import fj.data.Validation;
 import org.junit.Before;

@@ -1,6 +1,6 @@
 package de.njsm.stocks.server.v2.business.data.visitor;
 
-import de.njsm.stocks.common.api.impl.*;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 import de.njsm.stocks.server.util.Principals;
 import org.jooq.InsertOnDuplicateStep;

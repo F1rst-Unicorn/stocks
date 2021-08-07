@@ -21,9 +21,9 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.UnitForDeletion;
-import de.njsm.stocks.common.api.impl.UnitForInsertion;
-import de.njsm.stocks.common.api.impl.UnitForRenaming;
+import de.njsm.stocks.common.api.UnitForDeletion;
+import de.njsm.stocks.common.api.UnitForInsertion;
+import de.njsm.stocks.common.api.UnitForRenaming;
 import de.njsm.stocks.server.v2.business.UnitManager;
 import org.junit.After;
 import org.junit.Before;
@@ -125,7 +125,7 @@ public class UnitEndpointTest {
         UnitForRenaming input = new UnitForRenaming(1, 1, "name", "abbreviation");
         when(manager.rename(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        Response response = uut.rename(createMockRequest(), input.getId(), input.getVersion(), input.getName(), input.getAbbreviation());
+        Response response = uut.rename(createMockRequest(), input.id(), input.version(), input.getName(), input.getAbbreviation());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).rename(input);
@@ -137,7 +137,7 @@ public class UnitEndpointTest {
         UnitForRenaming input = new UnitForRenaming(1, 1, "name", "abbreviation");
         when(manager.rename(any())).thenReturn(StatusCode.SUCCESS);
 
-        Response response = uut.rename(createMockRequest(), input.getId(), input.getVersion(), input.getName(), input.getAbbreviation());
+        Response response = uut.rename(createMockRequest(), input.id(), input.version(), input.getName(), input.getAbbreviation());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).rename(input);
@@ -152,7 +152,7 @@ public class UnitEndpointTest {
 
         UnitForDeletion result = uut.wrapParameters(id, version);
 
-        assertEquals(id, result.getId());
-        assertEquals(version, result.getVersion());
+        assertEquals(id, result.id());
+        assertEquals(version, result.version());
     }
 }

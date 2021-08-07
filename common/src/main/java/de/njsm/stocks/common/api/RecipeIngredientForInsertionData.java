@@ -12,4 +12,12 @@ public interface RecipeIngredientForInsertionData {
 
     @JsonGetter
     int unit();
+
+    interface Builder<T> {
+         T amount(int v);
+
+         T ingredient(int v);
+
+         T unit(int v);
+    }
 }

@@ -20,7 +20,6 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.impl.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
 import org.jooq.Field;
 import org.jooq.Table;

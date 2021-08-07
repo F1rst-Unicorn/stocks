@@ -1,8 +1,6 @@
 package de.njsm.stocks.common.api.visitor;
 
-import de.njsm.stocks.common.api.Entity;
-import de.njsm.stocks.common.api.Insertable;
-import de.njsm.stocks.common.api.impl.*;
+import de.njsm.stocks.common.api.*;
 
 public interface InsertableVisitor<I, O> {
 

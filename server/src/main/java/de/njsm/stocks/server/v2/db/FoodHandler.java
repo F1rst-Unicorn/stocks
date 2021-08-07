@@ -19,11 +19,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.Food;
-import de.njsm.stocks.common.api.Identifiable;
-import de.njsm.stocks.common.api.Location;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.*;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -63,8 +59,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     FOOD.DESCRIPTION,
                     FOOD.STORE_UNIT
                     ),
-                    getIdField().eq(item.getId())
-                            .and(getVersionField().eq(item.getVersion()))
+                    getIdField().eq(item.id())
+                            .and(getVersionField().eq(item.version()))
                             .and(FOOD.TO_BUY.ne(item.isToBuy())))
                     .map(this::notFoundMeansInvalidVersion);
         });
@@ -81,7 +77,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                 FOOD.DESCRIPTION,
                 FOOD.STORE_UNIT
                 ),
-                getIdField().eq(item.getId())
+                getIdField().eq(item.id())
                         .and(FOOD.TO_BUY.ne(value)))
                 .map(this::notFoundIsOk);
     }
@@ -138,8 +134,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     locationField,
                     descriptionField,
                     storeUnitField),
-                    getIdField().eq(item.getId())
-                            .and(getVersionField().eq(item.getVersion())
+                    getIdField().eq(item.id())
+                            .and(getVersionField().eq(item.version())
                                     .and(FOOD.NAME.ne(item.getNewName())
                                             .or(expirationOffsetCondition)
                                             .or(locationCondition)
@@ -161,7 +157,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                 DSL.inline((Integer) null),
                 FOOD.DESCRIPTION,
                 FOOD.STORE_UNIT),
-                FOOD.LOCATION.eq(l.getId()))
+                FOOD.LOCATION.eq(l.id()))
                 .map(this::notFoundIsOk);
     }
 
@@ -179,8 +175,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     FOOD.LOCATION,
                     DSL.inline(item.getDescription()),
                     FOOD.STORE_UNIT),
-                    getIdField().eq(item.getId())
-                            .and(getVersionField().eq(item.getVersion()))
+                    getIdField().eq(item.id())
+                            .and(getVersionField().eq(item.version()))
                             .and(FOOD.DESCRIPTION.ne(item.getDescription())))
                     .map(this::notFoundMeansInvalidVersion);
         });

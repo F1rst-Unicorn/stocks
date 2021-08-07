@@ -20,7 +20,6 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.impl.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -55,8 +54,8 @@ public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
                     DSL.inline(unit.getName()),
                     DSL.inline(unit.getAbbreviation())),
 
-                    UNIT.ID.eq(unit.getId())
-                            .and(UNIT.VERSION.eq(unit.getVersion()))
+                    UNIT.ID.eq(unit.id())
+                            .and(UNIT.VERSION.eq(unit.version()))
                             .and(UNIT.NAME.ne(unit.getName())
                                     .or(UNIT.ABBREVIATION.ne(unit.getAbbreviation())))
             ).map(this::notFoundMeansInvalidVersion);

@@ -103,7 +103,7 @@ public class TicketHandler extends FailSafeDatabaseHandler {
     public StatusCode removeTicketOfDevice(Identifiable<UserDevice> device) {
         return runCommand(context -> {
             context.deleteFrom(TICKET)
-                    .where(TICKET.BELONGS_DEVICE.eq(device.getId()))
+                    .where(TICKET.BELONGS_DEVICE.eq(device.id()))
                     .execute();
 
             return StatusCode.SUCCESS;

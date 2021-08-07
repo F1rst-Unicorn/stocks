@@ -22,7 +22,7 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.EanNumber;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.EanNumberForDeletion;
+import de.njsm.stocks.common.api.EanNumberForDeletion;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 

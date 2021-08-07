@@ -20,10 +20,10 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.impl.BitemporalRecipeProduct;
-import de.njsm.stocks.common.api.impl.RecipeForDeletion;
-import de.njsm.stocks.common.api.impl.RecipeProductForDeletion;
-import de.njsm.stocks.common.api.impl.RecipeProductWithIdForInsertion;
+import de.njsm.stocks.common.api.BitemporalRecipeProduct;
+import de.njsm.stocks.common.api.RecipeForDeletion;
+import de.njsm.stocks.common.api.RecipeProductForDeletion;
+import de.njsm.stocks.common.api.RecipeProductWithIdForInsertion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,12 +92,12 @@ public class RecipeProductHandlerTest extends DbTestCase {
                 .map(v -> (BitemporalRecipeProduct) v).collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                        l.getId() == 1 &&
-                        l.getVersion() == 0 &&
-                        l.getAmount() == 2 &&
-                        l.getProduct() == 3 &&
-                        l.getRecipe() == 1 &&
-                        l.getUnit() == 2 &&
+                        l.id() == 1 &&
+                        l.version() == 0 &&
+                        l.amount() == 2 &&
+                        l.product() == 3 &&
+                        l.recipe() == 1 &&
+                        l.unit() == 2 &&
                         l.getInitiates() == 1));
     }
 
@@ -109,12 +109,12 @@ public class RecipeProductHandlerTest extends DbTestCase {
         List<RecipeProduct> data = result.success().collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 1 &&
-                        l.getVersion() == 0 &&
-                        l.getAmount() == 2 &&
-                        l.getProduct() == 3 &&
-                        l.getRecipe() == 1 &&
-                        l.getUnit() == 2));
+                l.id() == 1 &&
+                        l.version() == 0 &&
+                        l.amount() == 2 &&
+                        l.product() == 3 &&
+                        l.recipe() == 1 &&
+                        l.unit() == 2));
     }
 
     @Test

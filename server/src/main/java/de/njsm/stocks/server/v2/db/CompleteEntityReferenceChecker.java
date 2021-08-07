@@ -54,7 +54,7 @@ public class CompleteEntityReferenceChecker<T extends Entity<T>, U extends Entit
             Row2<Integer, Integer>[] ingredientsAsRows = new Row2[ingredients.size()];
             int i = 0;
             for (Versionable<U> ingredient : ingredients) {
-                ingredientsAsRows[i] = DSL.row(ingredient.getId(), ingredient.getVersion());
+                ingredientsAsRows[i] = DSL.row(ingredient.id(), ingredient.version());
                 i++;
             }
             inputIngredients = context.selectFrom(DSL.values(ingredientsAsRows))
@@ -62,7 +62,7 @@ public class CompleteEntityReferenceChecker<T extends Entity<T>, U extends Entit
         }
 
         SelectConditionStep<Record2<Integer, Integer>> actualIngredients = context.select(id, version).from(table)
-                .where(isCurrentlyValid.and(referringField.eq(recipe.getId())));
+                .where(isCurrentlyValid.and(referringField.eq(recipe.id())));
 
         int numberOfDifferentIngredients =
                 context.select(DSL.count(DSL.inline(1)))

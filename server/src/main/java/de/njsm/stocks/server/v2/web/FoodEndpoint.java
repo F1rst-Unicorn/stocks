@@ -20,10 +20,7 @@
 package de.njsm.stocks.server.v2.web;
 
 
-import de.njsm.stocks.common.api.Food;
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.*;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.FoodManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 

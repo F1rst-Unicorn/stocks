@@ -22,7 +22,7 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.StreamResponse;
-import de.njsm.stocks.common.api.impl.Update;
+import de.njsm.stocks.common.api.Update;
 import de.njsm.stocks.server.v2.business.UpdateManager;
 import fj.data.Validation;
 

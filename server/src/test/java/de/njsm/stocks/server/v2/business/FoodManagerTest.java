@@ -20,9 +20,7 @@
 package de.njsm.stocks.server.v2.business;
 
 
-import de.njsm.stocks.common.api.Food;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.*;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;

@@ -19,18 +19,33 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
+import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
+
 import java.time.Instant;
 
 public interface Bitemporal<T extends Entity<T>> extends Versionable<T> {
 
+    @JsonGetter
+    @JsonSerialize(using = InstantSerialiser.class)
     Instant getValidTimeStart();
 
+    @JsonGetter
+    @JsonSerialize(using = InstantSerialiser.class)
     Instant getValidTimeEnd();
 
+    @JsonGetter
+    @JsonSerialize(using = InstantSerialiser.class)
     Instant getTransactionTimeStart();
 
+    @JsonGetter
+    @JsonSerialize(using = InstantSerialiser.class)
     Instant getTransactionTimeEnd();
 
+    @JsonGetter
     int getInitiates();
 
     @Override
@@ -45,5 +60,20 @@ public interface Bitemporal<T extends Entity<T>> extends Versionable<T> {
         } else {
             return false;
         }
+    }
+
+    interface Builder<T> extends Versionable.Builder<T> {
+
+        @JsonDeserialize(using = InstantDeserialiser.class)
+        T validTimeStart(Instant v);
+
+        @JsonDeserialize(using = InstantDeserialiser.class)
+        T validTimeEnd(Instant v);
+
+        @JsonDeserialize(using = InstantDeserialiser.class)
+        T transactionTimeStart(Instant v);
+
+        @JsonDeserialize(using = InstantDeserialiser.class)
+        T transactionTimeEnd(Instant v);
     }
 }

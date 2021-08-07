@@ -23,9 +23,9 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Unit;
-import de.njsm.stocks.common.api.impl.UnitForDeletion;
-import de.njsm.stocks.common.api.impl.UnitForInsertion;
-import de.njsm.stocks.common.api.impl.UnitForRenaming;
+import de.njsm.stocks.common.api.UnitForDeletion;
+import de.njsm.stocks.common.api.UnitForInsertion;
+import de.njsm.stocks.common.api.UnitForRenaming;
 import de.njsm.stocks.server.v2.business.UnitManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
 

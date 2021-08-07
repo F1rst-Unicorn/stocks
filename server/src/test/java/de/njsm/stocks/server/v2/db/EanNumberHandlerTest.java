@@ -21,10 +21,10 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.EanNumber;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.BitemporalEanNumber;
-import de.njsm.stocks.common.api.impl.EanNumberForDeletion;
-import de.njsm.stocks.common.api.impl.EanNumberForInsertion;
-import de.njsm.stocks.common.api.impl.FoodForDeletion;
+import de.njsm.stocks.common.api.BitemporalEanNumber;
+import de.njsm.stocks.common.api.EanNumberForDeletion;
+import de.njsm.stocks.common.api.EanNumberForInsertion;
+import de.njsm.stocks.common.api.FoodForDeletion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;

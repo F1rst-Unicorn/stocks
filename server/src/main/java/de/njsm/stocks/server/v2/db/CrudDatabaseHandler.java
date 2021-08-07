@@ -104,8 +104,8 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            return currentDelete(getIdField().eq(item.getId())
-                    .and(getVersionField().eq(item.getVersion())))
+            return currentDelete(getIdField().eq(item.id())
+                    .and(getVersionField().eq(item.version())))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }
@@ -244,7 +244,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
     public boolean isCurrentlyMissing(Identifiable<N> item, DSLContext context) {
         int count = context.selectCount()
                 .from(getTable())
-                .where(getIdField().eq(item.getId()).and(nowAsBestKnown()))
+                .where(getIdField().eq(item.id()).and(nowAsBestKnown()))
                 .fetch()
                 .get(0)
                 .value1();

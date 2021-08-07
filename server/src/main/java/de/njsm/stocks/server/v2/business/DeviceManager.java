@@ -21,8 +21,8 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.UserDevice;
-import de.njsm.stocks.common.api.impl.UserDeviceForDeletion;
-import de.njsm.stocks.common.api.impl.UserDeviceForInsertion;
+import de.njsm.stocks.common.api.UserDeviceForDeletion;
+import de.njsm.stocks.common.api.UserDeviceForInsertion;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
@@ -85,7 +85,7 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
     public StatusCode revokeDevice(UserDeviceForDeletion device) {
         return runOperation(() -> {
             userDeviceHandler.setReadOnly();
-            return authAdmin.revokeCertificate(device.getId());
+            return authAdmin.revokeCertificate(device.id());
         });
     }
 
@@ -93,7 +93,7 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
         return foodItemHandler.transferFoodItems(device, principals.toDevice())
                 .bind(() -> ticketHandler.removeTicketOfDevice(device))
                 .bind(() -> userDeviceHandler.delete(device))
-                .bind(() -> authAdmin.revokeCertificate(device.getId()));
+                .bind(() -> authAdmin.revokeCertificate(device.id()));
     }
 
     private static String generateTicket() {

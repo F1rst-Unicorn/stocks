@@ -21,9 +21,9 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.User;
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.impl.BitemporalFoodItem;
-import de.njsm.stocks.common.api.impl.FoodItemForEditing;
-import de.njsm.stocks.common.api.impl.FoodItemForGetting;
+import de.njsm.stocks.common.api.BitemporalFoodItem;
+import de.njsm.stocks.common.api.FoodItemForEditing;
+import de.njsm.stocks.common.api.FoodItemForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -84,8 +84,8 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.VERSION.add(1),
                     unitField
                     ),
-                    FOOD_ITEM.ID.eq(item.getId())
-                            .and(FOOD_ITEM.VERSION.eq(item.getVersion()))
+                    FOOD_ITEM.ID.eq(item.id())
+                            .and(FOOD_ITEM.VERSION.eq(item.version()))
                             .and(FOOD_ITEM.EAT_BY.ne(newEatByDate)
                                     .or(FOOD_ITEM.STORED_IN.ne(item.getStoredIn()))
                                     .or(unitCondition)
@@ -111,12 +111,12 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,
                     FOOD_ITEM.STORED_IN,
-                    DSL.inline(to.getId()),
+                    DSL.inline(to.id()),
                     FOOD_ITEM.BUYS,
                     FOOD_ITEM.VERSION.add(1),
                     FOOD_ITEM.UNIT
                     ),
-                    FOOD_ITEM.REGISTERS.eq(from.getId()))
+                    FOOD_ITEM.REGISTERS.eq(from.id()))
                     .map(this::notFoundIsOk);
         });
     }
@@ -137,7 +137,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
             }
 
             List<Integer> deviceIds = fromDevices.stream()
-                    .map(Identifiable::getId)
+                    .map(Identifiable::id)
                     .collect(Collectors.toList());
 
             return currentUpdate(context, Arrays.asList(
@@ -145,24 +145,24 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,
                     FOOD_ITEM.STORED_IN,
-                    DSL.inline(toDevice.getId()),
-                    DSL.inline(to.getId()),
+                    DSL.inline(toDevice.id()),
+                    DSL.inline(to.id()),
                     FOOD_ITEM.VERSION.add(1),
                     FOOD_ITEM.UNIT
                     ),
-                    FOOD_ITEM.BUYS.eq(from.getId())
+                    FOOD_ITEM.BUYS.eq(from.id())
                             .and(FOOD_ITEM.REGISTERS.in(deviceIds)))
                     .map(this::notFoundIsOk);
         });
     }
 
     public StatusCode deleteItemsOfType(Identifiable<Food> item) {
-        return runCommand(context -> currentDelete(FOOD_ITEM.OF_TYPE.eq(item.getId()))
+        return runCommand(context -> currentDelete(FOOD_ITEM.OF_TYPE.eq(item.id()))
                 .map(this::notFoundIsOk));
     }
 
     public StatusCode deleteItemsStoredIn(Identifiable<Location> location) {
-        return runCommand(context -> currentDelete(FOOD_ITEM.STORED_IN.eq(location.getId()))
+        return runCommand(context -> currentDelete(FOOD_ITEM.STORED_IN.eq(location.id()))
                  .map(this::notFoundIsOk));
     }
 
@@ -171,7 +171,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
 
         int result = context.select(DSL.count())
                 .from(FOOD_ITEM)
-                .where(FOOD_ITEM.STORED_IN.eq(location.getId())
+                .where(FOOD_ITEM.STORED_IN.eq(location.id())
                         .and(getValidTimeStartField().lessOrEqual(now))
                         .and(now.lessThan(getValidTimeEndField()))
                         .and(getTransactionTimeEndField().eq(INFINITY))

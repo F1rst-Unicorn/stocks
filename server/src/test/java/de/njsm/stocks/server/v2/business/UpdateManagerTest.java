@@ -20,7 +20,7 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.Update;
+import de.njsm.stocks.common.api.Update;
 import de.njsm.stocks.server.v2.db.UpdateBackend;
 import fj.data.Validation;
 import org.junit.After;

@@ -20,10 +20,10 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.impl.BitemporalRecipeIngredient;
-import de.njsm.stocks.common.api.impl.RecipeForDeletion;
-import de.njsm.stocks.common.api.impl.RecipeIngredientForDeletion;
-import de.njsm.stocks.common.api.impl.RecipeIngredientWithIdForInsertion;
+import de.njsm.stocks.common.api.BitemporalRecipeIngredient;
+import de.njsm.stocks.common.api.RecipeForDeletion;
+import de.njsm.stocks.common.api.RecipeIngredientForDeletion;
+import de.njsm.stocks.common.api.RecipeIngredientWithIdForInsertion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,12 +93,12 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
                 .map(v -> (BitemporalRecipeIngredient) v).collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                        l.getId() == 1 &&
-                        l.getVersion() == 0 &&
-                        l.getAmount() == 2 &&
-                        l.getIngredient() == 3 &&
-                        l.getRecipe() == 1 &&
-                        l.getUnit() == 2 &&
+                        l.id() == 1 &&
+                        l.version() == 0 &&
+                        l.amount() == 2 &&
+                        l.ingredient() == 3 &&
+                        l.recipe() == 1 &&
+                        l.unit() == 2 &&
                         l.getInitiates() == 1));
     }
 
@@ -110,12 +110,12 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
         List<RecipeIngredient> data = result.success().collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 1 &&
-                        l.getVersion() == 0 &&
-                        l.getAmount() == 2 &&
-                        l.getIngredient() == 3 &&
-                        l.getRecipe() == 1 &&
-                        l.getUnit() == 2));
+                l.id() == 1 &&
+                        l.version() == 0 &&
+                        l.amount() == 2 &&
+                        l.ingredient() == 3 &&
+                        l.recipe() == 1 &&
+                        l.unit() == 2));
     }
 
     @Test

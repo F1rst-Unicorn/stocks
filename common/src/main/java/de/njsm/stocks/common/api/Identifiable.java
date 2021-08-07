@@ -19,13 +19,19 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.google.common.base.Preconditions;
-import de.njsm.stocks.common.api.impl.SelfValidating;
 
 public interface Identifiable<T extends Entity<T>> extends SelfValidating {
-    int getId();
+
+    @JsonGetter
+    int id();
 
     default void validate() {
-        Preconditions.checkState(getId() > 0, "id below 1");
+        Preconditions.checkState(id() > 0, "id below 1");
+    }
+
+    interface Builder<T> {
+        T id(int v);
     }
 }

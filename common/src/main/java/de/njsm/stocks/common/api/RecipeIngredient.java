@@ -19,13 +19,47 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.google.common.base.Preconditions;
+
 public interface RecipeIngredient extends Entity<RecipeIngredient> {
 
-    int getAmount();
+    @JsonGetter
+    int amount();
 
-    int getIngredient();
+    @JsonGetter
+    int ingredient();
 
-    int getRecipe();
+    @JsonGetter
+    int recipe();
 
-    int getUnit();
+    @JsonGetter
+    int unit();
+
+    @Override
+    default void validate() {
+        Entity.super.validate();
+        Preconditions.checkState(ingredient() > 0, "ingredient id is invalid");
+        Preconditions.checkState(recipe() > 0, "recipe id is invalid");
+        Preconditions.checkState(unit() > 0, "unit id is invalid");
+    }
+
+    @Override
+    default boolean isContainedIn(RecipeIngredient item) {
+        return Entity.super.isContainedIn(item) &&
+                amount() == item.amount() &&
+                ingredient() == item.ingredient() &&
+                recipe() == item.recipe() &&
+                unit() == item.unit();
+    }
+
+    interface Builder<T> {
+        T amount(int v);
+
+        T ingredient(int v);
+
+        T recipe(int v);
+
+        T unit(int v);
+    }
 }

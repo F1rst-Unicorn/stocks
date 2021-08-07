@@ -20,7 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.UserDeviceForDeletion;
+import de.njsm.stocks.common.api.UserDeviceForDeletion;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
 import de.njsm.stocks.server.v2.business.data.ServerTicket;

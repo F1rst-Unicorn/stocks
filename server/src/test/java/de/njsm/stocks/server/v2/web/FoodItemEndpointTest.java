@@ -23,9 +23,9 @@ import de.njsm.stocks.common.api.FoodItem;
 import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.StreamResponse;
-import de.njsm.stocks.common.api.impl.FoodItemForDeletion;
-import de.njsm.stocks.common.api.impl.FoodItemForEditing;
-import de.njsm.stocks.common.api.impl.FoodItemForInsertion;
+import de.njsm.stocks.common.api.FoodItemForDeletion;
+import de.njsm.stocks.common.api.FoodItemForEditing;
+import de.njsm.stocks.common.api.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import fj.data.Validation;
 import junit.framework.TestCase;
@@ -165,7 +165,7 @@ public class FoodItemEndpointTest {
         Mockito.when(manager.edit(expected)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.editItem(Util.createMockRequest(),
-                expected.getId(), expected.getVersion(), DATE, expected.getStoredIn(), expected.getUnitOptional().get());
+                expected.id(), expected.version(), DATE, expected.getStoredIn(), expected.getUnitOptional().get());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).edit(expected);
@@ -193,7 +193,7 @@ public class FoodItemEndpointTest {
         FoodItemForDeletion expected = new FoodItemForDeletion(2, 2);
         Mockito.when(manager.delete(expected)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.delete(createMockRequest(), expected.getId(), expected.getVersion());
+        Response result = uut.delete(createMockRequest(), expected.id(), expected.version());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).delete(expected);

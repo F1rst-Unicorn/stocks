@@ -21,7 +21,7 @@ package de.njsm.stocks.server.v2.business.data;
 
 import de.njsm.stocks.common.api.UserDevice;
 import de.njsm.stocks.common.api.Versionable;
-import de.njsm.stocks.common.api.impl.Data;
+import de.njsm.stocks.common.api.Data;
 
 public class UserDeviceForPrincipals extends Data implements Versionable<UserDevice> {
     public UserDeviceForPrincipals(int id) {
@@ -32,7 +32,7 @@ public class UserDeviceForPrincipals extends Data implements Versionable<UserDev
      * UserDevice is immutable, thus the version never changes
      */
     @Override
-    public int getVersion() {
+    public int version() {
         return 0;
     }
 }

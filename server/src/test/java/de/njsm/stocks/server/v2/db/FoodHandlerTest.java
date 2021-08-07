@@ -19,9 +19,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.Food;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.*;
+import de.njsm.stocks.common.api.*;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -240,7 +238,7 @@ public class FoodHandlerTest extends DbTestCase {
         StatusCode result = uut.setToBuyStatus(data, false);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Food changedData = uut.get(false, Instant.EPOCH).success().filter(f -> f.getId() == data.getId()).findFirst().get();
+        Food changedData = uut.get(false, Instant.EPOCH).success().filter(f -> f.id() == data.id()).findFirst().get();
         assertFalse(changedData.isToBuy());
     }
 
@@ -269,7 +267,7 @@ public class FoodHandlerTest extends DbTestCase {
         StatusCode result = uut.unregisterDefaultLocation(l);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Food changedFood = uut.get(false, Instant.EPOCH).success().filter(f -> f.getId() == 3).findAny().get();
+        Food changedFood = uut.get(false, Instant.EPOCH).success().filter(f -> f.id() == 3).findAny().get();
         assertNull(changedFood.getLocation());
     }
 
@@ -283,8 +281,8 @@ public class FoodHandlerTest extends DbTestCase {
         assertTrue("expected description '" + data.getDescription() + "' not found",
                 uut.get(false, Instant.EPOCH)
                 .success()
-                .anyMatch(f -> f.getId() == data.getId() &&
-                        data.getVersion() + 1 == f.getVersion() &&
+                .anyMatch(f -> f.id() == data.id() &&
+                        data.version() + 1 == f.version() &&
                         data.getDescription().equals(f.getDescription())));
     }
 

@@ -21,9 +21,9 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.ScaledUnit;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.BitemporalScaledUnit;
-import de.njsm.stocks.common.api.impl.ScaledUnitForEditing;
-import de.njsm.stocks.common.api.impl.ScaledUnitForGetting;
+import de.njsm.stocks.common.api.BitemporalScaledUnit;
+import de.njsm.stocks.common.api.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.ScaledUnitForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -58,8 +58,8 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
                             DSL.inline(data.getScale()),
                             DSL.inline(data.getUnit())
                     ),
-                    getIdField().eq(data.getId())
-                            .and(getVersionField().eq(data.getVersion()))
+                    getIdField().eq(data.id())
+                            .and(getVersionField().eq(data.version()))
                             .and(SCALED_UNIT.SCALE.ne(data.getScale())
                                     .or(SCALED_UNIT.UNIT.ne(data.getUnit())))
 

@@ -23,8 +23,8 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.common.api.EanNumber;
 import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.EanNumberForDeletion;
-import de.njsm.stocks.common.api.impl.EanNumberForInsertion;
+import de.njsm.stocks.common.api.EanNumberForDeletion;
+import de.njsm.stocks.common.api.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 

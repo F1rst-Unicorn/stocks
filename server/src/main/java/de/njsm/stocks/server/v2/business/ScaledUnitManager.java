@@ -22,8 +22,8 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.ScaledUnit;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.ScaledUnitForDeletion;
-import de.njsm.stocks.common.api.impl.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.ScaledUnitForDeletion;
+import de.njsm.stocks.common.api.ScaledUnitForEditing;
 import de.njsm.stocks.server.v2.db.ScaledUnitHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 

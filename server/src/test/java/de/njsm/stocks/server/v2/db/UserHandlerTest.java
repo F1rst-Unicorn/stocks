@@ -21,10 +21,10 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.User;
-import de.njsm.stocks.common.api.impl.BitemporalUser;
-import de.njsm.stocks.common.api.impl.UserForDeletion;
-import de.njsm.stocks.common.api.impl.UserForGetting;
-import de.njsm.stocks.common.api.impl.UserForInsertion;
+import de.njsm.stocks.common.api.BitemporalUser;
+import de.njsm.stocks.common.api.UserForDeletion;
+import de.njsm.stocks.common.api.UserForGetting;
+import de.njsm.stocks.common.api.UserForInsertion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;

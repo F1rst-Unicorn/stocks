@@ -21,8 +21,8 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.Recipe;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.FullRecipeForDeletion;
-import de.njsm.stocks.common.api.impl.FullRecipeForInsertion;
+import de.njsm.stocks.common.api.FullRecipeForDeletion;
+import de.njsm.stocks.common.api.FullRecipeForInsertion;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.RecipeHandler;
 import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;

@@ -20,8 +20,8 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.impl.UserDeviceForDeletion;
-import de.njsm.stocks.common.api.impl.UserDeviceForInsertion;
+import de.njsm.stocks.common.api.UserDeviceForDeletion;
+import de.njsm.stocks.common.api.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import fj.data.Validation;
@@ -141,8 +141,8 @@ public class DeviceEndpointTest {
         Mockito.when(businessObject.delete(device)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.deleteDevice(createMockRequest(),
-                device.getId(),
-                device.getVersion());
+                device.id(),
+                device.version());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(businessObject).delete(device);
@@ -177,8 +177,8 @@ public class DeviceEndpointTest {
         Mockito.when(businessObject.revokeDevice(device)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.revokeDevice(Util.createMockRequest(),
-                device.getId(),
-                device.getVersion());
+                device.id(),
+                device.version());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(businessObject).revokeDevice(device);

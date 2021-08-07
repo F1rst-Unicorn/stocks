@@ -20,9 +20,9 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.impl.BitemporalRecipeProduct;
-import de.njsm.stocks.common.api.impl.RecipeForDeletion;
-import de.njsm.stocks.common.api.impl.RecipeProductForGetting;
+import de.njsm.stocks.common.api.BitemporalRecipeProduct;
+import de.njsm.stocks.common.api.RecipeForDeletion;
+import de.njsm.stocks.common.api.RecipeProductForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeProductRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -58,7 +58,7 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
     }
 
     public StatusCode deleteAllOf(RecipeForDeletion recipe) {
-        return currentDelete(RECIPE_PRODUCT.RECIPE.eq(recipe.getId()))
+        return currentDelete(RECIPE_PRODUCT.RECIPE.eq(recipe.id()))
                 .map(this::notFoundIsOk);
     }
 
@@ -94,14 +94,14 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
                     cursor.getUnit()
             );
         else
-            return cursor -> new RecipeProductForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getAmount(),
-                    cursor.getProduct(),
-                    cursor.getRecipe(),
-                    cursor.getUnit()
-            );
+            return cursor -> RecipeProductForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .amount(cursor.getAmount())
+                    .product(cursor.getProduct())
+                    .recipe(cursor.getRecipe())
+                    .unit(cursor.getUnit())
+                    .build();
     }
 
     @Override

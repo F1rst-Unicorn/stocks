@@ -19,11 +19,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.FoodItem;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.User;
-import de.njsm.stocks.common.api.UserDevice;
-import de.njsm.stocks.common.api.impl.*;
+import de.njsm.stocks.common.api.*;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
@@ -227,7 +223,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.allMatch(item -> (item.getVersion() == 1) == (item.getRegisters() == to.getId())));
+        assertTrue(items.allMatch(item -> (item.version() == 1) == (item.getRegisters() == to.id())));
         Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(from), any());
         Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(to), any());
     }
@@ -278,7 +274,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.allMatch(item -> (item.getVersion() == 1) == (item.getRegisters() == to.getId())));
+        assertTrue(items.allMatch(item -> (item.version() == 1) == (item.getRegisters() == to.id())));
         Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(from), any());
         Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(to), any());
     }

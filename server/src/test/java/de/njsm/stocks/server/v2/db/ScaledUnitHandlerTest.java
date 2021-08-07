@@ -21,10 +21,10 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.ScaledUnit;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.BitemporalScaledUnit;
-import de.njsm.stocks.common.api.impl.ScaledUnitForDeletion;
-import de.njsm.stocks.common.api.impl.ScaledUnitForEditing;
-import de.njsm.stocks.common.api.impl.ScaledUnitForInsertion;
+import de.njsm.stocks.common.api.BitemporalScaledUnit;
+import de.njsm.stocks.common.api.ScaledUnitForDeletion;
+import de.njsm.stocks.common.api.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.ScaledUnitForInsertion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,8 +90,8 @@ public class ScaledUnitHandlerTest extends DbTestCase {
                 .map(v -> (BitemporalScaledUnit) v).collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                        l.getId() == 2 &&
-                        l.getVersion() == 0 &&
+                        l.id() == 2 &&
+                        l.version() == 0 &&
                         l.getScale().equals(new BigDecimal(3)) &&
                         l.getUnit() == 2 &&
                         l.getInitiates() == 1));
@@ -105,8 +105,8 @@ public class ScaledUnitHandlerTest extends DbTestCase {
         List<ScaledUnit> data = result.success().collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 2 &&
-                l.getVersion() == 0 &&
+                l.id() == 2 &&
+                l.version() == 0 &&
                 l.getScale().equals(new BigDecimal(3)) &&
                 l.getUnit() == 2));
     }

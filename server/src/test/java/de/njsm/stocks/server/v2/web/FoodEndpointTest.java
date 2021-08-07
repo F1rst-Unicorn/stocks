@@ -19,10 +19,7 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.common.api.Food;
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StreamResponse;
-import de.njsm.stocks.common.api.impl.*;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.FoodManager;
 import fj.data.Validation;
 import junit.framework.TestCase;
@@ -181,8 +178,8 @@ public class FoodEndpointTest {
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
-                data.getId(),
-                data.getVersion(),
+                data.id(),
+                data.version(),
                 data.getNewName(),
                 data.getExpirationOffsetOptional().get().getDays(),
                 data.getLocationOptional().get(),
@@ -200,8 +197,8 @@ public class FoodEndpointTest {
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
-                data.getId(),
-                data.getVersion(),
+                data.id(),
+                data.version(),
                 data.getNewName(),
                 data.getExpirationOffsetOptional().get().getDays(),
                 data.getLocationOptional().get(),
@@ -219,8 +216,8 @@ public class FoodEndpointTest {
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
-                data.getId(),
-                data.getVersion(),
+                data.id(),
+                data.version(),
                 data.getNewName(),
                 data.getExpirationOffsetOptional().get().getDays(),
                 null,
@@ -238,8 +235,8 @@ public class FoodEndpointTest {
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
-                data.getId(),
-                data.getVersion(),
+                data.id(),
+                data.version(),
                 data.getNewName(),
                 null,
                 data.getLocationOptional().get(),
@@ -257,8 +254,8 @@ public class FoodEndpointTest {
         when(manager.setToBuyStatus(data)).thenReturn(SUCCESS);
 
         Response response = uut.setToBuyStatus(createMockRequest(),
-                data.getId(),
-                data.getVersion(),
+                data.id(),
+                data.version(),
                 data.isToBuy() ? 1 : 0);
 
         assertEquals(SUCCESS, response.getStatus());
@@ -271,7 +268,7 @@ public class FoodEndpointTest {
         FoodForDeletion data = new FoodForDeletion(1, 2);
         when(manager.delete(data)).thenReturn(SUCCESS);
 
-        Response response = uut.delete(createMockRequest(), data.getId(), data.getVersion());
+        Response response = uut.delete(createMockRequest(), data.id(), data.version());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).delete(data);
@@ -283,7 +280,7 @@ public class FoodEndpointTest {
         FoodForSetDescription data = new FoodForSetDescription(1, 2, "some description");
         when(manager.setDescription(data)).thenReturn(SUCCESS);
 
-        Response response = uut.setDescription(createMockRequest(), data.getId(), data.getVersion(), data.getDescription());
+        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.getDescription());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).setDescription(data);
@@ -295,7 +292,7 @@ public class FoodEndpointTest {
         FoodForSetDescription data = new FoodForSetDescription(1, 2, "");
         when(manager.setDescription(data)).thenReturn(SUCCESS);
 
-        Response response = uut.setDescription(createMockRequest(), data.getId(), data.getVersion(), data.getDescription());
+        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.getDescription());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).setDescription(data);
@@ -307,7 +304,7 @@ public class FoodEndpointTest {
         FoodForSetDescription data = new FoodForSetDescription(1, 2, "some description");
         when(manager.setDescription(data)).thenReturn(INVALID_DATA_VERSION);
 
-        Response response = uut.setDescription(createMockRequest(), data.getId(), data.getVersion(), data.getDescription());
+        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.getDescription());
 
         assertEquals(INVALID_DATA_VERSION, response.getStatus());
         verify(manager).setDescription(data);

@@ -21,8 +21,8 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.UserDevice;
-import de.njsm.stocks.common.api.impl.UserDeviceForDeletion;
-import de.njsm.stocks.common.api.impl.UserDeviceForInsertion;
+import de.njsm.stocks.common.api.UserDeviceForDeletion;
+import de.njsm.stocks.common.api.UserDeviceForInsertion;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
@@ -148,7 +148,7 @@ public class DeviceManagerTest {
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDeviceForDeletion.class), any(UserDeviceForPrincipals.class))).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(authAdmin.revokeCertificate(device.getId())).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(authAdmin.revokeCertificate(device.id())).thenReturn(StatusCode.SUCCESS);
         Mockito.when(ticketDbHandler.removeTicketOfDevice(device)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(device);
@@ -159,14 +159,14 @@ public class DeviceManagerTest {
         Mockito.verify(dbHandler).commit();
         Mockito.verify(ticketDbHandler).removeTicketOfDevice(eq(device));
         Mockito.verify(foodDbHandler).transferFoodItems(eq(device), captor.capture());
-        Mockito.verify(authAdmin).revokeCertificate(device.getId());
-        assertEquals(TEST_USER.toDevice().getId(), captor.getValue().getId());
+        Mockito.verify(authAdmin).revokeCertificate(device.id());
+        assertEquals(TEST_USER.toDevice().id(), captor.getValue().id());
     }
 
     @Test
     public void revokingDeviceWorks() {
         UserDeviceForDeletion device = new UserDeviceForDeletion(1, 2);
-        Mockito.when(authAdmin.revokeCertificate(device.getId())).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(authAdmin.revokeCertificate(device.id())).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.revokeDevice(device);
@@ -174,7 +174,7 @@ public class DeviceManagerTest {
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(dbHandler).setReadOnly();
         Mockito.verify(dbHandler).commit();
-        Mockito.verify(authAdmin).revokeCertificate(device.getId());
+        Mockito.verify(authAdmin).revokeCertificate(device.id());
     }
 
     @Test
@@ -192,7 +192,7 @@ public class DeviceManagerTest {
         Mockito.verify(dbHandler).rollback();
         Mockito.verify(foodDbHandler).transferFoodItems(eq(device), captor.capture());
         Mockito.verify(ticketDbHandler).removeTicketOfDevice(eq(device));
-        assertEquals(TEST_USER.toDevice().getId(), captor.getValue().getId());
+        assertEquals(TEST_USER.toDevice().id(), captor.getValue().id());
     }
 
     @Test
@@ -206,6 +206,6 @@ public class DeviceManagerTest {
         ArgumentCaptor<UserDeviceForPrincipals> captor = ArgumentCaptor.forClass(UserDeviceForPrincipals.class);
         Mockito.verify(foodDbHandler).transferFoodItems(eq(device), captor.capture());
         Mockito.verify(dbHandler).rollback();
-        assertEquals(TEST_USER.toDevice().getId(), captor.getValue().getId());
+        assertEquals(TEST_USER.toDevice().id(), captor.getValue().id());
     }
 }

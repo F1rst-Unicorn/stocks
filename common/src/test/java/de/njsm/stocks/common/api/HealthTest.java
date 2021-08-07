@@ -17,7 +17,6 @@ package de.njsm.stocks.common.api;/* stocks is client-server program to manage a
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import de.njsm.stocks.common.api.impl.Health;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

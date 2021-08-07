@@ -23,8 +23,8 @@ import de.njsm.stocks.common.api.EanNumber;
 import de.njsm.stocks.common.api.Food;
 import de.njsm.stocks.common.api.Identifiable;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.BitemporalEanNumber;
-import de.njsm.stocks.common.api.impl.EanNumberForGetting;
+import de.njsm.stocks.common.api.BitemporalEanNumber;
+import de.njsm.stocks.common.api.EanNumberForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -46,7 +46,7 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
     }
 
     public StatusCode deleteOwnedByFood(Identifiable<Food> food) {
-        return currentDelete(EAN_NUMBER.IDENTIFIES.eq(food.getId()))
+        return currentDelete(EAN_NUMBER.IDENTIFIES.eq(food.id()))
                 .map(this::notFoundIsOk);
     }
 

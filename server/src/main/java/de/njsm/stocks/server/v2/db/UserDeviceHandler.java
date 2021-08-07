@@ -23,8 +23,8 @@ import de.njsm.stocks.common.api.Identifiable;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.User;
 import de.njsm.stocks.common.api.UserDevice;
-import de.njsm.stocks.common.api.impl.BitemporalUserDevice;
-import de.njsm.stocks.common.api.impl.UserDeviceForGetting;
+import de.njsm.stocks.common.api.BitemporalUserDevice;
+import de.njsm.stocks.common.api.UserDeviceForGetting;
 import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
@@ -52,7 +52,7 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
         return runFunction(context -> {
             List<Identifiable<UserDevice>> result = context
                     .selectFrom(USER_DEVICE)
-                    .where(USER_DEVICE.BELONGS_TO.eq(user.getId())
+                    .where(USER_DEVICE.BELONGS_TO.eq(user.id())
                         .and(nowAsBestKnown()))
                     .fetch()
                     .stream()

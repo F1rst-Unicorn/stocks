@@ -21,10 +21,10 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Unit;
-import de.njsm.stocks.common.api.impl.BitemporalUnit;
-import de.njsm.stocks.common.api.impl.UnitForDeletion;
-import de.njsm.stocks.common.api.impl.UnitForInsertion;
-import de.njsm.stocks.common.api.impl.UnitForRenaming;
+import de.njsm.stocks.common.api.BitemporalUnit;
+import de.njsm.stocks.common.api.UnitForDeletion;
+import de.njsm.stocks.common.api.UnitForInsertion;
+import de.njsm.stocks.common.api.UnitForRenaming;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -146,8 +146,8 @@ public class UnitHandlerTest extends DbTestCase {
                 .map(v -> (BitemporalUnit) v).collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 1 &&
-                        l.getVersion() == 0 &&
+                l.id() == 1 &&
+                        l.version() == 0 &&
                         l.getName().equals("Default") &&
                         l.getAbbreviation().equals("default") &&
                         l.getInitiates() == 1));
@@ -161,8 +161,8 @@ public class UnitHandlerTest extends DbTestCase {
         List<Unit> data = result.success().collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 1 &&
-                        l.getVersion() == 0 &&
+                l.id() == 1 &&
+                        l.version() == 0 &&
                         l.getName().equals("Default") &&
                         l.getAbbreviation().equals("default")));
     }

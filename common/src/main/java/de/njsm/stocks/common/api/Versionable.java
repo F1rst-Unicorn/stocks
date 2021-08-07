@@ -19,21 +19,26 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.google.common.base.Preconditions;
-import de.njsm.stocks.common.api.impl.SelfValidating;
 
 public interface Versionable<T extends Entity<T>> extends Identifiable<T>, SelfValidating {
 
-    int getVersion();
+    @JsonGetter
+    int version();
 
     default boolean isContainedIn(T item) {
-        return getId() == item.getId() &&
-                getVersion() + 1 == item.getVersion();
+        return id() == item.id() &&
+                version() + 1 == item.version();
     }
 
     @Override
     default void validate() {
         Identifiable.super.validate();
-        Preconditions.checkState(getVersion() >= 0, "version below 0");
+        Preconditions.checkState(version() >= 0, "version below 0");
+    }
+
+    interface Builder<T> extends Identifiable.Builder<T> {
+        T version(int v);
     }
 }

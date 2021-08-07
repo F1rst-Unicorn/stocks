@@ -20,8 +20,8 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.Recipe;
-import de.njsm.stocks.common.api.impl.BitemporalRecipe;
-import de.njsm.stocks.common.api.impl.RecipeForGetting;
+import de.njsm.stocks.common.api.BitemporalRecipe;
+import de.njsm.stocks.common.api.RecipeForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -74,13 +74,13 @@ public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
                     cursor.getDuration()
             );
         else
-            return cursor -> new RecipeForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getName(),
-                    cursor.getInstructions(),
-                    cursor.getDuration()
-            );
+            return cursor -> RecipeForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .name(cursor.getName())
+                    .instructions(cursor.getInstructions())
+                    .duration(cursor.getDuration())
+                    .build();
     }
 
     @Override

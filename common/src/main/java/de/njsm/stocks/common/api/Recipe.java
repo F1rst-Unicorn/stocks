@@ -19,13 +19,41 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.njsm.stocks.common.api.serialisers.DurationDeserialiser;
+import de.njsm.stocks.common.api.serialisers.DurationSerialiser;
+
 import java.time.Duration;
 
 public interface Recipe extends Entity<Recipe> {
 
-    String getName();
+    @JsonGetter
+    String name();
 
-    String getInstructions();
+    @JsonGetter
+    String instructions();
 
-    Duration getDuration();
+    @JsonGetter
+    @JsonSerialize(using = DurationSerialiser.class)
+    Duration duration();
+
+    @Override
+    default boolean isContainedIn(Recipe entity) {
+        return Entity.super.isContainedIn(entity) &&
+                name().equals(entity.name()) &&
+                instructions().equals(entity.instructions()) &&
+                duration().equals(entity.duration());
+    }
+
+    interface Builder<T> {
+
+        T name(String v);
+
+        T instructions(String v);
+
+        @JsonDeserialize(using = DurationDeserialiser.class)
+        T duration(Duration v);
+    }
 }

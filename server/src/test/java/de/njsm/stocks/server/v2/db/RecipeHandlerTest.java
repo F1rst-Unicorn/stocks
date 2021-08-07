@@ -21,9 +21,9 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.Recipe;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.impl.BitemporalRecipe;
-import de.njsm.stocks.common.api.impl.RecipeForDeletion;
-import de.njsm.stocks.common.api.impl.RecipeForInsertion;
+import de.njsm.stocks.common.api.BitemporalRecipe;
+import de.njsm.stocks.common.api.RecipeForDeletion;
+import de.njsm.stocks.common.api.RecipeForInsertion;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,11 +92,11 @@ public class RecipeHandlerTest extends DbTestCase {
                 .map(v -> (BitemporalRecipe) v).collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                        l.getId() == 1 &&
-                        l.getVersion() == 0 &&
-                        l.getName().equals("Cake") &&
-                        l.getInstructions().equals("Mix flour and sugar. Bake directly") &&
-                        l.getDuration().equals(Duration.ofHours(1)) &&
+                        l.id() == 1 &&
+                        l.version() == 0 &&
+                        l.name().equals("Cake") &&
+                        l.instructions().equals("Mix flour and sugar. Bake directly") &&
+                        l.duration().equals(Duration.ofHours(1)) &&
                         l.getInitiates() == 1));
     }
 
@@ -108,11 +108,11 @@ public class RecipeHandlerTest extends DbTestCase {
         List<Recipe> data = result.success().collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 1 &&
-                        l.getVersion() == 0 &&
-                        l.getName().equals("Cake") &&
-                        l.getInstructions().equals("Mix flour and sugar. Bake directly") &&
-                        l.getDuration().equals(Duration.ofHours(1))));
+                l.id() == 1 &&
+                        l.version() == 0 &&
+                        l.name().equals("Cake") &&
+                        l.instructions().equals("Mix flour and sugar. Bake directly") &&
+                        l.duration().equals(Duration.ofHours(1))));
     }
 
     @Test
