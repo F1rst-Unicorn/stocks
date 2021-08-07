@@ -27,7 +27,10 @@ public interface SelfValidating {
 
         abstract T autoBuild();
 
+        void normalise() {}
+
         public final T build() {
+            normalise();
             T result = autoBuild();
             result.validate();
             return result;

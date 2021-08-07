@@ -36,4 +36,13 @@ public class ResponseTest {
 
         assertEquals(StatusCode.NOT_FOUND, uut.getStatus());
     }
+
+    @Test
+    public void successfulValidationIsSet() {
+        Validation<StatusCode, Integer> input = Validation.success(4);
+
+        Response uut = new Response(input);
+
+        assertEquals(StatusCode.SUCCESS, uut.getStatus());
+    }
 }

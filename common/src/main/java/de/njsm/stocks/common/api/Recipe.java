@@ -56,4 +56,9 @@ public interface Recipe extends Entity<Recipe> {
         @JsonDeserialize(using = DurationDeserialiser.class)
         T duration(Duration v);
     }
+
+    @Override
+    default void validate() {
+        Entity.super.validate();
+    }
 }

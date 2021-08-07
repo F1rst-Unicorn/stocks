@@ -58,8 +58,8 @@ public class FoodForInsertion implements Insertable<Food> {
 
     @Override
     public boolean isContainedIn(Food entity) {
-        return name.equals(entity.getName()) &&
-                storeUnit.map(v -> v.equals(entity.getStoreUnit())).orElse(true);
+        return name.equals(entity.name()) &&
+                storeUnit.map(v -> v.equals(entity.storeUnit())).orElse(true);
     }
 
     @Override

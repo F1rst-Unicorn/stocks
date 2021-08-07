@@ -20,86 +20,21 @@
 package de.njsm.stocks.common.api;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.njsm.stocks.common.api.serialisers.PeriodDeserialiser;
-import de.njsm.stocks.common.api.serialisers.PeriodSerialiser;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.time.Period;
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_FoodForGetting.Builder.class)
+public abstract class FoodForGetting implements Food {
 
-public class FoodForGetting extends VersionedData implements Food {
-
-    private final String name;
-
-    private final boolean toBuy;
-
-    @JsonSerialize(using = PeriodSerialiser.class)
-    @JsonDeserialize(using = PeriodDeserialiser.class)
-    private final Period expirationOffset;
-
-    private final Integer location;
-
-    private final String description;
-
-    private final int storeUnit;
-
-    public FoodForGetting(int id, int version, String name, boolean toBuy, Period expirationOffset, Integer location, String description, int storeUnit) {
-        super(id, version);
-        this.name = name;
-        this.toBuy = toBuy;
-        this.expirationOffset = expirationOffset;
-        this.location = location;
-        this.description = description;
-        this.storeUnit = storeUnit;
+    public static Builder builder() {
+        return new AutoValue_FoodForGetting.Builder();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public boolean isToBuy() {
-        return toBuy;
-    }
-
-    public Period getExpirationOffset() {
-        return expirationOffset;
-    }
-
-    public Integer getLocation() {
-        return location;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public int getStoreUnit() {
-        return storeUnit;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        FoodForGetting that = (FoodForGetting) o;
-        return isToBuy() == that.isToBuy() && getName().equals(that.getName()) && getExpirationOffset().equals(that.getExpirationOffset()) && getLocation().equals(that.getLocation()) && getDescription().equals(that.getDescription());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), isToBuy(), getExpirationOffset(), getLocation(), getDescription());
-    }
-
-    @Override
-    public boolean isContainedIn(Food item) {
-        return Food.super.isContainedIn(item) &&
-                name.equals(item.getName()) &&
-                toBuy == item.isToBuy() &&
-                expirationOffset.equals(item.getExpirationOffset()) &&
-                (location == null) ? location == item.getLocation() : location.equals(item.getLocation()) &&
-                description.equals(item.getDescription()) &&
-                storeUnit == item.getStoreUnit();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<FoodForGetting>
+            implements Versionable.Builder<Builder>, Food.Builder<Builder> {
     }
 }

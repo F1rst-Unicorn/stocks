@@ -123,7 +123,7 @@ object Build : BuildType({
                     de.njsm.stocks.server.v2.db.jooq.Indexes
                     de.njsm.stocks.server.v2.business.data.AutoValue_*
 
-                    de.njsm.stocks.common.api.impl.AutoValue_*
+                    de.njsm.stocks.common.api.AutoValue_*
 
                     de.njsm.*.*Test
                     de.njsm.stocks.server.v2.matchers.*

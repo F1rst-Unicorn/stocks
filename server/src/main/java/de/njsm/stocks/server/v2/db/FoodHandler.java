@@ -216,15 +216,16 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     cursor.getStoreUnit()
             );
         else
-            return cursor -> new FoodForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getName(),
-                    cursor.getToBuy(),
-                    cursor.getExpirationOffset(),
-                    cursor.getLocation(),
-                    cursor.getDescription(),
-                    cursor.getStoreUnit());
+            return cursor -> FoodForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .name(cursor.getName())
+                    .toBuy(cursor.getToBuy())
+                    .expirationOffset(cursor.getExpirationOffset())
+                    .location(cursor.getLocation())
+                    .description(cursor.getDescription())
+                    .storeUnit(cursor.getStoreUnit())
+                    .build();
     }
 
     @Override

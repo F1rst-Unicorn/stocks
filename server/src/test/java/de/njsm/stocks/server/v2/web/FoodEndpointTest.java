@@ -149,7 +149,17 @@ public class FoodEndpointTest {
     @Test
     public void getFoodReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        List<Food> data = Collections.singletonList(new FoodForGetting(2, 2, "Banana", true, Period.ZERO, 1, "", 1));
+        FoodForGetting food = FoodForGetting.builder()
+                .id(2)
+                .version(2)
+                .name("Banana")
+                .toBuy(true)
+                .expirationOffset(Period.ZERO)
+                .location(1)
+                .description("")
+                .storeUnit(1)
+                .build();
+        List<Food> data = Collections.singletonList(food);
         when(manager.get(any(), eq(false), eq(Instant.EPOCH))).thenReturn(Validation.success(data.stream()));
 
         uut.get(r, 0, null);

@@ -53,34 +53,34 @@ public class BitemporalFood extends BitemporalData implements Food, Bitemporal<F
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return name;
     }
 
     @Override
-    public boolean isToBuy() {
+    public boolean toBuy() {
         return toBuy;
     }
 
     @JsonSerialize(using = PeriodSerialiser.class)
     @JsonDeserialize(using = PeriodDeserialiser.class)
     @Override
-    public Period getExpirationOffset() {
+    public Period expirationOffset() {
         return expirationOffset;
     }
 
     @Override
-    public Integer getLocation() {
+    public Integer location() {
         return location;
     }
 
     @Override
-    public String getDescription() {
+    public String description() {
         return description;
     }
 
     @Override
-    public int getStoreUnit() {
+    public int storeUnit() {
         return storeUnit;
     }
 
@@ -90,22 +90,22 @@ public class BitemporalFood extends BitemporalData implements Food, Bitemporal<F
         if (!(o instanceof BitemporalFood)) return false;
         if (!super.equals(o)) return false;
         BitemporalFood that = (BitemporalFood) o;
-        return isToBuy() == that.isToBuy() && getStoreUnit() == that.getStoreUnit() && getName().equals(that.getName()) && getExpirationOffset().equals(that.getExpirationOffset()) && Objects.equals(getLocation(), that.getLocation()) && getDescription().equals(that.getDescription());
+        return toBuy() == that.toBuy() && storeUnit() == that.storeUnit() && name().equals(that.name()) && expirationOffset().equals(that.expirationOffset()) && Objects.equals(location(), that.location()) && description().equals(that.description());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), isToBuy(), getExpirationOffset(), getLocation(), getDescription(), getStoreUnit());
+        return Objects.hash(super.hashCode(), name(), toBuy(), expirationOffset(), location(), description(), storeUnit());
     }
 
     @Override
     public boolean isContainedIn(Food item) {
         return Bitemporal.super.isContainedIn(item) &&
-                name.equals(item.getName()) &&
-                toBuy == item.isToBuy() &&
-                expirationOffset.equals(item.getExpirationOffset()) &&
-                (location == null) ? location == item.getLocation() : location.equals(item.getLocation()) &&
-                description.equals(item.getDescription()) &&
-                storeUnit == item.getStoreUnit();
+                name.equals(item.name()) &&
+                toBuy == item.toBuy() &&
+                expirationOffset.equals(item.expirationOffset()) &&
+                (location == null) ? location == item.location() : location.equals(item.location()) &&
+                description.equals(item.description()) &&
+                storeUnit == item.storeUnit();
     }
 }

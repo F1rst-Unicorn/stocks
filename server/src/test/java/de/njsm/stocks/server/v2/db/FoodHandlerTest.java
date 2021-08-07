@@ -177,7 +177,7 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertTrue(dbData.isSuccess());
 
-        assertTrue(dbData.success().map(Food::getName).noneMatch(name -> name.equals("Beer")));
+        assertTrue(dbData.success().map(Food::name).noneMatch(name -> name.equals("Beer")));
     }
 
     @Test
@@ -239,7 +239,7 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
         Food changedData = uut.get(false, Instant.EPOCH).success().filter(f -> f.id() == data.id()).findFirst().get();
-        assertFalse(changedData.isToBuy());
+        assertFalse(changedData.toBuy());
     }
 
     @Test
@@ -268,7 +268,7 @@ public class FoodHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, result);
         Food changedFood = uut.get(false, Instant.EPOCH).success().filter(f -> f.id() == 3).findAny().get();
-        assertNull(changedFood.getLocation());
+        assertNull(changedFood.location());
     }
 
     @Test
@@ -283,7 +283,7 @@ public class FoodHandlerTest extends DbTestCase {
                 .success()
                 .anyMatch(f -> f.id() == data.id() &&
                         data.version() + 1 == f.version() &&
-                        data.getDescription().equals(f.getDescription())));
+                        data.getDescription().equals(f.description())));
     }
 
     @Test

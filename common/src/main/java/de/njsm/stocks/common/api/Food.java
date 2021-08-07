@@ -19,19 +19,70 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.base.Preconditions;
+import de.njsm.stocks.common.api.serialisers.PeriodDeserialiser;
+import de.njsm.stocks.common.api.serialisers.PeriodSerialiser;
+
+import javax.annotation.Nullable;
 import java.time.Period;
 
 public interface Food extends Entity<Food> {
 
-    String getName();
+    @JsonGetter
+    String name();
 
-    Period getExpirationOffset();
+    @JsonGetter
+    @JsonSerialize(using = PeriodSerialiser.class)
+    Period expirationOffset();
 
-    Integer getLocation();
+    @JsonGetter
+    @Nullable
+    Integer location();
 
-    boolean isToBuy();
+    @JsonGetter
+    boolean toBuy();
 
-    String getDescription();
+    @JsonGetter
+    String description();
 
-    int getStoreUnit();
+    @JsonGetter
+    int storeUnit();
+
+    @Override
+    default boolean isContainedIn(Food entity) {
+        return Entity.super.isContainedIn(entity) &&
+                name().equals(entity.name()) &&
+                expirationOffset().equals(entity.expirationOffset()) &&
+                location().equals(entity.location()) &&
+                toBuy() == entity.toBuy() &&
+                description().equals(entity.description()) &&
+                storeUnit() == entity.storeUnit();
+    }
+
+    interface Builder<T> {
+
+        T name(String v);
+
+        @JsonDeserialize(using = PeriodDeserialiser.class)
+        T expirationOffset(Period v);
+
+        T location(Integer v);
+
+        T toBuy(boolean v);
+
+        T description(String v);
+
+        T storeUnit(int v);
+    }
+
+    @Override
+    default void validate() {
+        Entity.super.validate();
+        Preconditions.checkState(!expirationOffset().isNegative(), "expiration offset is negative");
+        Preconditions.checkState(location() == null || location() >= 0, "location id is invalid");
+        Preconditions.checkState(storeUnit() > 0, "store unit id is invalid");
+    }
 }
