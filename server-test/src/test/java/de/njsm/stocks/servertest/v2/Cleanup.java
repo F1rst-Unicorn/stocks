@@ -19,8 +19,11 @@
 
 package de.njsm.stocks.servertest.v2;
 
-import de.njsm.stocks.common.api.impl.VersionedData;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.servertest.TestSuite;
+import de.njsm.stocks.servertest.v2.repo.RecipeIngredientRepository;
+import de.njsm.stocks.servertest.v2.repo.RecipeProductRepository;
+import de.njsm.stocks.servertest.v2.repo.RecipeRepository;
 import groovy.lang.Tuple2;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
@@ -36,6 +39,7 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Cleanup {
@@ -45,11 +49,11 @@ public class Cleanup {
         List<VersionedData> ids = getIds("/v2/device");
 
         for (VersionedData d : ids) {
-            if (d.getId() == 1) continue;
+            if (d.id() == 1) continue;
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.getId())
-                    .queryParam("version", d.getVersion()).
+                    .queryParam("id", d.id())
+                    .queryParam("version", d.version()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/device").
             then()
@@ -66,8 +70,8 @@ public class Cleanup {
         for (VersionedData d : ids) {
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.getId())
-                    .queryParam("version", d.getVersion()).
+                    .queryParam("id", d.id())
+                    .queryParam("version", d.version()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/ean").
             then()
@@ -84,8 +88,8 @@ public class Cleanup {
         for (VersionedData d : ids) {
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.getId())
-                    .queryParam("version", d.getVersion()).
+                    .queryParam("id", d.id())
+                    .queryParam("version", d.version()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/fooditem").
             then()
@@ -97,19 +101,24 @@ public class Cleanup {
 
     @Test
     public void clean04Recipes() {
-        List<VersionedData> ids = getIds("/v2/recipe");
+        List<RecipeForGetting> data = RecipeRepository.getAll();
 
-        for (VersionedData d : ids) {
+        for (RecipeForGetting d : data) {
+            List<RecipeIngredientForGetting> ingredients = RecipeIngredientRepository.getOfRecipe(d);
+            List<RecipeProductForGetting> products = RecipeProductRepository.getOfRecipe(d);
+            FullRecipeForDeletion fullRecipeForDeletion = RecipeRepository.buildDeletionObject(d, ingredients, products);
+
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.getId())
-                    .queryParam("version", d.getVersion()).
-            when()
-                    .delete(TestSuite.DOMAIN + "/v2/recipe").
-            then()
+                    .contentType(ContentType.JSON)
+                    .body(fullRecipeForDeletion)
+                    .when()
+                    .delete(TestSuite.DOMAIN + "/v2/recipe")
+                    .then()
                     .log().ifValidationFails()
                     .statusCode(200)
-                    .contentType(ContentType.JSON);
+                    .contentType(ContentType.JSON)
+                    .body("status", equalTo(0));
         }
     }
 
@@ -120,8 +129,8 @@ public class Cleanup {
         for (VersionedData d : ids) {
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.getId())
-                    .queryParam("version", d.getVersion()).
+                    .queryParam("id", d.id())
+                    .queryParam("version", d.version()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/food").
             then()
@@ -138,8 +147,8 @@ public class Cleanup {
         for (VersionedData d : ids) {
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.getId())
-                    .queryParam("version", d.getVersion()).
+                    .queryParam("id", d.id())
+                    .queryParam("version", d.version()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/location").
             then()
@@ -154,11 +163,11 @@ public class Cleanup {
         List<VersionedData> ids = getIds("/v2/scaled-unit");
 
         for (VersionedData d : ids) {
-            if (d.getId() == 1) continue;
+            if (d.id() == 1) continue;
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.getId())
-                    .queryParam("version", d.getVersion()).
+                    .queryParam("id", d.id())
+                    .queryParam("version", d.version()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/scaled-unit").
             then()
@@ -173,11 +182,11 @@ public class Cleanup {
         List<VersionedData> ids = getIds("/v2/unit");
 
         for (VersionedData d : ids) {
-            if (d.getId() == 1) continue;
+            if (d.id() == 1) continue;
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.getId())
-                    .queryParam("version", d.getVersion()).
+                    .queryParam("id", d.id())
+                    .queryParam("version", d.version()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/unit").
             then()
@@ -192,11 +201,11 @@ public class Cleanup {
         List<VersionedData> ids = getIds("/v2/user");
 
         for (VersionedData d : ids) {
-            if (d.getId() == 1) continue;
+            if (d.id() == 1) continue;
             given()
                     .log().ifValidationFails()
-                    .queryParam("id", d.getId())
-                    .queryParam("version", d.getVersion()).
+                    .queryParam("id", d.id())
+                    .queryParam("version", d.version()).
             when()
                     .delete(TestSuite.DOMAIN + "/v2/user").
             then()

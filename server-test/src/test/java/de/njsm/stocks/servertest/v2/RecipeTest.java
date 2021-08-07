@@ -19,19 +19,17 @@
 
 package de.njsm.stocks.servertest.v2;
 
-import de.njsm.stocks.common.api.impl.FullRecipeForInsertion;
-import de.njsm.stocks.common.api.impl.RecipeForInsertion;
-import de.njsm.stocks.common.api.impl.RecipeIngredientForInsertion;
-import de.njsm.stocks.common.api.impl.RecipeProductForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.servertest.TestSuite;
-import de.njsm.stocks.servertest.v2.repo.FoodRepository;
-import de.njsm.stocks.servertest.v2.repo.UnitRepository;
+import de.njsm.stocks.servertest.v2.repo.*;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -62,36 +60,7 @@ public class RecipeTest extends Base implements Deleter {
 
     @Test
     public void addingARecipeWithIngredientsAndProductsWorks() {
-        int foodId = FoodRepository.getAnyFoodId();
-        int unitId = UnitRepository.getAnyUnitId();
-
-        String name = "addingARecipeWithIngredientsAndProductsWorks";
-        RecipeForInsertion recipe = RecipeForInsertion.builder()
-                .name(name)
-                .instructions("instruction")
-                .duration(Duration.ofHours(2))
-                .build();
-
-        RecipeIngredientForInsertion ingredient = RecipeIngredientForInsertion.builder()
-                .ingredient(foodId)
-                .amount(1)
-                .unit(unitId)
-                .build();
-
-        RecipeProductForInsertion product = RecipeProductForInsertion.builder()
-                .product(foodId)
-                .amount(1)
-                .unit(unitId)
-                .build();
-
-        FullRecipeForInsertion input = FullRecipeForInsertion.builder()
-                .recipe(recipe)
-                .addIngredient(ingredient)
-                .addIngredient(ingredient)
-                .addProduct(product)
-                .build();
-
-        put(input);
+        String name = putRecipeWithIngredientAndProduct("addingARecipeWithIngredientsAndProductsWorks");
 
         assertOnGet()
                 .body("data.name", hasItem(equalTo(name)));
@@ -121,6 +90,79 @@ public class RecipeTest extends Base implements Deleter {
         then()
                 .log().ifValidationFails()
                 .statusCode(400);
+    }
+
+    @Test
+    public void validDeletionWorks() {
+        String name = putRecipeWithIngredientAndProduct("validDeletionWorks");
+
+        RecipeForDeletion recipeForDeletion = loadRecipeForDeletionWith(name);
+        List<RecipeIngredientForGetting> ingredients = RecipeIngredientRepository.getOfRecipe(recipeForDeletion);
+        List<RecipeProductForGetting> products = RecipeProductRepository.getOfRecipe(recipeForDeletion);
+        FullRecipeForDeletion fullRecipeForDeletion = RecipeRepository.buildDeletionObject(recipeForDeletion, ingredients, products);
+
+        given()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON)
+                .body(fullRecipeForDeletion)
+        .when()
+                .delete(TestSuite.DOMAIN + getEndpoint())
+        .then()
+                .log().ifValidationFails()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(0));
+    }
+
+    private RecipeForDeletion loadRecipeForDeletionWith(String name) {
+        ListResponse<RecipeForGetting> response = assertOnGet()
+                .body("data.name", hasItem(equalTo(name)))
+                .extract()
+                .as(new TypeRef<>(){});
+
+        RecipeForGetting recipeForGetting = response.getData()
+                .stream().filter(v -> v.name().equals(name))
+                .findAny()
+                .get();
+
+        return RecipeForDeletion.builder()
+                .id(recipeForGetting.id())
+                .version(recipeForGetting.version())
+                .build();
+    }
+
+    private String putRecipeWithIngredientAndProduct(String validDeletionWorks) {
+        int foodId = FoodRepository.getAnyFoodId();
+        int unitId = UnitRepository.getAnyUnitId();
+
+        String name = getUniqueName(validDeletionWorks);
+        RecipeForInsertion recipe = RecipeForInsertion.builder()
+                .name(name)
+                .instructions("instruction")
+                .duration(Duration.ofHours(2))
+                .build();
+
+        RecipeIngredientForInsertion ingredient = RecipeIngredientForInsertion.builder()
+                .ingredient(foodId)
+                .amount(1)
+                .unit(unitId)
+                .build();
+
+        RecipeProductForInsertion product = RecipeProductForInsertion.builder()
+                .product(foodId)
+                .amount(1)
+                .unit(unitId)
+                .build();
+
+        FullRecipeForInsertion input = FullRecipeForInsertion.builder()
+                .recipe(recipe)
+                .addIngredient(ingredient)
+                .addIngredient(ingredient)
+                .addProduct(product)
+                .build();
+
+        put(input);
+        return name;
     }
 
     private void put(FullRecipeForInsertion input) {
