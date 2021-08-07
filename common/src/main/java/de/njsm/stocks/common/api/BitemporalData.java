@@ -57,30 +57,30 @@ public abstract class BitemporalData extends VersionedData {
 
     @JsonSerialize(using = InstantSerialiser.class)
     @JsonDeserialize(using = InstantDeserialiser.class)
-    public Instant getValidTimeStart() {
+    public Instant validTimeStart() {
         return validTimeStart;
     }
 
     @JsonSerialize(using = InstantSerialiser.class)
     @JsonDeserialize(using = InstantDeserialiser.class)
-    public Instant getValidTimeEnd() {
+    public Instant validTimeEnd() {
         return validTimeEnd;
     }
 
     @JsonSerialize(using = InstantSerialiser.class)
     @JsonDeserialize(using = InstantDeserialiser.class)
-    public Instant getTransactionTimeStart() {
+    public Instant transactionTimeStart() {
         return transactionTimeStart;
     }
 
     @JsonSerialize(using = InstantSerialiser.class)
     @JsonDeserialize(using = InstantDeserialiser.class)
-    public Instant getTransactionTimeEnd() {
+    public Instant transactionTimeEnd() {
         return transactionTimeEnd;
     }
 
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    public int getInitiates() {
+    public int initiates() {
         return initiates;
     }
 }

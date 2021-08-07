@@ -75,10 +75,10 @@ public class UserHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<User>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalUser sample = (BitemporalUser) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test

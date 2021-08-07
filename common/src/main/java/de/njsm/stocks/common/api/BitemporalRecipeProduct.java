@@ -82,4 +82,10 @@ public class BitemporalRecipeProduct extends BitemporalData implements Bitempora
                 recipe() == item.recipe() &&
                 unit() == item.unit();
     }
+
+    @Override
+    public void validate() {
+        Bitemporal.super.validate();
+        RecipeProduct.super.validate();
+    }
 }

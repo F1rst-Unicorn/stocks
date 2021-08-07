@@ -68,14 +68,14 @@ public class LocationHandlerTest extends DbTestCase {
                         l.version() == 0 &&
                         l.getName().equals("Fridge") &&
                         l.getDescription().equals("fridge description") &&
-                        l.getInitiates() == 1));
+                        l.initiates() == 1));
 
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 2 &&
                         l.version() == 0 &&
                         l.getName().equals("Cupboard") &&
                         l.getDescription().equals("cupboard description") &&
-                        l.getInitiates() == 1));
+                        l.initiates() == 1));
     }
 
     @Test
@@ -130,7 +130,7 @@ public class LocationHandlerTest extends DbTestCase {
                 f.getName().equals("Basement")
                         && f.id() == 2
                         && f.version() == 1
-                        && f.getInitiates() == TEST_USER.getDid()));
+                        && f.initiates() == TEST_USER.getDid()));
     }
 
     @Test
@@ -168,9 +168,9 @@ public class LocationHandlerTest extends DbTestCase {
         assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.getName().equals("Cupboard")
                 && f.id() == 2
                 && f.version() == 0
-                && !f.getValidTimeEnd().equals(INFINITY.toInstant())
-                && f.getTransactionTimeEnd().equals(INFINITY.toInstant())
-                && f.getInitiates() == TEST_USER.getDid()));
+                && !f.validTimeEnd().equals(INFINITY.toInstant())
+                && f.transactionTimeEnd().equals(INFINITY.toInstant())
+                && f.initiates() == TEST_USER.getDid()));
     }
 
     @Test
@@ -213,10 +213,10 @@ public class LocationHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<Location>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalLocation sample = (BitemporalLocation) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test

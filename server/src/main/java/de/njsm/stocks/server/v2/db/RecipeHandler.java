@@ -61,18 +61,18 @@ public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
     @Override
     protected Function<RecipeRecord, Recipe> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalRecipe(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getName(),
-                    cursor.getInstructions(),
-                    cursor.getDuration()
-            );
+            return cursor -> BitemporalRecipe.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .name(cursor.getName())
+                    .instructions(cursor.getInstructions())
+                    .duration(cursor.getDuration())
+                    .build();
         else
             return cursor -> RecipeForGetting.builder()
                     .id(cursor.getId())

@@ -72,13 +72,13 @@ public class EanNumberHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<EanNumber>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalEanNumber sample = (BitemporalEanNumber) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
 
         assertEquals(2, sample.getIdentifiesFood());
-        assertEquals(1, sample.getInitiates());
+        assertEquals(1, sample.initiates());
     }
 
     @Test

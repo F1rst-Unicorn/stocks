@@ -55,10 +55,10 @@ public class FoodHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<Food>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalFood sample = (BitemporalFood) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test

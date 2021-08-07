@@ -108,4 +108,10 @@ public class BitemporalFood extends BitemporalData implements Food, Bitemporal<F
                 description.equals(item.description()) &&
                 storeUnit == item.storeUnit();
     }
+
+    @Override
+    public void validate() {
+        Bitemporal.super.validate();
+        Food.super.validate();
+    }
 }

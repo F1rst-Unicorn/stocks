@@ -74,10 +74,10 @@ public class UnitHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<Unit>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalUnit sample = (BitemporalUnit) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test
@@ -150,7 +150,7 @@ public class UnitHandlerTest extends DbTestCase {
                         l.version() == 0 &&
                         l.getName().equals("Default") &&
                         l.getAbbreviation().equals("default") &&
-                        l.getInitiates() == 1));
+                        l.initiates() == 1));
     }
 
     @Test

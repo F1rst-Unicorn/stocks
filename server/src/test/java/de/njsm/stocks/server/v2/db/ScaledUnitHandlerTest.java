@@ -75,10 +75,10 @@ public class ScaledUnitHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<ScaledUnit>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalScaledUnit sample = (BitemporalScaledUnit) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test
@@ -94,7 +94,7 @@ public class ScaledUnitHandlerTest extends DbTestCase {
                         l.version() == 0 &&
                         l.getScale().equals(new BigDecimal(3)) &&
                         l.getUnit() == 2 &&
-                        l.getInitiates() == 1));
+                        l.initiates() == 1));
     }
 
     @Test

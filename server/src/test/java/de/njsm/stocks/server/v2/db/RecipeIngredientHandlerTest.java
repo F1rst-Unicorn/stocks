@@ -78,10 +78,10 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<RecipeIngredient>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalRecipeIngredient sample = (BitemporalRecipeIngredient) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
                         l.ingredient() == 3 &&
                         l.recipe() == 1 &&
                         l.unit() == 2 &&
-                        l.getInitiates() == 1));
+                        l.initiates() == 1));
     }
 
     @Test

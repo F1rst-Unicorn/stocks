@@ -77,10 +77,10 @@ public class RecipeProductHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<RecipeProduct>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalRecipeProduct sample = (BitemporalRecipeProduct) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test
@@ -98,7 +98,7 @@ public class RecipeProductHandlerTest extends DbTestCase {
                         l.product() == 3 &&
                         l.recipe() == 1 &&
                         l.unit() == 2 &&
-                        l.getInitiates() == 1));
+                        l.initiates() == 1));
     }
 
     @Test

@@ -73,10 +73,10 @@ public class UserDeviceHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<UserDevice>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalUserDevice sample = (BitemporalUserDevice) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test

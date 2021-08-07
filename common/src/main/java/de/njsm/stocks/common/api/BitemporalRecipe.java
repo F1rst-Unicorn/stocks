@@ -20,65 +20,33 @@
 package de.njsm.stocks.common.api;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.njsm.stocks.common.api.serialisers.DurationDeserialiser;
-import de.njsm.stocks.common.api.serialisers.DurationSerialiser;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_BitemporalRecipe.Builder.class)
+public abstract class BitemporalRecipe implements Bitemporal<Recipe>, Recipe {
 
-public class BitemporalRecipe extends BitemporalData implements Bitemporal<Recipe>, Recipe {
-
-    private final String name;
-
-    private final String instructions;
-
-    @JsonSerialize(using = DurationSerialiser.class)
-    @JsonDeserialize(using = DurationDeserialiser.class)
-    private final Duration duration;
-
-    public BitemporalRecipe(int id, int version, Instant validTimeStart, Instant validTimeEnd, Instant transactionTimeStart, Instant transactionTimeEnd, int initiates, String name, String instructions, Duration duration) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.name = name;
-        this.instructions = instructions;
-        this.duration = duration;
+    public static Builder builder() {
+        return new AutoValue_BitemporalRecipe.Builder();
     }
 
-    @Override
-    public String name() {
-        return name;
-    }
-
-    @Override
-    public String instructions() {
-        return instructions;
-    }
-
-    @Override
-    public Duration duration() {
-        return duration;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BitemporalRecipe)) return false;
-        if (!super.equals(o)) return false;
-        BitemporalRecipe that = (BitemporalRecipe) o;
-        return name().equals(that.name()) && instructions().equals(that.instructions()) && duration().equals(that.duration());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), name(), instructions(), duration());
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<BitemporalRecipe>
+            implements Bitemporal.Builder<Builder>, Recipe.Builder<Builder> {
     }
 
     @Override
     public boolean isContainedIn(Recipe entity) {
         return Bitemporal.super.isContainedIn(entity) &&
-                name.equals(entity.name()) &&
-                instructions.equals(entity.instructions()) &&
-                duration.equals(entity.duration());
+                Recipe.super.isContainedIn(entity);
+    }
+
+    @Override
+    public void validate() {
+        Bitemporal.super.validate();
+        Recipe.super.validate();
     }
 }
