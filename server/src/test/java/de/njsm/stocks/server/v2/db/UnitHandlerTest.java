@@ -36,7 +36,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UnitHandlerTest extends DbTestCase implements EntityDbTestCase<UnitRecord, Unit> {
+public class UnitHandlerTest extends DbTestCase implements InsertionTest<UnitRecord, Unit> {
 
     private UnitHandler uut;
 
@@ -48,13 +48,9 @@ public class UnitHandlerTest extends DbTestCase implements EntityDbTestCase<Unit
         uut.setPrincipals(TEST_USER);
     }
 
-    @Test
-    public void insertingWorks() {
-        UnitForInsertion data = new UnitForInsertion("name", "abbreviation");
-
-        Validation<StatusCode, Integer> result = uut.addReturningId(data);
-
-        assertInsertableIsInserted(result, data, 3, 3);
+    @Override
+    public UnitForInsertion getInsertable() {
+        return new UnitForInsertion("name", "abbreviation");
     }
 
     @Test
@@ -167,5 +163,10 @@ public class UnitHandlerTest extends DbTestCase implements EntityDbTestCase<Unit
     @Override
     public CrudDatabaseHandler<UnitRecord, Unit> getDbHandler() {
         return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 2;
     }
 }

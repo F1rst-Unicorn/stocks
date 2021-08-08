@@ -38,7 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class UserHandlerTest extends DbTestCase implements EntityDbTestCase<UserRecord, User> {
+public class UserHandlerTest extends DbTestCase implements InsertionTest<UserRecord, User> {
 
     private UserHandler uut;
 
@@ -76,13 +76,9 @@ public class UserHandlerTest extends DbTestCase implements EntityDbTestCase<User
         assertNotNull(sample.transactionTimeEnd());
     }
 
-    @Test
-    public void addingUserWorks() {
-        UserForInsertion input = new UserForInsertion("testuser");
-
-        Validation<StatusCode, Integer> result = uut.addReturningId(input);
-
-        assertInsertableIsInserted(result, input, 5, 5);
+    @Override
+    public UserForInsertion getInsertable() {
+        return new UserForInsertion("testuser");
     }
 
     @Test
@@ -119,5 +115,10 @@ public class UserHandlerTest extends DbTestCase implements EntityDbTestCase<User
     @Override
     public CrudDatabaseHandler<UserRecord, User> getDbHandler() {
         return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 4;
     }
 }

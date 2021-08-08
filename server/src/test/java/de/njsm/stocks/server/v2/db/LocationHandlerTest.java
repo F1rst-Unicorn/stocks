@@ -36,7 +36,7 @@ import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 
-public class LocationHandlerTest extends DbTestCase implements EntityDbTestCase<LocationRecord, Location> {
+public class LocationHandlerTest extends DbTestCase implements InsertionTest<LocationRecord, Location> {
 
     private LocationHandler uut;
 
@@ -98,13 +98,9 @@ public class LocationHandlerTest extends DbTestCase implements EntityDbTestCase<
                         l.description().equals("cupboard description")));
     }
 
-    @Test
-    public void addALocation() {
-        LocationForInsertion data = new LocationForInsertion("Fridge");
-
-        Validation<StatusCode, Integer> result = uut.addReturningId(data);
-
-        assertInsertableIsInserted(result, data, 3, 3);
+    @Override
+    public LocationForInsertion getInsertable() {
+        return new LocationForInsertion("Fridge");
     }
 
     @Test
@@ -257,5 +253,10 @@ public class LocationHandlerTest extends DbTestCase implements EntityDbTestCase<
     @Override
     public CrudDatabaseHandler<LocationRecord, Location> getDbHandler() {
         return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 2;
     }
 }

@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RecipeProductHandlerTest extends DbTestCase implements EntityDbTestCase<RecipeProductRecord, RecipeProduct> {
+public class RecipeProductHandlerTest extends DbTestCase implements InsertionTest<RecipeProductRecord, RecipeProduct> {
 
     private RecipeProductHandler uut;
 
@@ -46,18 +46,14 @@ public class RecipeProductHandlerTest extends DbTestCase implements EntityDbTest
         uut.setPrincipals(TEST_USER);
     }
 
-    @Test
-    public void insertingWorks() {
-        RecipeProductWithIdForInsertion data = RecipeProductWithIdForInsertion.builder()
+    @Override
+    public RecipeProductWithIdForInsertion getInsertable() {
+        return RecipeProductWithIdForInsertion.builder()
                 .amount(5)
                 .product(3)
                 .unit(1)
                 .recipe(4)
                 .build();
-
-        Validation<StatusCode, Integer> result = uut.addReturningId(data);
-
-        assertInsertableIsInserted(result, data, 2, 2);
     }
 
     @Test
@@ -240,5 +236,10 @@ public class RecipeProductHandlerTest extends DbTestCase implements EntityDbTest
     @Override
     public CrudDatabaseHandler<RecipeProductRecord, RecipeProduct> getDbHandler() {
         return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 1;
     }
 }

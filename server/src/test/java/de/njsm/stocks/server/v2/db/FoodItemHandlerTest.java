@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
-public class FoodItemHandlerTest extends DbTestCase implements EntityDbTestCase<FoodItemRecord, FoodItem> {
+public class FoodItemHandlerTest extends DbTestCase implements InsertionTest<FoodItemRecord, FoodItem> {
 
     private FoodItemHandler uut;
 
@@ -77,15 +77,6 @@ public class FoodItemHandlerTest extends DbTestCase implements EntityDbTestCase<
         assertNotNull(sample.validTimeEnd());
         assertNotNull(sample.transactionTimeStart());
         assertNotNull(sample.transactionTimeEnd());
-    }
-
-    @Test
-    public void testInserting() {
-        FoodItemForInsertion item = new FoodItemForInsertion(Instant.EPOCH, 2, 1, 1, 1, 1);
-
-        Validation<StatusCode, Integer> result = uut.addReturningId(item);
-
-        assertInsertableIsInserted(result, item, 4, 4);
     }
 
     @Test
@@ -315,5 +306,15 @@ public class FoodItemHandlerTest extends DbTestCase implements EntityDbTestCase<
     @Override
     public CrudDatabaseHandler<FoodItemRecord, FoodItem> getDbHandler() {
         return uut;
+    }
+
+    @Override
+    public Insertable<FoodItem> getInsertable() {
+        return new FoodItemForInsertion(Instant.EPOCH, 2, 1, 1, 1, 1);
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 3;
     }
 }

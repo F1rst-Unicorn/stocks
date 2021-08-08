@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EanNumberHandlerTest extends DbTestCase implements EntityDbTestCase<EanNumberRecord, EanNumber> {
+public class EanNumberHandlerTest extends DbTestCase implements InsertionTest<EanNumberRecord, EanNumber> {
 
     private EanNumberHandler uut;
 
@@ -41,15 +41,6 @@ public class EanNumberHandlerTest extends DbTestCase implements EntityDbTestCase
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT);
         uut.setPrincipals(TEST_USER);
-    }
-
-    @Test
-    public void addAEanNumber() {
-        EanNumberForInsertion data = new EanNumberForInsertion(1, "Code");
-
-        Validation<StatusCode, Integer> code = uut.addReturningId(data);
-
-        assertInsertableIsInserted(code, data, 2, 2);
     }
 
     @Test
@@ -129,5 +120,15 @@ public class EanNumberHandlerTest extends DbTestCase implements EntityDbTestCase
     @Override
     public CrudDatabaseHandler<EanNumberRecord, EanNumber> getDbHandler() {
         return uut;
+    }
+
+    @Override
+    public Insertable<EanNumber> getInsertable() {
+        return new EanNumberForInsertion(1, "Code");
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 1;
     }
 }

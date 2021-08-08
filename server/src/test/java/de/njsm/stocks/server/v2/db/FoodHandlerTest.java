@@ -37,7 +37,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FoodHandlerTest extends DbTestCase implements EntityDbTestCase<FoodRecord, Food> {
+public class FoodHandlerTest extends DbTestCase implements InsertionTest<FoodRecord, Food> {
 
     private FoodHandler uut;
 
@@ -61,13 +61,9 @@ public class FoodHandlerTest extends DbTestCase implements EntityDbTestCase<Food
         assertNotNull(sample.transactionTimeEnd());
     }
 
-    @Test
-    public void addAFood() {
-        FoodForInsertion data = new FoodForInsertion("Banana", 1);
-
-        Validation<StatusCode, Integer> result = uut.addReturningId(data);
-
-        assertInsertableIsInserted(result, data, 4, 4);
+    @Override
+    public FoodForInsertion getInsertable() {
+        return new FoodForInsertion("Banana", 1);
     }
 
     @Test
@@ -310,5 +306,10 @@ public class FoodHandlerTest extends DbTestCase implements EntityDbTestCase<Food
     @Override
     public CrudDatabaseHandler<FoodRecord, Food> getDbHandler() {
         return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 3;
     }
 }

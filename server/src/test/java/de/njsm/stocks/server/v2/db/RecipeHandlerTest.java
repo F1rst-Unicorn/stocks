@@ -38,7 +38,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RecipeHandlerTest extends DbTestCase implements EntityDbTestCase<RecipeRecord, Recipe> {
+public class RecipeHandlerTest extends DbTestCase implements InsertionTest<RecipeRecord, Recipe> {
 
     private RecipeHandler uut;
 
@@ -48,19 +48,6 @@ public class RecipeHandlerTest extends DbTestCase implements EntityDbTestCase<Re
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT);
         uut.setPrincipals(TEST_USER);
-    }
-
-    @Test
-    public void insertingWorks() {
-        RecipeForInsertion data = RecipeForInsertion.builder()
-                .name("Soup")
-                .instructions("Take water and carrots")
-                .duration(Duration.ofMinutes(30))
-                .build();
-
-        Validation<StatusCode, Integer> result = uut.addReturningId(data);
-
-        assertInsertableIsInserted(result, data, 2, 2);
     }
 
     @Test
@@ -160,5 +147,19 @@ public class RecipeHandlerTest extends DbTestCase implements EntityDbTestCase<Re
     @Override
     public CrudDatabaseHandler<RecipeRecord, Recipe> getDbHandler() {
         return uut;
+    }
+
+    @Override
+    public Insertable<Recipe> getInsertable() {
+        return RecipeForInsertion.builder()
+                .name("Soup")
+                .instructions("Take water and carrots")
+                .duration(Duration.ofMinutes(30))
+                .build();
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 1;
     }
 }

@@ -39,7 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class UserDeviceHandlerTest extends DbTestCase implements EntityDbTestCase<UserDeviceRecord, UserDevice> {
+public class UserDeviceHandlerTest extends DbTestCase implements InsertionTest<UserDeviceRecord, UserDevice> {
 
     private UserDeviceHandler uut;
 
@@ -79,13 +79,9 @@ public class UserDeviceHandlerTest extends DbTestCase implements EntityDbTestCas
         assertNotNull(sample.transactionTimeEnd());
     }
 
-    @Test
-    public void addingNewDeviceWorks() {
-        UserDeviceForInsertion device = new UserDeviceForInsertion("newDevice", 1);
-
-        Validation<StatusCode, Integer> result = uut.addReturningId(device);
-
-        assertInsertableIsInserted(result, device, 6, 6);
+    @Override
+    public UserDeviceForInsertion getInsertable() {
+        return new UserDeviceForInsertion("newDevice", 1);
     }
 
     @Test
@@ -132,5 +128,10 @@ public class UserDeviceHandlerTest extends DbTestCase implements EntityDbTestCas
     @Override
     public CrudDatabaseHandler<UserDeviceRecord, UserDevice> getDbHandler() {
         return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 5;
     }
 }
