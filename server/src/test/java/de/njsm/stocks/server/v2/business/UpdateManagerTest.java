@@ -23,15 +23,15 @@ import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Update;
 import de.njsm.stocks.server.v2.db.UpdateBackend;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
 import java.util.stream.Stream;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UpdateManagerTest {
 
@@ -39,13 +39,13 @@ public class UpdateManagerTest {
 
     private UpdateBackend backend;
 
-    @Before
+    @BeforeEach
     public void setup() {
         backend = Mockito.mock(UpdateBackend.class);
         uut = new UpdateManager(backend);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(backend);
     }

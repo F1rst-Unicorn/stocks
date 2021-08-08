@@ -20,17 +20,17 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.StatusCode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HealthHandlerTest extends DbTestCase {
 
     private HealthHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new HealthHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),

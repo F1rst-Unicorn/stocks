@@ -23,14 +23,14 @@ import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.ScaledUnitForDeletion;
 import de.njsm.stocks.common.api.ScaledUnitForEditing;
 import de.njsm.stocks.server.v2.db.ScaledUnitHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class ScaledUnitManagerTest {
@@ -39,7 +39,7 @@ public class ScaledUnitManagerTest {
 
     private ScaledUnitHandler dbHandler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         dbHandler = mock(ScaledUnitHandler.class);
         when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
@@ -47,7 +47,7 @@ public class ScaledUnitManagerTest {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         verify(dbHandler).setPrincipals(TEST_USER);
         verifyNoMoreInteractions(dbHandler);

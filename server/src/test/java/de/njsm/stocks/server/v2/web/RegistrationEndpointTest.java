@@ -24,12 +24,12 @@ import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.business.TicketAuthoriser;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RegistrationEndpointTest {
 
@@ -37,13 +37,13 @@ public class RegistrationEndpointTest {
 
     private TicketAuthoriser authoriser;
 
-    @Before
+    @BeforeEach
     public void setup() {
         authoriser = Mockito.mock(TicketAuthoriser.class);
         uut = new RegistrationEndpoint(authoriser);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(authoriser);
     }

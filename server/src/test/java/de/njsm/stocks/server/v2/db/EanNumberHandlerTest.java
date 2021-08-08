@@ -22,20 +22,20 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EanNumberHandlerTest extends DbTestCase implements EntityDbTestCase<EanNumberRecord, EanNumber> {
 
     private EanNumberHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new EanNumberHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),

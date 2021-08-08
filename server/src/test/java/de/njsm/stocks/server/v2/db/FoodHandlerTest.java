@@ -22,8 +22,8 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.Period;
@@ -35,13 +35,13 @@ import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FoodHandlerTest extends DbTestCase implements EntityDbTestCase<FoodRecord, Food> {
 
     private FoodHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new FoodHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
@@ -272,12 +272,12 @@ public class FoodHandlerTest extends DbTestCase implements EntityDbTestCase<Food
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue("expected description '" + data.getDescription() + "' not found",
-                uut.get(false, Instant.EPOCH)
+        assertTrue(uut.get(false, Instant.EPOCH)
                 .success()
                 .anyMatch(f -> f.id() == data.id() &&
                         data.version() + 1 == f.version() &&
-                        data.getDescription().equals(f.description())));
+                        data.getDescription().equals(f.description())),
+                () -> "expected description '" + data.getDescription() + "' not found");
     }
 
     @Test

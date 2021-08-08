@@ -22,8 +22,8 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -36,13 +36,13 @@ import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RecipeHandlerTest extends DbTestCase implements EntityDbTestCase<RecipeRecord, Recipe> {
 
     private RecipeHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new RecipeHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),

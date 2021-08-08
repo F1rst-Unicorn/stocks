@@ -25,11 +25,11 @@ import de.njsm.stocks.common.api.Health;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.v2.db.HealthHandler;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +39,7 @@ public class HealthManagerTest {
 
     private HealthHandler db;
 
-    @Before
+    @BeforeEach
     public void setup() {
         db = mock(HealthHandler.class);
         AuthAdmin ca = mock(AuthAdmin.class);

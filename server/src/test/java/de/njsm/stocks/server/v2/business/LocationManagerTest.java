@@ -29,9 +29,9 @@ import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
@@ -39,8 +39,8 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LocationManagerTest {
 
@@ -52,7 +52,7 @@ public class LocationManagerTest {
 
     private FoodItemHandler foodItemDbLayer;
 
-    @Before
+    @BeforeEach
     public void setup() {
         dbLayer = Mockito.mock(LocationHandler.class);
         foodItemDbLayer = Mockito.mock(FoodItemHandler.class);
@@ -62,7 +62,7 @@ public class LocationManagerTest {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verify(dbLayer).setPrincipals(TEST_USER);
         Mockito.verify(foodItemDbLayer).setPrincipals(TEST_USER);

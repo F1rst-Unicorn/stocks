@@ -30,9 +30,9 @@ import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.TicketHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -41,8 +41,8 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -58,7 +58,7 @@ public class DeviceManagerTest {
 
     private DeviceManager uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         dbHandler = Mockito.mock(UserDeviceHandler.class);
         foodDbHandler = Mockito.mock(FoodItemHandler.class);
@@ -69,7 +69,7 @@ public class DeviceManagerTest {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verify(dbHandler).setPrincipals(TEST_USER);
         Mockito.verify(foodDbHandler).setPrincipals(TEST_USER);

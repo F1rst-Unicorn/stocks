@@ -25,9 +25,9 @@ import de.njsm.stocks.common.api.EanNumberForDeletion;
 import de.njsm.stocks.common.api.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
@@ -35,8 +35,8 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EanNumberManagerTest {
 
@@ -44,7 +44,7 @@ public class EanNumberManagerTest {
 
     private EanNumberHandler backend;
 
-    @Before
+    @BeforeEach
     public void setup() {
         backend = Mockito.mock(EanNumberHandler.class);
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
@@ -52,7 +52,7 @@ public class EanNumberManagerTest {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verify(backend).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(backend);

@@ -28,10 +28,9 @@ import de.njsm.stocks.common.api.FoodItemForEditing;
 import de.njsm.stocks.common.api.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import fj.data.Validation;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -42,7 +41,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 public class FoodItemEndpointTest {
@@ -53,13 +52,13 @@ public class FoodItemEndpointTest {
 
     private FoodItemManager manager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         manager = Mockito.mock(FoodItemManager.class);
         uut = new FoodItemEndpoint(manager);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(manager);
     }
@@ -86,7 +85,7 @@ public class FoodItemEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        TestCase.assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
+        assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test

@@ -22,8 +22,8 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.Instant;
@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 
 public class LocationHandlerTest extends DbTestCase implements EntityDbTestCase<LocationRecord, Location> {
@@ -42,7 +42,7 @@ public class LocationHandlerTest extends DbTestCase implements EntityDbTestCase<
 
     private FoodItemHandler foodItemHandler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
@@ -219,12 +219,12 @@ public class LocationHandlerTest extends DbTestCase implements EntityDbTestCase<
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue("expected description '" + data.getDescription() + "' not found",
-                uut.get(false, Instant.EPOCH)
+        assertTrue(uut.get(false, Instant.EPOCH)
                         .success()
                         .anyMatch(f -> f.id() == data.id() &&
                                 data.version() + 1 == f.version() &&
-                                data.getDescription().equals(f.description())));
+                                data.getDescription().equals(f.description())),
+                () -> "expected description '" + data.getDescription() + "' not found");
     }
 
     @Test

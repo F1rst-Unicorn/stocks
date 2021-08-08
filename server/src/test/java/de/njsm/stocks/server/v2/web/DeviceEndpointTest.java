@@ -25,9 +25,9 @@ import de.njsm.stocks.common.api.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 public class DeviceEndpointTest {
@@ -46,14 +46,14 @@ public class DeviceEndpointTest {
 
     private DeviceEndpoint uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         businessObject = Mockito.mock(DeviceManager.class);
 
         uut = new DeviceEndpoint(businessObject);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(businessObject);
     }

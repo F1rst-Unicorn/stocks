@@ -14,8 +14,8 @@ import java.util.stream.Stream;
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public interface EntityDbTestCase<T extends TableRecord<T>, N extends Entity<N>> extends UutGetter<T, N> {
 

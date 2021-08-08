@@ -23,8 +23,8 @@ import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
@@ -32,18 +32,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class UserDeviceHandlerTest extends DbTestCase implements EntityDbTestCase<UserDeviceRecord, UserDevice> {
 
     private UserDeviceHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new UserDeviceHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),

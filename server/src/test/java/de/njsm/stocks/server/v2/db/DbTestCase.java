@@ -23,10 +23,10 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -46,7 +46,7 @@ public abstract class DbTestCase {
 
     private static ComboPooledDataSource ds;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         ds = new ComboPooledDataSource();
         ds.setJdbcUrl(getUrl());
@@ -55,12 +55,12 @@ public abstract class DbTestCase {
         ds.setMinPoolSize(1);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         ds.close();
     }
 
-    @Before
+    @BeforeEach
     public void resetDatabase() throws SQLException {
         factory = new ConnectionFactory(ds);
         connection = factory.getConnection();
@@ -69,7 +69,7 @@ public abstract class DbTestCase {
         resourceCounter++;
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws SQLException {
         connection.close();
     }

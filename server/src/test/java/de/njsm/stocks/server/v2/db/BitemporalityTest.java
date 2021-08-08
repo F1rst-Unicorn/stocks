@@ -27,8 +27,8 @@ import de.njsm.stocks.common.api.LocationForDeletion;
 import de.njsm.stocks.common.api.LocationForRenaming;
 import de.njsm.stocks.server.util.Principals;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.sql.SQLException;
@@ -41,14 +41,14 @@ import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.USER_DEVICE;
 import static de.njsm.stocks.server.v2.db.jooq.tables.Location.LOCATION;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BitemporalityTest extends DbTestCase {
 
     private LocationHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         FoodItemHandler foodItemHandler = Mockito.mock(FoodItemHandler.class);
 

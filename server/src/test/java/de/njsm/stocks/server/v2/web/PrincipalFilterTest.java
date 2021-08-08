@@ -23,9 +23,9 @@ import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -33,8 +33,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class PrincipalFilterTest {
@@ -47,13 +46,13 @@ public class PrincipalFilterTest {
 
     public static final Principals TEST_USER = new Principals("John", "Mobile", 5, 1);
 
-    @Before
+    @BeforeEach
     public void setup() {
         context = Mockito.mock(ContainerRequestContext.class);
         uut = new PrincipalFilter();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         verifyNoMoreInteractions(context);
     }
@@ -178,30 +177,18 @@ public class PrincipalFilterTest {
         assertEquals(StatusCode.INVALID_ARGUMENT, result.fail());
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void tooManyDollars() {
         String input = "/CN=omg$4$device$5$tooMuch";
 
-        Validation<StatusCode, Principals> p = PrincipalFilter.parseSubjectName(input);
-
-        assertTrue(p.isSuccess());
-        assertEquals("", p.success().getUsername());
-        assertEquals("", p.success().getDeviceName());
-        assertEquals(1, p.success().getUid());
-        assertEquals(1, p.success().getDid());
+        assertThrows(SecurityException.class, () -> PrincipalFilter.parseSubjectName(input));
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void testParseNameWithDollar() {
-        String[] testInput = new String[] {"my_user$name", "3",
-                "my_device_name", "6"};
-        String input = "CN=";
-        for (int i = 0; i < testInput.length-1; i++){
-            input = input.concat(testInput[i] + "$");
-        }
-        input = input.concat(testInput[testInput.length-1]);
+        String input = "CN=my_user$name$3$my_device_name$6";
 
-        PrincipalFilter.parseSubjectName(input);
+        assertThrows(SecurityException.class, () -> PrincipalFilter.parseSubjectName(input));
     }
 
     @Test

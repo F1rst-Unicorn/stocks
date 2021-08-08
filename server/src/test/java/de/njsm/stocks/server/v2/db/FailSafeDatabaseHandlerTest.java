@@ -25,24 +25,23 @@ import de.njsm.stocks.server.util.HystrixProducer;
 import fj.data.Validation;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
     private FailSafeDatabaseHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() throws SQLException {
         Connection c = getConnectionFactory().getConnection();
         c.setAutoCommit(false);
@@ -79,7 +78,7 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         uut.runCommand(input);
         Thread.sleep(500);      // hystrix window has to shift
 
-        Assert.assertTrue(uut.isCircuitBreakerOpen());
+        assertTrue(uut.isCircuitBreakerOpen());
     }
 
     @Test
@@ -91,7 +90,7 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         uut.runCommand(input);
         Thread.sleep(500);      // hystrix window has to shift
 
-        Assert.assertTrue(uut.isCircuitBreakerOpen());
+        assertTrue(uut.isCircuitBreakerOpen());
     }
 
     @Test
@@ -113,7 +112,7 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         uut.runCommand(input);
         Thread.sleep(500);      // hystrix window has to shift
 
-        Assert.assertTrue(uut.isCircuitBreakerOpen());
+        assertTrue(uut.isCircuitBreakerOpen());
     }
 
     @Test
@@ -125,7 +124,7 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         uut.runFunction(input);
         Thread.sleep(500);      // hystrix window has to shift
 
-        Assert.assertTrue(uut.isCircuitBreakerOpen());
+        assertTrue(uut.isCircuitBreakerOpen());
     }
 
     @Test

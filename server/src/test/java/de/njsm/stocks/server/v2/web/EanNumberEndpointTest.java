@@ -27,10 +27,9 @@ import de.njsm.stocks.common.api.EanNumberForGetting;
 import de.njsm.stocks.common.api.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
 import fj.data.Validation;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -44,7 +43,7 @@ import static de.njsm.stocks.common.api.StatusCode.INVALID_ARGUMENT;
 import static de.njsm.stocks.common.api.StatusCode.SUCCESS;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,13 +53,13 @@ public class EanNumberEndpointTest {
 
     private EanNumberManager manager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         manager = Mockito.mock(EanNumberManager.class);
         uut = new EanNumberEndpoint(manager);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(manager);
     }
@@ -140,7 +139,7 @@ public class EanNumberEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        TestCase.assertEquals(INVALID_ARGUMENT, c.getValue().getStatus());
+        assertEquals(INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test

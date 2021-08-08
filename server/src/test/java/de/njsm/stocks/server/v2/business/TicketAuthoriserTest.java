@@ -26,15 +26,15 @@ import de.njsm.stocks.server.v2.business.data.ClientTicket;
 import de.njsm.stocks.server.v2.business.data.ServerTicket;
 import de.njsm.stocks.server.v2.db.TicketHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
@@ -51,14 +51,14 @@ public class TicketAuthoriserTest {
 
     private final int validityTime = 10 * 60 * 1000;
 
-    @Before
+    @BeforeEach
     public void setup() {
         authAdmin = Mockito.mock(AuthAdmin.class);
         databaseHandler = Mockito.mock(TicketHandler.class);
         uut = new TicketAuthoriser(authAdmin, databaseHandler, validityTime / (60 * 1000));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         verifyNoMoreInteractions(authAdmin);
         verifyNoMoreInteractions(databaseHandler);
@@ -75,7 +75,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(stub);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(stub);
         verify(databaseHandler).rollback();
@@ -100,7 +100,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(stub);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(stub);
         verify(databaseHandler).getPrincipalsForTicket(stub.ticket());
@@ -129,7 +129,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(stub);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(stub);
         verify(databaseHandler).rollback();
@@ -155,7 +155,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).rollback();
@@ -179,7 +179,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).rollback();
@@ -206,7 +206,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket());
@@ -238,7 +238,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket());
@@ -270,7 +270,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket());
@@ -305,7 +305,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         assertEquals("certificate", result.success());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket());
@@ -341,7 +341,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.NOT_FOUND, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket());
@@ -378,7 +378,7 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         assertEquals("certificate", result.success());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).getPrincipalsForTicket(input.ticket());

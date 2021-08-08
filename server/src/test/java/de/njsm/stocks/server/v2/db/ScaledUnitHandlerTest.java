@@ -22,8 +22,8 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -35,13 +35,13 @@ import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ScaledUnitHandlerTest extends DbTestCase implements EntityDbTestCase<ScaledUnitRecord, ScaledUnit> {
 
     private ScaledUnitHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new ScaledUnitHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),

@@ -25,9 +25,9 @@ import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
@@ -36,8 +36,8 @@ import java.time.Period;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FoodManagerTest {
 
@@ -49,7 +49,7 @@ public class FoodManagerTest {
 
     private EanNumberHandler eanNumberHandler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         backend = Mockito.mock(FoodHandler.class);
         foodItemHandler = Mockito.mock(FoodItemHandler.class);
@@ -59,7 +59,7 @@ public class FoodManagerTest {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verify(backend).setPrincipals(TEST_USER);
         Mockito.verify(foodItemHandler).setPrincipals(TEST_USER);

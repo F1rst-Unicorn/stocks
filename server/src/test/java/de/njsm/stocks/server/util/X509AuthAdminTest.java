@@ -22,7 +22,7 @@ package de.njsm.stocks.server.util;
 import de.njsm.stocks.common.api.StatusCode;
 import fj.data.Validation;
 import org.apache.commons.io.IOUtils;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,8 +31,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 import static de.njsm.stocks.server.v2.db.DbTestCase.CIRCUIT_BREAKER_TIMEOUT;
-import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class X509AuthAdminTest {
 
@@ -42,7 +42,7 @@ public class X509AuthAdminTest {
 
     private X509AuthAdmin uut;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupCa() throws Exception {
         caDirectory = new File("src/test/resources/tmp");
         caDirectory.mkdirs();
@@ -54,7 +54,7 @@ public class X509AuthAdminTest {
         testCounter = 0;
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new X509AuthAdmin(caDirectory.getAbsolutePath(),
                 "touch " + caDirectory + "/reload-nginx",
@@ -62,12 +62,12 @@ public class X509AuthAdminTest {
                 CIRCUIT_BREAKER_TIMEOUT);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         testCounter++;
     }
 
-    @AfterClass
+    @AfterAll
     public static void removeCa() throws Exception {
         Runtime.getRuntime().exec("rm -rf " + caDirectory.getAbsolutePath()).waitFor();
     }
@@ -84,7 +84,7 @@ public class X509AuthAdminTest {
 
         Validation<StatusCode, Principals> p = uut.getPrincipals(testCounter);
 
-        Assert.assertTrue(p.isSuccess());
+        assertTrue(p.isSuccess());
         assertEquals(input, p.success());
     }
 
@@ -94,7 +94,7 @@ public class X509AuthAdminTest {
         IOUtils.write("invalid csr", new FileOutputStream(invalidCsr), StandardCharsets.UTF_8);
 
         Validation<StatusCode, Principals> result = uut.getPrincipals(-1);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
     }
 
     @Test
@@ -131,7 +131,7 @@ public class X509AuthAdminTest {
 
         Validation<StatusCode, String> certificate = uut.getCertificate(input.getDid());
 
-        Assert.assertTrue(certificate.isSuccess());
+        assertTrue(certificate.isSuccess());
         assertFalse(certificate.success().isEmpty());
     }
 

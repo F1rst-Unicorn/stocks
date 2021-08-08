@@ -27,9 +27,9 @@ import de.njsm.stocks.common.api.UserForDeletion;
 import de.njsm.stocks.common.api.UserForInsertion;
 import de.njsm.stocks.server.v2.business.UserManager;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -49,14 +49,14 @@ public class UserEndpointTest {
 
     private UserManager userManager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         userManager = Mockito.mock(UserManager.class);
 
         uut = new UserEndpoint(userManager);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(userManager);
     }

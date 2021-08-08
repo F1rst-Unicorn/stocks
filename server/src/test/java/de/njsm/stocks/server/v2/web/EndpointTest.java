@@ -19,12 +19,12 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EndpointTest {
 
@@ -32,7 +32,7 @@ public class EndpointTest {
 
     private static final String RAW_INSTANT = "1970.01.01-00:00:00.000000-+0000";
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new Endpoint();
     }
@@ -40,14 +40,14 @@ public class EndpointTest {
     @Test
     public void positiveIdsAreValid() {
         for (int i = 1; i < 100; i++) {
-            assertTrue(i + " is considered invalid", uut.isValid(i, "value name"));
+            assertTrue(uut.isValid(i, "value name"), i + " is considered invalid");
         }
     }
 
     @Test
     public void negativeIdsAreInvalid() {
         for (int i = -100; i < 0; i++) {
-            assertFalse(i + " is considered invalid", uut.isValid(i, "value name"));
+            assertFalse(uut.isValid(i, "value name"), i + " is considered invalid");
         }
     }
 
@@ -59,14 +59,14 @@ public class EndpointTest {
     @Test
     public void positiveVersionsAreValid() {
         for (int i = 1; i < 100; i++) {
-            assertTrue(i + " is considered invalid", uut.isValid(i, "value name"));
+            assertTrue(uut.isValid(i, "value name"), i + " is considered invalid");
         }
     }
 
     @Test
     public void negativeVersionsAreInvalid() {
         for (int i = -100; i < 0; i++) {
-            assertFalse(i + " is considered invalid", uut.isValid(i, "value name"));
+            assertFalse(uut.isValid(i, "value name"), i + " is considered invalid");
         }
     }
 

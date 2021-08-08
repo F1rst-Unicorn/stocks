@@ -22,9 +22,9 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.Instant;
@@ -37,7 +37,7 @@ import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -49,7 +49,7 @@ public class FoodItemHandlerTest extends DbTestCase implements EntityDbTestCase<
 
     private PresenceChecker<User> userPresenceChecker;
 
-    @Before
+    @BeforeEach
     public void setup() {
         userDevicePresenceChecker = (PresenceChecker) Mockito.mock(PresenceChecker.class);
         userPresenceChecker = (PresenceChecker) Mockito.mock(PresenceChecker.class);
@@ -62,7 +62,7 @@ public class FoodItemHandlerTest extends DbTestCase implements EntityDbTestCase<
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void verifyMocks() {
         Mockito.verifyNoMoreInteractions(userDevicePresenceChecker);
     }

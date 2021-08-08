@@ -25,14 +25,14 @@ import de.njsm.stocks.common.api.UnitForDeletion;
 import de.njsm.stocks.common.api.UnitForInsertion;
 import de.njsm.stocks.common.api.UnitForRenaming;
 import de.njsm.stocks.server.v2.business.UnitManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,13 +43,13 @@ public class UnitEndpointTest {
 
     private UnitManager manager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         manager = Mockito.mock(UnitManager.class);
         uut = new UnitEndpoint(manager);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(manager);
     }

@@ -22,10 +22,9 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.LocationManager;
 import fj.data.Validation;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -38,7 +37,7 @@ import java.util.stream.Collectors;
 import static de.njsm.stocks.common.api.StatusCode.*;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,13 +47,13 @@ public class LocationEndpointTest {
 
     private LocationManager businessLayer;
 
-    @Before
+    @BeforeEach
     public void setup() {
         businessLayer = Mockito.mock(LocationManager.class);
         uut = new LocationEndpoint(businessLayer);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(businessLayer);
     }
@@ -150,7 +149,7 @@ public class LocationEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        TestCase.assertEquals(INVALID_ARGUMENT, c.getValue().getStatus());
+        assertEquals(INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test

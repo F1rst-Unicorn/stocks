@@ -24,9 +24,9 @@ import de.njsm.stocks.server.v2.db.RecipeHandler;
 import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;
 import de.njsm.stocks.server.v2.db.RecipeProductHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -52,7 +52,7 @@ public class RecipeManagerTest {
 
     private RecipeProductHandler productHandler;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         recipeHandler = Mockito.mock(RecipeHandler.class);
         ingredientHandler = Mockito.mock(RecipeIngredientHandler.class);
@@ -61,7 +61,7 @@ public class RecipeManagerTest {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         verify(recipeHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(recipeHandler);

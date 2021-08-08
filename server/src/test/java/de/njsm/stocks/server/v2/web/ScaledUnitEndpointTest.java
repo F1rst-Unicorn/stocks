@@ -25,16 +25,16 @@ import de.njsm.stocks.common.api.ScaledUnitForDeletion;
 import de.njsm.stocks.common.api.ScaledUnitForEditing;
 import de.njsm.stocks.common.api.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,13 +45,13 @@ public class ScaledUnitEndpointTest {
 
     private ScaledUnitManager manager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         manager = Mockito.mock(ScaledUnitManager.class);
         uut = new ScaledUnitEndpoint(manager);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(manager);
     }
