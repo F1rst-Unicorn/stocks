@@ -31,12 +31,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 
-public class LocationHandlerTest extends DbTestCase implements InsertionTest<LocationRecord, Location> {
+public class LocationHandlerTest extends DbTestCase implements CrudOperationsTest<LocationRecord, Location> {
 
     private LocationHandler uut;
 
@@ -141,28 +140,6 @@ public class LocationHandlerTest extends DbTestCase implements InsertionTest<Loc
     }
 
     @Test
-    public void deleteALocation() {
-        LocationForDeletion data = new LocationForDeletion(2, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(Location::name).noneMatch(name -> name.equals("Cupboard")));
-
-        dbData = uut.get(true, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals("Cupboard")
-                && f.id() == 2
-                && f.version() == 0
-                && !f.validTimeEnd().equals(INFINITY.toInstant())
-                && f.transactionTimeEnd().equals(INFINITY.toInstant())
-                && f.initiates() == TEST_USER.getDid()));
-    }
-
-    @Test
     public void deleteALocationWithItemsInsideFails() {
         LocationForDeletion data = new LocationForDeletion(1, 0);
         Mockito.when(foodItemHandler.areItemsStoredIn(any(), any())).thenReturn(true);
@@ -170,30 +147,6 @@ public class LocationHandlerTest extends DbTestCase implements InsertionTest<Loc
         StatusCode result = uut.delete(data);
 
         assertEquals(StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION, result);
-    }
-
-    @Test
-    public void invalidDataVersionIsRejected() {
-        LocationForDeletion data = new LocationForDeletion(2, 100);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertEquals(2, dbData.success().count());
-    }
-
-    @Test
-    public void unknownDeletionsAreReported() {
-        LocationForDeletion data = new LocationForDeletion(100, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.NOT_FOUND, result);
     }
 
     @Test
@@ -258,5 +211,20 @@ public class LocationHandlerTest extends DbTestCase implements InsertionTest<Loc
     @Override
     public int getNumberOfEntities() {
         return 2;
+    }
+
+    @Override
+    public LocationForDeletion getUnknownEntity() {
+        return new LocationForDeletion(getNumberOfEntities() + 1, getValidEntity().version() + 1);
+    }
+
+    @Override
+    public LocationForDeletion getWrongVersionEntity() {
+        return new LocationForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+    }
+
+    @Override
+    public LocationForDeletion getValidEntity() {
+        return new LocationForDeletion(2, 0);
     }
 }

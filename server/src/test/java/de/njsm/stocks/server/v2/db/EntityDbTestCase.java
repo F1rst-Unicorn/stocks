@@ -1,5 +1,6 @@
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.common.api.Bitemporal;
 import de.njsm.stocks.common.api.Entity;
 import de.njsm.stocks.common.api.Insertable;
 import de.njsm.stocks.common.api.StatusCode;
@@ -26,11 +27,22 @@ public interface EntityDbTestCase<T extends TableRecord<T>, N extends Entity<N>>
         assertTrue(result.isSuccess());
         assertEquals(Integer.valueOf(expectedId), result.success());
 
-        Validation<StatusCode, Stream<N>> units = getDbHandler().get(false, Instant.EPOCH);
-        assertTrue(units.isSuccess());
-
-        List<N> list = units.success().collect(Collectors.toList());
+        List<N> list = getData();
         assertEquals(expectedNumberOfEntities, list.size());
         assertThat(list, hasItem(matchesInsertable(data)));
+    }
+
+    default List<N> getData() {
+        Validation<StatusCode, Stream<N>> units = getDbHandler().get(false, Instant.EPOCH);
+        assertTrue(units.isSuccess());
+        return units.success().collect(Collectors.toList());
+    }
+
+    default List<Bitemporal<N>> getBitemporalData() {
+        Validation<StatusCode, Stream<N>> units = getDbHandler().get(true, Instant.EPOCH);
+        assertTrue(units.isSuccess());
+        return units.success()
+                .map(v -> (Bitemporal<N>) v)
+                .collect(Collectors.toList());
     }
 }

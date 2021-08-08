@@ -65,8 +65,8 @@ public class UserDeviceForGetting extends VersionedData implements Versionable<U
     }
 
     @Override
-    public boolean isContainedIn(UserDevice item) {
-        return UserDevice.super.isContainedIn(item) &&
+    public boolean isContainedIn(UserDevice item, boolean increment) {
+        return UserDevice.super.isContainedIn(item, increment) &&
                 name.equals(item.name()) &&
                 belongsTo == item.belongsTo();
     }

@@ -39,9 +39,9 @@ public abstract class BitemporalLocation implements Bitemporal<Location>, Locati
     }
 
     @Override
-    public boolean isContainedIn(Location item) {
-        return Bitemporal.super.isContainedIn(item) &&
-                Location.super.isContainedIn(item);
+    public boolean isContainedIn(Location item, boolean increment) {
+        return Bitemporal.super.isContainedIn(item, increment) &&
+                Location.super.isContainedIn(item, increment);
     }
 
     @Override

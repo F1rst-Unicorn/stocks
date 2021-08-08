@@ -68,8 +68,8 @@ public interface Food extends Entity<Food> {
     }
 
     @Override
-    default boolean isContainedIn(Food entity) {
-        return Entity.super.isContainedIn(entity) &&
+    default boolean isContainedIn(Food entity, boolean increment) {
+        return Entity.super.isContainedIn(entity, increment) &&
                 name().equals(entity.name()) &&
                 expirationOffset().equals(entity.expirationOffset()) &&
                 location().equals(entity.location()) &&

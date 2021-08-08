@@ -42,8 +42,8 @@ public class UnitForGetting extends VersionedData implements Unit {
     }
 
     @Override
-    public boolean isContainedIn(Unit item) {
-        return Unit.super.isContainedIn(item) &&
+    public boolean isContainedIn(Unit item, boolean increment) {
+        return Unit.super.isContainedIn(item, increment) &&
                 name.equals(item.name()) &&
                 abbreviation.equals(item.abbreviation());
     }

@@ -32,8 +32,8 @@ public interface User extends Entity<User> {
     }
 
     @Override
-    default boolean isContainedIn(User item) {
-        return Entity.super.isContainedIn(item) &&
+    default boolean isContainedIn(User item, boolean increment) {
+        return Entity.super.isContainedIn(item, increment) &&
                 name().equals(item.name());
     }
 

@@ -45,8 +45,8 @@ public interface RecipeProduct extends Entity<RecipeProduct> {
     }
 
     @Override
-    default boolean isContainedIn(RecipeProduct item) {
-        return Entity.super.isContainedIn(item) &&
+    default boolean isContainedIn(RecipeProduct item, boolean increment) {
+        return Entity.super.isContainedIn(item, increment) &&
                 amount() == item.amount() &&
                 product() == item.product() &&
                 recipe() == item.recipe() &&

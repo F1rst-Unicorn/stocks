@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EanNumberHandlerTest extends DbTestCase implements InsertionTest<EanNumberRecord, EanNumber> {
+public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTest<EanNumberRecord, EanNumber> {
 
     private EanNumberHandler uut;
 
@@ -56,45 +56,6 @@ public class EanNumberHandlerTest extends DbTestCase implements InsertionTest<Ea
 
         assertEquals(2, sample.identifiesFood());
         assertEquals(1, sample.initiates());
-    }
-
-    @Test
-    public void deleteAEanNumber() {
-        EanNumberForDeletion data = new EanNumberForDeletion(1, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertEquals(0, dbData.success().count());
-    }
-
-    @Test
-    public void invalidDataVersionIsRejected() {
-        EanNumberForDeletion data = new EanNumberForDeletion(1, 1);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-
-        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertEquals(1, dbData.success().count());
-    }
-
-    @Test
-    public void unknownDeletionsAreReported() {
-        EanNumberForDeletion data = new EanNumberForDeletion(100, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.NOT_FOUND, result);
     }
 
     @Test
@@ -130,5 +91,20 @@ public class EanNumberHandlerTest extends DbTestCase implements InsertionTest<Ea
     @Override
     public int getNumberOfEntities() {
         return 1;
+    }
+
+    @Override
+    public EanNumberForDeletion getUnknownEntity() {
+        return new EanNumberForDeletion(getNumberOfEntities() + 1, 0);
+    }
+
+    @Override
+    public EanNumberForDeletion getWrongVersionEntity() {
+        return new EanNumberForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+    }
+
+    @Override
+    public EanNumberForDeletion getValidEntity() {
+        return new EanNumberForDeletion(1, 0);
     }
 }

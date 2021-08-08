@@ -40,9 +40,9 @@ public abstract class BitemporalScaledUnit implements Bitemporal<ScaledUnit>, Sc
     }
 
     @Override
-    public boolean isContainedIn(ScaledUnit entity) {
-        return Bitemporal.super.isContainedIn(entity) &&
-                ScaledUnit.super.isContainedIn(entity);
+    public boolean isContainedIn(ScaledUnit entity, boolean increment) {
+        return Bitemporal.super.isContainedIn(entity, increment) &&
+                ScaledUnit.super.isContainedIn(entity, increment);
     }
 
     @Override

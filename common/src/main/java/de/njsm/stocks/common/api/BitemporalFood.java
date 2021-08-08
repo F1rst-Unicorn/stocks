@@ -39,8 +39,8 @@ public abstract class BitemporalFood implements Food, Bitemporal<Food> {
     }
 
     @Override
-    public boolean isContainedIn(Food item) {
-        return Bitemporal.super.isContainedIn(item) &&
+    public boolean isContainedIn(Food item, boolean increment) {
+        return Bitemporal.super.isContainedIn(item, increment) &&
                 name().equals(item.name()) &&
                 toBuy() == item.toBuy() &&
                 expirationOffset().equals(item.expirationOffset()) &&

@@ -39,9 +39,9 @@ public abstract class BitemporalFoodItem implements Bitemporal<FoodItem>, FoodIt
     }
 
     @Override
-    public boolean isContainedIn(FoodItem entity) {
-        return Bitemporal.super.isContainedIn(entity) &&
-                FoodItem.super.isContainedIn(entity);
+    public boolean isContainedIn(FoodItem entity, boolean increment) {
+        return Bitemporal.super.isContainedIn(entity, increment) &&
+                FoodItem.super.isContainedIn(entity, increment);
     }
 
     @Override

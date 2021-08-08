@@ -39,9 +39,9 @@ public abstract class BitemporalEanNumber implements Bitemporal<EanNumber>, EanN
     }
 
     @Override
-    public boolean isContainedIn(EanNumber entity) {
-        return Bitemporal.super.isContainedIn(entity) &&
-                EanNumber.super.isContainedIn(entity);
+    public boolean isContainedIn(EanNumber entity, boolean increment) {
+        return Bitemporal.super.isContainedIn(entity, increment) &&
+                EanNumber.super.isContainedIn(entity, increment);
     }
 
     @Override

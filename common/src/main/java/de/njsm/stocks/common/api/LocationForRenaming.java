@@ -49,8 +49,8 @@ public class LocationForRenaming extends VersionedData implements Versionable<Lo
     }
 
     @Override
-    public boolean isContainedIn(Location item) {
-        return Versionable.super.isContainedIn(item) &&
+    public boolean isContainedIn(Location item, boolean increment) {
+        return Versionable.super.isContainedIn(item, increment) &&
                 newName.equals(item.name());
     }
 }

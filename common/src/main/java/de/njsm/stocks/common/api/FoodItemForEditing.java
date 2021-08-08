@@ -65,8 +65,8 @@ public class FoodItemForEditing extends VersionedData implements Versionable<Foo
     }
 
     @Override
-    public boolean isContainedIn(FoodItem item) {
-        return Versionable.super.isContainedIn(item) &&
+    public boolean isContainedIn(FoodItem item, boolean increment) {
+        return Versionable.super.isContainedIn(item, increment) &&
                 eatBy.equals(item.eatByDate()) &&
                 storedIn == item.storedIn() &&
                 unit.map(v -> v.equals(item.unit())).orElse(true);

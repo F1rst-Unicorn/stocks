@@ -82,8 +82,8 @@ public class FoodForEditing extends VersionedData implements Versionable<Food> {
     }
 
     @Override
-    public boolean isContainedIn(Food item) {
-        return Versionable.super.isContainedIn(item) &&
+    public boolean isContainedIn(Food item, boolean increment) {
+        return Versionable.super.isContainedIn(item, increment) &&
                 newName.equals(item.name()) &&
                 location.map(v -> v.equals(item.location()) || (
                         v == 0 && item.location() == null

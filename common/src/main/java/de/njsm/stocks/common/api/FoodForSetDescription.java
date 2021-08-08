@@ -49,8 +49,8 @@ public class FoodForSetDescription extends VersionedData implements Versionable<
     }
 
     @Override
-    public boolean isContainedIn(Food item) {
-        return Versionable.super.isContainedIn(item) &&
+    public boolean isContainedIn(Food item, boolean increment) {
+        return Versionable.super.isContainedIn(item, increment) &&
                 description.equals(item.description());
     }
 }

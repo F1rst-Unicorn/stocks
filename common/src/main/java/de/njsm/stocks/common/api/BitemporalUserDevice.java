@@ -39,9 +39,9 @@ public abstract class BitemporalUserDevice implements Bitemporal<UserDevice>, Us
     }
 
     @Override
-    public boolean isContainedIn(UserDevice entity) {
-        return Bitemporal.super.isContainedIn(entity) &&
-                UserDevice.super.isContainedIn(entity);
+    public boolean isContainedIn(UserDevice entity, boolean increment) {
+        return Bitemporal.super.isContainedIn(entity, increment) &&
+                UserDevice.super.isContainedIn(entity, increment);
     }
 
     @Override

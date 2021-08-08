@@ -50,10 +50,10 @@ public interface Bitemporal<T extends Entity<T>> extends Versionable<T> {
     int initiates();
 
     @Override
-    default boolean isContainedIn(T item) {
+    default boolean isContainedIn(T item, boolean increment) {
         if (item instanceof Bitemporal) {
             Bitemporal<T> castedItem = (Bitemporal) item;
-            return Versionable.super.isContainedIn(item) &&
+            return Versionable.super.isContainedIn(item, increment) &&
                     validTimeStart().equals(castedItem.validTimeStart()) &&
                     validTimeEnd().equals(castedItem.validTimeEnd()) &&
                     transactionTimeStart().equals(castedItem.transactionTimeStart()) &&

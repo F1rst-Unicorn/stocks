@@ -30,13 +30,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UnitHandlerTest extends DbTestCase implements InsertionTest<UnitRecord, Unit> {
+public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<UnitRecord, Unit> {
 
     private UnitHandler uut;
 
@@ -75,7 +75,7 @@ public class UnitHandlerTest extends DbTestCase implements InsertionTest<UnitRec
 
         Validation<StatusCode, Stream<Unit>> dbData = uut.get(false, Instant.EPOCH);
         List<Unit> records = dbData.success().collect(Collectors.toList());
-        assertThat(records, hasItem(matchesVersionable(data)));
+        assertThat(records, hasItem(matchesVersionableUpdated(data)));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class UnitHandlerTest extends DbTestCase implements InsertionTest<UnitRec
 
         Validation<StatusCode, Stream<Unit>> dbData = uut.get(false, Instant.EPOCH);
         List<Unit> records = dbData.success().collect(Collectors.toList());
-        assertThat(records, hasItem(matchesVersionable(data)));
+        assertThat(records, hasItem(matchesVersionableUpdated(data)));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class UnitHandlerTest extends DbTestCase implements InsertionTest<UnitRec
 
         Validation<StatusCode, Stream<Unit>> dbData = uut.get(false, Instant.EPOCH);
         List<Unit> records = dbData.success().collect(Collectors.toList());
-        assertThat(records, hasItem(matchesVersionable(data)));
+        assertThat(records, hasItem(matchesVersionableUpdated(data)));
     }
 
     @Test
@@ -167,6 +167,21 @@ public class UnitHandlerTest extends DbTestCase implements InsertionTest<UnitRec
 
     @Override
     public int getNumberOfEntities() {
-        return 2;
+        return 3;
+    }
+
+    @Override
+    public Versionable<Unit> getUnknownEntity() {
+        return new UnitForDeletion(getNumberOfEntities() + 1, 0);
+    }
+
+    @Override
+    public Versionable<Unit> getWrongVersionEntity() {
+        return new UnitForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+    }
+
+    @Override
+    public Versionable<Unit> getValidEntity() {
+        return new UnitForDeletion(3, 0);
     }
 }

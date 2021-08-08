@@ -39,9 +39,9 @@ public abstract class BitemporalRecipeIngredient implements Bitemporal<RecipeIng
     }
 
     @Override
-    public boolean isContainedIn(RecipeIngredient entity) {
-        return Bitemporal.super.isContainedIn(entity) &&
-                RecipeIngredient.super.isContainedIn(entity);
+    public boolean isContainedIn(RecipeIngredient entity, boolean increment) {
+        return Bitemporal.super.isContainedIn(entity, increment) &&
+                RecipeIngredient.super.isContainedIn(entity, increment);
     }
 
     @Override

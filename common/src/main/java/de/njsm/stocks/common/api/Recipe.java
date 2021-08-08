@@ -51,8 +51,8 @@ public interface Recipe extends Entity<Recipe> {
     }
 
     @Override
-    default boolean isContainedIn(Recipe entity) {
-        return Entity.super.isContainedIn(entity) &&
+    default boolean isContainedIn(Recipe entity, boolean increment) {
+        return Entity.super.isContainedIn(entity, increment) &&
                 name().equals(entity.name()) &&
                 instructions().equals(entity.instructions()) &&
                 duration().equals(entity.duration());

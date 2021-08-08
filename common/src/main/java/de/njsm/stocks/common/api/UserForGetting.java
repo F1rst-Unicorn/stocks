@@ -50,8 +50,8 @@ public class UserForGetting extends VersionedData implements Versionable<User>, 
     }
 
     @Override
-    public boolean isContainedIn(User item) {
-        return User.super.isContainedIn(item) &&
+    public boolean isContainedIn(User item, boolean increment) {
+        return User.super.isContainedIn(item, increment) &&
                 name.equals(item.name());
     }
 }

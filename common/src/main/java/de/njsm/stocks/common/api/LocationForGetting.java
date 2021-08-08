@@ -56,8 +56,8 @@ public class LocationForGetting extends VersionedData implements Versionable<Loc
     }
 
     @Override
-    public boolean isContainedIn(Location item) {
-        return Location.super.isContainedIn(item) &&
+    public boolean isContainedIn(Location item, boolean increment) {
+        return Location.super.isContainedIn(item, increment) &&
                 name.equals(item.name()) &&
                 description.equals(item.description());
     }

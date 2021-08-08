@@ -38,8 +38,8 @@ public interface UserDevice extends Entity<UserDevice> {
     }
 
     @Override
-    default boolean isContainedIn(UserDevice item) {
-        return Entity.super.isContainedIn(item) &&
+    default boolean isContainedIn(UserDevice item, boolean increment) {
+        return Entity.super.isContainedIn(item, increment) &&
                 name().equals(item.name()) &&
                 belongsTo() == item.belongsTo();
     }

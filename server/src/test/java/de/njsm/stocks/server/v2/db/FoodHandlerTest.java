@@ -31,13 +31,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FoodHandlerTest extends DbTestCase implements InsertionTest<FoodRecord, Food> {
+public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<FoodRecord, Food> {
 
     private FoodHandler uut;
 
@@ -134,7 +134,7 @@ public class FoodHandlerTest extends DbTestCase implements InsertionTest<FoodRec
         Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
         assertTrue(dbData.isSuccess());
         List<Food> currentFood = dbData.success().collect(Collectors.toList());
-        assertThat(currentFood, hasItem(matchesVersionable(data)));
+        assertThat(currentFood, hasItem(matchesVersionableUpdated(data)));
     }
 
     @Test
@@ -151,45 +151,6 @@ public class FoodHandlerTest extends DbTestCase implements InsertionTest<FoodRec
         FoodForEditing data = new FoodForEditing(100, 0, "Wine", Period.ZERO, 2, "new description", 1);
 
         StatusCode result = uut.edit(data);
-
-        assertEquals(StatusCode.NOT_FOUND, result);
-    }
-
-    @Test
-    public void deleteAFood() {
-        FoodForDeletion data = new FoodForDeletion(2, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertTrue(dbData.success().map(Food::name).noneMatch(name -> name.equals("Beer")));
-    }
-
-    @Test
-    public void invalidDataVersionIsRejected() {
-        FoodForDeletion data = new FoodForDeletion(2, 100);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertEquals(3, dbData.success().count());
-    }
-
-    @Test
-    public void unknownDeletionsAreReported() {
-        FoodForDeletion data = new FoodForDeletion(100, 0);
-
-        StatusCode result = uut.delete(data);
 
         assertEquals(StatusCode.NOT_FOUND, result);
     }
@@ -311,5 +272,20 @@ public class FoodHandlerTest extends DbTestCase implements InsertionTest<FoodRec
     @Override
     public int getNumberOfEntities() {
         return 3;
+    }
+
+    @Override
+    public Versionable<Food> getUnknownEntity() {
+        return new FoodForDeletion(getNumberOfEntities() + 1, 0);
+    }
+
+    @Override
+    public Versionable<Food> getWrongVersionEntity() {
+        return new FoodForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+    }
+
+    @Override
+    public Versionable<Food> getValidEntity() {
+        return new FoodForDeletion(2, 0);
     }
 }

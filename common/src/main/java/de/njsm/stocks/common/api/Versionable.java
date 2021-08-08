@@ -27,9 +27,9 @@ public interface Versionable<T extends Entity<T>> extends Identifiable<T>, SelfV
     @JsonGetter
     int version();
 
-    default boolean isContainedIn(T item) {
+    default boolean isContainedIn(T item, boolean increment) {
         return id() == item.id() &&
-                version() + 1 == item.version();
+                version() + (increment ? 1 : 0) == item.version();
     }
 
     @Override

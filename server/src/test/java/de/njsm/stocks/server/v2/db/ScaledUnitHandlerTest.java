@@ -31,13 +31,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ScaledUnitHandlerTest extends DbTestCase implements InsertionTest<ScaledUnitRecord, ScaledUnit> {
+public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsTest<ScaledUnitRecord, ScaledUnit> {
 
     private ScaledUnitHandler uut;
 
@@ -106,7 +106,7 @@ public class ScaledUnitHandlerTest extends DbTestCase implements InsertionTest<S
 
     @Test
     public void editingMissingScaleIsReported() {
-        ScaledUnitForEditing input = new ScaledUnitForEditing(3, 0, new BigDecimal(2), 1);
+        ScaledUnitForEditing input = new ScaledUnitForEditing(getNumberOfEntities() + 1, 0, new BigDecimal(2), 1);
 
         StatusCode result = uut.edit(input);
 
@@ -121,7 +121,7 @@ public class ScaledUnitHandlerTest extends DbTestCase implements InsertionTest<S
 
         assertEquals(StatusCode.SUCCESS, result);
         List<ScaledUnit> data = uut.get(false, Instant.EPOCH).success().collect(Collectors.toList());
-        assertThat(data, hasItem(matchesVersionable(input)));
+        assertThat(data, hasItem(matchesVersionableUpdated(input)));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class ScaledUnitHandlerTest extends DbTestCase implements InsertionTest<S
 
         assertEquals(StatusCode.SUCCESS, result);
         List<ScaledUnit> data = uut.get(false, Instant.EPOCH).success().collect(Collectors.toList());
-        assertThat(data, hasItem(matchesVersionable(input)));
+        assertThat(data, hasItem(matchesVersionableUpdated(input)));
     }
 
     @Override
@@ -142,6 +142,21 @@ public class ScaledUnitHandlerTest extends DbTestCase implements InsertionTest<S
 
     @Override
     public int getNumberOfEntities() {
-        return 2;
+        return 3;
+    }
+
+    @Override
+    public ScaledUnitForDeletion getUnknownEntity() {
+        return new ScaledUnitForDeletion(getNumberOfEntities() + 1, 0);
+    }
+
+    @Override
+    public ScaledUnitForDeletion getWrongVersionEntity() {
+        return new ScaledUnitForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+    }
+
+    @Override
+    public ScaledUnitForDeletion getValidEntity() {
+        return new ScaledUnitForDeletion(3, 0);
     }
 }

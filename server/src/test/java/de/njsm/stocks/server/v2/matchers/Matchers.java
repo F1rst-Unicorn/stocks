@@ -22,6 +22,7 @@ package de.njsm.stocks.server.v2.matchers;
 import de.njsm.stocks.common.api.Entity;
 import de.njsm.stocks.common.api.Insertable;
 import de.njsm.stocks.common.api.Versionable;
+import de.njsm.stocks.server.util.Principals;
 import org.hamcrest.Matcher;
 
 public class Matchers {
@@ -30,7 +31,19 @@ public class Matchers {
         return new MatchesInsertable<>(contentData);
     }
 
-    public static <T extends Entity<T>> Matcher<Entity<T>> matchesVersionable(Versionable<T> contentData) {
-        return new MatchesVersionable<>(contentData);
+    public static <T extends Entity<T>> Matcher<Entity<T>> matchesVersionableUpdated(Versionable<T> contentData) {
+        return new MatchesVersionableUpdated<>(contentData);
+    }
+
+    public static <T extends Entity<T>> Matcher<Entity<T>> matchesVersionableExactly(Versionable<T> contentData) {
+        return new MatchesVersionableExactly<>(contentData);
+    }
+
+    public static <T extends Entity<T>> Matcher<? super Entity<T>> isTerminatedForInfinity() {
+        return new IsTerminatedForInfinity<>();
+    }
+
+    public static <T extends Entity<T>> Matcher<Entity<T>> wasInitiatedBy(Principals principals) {
+        return new WasInitiatedBy<>(principals);
     }
 }

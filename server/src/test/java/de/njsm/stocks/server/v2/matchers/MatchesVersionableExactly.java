@@ -17,34 +17,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.common.api;
+package de.njsm.stocks.server.v2.matchers;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.Versionable;
 
-public interface Unit extends Entity<Unit> {
+public class MatchesVersionableExactly<T extends Entity<T>> extends MatchesVersionable<T> {
 
-    @JsonGetter
-    String name();
-
-    @JsonGetter
-    String abbreviation();
-
-    interface Builder<T> {
-
-        T name(String v);
-
-        T abbreviation(String v);
+    public MatchesVersionableExactly(Versionable<T> contentData) {
+        super(contentData);
     }
 
     @Override
-    default boolean isContainedIn(Unit item, boolean increment) {
-        return Entity.super.isContainedIn(item, increment) &&
-                name().equals(item.name()) &&
-                abbreviation().equals(item.abbreviation());
-    }
-
-    @Override
-    default void validate() {
-        Entity.super.validate();
+    boolean getIncrement() {
+        return false;
     }
 }

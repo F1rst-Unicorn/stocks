@@ -40,9 +40,9 @@ public abstract class BitemporalUser implements Bitemporal<User>, User {
     }
 
     @Override
-    public boolean isContainedIn(User entity) {
-        return Bitemporal.super.isContainedIn(entity) &&
-                User.super.isContainedIn(entity);
+    public boolean isContainedIn(User entity, boolean increment) {
+        return Bitemporal.super.isContainedIn(entity, increment) &&
+                User.super.isContainedIn(entity, increment);
     }
 
     @Override

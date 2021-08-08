@@ -39,9 +39,9 @@ public abstract class BitemporalUnit implements Unit, Bitemporal<Unit> {
     }
 
     @Override
-    public boolean isContainedIn(Unit entity) {
-        return Bitemporal.super.isContainedIn(entity) &&
-                Unit.super.isContainedIn(entity);
+    public boolean isContainedIn(Unit entity, boolean increment) {
+        return Bitemporal.super.isContainedIn(entity, increment) &&
+                Unit.super.isContainedIn(entity, increment);
     }
 
     @Override

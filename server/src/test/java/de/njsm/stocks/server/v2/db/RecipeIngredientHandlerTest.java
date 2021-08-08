@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RecipeIngredientHandlerTest extends DbTestCase implements InsertionTest<RecipeIngredientRecord, RecipeIngredient> {
+public class RecipeIngredientHandlerTest extends DbTestCase implements CrudOperationsTest<RecipeIngredientRecord, RecipeIngredient> {
 
     private RecipeIngredientHandler uut;
 
@@ -103,21 +103,6 @@ public class RecipeIngredientHandlerTest extends DbTestCase implements Insertion
     }
 
     @Test
-    public void deletingWorks() {
-        RecipeIngredientForDeletion input = RecipeIngredientForDeletion.builder()
-                .id(1)
-                .version(0)
-                .build();
-
-        StatusCode result = uut.delete(input);
-
-        assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<RecipeIngredient>> stream = uut.get(false, Instant.EPOCH);
-        assertTrue(stream.isSuccess());
-        assertEquals(0, stream.success().count());
-    }
-
-    @Test
     public void checkingSetEqualityWorks() {
         RecipeIngredientForDeletion ingredient = RecipeIngredientForDeletion.builder()
                 .id(1)
@@ -127,7 +112,7 @@ public class RecipeIngredientHandlerTest extends DbTestCase implements Insertion
                 .id(1)
                 .version(0)
                 .build();
-        Set<Versionable<RecipeIngredient>> ingredients = Set.of(ingredient);
+        Set<RecipeIngredientForDeletion> ingredients = Set.of(ingredient);
 
         StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
 
@@ -148,7 +133,7 @@ public class RecipeIngredientHandlerTest extends DbTestCase implements Insertion
                 .id(1)
                 .version(0)
                 .build();
-        Set<Versionable<RecipeIngredient>> ingredients = Set.of(ingredient1, ingredient2);
+        Set<RecipeIngredientForDeletion> ingredients = Set.of(ingredient1, ingredient2);
 
         StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
 
@@ -165,7 +150,7 @@ public class RecipeIngredientHandlerTest extends DbTestCase implements Insertion
                 .id(1)
                 .version(0)
                 .build();
-        Set<Versionable<RecipeIngredient>> ingredients = Set.of(ingredient);
+        Set<RecipeIngredientForDeletion> ingredients = Set.of(ingredient);
 
         StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
 
@@ -182,7 +167,7 @@ public class RecipeIngredientHandlerTest extends DbTestCase implements Insertion
                 .id(1)
                 .version(0)
                 .build();
-        Set<Versionable<RecipeIngredient>> ingredients = Set.of(ingredient);
+        Set<RecipeIngredientForDeletion> ingredients = Set.of(ingredient);
 
         StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
 
@@ -196,7 +181,7 @@ public class RecipeIngredientHandlerTest extends DbTestCase implements Insertion
                 .id(1)
                 .version(0)
                 .build();
-        Set<Versionable<RecipeIngredient>> ingredients = Set.of();
+        Set<RecipeIngredientForDeletion> ingredients = Set.of();
 
         StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
 
@@ -241,5 +226,29 @@ public class RecipeIngredientHandlerTest extends DbTestCase implements Insertion
     @Override
     public int getNumberOfEntities() {
         return 1;
+    }
+
+    @Override
+    public RecipeIngredientForDeletion getUnknownEntity() {
+        return RecipeIngredientForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public RecipeIngredientForDeletion getWrongVersionEntity() {
+        return RecipeIngredientForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public RecipeIngredientForDeletion getValidEntity() {
+        return RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
     }
 }

@@ -31,14 +31,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class UserHandlerTest extends DbTestCase implements InsertionTest<UserRecord, User> {
+public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<UserRecord, User> {
 
     private UserHandler uut;
 
@@ -81,37 +78,6 @@ public class UserHandlerTest extends DbTestCase implements InsertionTest<UserRec
         return new UserForInsertion("testuser");
     }
 
-    @Test
-    public void deletingUnknownIdIsReported() {
-
-        StatusCode result = uut.delete(new UserForDeletion(99999, 0));
-
-        assertEquals(StatusCode.NOT_FOUND, result);
-    }
-
-    @Test
-    public void deletingInvalidVersionIsReported() {
-
-        StatusCode result = uut.delete(new UserForDeletion(1, 999));
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-    }
-
-    @Test
-    public void deletingValidDeviceWorks() {
-        UserForDeletion input = new UserForDeletion(1, 0);
-
-        StatusCode result = uut.delete(input);
-
-        Validation<StatusCode, Stream<User>> users = uut.get(false, Instant.EPOCH);
-        assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(users.isSuccess());
-        List<User> list = users.success().collect(Collectors.toList());
-        assertEquals(3, list.size());
-        UserForGetting expectedAbsent = new UserForGetting(1, 0, "Bob");
-        assertThat(list, not(hasItem(expectedAbsent)));
-    }
-
     @Override
     public CrudDatabaseHandler<UserRecord, User> getDbHandler() {
         return uut;
@@ -120,5 +86,20 @@ public class UserHandlerTest extends DbTestCase implements InsertionTest<UserRec
     @Override
     public int getNumberOfEntities() {
         return 4;
+    }
+
+    @Override
+    public Versionable<User> getUnknownEntity() {
+        return new UserForDeletion(getNumberOfEntities() + 1, 0);
+    }
+
+    @Override
+    public Versionable<User> getWrongVersionEntity() {
+        return new UserForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+    }
+
+    @Override
+    public Versionable<User> getValidEntity() {
+        return new UserForDeletion(1, 0);
     }
 }

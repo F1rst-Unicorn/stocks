@@ -57,8 +57,8 @@ public class ScaledUnitForGetting extends VersionedData implements Entity<Scaled
     }
 
     @Override
-    public boolean isContainedIn(ScaledUnit entity) {
-        return ScaledUnit.super.isContainedIn(entity) &&
+    public boolean isContainedIn(ScaledUnit entity, boolean increment) {
+        return ScaledUnit.super.isContainedIn(entity, increment) &&
                 scale.equals(entity.scale()) &&
                 unit == entity.unit();
     }

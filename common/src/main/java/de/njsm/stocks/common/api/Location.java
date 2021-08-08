@@ -37,8 +37,8 @@ public interface Location extends Entity<Location> {
     }
 
     @Override
-    default boolean isContainedIn(Location item) {
-        return Entity.super.isContainedIn(item) &&
+    default boolean isContainedIn(Location item, boolean increment) {
+        return Entity.super.isContainedIn(item, increment) &&
                 name().equals(item.name()) &&
                 description().equals(item.description());
     }

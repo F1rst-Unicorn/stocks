@@ -49,8 +49,8 @@ public class LocationForSetDescription extends VersionedData implements Versiona
     }
 
     @Override
-    public boolean isContainedIn(Location item) {
-        return Versionable.super.isContainedIn(item) &&
+    public boolean isContainedIn(Location item, boolean increment) {
+        return Versionable.super.isContainedIn(item, increment) &&
                 description.equals(item.description());
     }
 }

@@ -31,14 +31,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RecipeHandlerTest extends DbTestCase implements InsertionTest<RecipeRecord, Recipe> {
+public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<RecipeRecord, Recipe> {
 
     private RecipeHandler uut;
 
@@ -111,7 +111,7 @@ public class RecipeHandlerTest extends DbTestCase implements InsertionTest<Recip
         assertTrue(recipes.isSuccess());
         List<Recipe> list = recipes.success().collect(Collectors.toList());
         assertEquals(1, list.size());
-        assertThat(list, hasItem(matchesVersionable(recipe)));
+        assertThat(list, hasItem(matchesVersionableUpdated(recipe)));
     }
 
     @Test
@@ -127,21 +127,6 @@ public class RecipeHandlerTest extends DbTestCase implements InsertionTest<Recip
         StatusCode result = uut.edit(recipe);
 
         assertThat(result, is(StatusCode.INVALID_DATA_VERSION));
-    }
-
-    @Test
-    public void deletingWorks() {
-        RecipeForDeletion recipe = RecipeForDeletion.builder()
-                .id(1)
-                .version(0)
-                .build();
-
-        StatusCode result = uut.delete(recipe);
-
-        assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<Recipe>> stream = uut.get(false, Instant.EPOCH);
-        assertTrue(stream.isSuccess());
-        assertEquals(0, stream.success().count());
     }
 
     @Override
@@ -161,5 +146,29 @@ public class RecipeHandlerTest extends DbTestCase implements InsertionTest<Recip
     @Override
     public int getNumberOfEntities() {
         return 1;
+    }
+
+    @Override
+    public RecipeForDeletion getUnknownEntity() {
+        return RecipeForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public RecipeForDeletion getWrongVersionEntity() {
+        return RecipeForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public RecipeForDeletion getValidEntity() {
+        return RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
     }
 }

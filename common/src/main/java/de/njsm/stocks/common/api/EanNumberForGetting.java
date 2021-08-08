@@ -66,8 +66,8 @@ public class EanNumberForGetting extends VersionedData implements Versionable<Ea
     }
 
     @Override
-    public boolean isContainedIn(EanNumber item) {
-        return EanNumber.super.isContainedIn(item) &&
+    public boolean isContainedIn(EanNumber item, boolean increment) {
+        return EanNumber.super.isContainedIn(item, increment) &&
                 identifiesFood == item.identifiesFood() &&
                 eanNumber.equals(item.eanNumber());
     }

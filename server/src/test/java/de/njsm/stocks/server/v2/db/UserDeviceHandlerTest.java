@@ -32,14 +32,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class UserDeviceHandlerTest extends DbTestCase implements InsertionTest<UserDeviceRecord, UserDevice> {
+public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsTest<UserDeviceRecord, UserDevice> {
 
     private UserDeviceHandler uut;
 
@@ -85,36 +82,6 @@ public class UserDeviceHandlerTest extends DbTestCase implements InsertionTest<U
     }
 
     @Test
-    public void deletingUnknownIdIsReported() {
-
-        StatusCode result = uut.delete(new UserDeviceForDeletion(99999, 0));
-
-        assertEquals(StatusCode.NOT_FOUND, result);
-    }
-
-    @Test
-    public void deletingInvalidVersionIsReported() {
-
-        StatusCode result = uut.delete(new UserDeviceForDeletion(1, 9999));
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-    }
-
-    @Test
-    public void deletingValidDeviceWorks() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(2, 0);
-
-        StatusCode result = uut.delete(device);
-
-        Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false, Instant.EPOCH);
-        assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(devices.isSuccess());
-        List<UserDevice> list = devices.success().collect(Collectors.toList());
-        assertEquals(4, list.size());
-        assertThat(list, not(hasItem(new UserDeviceForGetting(2, 0, "mobile", 2))));
-    }
-
-    @Test
     public void gettingDevicesOfUserWorks() {
 
         Validation<StatusCode, List<Identifiable<UserDevice>>> result = uut.getDevicesOfUser(new UserForDeletion(2, 2));
@@ -133,5 +100,20 @@ public class UserDeviceHandlerTest extends DbTestCase implements InsertionTest<U
     @Override
     public int getNumberOfEntities() {
         return 5;
+    }
+
+    @Override
+    public Versionable<UserDevice> getUnknownEntity() {
+        return new UserDeviceForDeletion(getNumberOfEntities() + 1, 0);
+    }
+
+    @Override
+    public Versionable<UserDevice> getWrongVersionEntity() {
+        return new UserDeviceForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+    }
+
+    @Override
+    public Versionable<UserDevice> getValidEntity() {
+        return new UserDeviceForDeletion(2, 0);
     }
 }

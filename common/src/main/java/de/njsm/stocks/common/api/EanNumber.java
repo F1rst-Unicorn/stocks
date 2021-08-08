@@ -38,8 +38,8 @@ public interface EanNumber extends Entity<EanNumber> {
     }
 
     @Override
-    default boolean isContainedIn(EanNumber item) {
-        return Entity.super.isContainedIn(item) &&
+    default boolean isContainedIn(EanNumber item, boolean increment) {
+        return Entity.super.isContainedIn(item, increment) &&
                 identifiesFood() == item.identifiesFood() &&
                 eanNumber().equals(item.eanNumber());
     }

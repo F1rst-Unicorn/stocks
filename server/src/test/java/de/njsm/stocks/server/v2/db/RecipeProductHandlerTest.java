@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RecipeProductHandlerTest extends DbTestCase implements InsertionTest<RecipeProductRecord, RecipeProduct> {
+public class RecipeProductHandlerTest extends DbTestCase implements CrudOperationsTest<RecipeProductRecord, RecipeProduct> {
 
     private RecipeProductHandler uut;
 
@@ -241,5 +241,29 @@ public class RecipeProductHandlerTest extends DbTestCase implements InsertionTes
     @Override
     public int getNumberOfEntities() {
         return 1;
+    }
+
+    @Override
+    public Versionable<RecipeProduct> getUnknownEntity() {
+        return RecipeProductForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public Versionable<RecipeProduct> getWrongVersionEntity() {
+        return RecipeProductForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public Versionable<RecipeProduct> getValidEntity() {
+        return RecipeProductForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
     }
 }
