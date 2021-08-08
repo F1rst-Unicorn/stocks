@@ -19,26 +19,19 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.EanNumber;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.BitemporalEanNumber;
-import de.njsm.stocks.common.api.EanNumberForDeletion;
-import de.njsm.stocks.common.api.EanNumberForInsertion;
-import de.njsm.stocks.common.api.FoodForDeletion;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Instant;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
-public class EanNumberHandlerTest extends DbTestCase {
+public class EanNumberHandlerTest extends DbTestCase implements EntityDbTestCase<EanNumberRecord, EanNumber> {
 
     private EanNumberHandler uut;
 
@@ -56,14 +49,7 @@ public class EanNumberHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> code = uut.addReturningId(data);
 
-        assertTrue(code.isSuccess());
-        assertEquals(Integer.valueOf(2), code.success());
-
-        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-        assertThat(dbData.success().collect(Collectors.toList()),
-                hasItem(matchesInsertable(data)));
+        assertInsertableIsInserted(code, data, 2, 2);
     }
 
     @Test
@@ -138,5 +124,10 @@ public class EanNumberHandlerTest extends DbTestCase {
         assertEquals(StatusCode.SUCCESS, result);
         codes = uut.get(false, Instant.EPOCH).success().count();
         assertEquals(0, codes);
+    }
+
+    @Override
+    public CrudDatabaseHandler<EanNumberRecord, EanNumber> getDbHandler() {
+        return uut;
     }
 }

@@ -19,11 +19,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.Recipe;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.BitemporalRecipe;
-import de.njsm.stocks.common.api.RecipeForDeletion;
-import de.njsm.stocks.common.api.RecipeForInsertion;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,13 +31,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
-public class RecipeHandlerTest extends DbTestCase {
+public class RecipeHandlerTest extends DbTestCase implements EntityDbTestCase<RecipeRecord, Recipe> {
 
     private RecipeHandler uut;
 
@@ -62,13 +60,7 @@ public class RecipeHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
-        assertTrue(result.isSuccess());
-        assertEquals(Integer.valueOf(2), result.success());
-        Validation<StatusCode, Stream<Recipe>> recipes = uut.get(false, Instant.EPOCH);
-        List<Recipe> list = recipes.success().collect(Collectors.toList());
-        assertTrue(recipes.isSuccess());
-        assertEquals(2, list.size());
-        assertThat(list, hasItem(matchesInsertable(data)));
+        assertInsertableIsInserted(result, data, 2, 2);
     }
 
     @Test
@@ -116,6 +108,41 @@ public class RecipeHandlerTest extends DbTestCase {
     }
 
     @Test
+    public void editingWorks() {
+        RecipeForEditing recipe = RecipeForEditing.builder()
+                .id(1)
+                .version(0)
+                .name("Bread")
+                .instructions("Add bread")
+                .duration(Duration.ofHours(2))
+                .build();
+
+        StatusCode result = uut.edit(recipe);
+
+        assertThat(result, is(StatusCode.SUCCESS));
+        Validation<StatusCode, Stream<Recipe>> recipes = uut.get(false, Instant.EPOCH);
+        assertTrue(recipes.isSuccess());
+        List<Recipe> list = recipes.success().collect(Collectors.toList());
+        assertEquals(1, list.size());
+        assertThat(list, hasItem(matchesVersionable(recipe)));
+    }
+
+    @Test
+    public void editingWithoutChangeIsRejected() {
+        RecipeForEditing recipe = RecipeForEditing.builder()
+                .id(1)
+                .version(0)
+                .name("Cake")
+                .instructions("Mix flour and sugar. Bake directly")
+                .duration(Duration.ofHours(1))
+                .build();
+
+        StatusCode result = uut.edit(recipe);
+
+        assertThat(result, is(StatusCode.INVALID_DATA_VERSION));
+    }
+
+    @Test
     public void deletingWorks() {
         RecipeForDeletion recipe = RecipeForDeletion.builder()
                 .id(1)
@@ -128,5 +155,10 @@ public class RecipeHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<Recipe>> stream = uut.get(false, Instant.EPOCH);
         assertTrue(stream.isSuccess());
         assertEquals(0, stream.success().count());
+    }
+
+    @Override
+    public CrudDatabaseHandler<RecipeRecord, Recipe> getDbHandler() {
+        return uut;
     }
 }

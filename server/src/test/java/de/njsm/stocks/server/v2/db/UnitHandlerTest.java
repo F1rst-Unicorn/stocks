@@ -19,12 +19,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.Unit;
-import de.njsm.stocks.common.api.BitemporalUnit;
-import de.njsm.stocks.common.api.UnitForDeletion;
-import de.njsm.stocks.common.api.UnitForInsertion;
-import de.njsm.stocks.common.api.UnitForRenaming;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,14 +30,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
-public class UnitHandlerTest extends DbTestCase {
+public class UnitHandlerTest extends DbTestCase implements EntityDbTestCase<UnitRecord, Unit> {
 
     private UnitHandler uut;
 
@@ -59,13 +54,7 @@ public class UnitHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
-        assertTrue(result.isSuccess());
-        assertEquals(Integer.valueOf(3), result.success());
-        Validation<StatusCode, Stream<Unit>> units = uut.get(false, Instant.EPOCH);
-        List<Unit> list = units.success().collect(Collectors.toList());
-        assertTrue(units.isSuccess());
-        assertEquals(3, list.size());
-        assertThat(list, hasItem(matchesInsertable(data)));
+        assertInsertableIsInserted(result, data, 3, 3);
     }
 
     @Test
@@ -173,5 +162,10 @@ public class UnitHandlerTest extends DbTestCase {
                 .bind(uut::commit);
 
         assertEquals(StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION, result);
+    }
+
+    @Override
+    public CrudDatabaseHandler<UnitRecord, Unit> getDbHandler() {
+        return uut;
     }
 }

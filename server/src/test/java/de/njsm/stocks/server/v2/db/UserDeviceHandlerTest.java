@@ -21,6 +21,7 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -39,7 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class UserDeviceHandlerTest extends DbTestCase {
+public class UserDeviceHandlerTest extends DbTestCase implements EntityDbTestCase<UserDeviceRecord, UserDevice> {
 
     private UserDeviceHandler uut;
 
@@ -85,14 +85,7 @@ public class UserDeviceHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.addReturningId(device);
 
-
-        Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false, Instant.EPOCH);
-        assertTrue(result.isSuccess());
-        assertEquals(Integer.valueOf(6), result.success());
-        assertTrue(devices.isSuccess());
-        List<UserDevice> list = devices.success().collect(Collectors.toList());
-        assertEquals(6, list.size());
-        assertThat(list, hasItem(matchesInsertable(device)));
+        assertInsertableIsInserted(result, device, 6, 6);
     }
 
     @Test
@@ -134,5 +127,10 @@ public class UserDeviceHandlerTest extends DbTestCase {
         assertEquals(2, result.success().size());
         assertThat(result.success(), hasItem(UserDeviceForPrincipals.builder().id(2).build()));
         assertThat(result.success(), hasItem(UserDeviceForPrincipals.builder().id(3).build()));
+    }
+
+    @Override
+    public CrudDatabaseHandler<UserDeviceRecord, UserDevice> getDbHandler() {
+        return uut;
     }
 }

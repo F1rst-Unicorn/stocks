@@ -19,12 +19,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.ScaledUnit;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.BitemporalScaledUnit;
-import de.njsm.stocks.common.api.ScaledUnitForDeletion;
-import de.njsm.stocks.common.api.ScaledUnitForEditing;
-import de.njsm.stocks.common.api.ScaledUnitForInsertion;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,14 +31,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
-public class ScaledUnitHandlerTest extends DbTestCase {
+public class ScaledUnitHandlerTest extends DbTestCase implements EntityDbTestCase<ScaledUnitRecord, ScaledUnit> {
 
     private ScaledUnitHandler uut;
 
@@ -60,13 +55,7 @@ public class ScaledUnitHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
-        assertTrue(result.isSuccess());
-        assertEquals(Integer.valueOf(3), result.success());
-        Validation<StatusCode, Stream<ScaledUnit>> units = uut.get(false, Instant.EPOCH);
-        List<ScaledUnit> list = units.success().collect(Collectors.toList());
-        assertTrue(units.isSuccess());
-        assertEquals(3, list.size());
-        assertThat(list, hasItem(matchesInsertable(data)));
+        assertInsertableIsInserted(result, data, 3, 3);
     }
 
     @Test
@@ -148,5 +137,10 @@ public class ScaledUnitHandlerTest extends DbTestCase {
         assertEquals(StatusCode.SUCCESS, result);
         List<ScaledUnit> data = uut.get(false, Instant.EPOCH).success().collect(Collectors.toList());
         assertThat(data, hasItem(matchesVersionable(input)));
+    }
+
+    @Override
+    public CrudDatabaseHandler<ScaledUnitRecord, ScaledUnit> getDbHandler() {
+        return uut;
     }
 }

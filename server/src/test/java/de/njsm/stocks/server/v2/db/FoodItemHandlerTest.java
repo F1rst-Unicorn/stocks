@@ -20,6 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import fj.data.Validation;
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +33,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -41,7 +41,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
-public class FoodItemHandlerTest extends DbTestCase {
+public class FoodItemHandlerTest extends DbTestCase implements EntityDbTestCase<FoodItemRecord, FoodItem> {
 
     private FoodItemHandler uut;
 
@@ -83,15 +83,9 @@ public class FoodItemHandlerTest extends DbTestCase {
     public void testInserting() {
         FoodItemForInsertion item = new FoodItemForInsertion(Instant.EPOCH, 2, 1, 1, 1, 1);
 
-        StatusCode result = uut.add(item);
+        Validation<StatusCode, Integer> result = uut.addReturningId(item);
 
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
-        assertTrue(result.isSuccess());
-        assertTrue(items.isSuccess());
-
-        List<FoodItem> list = items.success().collect(Collectors.toList());
-        assertEquals(4, list.size());
-        assertThat(list, hasItem(matchesInsertable(item)));
+        assertInsertableIsInserted(result, item, 4, 4);
     }
 
     @Test
@@ -316,5 +310,10 @@ public class FoodItemHandlerTest extends DbTestCase {
         assertEquals(StatusCode.SUCCESS, result);
         entities = uut.get(false, Instant.EPOCH).success().count();
         assertEquals(0, entities);
+    }
+
+    @Override
+    public CrudDatabaseHandler<FoodItemRecord, FoodItem> getDbHandler() {
+        return uut;
     }
 }

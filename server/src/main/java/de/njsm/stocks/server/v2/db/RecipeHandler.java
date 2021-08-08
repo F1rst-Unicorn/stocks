@@ -19,13 +19,12 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.Recipe;
-import de.njsm.stocks.common.api.BitemporalRecipe;
-import de.njsm.stocks.common.api.RecipeForGetting;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +40,24 @@ public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
                          String resourceIdentifier,
                          int timeout) {
         super(connectionFactory, resourceIdentifier, timeout);
+    }
+
+    public StatusCode edit(RecipeForEditing recipe) {
+        return runCommand(context -> currentUpdate(context, List.of(
+                        RECIPE.ID,
+                        RECIPE.VERSION.add(1),
+                        DSL.inline(recipe.name()),
+                        DSL.inline(recipe.instructions()),
+                        DSL.inline(recipe.duration())
+                ),
+                RECIPE.ID.eq(recipe.id())
+                        .and(RECIPE.VERSION.eq(recipe.version()))
+                        .and(
+                                RECIPE.NAME.ne(recipe.name())
+                                        .or(RECIPE.INSTRUCTIONS.ne(recipe.instructions()))
+                                        .or(RECIPE.DURATION.ne(recipe.duration()))
+                        )
+        ).map(this::notFoundMeansInvalidVersion));
     }
 
     @Override

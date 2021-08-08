@@ -20,6 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,14 +31,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
-public class FoodHandlerTest extends DbTestCase {
+public class FoodHandlerTest extends DbTestCase implements EntityDbTestCase<FoodRecord, Food> {
 
     private FoodHandler uut;
 
@@ -65,15 +65,9 @@ public class FoodHandlerTest extends DbTestCase {
     public void addAFood() {
         FoodForInsertion data = new FoodForInsertion("Banana", 1);
 
-        StatusCode code = uut.add(data);
+        Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
-        assertTrue(code.isSuccess());
-
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-        assertThat(dbData.success().collect(Collectors.toList()),
-                hasItem(matchesInsertable(data)));
+        assertInsertableIsInserted(result, data, 4, 4);
     }
 
     @Test
@@ -311,5 +305,10 @@ public class FoodHandlerTest extends DbTestCase {
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
+
+    @Override
+    public CrudDatabaseHandler<FoodRecord, Food> getDbHandler() {
+        return uut;
     }
 }

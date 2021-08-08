@@ -19,12 +19,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.User;
-import de.njsm.stocks.common.api.BitemporalUser;
-import de.njsm.stocks.common.api.UserForDeletion;
-import de.njsm.stocks.common.api.UserForGetting;
-import de.njsm.stocks.common.api.UserForInsertion;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +30,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -43,7 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class UserHandlerTest extends DbTestCase {
+public class UserHandlerTest extends DbTestCase implements EntityDbTestCase<UserRecord, User> {
 
     private UserHandler uut;
 
@@ -87,13 +82,7 @@ public class UserHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.addReturningId(input);
 
-        Validation<StatusCode, Stream<User>> users = uut.get(false, Instant.EPOCH);
-        assertTrue(result.isSuccess());
-        List<User> list = users.success().collect(Collectors.toList());
-        assertEquals(Integer.valueOf(5), result.success());
-        assertTrue(users.isSuccess());
-        assertEquals(5, list.size());
-        assertThat(list, hasItem(matchesInsertable(input)));
+        assertInsertableIsInserted(result, input, 5, 5);
     }
 
     @Test
@@ -127,4 +116,8 @@ public class UserHandlerTest extends DbTestCase {
         assertThat(list, not(hasItem(expectedAbsent)));
     }
 
+    @Override
+    public CrudDatabaseHandler<UserRecord, User> getDbHandler() {
+        return uut;
+    }
 }

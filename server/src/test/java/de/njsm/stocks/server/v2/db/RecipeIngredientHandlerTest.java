@@ -20,10 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.BitemporalRecipeIngredient;
-import de.njsm.stocks.common.api.RecipeForDeletion;
-import de.njsm.stocks.common.api.RecipeIngredientForDeletion;
-import de.njsm.stocks.common.api.RecipeIngredientWithIdForInsertion;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,13 +31,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
-public class RecipeIngredientHandlerTest extends DbTestCase {
+public class RecipeIngredientHandlerTest extends DbTestCase implements EntityDbTestCase<RecipeIngredientRecord, RecipeIngredient> {
 
     private RecipeIngredientHandler uut;
 
@@ -63,13 +57,7 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
 
         Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
-        assertTrue(result.isSuccess());
-        assertEquals(Integer.valueOf(2), result.success());
-        Validation<StatusCode, Stream<RecipeIngredient>> recipeIngredients = uut.get(false, Instant.EPOCH);
-        List<RecipeIngredient> list = recipeIngredients.success().collect(Collectors.toList());
-        assertTrue(recipeIngredients.isSuccess());
-        assertEquals(2, list.size());
-        assertThat(list, hasItem(matchesInsertable(data)));
+        assertInsertableIsInserted(result, data, 2, 2);
     }
 
     @Test
@@ -247,5 +235,10 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<RecipeIngredient>> stream = uut.get(false, Instant.EPOCH);
         assertTrue(stream.isSuccess());
         assertEquals(1, stream.success().count());
+    }
+
+    @Override
+    public CrudDatabaseHandler<RecipeIngredientRecord, RecipeIngredient> getDbHandler() {
+        return uut;
     }
 }

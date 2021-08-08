@@ -20,6 +20,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 import fj.data.Validation;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,13 +32,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 
-public class LocationHandlerTest extends DbTestCase {
+public class LocationHandlerTest extends DbTestCase implements EntityDbTestCase<LocationRecord, Location> {
 
     private LocationHandler uut;
 
@@ -103,15 +102,9 @@ public class LocationHandlerTest extends DbTestCase {
     public void addALocation() {
         LocationForInsertion data = new LocationForInsertion("Fridge");
 
-        StatusCode code = uut.add(data);
+        Validation<StatusCode, Integer> result = uut.addReturningId(data);
 
-        assertTrue(code.isSuccess());
-
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-        assertThat(dbData.success().collect(Collectors.toList()),
-                hasItem(matchesInsertable(data)));
+        assertInsertableIsInserted(result, data, 3, 3);
     }
 
     @Test
@@ -259,5 +252,10 @@ public class LocationHandlerTest extends DbTestCase {
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
+
+    @Override
+    public CrudDatabaseHandler<LocationRecord, Location> getDbHandler() {
+        return uut;
     }
 }
