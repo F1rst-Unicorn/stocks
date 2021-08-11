@@ -126,7 +126,7 @@ public class ScaledUnit extends VersionedData {
 
     private static int getExponentPivot(BigDecimal input) {
         int result = 0;
-        if (input.equals(ZERO))
+        if (input.compareTo(ZERO) == 0)
             return result;
 
         BigDecimal iterator = input;
@@ -178,7 +178,7 @@ public class ScaledUnit extends VersionedData {
         if (this == o) return true;
         if (!(o instanceof ScaledUnit)) return false;
         ScaledUnit that = (ScaledUnit) o;
-        return getUnit() == that.getUnit() && getScale().equals(that.getScale());
+        return getUnit() == that.getUnit() && getScale().compareTo(that.getScale()) == 0;
     }
 
     @Override
