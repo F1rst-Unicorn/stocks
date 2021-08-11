@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.10.0.2]
+
 ### Fixed
 
 * The app used to hang in certain circumstances when a 0 amount should have been
