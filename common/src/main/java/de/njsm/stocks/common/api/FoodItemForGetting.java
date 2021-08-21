@@ -20,85 +20,21 @@
 package de.njsm.stocks.common.api;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
-import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.time.Instant;
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_FoodItemForGetting.Builder.class)
+public abstract class FoodItemForGetting implements FoodItem {
 
-public class FoodItemForGetting extends VersionedData implements Versionable<FoodItem>, FoodItem {
-
-    private final Instant eatByDate;
-
-    private final int ofType;
-
-    private final int storedIn;
-
-    private final int registers;
-
-    private final int buys;
-
-    private final int unit;
-
-    public FoodItemForGetting(int id, int version, Instant eatByDate, int ofType, int storedIn, int registers, int buys, int unit) {
-        super(id, version);
-        this.eatByDate = eatByDate;
-        this.ofType = ofType;
-        this.storedIn = storedIn;
-        this.registers = registers;
-        this.buys = buys;
-        this.unit = unit;
+    public static FoodItemForGetting.Builder builder() {
+        return new AutoValue_FoodItemForGetting.Builder();
     }
 
-    @JsonSerialize(using = InstantSerialiser.class)
-    @JsonDeserialize(using = InstantDeserialiser.class)
-    public Instant eatByDate() {
-        return eatByDate;
-    }
-
-    public int ofType() {
-        return ofType;
-    }
-
-    public int storedIn() {
-        return storedIn;
-    }
-
-    public int registers() {
-        return registers;
-    }
-
-    public int buys() {
-        return buys;
-    }
-
-    public int unit() {
-        return unit;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        FoodItemForGetting that = (FoodItemForGetting) o;
-        return ofType() == that.ofType() && storedIn() == that.storedIn() && registers() == that.registers() && buys() == that.buys() && eatByDate().equals(that.eatByDate());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), eatByDate(), ofType(), storedIn(), registers(), buys());
-    }
-
-    @Override
-    public boolean isContainedIn(FoodItem item, boolean increment) {
-        return FoodItem.super.isContainedIn(item, increment) &&
-                eatByDate.equals(item.eatByDate()) &&
-                ofType == item.ofType() &&
-                storedIn == item.storedIn() &&
-                registers == item.registers() &&
-                buys == item.buys() &&
-                unit == item.unit();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<FoodItemForGetting>
+            implements Versionable.Builder<Builder>, FoodItem.Builder<Builder> {
     }
 }

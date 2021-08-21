@@ -19,56 +19,46 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+import javax.annotation.Nullable;
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Optional;
 
-public class FoodItemForEditing extends VersionedData implements Versionable<FoodItem> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_FoodItemForEditing.class)
+public abstract class FoodItemForEditing implements Versionable<FoodItem> {
 
-    private final Instant eatBy;
-
-    private final int storedIn;
-
-    private final Optional<Integer> unit;
-
-    public FoodItemForEditing(int id, int version, Instant eatBy, int storedIn, Integer unit) {
-        super(id, version);
-        this.eatBy = eatBy;
-        this.storedIn = storedIn;
-        this.unit = Optional.ofNullable(unit);
+    public static Builder builder() {
+        return new AutoValue_FoodItemForEditing.Builder();
     }
 
-    public Instant getEatBy() {
-        return eatBy;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<FoodItemForEditing>
+            implements Versionable.Builder<Builder> {
+
+        public abstract Builder eatBy(Instant v);
+
+        public abstract Builder storedIn(int v);
+
+        public abstract Builder unit(@Nullable Integer v);
     }
 
-    public int getStoredIn() {
-        return storedIn;
-    }
+    public abstract Instant eatBy();
 
-    public Optional<Integer> getUnitOptional() {
-        return unit;
-    }
+    public abstract int storedIn();
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FoodItemForEditing)) return false;
-        if (!super.equals(o)) return false;
-        FoodItemForEditing that = (FoodItemForEditing) o;
-        return getStoredIn() == that.getStoredIn() && getEatBy().equals(that.getEatBy()) && unit.equals(that.unit);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getEatBy(), getStoredIn(), unit);
-    }
+    public abstract Optional<Integer> unit();
 
     @Override
     public boolean isContainedIn(FoodItem item, boolean increment) {
         return Versionable.super.isContainedIn(item, increment) &&
-                eatBy.equals(item.eatByDate()) &&
-                storedIn == item.storedIn() &&
-                unit.map(v -> v.equals(item.unit())).orElse(true);
+                eatBy().equals(item.eatByDate()) &&
+                storedIn() == item.storedIn() &&
+                unit().map(v -> v.equals(item.unit())).orElse(true);
     }
 }

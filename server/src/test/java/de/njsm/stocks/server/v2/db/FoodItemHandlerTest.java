@@ -84,14 +84,47 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
         assertTrue(result.isSuccess());
         List<FoodItem> list = result.success().collect(Collectors.toList());
         assertEquals(3, list.size());
-        assertEquals(new FoodItemForGetting(1, 0, Instant.EPOCH, 2, 1, 3, 2, 1), list.get(0));
-        assertEquals(new FoodItemForGetting(2, 0, Instant.EPOCH, 2, 1, 3, 2, 1), list.get(1));
-        assertEquals(new FoodItemForGetting(3, 0, Instant.EPOCH, 2, 1, 3, 2, 1), list.get(2));
+        assertEquals(FoodItemForGetting.builder()
+                .id(1)
+                .version(0)
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(1)
+                .registers(3)
+                .buys(2)
+                .unit(1)
+                .build(), list.get(0));
+        assertEquals(FoodItemForGetting.builder()
+                .id(2)
+                .version(0)
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(1)
+                .registers(3)
+                .buys(2)
+                .unit(1)
+                .build(), list.get(1));
+        assertEquals(FoodItemForGetting.builder()
+                .id(3)
+                .version(0)
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(1)
+                .registers(3)
+                .buys(2)
+                .unit(1)
+                .build(), list.get(2));
     }
 
     @Test
     public void validEditingHappens() {
-        FoodItemForEditing item = new FoodItemForEditing(1, 0, Instant.ofEpochMilli(42), 2, 2);
+        FoodItemForEditing item = FoodItemForEditing.builder()
+                .id(1)
+                .version(0)
+                .eatBy(Instant.ofEpochMilli(42))
+                .storedIn(2)
+                .unit(2)
+                .build();
 
         StatusCode result = uut.edit(item);
 
@@ -100,7 +133,13 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void editingUnitWorks() {
-        FoodItemForEditing data = new FoodItemForEditing(1, 0, Instant.EPOCH, 1, 2);
+        FoodItemForEditing data = FoodItemForEditing.builder()
+                .id(1)
+                .version(0)
+                .eatBy(Instant.EPOCH)
+                .storedIn(1)
+                .unit(2)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -109,7 +148,13 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void editingWrongVersionIsReported() {
-        FoodItemForEditing item = new FoodItemForEditing(1, 99, Instant.ofEpochMilli(42), 2, 1);
+        FoodItemForEditing item = FoodItemForEditing.builder()
+                .id(1)
+                .version(99)
+                .eatBy(Instant.EPOCH)
+                .storedIn(2)
+                .unit(1)
+                .build();
 
         StatusCode result = uut.edit(item);
 
@@ -118,7 +163,13 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void editingUnknownIdIsReported() {
-        FoodItemForEditing item = new FoodItemForEditing(100, 0, Instant.ofEpochMilli(42), 2, 1);
+        FoodItemForEditing item = FoodItemForEditing.builder()
+                .id(100)
+                .version(0)
+                .eatBy(Instant.EPOCH)
+                .storedIn(2)
+                .unit(1)
+                .build();
 
         StatusCode result = uut.edit(item);
 
@@ -271,7 +322,14 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Override
     public Insertable<FoodItem> getInsertable() {
-        return new FoodItemForInsertion(Instant.EPOCH, 2, 1, 1, 1, 1);
+        return FoodItemForInsertion.builder()
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(1)
+                .registers(1)
+                .buys(1)
+                .unit(1)
+                .build();
     }
 
     @Override
@@ -281,16 +339,25 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Override
     public Versionable<FoodItem> getUnknownEntity() {
-        return new FoodItemForDeletion(getNumberOfEntities() + 1, 0);
+        return FoodItemForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
     }
 
     @Override
     public Versionable<FoodItem> getWrongVersionEntity() {
-        return new FoodItemForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+        return FoodItemForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
     }
 
     @Override
     public Versionable<FoodItem> getValidEntity() {
-        return new FoodItemForDeletion(1, 0);
+        return FoodItemForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
     }
 }

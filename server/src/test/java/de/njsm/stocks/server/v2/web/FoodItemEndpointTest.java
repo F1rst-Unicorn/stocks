@@ -114,12 +114,17 @@ public class FoodItemEndpointTest {
 
     @Test
     public void validInsertHappens() throws IOException {
-        FoodItemForInsertion expected = new FoodItemForInsertion(Instant.EPOCH, 2, 2,
-                PrincipalFilterTest.TEST_USER.getDid(),
-                PrincipalFilterTest.TEST_USER.getUid(), 1);
+        FoodItemForInsertion expected = FoodItemForInsertion.builder()
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(2)
+                .registers(TEST_USER.getDid())
+                .buys(TEST_USER.getUid())
+                .unit(1)
+                .build();
         Mockito.when(manager.add(expected)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.putItem(Util.createMockRequest(), DATE, expected.getStoredIn(), expected.getOfType(), expected.getUnit().get());
+        Response result = uut.putItem(Util.createMockRequest(), DATE, expected.storedIn(), expected.ofType(), expected.unit().get());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).add(expected);
@@ -160,11 +165,17 @@ public class FoodItemEndpointTest {
 
     @Test
     public void validEditingHappens() throws IOException {
-        FoodItemForEditing expected = new FoodItemForEditing(2, 2, Instant.EPOCH, 2, 1);
+        FoodItemForEditing expected = FoodItemForEditing.builder()
+                .id(2)
+                .version(2)
+                .eatBy(Instant.EPOCH)
+                .storedIn(2)
+                .unit(1)
+                .build();
         Mockito.when(manager.edit(expected)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.editItem(Util.createMockRequest(),
-                expected.id(), expected.version(), DATE, expected.getStoredIn(), expected.getUnitOptional().get());
+                expected.id(), expected.version(), DATE, expected.storedIn(), expected.unit().get());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).edit(expected);
@@ -189,7 +200,10 @@ public class FoodItemEndpointTest {
 
     @Test
     public void validDeletionHappens() {
-        FoodItemForDeletion expected = new FoodItemForDeletion(2, 2);
+        FoodItemForDeletion expected = FoodItemForDeletion.builder()
+                .id(2)
+                .version(2)
+                .build();
         Mockito.when(manager.delete(expected)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.delete(createMockRequest(), expected.id(), expected.version());

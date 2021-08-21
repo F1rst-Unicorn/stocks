@@ -19,84 +19,81 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Optional;
 
-public class FoodItemForInsertion implements Insertable<FoodItem> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_FoodItemForInsertion.Builder.class)
+public abstract class FoodItemForInsertion implements Insertable<FoodItem>, SelfValidating {
 
-    private final Instant eatByDate;
+    @JsonGetter
+    public abstract Instant eatByDate();
 
-    private final int ofType;
+    @JsonGetter
+    public abstract int ofType();
 
-    private final int storedIn;
-
-    private final int registers;
-
-    private final int buys;
-
-    private final Optional<Integer> unit;
-
-    public FoodItemForInsertion(Instant eatByDate, int ofType, int storedIn, int registers, int buys, Integer unit) {
-        this.eatByDate = eatByDate;
-        this.ofType = ofType;
-        this.storedIn = storedIn;
-        this.registers = registers;
-        this.buys = buys;
-        this.unit = Optional.ofNullable(unit);
+    public Identifiable<Food> ofTypeIdentifiable() {
+        return this::ofType;
     }
 
-    public Instant getEatByDate() {
-        return eatByDate;
+    @JsonGetter
+    public abstract int storedIn();
+
+    @JsonGetter
+    public abstract int registers();
+
+    @JsonGetter
+    public abstract int buys();
+
+    @JsonGetter
+    public abstract Optional<Integer> unit();
+
+    public static Builder builder() {
+        return new AutoValue_FoodItemForInsertion.Builder();
     }
 
-    public int getOfType() {
-        return ofType;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<FoodItemForInsertion> {
 
-    public int getStoredIn() {
-        return storedIn;
-    }
+        public abstract Builder eatByDate(Instant v);
 
-    public int getRegisters() {
-        return registers;
-    }
+        public abstract Builder ofType(int v);
 
-    public Identifiable<Food> getOfTypeFood() {
-        return () -> ofType;
-    }
+        public abstract Builder storedIn(int v);
 
-    public int getBuys() {
-        return buys;
-    }
+        public abstract Builder registers(int v);
 
-    public Optional<Integer> getUnit() {
-        return unit;
-    }
+        public abstract Builder buys(int v);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FoodItemForInsertion)) return false;
-        FoodItemForInsertion that = (FoodItemForInsertion) o;
-        return getOfType() == that.getOfType() && getStoredIn() == that.getStoredIn() && getRegisters() == that.getRegisters() && getBuys() == that.getBuys() && getEatByDate().equals(that.getEatByDate()) && getUnit().equals(that.getUnit());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getEatByDate(), getOfType(), getStoredIn(), getRegisters(), getBuys(), getUnit());
+        public abstract Builder unit(@Nullable Integer v);
     }
 
     @Override
     public boolean isContainedIn(FoodItem entity) {
-        return eatByDate.equals(entity.eatByDate()) &&
-                ofType == entity.ofType() &&
-                storedIn == entity.storedIn() &&
-                registers == entity.registers() &&
-                buys == entity.buys() &&
-                unit.map(v -> v.equals(entity.unit())).orElse(true);
+        return eatByDate().equals(entity.eatByDate()) &&
+                ofType() == entity.ofType() &&
+                storedIn() == entity.storedIn() &&
+                registers() == entity.registers() &&
+                buys() == entity.buys() &&
+                unit().map(v -> v.equals(entity.unit())).orElse(true);
+    }
+
+    @Override
+    public void validate() {
+        Preconditions.checkState(ofType() > 0, "ofType id is invalid");
+        Preconditions.checkState(storedIn() > 0, "storedIn id is invalid");
+        Preconditions.checkState(registers() > 0, "registers id is invalid");
+        Preconditions.checkState(buys() > 0, "buys id is invalid");
     }
 
     @Override

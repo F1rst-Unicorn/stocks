@@ -58,7 +58,7 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
 
     @Override
     public InsertOnDuplicateStep<R> foodItemForInsertion(FoodItemForInsertion foodItemForInsertion, Input<R> input) {
-        if (foodItemForInsertion.getUnit().isEmpty())
+        if (foodItemForInsertion.unit().isEmpty())
             return input.getInsertSetStep().columns(FOOD_ITEM.EAT_BY,
                             FOOD_ITEM.STORED_IN,
                             FOOD_ITEM.OF_TYPE,
@@ -67,11 +67,11 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
                             FOOD_ITEM.INITIATES,
                             FOOD_ITEM.UNIT)
                     .select(DSL.select(
-                                    DSL.inline(OffsetDateTime.from(foodItemForInsertion.getEatByDate().atOffset(ZoneOffset.UTC))),
-                                    DSL.inline(foodItemForInsertion.getStoredIn()),
-                                    DSL.inline(foodItemForInsertion.getOfType()),
-                                    DSL.inline(foodItemForInsertion.getRegisters()),
-                                    DSL.inline(foodItemForInsertion.getBuys()),
+                                    DSL.inline(OffsetDateTime.from(foodItemForInsertion.eatByDate().atOffset(ZoneOffset.UTC))),
+                                    DSL.inline(foodItemForInsertion.storedIn()),
+                                    DSL.inline(foodItemForInsertion.ofType()),
+                                    DSL.inline(foodItemForInsertion.registers()),
+                                    DSL.inline(foodItemForInsertion.buys()),
                                     DSL.inline(input.getPrincipals().getDid()),
                                     DSL.min(SCALED_UNIT.ID))
                             .from(SCALED_UNIT));
@@ -83,13 +83,13 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
                             FOOD_ITEM.BUYS,
                             FOOD_ITEM.INITIATES,
                             FOOD_ITEM.UNIT)
-                    .values(OffsetDateTime.from(foodItemForInsertion.getEatByDate().atOffset(ZoneOffset.UTC)),
-                            foodItemForInsertion.getStoredIn(),
-                            foodItemForInsertion.getOfType(),
-                            foodItemForInsertion.getRegisters(),
-                            foodItemForInsertion.getBuys(),
+                    .values(OffsetDateTime.from(foodItemForInsertion.eatByDate().atOffset(ZoneOffset.UTC)),
+                            foodItemForInsertion.storedIn(),
+                            foodItemForInsertion.ofType(),
+                            foodItemForInsertion.registers(),
+                            foodItemForInsertion.buys(),
                             input.getPrincipals().getDid(),
-                            foodItemForInsertion.getUnit().get());
+                            foodItemForInsertion.unit().get());
     }
 
     @Override

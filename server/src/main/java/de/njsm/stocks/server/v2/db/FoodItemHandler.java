@@ -64,13 +64,13 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                 return StatusCode.NOT_FOUND;
             }
 
-            OffsetDateTime newEatByDate = item.getEatBy().atOffset(ZoneOffset.UTC);
+            OffsetDateTime newEatByDate = item.eatBy().atOffset(ZoneOffset.UTC);
 
-            Field<?> unitField = item.getUnitOptional()
+            Field<?> unitField = item.unit()
                     .map(v -> (Field<Integer>) DSL.inline(v))
                     .orElse(FOOD_ITEM.UNIT);
 
-            Condition unitCondition = item.getUnitOptional()
+            Condition unitCondition = item.unit()
                     .map(FOOD_ITEM.UNIT::ne)
                     .orElseGet(DSL::falseCondition);
 
@@ -78,7 +78,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.ID,
                     DSL.inline(OffsetDateTime.from(newEatByDate)),
                     FOOD_ITEM.OF_TYPE,
-                    DSL.inline(item.getStoredIn()),
+                    DSL.inline(item.storedIn()),
                     FOOD_ITEM.REGISTERS,
                     FOOD_ITEM.BUYS,
                     FOOD_ITEM.VERSION.add(1),
@@ -87,7 +87,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     FOOD_ITEM.ID.eq(item.id())
                             .and(FOOD_ITEM.VERSION.eq(item.version()))
                             .and(FOOD_ITEM.EAT_BY.ne(newEatByDate)
-                                    .or(FOOD_ITEM.STORED_IN.ne(item.getStoredIn()))
+                                    .or(FOOD_ITEM.STORED_IN.ne(item.storedIn()))
                                     .or(unitCondition)
                             )
             )
@@ -215,15 +215,16 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     .unit(cursor.getUnit())
                     .build();
         else
-            return cursor -> new FoodItemForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getEatBy().toInstant(),
-                    cursor.getOfType(),
-                    cursor.getStoredIn(),
-                    cursor.getRegisters(),
-                    cursor.getBuys(),
-                    cursor.getUnit());
+            return cursor -> FoodItemForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .eatByDate(cursor.getEatBy().toInstant())
+                    .ofType(cursor.getOfType())
+                    .storedIn(cursor.getStoredIn())
+                    .registers(cursor.getRegisters())
+                    .buys(cursor.getBuys())
+                    .unit(cursor.getUnit())
+                    .build();
     }
 
     @Override

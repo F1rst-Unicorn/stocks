@@ -45,7 +45,7 @@ public class FoodItemManager extends BusinessObject<FoodItemRecord, FoodItem> im
 
     public StatusCode add(FoodItemForInsertion item) {
         return runOperation(() -> dbHandler.add(item)
-                .bind(() -> foodHandler.setToBuyStatus(item.getOfTypeFood(), false)));
+                .bind(() -> foodHandler.setToBuyStatus(item.ofTypeIdentifiable(), false)));
     }
 
     public StatusCode edit(FoodItemForEditing item) {

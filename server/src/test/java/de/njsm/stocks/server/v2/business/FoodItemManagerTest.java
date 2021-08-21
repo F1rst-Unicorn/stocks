@@ -82,7 +82,14 @@ public class FoodItemManagerTest {
 
     @Test
     public void testAddingItem() {
-        FoodItemForInsertion data = new FoodItemForInsertion(Instant.now(), 2, 2, 3, 3, 1);
+        FoodItemForInsertion data = FoodItemForInsertion.builder()
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(2)
+                .registers(3)
+                .buys(3)
+                .unit(1)
+                .build();
         Mockito.when(backend.add(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodHandler.setToBuyStatus(any(), eq(false))).thenReturn(StatusCode.SUCCESS);
 
@@ -96,7 +103,13 @@ public class FoodItemManagerTest {
 
     @Test
     public void testRenamingItem() {
-        FoodItemForEditing data = new FoodItemForEditing(1, 2, Instant.now(), 3, 1);
+        FoodItemForEditing data = FoodItemForEditing.builder()
+                .id(1)
+                .version(2)
+                .eatBy(Instant.EPOCH)
+                .storedIn(3)
+                .unit(1)
+                .build();
         Mockito.when(backend.edit(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.edit(data);
@@ -108,7 +121,10 @@ public class FoodItemManagerTest {
 
     @Test
     public void testDeletingItem() {
-        FoodItemForDeletion data = new FoodItemForDeletion(1, 2);
+        FoodItemForDeletion data = FoodItemForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);

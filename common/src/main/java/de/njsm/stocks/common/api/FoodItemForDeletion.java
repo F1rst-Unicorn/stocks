@@ -19,9 +19,22 @@
 
 package de.njsm.stocks.common.api;
 
-public class FoodItemForDeletion extends VersionedData implements Versionable<FoodItem> {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    public FoodItemForDeletion(int id, int version) {
-        super(id, version);
+@AutoValue
+@JsonDeserialize(builder = AutoValue_FoodItemForDeletion.class)
+public abstract class FoodItemForDeletion implements Versionable<FoodItem> {
+
+    public static FoodItemForDeletion.Builder builder() {
+        return new AutoValue_FoodItemForDeletion.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<FoodItemForDeletion>
+            implements Versionable.Builder<Builder> {
     }
 }
