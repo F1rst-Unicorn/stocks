@@ -106,10 +106,13 @@ public class EanNumberEndpointTest {
 
     @Test
     public void eanNumberIsAdded() {
-        EanNumberForInsertion data = new EanNumberForInsertion(2, "CODE");
+        EanNumberForInsertion data = EanNumberForInsertion.builder()
+                .eanNumber("CODE")
+                .identifiesFood(2)
+                .build();
         when(manager.add(data)).thenReturn(SUCCESS);
 
-        Response response = uut.putEanNumber(createMockRequest(), data.getEanNumber(), data.getIdentifiesFood());
+        Response response = uut.putEanNumber(createMockRequest(), data.eanNumber(), data.identifiesFood());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).add(data);
@@ -119,7 +122,12 @@ public class EanNumberEndpointTest {
     @Test
     public void getEanNumberReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        List<EanNumber> data = Collections.singletonList(new EanNumberForGetting(1, 2, 2, "CODE"));
+        List<EanNumber> data = Collections.singletonList(EanNumberForGetting.builder()
+                .id(1)
+                .version(2)
+                .identifiesFood(2)
+                .eanNumber("CODE")
+                .build());
         when(manager.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
         uut.get(r, 0, null);
@@ -144,7 +152,10 @@ public class EanNumberEndpointTest {
 
     @Test
     public void deleteWorks() {
-        EanNumberForDeletion data = new EanNumberForDeletion(1, 0);
+        EanNumberForDeletion data = EanNumberForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
         when(manager.delete(data)).thenReturn(SUCCESS);
 
         Response response = uut.delete(createMockRequest(), data.id(), data.version());

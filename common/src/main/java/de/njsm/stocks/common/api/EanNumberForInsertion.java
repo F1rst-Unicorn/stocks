@@ -19,46 +19,49 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
-import java.util.Objects;
 
-public class EanNumberForInsertion implements Insertable<EanNumber> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_EanNumberForInsertion.Builder.class)
+public abstract class EanNumberForInsertion implements Insertable<EanNumber>, SelfValidating {
 
-    private final int identifiesFood;
+    @JsonGetter
+    public abstract int identifiesFood();
 
-    private final String eanNumber;
+    @JsonGetter
+    public abstract String eanNumber();
 
-    public EanNumberForInsertion(int identifiesFood, String eanNumber) {
-        this.identifiesFood = identifiesFood;
-        this.eanNumber = eanNumber;
+    public static Builder builder() {
+        return new AutoValue_EanNumberForInsertion.Builder();
     }
 
-    public int getIdentifiesFood() {
-        return identifiesFood;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<EanNumberForInsertion> {
 
-    public String getEanNumber() {
-        return eanNumber;
-    }
+        public abstract Builder identifiesFood(int v);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EanNumberForInsertion that = (EanNumberForInsertion) o;
-        return getIdentifiesFood() == that.getIdentifiesFood() && getEanNumber().equals(that.getEanNumber());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getIdentifiesFood(), getEanNumber());
+        @JsonSetter("eanCode")
+        public abstract Builder eanNumber(String v);
     }
 
     @Override
     public boolean isContainedIn(EanNumber entity) {
-        return identifiesFood == entity.identifiesFood() &&
-                eanNumber.equals(entity.eanNumber());
+        return identifiesFood() == entity.identifiesFood() &&
+                eanNumber().equals(entity.eanNumber());
+    }
+
+    @Override
+    public void validate() {
+        Preconditions.checkState(identifiesFood() > 0, "identifiesFood id is invalid");
     }
 
     @Override

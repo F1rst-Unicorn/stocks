@@ -85,7 +85,10 @@ public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTe
 
     @Override
     public Insertable<EanNumber> getInsertable() {
-        return new EanNumberForInsertion(1, "Code");
+        return EanNumberForInsertion.builder()
+                .identifiesFood(1)
+                .eanNumber("Code")
+                .build();
     }
 
     @Override
@@ -95,16 +98,25 @@ public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTe
 
     @Override
     public EanNumberForDeletion getUnknownEntity() {
-        return new EanNumberForDeletion(getNumberOfEntities() + 1, 0);
+        return EanNumberForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
     }
 
     @Override
     public EanNumberForDeletion getWrongVersionEntity() {
-        return new EanNumberForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+        return EanNumberForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
     }
 
     @Override
     public EanNumberForDeletion getValidEntity() {
-        return new EanNumberForDeletion(1, 0);
+        return EanNumberForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
     }
 }

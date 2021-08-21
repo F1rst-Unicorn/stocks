@@ -80,12 +80,12 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
                     .eanNumber(cursor.getNumber())
                     .build();
         else
-            return cursor -> new EanNumberForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getIdentifies(),
-                    cursor.getNumber()
-                    );
+            return cursor -> EanNumberForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .identifiesFood(cursor.getIdentifies())
+                    .eanNumber(cursor.getNumber())
+                    .build();
     }
 
     @Override

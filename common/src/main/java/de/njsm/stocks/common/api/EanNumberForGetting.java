@@ -19,56 +19,22 @@
 
 package de.njsm.stocks.common.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_EanNumberForGetting.Builder.class)
+public abstract class EanNumberForGetting implements EanNumber {
 
-public class EanNumberForGetting extends VersionedData implements Versionable<EanNumber>, EanNumber {
-
-    private final int identifiesFood;
-
-    private final String eanNumber;
-
-    public EanNumberForGetting(int id, int version, int identifiesFood, String eanNumber) {
-        super(id, version);
-        this.identifiesFood = identifiesFood;
-        this.eanNumber = eanNumber;
+    public static Builder builder() {
+        return new AutoValue_EanNumberForGetting.Builder();
     }
 
-    public int identifiesFood() {
-        return identifiesFood;
-    }
-
-    @JsonIgnore
-    public String eanNumber() {
-        return eanNumber;
-    }
-
-    /**
-     * JSON property name. Keep for backward compatibility
-     */
-    public String getEanCode() {
-        return eanNumber;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        EanNumberForGetting that = (EanNumberForGetting) o;
-        return identifiesFood() == that.identifiesFood() && eanNumber().equals(that.eanNumber());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), identifiesFood(), eanNumber());
-    }
-
-    @Override
-    public boolean isContainedIn(EanNumber item, boolean increment) {
-        return EanNumber.super.isContainedIn(item, increment) &&
-                identifiesFood == item.identifiesFood() &&
-                eanNumber.equals(item.eanNumber());
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<EanNumberForGetting>
+            implements Versionable.Builder<Builder>, EanNumber.Builder<Builder> {
     }
 }

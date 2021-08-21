@@ -19,9 +19,23 @@
 
 package de.njsm.stocks.common.api;
 
-public class EanNumberForDeletion extends VersionedData implements Versionable<EanNumber> {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    public EanNumberForDeletion(int id, int version) {
-        super(id, version);
+@AutoValue
+@JsonDeserialize(builder = AutoValue_EanNumberForDeletion.class)
+public abstract class EanNumberForDeletion implements Versionable<EanNumber> {
+
+    public static Builder builder() {
+        return new AutoValue_EanNumberForDeletion.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<EanNumberForDeletion>
+            implements Versionable.Builder<Builder> {
+
     }
 }

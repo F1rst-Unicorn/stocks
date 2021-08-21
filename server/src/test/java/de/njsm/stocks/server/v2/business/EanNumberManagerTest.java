@@ -72,7 +72,10 @@ public class EanNumberManagerTest {
 
     @Test
     public void testAddingItem() {
-        EanNumberForInsertion data = new EanNumberForInsertion(2, "code");
+        EanNumberForInsertion data = EanNumberForInsertion.builder()
+                .eanNumber("code")
+                .identifiesFood(2)
+                .build();
         Mockito.when(backend.add(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.add(data);
@@ -84,7 +87,10 @@ public class EanNumberManagerTest {
 
     @Test
     public void testDeletingItem() {
-        EanNumberForDeletion data = new EanNumberForDeletion(1, 2);
+        EanNumberForDeletion data = EanNumberForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);

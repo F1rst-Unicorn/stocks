@@ -58,7 +58,10 @@ public class EanNumberEndpoint extends Endpoint implements
                 isValid(foodId, "foodId")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.add(new EanNumberForInsertion(foodId, code));
+            StatusCode status = manager.add(EanNumberForInsertion.builder()
+                    .identifiesFood(foodId)
+                    .eanNumber(code)
+                    .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -72,6 +75,9 @@ public class EanNumberEndpoint extends Endpoint implements
 
     @Override
     public EanNumberForDeletion wrapParameters(int id, int version) {
-        return new EanNumberForDeletion(id, version);
+        return EanNumberForDeletion.builder()
+                .id(id)
+                .version(version)
+                .build();
     }
 }

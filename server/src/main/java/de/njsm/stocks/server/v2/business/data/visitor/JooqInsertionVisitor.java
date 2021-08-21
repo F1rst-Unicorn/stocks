@@ -41,7 +41,7 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
     @Override
     public InsertOnDuplicateStep<R> eanNumberForInsertion(EanNumberForInsertion eanNumberForInsertion, Input<R> input) {
         return input.getInsertSetStep().columns(EAN_NUMBER.NUMBER, EAN_NUMBER.IDENTIFIES, EAN_NUMBER.INITIATES)
-                .values(eanNumberForInsertion.getEanNumber(), eanNumberForInsertion.getIdentifiesFood(), input.getPrincipals().getDid());
+                .values(eanNumberForInsertion.eanNumber(), eanNumberForInsertion.identifiesFood(), input.getPrincipals().getDid());
     }
 
     @Override
