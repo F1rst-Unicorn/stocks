@@ -43,21 +43,27 @@ public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
     }
 
     public StatusCode edit(RecipeForEditing recipe) {
-        return runCommand(context -> currentUpdate(context, List.of(
-                        RECIPE.ID,
-                        RECIPE.VERSION.add(1),
-                        DSL.inline(recipe.name()),
-                        DSL.inline(recipe.instructions()),
-                        DSL.inline(recipe.duration())
-                ),
-                RECIPE.ID.eq(recipe.id())
-                        .and(RECIPE.VERSION.eq(recipe.version()))
-                        .and(
-                                RECIPE.NAME.ne(recipe.name())
-                                        .or(RECIPE.INSTRUCTIONS.ne(recipe.instructions()))
-                                        .or(RECIPE.DURATION.ne(recipe.duration()))
-                        )
-        ).map(this::notFoundMeansInvalidVersion));
+        return runCommand(context -> {
+
+            if (isCurrentlyMissing(recipe, context))
+                return StatusCode.NOT_FOUND;
+
+            return currentUpdate(context, List.of(
+                            RECIPE.ID,
+                            RECIPE.VERSION.add(1),
+                            DSL.inline(recipe.name()),
+                            DSL.inline(recipe.instructions()),
+                            DSL.inline(recipe.duration())
+                    ),
+                    RECIPE.ID.eq(recipe.id())
+                            .and(RECIPE.VERSION.eq(recipe.version()))
+                            .and(
+                                    RECIPE.NAME.ne(recipe.name())
+                                            .or(RECIPE.INSTRUCTIONS.ne(recipe.instructions()))
+                                            .or(RECIPE.DURATION.ne(recipe.duration()))
+                            )
+            ).map(this::notFoundMeansInvalidVersion);
+        });
     }
 
     @Override

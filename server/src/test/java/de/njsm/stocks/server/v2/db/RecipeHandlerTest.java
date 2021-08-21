@@ -129,6 +129,36 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
         assertThat(result, is(StatusCode.INVALID_DATA_VERSION));
     }
 
+    @Test
+    void editingMissingEntityIsRejected() {
+        RecipeForEditing recipe = RecipeForEditing.builder()
+                .id(2)
+                .version(0)
+                .name("Bread")
+                .instructions("Add bread")
+                .duration(Duration.ofHours(2))
+                .build();
+
+        StatusCode result = uut.edit(recipe);
+
+        assertThat(result, is(StatusCode.NOT_FOUND));
+    }
+
+    @Test
+    void editingWrongVersionIsRejected() {
+        RecipeForEditing recipe = RecipeForEditing.builder()
+                .id(1)
+                .version(1)
+                .name("Bread")
+                .instructions("Add bread")
+                .duration(Duration.ofHours(2))
+                .build();
+
+        StatusCode result = uut.edit(recipe);
+
+        assertThat(result, is(StatusCode.INVALID_DATA_VERSION));
+    }
+
     @Override
     public CrudDatabaseHandler<RecipeRecord, Recipe> getDbHandler() {
         return uut;
