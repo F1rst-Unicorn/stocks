@@ -57,7 +57,10 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Override
     public FoodForInsertion getInsertable() {
-        return new FoodForInsertion("Banana", 1);
+        return FoodForInsertion.builder()
+                .name("Banana")
+                .storeUnit(1)
+                .build();
     }
 
     @Test
@@ -205,7 +208,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void foodToBuyIsMarked() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 0, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(1)
+                .version(0)
+                .toBuy(true)
+                .build();
 
         StatusCode result = uut.setToBuyStatus(data);
 
@@ -214,7 +221,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void foodToBuyWithInvalidVersionIsNotMarked() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 2, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(1)
+                .version(2)
+                .toBuy(true)
+                .build();
 
         StatusCode result = uut.setToBuyStatus(data);
 
@@ -223,7 +234,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void missingFoodToBuyIsReported() {
-        FoodForSetToBuy data = new FoodForSetToBuy(100, 0, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(100)
+                .version(0)
+                .toBuy(true)
+                .build();
 
         StatusCode result = uut.setToBuyStatus(data);
 
@@ -232,7 +247,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void settingExplicitBuyStatusWorks() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 0, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(1)
+                .version(0)
+                .toBuy(true)
+                .build();
 
         StatusCode result = uut.setToBuyStatus(data, false);
 
@@ -243,7 +262,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void settingExplicitBuyStatusWithoutFindingAnyFoodIsOk() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 0, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(2)
+                .version(1)
+                .toBuy(true)
+                .build();
 
         StatusCode result = uut.setToBuyStatus(data, true);
 
@@ -272,7 +295,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void settingDescriptionWorks() {
-        FoodForSetDescription data = new FoodForSetDescription(2, 0, "new description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(2)
+                .version(0)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -281,13 +308,17 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
                 .success()
                 .anyMatch(f -> f.id() == data.id() &&
                         data.version() + 1 == f.version() &&
-                        data.getDescription().equals(f.description())),
-                () -> "expected description '" + data.getDescription() + "' not found");
+                        data.description().equals(f.description())),
+                () -> "expected description '" + data.description() + "' not found");
     }
 
     @Test
     public void settingDescriptionOnAbsentFoodIsReported() {
-        FoodForSetDescription data = new FoodForSetDescription(4, 0, "new description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(4)
+                .version(0)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -296,7 +327,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void settingDescriptionOnInvalidVersionIsReported() {
-        FoodForSetDescription data = new FoodForSetDescription(2, 1, "new description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(2)
+                .version(1)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -305,7 +340,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void settingDescriptionWithoutChangeIsPrevented() {
-        FoodForSetDescription data = new FoodForSetDescription(2, 0, "beer description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(2)
+                .version(0)
+                .description("beer description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 

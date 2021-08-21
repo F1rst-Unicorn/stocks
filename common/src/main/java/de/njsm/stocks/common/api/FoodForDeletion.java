@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_FoodForDeletion.class)
+@JsonDeserialize(builder = AutoValue_FoodForDeletion.Builder.class)
 public abstract class FoodForDeletion implements Versionable<Food> {
 
     public static FoodForDeletion.Builder builder() {

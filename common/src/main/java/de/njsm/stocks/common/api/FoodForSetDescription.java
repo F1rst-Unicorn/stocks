@@ -19,38 +19,34 @@
 
 package de.njsm.stocks.common.api;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class FoodForSetDescription extends VersionedData implements Versionable<Food> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_FoodForSetDescription.Builder.class)
+public abstract class FoodForSetDescription implements Versionable<Food>, SelfValidating {
 
-    private final String description;
+    @JsonGetter
+    public abstract String description();
 
-    public FoodForSetDescription(int id, int version, String description) {
-        super(id, version);
-        this.description = description;
+    public static Builder builder() {
+        return new AutoValue_FoodForSetDescription.Builder();
     }
 
-    public String getDescription() {
-        return description;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<FoodForSetDescription>
+            implements Versionable.Builder<Builder> {
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        FoodForSetDescription that = (FoodForSetDescription) o;
-        return getDescription().equals(that.getDescription());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getDescription());
+        public abstract Builder description(String v);
     }
 
     @Override
     public boolean isContainedIn(Food item, boolean increment) {
         return Versionable.super.isContainedIn(item, increment) &&
-                description.equals(item.description());
+                description().equals(item.description());
     }
 }

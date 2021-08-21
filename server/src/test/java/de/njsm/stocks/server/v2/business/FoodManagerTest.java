@@ -82,7 +82,10 @@ public class FoodManagerTest {
 
     @Test
     public void testAddingItem() {
-        FoodForInsertion data = new FoodForInsertion("Cheese", 1);
+        FoodForInsertion data = FoodForInsertion.builder()
+                .name("Cheese")
+                .storeUnit(1)
+                .build();
         Mockito.when(backend.add(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.add(data);
@@ -114,7 +117,11 @@ public class FoodManagerTest {
 
     @Test
     public void testSettingBuyStatusItem() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 2, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(1)
+                .version(2)
+                .toBuy(true)
+                .build();
         Mockito.when(backend.setToBuyStatus(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.setToBuyStatus(data);
@@ -145,7 +152,11 @@ public class FoodManagerTest {
 
     @Test
     public void settingDescriptionWorks() {
-        FoodForSetDescription data = new FoodForSetDescription(1, 2, "some description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(1)
+                .version(2)
+                .description("some description")
+                .build();
         Mockito.when(backend.setDescription(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.setDescription(data);

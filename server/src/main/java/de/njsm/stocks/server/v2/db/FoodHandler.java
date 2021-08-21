@@ -53,7 +53,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     FOOD.ID,
                     FOOD.NAME,
                     FOOD.VERSION.add(1),
-                    DSL.inline(item.isToBuy()),
+                    DSL.inline(item.toBuy()),
                     FOOD.EXPIRATION_OFFSET,
                     FOOD.LOCATION,
                     FOOD.DESCRIPTION,
@@ -61,7 +61,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     ),
                     getIdField().eq(item.id())
                             .and(getVersionField().eq(item.version()))
-                            .and(FOOD.TO_BUY.ne(item.isToBuy())))
+                            .and(FOOD.TO_BUY.ne(item.toBuy())))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }
@@ -173,11 +173,11 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     FOOD.TO_BUY,
                     FOOD.EXPIRATION_OFFSET,
                     FOOD.LOCATION,
-                    DSL.inline(item.getDescription()),
+                    DSL.inline(item.description()),
                     FOOD.STORE_UNIT),
                     getIdField().eq(item.id())
                             .and(getVersionField().eq(item.version()))
-                            .and(FOOD.DESCRIPTION.ne(item.getDescription())))
+                            .and(FOOD.DESCRIPTION.ne(item.description())))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }

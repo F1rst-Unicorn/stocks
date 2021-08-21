@@ -19,47 +19,49 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
-import java.util.Objects;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class FoodForInsertion implements Insertable<Food> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_FoodForInsertion.Builder.class)
+public abstract class FoodForInsertion implements Insertable<Food>, SelfValidating {
 
-    private final String name;
+    @JsonGetter
+    public abstract String name();
 
-    private final Optional<Integer> storeUnit;
+    @JsonGetter
+    public abstract Optional<Integer> storeUnit();
 
-    public FoodForInsertion(String name, Integer storeUnit) {
-        this.name = name;
-        this.storeUnit = Optional.ofNullable(storeUnit);
+    public static Builder builder() {
+        return new AutoValue_FoodForInsertion.Builder();
     }
 
-    public String getName() {
-        return name;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<FoodForInsertion> {
 
-    public Optional<Integer> getStoreUnit() {
-        return storeUnit;
-    }
+        public abstract Builder name(String v);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FoodForInsertion)) return false;
-        FoodForInsertion that = (FoodForInsertion) o;
-        return getName().equals(that.getName()) && getStoreUnit().equals(that.getStoreUnit());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getStoreUnit());
+        public abstract Builder storeUnit(@Nullable Integer v);
     }
 
     @Override
     public boolean isContainedIn(Food entity) {
-        return name.equals(entity.name()) &&
-                storeUnit.map(v -> v.equals(entity.storeUnit())).orElse(true);
+        return name().equals(entity.name()) &&
+                storeUnit().map(v -> v.equals(entity.storeUnit())).orElse(true);
+    }
+
+    @Override
+    public void validate() {
+        Preconditions.checkState(storeUnit().map(v -> v > 0).orElse(true), "storeUnit id is invalid");
     }
 
     @Override

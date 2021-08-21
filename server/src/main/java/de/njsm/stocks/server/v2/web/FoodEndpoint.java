@@ -49,7 +49,10 @@ public class FoodEndpoint extends Endpoint implements
                             @QueryParam("unit") Integer storeUnit) {
         if (isValid(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.add(new FoodForInsertion(name, storeUnit));
+            StatusCode status = manager.add(FoodForInsertion.builder()
+                    .name(name)
+                    .storeUnit(storeUnit)
+                    .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -114,7 +117,11 @@ public class FoodEndpoint extends Endpoint implements
 
             manager.setPrincipals(getPrincipals(request));
             boolean toBuy = toBuyParameter == 1;
-            StatusCode status = manager.setToBuyStatus(new FoodForSetToBuy(id, version, toBuy));
+            StatusCode status = manager.setToBuyStatus(FoodForSetToBuy.builder()
+                    .id(id)
+                    .version(version)
+                    .toBuy(toBuy)
+                    .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -131,7 +138,11 @@ public class FoodEndpoint extends Endpoint implements
                                    @FormParam("description") String description) {
         if (isValid(id, "id") && isValidVersion(version, "version") && isValidOrEmpty(description, "description")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.setDescription(new FoodForSetDescription(id, version, description));
+            StatusCode result = manager.setDescription(FoodForSetDescription.builder()
+                    .id(id)
+                    .version(version)
+                    .description(description)
+                    .build());
             return new Response(result);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

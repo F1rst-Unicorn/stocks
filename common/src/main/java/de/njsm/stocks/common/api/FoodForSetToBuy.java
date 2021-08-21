@@ -19,38 +19,34 @@
 
 package de.njsm.stocks.common.api;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class FoodForSetToBuy extends VersionedData implements Versionable<Food> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_FoodForSetToBuy.Builder.class)
+public abstract class FoodForSetToBuy implements Versionable<Food>, SelfValidating {
 
-    private final boolean toBuy;
+    @JsonGetter
+    public abstract boolean toBuy();
 
-    public FoodForSetToBuy(int id, int version, boolean toBuy) {
-        super(id, version);
-        this.toBuy = toBuy;
+    public static Builder builder() {
+        return new AutoValue_FoodForSetToBuy.Builder();
     }
 
-    public boolean isToBuy() {
-        return toBuy;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<FoodForSetToBuy>
+            implements Versionable.Builder<Builder> {
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        FoodForSetToBuy that = (FoodForSetToBuy) o;
-        return isToBuy() == that.isToBuy();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), isToBuy());
+        public abstract Builder toBuy(boolean v);
     }
 
     @Override
     public boolean isContainedIn(Food item, boolean increment) {
         return Versionable.super.isContainedIn(item, increment) &&
-                toBuy == item.toBuy();
+                toBuy() == item.toBuy();
     }
 }

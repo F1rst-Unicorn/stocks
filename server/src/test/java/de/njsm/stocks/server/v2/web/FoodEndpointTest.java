@@ -135,10 +135,13 @@ public class FoodEndpointTest {
 
     @Test
     public void foodIsAdded() {
-        FoodForInsertion data = new FoodForInsertion("Banana", 1);
+        FoodForInsertion data = FoodForInsertion.builder()
+                .name("Banana")
+                .storeUnit(1)
+                .build();
         when(manager.add(data)).thenReturn(SUCCESS);
 
-        Response response = uut.putFood(createMockRequest(), data.getName(), data.getStoreUnit().orElseThrow());
+        Response response = uut.putFood(createMockRequest(), data.name(), data.storeUnit().orElseThrow());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).add(data);
@@ -289,13 +292,17 @@ public class FoodEndpointTest {
 
     @Test
     public void settingBuyStatusWorks() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 2, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(1)
+                .version(2)
+                .toBuy(true)
+                .build();
         when(manager.setToBuyStatus(data)).thenReturn(SUCCESS);
 
         Response response = uut.setToBuyStatus(createMockRequest(),
                 data.id(),
                 data.version(),
-                data.isToBuy() ? 1 : 0);
+                data.toBuy() ? 1 : 0);
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).setToBuyStatus(data);
@@ -319,10 +326,14 @@ public class FoodEndpointTest {
 
     @Test
     public void settingDescriptionIsPropagated() {
-        FoodForSetDescription data = new FoodForSetDescription(1, 2, "some description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(1)
+                .version(2)
+                .description("some description")
+                .build();
         when(manager.setDescription(data)).thenReturn(SUCCESS);
 
-        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.getDescription());
+        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.description());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).setDescription(data);
@@ -331,10 +342,14 @@ public class FoodEndpointTest {
 
     @Test
     public void emptyDescriptionIsPropagated() {
-        FoodForSetDescription data = new FoodForSetDescription(1, 2, "");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(1)
+                .version(2)
+                .description("")
+                .build();
         when(manager.setDescription(data)).thenReturn(SUCCESS);
 
-        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.getDescription());
+        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.description());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).setDescription(data);
@@ -343,10 +358,14 @@ public class FoodEndpointTest {
 
     @Test
     public void errorFromBackendIsPropagated() {
-        FoodForSetDescription data = new FoodForSetDescription(1, 2, "some description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(1)
+                .version(2)
+                .description("some description")
+                .build();
         when(manager.setDescription(data)).thenReturn(INVALID_DATA_VERSION);
 
-        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.getDescription());
+        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.description());
 
         assertEquals(INVALID_DATA_VERSION, response.getStatus());
         verify(manager).setDescription(data);

@@ -46,14 +46,14 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
 
     @Override
     public InsertOnDuplicateStep<R> foodForInsertion(FoodForInsertion foodForInsertion, Input<R> input) {
-        if (foodForInsertion.getStoreUnit().isEmpty())
+        if (foodForInsertion.storeUnit().isEmpty())
             return input.getInsertSetStep().columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
-                    .select(DSL.select(DSL.inline(foodForInsertion.getName()), DSL.inline(input.getPrincipals().getDid()), DSL.min(SCALED_UNIT.ID))
+                    .select(DSL.select(DSL.inline(foodForInsertion.name()), DSL.inline(input.getPrincipals().getDid()), DSL.min(SCALED_UNIT.ID))
                             .from(SCALED_UNIT));
 
         else
             return input.getInsertSetStep().columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
-                    .values(foodForInsertion.getName(), input.getPrincipals().getDid(), foodForInsertion.getStoreUnit().get());
+                    .values(foodForInsertion.name(), input.getPrincipals().getDid(), foodForInsertion.storeUnit().get());
     }
 
     @Override
