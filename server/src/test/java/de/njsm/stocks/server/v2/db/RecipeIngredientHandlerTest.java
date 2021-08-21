@@ -27,14 +27,14 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RecipeIngredientHandlerTest extends DbTestCase implements CrudOperationsTest<RecipeIngredientRecord, RecipeIngredient> {
+public class RecipeIngredientHandlerTest extends DbTestCase
+        implements CrudOperationsTest<RecipeIngredientRecord, RecipeIngredient>, CompleteEntityReferenceCheckerTest<Recipe, RecipeIngredient> {
 
     private RecipeIngredientHandler uut;
 
@@ -103,92 +103,6 @@ public class RecipeIngredientHandlerTest extends DbTestCase implements CrudOpera
     }
 
     @Test
-    public void checkingSetEqualityWorks() {
-        RecipeIngredientForDeletion ingredient = RecipeIngredientForDeletion.builder()
-                .id(1)
-                .version(0)
-                .build();
-        Versionable<Recipe> recipe = RecipeForDeletion.builder()
-                .id(1)
-                .version(0)
-                .build();
-        Set<RecipeIngredientForDeletion> ingredients = Set.of(ingredient);
-
-        StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
-
-        assertEquals(StatusCode.SUCCESS, result);
-    }
-
-    @Test
-    public void moreIngredientsThanInRecipeAreRejected() {
-        RecipeIngredientForDeletion ingredient1 = RecipeIngredientForDeletion.builder()
-                .id(1)
-                .version(0)
-                .build();
-        RecipeIngredientForDeletion ingredient2 = RecipeIngredientForDeletion.builder()
-                .id(2)
-                .version(0)
-                .build();
-        Versionable<Recipe> recipe = RecipeForDeletion.builder()
-                .id(1)
-                .version(0)
-                .build();
-        Set<RecipeIngredientForDeletion> ingredients = Set.of(ingredient1, ingredient2);
-
-        StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-    }
-
-    @Test
-    public void differentVersionIsRejected() {
-        RecipeIngredientForDeletion ingredient = RecipeIngredientForDeletion.builder()
-                .id(1)
-                .version(1)
-                .build();
-        Identifiable<Recipe> recipe = RecipeForDeletion.builder()
-                .id(1)
-                .version(0)
-                .build();
-        Set<RecipeIngredientForDeletion> ingredients = Set.of(ingredient);
-
-        StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-    }
-
-    @Test
-    public void differentIdIsRejected() {
-        RecipeIngredientForDeletion ingredient = RecipeIngredientForDeletion.builder()
-                .id(2)
-                .version(0)
-                .build();
-        Identifiable<Recipe> recipe = RecipeForDeletion.builder()
-                .id(1)
-                .version(0)
-                .build();
-        Set<RecipeIngredientForDeletion> ingredients = Set.of(ingredient);
-
-        StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-    }
-
-
-    @Test
-    public void lessIngredientsThanInRecipeAreRejected() {
-        Identifiable<Recipe> recipe = RecipeForDeletion.builder()
-                .id(1)
-                .version(0)
-                .build();
-        Set<RecipeIngredientForDeletion> ingredients = Set.of();
-
-        StatusCode result = uut.areEntitiesComplete(recipe, ingredients);
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-    }
-
-    @Test
     public void deletingAllOfRecipeWorks() {
         RecipeForDeletion recipe = RecipeForDeletion.builder()
                 .id(1)
@@ -219,13 +133,58 @@ public class RecipeIngredientHandlerTest extends DbTestCase implements CrudOpera
     }
 
     @Override
-    public CrudDatabaseHandler<RecipeIngredientRecord, RecipeIngredient> getDbHandler() {
+    public RecipeIngredientHandler getDbHandler() {
         return uut;
     }
 
     @Override
     public int getNumberOfEntities() {
         return 1;
+    }
+
+    @Override
+    public RecipeIngredientHandler getUnitUnderTest() {
+        return getDbHandler();
+    }
+
+    @Override
+    public Versionable<Recipe> getPrimary() {
+        return RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public Versionable<RecipeIngredient> getValidForeign() {
+        return RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public Versionable<RecipeIngredient> getUnreferencedForeign() {
+        return RecipeIngredientForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public Versionable<RecipeIngredient> getWrongVersionForeign() {
+        return RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(1)
+                .build();
+    }
+
+    @Override
+    public Versionable<RecipeIngredient> getWrongIdForeign() {
+        return RecipeIngredientForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
     }
 
     @Override

@@ -36,7 +36,7 @@ import java.util.function.Function;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE_INGREDIENT;
 
 
-public class RecipeIngredientHandler extends CrudDatabaseHandler<RecipeIngredientRecord, RecipeIngredient> {
+public class RecipeIngredientHandler extends CrudDatabaseHandler<RecipeIngredientRecord, RecipeIngredient> implements CompleteReferenceChecker<Recipe, RecipeIngredient> {
 
 
     public RecipeIngredientHandler(ConnectionFactory connectionFactory,

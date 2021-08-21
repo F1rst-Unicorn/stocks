@@ -23,7 +23,7 @@ import com.google.auto.value.AutoValue;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
 @AutoValue
-public abstract class RecipeProductWithIdForInsertion implements Insertable<RecipeProduct>, RecipeProductForInsertionData {
+public abstract class RecipeProductWithIdForInsertion implements Insertable<RecipeProduct>, RecipeProductData {
 
     public abstract int recipe();
 
@@ -32,12 +32,8 @@ public abstract class RecipeProductWithIdForInsertion implements Insertable<Reci
     }
 
     @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder amount(int v);
-
-        public abstract Builder product(int v);
-
-        public abstract Builder unit(int v);
+    public abstract static class Builder
+            implements RecipeProductData.Builder<Builder> {
 
         public abstract Builder recipe(int v);
 

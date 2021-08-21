@@ -26,7 +26,7 @@ import com.google.common.base.Preconditions;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RecipeIngredientForInsertion.Builder.class)
-public abstract class RecipeIngredientForInsertion implements SelfValidating, RecipeIngredientForInsertionData {
+public abstract class RecipeIngredientForInsertion implements SelfValidating, RecipeIngredientData {
 
     public static Builder builder() {
         return new AutoValue_RecipeIngredientForInsertion.Builder();
@@ -36,7 +36,7 @@ public abstract class RecipeIngredientForInsertion implements SelfValidating, Re
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder
             extends SelfValidating.Builder<RecipeIngredientForInsertion>
-            implements RecipeIngredientForInsertionData.Builder<Builder> {
+            implements RecipeIngredientData.Builder<Builder> {
     }
 
     @Override

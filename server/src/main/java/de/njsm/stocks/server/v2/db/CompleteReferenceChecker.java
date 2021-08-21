@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -17,26 +18,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.common.api;
+package de.njsm.stocks.server.v2.db;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.Identifiable;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.Versionable;
 
-public interface RecipeIngredientForInsertionData {
+import java.util.Set;
 
-    @JsonGetter
-    int amount();
-
-    @JsonGetter
-    int ingredient();
-
-    @JsonGetter
-    int unit();
-
-    interface Builder<T> {
-         T amount(int v);
-
-         T ingredient(int v);
-
-         T unit(int v);
-    }
+public interface CompleteReferenceChecker<T extends Entity<T>, U extends Entity<U>> {
+    StatusCode areEntitiesComplete(Identifiable<T> primary, Set<? extends Versionable<U>> foreign);
 }

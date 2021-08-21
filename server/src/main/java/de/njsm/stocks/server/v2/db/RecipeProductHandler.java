@@ -36,7 +36,7 @@ import java.util.function.Function;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE_PRODUCT;
 
 
-public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecord, RecipeProduct> {
+public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecord, RecipeProduct> implements CompleteReferenceChecker<Recipe, RecipeProduct> {
 
 
     public RecipeProductHandler(ConnectionFactory connectionFactory,
@@ -45,6 +45,7 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
         super(connectionFactory, resourceIdentifier, timeout);
     }
 
+    @Override
     public StatusCode areEntitiesComplete(Identifiable<Recipe> recipe, Set<? extends Versionable<RecipeProduct>> products) {
         return runCommand(context -> new CompleteEntityReferenceChecker<Recipe, RecipeProduct, RecipeProductRecord>(
                 getIdField(),

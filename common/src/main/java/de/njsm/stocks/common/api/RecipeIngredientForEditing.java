@@ -19,37 +19,30 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.common.api.visitor.InsertableVisitor;
+import com.google.common.base.Preconditions;
 
 @AutoValue
-public abstract class RecipeIngredientWithIdForInsertion implements Insertable<RecipeIngredient>, RecipeIngredientData {
-
-    public abstract int recipe();
+@JsonDeserialize(builder = AutoValue_RecipeIngredientForEditing.Builder.class)
+public abstract class RecipeIngredientForEditing implements RecipeIngredientData, Versionable<RecipeIngredient> {
 
     public static Builder builder() {
-        return new AutoValue_RecipeIngredientWithIdForInsertion.Builder();
+        return new AutoValue_RecipeIngredientForEditing.Builder();
     }
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder
-            implements RecipeIngredientData.Builder<Builder> {
-
-        public abstract Builder recipe(int v);
-
-        public abstract RecipeIngredientWithIdForInsertion build();
+            extends SelfValidating.Builder<RecipeIngredientForEditing>
+            implements RecipeIngredientData.Builder<Builder>, Versionable.Builder<Builder> {
     }
 
     @Override
-    public boolean isContainedIn(RecipeIngredient entity) {
-        return amount() == entity.amount() &&
-                ingredient() == entity.ingredient() &&
-                recipe() == entity.recipe() &&
-                unit() == entity.unit();
-    }
-
-    @Override
-    public <I, O> O accept(InsertableVisitor<I, O> visitor, I argument) {
-        return visitor.recipeIngredientWithIdForInsertion(this, argument);
+    public void validate() {
+        Versionable.super.validate();
+        Preconditions.checkState(ingredient() > 0, "ingredient id is invalid");
+        Preconditions.checkState(unit() > 0, "unit id is invalid");
     }
 }
