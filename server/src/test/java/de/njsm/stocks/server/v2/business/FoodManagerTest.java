@@ -32,7 +32,6 @@ import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
 import java.time.Instant;
-import java.time.Period;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
@@ -95,8 +94,15 @@ public class FoodManagerTest {
 
     @Test
     public void testRenamingItem() {
-        String newName = "Sausage";
-        FoodForEditing data = new FoodForEditing(1, 2, newName, Period.ZERO, 1, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(1)
+                .version(2)
+                .name("Sausage")
+                .expirationOffset(0)
+                .location(1)
+                .description("new description")
+                .storeUnit(1)
+                .build();
         Mockito.when(backend.edit(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.rename(data);
@@ -120,7 +126,10 @@ public class FoodManagerTest {
 
     @Test
     public void testDeletingItem() {
-        FoodForDeletion data = new FoodForDeletion(1, 2);
+        FoodForDeletion data = FoodForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodItemHandler.deleteItemsOfType(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(eanNumberHandler.deleteOwnedByFood(data)).thenReturn(StatusCode.SUCCESS);

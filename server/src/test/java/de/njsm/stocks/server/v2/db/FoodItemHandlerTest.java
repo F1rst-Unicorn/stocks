@@ -33,10 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -98,13 +95,7 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
         StatusCode result = uut.edit(item);
 
-        assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
-        assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.isSuccess());
-        List<FoodItem> list = items.success().collect(Collectors.toList());
-        assertEquals(3, list.size());
-        assertThat(list, hasItem(new FoodItemForGetting(1, 1, item.getEatBy(), 2, item.getStoredIn(), 3, 2, 2)));
+        assertEditingWorked(item, result);
     }
 
     @Test
@@ -114,14 +105,6 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
         StatusCode result = uut.edit(data);
 
         assertEditingWorked(data, result);
-    }
-
-    private void assertEditingWorked(FoodItemForEditing data, StatusCode result) {
-        assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<FoodItem>> dbData = uut.get(false, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        List<FoodItem> currentData = dbData.success().collect(Collectors.toList());
-        assertThat(currentData, hasItem(matchesVersionableUpdated(data)));
     }
 
     @Test
@@ -258,7 +241,10 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void deletingFoodWithoutItemsIsOk() {
 
-        StatusCode result = uut.deleteItemsOfType(new FoodForDeletion(1, 1));
+        StatusCode result = uut.deleteItemsOfType(FoodForDeletion.builder()
+                .id(1)
+                .version(1)
+                .build());
 
         assertEquals(StatusCode.SUCCESS, result);
     }
@@ -268,7 +254,10 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
         long entities = uut.get(false, Instant.EPOCH).success().count();
         assertEquals(3, entities);
 
-        StatusCode result = uut.deleteItemsOfType(new FoodForDeletion(2, 1));
+        StatusCode result = uut.deleteItemsOfType(FoodForDeletion.builder()
+                .id(2)
+                .version(1)
+                .build());
 
         assertEquals(StatusCode.SUCCESS, result);
         entities = uut.get(false, Instant.EPOCH).success().count();

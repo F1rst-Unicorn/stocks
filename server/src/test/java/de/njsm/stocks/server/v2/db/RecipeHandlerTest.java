@@ -31,12 +31,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<RecipeRecord, Recipe> {
 
@@ -106,12 +105,7 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
 
         StatusCode result = uut.edit(recipe);
 
-        assertThat(result, is(StatusCode.SUCCESS));
-        Validation<StatusCode, Stream<Recipe>> recipes = uut.get(false, Instant.EPOCH);
-        assertTrue(recipes.isSuccess());
-        List<Recipe> list = recipes.success().collect(Collectors.toList());
-        assertEquals(1, list.size());
-        assertThat(list, hasItem(matchesVersionableUpdated(recipe)));
+        assertEditingWorked(recipe, result);
     }
 
     @Test

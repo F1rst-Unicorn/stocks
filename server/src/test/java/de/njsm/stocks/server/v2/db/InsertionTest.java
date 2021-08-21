@@ -26,6 +26,14 @@ import fj.data.Validation;
 import org.jooq.TableRecord;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public interface InsertionTest<T extends TableRecord<T>, N extends Entity<N>> extends EntityDbTestCase<T, N>, SampleDataInformer {
 
     @Test
@@ -38,4 +46,16 @@ public interface InsertionTest<T extends TableRecord<T>, N extends Entity<N>> ex
     }
 
     Insertable<N> getInsertable();
+
+    default void assertInsertableIsInserted(Validation<StatusCode, Integer> result,
+                                            Insertable<N> data,
+                                            int expectedId,
+                                            int expectedNumberOfEntities) {
+        assertTrue(result.isSuccess());
+        assertEquals(Integer.valueOf(expectedId), result.success());
+
+        List<N> list = getData();
+        assertEquals(expectedNumberOfEntities, list.size());
+        assertThat(list, hasItem(matchesInsertable(data)));
+    }
 }

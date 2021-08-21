@@ -36,6 +36,5 @@ public abstract class EanNumberForDeletion implements Versionable<EanNumber> {
     public abstract static class Builder
             extends SelfValidating.Builder<EanNumberForDeletion>
             implements Versionable.Builder<Builder> {
-
     }
 }

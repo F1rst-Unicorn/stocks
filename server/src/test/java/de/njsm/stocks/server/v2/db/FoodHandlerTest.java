@@ -26,15 +26,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.time.Period;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<FoodRecord, Food> {
@@ -68,7 +62,14 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editAFood() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ofDays(3), 2, null, 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(2)
+                .version(0)
+                .name("Beer")
+                .expirationOffset(3)
+                .location(2)
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -77,7 +78,14 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editFoodStoreUnit() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ofDays(3), 2, null, 2);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(2)
+                .version(0)
+                .name("Beer")
+                .expirationOffset(3)
+                .location(2)
+                .storeUnit(2)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -86,7 +94,14 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editAFoodDefaultLocation() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ZERO.plusDays(2), 2, null, 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(2)
+                .version(0)
+                .name("Beer")
+                .expirationOffset(2)
+                .location(2)
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -95,7 +110,14 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editAFoodDefaultLocationBySettingNull() {
-        FoodForEditing data = new FoodForEditing(3, 0, "Cheese", Period.ZERO.plusDays(3), 0, null, 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(3)
+                .version(0)
+                .name("Cheese")
+                .expirationOffset(3)
+                .location(0)
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -104,7 +126,15 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editAFoodExpirationOffset() {
-        FoodForEditing data = new FoodForEditing(3, 0, "Cheese", Period.ZERO.plusDays(2), 1, null, 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(3)
+                .version(0)
+                .name("Cheese")
+                .expirationOffset(2)
+                .location(1)
+                .description("new description")
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -113,7 +143,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editAFoodWithoutExpirationOrDefaultLocationDoesntUpdateThem() {
-        FoodForEditing data = new FoodForEditing(3, 0, "Cheddar", null, null, null, null);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(3)
+                .version(0)
+                .name("Cheddar")
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -122,24 +156,30 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editingDescriptionWorks() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", null, null, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(2)
+                .version(0)
+                .name("Beer")
+                .description("new description")
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
         assertEditingWorked(data, result);
     }
 
-    private void assertEditingWorked(FoodForEditing data, StatusCode result) {
-        assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        List<Food> currentFood = dbData.success().collect(Collectors.toList());
-        assertThat(currentFood, hasItem(matchesVersionableUpdated(data)));
-    }
-
     @Test
     public void wrongVersionIsNotRenamed() {
-        FoodForEditing data = new FoodForEditing(2, 100, "Wine", Period.ZERO, 2, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(2)
+                .version(100)
+                .name("Wine")
+                .expirationOffset(0)
+                .location(2)
+                .description("new description")
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -148,7 +188,15 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void unknownIsReported() {
-        FoodForEditing data = new FoodForEditing(100, 0, "Wine", Period.ZERO, 2, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(100)
+                .version(0)
+                .name("Wine")
+                .expirationOffset(0)
+                .location(2)
+                .description("new description")
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -276,16 +324,25 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Override
     public Versionable<Food> getUnknownEntity() {
-        return new FoodForDeletion(getNumberOfEntities() + 1, 0);
+        return FoodForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
     }
 
     @Override
     public Versionable<Food> getWrongVersionEntity() {
-        return new FoodForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+        return FoodForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
     }
 
     @Override
     public Versionable<Food> getValidEntity() {
-        return new FoodForDeletion(2, 0);
+        return FoodForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
     }
 }

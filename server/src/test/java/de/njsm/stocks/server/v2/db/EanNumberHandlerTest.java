@@ -61,7 +61,10 @@ public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTe
     @Test
     public void deletingCodesWithoutFoodIsOk() {
 
-        StatusCode result = uut.deleteOwnedByFood(new FoodForDeletion(1, 1));
+        StatusCode result = uut.deleteOwnedByFood(FoodForDeletion.builder()
+                .id(1)
+                .version(1)
+                .build());
 
         assertEquals(StatusCode.SUCCESS, result);
     }
@@ -71,7 +74,10 @@ public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTe
         long codes = uut.get(false, Instant.EPOCH).success().count();
         assertEquals(1, codes);
 
-        StatusCode result = uut.deleteOwnedByFood(new FoodForDeletion(2, 1));
+        StatusCode result = uut.deleteOwnedByFood(FoodForDeletion.builder()
+                        .id(2)
+                        .version(1)
+                        .build());
 
         assertEquals(StatusCode.SUCCESS, result);
         codes = uut.get(false, Instant.EPOCH).success().count();

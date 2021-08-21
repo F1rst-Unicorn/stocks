@@ -42,7 +42,7 @@ public abstract class RecipeProductForEditing implements RecipeProductData, Vers
     @Override
     public void validate() {
         Versionable.super.validate();
-        Preconditions.checkState(product() > 0, "Product id is invalid");
+        Preconditions.checkState(product() > 0, "product id is invalid");
         Preconditions.checkState(unit() > 0, "unit id is invalid");
     }
 }

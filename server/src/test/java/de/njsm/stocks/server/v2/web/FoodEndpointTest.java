@@ -183,17 +183,25 @@ public class FoodEndpointTest {
 
     @Test
     public void editWorks() {
-        FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, 2, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(1)
+                .version(2)
+                .name("Bread")
+                .expirationOffset(0)
+                .location(2)
+                .description("new description")
+                .storeUnit(1)
+                .build();
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
                 data.id(),
                 data.version(),
-                data.getNewName(),
-                data.getExpirationOffsetOptional().get().getDays(),
-                data.getLocationOptional().get(),
-                data.getDescription().get(),
-                data.getStoreUnit().get());
+                data.name(),
+                data.expirationOffset().get().getDays(),
+                data.location().get(),
+                data.description().get(),
+                data.storeUnit().get());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).rename(data);
@@ -202,17 +210,25 @@ public class FoodEndpointTest {
 
     @Test
     public void editWithoutLocationWorks() {
-        FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, 0, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(1)
+                .version(2)
+                .name("Bread")
+                .expirationOffset(0)
+                .location(0)
+                .description("new description")
+                .storeUnit(1)
+                .build();
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
                 data.id(),
                 data.version(),
-                data.getNewName(),
-                data.getExpirationOffsetOptional().get().getDays(),
-                data.getLocationOptional().get(),
-                data.getDescription().get(),
-                data.getStoreUnit().get());
+                data.name(),
+                data.expirationOffset().get().getDays(),
+                data.location().get(),
+                data.description().get(),
+                data.storeUnit().get());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).rename(data);
@@ -221,17 +237,24 @@ public class FoodEndpointTest {
 
     @Test
     public void editWithoutLocationYieldsNullAndMapsCorrectly() {
-        FoodForEditing data = new FoodForEditing(1, 2, "Bread", Period.ZERO, null, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(1)
+                .version(2)
+                .name("Bread")
+                .expirationOffset(0)
+                .description("new description")
+                .storeUnit(1)
+                .build();
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
                 data.id(),
                 data.version(),
-                data.getNewName(),
-                data.getExpirationOffsetOptional().get().getDays(),
+                data.name(),
+                data.expirationOffset().get().getDays(),
                 null,
-                data.getDescription().get(),
-                data.getStoreUnit().get());
+                data.description().get(),
+                data.storeUnit().get());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).rename(data);
@@ -240,17 +263,24 @@ public class FoodEndpointTest {
 
     @Test
     public void editWithoutExpirationOffsetYieldsNullAndMapsCorrectly() {
-        FoodForEditing data = new FoodForEditing(1, 2, "Bread", null, 2, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(1)
+                .version(2)
+                .name("Bread")
+                .location(2)
+                .description("new description")
+                .storeUnit(1)
+                .build();
         when(manager.rename(data)).thenReturn(SUCCESS);
 
         Response response = uut.edit(createMockRequest(),
                 data.id(),
                 data.version(),
-                data.getNewName(),
+                data.name(),
                 null,
-                data.getLocationOptional().get(),
-                data.getDescription().get(),
-                data.getStoreUnit().get());
+                data.location().get(),
+                data.description().get(),
+                data.storeUnit().get());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).rename(data);
@@ -274,7 +304,10 @@ public class FoodEndpointTest {
 
     @Test
     public void deleteWorks() {
-        FoodForDeletion data = new FoodForDeletion(1, 2);
+        FoodForDeletion data = FoodForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         when(manager.delete(data)).thenReturn(SUCCESS);
 
         Response response = uut.delete(createMockRequest(), data.id(), data.version());

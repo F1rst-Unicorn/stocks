@@ -87,7 +87,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            Field<?> locationField = item.getLocationOptional()
+            Field<?> locationField = item.location()
                     .map(v -> {
                         if (v != 0) {
                             return (Field<Integer>) DSL.inline(v);
@@ -97,37 +97,37 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     })
                     .orElse(FOOD.LOCATION);
 
-            Field<?> expirationOffsetField = item.getExpirationOffsetOptional()
+            Field<?> expirationOffsetField = item.expirationOffset()
                     .map(v -> (Field<Period>) DSL.inline(v))
                     .orElse(FOOD.EXPIRATION_OFFSET);
 
-            Field<?> descriptionField = item.getDescription()
+            Field<?> descriptionField = item.description()
                     .map(v -> (Field<String>) DSL.inline(v))
                     .orElse(FOOD.DESCRIPTION);
 
-            Field<?> storeUnitField = item.getStoreUnit()
+            Field<?> storeUnitField = item.storeUnit()
                     .map(v -> (Field<Integer>) DSL.inline(v))
                     .orElse(FOOD.STORE_UNIT);
 
-            Condition locationCondition = item.getLocationOptional()
+            Condition locationCondition = item.location()
                     .map(FOOD.LOCATION::isDistinctFrom)
                     .orElseGet(DSL::falseCondition);
 
-            Condition expirationOffsetCondition = item.getExpirationOffsetOptional()
+            Condition expirationOffsetCondition = item.expirationOffset()
                     .map(FOOD.EXPIRATION_OFFSET::ne)
                     .orElseGet(DSL::falseCondition);
 
-            Condition descriptionCondition = item.getDescription()
+            Condition descriptionCondition = item.description()
                     .map(FOOD.DESCRIPTION::ne)
                     .orElseGet(DSL::falseCondition);
 
-            Condition storeUnitCondition = item.getStoreUnit()
+            Condition storeUnitCondition = item.storeUnit()
                     .map(FOOD.STORE_UNIT::ne)
                     .orElseGet(DSL::falseCondition);
 
             return currentUpdate(context, Arrays.asList(
                     FOOD.ID,
-                    DSL.inline(item.getNewName()),
+                    DSL.inline(item.name()),
                     FOOD.VERSION.add(1),
                     FOOD.TO_BUY,
                     expirationOffsetField,
@@ -136,7 +136,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     storeUnitField),
                     getIdField().eq(item.id())
                             .and(getVersionField().eq(item.version())
-                                    .and(FOOD.NAME.ne(item.getNewName())
+                                    .and(FOOD.NAME.ne(item.name())
                                             .or(expirationOffsetCondition)
                                             .or(locationCondition)
                                             .or(descriptionCondition)

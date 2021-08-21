@@ -19,77 +19,70 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
+
+import javax.annotation.Nullable;
 import java.time.Period;
-import java.util.Objects;
 import java.util.Optional;
 
-public class FoodForEditing extends VersionedData implements Versionable<Food> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_FoodForEditing.class)
+public abstract class FoodForEditing implements Versionable<Food> {
 
-    private final String newName;
-
-    private final Optional<Period> expirationOffset;
-
-    private final Optional<Integer> location;
-
-    private final Optional<String> description;
-
-    private final Optional<Integer> storeUnit;
-
-    public FoodForEditing(int id, int version, String newName, Period expirationOffset, Integer location, String description, Integer storeUnit) {
-        super(id, version);
-        this.newName = newName;
-        this.expirationOffset = Optional.ofNullable(expirationOffset);
-        this.location = Optional.ofNullable(location);
-        this.description = Optional.ofNullable(description);
-        this.storeUnit = Optional.ofNullable(storeUnit);
+    public static Builder builder() {
+        return new AutoValue_FoodForEditing.Builder();
     }
 
-    public String getNewName() {
-        return newName;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<FoodForEditing>
+            implements Versionable.Builder<Builder> {
+
+        public abstract Builder name(String v);
+
+        public abstract Builder expirationOffset(Optional<Period> v);
+
+        public Builder expirationOffset(@Nullable Integer v) {
+            return expirationOffset(Optional.ofNullable(v).map(Period::ofDays));
+        }
+
+        public abstract Builder location(@Nullable Integer v);
+
+        public abstract Builder description(@Nullable String v);
+
+        public abstract Builder storeUnit(@Nullable Integer v);
     }
 
-    public Optional<Integer> getLocationOptional() {
-        return location;
-    }
+    public abstract String name();
 
-    public Optional<Period> getExpirationOffsetOptional() {
-        return expirationOffset;
-    }
+    public abstract Optional<Period> expirationOffset();
 
-    public Optional<String> getDescription() {
-        return description;
-    }
+    public abstract Optional<Integer> location();
 
-    public Optional<Integer> getStoreUnit() {
-        return storeUnit;
-    }
+    public abstract Optional<String> description();
+
+    public abstract Optional<Integer> storeUnit();
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        FoodForEditing that = (FoodForEditing) o;
-        return getExpirationOffsetOptional().equals(that.getExpirationOffsetOptional())
-                && getLocationOptional().equals(that.getLocationOptional())
-                && getNewName().equals(that.getNewName())
-                && getDescription().equals(that.getDescription());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getNewName(), getExpirationOffsetOptional(), getLocationOptional(), getDescription(), getStoreUnit());
+    public void validate() {
+        Versionable.super.validate();
+        Preconditions.checkState(location().map(v -> v >= 0).orElse(true), "location id is invalid");
+        Preconditions.checkState(storeUnit().map(v -> v > 0).orElse(true), "storeUnit id is invalid");
     }
 
     @Override
     public boolean isContainedIn(Food item, boolean increment) {
         return Versionable.super.isContainedIn(item, increment) &&
-                newName.equals(item.name()) &&
-                location.map(v -> v.equals(item.location()) || (
+                name().equals(item.name()) &&
+                location().map(v -> v.equals(item.location()) || (
                         v == 0 && item.location() == null
                         )).orElse(true) &&
-                expirationOffset.map(v -> v.equals(item.expirationOffset())).orElse(true) &&
-                description.map(v -> v.equals(item.description())).orElse(true) &&
-                storeUnit.map(v -> v.equals(item.storeUnit())).orElse(true);
+                expirationOffset().map(v -> v.equals(item.expirationOffset())).orElse(true) &&
+                description().map(v -> v.equals(item.description())).orElse(true) &&
+                storeUnit().map(v -> v.equals(item.storeUnit())).orElse(true);
     }
 }

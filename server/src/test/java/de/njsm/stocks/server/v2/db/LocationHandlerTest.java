@@ -108,17 +108,7 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
 
         StatusCode result = uut.rename(data);
 
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f ->
-                f.name().equals("Basement")
-                        && f.id() == 2
-                        && f.version() == 1
-                        && f.initiates() == TEST_USER.getDid()));
+        assertEditingWorked(data, result);
     }
 
     @Test

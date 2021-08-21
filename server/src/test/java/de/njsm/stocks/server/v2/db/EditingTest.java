@@ -17,24 +17,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.common.api;
+package de.njsm.stocks.server.v2.db;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.Versionable;
+import org.jooq.TableRecord;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_FoodForDeletion.class)
-public abstract class FoodForDeletion implements Versionable<Food> {
+import java.util.List;
 
-    public static FoodForDeletion.Builder builder() {
-        return new AutoValue_FoodForDeletion.Builder();
-    }
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder
-            extends SelfValidating.Builder<FoodForDeletion>
-            implements Versionable.Builder<Builder> {
+public interface EditingTest<T extends TableRecord<T>, N extends Entity<N>> extends EntityDbTestCase<T, N> {
+
+    default void assertEditingWorked(Versionable<N> data, StatusCode result) {
+        assertEquals(StatusCode.SUCCESS, result);
+        List<N> dbData = getData();
+        assertThat(dbData, hasItem(matchesVersionableUpdated(data)));
     }
 }

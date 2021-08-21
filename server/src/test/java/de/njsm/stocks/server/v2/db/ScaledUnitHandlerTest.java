@@ -31,10 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsTest<ScaledUnitRecord, ScaledUnit> {
@@ -119,9 +116,7 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
         StatusCode result = uut.edit(input);
 
-        assertEquals(StatusCode.SUCCESS, result);
-        List<ScaledUnit> data = uut.get(false, Instant.EPOCH).success().collect(Collectors.toList());
-        assertThat(data, hasItem(matchesVersionableUpdated(input)));
+        assertEditingWorked(input, result);
     }
 
     @Test
@@ -130,9 +125,7 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
         StatusCode result = uut.edit(input);
 
-        assertEquals(StatusCode.SUCCESS, result);
-        List<ScaledUnit> data = uut.get(false, Instant.EPOCH).success().collect(Collectors.toList());
-        assertThat(data, hasItem(matchesVersionableUpdated(input)));
+        assertEditingWorked(input, result);
     }
 
     @Override

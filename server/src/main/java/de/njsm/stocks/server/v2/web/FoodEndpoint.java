@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.time.Period;
 
 @Path("v2/food")
 public class FoodEndpoint extends Endpoint implements
@@ -75,14 +74,15 @@ public class FoodEndpoint extends Endpoint implements
 
             manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.rename(
-                    new FoodForEditing(
-                            id,
-                            version,
-                            newName,
-                            expirationOffset == null ? null : Period.ofDays(expirationOffset),
-                            location,
-                            description,
-                            storeUnit));
+                    FoodForEditing.builder()
+                            .id(id)
+                            .version(version)
+                            .name(newName)
+                            .expirationOffset(expirationOffset)
+                            .location(location)
+                            .description(description)
+                            .storeUnit(storeUnit)
+                            .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -145,6 +145,9 @@ public class FoodEndpoint extends Endpoint implements
 
     @Override
     public FoodForDeletion wrapParameters(int id, int version) {
-        return new FoodForDeletion(id, version);
+        return FoodForDeletion.builder()
+                .id(id)
+                .version(version)
+                .build();
     }
 }
