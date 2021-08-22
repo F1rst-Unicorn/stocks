@@ -99,12 +99,18 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Override
     public LocationForInsertion getInsertable() {
-        return new LocationForInsertion("Fridge");
+        return LocationForInsertion.builder()
+                .name("Fridge")
+                .build();
     }
 
     @Test
     public void renameALocation() {
-        LocationForRenaming data = new LocationForRenaming(2, 0, "Basement");
+        LocationForRenaming data = LocationForRenaming.builder()
+                .id(2)
+                .version(0)
+                .name("Basement")
+                .build();
 
         StatusCode result = uut.rename(data);
 
@@ -113,7 +119,11 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void wrongVersionIsNotRenamed() {
-        LocationForRenaming data = new LocationForRenaming(2, 100, "Basement");
+        LocationForRenaming data = LocationForRenaming.builder()
+                .id(2)
+                .version(100)
+                .name("Basement")
+                .build();
 
         StatusCode result = uut.rename(data);
 
@@ -122,7 +132,11 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void unknownIsReported() {
-        LocationForRenaming data = new LocationForRenaming(100, 1, "Basement");
+        LocationForRenaming data = LocationForRenaming.builder()
+                .id(100)
+                .version(1)
+                .name("Basement")
+                .build();
 
         StatusCode result = uut.rename(data);
 
@@ -131,7 +145,10 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void deleteALocationWithItemsInsideFails() {
-        LocationForDeletion data = new LocationForDeletion(1, 0);
+        LocationForDeletion data = LocationForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
         Mockito.when(foodItemHandler.areItemsStoredIn(any(), any())).thenReturn(true);
 
         StatusCode result = uut.delete(data);
@@ -153,7 +170,11 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void settingDescriptionWorks() {
-        LocationForSetDescription data = new LocationForSetDescription(1, 0, "new description");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(1)
+                .version(0)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -162,13 +183,17 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
                         .success()
                         .anyMatch(f -> f.id() == data.id() &&
                                 data.version() + 1 == f.version() &&
-                                data.getDescription().equals(f.description())),
-                () -> "expected description '" + data.getDescription() + "' not found");
+                                data.description().equals(f.description())),
+                () -> "expected description '" + data.description() + "' not found");
     }
 
     @Test
     public void settingDescriptionOnAbsentLocationIsReported() {
-        LocationForSetDescription data = new LocationForSetDescription(-1, 0, "new description");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -177,7 +202,11 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void settingDescriptionOnInvalidVersionIsReported() {
-        LocationForSetDescription data = new LocationForSetDescription(1, 1, "new description");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(1)
+                .version(1)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -186,7 +215,11 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void settingDescriptionWithoutChangeIsPrevented() {
-        LocationForSetDescription data = new LocationForSetDescription(1, 0, "fridge description");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(1)
+                .version(0)
+                .description("fridge description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -205,16 +238,25 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Override
     public LocationForDeletion getUnknownEntity() {
-        return new LocationForDeletion(getNumberOfEntities() + 1, getValidEntity().version() + 1);
+        return LocationForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(getValidEntity().version())
+                .build();
     }
 
     @Override
     public LocationForDeletion getWrongVersionEntity() {
-        return new LocationForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+        return LocationForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
     }
 
     @Override
     public LocationForDeletion getValidEntity() {
-        return new LocationForDeletion(2, 0);
+        return LocationForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
     }
 }

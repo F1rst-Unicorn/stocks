@@ -61,7 +61,7 @@ public class LocationManager extends BusinessObject<LocationRecord, Location> im
 
     public StatusCode delete(LocationForDeletion l) {
         return runOperation(() -> {
-            if (l.isCascade()) {
+            if (l.cascade()) {
                 StatusCode deleteFoodResult = foodItemHandler.deleteItemsStoredIn(l);
 
                 if (deleteFoodResult != StatusCode.SUCCESS)

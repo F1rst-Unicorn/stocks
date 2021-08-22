@@ -54,13 +54,13 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
 
             return currentUpdate(context, Arrays.asList(
                     LOCATION.ID,
-                    DSL.inline(item.getNewName()),
+                    DSL.inline(item.name()),
                     LOCATION.VERSION.add(1),
                     LOCATION.DESCRIPTION
                     ),
                     LOCATION.ID.eq(item.id())
                             .and(LOCATION.VERSION.eq(item.version()))
-                            .and(LOCATION.NAME.ne(item.getNewName())))
+                            .and(LOCATION.NAME.ne(item.name())))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }
@@ -81,11 +81,11 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                     LOCATION.ID,
                     LOCATION.NAME,
                     LOCATION.VERSION.add(1),
-                    DSL.inline(input.getDescription())
+                    DSL.inline(input.description())
                     ),
                     LOCATION.ID.eq(input.id())
                             .and(LOCATION.VERSION.eq(input.version()))
-                            .and(LOCATION.DESCRIPTION.ne(input.getDescription())))
+                            .and(LOCATION.DESCRIPTION.ne(input.description())))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }
@@ -128,12 +128,12 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                     .description(cursor.getDescription())
                     .build();
         else
-            return cursor -> new LocationForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getName(),
-                    cursor.getDescription()
-            );
+            return cursor -> LocationForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .name(cursor.getName())
+                    .description(cursor.getDescription())
+                    .build();
     }
 
     @Override

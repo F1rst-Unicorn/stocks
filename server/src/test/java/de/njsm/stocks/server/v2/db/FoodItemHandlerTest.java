@@ -272,7 +272,10 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void deleteItemsInLocationWorks() {
-        LocationForDeletion input = new LocationForDeletion(1, 0);
+        LocationForDeletion input = LocationForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
 
         StatusCode deleteResult = uut.deleteItemsStoredIn(input);
 
@@ -285,8 +288,14 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void testingAreItemsStoredIn() {
-        assertTrue(uut.areItemsStoredIn(new LocationForDeletion(1, 0), getDSLContext()));
-        assertFalse(uut.areItemsStoredIn(new LocationForDeletion(2, 0), getDSLContext()));
+        assertTrue(uut.areItemsStoredIn(LocationForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build(), getDSLContext()));
+        assertFalse(uut.areItemsStoredIn(LocationForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build(), getDSLContext()));
     }
 
     @Test

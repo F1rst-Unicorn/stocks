@@ -19,38 +19,32 @@
 
 package de.njsm.stocks.common.api;
 
-import java.util.Objects;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class LocationForSetDescription extends VersionedData implements Versionable<Location> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_LocationForSetDescription.class)
+public abstract class LocationForSetDescription implements Versionable<Location> {
 
-    private final String description;
+    public abstract String description();
 
-    public LocationForSetDescription(int id, int version, String description) {
-        super(id, version);
-        this.description = description;
+    public static Builder builder() {
+        return new AutoValue_LocationForSetDescription.Builder();
     }
 
-    public String getDescription() {
-        return description;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<LocationForSetDescription>
+            implements Versionable.Builder<Builder> {
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        LocationForSetDescription that = (LocationForSetDescription) o;
-        return getDescription().equals(that.getDescription());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getDescription());
+        public abstract Builder description(String v);
     }
 
     @Override
     public boolean isContainedIn(Location item, boolean increment) {
         return Versionable.super.isContainedIn(item, increment) &&
-                description.equals(item.description());
+                description().equals(item.description());
     }
 }

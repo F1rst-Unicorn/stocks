@@ -151,7 +151,11 @@ public class BitemporalityTest extends DbTestCase {
                 .build();
         Principals principals = new Principals("Bob", youngDevice.name(), 1, youngDevice.id());
         uut.setPrincipals(principals);
-        LocationForRenaming input = new LocationForRenaming(1, 0, "newName");
+        LocationForRenaming input = LocationForRenaming.builder()
+                .id(1)
+                .version(0)
+                .name("newName")
+                .build();
         getDSLContext().insertInto(USER_DEVICE)
                 .columns(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.VALID_TIME_START, USER_DEVICE.VALID_TIME_END, USER_DEVICE.TRANSACTION_TIME_START, USER_DEVICE.TRANSACTION_TIME_END, USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.INITIATES)
                 .values(youngDevice.id(), youngDevice.version(), now, INFINITY, now, INFINITY, youngDevice.name(), youngDevice.belongsTo(), youngDevice.initiates())
@@ -163,7 +167,7 @@ public class BitemporalityTest extends DbTestCase {
 
         Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
         assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals(input.getNewName())
+        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals(input.name())
                 && f.id() == input.id()
                 && f.version() == input.version() + 1
                 && f.validTimeEnd().equals(INFINITY.toInstant())
@@ -188,7 +192,10 @@ public class BitemporalityTest extends DbTestCase {
                 .build();
         Principals principals = new Principals("Bob", youngDevice.name(), 1, youngDevice.id());
         uut.setPrincipals(principals);
-        LocationForDeletion input = new LocationForDeletion(2, 0);
+        LocationForDeletion input = LocationForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
         getDSLContext().insertInto(USER_DEVICE)
                 .columns(USER_DEVICE.ID, USER_DEVICE.VERSION, USER_DEVICE.VALID_TIME_START, USER_DEVICE.VALID_TIME_END, USER_DEVICE.TRANSACTION_TIME_START, USER_DEVICE.TRANSACTION_TIME_END, USER_DEVICE.NAME, USER_DEVICE.BELONGS_TO, USER_DEVICE.INITIATES)
                 .values(youngDevice.id(), youngDevice.version(), now, INFINITY, now, INFINITY, youngDevice.name(), youngDevice.belongsTo(), youngDevice.initiates())

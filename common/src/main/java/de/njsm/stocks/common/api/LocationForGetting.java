@@ -19,46 +19,22 @@
 
 package de.njsm.stocks.common.api;
 
-import java.util.Objects;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class LocationForGetting extends VersionedData implements Versionable<Location>, Location {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_LocationForGetting.Builder.class)
+public abstract class LocationForGetting implements Location {
 
-    private final String name;
-
-    private final String description;
-
-    public LocationForGetting(int id, int version, String name, String description) {
-        super(id, version);
-        this.name = name;
-        this.description = description;
+    public static Builder builder() {
+        return new AutoValue_LocationForGetting.Builder();
     }
 
-    public String name() {
-        return name;
-    }
-
-    public String description() {
-        return description;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        LocationForGetting that = (LocationForGetting) o;
-        return name().equals(that.name()) && description().equals(that.description());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), name(), description());
-    }
-
-    @Override
-    public boolean isContainedIn(Location item, boolean increment) {
-        return Location.super.isContainedIn(item, increment) &&
-                name.equals(item.name()) &&
-                description.equals(item.description());
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<LocationForGetting>
+            implements Versionable.Builder<Builder>, Location.Builder<Builder> {
     }
 }

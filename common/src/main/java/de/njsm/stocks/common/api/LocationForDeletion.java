@@ -19,37 +19,27 @@
 
 package de.njsm.stocks.common.api;
 
-import java.util.Objects;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class LocationForDeletion extends VersionedData implements Versionable<Location> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_LocationForDeletion.Builder.class)
+public abstract class LocationForDeletion implements Versionable<Location> {
 
-    private final boolean cascade;
+    public abstract boolean cascade();
 
-    public LocationForDeletion(int id, int version, boolean cascade) {
-        super(id, version);
-        this.cascade = cascade;
+    public static LocationForDeletion.Builder builder() {
+        return new AutoValue_LocationForDeletion.Builder()
+                .cascade(false);
     }
 
-    public LocationForDeletion(int id, int version) {
-        super(id, version);
-        this.cascade = false;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<LocationForDeletion>
+            implements Versionable.Builder<Builder> {
 
-    public boolean isCascade() {
-        return cascade;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LocationForDeletion)) return false;
-        if (!super.equals(o)) return false;
-        LocationForDeletion that = (LocationForDeletion) o;
-        return isCascade() == that.isCascade();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), isCascade());
+        public abstract Builder cascade(boolean v);
     }
 }

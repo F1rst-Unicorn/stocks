@@ -275,7 +275,10 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void unregisteringALocationWithoutFoodIsOk() {
-        LocationForDeletion l = new LocationForDeletion(2, 1);
+        LocationForDeletion l = LocationForDeletion.builder()
+                .id(2)
+                .version(1)
+                .build();
 
         StatusCode result = uut.unregisterDefaultLocation(l);
 
@@ -284,7 +287,10 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void unregisteringALocationWorks() {
-        LocationForDeletion l = new LocationForDeletion(1, 1);
+        LocationForDeletion l = LocationForDeletion.builder()
+                .id(1)
+                .version(1)
+                .build();
 
         StatusCode result = uut.unregisterDefaultLocation(l);
 

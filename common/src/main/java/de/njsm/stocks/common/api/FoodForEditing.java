@@ -32,6 +32,16 @@ import java.util.Optional;
 @JsonDeserialize(builder = AutoValue_FoodForEditing.class)
 public abstract class FoodForEditing implements Versionable<Food> {
 
+    public abstract String name();
+
+    public abstract Optional<Period> expirationOffset();
+
+    public abstract Optional<Integer> location();
+
+    public abstract Optional<String> description();
+
+    public abstract Optional<Integer> storeUnit();
+
     public static Builder builder() {
         return new AutoValue_FoodForEditing.Builder();
     }
@@ -56,16 +66,6 @@ public abstract class FoodForEditing implements Versionable<Food> {
 
         public abstract Builder storeUnit(@Nullable Integer v);
     }
-
-    public abstract String name();
-
-    public abstract Optional<Period> expirationOffset();
-
-    public abstract Optional<Integer> location();
-
-    public abstract Optional<String> description();
-
-    public abstract Optional<Integer> storeUnit();
 
     @Override
     public void validate() {

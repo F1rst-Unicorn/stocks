@@ -19,38 +19,32 @@
 
 package de.njsm.stocks.common.api;
 
-import java.util.Objects;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class LocationForRenaming extends VersionedData implements Versionable<Location> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_LocationForRenaming.class)
+public abstract class LocationForRenaming implements Versionable<Location> {
 
-    private final String newName;
+    public abstract String name();
 
-    public LocationForRenaming(int id, int version, String newName) {
-        super(id, version);
-        this.newName = newName;
+    public static Builder builder() {
+        return new AutoValue_LocationForRenaming.Builder();
     }
 
-    public String getNewName() {
-        return newName;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<LocationForRenaming>
+            implements Versionable.Builder<Builder> {
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        LocationForRenaming that = (LocationForRenaming) o;
-        return getNewName().equals(that.getNewName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getNewName());
+        public abstract Builder name(String v);
     }
 
     @Override
     public boolean isContainedIn(Location item, boolean increment) {
         return Versionable.super.isContainedIn(item, increment) &&
-                newName.equals(item.name());
+                name().equals(item.name());
     }
 }
