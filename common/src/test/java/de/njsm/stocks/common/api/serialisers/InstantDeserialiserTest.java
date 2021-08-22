@@ -22,12 +22,13 @@ package de.njsm.stocks.common.api.serialisers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.njsm.stocks.common.api.Update;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.Instant;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InstantDeserialiserTest {
 
@@ -40,19 +41,19 @@ public class InstantDeserialiserTest {
         assertEquals(Instant.EPOCH, output.lastUpdate());
     }
 
-    @Test(expected = IOException.class)
-    public void invalidInputThrowsException() throws IOException {
-        InstantDeserialiser.parseString("fdsaklföe");
+    @Test
+    public void invalidInputThrowsException() {
+        assertThrows(IOException.class, () -> InstantDeserialiser.parseString("fdsaklföe"));
     }
 
-    @Test(expected = IOException.class)
-    public void emptyInputThrowsException() throws IOException {
-        InstantDeserialiser.parseString("");
+    @Test
+    public void emptyInputThrowsException() {
+        assertThrows(IOException.class, () -> InstantDeserialiser.parseString(""));
     }
 
-    @Test(expected = IOException.class)
-    public void nullInputThrowsException() throws IOException {
-        InstantDeserialiser.parseString(null);
+    @Test
+    public void nullInputThrowsException() {
+        assertThrows(IOException.class, () -> InstantDeserialiser.parseString(null));
     }
 
     @Test

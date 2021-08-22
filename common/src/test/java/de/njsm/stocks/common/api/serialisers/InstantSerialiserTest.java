@@ -20,8 +20,8 @@
 package de.njsm.stocks.common.api.serialisers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
@@ -34,7 +34,7 @@ public class InstantSerialiserTest {
 
     private JsonGenerator generatorMock;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         generatorMock = mock(JsonGenerator.class);
         uut = new InstantSerialiser();

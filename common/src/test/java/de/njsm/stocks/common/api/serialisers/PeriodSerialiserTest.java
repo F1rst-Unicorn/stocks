@@ -20,8 +20,8 @@
 package de.njsm.stocks.common.api.serialisers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Period;
 
@@ -34,7 +34,7 @@ public class PeriodSerialiserTest {
 
     private JsonGenerator generatorMock;
 
-    @Before
+    @BeforeEach
     public void setup() {
         generatorMock = mock(JsonGenerator.class);
         uut = new PeriodSerialiser();

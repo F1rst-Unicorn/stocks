@@ -20,7 +20,7 @@
 package de.njsm.stocks.common.api;
 
 import fj.data.Validation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ListResponseTest {
 

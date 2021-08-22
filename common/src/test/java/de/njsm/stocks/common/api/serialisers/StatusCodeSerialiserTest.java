@@ -21,8 +21,8 @@ package de.njsm.stocks.common.api.serialisers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import de.njsm.stocks.common.api.StatusCode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -33,7 +33,7 @@ public class StatusCodeSerialiserTest {
 
     private JsonGenerator generatorMock;
 
-    @Before
+    @BeforeEach
     public void setup() {
         generatorMock = mock(JsonGenerator.class);
         uut = new StatusCodeSerialiser();

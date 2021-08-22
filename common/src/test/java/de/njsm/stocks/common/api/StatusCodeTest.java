@@ -20,22 +20,24 @@
 package de.njsm.stocks.common.api;
 
 import fj.data.Validation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 public class StatusCodeTest {
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void invalidValidationWithFailIsRaised() {
-        StatusCode.toCode(Validation.fail(StatusCode.SUCCESS));
+        assertThrows(RuntimeException.class, () -> StatusCode.toCode(Validation.fail(StatusCode.SUCCESS)));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void invalidValidationWithSuccessIsRaised() {
-        StatusCode.toCode(Validation.success(StatusCode.DATABASE_UNREACHABLE));
+        assertThrows(RuntimeException.class, () -> StatusCode.toCode(Validation.success(StatusCode.DATABASE_UNREACHABLE)));
     }
 
     @Test

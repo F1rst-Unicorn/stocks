@@ -22,11 +22,12 @@ package de.njsm.stocks.common.api.serialisers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.njsm.stocks.common.api.RecipeForGetting;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class DurationDeserialiserTest {
     @Test
