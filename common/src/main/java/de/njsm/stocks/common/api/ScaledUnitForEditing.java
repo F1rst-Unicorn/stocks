@@ -20,47 +20,49 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
+
 import java.math.BigDecimal;
-import java.util.Objects;
 
-public class ScaledUnitForEditing extends VersionedData implements Versionable<ScaledUnit> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ScaledUnitForEditing.Builder.class)
+public abstract class ScaledUnitForEditing implements Versionable<ScaledUnit> {
 
-    private final BigDecimal scale;
+    @JsonGetter
+    public abstract BigDecimal scale();
 
-    private final int unit;
+    @JsonGetter
+    public abstract int unit();
 
-    public ScaledUnitForEditing(int id, int version, BigDecimal scale, int unit) {
-        super(id, version);
-        this.scale = scale;
-        this.unit = unit;
+    public static Builder builder() {
+        return new AutoValue_ScaledUnitForEditing.Builder();
     }
 
-    public BigDecimal getScale() {
-        return scale;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<ScaledUnitForEditing>
+            implements Versionable.Builder<Builder>, ScaledUnit.ScaleFromString<Builder> {
 
-    public int getUnit() {
-        return unit;
-    }
+        public abstract Builder scale(BigDecimal v);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ScaledUnitForEditing)) return false;
-        if (!super.equals(o)) return false;
-        ScaledUnitForEditing that = (ScaledUnitForEditing) o;
-        return getUnit() == that.getUnit() && Objects.equals(getScale(), that.getScale());
+        public abstract Builder unit(int v);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getScale(), getUnit());
+    public void validate() {
+        Versionable.super.validate();
+        Preconditions.checkState(unit() > 0, "unit id is invalid");
     }
 
     @Override
     public boolean isContainedIn(ScaledUnit item, boolean increment) {
         return Versionable.super.isContainedIn(item, increment) &&
-                scale.equals(item.scale()) &&
-                unit == item.unit();
+                scale().equals(item.scale()) &&
+                unit() == item.unit();
     }
 }

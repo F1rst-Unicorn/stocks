@@ -48,7 +48,10 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Override
     public ScaledUnitForInsertion getInsertable() {
-        return new ScaledUnitForInsertion(BigDecimal.ONE, 1);
+        return ScaledUnitForInsertion.builder()
+                .scale(BigDecimal.ONE)
+                .unit(1)
+                .build();
     }
 
     @Test
@@ -95,7 +98,10 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Test
     public void deletingWithForeignReferencesIsRejected() {
-        StatusCode result = uut.delete(new ScaledUnitForDeletion(1, 0))
+        StatusCode result = uut.delete(ScaledUnitForDeletion.builder()
+                        .id(1)
+                        .version(0)
+                        .build())
                 .bind(uut::commit);
 
         assertEquals(StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION, result);
@@ -103,7 +109,12 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Test
     public void editingMissingScaleIsReported() {
-        ScaledUnitForEditing input = new ScaledUnitForEditing(getNumberOfEntities() + 1, 0, new BigDecimal(2), 1);
+        ScaledUnitForEditing input = ScaledUnitForEditing.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .scale(BigDecimal.valueOf(2))
+                .unit(1)
+                .build();
 
         StatusCode result = uut.edit(input);
 
@@ -112,7 +123,12 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Test
     public void editingScaleWorks() {
-        ScaledUnitForEditing input = new ScaledUnitForEditing(1, 0, new BigDecimal(2), 1);
+        ScaledUnitForEditing input = ScaledUnitForEditing.builder()
+                .id(1)
+                .version(0)
+                .scale(BigDecimal.valueOf(2))
+                .unit(1)
+                .build();
 
         StatusCode result = uut.edit(input);
 
@@ -121,7 +137,12 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Test
     public void editingUnitWorks() {
-        ScaledUnitForEditing input = new ScaledUnitForEditing(1, 0, new BigDecimal(1), 2);
+        ScaledUnitForEditing input = ScaledUnitForEditing.builder()
+                .id(1)
+                .version(0)
+                .scale(BigDecimal.valueOf(1))
+                .unit(2)
+                .build();
 
         StatusCode result = uut.edit(input);
 
@@ -140,16 +161,25 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Override
     public ScaledUnitForDeletion getUnknownEntity() {
-        return new ScaledUnitForDeletion(getNumberOfEntities() + 1, 0);
+        return ScaledUnitForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
     }
 
     @Override
     public ScaledUnitForDeletion getWrongVersionEntity() {
-        return new ScaledUnitForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+        return ScaledUnitForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
     }
 
     @Override
     public ScaledUnitForDeletion getValidEntity() {
-        return new ScaledUnitForDeletion(3, 0);
+        return ScaledUnitForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
     }
 }

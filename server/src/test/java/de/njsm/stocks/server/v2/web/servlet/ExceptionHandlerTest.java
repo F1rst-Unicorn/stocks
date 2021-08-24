@@ -110,4 +110,16 @@ public class ExceptionHandlerTest {
         Mockito.verify(response).setStatus(400);
         Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
     }
+
+    @Test
+    public void illegalStateExceptionYieldsInvalidInput() {
+        ContainerException exception = new ContainerException(new IllegalStateException("test"));
+        Mockito.when(request.getAttribute(ExceptionHandler.EXCEPTION_KEY)).thenReturn(exception);
+
+        Response result = uut.put(request, response);
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
+        Mockito.verify(response).setStatus(400);
+        Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
+    }
 }

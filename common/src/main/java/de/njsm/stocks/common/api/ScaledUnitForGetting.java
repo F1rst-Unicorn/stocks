@@ -19,47 +19,31 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
 import java.math.BigDecimal;
-import java.util.Objects;
 
-public class ScaledUnitForGetting extends VersionedData implements Entity<ScaledUnit>, ScaledUnit {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ScaledUnitForGetting.Builder.class)
+public abstract class ScaledUnitForGetting implements ScaledUnit {
 
-    private final BigDecimal scale;
+    @JsonGetter
+    public abstract BigDecimal scale();
 
-    private final int unit;
+    @JsonGetter
+    public abstract int unit();
 
-    public ScaledUnitForGetting(int id, int version, BigDecimal scale, int unit) {
-        super(id, version);
-        this.scale = scale;
-        this.unit = unit;
+    public static Builder builder() {
+       return new AutoValue_ScaledUnitForGetting.Builder();
     }
 
-    public BigDecimal scale() {
-        return scale;
-    }
-
-    public int unit() {
-        return unit;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ScaledUnitForGetting)) return false;
-        if (!super.equals(o)) return false;
-        ScaledUnitForGetting that = (ScaledUnitForGetting) o;
-        return unit() == that.unit() && scale().equals(that.scale());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), scale(), unit());
-    }
-
-    @Override
-    public boolean isContainedIn(ScaledUnit entity, boolean increment) {
-        return ScaledUnit.super.isContainedIn(entity, increment) &&
-                scale.equals(entity.scale()) &&
-                unit == entity.unit();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<ScaledUnitForGetting>
+            implements Versionable.Builder<Builder>, ScaledUnit.Builder<Builder> {
     }
 }

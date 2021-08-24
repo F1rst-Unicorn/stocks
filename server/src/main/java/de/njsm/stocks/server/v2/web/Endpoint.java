@@ -27,7 +27,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -97,27 +96,6 @@ public class Endpoint {
             return true;
         } catch (IOException e) {
             LOG.info("Request is invalid as " + name + " has value '" + rawInstant + "'");
-            return false;
-        }
-    }
-
-    public static boolean isValidBigDecimal(String rawNumber, String name) {
-        LOG.debug("Checking parameter " + name);
-
-        if (!isValid(rawNumber, name)) {
-            return false;
-        }
-
-        if (rawNumber.length() > 20) {
-            LOG.info("Request is invalid as " + name + " is longer than 20 characters");
-            return false;
-        }
-
-        try {
-            new BigDecimal(rawNumber);
-            return true;
-        } catch (NumberFormatException e) {
-            LOG.info("Request is invalid as " + name + " is not a number");
             return false;
         }
     }

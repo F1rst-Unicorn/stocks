@@ -55,13 +55,13 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
                     Arrays.asList(
                             SCALED_UNIT.ID,
                             SCALED_UNIT.VERSION.add(1),
-                            DSL.inline(data.getScale()),
-                            DSL.inline(data.getUnit())
+                            DSL.inline(data.scale()),
+                            DSL.inline(data.unit())
                     ),
                     getIdField().eq(data.id())
                             .and(getVersionField().eq(data.version()))
-                            .and(SCALED_UNIT.SCALE.ne(data.getScale())
-                                    .or(SCALED_UNIT.UNIT.ne(data.getUnit())))
+                            .and(SCALED_UNIT.SCALE.ne(data.scale())
+                                    .or(SCALED_UNIT.UNIT.ne(data.unit())))
 
             )
                     .map(this::notFoundMeansInvalidVersion);
@@ -98,12 +98,12 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
                     .unit(cursor.getUnit())
                     .build();
         else
-            return cursor -> new ScaledUnitForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getScale(),
-                    cursor.getUnit()
-            );
+            return cursor -> ScaledUnitForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .scale(cursor.getScale())
+                    .unit(cursor.getUnit())
+                    .build();
     }
 
     @Override

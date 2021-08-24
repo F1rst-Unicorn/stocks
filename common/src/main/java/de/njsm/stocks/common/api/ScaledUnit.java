@@ -24,6 +24,8 @@ import com.google.common.base.Preconditions;
 
 import java.math.BigDecimal;
 
+import static java.util.Objects.requireNonNullElse;
+
 public interface ScaledUnit extends Entity<ScaledUnit> {
 
     @JsonGetter
@@ -37,6 +39,19 @@ public interface ScaledUnit extends Entity<ScaledUnit> {
         T scale(BigDecimal v);
 
         T unit(int v);
+    }
+
+    interface ScaleFromString<T> {
+
+        T scale(BigDecimal v);
+
+        default T scale(String v) {
+            try {
+                return scale(new BigDecimal(requireNonNullElse(v, "not a number")));
+            } catch (NumberFormatException e) {
+                throw new IllegalStateException("scale not a java.math.BigDecimal: " + v, e);
+            }
+        }
     }
 
     @Override

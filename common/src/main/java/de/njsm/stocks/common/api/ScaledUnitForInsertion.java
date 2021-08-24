@@ -19,47 +19,49 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
-public class ScaledUnitForInsertion implements Insertable<ScaledUnit> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_ScaledUnitForInsertion.Builder.class)
+public abstract class ScaledUnitForInsertion implements Insertable<ScaledUnit>, SelfValidating {
 
-    private final BigDecimal scale;
+    @JsonGetter
+    public abstract BigDecimal scale();
 
-    private final int unit;
+    @JsonGetter
+    public abstract int unit();
 
-    public ScaledUnitForInsertion(BigDecimal scale, int unit) {
-        this.scale = scale;
-        this.unit = unit;
+    public static Builder builder() {
+        return new AutoValue_ScaledUnitForInsertion.Builder();
     }
 
-    public BigDecimal getScale() {
-        return scale;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<ScaledUnitForInsertion>
+            implements ScaledUnit.ScaleFromString<Builder> {
 
-    public int getUnit() {
-        return unit;
-    }
+        public abstract Builder scale(BigDecimal v);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ScaledUnitForInsertion)) return false;
-        ScaledUnitForInsertion that = (ScaledUnitForInsertion) o;
-        return getUnit() == that.getUnit() && getScale().equals(that.getScale());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getScale(), getUnit());
+        public abstract Builder unit(int v);
     }
 
     @Override
     public boolean isContainedIn(ScaledUnit entity) {
-        return scale.equals(entity.scale()) &&
-                unit == entity.unit();
+        return scale().equals(entity.scale()) &&
+                unit() == entity.unit();
+    }
+
+    @Override
+    public void validate() {
+        Preconditions.checkState(unit() > 0, "unit id is invalid");
     }
 
     @Override

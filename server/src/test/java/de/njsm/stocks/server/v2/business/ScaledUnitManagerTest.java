@@ -55,7 +55,12 @@ public class ScaledUnitManagerTest {
 
     @Test
     public void editingWorks() {
-        ScaledUnitForEditing data = new ScaledUnitForEditing(1, 2, BigDecimal.ONE, 1);
+        ScaledUnitForEditing data = ScaledUnitForEditing.builder()
+                .id(1)
+                .version(2)
+                .scale(BigDecimal.ONE)
+                .unit(1)
+                .build();
         when(dbHandler.edit(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.edit(data);
@@ -67,7 +72,10 @@ public class ScaledUnitManagerTest {
 
     @Test
     public void deletingWorks() {
-        ScaledUnitForDeletion data = new ScaledUnitForDeletion(1, 2);
+        ScaledUnitForDeletion data = ScaledUnitForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         when(dbHandler.delete(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);
