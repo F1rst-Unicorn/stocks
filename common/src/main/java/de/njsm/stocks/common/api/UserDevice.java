@@ -27,7 +27,7 @@ public interface UserDevice extends Entity<UserDevice> {
     @JsonGetter
     String name();
 
-    @JsonGetter
+    @JsonGetter("userId")
     int belongsTo();
 
     interface Builder<T> {
