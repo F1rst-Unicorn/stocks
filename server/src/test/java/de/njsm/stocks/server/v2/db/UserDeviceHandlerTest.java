@@ -112,7 +112,10 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
     @Test
     public void gettingDevicesOfUserWorks() {
 
-        Validation<StatusCode, List<Identifiable<UserDevice>>> result = uut.getDevicesOfUser(new UserForDeletion(2, 2));
+        Validation<StatusCode, List<Identifiable<UserDevice>>> result = uut.getDevicesOfUser(UserForDeletion.builder()
+                .id(2)
+                .version(2)
+                .build());
 
         assertTrue(result.isSuccess());
         assertEquals(2, result.success().size());

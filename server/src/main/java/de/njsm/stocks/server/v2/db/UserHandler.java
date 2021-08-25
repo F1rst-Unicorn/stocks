@@ -59,11 +59,11 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
                     .name(cursor.getName())
                     .build();
         else
-            return record -> new UserForGetting(
-                    record.getId(),
-                    record.getVersion(),
-                    record.getName()
-            );
+            return cursor -> UserForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .name(cursor.getName())
+                    .build();
     }
 
     @Override

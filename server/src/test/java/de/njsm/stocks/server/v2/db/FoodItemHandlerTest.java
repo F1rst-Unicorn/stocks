@@ -239,8 +239,14 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void movingFromUnknownUserIsReported() {
-        UserForDeletion from = new UserForDeletion(1, 0);
-        UserForDeletion to = new UserForDeletion(2, 0);
+        UserForDeletion from = UserForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserForDeletion to = UserForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
         UserDeviceForDeletion from1 = UserDeviceForDeletion.builder()
                 .id(1)
                 .version(0)
@@ -264,8 +270,14 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void movingToUnknownUserIsReported() {
-        UserForDeletion from = new UserForDeletion(1, 0);
-        UserForDeletion to = new UserForDeletion(2, 0);
+        UserForDeletion from = UserForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserForDeletion to = UserForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
         UserDeviceForDeletion from1 = UserDeviceForDeletion.builder()
                 .id(1)
                 .version(0)
@@ -289,8 +301,14 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void moveUserSuccessfully() {
-        UserForDeletion from = new UserForDeletion(1, 0);
-        UserForDeletion to = new UserForDeletion(2, 0);
+        UserForDeletion from = UserForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserForDeletion to = UserForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
         UserDeviceForDeletion from1 = UserDeviceForDeletion.builder()
                 .id(1)
                 .version(0)

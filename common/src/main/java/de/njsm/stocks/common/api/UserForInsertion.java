@@ -19,40 +19,39 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
-import java.util.Objects;
 
+@AutoValue
+@JsonDeserialize(builder = AutoValue_UserForInsertion.Builder.class)
+public abstract class UserForInsertion implements Insertable<User>, SelfValidating {
 
-public class UserForInsertion implements Insertable<User> {
+    @JsonGetter
+    public abstract String name();
 
-    private final String name;
-
-    public UserForInsertion(String name) {
-        this.name = name;
+    public static Builder builder() {
+        return new AutoValue_UserForInsertion.Builder();
     }
 
-    public String getName() {
-        return name;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder
+    public abstract static class Builder
+            extends SelfValidating.Builder<UserForInsertion> {
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserForInsertion that = (UserForInsertion) o;
-        return getName().equals(that.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName());
+        public abstract Builder name(String v);
     }
 
     @Override
     public boolean isContainedIn(User entity) {
-        return name.equals(entity.name());
+        return name().equals(entity.name());
     }
+
+    @Override
+    public void validate() {}
 
     @Override
     public <I, O> O accept(InsertableVisitor<I, O> visitor, I argument) {

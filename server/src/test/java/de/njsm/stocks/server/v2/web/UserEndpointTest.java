@@ -114,7 +114,9 @@ public class UserEndpointTest {
         Response result = uut.putUser(createMockRequest(), name);
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
-        Mockito.verify(userManager).add(new UserForInsertion(name));
+        Mockito.verify(userManager).add(UserForInsertion.builder()
+                .name(name)
+                .build());
         Mockito.verify(userManager).setPrincipals(TEST_USER);
     }
 
@@ -143,7 +145,10 @@ public class UserEndpointTest {
         Response result = uut.delete(Util.createMockRequest(), 1, 2);
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
-        Mockito.verify(userManager).delete(new UserForDeletion(1, 2));
+        Mockito.verify(userManager).delete(UserForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build());
         Mockito.verify(userManager).setPrincipals(TEST_USER);
     }
 }

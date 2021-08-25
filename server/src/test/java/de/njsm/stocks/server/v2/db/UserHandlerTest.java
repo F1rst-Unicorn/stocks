@@ -55,10 +55,26 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
         assertTrue(result.isSuccess());
         List<User> list = result.success().collect(Collectors.toList());
         assertEquals(4, list.size());
-        assertThat(list, hasItem(new UserForGetting(1, 0, "Default")));
-        assertThat(list, hasItem(new UserForGetting(2, 0, "Bob")));
-        assertThat(list, hasItem(new UserForGetting(3, 0, "Alice")));
-        assertThat(list, hasItem(new UserForGetting(4, 0, "Jack")));
+        assertThat(list, hasItem(UserForGetting.builder()
+                .id(1)
+                .version(0)
+                .name("Default")
+                .build()));
+        assertThat(list, hasItem(UserForGetting.builder()
+                .id(2)
+                .version(0)
+                .name("Bob")
+                .build()));
+        assertThat(list, hasItem(UserForGetting.builder()
+                .id(3)
+                .version(0)
+                .name("Alice")
+                .build()));
+        assertThat(list, hasItem(UserForGetting.builder()
+                .id(4)
+                .version(0)
+                .name("Jack")
+                .build()));
     }
 
     @Test
@@ -75,7 +91,9 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
 
     @Override
     public UserForInsertion getInsertable() {
-        return new UserForInsertion("testuser");
+        return UserForInsertion.builder()
+                .name("testuser")
+                .build();
     }
 
     @Override
@@ -90,16 +108,25 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
 
     @Override
     public Versionable<User> getUnknownEntity() {
-        return new UserForDeletion(getNumberOfEntities() + 1, 0);
+        return UserForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
     }
 
     @Override
     public Versionable<User> getWrongVersionEntity() {
-        return new UserForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+        return UserForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
     }
 
     @Override
     public Versionable<User> getValidEntity() {
-        return new UserForDeletion(1, 0);
+        return UserForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
     }
 }

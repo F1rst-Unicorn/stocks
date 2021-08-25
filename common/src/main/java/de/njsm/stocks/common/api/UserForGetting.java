@@ -20,38 +20,23 @@
 package de.njsm.stocks.common.api;
 
 
-import java.util.Objects;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class UserForGetting extends VersionedData implements Versionable<User>, User {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_UserForGetting.Builder.class)
+public abstract class UserForGetting implements User {
 
-    private final String name;
-
-    public UserForGetting(int id, int version, String name) {
-        super(id, version);
-        this.name = name;
+    public static Builder builder() {
+        return new AutoValue_UserForGetting.Builder();
     }
 
-    public String name() {
-        return name;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<UserForGetting>
+            implements Versionable.Builder<Builder>, User.Builder<Builder> {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        UserForGetting that = (UserForGetting) o;
-        return name().equals(that.name());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), name());
-    }
-
-    @Override
-    public boolean isContainedIn(User item, boolean increment) {
-        return User.super.isContainedIn(item, increment) &&
-                name.equals(item.name());
-    }
 }

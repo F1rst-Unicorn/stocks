@@ -86,7 +86,9 @@ public class UserManagerTest {
 
     @Test
     public void successfulAddingWorks() {
-        UserForInsertion input = new UserForInsertion("fdsa");
+        UserForInsertion input = UserForInsertion.builder()
+                .name("fdsa")
+                .build();
         Mockito.when(userDbHandler.add(any())).thenReturn(StatusCode.SUCCESS);
         Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
@@ -99,7 +101,9 @@ public class UserManagerTest {
 
     @Test
     public void failingAddingWorks() {
-        UserForInsertion input = new UserForInsertion("fdsa");
+        UserForInsertion input = UserForInsertion.builder()
+                .name("fdsa")
+                .build();
         Mockito.when(userDbHandler.add(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
         StatusCode result = uut.add(input);
@@ -112,7 +116,10 @@ public class UserManagerTest {
     @Test
     public void deleteWithFailingDeviceRetrieval() {
         StatusCode code = StatusCode.DATABASE_UNREACHABLE;
-        UserForDeletion input = new UserForDeletion(1, 2);
+        UserForDeletion input = UserForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         Mockito.when(deviceHandler.getDevicesOfUser(input)).thenReturn(Validation.fail(code));
 
         StatusCode result = uut.delete(input);
@@ -126,7 +133,10 @@ public class UserManagerTest {
     public void deleteWithFailingUserTransfer() {
         StatusCode code = StatusCode.DATABASE_UNREACHABLE;
         List<Identifiable<UserDevice>> devices = new LinkedList<>();
-        UserForDeletion input = new UserForDeletion(1, 2);
+        UserForDeletion input = UserForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         devices.add(UserDeviceForGetting.builder()
                 .id(1)
                 .version(2)
@@ -154,7 +164,10 @@ public class UserManagerTest {
     @Test
     public void deleteSuccessfully() {
         List<Identifiable<UserDevice>> devices = new LinkedList<>();
-        UserForDeletion input = new UserForDeletion(1, 2);
+        UserForDeletion input = UserForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         devices.add(UserDeviceForGetting.builder()
                 .id(1)
                 .version(2)

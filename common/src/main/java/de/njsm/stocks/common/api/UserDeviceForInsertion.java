@@ -30,7 +30,6 @@ import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 @JsonDeserialize(builder = AutoValue_UserDeviceForInsertion.Builder.class)
 public abstract class UserDeviceForInsertion implements Insertable<UserDevice>, SelfValidating {
 
-
     @JsonGetter
     public abstract String name();
 
