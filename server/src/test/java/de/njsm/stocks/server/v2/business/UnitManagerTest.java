@@ -53,7 +53,12 @@ public class UnitManagerTest {
 
     @Test
     public void renamingWorks() {
-        UnitForRenaming data = new UnitForRenaming(1, 2, "name", "abbreviation");
+        UnitForRenaming data = UnitForRenaming.builder()
+                .id(1)
+                .version(2)
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
         when(dbHandler.rename(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.rename(data);
@@ -65,7 +70,10 @@ public class UnitManagerTest {
 
     @Test
     public void deletingWorks() {
-        UnitForDeletion data = new UnitForDeletion(1, 2);
+        UnitForDeletion data = UnitForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         when(dbHandler.delete(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);

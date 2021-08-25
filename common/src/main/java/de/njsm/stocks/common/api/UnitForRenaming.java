@@ -19,46 +19,40 @@
 
 package de.njsm.stocks.common.api;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public class UnitForRenaming extends VersionedData implements Versionable<Unit> {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_UnitForRenaming.Builder.class)
+public abstract class UnitForRenaming implements Versionable<Unit> {
 
-    private final String name;
+    @JsonGetter
+    public abstract String name();
 
-    private final String abbreviation;
+    @JsonGetter
+    public abstract String abbreviation();
 
-    public UnitForRenaming(int id, int version, String name, String abbreviation) {
-        super(id, version);
-        this.name = name;
-        this.abbreviation = abbreviation;
+    public static Builder builder() {
+        return new AutoValue_UnitForRenaming.Builder();
     }
 
-    public String getName() {
-        return name;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<UnitForRenaming>
+            implements Versionable.Builder<Builder> {
 
-    public String getAbbreviation() {
-        return abbreviation;
-    }
+        public abstract Builder name(String v);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UnitForRenaming)) return false;
-        if (!super.equals(o)) return false;
-        UnitForRenaming that = (UnitForRenaming) o;
-        return getName().equals(that.getName()) && getAbbreviation().equals(that.getAbbreviation());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), getAbbreviation());
+        public abstract Builder abbreviation(String v);
     }
 
     @Override
     public boolean isContainedIn(Unit item, boolean increment) {
         return Versionable.super.isContainedIn(item, increment) &&
-                name.equals(item.name()) &&
-                abbreviation.equals(item.abbreviation());
+                name().equals(item.name()) &&
+                abbreviation().equals(item.abbreviation());
     }
 }

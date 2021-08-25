@@ -55,7 +55,10 @@ public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Del
                         @QueryParam("abbreviation") String abbreviation) {
         if (isValid(name, "name") && isValid(abbreviation, "abbreviation")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.add(new UnitForInsertion(name, abbreviation));
+            StatusCode status = manager.add(UnitForInsertion.builder()
+                    .name(name)
+                    .abbreviation(abbreviation)
+                    .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -76,13 +79,12 @@ public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Del
                 isValid(abbreviation, "abbreviation")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.rename(
-                    new UnitForRenaming(
-                            id,
-                            version,
-                            name,
-                            abbreviation
-                    ));
+            StatusCode status = manager.rename(UnitForRenaming.builder()
+                    .id(id)
+                    .version(version)
+                    .name(name)
+                    .abbreviation(abbreviation)
+                    .build());
             return new Response(status);
 
         } else {
@@ -97,6 +99,9 @@ public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Del
 
     @Override
     public UnitForDeletion wrapParameters(int id, int version) {
-        return new UnitForDeletion(id, version);
+        return UnitForDeletion.builder()
+                .id(id)
+                .version(version)
+                .build();
     }
 }

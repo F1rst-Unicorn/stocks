@@ -51,13 +51,13 @@ public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
             return currentUpdate(context, Arrays.asList(
                     UNIT.ID,
                     UNIT.VERSION.add(1),
-                    DSL.inline(unit.getName()),
-                    DSL.inline(unit.getAbbreviation())),
+                    DSL.inline(unit.name()),
+                    DSL.inline(unit.abbreviation())),
 
                     UNIT.ID.eq(unit.id())
                             .and(UNIT.VERSION.eq(unit.version()))
-                            .and(UNIT.NAME.ne(unit.getName())
-                                    .or(UNIT.ABBREVIATION.ne(unit.getAbbreviation())))
+                            .and(UNIT.NAME.ne(unit.name())
+                                    .or(UNIT.ABBREVIATION.ne(unit.abbreviation())))
             ).map(this::notFoundMeansInvalidVersion);
 
         });
@@ -93,12 +93,12 @@ public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
                     .abbreviation(cursor.getAbbreviation())
                     .build();
         else
-            return cursor -> new UnitForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getName(),
-                    cursor.getAbbreviation()
-            );
+            return cursor -> UnitForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .name(cursor.getName())
+                    .abbreviation(cursor.getAbbreviation())
+                    .build();
     }
 
     @Override

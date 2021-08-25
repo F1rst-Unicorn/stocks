@@ -47,7 +47,10 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Override
     public UnitForInsertion getInsertable() {
-        return new UnitForInsertion("name", "abbreviation");
+        return UnitForInsertion.builder()
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
     }
 
     @Test
@@ -64,7 +67,12 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void renamingWorks() {
-        UnitForRenaming data = new UnitForRenaming(1, 0, "name", "abbreviation");
+        UnitForRenaming data = UnitForRenaming.builder()
+                .id(1)
+                .version(0)
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
 
         StatusCode result = uut.rename(data);
 
@@ -73,7 +81,12 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void renamingOnlyNameWorks() {
-        UnitForRenaming data = new UnitForRenaming(1, 0, "Default", "new abbreviation");
+        UnitForRenaming data = UnitForRenaming.builder()
+                .id(1)
+                .version(0)
+                .name("Default")
+                .abbreviation("new abbreviation")
+                .build();
 
         StatusCode result = uut.rename(data);
 
@@ -82,7 +95,12 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void renamingOnlyAbbreviationWorks() {
-        UnitForRenaming data = new UnitForRenaming(1, 0, "new name", "default");
+        UnitForRenaming data = UnitForRenaming.builder()
+                .id(1)
+                .version(0)
+                .name("new name")
+                .abbreviation("default")
+                .build();
 
         StatusCode result = uut.rename(data);
 
@@ -91,7 +109,12 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void missingWhileRenamingIsReported() {
-        UnitForRenaming data = new UnitForRenaming(999, 0, "name", "abbreviation");
+        UnitForRenaming data = UnitForRenaming.builder()
+                .id(999)
+                .version(0)
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
 
         StatusCode result = uut.rename(data);
 
@@ -100,7 +123,12 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void invalidWhileRenamingIsReported() {
-        UnitForRenaming data = new UnitForRenaming(1, 1, "name", "abbreviation");
+        UnitForRenaming data = UnitForRenaming.builder()
+                .id(1)
+                .version(1)
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
 
         StatusCode result = uut.rename(data);
 
@@ -139,7 +167,12 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void deletingWithForeignReferencesIsRejected() {
-        StatusCode result = uut.delete(new UnitForDeletion(1, 0))
+        UnitForDeletion data = UnitForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+
+        StatusCode result = uut.delete(data)
                 .bind(uut::commit);
 
         assertEquals(StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION, result);
@@ -157,16 +190,25 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Override
     public Versionable<Unit> getUnknownEntity() {
-        return new UnitForDeletion(getNumberOfEntities() + 1, 0);
+        return UnitForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
     }
 
     @Override
     public Versionable<Unit> getWrongVersionEntity() {
-        return new UnitForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+        return UnitForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
     }
 
     @Override
     public Versionable<Unit> getValidEntity() {
-        return new UnitForDeletion(3, 0);
+        return UnitForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
     }
 }

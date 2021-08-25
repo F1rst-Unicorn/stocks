@@ -113,7 +113,7 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
     @Override
     public InsertOnDuplicateStep<R> unitForInsertion(UnitForInsertion unitForInsertion, Input<R> input) {
         return input.getInsertSetStep().columns(UNIT.NAME, UNIT.ABBREVIATION, UNIT.INITIATES)
-                .values(unitForInsertion.getName(), unitForInsertion.getAbbreviation(), input.getPrincipals().getDid());
+                .values(unitForInsertion.name(), unitForInsertion.abbreviation(), input.getPrincipals().getDid());
     }
 
     @Override

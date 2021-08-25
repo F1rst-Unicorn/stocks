@@ -19,47 +19,44 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_UnitForInsertion.Builder.class)
+public abstract class UnitForInsertion implements Insertable<Unit>, SelfValidating {
 
-public class UnitForInsertion implements Insertable<Unit> {
+    @JsonGetter
+    public abstract String name();
 
-    private final String name;
+    @JsonGetter
+    public abstract String abbreviation();
 
-    private final String abbreviation;
+    public static Builder builder() {
+        return new AutoValue_UnitForInsertion.Builder();
+    }
 
-    public UnitForInsertion(String name, String abbreviation) {
-        this.name = name;
-        this.abbreviation = abbreviation;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<UnitForInsertion> {
+
+        public abstract Builder name(String v);
+
+        public abstract Builder abbreviation(String v);
     }
 
     @Override
     public boolean isContainedIn(Unit entity) {
-        return name.equals(entity.name()) &&
-                abbreviation.equals(entity.abbreviation());
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getAbbreviation() {
-        return abbreviation;
+        return name().equals(entity.name()) &&
+                abbreviation().equals(entity.abbreviation());
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UnitForInsertion)) return false;
-        UnitForInsertion that = (UnitForInsertion) o;
-        return getName().equals(that.getName()) && getAbbreviation().equals(that.getAbbreviation());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getAbbreviation());
-    }
+    public void validate() {}
 
     @Override
     public <I, O> O accept(InsertableVisitor<I, O> visitor, I argument) {

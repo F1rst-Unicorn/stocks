@@ -70,10 +70,13 @@ public class UnitEndpointTest {
 
     @Test
     public void validPuttingIsDone() {
-        UnitForInsertion input = new UnitForInsertion("name", "abbreviation");
+        UnitForInsertion input = UnitForInsertion.builder()
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
         when(manager.add(any())).thenReturn(StatusCode.SUCCESS);
 
-        Response response = uut.put(createMockRequest(), input.getName(), input.getAbbreviation());
+        Response response = uut.put(createMockRequest(), input.name(), input.abbreviation());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).add(input);
@@ -82,10 +85,13 @@ public class UnitEndpointTest {
 
     @Test
     public void invalidBusinessPuttingIsPropagated() {
-        UnitForInsertion input = new UnitForInsertion("name", "abbreviation");
+        UnitForInsertion input = UnitForInsertion.builder()
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
         when(manager.add(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        Response response = uut.put(createMockRequest(), input.getName(), input.getAbbreviation());
+        Response response = uut.put(createMockRequest(), input.name(), input.abbreviation());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).add(input);
@@ -122,10 +128,15 @@ public class UnitEndpointTest {
 
     @Test
     public void invalidBusinessRenamingIsPropagated() {
-        UnitForRenaming input = new UnitForRenaming(1, 1, "name", "abbreviation");
+        UnitForRenaming input = UnitForRenaming.builder()
+                .id(1)
+                .version(1)
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
         when(manager.rename(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        Response response = uut.rename(createMockRequest(), input.id(), input.version(), input.getName(), input.getAbbreviation());
+        Response response = uut.rename(createMockRequest(), input.id(), input.version(), input.name(), input.abbreviation());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).rename(input);
@@ -134,10 +145,15 @@ public class UnitEndpointTest {
 
     @Test
     public void validRenamingWorks() {
-        UnitForRenaming input = new UnitForRenaming(1, 1, "name", "abbreviation");
+        UnitForRenaming input = UnitForRenaming.builder()
+                .id(1)
+                .version(1)
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
         when(manager.rename(any())).thenReturn(StatusCode.SUCCESS);
 
-        Response response = uut.rename(createMockRequest(), input.id(), input.version(), input.getName(), input.getAbbreviation());
+        Response response = uut.rename(createMockRequest(), input.id(), input.version(), input.name(), input.abbreviation());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).rename(input);

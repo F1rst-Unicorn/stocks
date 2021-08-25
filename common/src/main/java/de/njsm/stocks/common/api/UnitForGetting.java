@@ -19,32 +19,22 @@
 
 package de.njsm.stocks.common.api;
 
-public class UnitForGetting extends VersionedData implements Unit {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-    private final String name;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_UnitForGetting.Builder.class)
+public abstract class UnitForGetting implements Unit {
 
-    private final String abbreviation;
-
-    public UnitForGetting(int id, int version, String name, String abbreviation) {
-        super(id, version);
-        this.name = name;
-        this.abbreviation = abbreviation;
+    public static Builder builder() {
+        return new AutoValue_UnitForGetting.Builder();
     }
 
-    @Override
-    public String name() {
-        return name;
-    }
-
-    @Override
-    public String abbreviation() {
-        return abbreviation;
-    }
-
-    @Override
-    public boolean isContainedIn(Unit item, boolean increment) {
-        return Unit.super.isContainedIn(item, increment) &&
-                name.equals(item.name()) &&
-                abbreviation.equals(item.abbreviation());
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<UnitForGetting>
+            implements Versionable.Builder<Builder>, Unit.Builder<Builder> {
     }
 }

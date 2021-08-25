@@ -19,22 +19,13 @@
 
 package de.njsm.stocks.common.api;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import java.math.BigDecimal;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ScaledUnitForGetting.Builder.class)
 public abstract class ScaledUnitForGetting implements ScaledUnit {
-
-    @JsonGetter
-    public abstract BigDecimal scale();
-
-    @JsonGetter
-    public abstract int unit();
 
     public static Builder builder() {
        return new AutoValue_ScaledUnitForGetting.Builder();
