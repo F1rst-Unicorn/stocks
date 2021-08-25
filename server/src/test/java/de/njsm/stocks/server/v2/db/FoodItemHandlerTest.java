@@ -178,8 +178,14 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void movingFromUnknownDeviceIsReported() {
-        UserDeviceForDeletion from = new UserDeviceForDeletion(1, 0);
-        UserDeviceForDeletion to = new UserDeviceForDeletion(3, 0);
+        UserDeviceForDeletion from = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserDeviceForDeletion to = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(true);
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
@@ -191,8 +197,14 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void movingToUnknownDeviceIsReported() {
-        UserDeviceForDeletion from = new UserDeviceForDeletion(1, 0);
-        UserDeviceForDeletion to = new UserDeviceForDeletion(3, 0);
+        UserDeviceForDeletion from = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserDeviceForDeletion to = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(true);
 
@@ -205,8 +217,14 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void successfulTransfer() {
-        UserDeviceForDeletion from = new UserDeviceForDeletion(3, 0);
-        UserDeviceForDeletion to = new UserDeviceForDeletion(1, 0);
+        UserDeviceForDeletion from = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
+        UserDeviceForDeletion to = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
@@ -223,9 +241,18 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
     public void movingFromUnknownUserIsReported() {
         UserForDeletion from = new UserForDeletion(1, 0);
         UserForDeletion to = new UserForDeletion(2, 0);
-        UserDeviceForDeletion from1 = new UserDeviceForDeletion(1, 0);
-        UserDeviceForDeletion from2 = new UserDeviceForDeletion(2, 0);
-        UserDeviceForDeletion toDevice = new UserDeviceForDeletion(3, 0);
+        UserDeviceForDeletion from1 = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserDeviceForDeletion from2 = UserDeviceForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        UserDeviceForDeletion toDevice = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(true);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
@@ -239,9 +266,18 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
     public void movingToUnknownUserIsReported() {
         UserForDeletion from = new UserForDeletion(1, 0);
         UserForDeletion to = new UserForDeletion(2, 0);
-        UserDeviceForDeletion from1 = new UserDeviceForDeletion(1, 0);
-        UserDeviceForDeletion from2 = new UserDeviceForDeletion(2, 0);
-        UserDeviceForDeletion toDevice = new UserDeviceForDeletion(3, 0);
+        UserDeviceForDeletion from1 = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserDeviceForDeletion from2 = UserDeviceForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        UserDeviceForDeletion toDevice = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(true);
 
@@ -255,9 +291,18 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
     public void moveUserSuccessfully() {
         UserForDeletion from = new UserForDeletion(1, 0);
         UserForDeletion to = new UserForDeletion(2, 0);
-        UserDeviceForDeletion from1 = new UserDeviceForDeletion(1, 0);
-        UserDeviceForDeletion from2 = new UserDeviceForDeletion(2, 0);
-        UserDeviceForDeletion toDevice = new UserDeviceForDeletion(3, 0);
+        UserDeviceForDeletion from1 = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserDeviceForDeletion from2 = UserDeviceForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        UserDeviceForDeletion toDevice = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 

@@ -140,7 +140,10 @@ public class TicketHandlerTest extends DbTestCase {
 
     @Test
     public void removingTicketOfDeviceWorks() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(5, 0);
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(5)
+                .version(0)
+                .build();
         long numberOfTickets = getDSLContext().selectFrom(TICKET).stream().count();
         assertEquals(1, numberOfTickets);
 

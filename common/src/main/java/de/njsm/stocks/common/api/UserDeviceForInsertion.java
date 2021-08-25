@@ -19,46 +19,47 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_UserDeviceForInsertion.Builder.class)
+public abstract class UserDeviceForInsertion implements Insertable<UserDevice>, SelfValidating {
 
-public class UserDeviceForInsertion implements Insertable<UserDevice> {
 
-    private final String name;
+    @JsonGetter
+    public abstract String name();
 
-    private final int belongsTo;
+    @JsonGetter
+    public abstract int belongsTo();
 
-    public UserDeviceForInsertion(String name, int belongsTo) {
-        this.name = name;
-        this.belongsTo = belongsTo;
+    public static Builder builder() {
+        return new AutoValue_UserDeviceForInsertion.Builder();
     }
 
-    public String getName() {
-        return name;
-    }
+    @AutoValue.Builder
+    @JsonPOJOBuilder
+    public abstract static class Builder
+            extends SelfValidating.Builder<UserDeviceForInsertion> {
 
-    public int getBelongsTo() {
-        return belongsTo;
-    }
+        public abstract Builder name(String v);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserDeviceForInsertion that = (UserDeviceForInsertion) o;
-        return getBelongsTo() == that.getBelongsTo() && getName().equals(that.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getBelongsTo());
+        public abstract Builder belongsTo(int v);
     }
 
     @Override
     public boolean isContainedIn(UserDevice entity) {
-        return name.equals(entity.name()) &&
-                belongsTo == entity.belongsTo();
+        return name().equals(entity.name()) &&
+                belongsTo() == entity.belongsTo();
+    }
+
+    @Override
+    public void validate() {
+        Preconditions.checkState(belongsTo() > 0, "belongsTo id is invalid");
     }
 
     @Override

@@ -57,11 +57,36 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
         assertEquals(5, list.size());
-        assertThat(list, hasItem(new UserDeviceForGetting(1, 0, "Default", 1)));
-        assertThat(list, hasItem(new UserDeviceForGetting(2, 0, "mobile", 2)));
-        assertThat(list, hasItem(new UserDeviceForGetting(3, 0, "mobile2", 2)));
-        assertThat(list, hasItem(new UserDeviceForGetting(4, 0, "laptop", 3)));
-        assertThat(list, hasItem(new UserDeviceForGetting(5, 0, "pending_device", 3)));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(1)
+                .version(0)
+                .name("Default")
+                .belongsTo(1)
+                .build()));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(2)
+                .version(0)
+                .name("mobile")
+                .belongsTo(2)
+                .build()));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(3)
+                .version(0)
+                .name("mobile2")
+                .belongsTo(2)
+                .build()));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(4)
+                .version(0)
+                .name("laptop")
+                .belongsTo(3)
+                .build()));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(5)
+                .version(0)
+                .name("pending_device")
+                .belongsTo(3)
+                .build()));
     }
 
     @Test
@@ -78,7 +103,10 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Override
     public UserDeviceForInsertion getInsertable() {
-        return new UserDeviceForInsertion("newDevice", 1);
+        return UserDeviceForInsertion.builder()
+                .name("newDevice")
+                .belongsTo(1)
+                .build();
     }
 
     @Test
@@ -104,16 +132,25 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Override
     public Versionable<UserDevice> getUnknownEntity() {
-        return new UserDeviceForDeletion(getNumberOfEntities() + 1, 0);
+        return UserDeviceForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
     }
 
     @Override
     public Versionable<UserDevice> getWrongVersionEntity() {
-        return new UserDeviceForDeletion(getValidEntity().id(), getValidEntity().version() + 1);
+        return UserDeviceForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
     }
 
     @Override
     public Versionable<UserDevice> getValidEntity() {
-        return new UserDeviceForDeletion(2, 0);
+        return UserDeviceForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
     }
 }

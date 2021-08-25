@@ -83,7 +83,10 @@ public class DeviceManagerTest {
     @Test
     public void addDeviceSuccessfully() {
         int newId = 1;
-        UserDeviceForInsertion device = new UserDeviceForInsertion("testdevice", 3);
+        UserDeviceForInsertion device = UserDeviceForInsertion.builder()
+                .name("testdevice")
+                .belongsTo(3)
+                .build();
         Mockito.when(dbHandler.addReturningId(device)).thenReturn(Validation.success(newId));
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(ticketDbHandler.addTicket(eq(newId), any())).thenReturn(StatusCode.SUCCESS);
@@ -100,7 +103,10 @@ public class DeviceManagerTest {
 
     @Test
     public void addDeviceDbErrorPropagates() {
-        UserDeviceForInsertion device = new UserDeviceForInsertion("testdevice", 3);
+        UserDeviceForInsertion device = UserDeviceForInsertion.builder()
+                .name("testdevice")
+                .belongsTo(3)
+                .build();
         Mockito.when(dbHandler.addReturningId(device)).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
 
         Validation<StatusCode, NewDeviceTicket> result = uut.addDevice(device);
@@ -115,8 +121,10 @@ public class DeviceManagerTest {
     @Test
     public void addDeviceTicketErrorPropagates() {
         int newId = 3;
-        UserDeviceForInsertion device = new UserDeviceForInsertion("testdevice", 3);
-        Mockito.when(dbHandler.addReturningId(device)).thenReturn(Validation.success(newId));
+        UserDeviceForInsertion device = UserDeviceForInsertion.builder()
+                .name("testdevice")
+                .belongsTo(3)
+                .build();        Mockito.when(dbHandler.addReturningId(device)).thenReturn(Validation.success(newId));
         Mockito.when(ticketDbHandler.addTicket(eq(newId), any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
         Validation<StatusCode, NewDeviceTicket> result = uut.addDevice(device);
@@ -144,7 +152,10 @@ public class DeviceManagerTest {
 
     @Test
     public void removeDeviceWorks() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(1, 2);
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDeviceForDeletion.class), any(UserDeviceForPrincipals.class))).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
@@ -165,7 +176,10 @@ public class DeviceManagerTest {
 
     @Test
     public void revokingDeviceWorks() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(1, 2);
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         Mockito.when(authAdmin.revokeCertificate(device.id())).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
@@ -179,7 +193,10 @@ public class DeviceManagerTest {
 
     @Test
     public void deletingErrorIsPropagated() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(1, 2);
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDeviceForDeletion.class), any(UserDeviceForPrincipals.class))).thenReturn(StatusCode.SUCCESS);
         Mockito.when(ticketDbHandler.removeTicketOfDevice(device)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
@@ -197,7 +214,10 @@ public class DeviceManagerTest {
 
     @Test
     public void foodItemTransferFailIsPropagated() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(1, 2);
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDeviceForDeletion.class), any(UserDeviceForPrincipals.class))).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
         StatusCode result = uut.delete(device);

@@ -19,55 +19,22 @@
 
 package de.njsm.stocks.common.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.util.Objects;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_UserDeviceForGetting.Builder.class)
+public abstract class UserDeviceForGetting implements UserDevice {
 
-public class UserDeviceForGetting extends VersionedData implements Versionable<UserDevice>, UserDevice {
-    private final String name;
-
-    private final int belongsTo;
-
-    public UserDeviceForGetting(int id, int version, String name, int belongsTo) {
-        super(id, version);
-        this.name = name;
-        this.belongsTo = belongsTo;
+    public static Builder builder() {
+        return new AutoValue_UserDeviceForGetting.Builder();
     }
 
-    public String name() {
-        return name;
-    }
-
-    @JsonIgnore
-    public int belongsTo() {
-        return belongsTo;
-    }
-
-    /**
-     * JSON property name. Keep for backward compatibility
-     */
-    public int getUserId() {
-        return belongsTo;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        UserDeviceForGetting that = (UserDeviceForGetting) o;
-        return belongsTo() == that.belongsTo() && name().equals(that.name());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), name(), belongsTo());
-    }
-
-    @Override
-    public boolean isContainedIn(UserDevice item, boolean increment) {
-        return UserDevice.super.isContainedIn(item, increment) &&
-                name.equals(item.name()) &&
-                belongsTo == item.belongsTo();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<UserDeviceForGetting>
+            implements Versionable.Builder<Builder>, UserDevice.Builder<Builder> {
     }
 }

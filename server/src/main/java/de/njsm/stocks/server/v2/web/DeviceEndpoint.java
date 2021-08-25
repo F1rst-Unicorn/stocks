@@ -57,7 +57,10 @@ public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, Us
         if (isValidName(name, "name") &&
                 isValid(userId, "userId")) {
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, NewDeviceTicket> result = manager.addDevice(new UserDeviceForInsertion(name, userId));
+            Validation<StatusCode, NewDeviceTicket> result = manager.addDevice(UserDeviceForInsertion.builder()
+                    .name(name)
+                    .belongsTo(userId)
+                    .build());
             return new DataResponse<>(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
@@ -73,7 +76,10 @@ public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, Us
                 isValidVersion(version, "version")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.delete(new UserDeviceForDeletion(id, version));
+            StatusCode result = manager.delete(UserDeviceForDeletion.builder()
+                    .id(id)
+                    .version(version)
+                    .build());
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
@@ -90,7 +96,10 @@ public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, Us
                 isValidVersion(version, "version")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.revokeDevice(new UserDeviceForDeletion(id, version));
+            StatusCode result = manager.revokeDevice(UserDeviceForDeletion.builder()
+                    .id(id)
+                    .version(version)
+                    .build());
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));

@@ -19,8 +19,22 @@
 
 package de.njsm.stocks.common.api;
 
-public class UserDeviceForDeletion extends VersionedData implements Versionable<UserDevice> {
-    public UserDeviceForDeletion(int id, int version) {
-        super(id, version);
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_UserDeviceForDeletion.Builder.class)
+public abstract class UserDeviceForDeletion implements Versionable<UserDevice> {
+
+    public static Builder builder() {
+        return new AutoValue_UserDeviceForDeletion.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder
+            extends SelfValidating.Builder<UserDeviceForDeletion>
+            implements Versionable.Builder<Builder> {
     }
 }

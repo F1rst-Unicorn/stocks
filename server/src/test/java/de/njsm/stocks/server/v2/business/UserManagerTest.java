@@ -127,8 +127,18 @@ public class UserManagerTest {
         StatusCode code = StatusCode.DATABASE_UNREACHABLE;
         List<Identifiable<UserDevice>> devices = new LinkedList<>();
         UserForDeletion input = new UserForDeletion(1, 2);
-        devices.add(new UserDeviceForGetting(1, 2, "fdsa", input.id()));
-        devices.add(new UserDeviceForGetting(2, 2, "fdsa", input.id()));
+        devices.add(UserDeviceForGetting.builder()
+                .id(1)
+                .version(2)
+                .name("fdsa")
+                .belongsTo(input.id())
+                .build());
+        devices.add(UserDeviceForGetting.builder()
+                .id(2)
+                .version(2)
+                .name("fdsa")
+                .belongsTo(input.id())
+                .build());
         Mockito.when(deviceHandler.getDevicesOfUser(input)).thenReturn(Validation.success(devices));
         Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice()))
                 .thenReturn(code);
@@ -145,9 +155,24 @@ public class UserManagerTest {
     public void deleteSuccessfully() {
         List<Identifiable<UserDevice>> devices = new LinkedList<>();
         UserForDeletion input = new UserForDeletion(1, 2);
-        devices.add(new UserDeviceForGetting(1, 2, "fdsa", input.id()));
-        devices.add(new UserDeviceForGetting(2, 2, "fdsa", input.id()));
-        devices.add(new UserDeviceForGetting(3, 2, "fdsa", input.id()));
+        devices.add(UserDeviceForGetting.builder()
+                .id(1)
+                .version(2)
+                .name("fdsa")
+                .belongsTo(input.id())
+                .build());
+        devices.add(UserDeviceForGetting.builder()
+                .id(2)
+                .version(2)
+                .name("fdsa")
+                .belongsTo(input.id())
+                .build());
+        devices.add(UserDeviceForGetting.builder()
+                .id(3)
+                .version(2)
+                .name("fdsa")
+                .belongsTo(input.id())
+                .build());
         Mockito.when(deviceHandler.getDevicesOfUser(input)).thenReturn(Validation.success(devices));
         Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice()))
                 .thenReturn(StatusCode.SUCCESS);

@@ -86,12 +86,12 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
                     .belongsTo(cursor.getBelongsTo())
                     .build();
         else
-            return cursor -> new UserDeviceForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getName(),
-                    cursor.getBelongsTo()
-            );
+            return cursor -> UserDeviceForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .name(cursor.getName())
+                    .belongsTo(cursor.getBelongsTo())
+                    .build();
     }
 
     @Override

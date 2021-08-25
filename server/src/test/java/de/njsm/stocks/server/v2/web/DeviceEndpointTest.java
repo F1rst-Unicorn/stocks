@@ -85,13 +85,16 @@ public class DeviceEndpointTest {
 
     @Test
     public void addDevice() {
-        UserDeviceForInsertion device = new UserDeviceForInsertion("test", 2);
+        UserDeviceForInsertion device = UserDeviceForInsertion.builder()
+                .name("test")
+                .belongsTo(2)
+                .build();
         Mockito.when(businessObject.addDevice(device)).thenReturn(Validation.success(NewDeviceTicket.builder()
                 .deviceId(0)
                 .ticket("")
                 .build()));
 
-        DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), device.getName(), device.getBelongsTo());
+        DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), device.name(), device.belongsTo());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(businessObject).addDevice(device);
@@ -140,7 +143,10 @@ public class DeviceEndpointTest {
 
     @Test
     public void deleteDevice() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(4, 3);
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(4)
+                .version(3)
+                .build();
         Mockito.when(businessObject.delete(device)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.deleteDevice(createMockRequest(),
@@ -176,7 +182,10 @@ public class DeviceEndpointTest {
 
     @Test
     public void revokeDevice() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(4, 3);
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(4)
+                .version(3)
+                .build();
         Mockito.when(businessObject.revokeDevice(device)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.revokeDevice(Util.createMockRequest(),
