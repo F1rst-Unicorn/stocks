@@ -39,4 +39,10 @@ public interface RecipeProductData {
 
         T unit(int v);
     }
+
+    default boolean isContainedIn(RecipeProduct entity) {
+        return amount() == entity.amount() &&
+                product() == entity.product() &&
+                unit() == entity.unit();
+    }
 }

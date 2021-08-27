@@ -20,13 +20,11 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.BitemporalRecipeProduct;
-import de.njsm.stocks.common.api.RecipeForDeletion;
-import de.njsm.stocks.common.api.RecipeProductForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeProductRecord;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,6 +55,32 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
                 getTable()
         ).check(context, recipe, products));
     }
+
+    public StatusCode edit(RecipeProductForEditing data) {
+        return runCommand(context -> {
+            if (isCurrentlyMissing(data, context))
+                return StatusCode.NOT_FOUND;
+
+            return currentUpdate(List.of(
+                            RECIPE_PRODUCT.ID,
+                            RECIPE_PRODUCT.VERSION.add(1),
+                            DSL.inline(data.amount()),
+                            DSL.inline(data.product()),
+                            DSL.inline(data.recipe()),
+                            DSL.inline(data.unit())
+                    ),
+                    RECIPE_PRODUCT.ID.eq(data.id())
+                            .and(RECIPE_PRODUCT.VERSION.eq(data.version()))
+                            .and(RECIPE_PRODUCT.AMOUNT.ne(data.amount())
+                                    .or(RECIPE_PRODUCT.RECIPE.ne(data.recipe()))
+                                    .or(RECIPE_PRODUCT.PRODUCT.ne(data.product()))
+                                    .or(RECIPE_PRODUCT.UNIT.ne(data.unit())))
+            )
+                    .map(this::notFoundMeansInvalidVersion);
+        });
+    }
+
+
 
     public StatusCode deleteAllOf(RecipeForDeletion recipe) {
         return currentDelete(RECIPE_PRODUCT.RECIPE.eq(recipe.id()))

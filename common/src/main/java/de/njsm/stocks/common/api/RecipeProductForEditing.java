@@ -26,7 +26,7 @@ import com.google.common.base.Preconditions;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RecipeProductForEditing.Builder.class)
-public abstract class RecipeProductForEditing implements RecipeProductData, Versionable<RecipeProduct> {
+public abstract class RecipeProductForEditing implements RecipeProductWithRecipeIdData, Versionable<RecipeProduct> {
 
     public static Builder builder() {
         return new AutoValue_RecipeProductForEditing.Builder();
@@ -36,7 +36,7 @@ public abstract class RecipeProductForEditing implements RecipeProductData, Vers
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder
             extends SelfValidating.Builder<RecipeProductForEditing>
-            implements RecipeProductData.Builder<Builder>, Versionable.Builder<Builder> {
+            implements RecipeProductWithRecipeIdData.Builder<Builder>, Versionable.Builder<Builder> {
     }
 
     @Override
@@ -44,5 +44,6 @@ public abstract class RecipeProductForEditing implements RecipeProductData, Vers
         Versionable.super.validate();
         Preconditions.checkState(product() > 0, "product id is invalid");
         Preconditions.checkState(unit() > 0, "unit id is invalid");
+        Preconditions.checkState(recipe() > 0, "recipe id is invalid");
     }
 }

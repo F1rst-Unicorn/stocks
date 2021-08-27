@@ -50,9 +50,6 @@ public abstract class RecipeIngredientForEditing implements RecipeIngredientWith
     @Override
     public boolean isContainedIn(RecipeIngredient item, boolean increment) {
         return Versionable.super.isContainedIn(item, increment) &&
-                ingredient() == item.ingredient() &&
-                amount() == item.amount() &&
-                recipe() == item.recipe() &&
-                unit() == item.unit();
+                RecipeIngredientWithRecipeIdData.super.isContainedIn(item);
     }
 }

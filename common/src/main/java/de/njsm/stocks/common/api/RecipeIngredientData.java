@@ -39,4 +39,10 @@ public interface RecipeIngredientData {
 
          T unit(int v);
     }
+
+    default boolean isContainedIn(RecipeIngredient item) {
+        return ingredient() == item.ingredient() &&
+                amount() == item.amount() &&
+                unit() == item.unit();
+    }
 }

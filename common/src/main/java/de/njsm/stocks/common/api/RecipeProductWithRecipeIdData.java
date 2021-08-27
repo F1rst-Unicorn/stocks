@@ -19,30 +19,20 @@
 
 package de.njsm.stocks.common.api;
 
-import com.google.auto.value.AutoValue;
-import de.njsm.stocks.common.api.visitor.InsertableVisitor;
+import com.fasterxml.jackson.annotation.JsonGetter;
 
-@AutoValue
-public abstract class RecipeIngredientWithIdForInsertion implements Insertable<RecipeIngredient>, RecipeIngredientWithRecipeIdData {
+public interface RecipeProductWithRecipeIdData extends RecipeProductData {
 
-    public static Builder builder() {
-        return new AutoValue_RecipeIngredientWithIdForInsertion.Builder();
-    }
+    @JsonGetter
+    int recipe();
 
-    @AutoValue.Builder
-    public abstract static class Builder
-            implements RecipeIngredientWithRecipeIdData.Builder<Builder> {
-
-        public abstract RecipeIngredientWithIdForInsertion build();
+    interface Builder<T> extends RecipeProductData.Builder<T> {
+        T recipe(int v);
     }
 
     @Override
-    public boolean isContainedIn(RecipeIngredient entity) {
-        return RecipeIngredientWithRecipeIdData.super.isContainedIn(entity);
-    }
-
-    @Override
-    public <I, O> O accept(InsertableVisitor<I, O> visitor, I argument) {
-        return visitor.recipeIngredientWithIdForInsertion(this, argument);
+    default boolean isContainedIn(RecipeProduct entity) {
+        return RecipeProductData.super.isContainedIn(entity) &&
+                recipe() == entity.recipe();
     }
 }

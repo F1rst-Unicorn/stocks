@@ -29,4 +29,9 @@ public interface RecipeIngredientWithRecipeIdData extends RecipeIngredientData {
     interface Builder<T> extends RecipeIngredientData.Builder<T> {
          T recipe(int v);
     }
+
+    default boolean isContainedIn(RecipeIngredient item) {
+        return RecipeIngredientData.super.isContainedIn(item) &&
+                recipe() == item.recipe();
+    }
 }

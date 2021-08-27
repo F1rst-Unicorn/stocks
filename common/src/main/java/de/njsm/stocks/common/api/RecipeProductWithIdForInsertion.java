@@ -23,9 +23,7 @@ import com.google.auto.value.AutoValue;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
 @AutoValue
-public abstract class RecipeProductWithIdForInsertion implements Insertable<RecipeProduct>, RecipeProductData {
-
-    public abstract int recipe();
+public abstract class RecipeProductWithIdForInsertion implements Insertable<RecipeProduct>, RecipeProductWithRecipeIdData {
 
     public static Builder builder() {
         return new AutoValue_RecipeProductWithIdForInsertion.Builder();
@@ -33,19 +31,14 @@ public abstract class RecipeProductWithIdForInsertion implements Insertable<Reci
 
     @AutoValue.Builder
     public abstract static class Builder
-            implements RecipeProductData.Builder<Builder> {
-
-        public abstract Builder recipe(int v);
+            implements RecipeProductWithRecipeIdData.Builder<Builder> {
 
         public abstract RecipeProductWithIdForInsertion build();
     }
 
     @Override
     public boolean isContainedIn(RecipeProduct entity) {
-        return amount() == entity.amount() &&
-                product() == entity.product() &&
-                recipe() == entity.recipe() &&
-                unit() == entity.unit();
+        return RecipeProductWithRecipeIdData.super.isContainedIn(entity);
     }
 
     @Override
