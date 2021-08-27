@@ -26,7 +26,7 @@ import com.google.common.base.Preconditions;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RecipeIngredientForEditing.Builder.class)
-public abstract class RecipeIngredientForEditing implements RecipeIngredientData, Versionable<RecipeIngredient> {
+public abstract class RecipeIngredientForEditing implements RecipeIngredientWithRecipeIdData, Versionable<RecipeIngredient> {
 
     public static Builder builder() {
         return new AutoValue_RecipeIngredientForEditing.Builder();
@@ -36,7 +36,7 @@ public abstract class RecipeIngredientForEditing implements RecipeIngredientData
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder
             extends SelfValidating.Builder<RecipeIngredientForEditing>
-            implements RecipeIngredientData.Builder<Builder>, Versionable.Builder<Builder> {
+            implements RecipeIngredientWithRecipeIdData.Builder<Builder>, Versionable.Builder<Builder> {
     }
 
     @Override
@@ -44,5 +44,15 @@ public abstract class RecipeIngredientForEditing implements RecipeIngredientData
         Versionable.super.validate();
         Preconditions.checkState(ingredient() > 0, "ingredient id is invalid");
         Preconditions.checkState(unit() > 0, "unit id is invalid");
+        Preconditions.checkState(recipe() > 0, "recipe id is invalid");
+    }
+
+    @Override
+    public boolean isContainedIn(RecipeIngredient item, boolean increment) {
+        return Versionable.super.isContainedIn(item, increment) &&
+                ingredient() == item.ingredient() &&
+                amount() == item.amount() &&
+                recipe() == item.recipe() &&
+                unit() == item.unit();
     }
 }

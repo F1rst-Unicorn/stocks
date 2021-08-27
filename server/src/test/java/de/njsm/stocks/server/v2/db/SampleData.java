@@ -81,7 +81,8 @@ class SampleData {
                     "(3, 2, 1)," +
                     "(3, 1, 1)",
             "insert into recipe (name, instructions, duration, initiates) values " +
-                    "('Cake', 'Mix flour and sugar. Bake directly', interval '1 hour', 1)",
+                    "('Cake', 'Mix flour and sugar. Bake directly', interval '1 hour', 1)," +
+                    "('Bread', 'Mix flour and water. Bake with love', interval '2 hour', 1)",
             "insert into recipe_ingredient (amount, ingredient, recipe, unit, initiates) values " +
                     "(2, 3, 1, 2, 1)",
             "insert into recipe_product (amount, product, recipe, unit, initiates) values " +

@@ -126,7 +126,7 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
     @Test
     void editingMissingEntityIsRejected() {
         RecipeForEditing recipe = RecipeForEditing.builder()
-                .id(2)
+                .id(getNumberOfEntities() + 1)
                 .version(0)
                 .name("Bread")
                 .instructions("Add bread")
@@ -169,7 +169,7 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
 
     @Override
     public int getNumberOfEntities() {
-        return 1;
+        return 2;
     }
 
     @Override

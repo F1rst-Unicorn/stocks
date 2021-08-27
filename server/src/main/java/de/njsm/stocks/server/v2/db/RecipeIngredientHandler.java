@@ -20,13 +20,11 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.BitemporalRecipeIngredient;
-import de.njsm.stocks.common.api.RecipeForDeletion;
-import de.njsm.stocks.common.api.RecipeIngredientForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +34,9 @@ import java.util.function.Function;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE_INGREDIENT;
 
 
-public class RecipeIngredientHandler extends CrudDatabaseHandler<RecipeIngredientRecord, RecipeIngredient> implements CompleteReferenceChecker<Recipe, RecipeIngredient> {
+public class RecipeIngredientHandler
+        extends CrudDatabaseHandler<RecipeIngredientRecord, RecipeIngredient>
+        implements CompleteReferenceChecker<Recipe, RecipeIngredient> {
 
 
     public RecipeIngredientHandler(ConnectionFactory connectionFactory,
@@ -45,6 +45,7 @@ public class RecipeIngredientHandler extends CrudDatabaseHandler<RecipeIngredien
         super(connectionFactory, resourceIdentifier, timeout);
     }
 
+    @Override
     public StatusCode areEntitiesComplete(Identifiable<Recipe> recipe, Set<? extends Versionable<RecipeIngredient>> ingredients) {
         return runCommand(context -> new CompleteEntityReferenceChecker<Recipe, RecipeIngredient, RecipeIngredientRecord>(
                 getIdField(),
@@ -55,6 +56,30 @@ public class RecipeIngredientHandler extends CrudDatabaseHandler<RecipeIngredien
                 RECIPE_INGREDIENT.RECIPE,
                 getTable()
         ).check(context, recipe, ingredients));
+    }
+
+    public StatusCode edit(RecipeIngredientForEditing data) {
+        return runCommand(context -> {
+            if (isCurrentlyMissing(data, context))
+                return StatusCode.NOT_FOUND;
+
+            return currentUpdate(List.of(
+                    RECIPE_INGREDIENT.ID,
+                    RECIPE_INGREDIENT.VERSION.add(1),
+                    DSL.inline(data.amount()),
+                    DSL.inline(data.ingredient()),
+                    DSL.inline(data.recipe()),
+                    DSL.inline(data.unit())
+                    ),
+                    RECIPE_INGREDIENT.ID.eq(data.id())
+                            .and(RECIPE_INGREDIENT.VERSION.eq(data.version()))
+                            .and(RECIPE_INGREDIENT.AMOUNT.ne(data.amount())
+                                    .or(RECIPE_INGREDIENT.RECIPE.ne(data.recipe()))
+                                    .or(RECIPE_INGREDIENT.INGREDIENT.ne(data.ingredient()))
+                                    .or(RECIPE_INGREDIENT.UNIT.ne(data.unit())))
+            )
+            .map(this::notFoundMeansInvalidVersion);
+        });
     }
 
     public StatusCode deleteAllOf(RecipeForDeletion recipe) {

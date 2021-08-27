@@ -30,11 +30,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.common.api.StatusCode.INVALID_DATA_VERSION;
+import static de.njsm.stocks.common.api.StatusCode.NOT_FOUND;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RecipeIngredientHandlerTest extends DbTestCase
-        implements CrudOperationsTest<RecipeIngredientRecord, RecipeIngredient>, CompleteEntityReferenceCheckerTest<Recipe, RecipeIngredient> {
+public class RecipeIngredientHandlerTest
+        extends DbTestCase
+        implements CrudOperationsTest<RecipeIngredientRecord, RecipeIngredient>,
+                CompleteEntityReferenceCheckerTest<Recipe, RecipeIngredient>,
+                EditingTest<RecipeIngredientRecord, RecipeIngredient> {
 
     private RecipeIngredientHandler uut;
 
@@ -100,6 +107,134 @@ public class RecipeIngredientHandlerTest extends DbTestCase
                         l.ingredient() == 3 &&
                         l.recipe() == 1 &&
                         l.unit() == 2));
+    }
+
+    @Test
+    void editingMissingIsRejected() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .amount(2)
+                .ingredient(3)
+                .recipe(4)
+                .unit(5)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertThat(result, is(NOT_FOUND));
+    }
+
+    @Test
+    void editingWrongVersionIsRejected() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(1)
+                .amount(2)
+                .ingredient(3)
+                .recipe(4)
+                .unit(5)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertThat(result, is(INVALID_DATA_VERSION));
+    }
+
+    @Test
+    void editingWithoutChangeIsRejected() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(2)
+                .ingredient(3)
+                .recipe(1)
+                .unit(2)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertThat(result, is(INVALID_DATA_VERSION));
+    }
+
+    @Test
+    void editingAmountWorks() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(3)
+                .ingredient(3)
+                .recipe(1)
+                .unit(2)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    @Test
+    void editingIngredientWorks() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(2)
+                .ingredient(2)
+                .recipe(1)
+                .unit(2)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    @Test
+    void editingRecipeWorks() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(2)
+                .ingredient(3)
+                .recipe(2)
+                .unit(2)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    @Test
+    void editingUnitWorks() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(2)
+                .ingredient(3)
+                .recipe(1)
+                .unit(1)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    @Test
+    void fullEditingUnitWorks() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(3)
+                .ingredient(2)
+                .recipe(2)
+                .unit(1)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
     }
 
     @Test
