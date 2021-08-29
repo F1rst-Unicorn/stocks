@@ -46,6 +46,30 @@ public class RecipeRepository {
                 .getData();
     }
 
+    public static RecipeForGetting getRecipeWith(String name) {
+        return getAll()
+                .stream().filter(v -> v.name().equals(name))
+                .findAny()
+                .get();
+    }
+
+    public static RecipeForEditing.Builder loadRecipeForEditingWith(String name) {
+        RecipeForGetting recipeForGetting = getRecipeWith(name);
+
+        return RecipeForEditing.builder()
+                .id(recipeForGetting.id())
+                .version(recipeForGetting.version());
+    }
+
+    public static RecipeForDeletion loadRecipeForDeletionWith(String name) {
+        RecipeForGetting recipeForGetting = getRecipeWith(name);
+
+        return RecipeForDeletion.builder()
+                .id(recipeForGetting.id())
+                .version(recipeForGetting.version())
+                .build();
+    }
+
     public static FullRecipeForDeletion buildDeletionObject(Versionable<Recipe> recipe,
                                                             List<? extends Versionable<RecipeIngredient>> ingredients,
                                                             List<? extends Versionable<RecipeProduct>> products) {
@@ -67,6 +91,38 @@ public class RecipeRepository {
                                 .map(v -> RecipeProductForDeletion.builder()
                                         .id(v.id())
                                         .version(v.version())
+                                        .build())
+                                .collect(Collectors.toSet())
+                )
+                .build();
+    }
+
+    public static FullRecipeForEditing buildEditingObject(RecipeForEditing recipeForEditing,
+                                                          List<RecipeIngredientForGetting> ingredients,
+                                                          List<RecipeProductForGetting> products) {
+        return FullRecipeForEditing.builder()
+                .recipe(recipeForEditing)
+                .ingredients(
+                        ingredients.stream()
+                                .map(v -> RecipeIngredientForEditing.builder()
+                                        .id(v.id())
+                                        .version(v.version())
+                                        .amount(v.amount())
+                                        .ingredient(v.ingredient())
+                                        .recipe(v.recipe())
+                                        .unit(v.unit())
+                                        .build())
+                                .collect(Collectors.toSet())
+                )
+                .products(
+                        products.stream()
+                                .map(v -> RecipeProductForEditing.builder()
+                                        .id(v.id())
+                                        .version(v.version())
+                                        .amount(v.amount())
+                                        .product(v.product())
+                                        .recipe(v.recipe())
+                                        .unit(v.unit())
                                         .build())
                                 .collect(Collectors.toSet())
                 )

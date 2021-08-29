@@ -22,7 +22,6 @@ package de.njsm.stocks.servertest.v2;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.v2.repo.*;
-import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
@@ -30,6 +29,7 @@ import org.junit.Test;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -93,10 +93,51 @@ public class RecipeTest extends Base implements Deleter {
     }
 
     @Test
+    public void editingWithoutBodyIsRejected() {
+        given()
+                .log().ifValidationFails().
+        when()
+                .put(TestSuite.DOMAIN + "/v2/recipe/edit").
+        then()
+                .log().ifValidationFails()
+                .statusCode(400);
+    }
+
+    @Test
+    public void validEditingWorks() {
+        String name = putRecipeWithIngredientAndProduct("validEditingWorks");
+
+        RecipeForEditing recipeForEditing = RecipeRepository.loadRecipeForEditingWith(name)
+                .name(getUniqueName("validEditingWorks.newName"))
+                .instructions("new instructions")
+                .duration(Duration.ofHours(2))
+                .build();
+        List<RecipeIngredientForGetting> ingredients = RecipeIngredientRepository.getOfRecipe(recipeForEditing);
+        List<RecipeProductForGetting> products = RecipeProductRepository.getOfRecipe(recipeForEditing).stream()
+                .map(v -> v.toBuilder()
+                        .amount(v.amount() + 1)
+                        .build())
+                .collect(Collectors.toList());
+        FullRecipeForEditing fullRecipeForDeletion = RecipeRepository.buildEditingObject(recipeForEditing, ingredients, products);
+
+        given()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON)
+                .body(fullRecipeForDeletion)
+        .when()
+                .put(TestSuite.DOMAIN + getEndpoint() + "/edit")
+        .then()
+                .log().ifValidationFails()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(0));
+    }
+
+    @Test
     public void validDeletionWorks() {
         String name = putRecipeWithIngredientAndProduct("validDeletionWorks");
 
-        RecipeForDeletion recipeForDeletion = loadRecipeForDeletionWith(name);
+        RecipeForDeletion recipeForDeletion = RecipeRepository.loadRecipeForDeletionWith(name);
         List<RecipeIngredientForGetting> ingredients = RecipeIngredientRepository.getOfRecipe(recipeForDeletion);
         List<RecipeProductForGetting> products = RecipeProductRepository.getOfRecipe(recipeForDeletion);
         FullRecipeForDeletion fullRecipeForDeletion = RecipeRepository.buildDeletionObject(recipeForDeletion, ingredients, products);
@@ -114,28 +155,11 @@ public class RecipeTest extends Base implements Deleter {
                 .body("status", equalTo(0));
     }
 
-    private RecipeForDeletion loadRecipeForDeletionWith(String name) {
-        ListResponse<RecipeForGetting> response = assertOnGet()
-                .body("data.name", hasItem(equalTo(name)))
-                .extract()
-                .as(new TypeRef<>(){});
-
-        RecipeForGetting recipeForGetting = response.getData()
-                .stream().filter(v -> v.name().equals(name))
-                .findAny()
-                .get();
-
-        return RecipeForDeletion.builder()
-                .id(recipeForGetting.id())
-                .version(recipeForGetting.version())
-                .build();
-    }
-
-    private String putRecipeWithIngredientAndProduct(String validDeletionWorks) {
+    private String putRecipeWithIngredientAndProduct(String distinguisher) {
         int foodId = FoodRepository.getAnyFoodId();
         int unitId = UnitRepository.getAnyUnitId();
 
-        String name = getUniqueName(validDeletionWorks);
+        String name = getUniqueName(distinguisher);
         RecipeForInsertion recipe = RecipeForInsertion.builder()
                 .name(name)
                 .instructions("instruction")

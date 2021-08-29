@@ -69,11 +69,7 @@ public class ExceptionHandler {
     private Response processError(HttpServletRequest request, HttpServletResponse response) {
         Throwable throwable = (Throwable) request.getAttribute(EXCEPTION_KEY);
 
-        if (throwable.getCause() instanceof JsonProcessingException) {
-            LOG.debug("Caught exception leaving web app", throwable);
-            LOG.info("invalid input");
-            return setErrorStatus(response, StatusCode.INVALID_ARGUMENT);
-        } else if (throwable.getCause() instanceof IllegalStateException) {
+        if (inputInstantiationFailed(throwable)) {
             LOG.debug("Caught exception leaving web app", throwable);
             LOG.info("invalid input: " + throwable.getCause().getMessage());
             return setErrorStatus(response, StatusCode.INVALID_ARGUMENT);
@@ -81,6 +77,11 @@ public class ExceptionHandler {
             LOG.error("Caught exception leaving web app", throwable);
             return setErrorStatus(response, StatusCode.GENERAL_ERROR);
         }
+    }
+
+    private boolean inputInstantiationFailed(Throwable throwable) {
+        return throwable.getCause() instanceof IllegalStateException ||
+                throwable.getCause() instanceof JsonProcessingException;
     }
 
     private Response setErrorStatus(HttpServletResponse response, StatusCode invalidArgument) {

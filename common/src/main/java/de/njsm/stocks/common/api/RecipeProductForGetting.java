@@ -31,6 +31,8 @@ public abstract class RecipeProductForGetting implements RecipeProduct {
         return new AutoValue_RecipeProductForGetting.Builder();
     }
 
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder
