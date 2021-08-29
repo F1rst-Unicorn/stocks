@@ -142,7 +142,7 @@ public class RecipeIngredientHandlerTest
     }
 
     @Test
-    void editingWithoutChangeIsRejected() {
+    void editingWithoutChangeWorksWithoutChange() {
         RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
                 .id(1)
                 .version(0)
@@ -154,7 +154,7 @@ public class RecipeIngredientHandlerTest
 
         StatusCode result = uut.edit(data);
 
-        assertThat(result, is(INVALID_DATA_VERSION));
+        assertEditedDataIsPresentWithoutUpdate(data, result);
     }
 
     @Test

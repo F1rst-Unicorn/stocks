@@ -32,8 +32,11 @@ import org.postgresql.PGStatement;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import static de.njsm.stocks.common.api.StatusCode.*;
 
 public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends Entity<N>>
         extends FailSafeDatabaseHandler
@@ -102,7 +105,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
     public StatusCode delete(Versionable<N> item) {
         return runCommand(context -> {
             if (isCurrentlyMissing(item, context))
-                return StatusCode.NOT_FOUND;
+                return NOT_FOUND;
 
             return currentDelete(getIdField().eq(item.id())
                     .and(getVersionField().eq(item.version())))
@@ -145,7 +148,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
             if (0 < changedItems)
                 return StatusCode.SUCCESS;
             else
-                return StatusCode.NOT_FOUND;
+                return NOT_FOUND;
 
         });
     }
@@ -237,7 +240,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
         if (changedItems > 0)
             return StatusCode.SUCCESS;
         else
-            return StatusCode.NOT_FOUND;
+            return NOT_FOUND;
     }
 
     @Override
@@ -250,6 +253,21 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
                 .value1();
 
         return count == 0;
+    }
+
+    public StatusCode checkPresenceInThisVersion(Versionable<N> item, DSLContext context) {
+        Optional<Record1<Integer>> dbVersionable = context.select(getVersionField())
+                .from(getTable())
+                .where(getIdField().eq(item.id()).and(nowAsBestKnown()))
+                .fetchOptional();
+
+        return dbVersionable.map(v -> {
+                    if (v.value1() == item.version())
+                        return SUCCESS;
+                    else
+                        return INVALID_DATA_VERSION;
+                }
+        ).orElse(NOT_FOUND);
     }
 
     public StatusCode cleanDataOlderThan(Period period) {
@@ -316,14 +334,14 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
     }
 
     protected StatusCode notFoundMeansInvalidVersion(StatusCode code) {
-        if (code == StatusCode.NOT_FOUND)
+        if (code == NOT_FOUND)
             return StatusCode.INVALID_DATA_VERSION;
         else
             return code;
     }
 
     protected StatusCode notFoundIsOk(StatusCode code) {
-        if (code == StatusCode.NOT_FOUND)
+        if (code == NOT_FOUND)
             return StatusCode.SUCCESS;
         else
             return code;

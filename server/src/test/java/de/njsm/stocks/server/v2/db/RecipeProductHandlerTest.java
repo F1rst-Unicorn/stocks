@@ -140,7 +140,7 @@ public class RecipeProductHandlerTest extends DbTestCase
     }
 
     @Test
-    void editingWithoutChangeIsRejected() {
+    void editingWithoutChangeWorksWithoutChange() {
         RecipeProductForEditing data = RecipeProductForEditing.builder()
                 .id(1)
                 .version(0)
@@ -152,7 +152,7 @@ public class RecipeProductHandlerTest extends DbTestCase
 
         StatusCode result = uut.edit(data);
 
-        assertThat(result, is(INVALID_DATA_VERSION));
+        assertEditedDataIsPresentWithoutUpdate(data, result);
     }
 
     @Test

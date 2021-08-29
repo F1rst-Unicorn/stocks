@@ -26,6 +26,7 @@ import org.jooq.TableRecord;
 
 import java.util.List;
 
+import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableExactly;
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -34,8 +35,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public interface EditingTest<T extends TableRecord<T>, N extends Entity<N>> extends EntityDbTestCase<T, N> {
 
     default void assertEditingWorked(Versionable<N> data, StatusCode result) {
-        assertEquals(StatusCode.SUCCESS, result);
-        List<N> dbData = getData();
+        List<N> dbData = getDbData(result);
         assertThat(dbData, hasItem(matchesVersionableUpdated(data)));
+    }
+
+    default void assertEditedDataIsPresentWithoutUpdate(Versionable<N> data, StatusCode result) {
+        List<N> dbData = getDbData(result);
+        assertThat(dbData, hasItem(matchesVersionableExactly(data)));
+    }
+
+    private List<N> getDbData(StatusCode result) {
+        assertEquals(StatusCode.SUCCESS, result);
+        return getData();
     }
 }

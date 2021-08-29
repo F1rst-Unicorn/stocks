@@ -59,27 +59,24 @@ public class RecipeIngredientHandler
     }
 
     public StatusCode edit(RecipeIngredientForEditing data) {
-        return runCommand(context -> {
-            if (isCurrentlyMissing(data, context))
-                return StatusCode.NOT_FOUND;
-
-            return currentUpdate(List.of(
-                    RECIPE_INGREDIENT.ID,
-                    RECIPE_INGREDIENT.VERSION.add(1),
-                    DSL.inline(data.amount()),
-                    DSL.inline(data.ingredient()),
-                    DSL.inline(data.recipe()),
-                    DSL.inline(data.unit())
-                    ),
-                    RECIPE_INGREDIENT.ID.eq(data.id())
-                            .and(RECIPE_INGREDIENT.VERSION.eq(data.version()))
-                            .and(RECIPE_INGREDIENT.AMOUNT.ne(data.amount())
-                                    .or(RECIPE_INGREDIENT.RECIPE.ne(data.recipe()))
-                                    .or(RECIPE_INGREDIENT.INGREDIENT.ne(data.ingredient()))
-                                    .or(RECIPE_INGREDIENT.UNIT.ne(data.unit())))
-            )
-            .map(this::notFoundMeansInvalidVersion);
-        });
+        return runCommand(context -> checkPresenceInThisVersion(data, context)
+                .bind(() ->
+                        currentUpdate(context, List.of(
+                                RECIPE_INGREDIENT.ID,
+                                RECIPE_INGREDIENT.VERSION.add(1),
+                                DSL.inline(data.amount()),
+                                DSL.inline(data.ingredient()),
+                                DSL.inline(data.recipe()),
+                                DSL.inline(data.unit())
+                                ),
+                                RECIPE_INGREDIENT.ID.eq(data.id())
+                                        .and(RECIPE_INGREDIENT.VERSION.eq(data.version()))
+                                        .and(RECIPE_INGREDIENT.AMOUNT.ne(data.amount())
+                                                .or(RECIPE_INGREDIENT.RECIPE.ne(data.recipe()))
+                                                .or(RECIPE_INGREDIENT.INGREDIENT.ne(data.ingredient()))
+                                                .or(RECIPE_INGREDIENT.UNIT.ne(data.unit())))
+                        ).map(this::notFoundIsOk)
+                ));
     }
 
     public StatusCode deleteAllOf(RecipeForDeletion recipe) {

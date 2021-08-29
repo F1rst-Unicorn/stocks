@@ -57,11 +57,8 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
     }
 
     public StatusCode edit(RecipeProductForEditing data) {
-        return runCommand(context -> {
-            if (isCurrentlyMissing(data, context))
-                return StatusCode.NOT_FOUND;
-
-            return currentUpdate(List.of(
+        return runCommand(context -> checkPresenceInThisVersion(data, context)
+                .bind(() -> currentUpdate(context, List.of(
                             RECIPE_PRODUCT.ID,
                             RECIPE_PRODUCT.VERSION.add(1),
                             DSL.inline(data.amount()),
@@ -76,8 +73,8 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
                                     .or(RECIPE_PRODUCT.PRODUCT.ne(data.product()))
                                     .or(RECIPE_PRODUCT.UNIT.ne(data.unit())))
             )
-                    .map(this::notFoundMeansInvalidVersion);
-        });
+                    .map(this::notFoundIsOk))
+        );
     }
 
 
