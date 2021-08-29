@@ -19,11 +19,7 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.common.api.Recipe;
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.FullRecipeForDeletion;
-import de.njsm.stocks.common.api.FullRecipeForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.RecipeManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 
@@ -54,6 +50,17 @@ public class RecipeEndpoint extends Endpoint implements Get<RecipeRecord, Recipe
                         @NotNull FullRecipeForInsertion input) {
         manager.setPrincipals(getPrincipals(request));
         StatusCode result = manager.add(input);
+        return new Response(result);
+    }
+
+    @PUT
+    @Path("edit")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response edit(@Context HttpServletRequest request,
+                         @NotNull FullRecipeForEditing input) {
+        manager.setPrincipals(getPrincipals(request));
+        StatusCode result = manager.edit(input);
         return new Response(result);
     }
 

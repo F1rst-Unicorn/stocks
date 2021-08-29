@@ -20,12 +20,7 @@
 package de.njsm.stocks.server.v2.web;
 
 import com.google.common.collect.ImmutableSet;
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.FullRecipeForDeletion;
-import de.njsm.stocks.common.api.FullRecipeForInsertion;
-import de.njsm.stocks.common.api.RecipeForDeletion;
-import de.njsm.stocks.common.api.RecipeForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.RecipeManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,9 +29,12 @@ import org.mockito.Mockito;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Set;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -77,6 +75,45 @@ public class RecipeEndpointTest {
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         verify(recipeManager).add(input);
         verify(recipeManager).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    void validEditingIsForwarded() {
+        RecipeForEditing recipe = RecipeForEditing.builder()
+                .id(1)
+                .version(0)
+                .name("name")
+                .instructions("instructions")
+                .duration(Duration.ofHours(1))
+                .build();
+        RecipeIngredientForEditing ingredient = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(2)
+                .recipe(3)
+                .ingredient(4)
+                .unit(5)
+                .build();
+        RecipeProductForEditing product = RecipeProductForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(2)
+                .recipe(3)
+                .product(4)
+                .unit(5)
+                .build();
+        FullRecipeForEditing input = FullRecipeForEditing.builder()
+                .recipe(recipe)
+                .ingredients(Set.of(ingredient))
+                .products(Set.of(product))
+                .build();
+        when(recipeManager.edit(input)).thenReturn(StatusCode.SUCCESS);
+
+        Response result = uut.edit(createMockRequest(), input);
+
+        assertThat(result.getStatus(), is(StatusCode.SUCCESS));
+        verify(recipeManager).setPrincipals(TEST_USER);
+        verify(recipeManager).edit(input);
     }
 
     @Test
