@@ -23,16 +23,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 import androidx.room.Dao;
 import androidx.room.Query;
-
 import com.github.mikephil.charting.data.BarEntry;
-
-import org.threeten.bp.Instant;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import de.njsm.stocks.android.db.views.BarEntryView;
 import de.njsm.stocks.android.db.views.PlotPoint;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 

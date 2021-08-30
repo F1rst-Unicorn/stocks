@@ -23,7 +23,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.db.entities.Sql;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 public abstract class LocationDao implements Inserter<Location> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(Location[] locations);
+    public abstract void insert(List<Location> locations);
 
     public LiveData<List<Location>> getAll() {
         return getAll(DATABASE_INFINITY);
@@ -49,7 +49,7 @@ public abstract class LocationDao implements Inserter<Location> {
     }
 
     @Transaction
-    public void synchronise(Location[] locations) {
+    public void synchronise(List<Location> locations) {
         delete();
         insert(locations);
     }

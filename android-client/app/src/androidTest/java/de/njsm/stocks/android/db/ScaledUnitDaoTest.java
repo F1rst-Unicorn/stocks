@@ -26,7 +26,7 @@ import de.njsm.stocks.android.db.entities.ScaledUnit;
 import de.njsm.stocks.android.util.Config;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.math.BigDecimal;
 
@@ -57,13 +57,4 @@ public class ScaledUnitDaoTest extends InsertionTest<ScaledUnit> {
         data.scale = BigDecimal.TEN;
     }
 
-    @Override
-    ScaledUnit[] toArray(ScaledUnit data) {
-        return new ScaledUnit[] {data};
-    }
-
-    @Override
-    ScaledUnit[] toArray(ScaledUnit data, ScaledUnit data2) {
-        return new ScaledUnit[] {data, data2};
-    }
 }

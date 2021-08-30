@@ -24,15 +24,13 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.provider.BaseColumns;
-
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-
-import org.threeten.bp.Instant;
-
 import de.njsm.stocks.android.db.entities.SearchSuggestion;
+
+import java.time.Instant;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;

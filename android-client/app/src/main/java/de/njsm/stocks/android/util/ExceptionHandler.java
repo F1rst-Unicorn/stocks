@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.android.util;
 
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.io.File;
 import java.io.FileOutputStream;

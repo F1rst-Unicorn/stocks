@@ -21,9 +21,9 @@ package de.njsm.stocks.android.util;
 
 import android.content.SharedPreferences;
 
-import org.threeten.bp.Instant;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.format.DateTimeFormatter;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import java.util.Locale;
 

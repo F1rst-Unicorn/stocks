@@ -20,6 +20,7 @@
 package de.njsm.stocks.common.api;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.base.Preconditions;
 
 public interface EanNumber extends Entity<EanNumber> {
@@ -34,6 +35,7 @@ public interface EanNumber extends Entity<EanNumber> {
 
         T identifiesFood(int v);
 
+        @JsonSetter(value = "eanCode")
         T eanNumber(String v);
     }
 

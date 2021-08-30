@@ -28,7 +28,10 @@ import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
-import org.threeten.bp.Instant;
+
+import java.time.Instant;
+
+import static java.util.Collections.singletonList;
 
 public class DbTestCase {
 
@@ -63,6 +66,6 @@ public class DbTestCase {
         Update update = new Update(99999, "artificial_db_now", now);
 
         stocksDatabase.updateDao().reset();
-        stocksDatabase.updateDao().set(update);
+        stocksDatabase.updateDao().set(singletonList(update));
     }
 }

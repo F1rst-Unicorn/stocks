@@ -1,5 +1,6 @@
-/* stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -17,38 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.network.server;
+package de.njsm.stocks.android.error;
 
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.common.api.StatusCode;
 
-public enum StatusCode {
+public final class StatusCodeMessages {
 
+    private static final Logger LOG = new Logger(StatusCodeMessages.class);
 
-    SUCCESS,
-
-    GENERAL_ERROR,
-
-    NOT_FOUND,
-
-    INVALID_DATA_VERSION,
-
-    FOREIGN_KEY_CONSTRAINT_VIOLATION,
-
-    DATABASE_UNREACHABLE,
-
-    ACCESS_DENIED,
-
-    INVALID_ARGUMENT,
-
-    CA_UNREACHABLE,
-
-    SERIALISATION_CONFLICT;
-
-    private static final Logger LOG = new Logger(StatusCode.class);
-
-    public int getReadErrorMessage() {
-        switch (this) {
+    public static int getReadErrorMessage(StatusCode statusCode) {
+        switch (statusCode) {
             case SUCCESS:
                 LOG.e("Tried to notify for successful call");
                 return R.string.dialog_done;
@@ -60,19 +41,19 @@ public enum StatusCode {
             case FOREIGN_KEY_CONSTRAINT_VIOLATION:
             case ACCESS_DENIED:
             case SERIALISATION_CONFLICT:
-                LOG.e("Server should not reply with " + name() + " when reading");
+                LOG.e("Server should not reply with " + statusCode.name() + " when reading");
                 return R.string.dialog_done;
             case DATABASE_UNREACHABLE:
             case CA_UNREACHABLE:
-                LOG.e("Server trouble: " + name());
+                LOG.e("Server trouble: " + statusCode.name());
                 return R.string.dialog_server_trouble;
         }
-        LOG.e("Didn't catch code " + name());
+        LOG.e("Didn't catch code " + statusCode.name());
         return R.string.dialog_done;
     }
 
-    public int getAddErrorMessage() {
-        switch (this) {
+    public static int getAddErrorMessage(StatusCode statusCode) {
+        switch (statusCode) {
             case SUCCESS:
                 LOG.e("Tried to notify for successful call");
                 return R.string.dialog_done;
@@ -86,19 +67,19 @@ public enum StatusCode {
             case FOREIGN_KEY_CONSTRAINT_VIOLATION:
             case ACCESS_DENIED:
             case SERIALISATION_CONFLICT:
-                LOG.e("Server should not reply with " + name() + " when adding");
+                LOG.e("Server should not reply with " + statusCode.name() + " when adding");
                 return R.string.dialog_done;
             case DATABASE_UNREACHABLE:
             case CA_UNREACHABLE:
-                LOG.e("Server trouble: " + name());
+                LOG.e("Server trouble: " + statusCode.name());
                 return R.string.dialog_server_trouble;
         }
-        LOG.e("Didn't catch code " + name());
+        LOG.e("Didn't catch code " + statusCode.name());
         return R.string.dialog_done;
     }
 
-    public int getEditErrorMessage() {
-        switch (this) {
+    public static int getEditErrorMessage(StatusCode statusCode) {
+        switch (statusCode) {
             case SUCCESS:
                 LOG.e("Tried to notify for successful call");
                 return R.string.dialog_done;
@@ -114,19 +95,19 @@ public enum StatusCode {
             case FOREIGN_KEY_CONSTRAINT_VIOLATION:
             case ACCESS_DENIED:
             case SERIALISATION_CONFLICT:
-                LOG.e("Server should not reply with " + name() + " when editing");
+                LOG.e("Server should not reply with " + statusCode.name() + " when editing");
                 return R.string.dialog_done;
             case DATABASE_UNREACHABLE:
             case CA_UNREACHABLE:
-                LOG.e("Server trouble: " + name());
+                LOG.e("Server trouble: " + statusCode.name());
                 return R.string.dialog_server_trouble;
         }
-        LOG.e("Didn't catch code " + name());
+        LOG.e("Didn't catch code " + statusCode.name());
         return R.string.dialog_done;
     }
 
-    public int getDeleteErrorMessage() {
-        switch (this) {
+    public static int getDeleteErrorMessage(StatusCode statusCode) {
+        switch (statusCode) {
             case SUCCESS:
                 LOG.e("Tried to notify for successful call");
                 return R.string.dialog_done;
@@ -143,14 +124,14 @@ public enum StatusCode {
                 return R.string.dialog_delete_but_dependants;
             case ACCESS_DENIED:
             case SERIALISATION_CONFLICT:
-                LOG.e("Server should not reply with " + name() + " when deleting");
+                LOG.e("Server should not reply with " + statusCode.name() + " when deleting");
                 return R.string.dialog_done;
             case DATABASE_UNREACHABLE:
             case CA_UNREACHABLE:
-                LOG.e("Server trouble: " + name());
+                LOG.e("Server trouble: " + statusCode.name());
                 return R.string.dialog_server_trouble;
         }
-        LOG.e("Didn't catch code " + name());
+        LOG.e("Didn't catch code " + statusCode.name());
         return R.string.dialog_done;
     }
 }

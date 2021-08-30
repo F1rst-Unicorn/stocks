@@ -37,7 +37,7 @@ import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.interactor.EanNumberDeletionInteractor;
 import de.njsm.stocks.android.frontend.main.MainActivity;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
 

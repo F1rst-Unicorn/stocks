@@ -32,7 +32,9 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
+
+import static de.njsm.stocks.android.error.StatusCodeMessages.getEditErrorMessage;
 
 public class LocationEditDescriptionFragment extends InjectedFragment {
 
@@ -117,7 +119,7 @@ public class LocationEditDescriptionFragment extends InjectedFragment {
                 });
 
             } else {
-                showErrorMessage(requireActivity(), code.getEditErrorMessage());
+                showErrorMessage(requireActivity(), getEditErrorMessage(code));
             }
         });
     }

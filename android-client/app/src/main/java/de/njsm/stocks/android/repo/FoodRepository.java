@@ -27,13 +27,13 @@ import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.db.views.FoodSummaryWithExpirationView;
 import de.njsm.stocks.android.network.server.ServerClient;
-import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
-import org.threeten.bp.Instant;
+import de.njsm.stocks.common.api.StatusCode;
 
 import javax.inject.Inject;
+import java.time.Instant;
 import java.util.List;
 
 public class FoodRepository {

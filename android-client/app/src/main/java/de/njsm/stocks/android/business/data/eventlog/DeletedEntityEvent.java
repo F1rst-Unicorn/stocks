@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.android.business.data.eventlog;
 
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;

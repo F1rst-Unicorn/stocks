@@ -24,7 +24,7 @@ import androidx.lifecycle.LiveData;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.frontend.BaseFragment;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 
 import java.util.function.BiFunction;
 

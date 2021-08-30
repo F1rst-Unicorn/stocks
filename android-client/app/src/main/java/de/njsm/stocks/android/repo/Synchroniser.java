@@ -22,22 +22,27 @@ package de.njsm.stocks.android.repo;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import de.njsm.stocks.android.db.dao.*;
-import de.njsm.stocks.android.db.entities.*;
+import de.njsm.stocks.android.db.entities.Update;
+import de.njsm.stocks.android.db.entities.VersionedData;
 import de.njsm.stocks.android.error.StatusCodeException;
 import de.njsm.stocks.android.network.server.ServerClient;
-import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
-import de.njsm.stocks.android.network.server.data.ListResponse;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
-import org.threeten.bp.Instant;
+import de.njsm.stocks.common.api.Bitemporal;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.ListResponse;
+import de.njsm.stocks.common.api.StatusCode;
 import retrofit2.Call;
 
 import javax.inject.Inject;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Synchroniser {
 
@@ -128,10 +133,13 @@ public class Synchroniser {
             updateDao.reset();
 
         try {
-            Call<ListResponse<Update>> call = serverClient.getUpdates();
-            Update[] serverUpdates = StatusCodeCallback.executeCall(call);
+            Call<ListResponse<de.njsm.stocks.common.api.Update>> call = serverClient.getUpdates();
+            List<de.njsm.stocks.common.api.Update> networkServerUpdates = StatusCodeCallback.executeCall(call);
+            List<Update> serverUpdates = networkServerUpdates.stream()
+                    .map(v -> new Update(0, v.table(), v.lastUpdate()))
+                    .collect(Collectors.toList());
             enumerateServerUpdates(serverUpdates);
-            Update[] localUpdates = updateDao.getAll();
+            List<Update> localUpdates = updateDao.getAll();
             updateTables(serverUpdates, localUpdates);
             result.postValue(StatusCode.SUCCESS);
         } catch (StatusCodeException e) {
@@ -141,17 +149,17 @@ public class Synchroniser {
     }
 
     // Room needs primary keys on entities, but server doesn't provide IDs here
-    private void enumerateServerUpdates(Update[] serverUpdates) {
+    private void enumerateServerUpdates(List<Update> serverUpdates) {
         int i = 1;
         for (Update u : serverUpdates) {
             u.id = i++;
         }
     }
 
-    private void updateTables(Update[] serverUpdates, Update[] localUpdates) throws StatusCodeException {
-        if (serverUpdates.length == 0) {
+    private void updateTables(List<Update> serverUpdates, List<Update> localUpdates) throws StatusCodeException {
+        if (serverUpdates.size() == 0) {
             LOG.e("Server updates are empty");
-        } else if (localUpdates.length == 0) {
+        } else if (localUpdates.size() == 0) {
             LOG.d("Updating all tables as local updates are empty");
             refreshAll();
         } else {
@@ -161,26 +169,27 @@ public class Synchroniser {
     }
 
     private void refreshAll() throws StatusCodeException {
-        List<UpdateChain<? extends VersionedData>> entities = Arrays.asList(
-                UpdateChain.of(serverClient.getUsers(1, null), userDao),
-                UpdateChain.of(serverClient.getDevices(1, null), userDeviceDao),
-                UpdateChain.of(serverClient.getLocations(1, null), locationDao),
-                UpdateChain.of(serverClient.getFood(1, null), foodDao),
-                UpdateChain.of(serverClient.getFoodItems(1, null), foodItemDao),
-                UpdateChain.of(serverClient.getEanNumbers(1, null), eanNumberDao),
-                UpdateChain.of(serverClient.getUnits(1, null), unitDao),
-                UpdateChain.of(serverClient.getScaledUnits(1, null), scaledUnitDao),
-                UpdateChain.of(serverClient.getRecipes(1, null), recipeDao),
-                UpdateChain.of(serverClient.getRecipeIngredients(1, null), recipeIngredientDao),
-                UpdateChain.of(serverClient.getRecipeProducts(1, null), recipeProductDao)
+        BitemporalEntityMapperVisitor mapper = new BitemporalEntityMapperVisitor();
+        List<UpdateChain<?, ?, ?>> entities = Arrays.asList(
+                UpdateChain.of(serverClient.getUsers(null), userDao, mapper::bitemporalUser),
+                UpdateChain.of(serverClient.getDevices(null), userDeviceDao, mapper::bitemporalUserDevice),
+                UpdateChain.of(serverClient.getLocations(null), locationDao, mapper::bitemporalLocation),
+                UpdateChain.of(serverClient.getFood(null), foodDao, mapper::bitemporalFood),
+                UpdateChain.of(serverClient.getFoodItems(null), foodItemDao, mapper::bitemporalFoodItem),
+                UpdateChain.of(serverClient.getEanNumbers(null), eanNumberDao, mapper::bitemporalEanNumber),
+                UpdateChain.of(serverClient.getUnits(null), unitDao, mapper::bitemporalUnit),
+                UpdateChain.of(serverClient.getScaledUnits(null), scaledUnitDao, mapper::bitemporalScaledUnit),
+                UpdateChain.of(serverClient.getRecipes(null), recipeDao, mapper::bitemporalRecipe),
+                UpdateChain.of(serverClient.getRecipeIngredients(null), recipeIngredientDao, mapper::bitemporalRecipeIngredient),
+                UpdateChain.of(serverClient.getRecipeProducts(null), recipeProductDao, mapper::bitemporalRecipeProduct)
         );
 
-        for (UpdateChain<? extends VersionedData> chain : entities) {
+        for (UpdateChain<?, ?, ?> chain : entities) {
             chain.refreshFully();
         }
     }
 
-    void refreshOutdatedTables(Update[] serverUpdates, Update[] localUpdates) throws StatusCodeException {
+    void refreshOutdatedTables(List<Update> serverUpdates, List<Update> localUpdates) throws StatusCodeException {
         for (Update update : serverUpdates) {
             Instant localUpdate = getLatestLocalUpdate(localUpdates, update);
             if (localUpdate != null) {
@@ -195,37 +204,38 @@ public class Synchroniser {
 
     private void refresh(String table, Instant localUpdate) throws StatusCodeException {
         String rawLocalUpdate = Config.API_DATE_FORMAT.format(localUpdate);
+        BitemporalEntityMapperVisitor mapper = new BitemporalEntityMapperVisitor();
         if (table.equalsIgnoreCase("User")) {
-            UpdateChain.of(serverClient.getUsers(1, rawLocalUpdate), userDao).refresh();
+            UpdateChain.of(serverClient.getUsers(rawLocalUpdate), userDao, mapper::bitemporalUser).refresh();
         } else if (table.equalsIgnoreCase("User_device")) {
-            UpdateChain.of(serverClient.getDevices(1, rawLocalUpdate), userDeviceDao).refresh();
+            UpdateChain.of(serverClient.getDevices(rawLocalUpdate), userDeviceDao, mapper::bitemporalUserDevice).refresh();
         } else if (table.equalsIgnoreCase("Location")) {
-            UpdateChain.of(serverClient.getLocations(1, rawLocalUpdate), locationDao).refresh();
+            UpdateChain.of(serverClient.getLocations(rawLocalUpdate), locationDao, mapper::bitemporalLocation).refresh();
         } else if (table.equalsIgnoreCase("Food")) {
-            UpdateChain.of(serverClient.getFood(1, rawLocalUpdate), foodDao).refresh();
+            UpdateChain.of(serverClient.getFood(rawLocalUpdate), foodDao, mapper::bitemporalFood).refresh();
         } else if (table.equalsIgnoreCase("Food_item")) {
-            UpdateChain.of(serverClient.getFoodItems(1, rawLocalUpdate), foodItemDao).refresh();
+            UpdateChain.of(serverClient.getFoodItems(rawLocalUpdate), foodItemDao, mapper::bitemporalFoodItem).refresh();
         } else if (table.equalsIgnoreCase("EAN_number")) {
-            UpdateChain.of(serverClient.getEanNumbers(1, rawLocalUpdate), eanNumberDao).refresh();
+            UpdateChain.of(serverClient.getEanNumbers(rawLocalUpdate), eanNumberDao, mapper::bitemporalEanNumber).refresh();
         } else if (table.equalsIgnoreCase("unit")) {
-            UpdateChain.of(serverClient.getUnits(1, rawLocalUpdate), unitDao).refresh();
+            UpdateChain.of(serverClient.getUnits(rawLocalUpdate), unitDao, mapper::bitemporalUnit).refresh();
         } else if (table.equalsIgnoreCase("scaled_unit")) {
-            UpdateChain.of(serverClient.getScaledUnits(1, rawLocalUpdate), scaledUnitDao).refresh();
+            UpdateChain.of(serverClient.getScaledUnits(rawLocalUpdate), scaledUnitDao, mapper::bitemporalScaledUnit).refresh();
         } else if (table.equalsIgnoreCase("recipe")) {
-            UpdateChain.of(serverClient.getRecipes(1, rawLocalUpdate), recipeDao).refresh();
+            UpdateChain.of(serverClient.getRecipes(rawLocalUpdate), recipeDao, mapper::bitemporalRecipe).refresh();
         } else if (table.equalsIgnoreCase("recipe_ingredient")) {
-            UpdateChain.of(serverClient.getRecipeIngredients(1, rawLocalUpdate), recipeIngredientDao).refresh();
+            UpdateChain.of(serverClient.getRecipeIngredients(rawLocalUpdate), recipeIngredientDao, mapper::bitemporalRecipeIngredient).refresh();
         } else if (table.equalsIgnoreCase("recipe_product")) {
-            UpdateChain.of(serverClient.getRecipeProducts(1, rawLocalUpdate), recipeProductDao).refresh();
+            UpdateChain.of(serverClient.getRecipeProducts(rawLocalUpdate), recipeProductDao, mapper::bitemporalRecipeProduct).refresh();
         }
     }
 
-    private Instant getLatestLocalUpdate(Update[] localUpdates, Update update) {
+    private Instant getLatestLocalUpdate(List<Update> localUpdates, Update update) {
         Update localUpdate = getLocalUpdate(localUpdates, update.table);
         return localUpdate != null ? localUpdate.lastUpdate : null;
     }
 
-    private Update getLocalUpdate(Update[] localUpdates, String table) {
+    private Update getLocalUpdate(List<Update> localUpdates, String table) {
         for (Update u : localUpdates) {
             if (u.table.equalsIgnoreCase(table)) {
                 return u;
@@ -234,28 +244,37 @@ public class Synchroniser {
         return null;
     }
 
-    private static class UpdateChain<T> {
+    private static class UpdateChain<N extends Entity<N>, T extends Bitemporal<N>, E extends VersionedData> {
 
         private final Call<ListResponse<T>> call;
 
-        private final Inserter<T> dao;
+        private final Inserter<E> dao;
 
-        static <T> UpdateChain<T> of(Call<ListResponse<T>> call, Inserter<T> data) {
-            return new UpdateChain<>(call, data);
+        private final Function<T, E> mapper;
+
+        static <N extends Entity<N>, T extends Bitemporal<N>, E extends VersionedData> UpdateChain<N, T, E> of(Call<ListResponse<T>> call,
+                                                                                                               Inserter<E> data,
+                                                                                                               Function<T, E> mapper) {
+            return new UpdateChain<>(call, data, mapper);
         }
 
-        public UpdateChain(Call<ListResponse<T>> call, Inserter<T> dao) {
+        public UpdateChain(Call<ListResponse<T>> call, Inserter<E> dao, Function<T, E> mapper) {
             this.call = call;
             this.dao = dao;
+            this.mapper = mapper;
         }
 
         private void refreshFully() throws StatusCodeException {
-            T[] data = StatusCodeCallback.executeCall(call);
+            List<E> data = StatusCodeCallback.executeCall(call).stream()
+                    .map(mapper)
+                    .collect(Collectors.toList());
             dao.synchronise(data);
         }
 
         private void refresh() throws StatusCodeException {
-            T[] data = StatusCodeCallback.executeCall(call);
+            List<E> data = StatusCodeCallback.executeCall(call).stream()
+                    .map(mapper)
+                    .collect(Collectors.toList());
             dao.insert(data);
         }
     }

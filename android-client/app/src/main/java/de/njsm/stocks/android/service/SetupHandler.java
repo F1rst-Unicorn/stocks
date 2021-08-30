@@ -33,11 +33,11 @@ import de.njsm.stocks.android.dagger.modules.WebModule;
 import de.njsm.stocks.android.error.TextResourceException;
 import de.njsm.stocks.android.network.sentry.SentryClient;
 import de.njsm.stocks.android.network.server.HostnameInterceptor;
-import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.ExceptionHandler;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.Principals;
+import de.njsm.stocks.common.api.StatusCode;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
@@ -268,10 +268,10 @@ public class SetupHandler extends Handler {
                     case GENERAL_ERROR:
                     case DATABASE_UNREACHABLE:
                     case CA_UNREACHABLE:
-                        LOG.e("Server had problems issuing certificate: " + response.raw().toString());
+                        LOG.e("Server had problems issuing certificate: " + response.raw());
                         throw new TextResourceException(R.string.dialog_invalid_answer);
                     default:
-                        LOG.e("Got invalid response from server: " + response.raw().toString());
+                        LOG.e("Got invalid response from server: " + response.raw());
                         throw new TextResourceException(R.string.dialog_invalid_answer);
                 }
             }
@@ -290,7 +290,7 @@ public class SetupHandler extends Handler {
             out.flush();
             out.close();
         } else {
-            throw new Exception(c.getResources().getString(R.string.dialog_invalid_answer) + response.raw().toString());
+            throw new Exception(c.getResources().getString(R.string.dialog_invalid_answer) + response.raw());
         }
     }
 

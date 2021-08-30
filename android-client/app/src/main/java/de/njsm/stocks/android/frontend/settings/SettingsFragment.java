@@ -42,7 +42,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider;
 import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.android.util.Config;
 
 public class SettingsFragment extends PreferenceFragmentCompat {

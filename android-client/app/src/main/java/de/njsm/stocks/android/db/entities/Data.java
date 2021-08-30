@@ -22,30 +22,16 @@ package de.njsm.stocks.android.db.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Ignore;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
 public abstract class Data implements Positionable {
 
     @ColumnInfo(name = "_id")
     public int id;
 
     @Ignore
-    @JsonIgnore
     public int position;    // store position in adapter, local to android
-
-    @Ignore
-    public Data() {}
 
     public Data(int id) {
         this.id = id;

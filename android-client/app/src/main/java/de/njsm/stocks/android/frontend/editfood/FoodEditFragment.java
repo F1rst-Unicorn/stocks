@@ -41,11 +41,13 @@ import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.frontend.units.ScaledUnitViewModel;
 import de.njsm.stocks.android.frontend.util.SpinnerSynchroniser;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static de.njsm.stocks.android.error.StatusCodeMessages.getEditErrorMessage;
 
 public class FoodEditFragment extends InjectedFragment {
 
@@ -210,7 +212,7 @@ public class FoodEditFragment extends InjectedFragment {
             } else if (code == StatusCode.INVALID_DATA_VERSION) {
                 resolveConflict(editedFood);
             } else {
-                showErrorMessage(requireActivity(), code.getEditErrorMessage());
+                showErrorMessage(requireActivity(), getEditErrorMessage(code));
             }
         });
     }

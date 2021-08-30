@@ -23,21 +23,11 @@ package de.njsm.stocks.android.db.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.Index;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.threeten.bp.Instant;
 
+import java.time.Instant;
 import java.util.Objects;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @Entity(primaryKeys = {"_id", "version", "transaction_time_start"},
         indices = {
                 @Index(value = {"_id", "valid_time_start", "valid_time_end"}, name = "food_current"),
@@ -67,16 +57,7 @@ public class Food extends VersionedData {
     @NonNull
     public int storeUnit;
 
-    public Food(String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit) {
-        this.name = name;
-        this.toBuy = toBuy;
-        this.expirationOffset = expirationOffset;
-        this.location = location;
-        this.description = description;
-        this.storeUnit = storeUnit;
-    }
-
-    public Food(int position, int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit) {
+    public Food(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit) {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.name = name;
         this.toBuy = toBuy;
@@ -84,11 +65,7 @@ public class Food extends VersionedData {
         this.location = location;
         this.description = description;
         this.storeUnit = storeUnit;
-        setPosition(position);
     }
-
-    @Ignore
-    public Food() {}
 
     public String getName() {
         return name;
@@ -130,6 +107,6 @@ public class Food extends VersionedData {
 
     @NonNull
     public Food copy() {
-        return new Food(position, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
+        return new Food(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
     }
 }

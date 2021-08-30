@@ -23,25 +23,11 @@ package de.njsm.stocks.android.db.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.Index;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.njsm.stocks.android.network.server.util.InstantDeserialiser;
-import de.njsm.stocks.android.network.server.util.InstantSerialiser;
-import org.threeten.bp.Instant;
 
+import java.time.Instant;
 import java.util.Objects;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @Entity(tableName = "fooditem", primaryKeys = {"_id", "version", "transaction_time_start"},
         indices = {
                 @Index(value = {"_id", "valid_time_start", "valid_time_end"}, name = "fooditem_current"),
@@ -51,8 +37,6 @@ import java.util.Objects;
         })
 public class FoodItem extends VersionedData {
 
-    @JsonSerialize(using = InstantSerialiser.class)
-    @JsonDeserialize(using = InstantDeserialiser.class)
     @ColumnInfo(name = "eat_by")
     @NonNull
     public Instant eatByDate;
@@ -98,9 +82,6 @@ public class FoodItem extends VersionedData {
         this.buys = buys;
         this.unit = unit;
     }
-
-    @Ignore
-    public FoodItem() {}
 
     @NonNull
     public Instant getEatByDate() {

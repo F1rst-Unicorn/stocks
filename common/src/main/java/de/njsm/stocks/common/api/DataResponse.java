@@ -19,21 +19,17 @@
 
 package de.njsm.stocks.common.api;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fj.data.Validation;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE,
-        fieldVisibility = JsonAutoDetect.Visibility.NONE)
 public class DataResponse<T> extends Response {
 
     public T data;
 
-    public DataResponse(StatusCode status, T data) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public DataResponse(@JsonProperty("status") StatusCode status,
+                        @JsonProperty("data") T data) {
         super(status);
         this.data = data;
     }

@@ -26,7 +26,7 @@ import de.njsm.stocks.android.db.entities.Unit;
 import de.njsm.stocks.android.util.Config;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 @RunWith(AndroidJUnit4.class)
 public class UnitDaoTest extends InsertionTest<Unit> {
@@ -53,13 +53,4 @@ public class UnitDaoTest extends InsertionTest<Unit> {
         data.abbreviation = "altered abbreviation";
     }
 
-    @Override
-    Unit[] toArray(Unit data) {
-        return new Unit[] {data};
-    }
-
-    @Override
-    Unit[] toArray(Unit data, Unit data2) {
-        return new Unit[] {data, data2};
-    }
 }

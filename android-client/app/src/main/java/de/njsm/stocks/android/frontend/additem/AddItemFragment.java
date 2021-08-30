@@ -41,13 +41,13 @@ import de.njsm.stocks.android.frontend.fooditem.FoodItemViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.frontend.units.ScaledUnitViewModel;
 import de.njsm.stocks.android.frontend.util.SpinnerSynchroniser;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.livedata.Transformator;
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.Period;
-import org.threeten.bp.ZoneId;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.android.db.views;
 
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 public class PlotPoint {
 

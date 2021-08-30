@@ -21,8 +21,8 @@ package de.njsm.stocks.android.frontend.fooditem;
 
 import com.github.mikephil.charting.components.AxisBase;
 
-import org.threeten.bp.Instant;
-import org.threeten.bp.ZoneId;
+import java.time.Instant;
+import java.time.ZoneId;
 
 import de.njsm.stocks.android.util.Config;
 

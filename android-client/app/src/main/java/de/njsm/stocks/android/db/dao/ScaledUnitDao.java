@@ -25,7 +25,7 @@ import de.njsm.stocks.android.db.entities.ScaledUnit;
 import de.njsm.stocks.android.db.entities.Sql;
 import de.njsm.stocks.android.db.views.ScaledUnitView;
 import de.njsm.stocks.android.util.Config;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.List;
 
@@ -35,10 +35,10 @@ import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 public abstract class ScaledUnitDao implements Inserter<ScaledUnit> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(ScaledUnit[] data);
+    public abstract void insert(List<ScaledUnit> data);
 
     @Transaction
-    public void synchronise(ScaledUnit[] data) {
+    public void synchronise(List<ScaledUnit> data) {
         delete();
         insert(data);
     }

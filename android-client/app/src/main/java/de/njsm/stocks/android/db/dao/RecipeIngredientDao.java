@@ -23,7 +23,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.RecipeIngredient;
 import de.njsm.stocks.android.util.Config;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.List;
 
@@ -33,10 +33,10 @@ import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 public abstract class RecipeIngredientDao implements Inserter<RecipeIngredient> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(RecipeIngredient[] data);
+    public abstract void insert(List<RecipeIngredient> data);
 
     @Transaction
-    public void synchronise(RecipeIngredient[] data) {
+    public void synchronise(List<RecipeIngredient> data) {
         delete();
         insert(data);
     }

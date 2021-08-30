@@ -20,7 +20,7 @@
 
 package de.njsm.stocks.android.business.data.conflict;
 
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.function.BiConsumer;
 

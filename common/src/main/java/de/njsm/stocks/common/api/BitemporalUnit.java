@@ -22,6 +22,7 @@ package de.njsm.stocks.common.api;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.common.api.visitor.BitemporalVisitor;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_BitemporalUnit.Builder.class)
@@ -48,5 +49,10 @@ public abstract class BitemporalUnit implements Unit, Bitemporal<Unit> {
     public void validate() {
         Bitemporal.super.validate();
         Unit.super.validate();
+    }
+
+    @Override
+    public <I, O> O accept(BitemporalVisitor<I, O> visitor, I data) {
+        return visitor.bitemporalUnit(this, data);
     }
 }

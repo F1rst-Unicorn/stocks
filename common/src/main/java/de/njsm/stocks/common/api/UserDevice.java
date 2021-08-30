@@ -20,6 +20,7 @@
 package de.njsm.stocks.common.api;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.base.Preconditions;
 
 public interface UserDevice extends Entity<UserDevice> {
@@ -34,6 +35,7 @@ public interface UserDevice extends Entity<UserDevice> {
 
         T name(String v);
 
+        @JsonSetter(value = "userId")
         T belongsTo(int v);
     }
 

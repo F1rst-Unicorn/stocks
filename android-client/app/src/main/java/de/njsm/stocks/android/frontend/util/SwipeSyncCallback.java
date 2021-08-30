@@ -23,7 +23,7 @@ package de.njsm.stocks.android.frontend.util;
 import androidx.lifecycle.LiveData;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import de.njsm.stocks.android.frontend.BaseFragment;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 
 public class SwipeSyncCallback implements SwipeRefreshLayout.OnRefreshListener {
 

@@ -20,24 +20,27 @@
 package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.MutableLiveData;
+import com.google.common.collect.Lists;
 import de.njsm.stocks.android.db.dao.*;
-import de.njsm.stocks.android.db.entities.*;
+import de.njsm.stocks.android.db.entities.Update;
 import de.njsm.stocks.android.network.server.ServerClient;
-import de.njsm.stocks.android.network.server.StatusCode;
-import de.njsm.stocks.android.network.server.data.ListResponse;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.idling.IdlingResource;
 import de.njsm.stocks.android.util.idling.NullIdlingResource;
+import de.njsm.stocks.common.api.ListResponse;
+import de.njsm.stocks.common.api.StatusCode;
 import okhttp3.Request;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.threeten.bp.Instant;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.lang.reflect.Array;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class SynchroniserTest {
@@ -94,213 +97,205 @@ public class SynchroniserTest {
     }
 
     @Test
-    public void unknownTableIsIgnoredMixedOrder() throws Exception {
-        Update[] serverUpdates = new Update[] {
+    public void tablesInMixedOrderAreHandled() throws Exception {
+        List<Update> serverUpdates = Lists.newArrayList(
             new Update(0, "User", Instant.EPOCH),
-            new Update(0, "Food", Instant.EPOCH),
-        };
-        Update[] localUpdates = new Update[] {
-            new Update(0, "Food", Instant.EPOCH),
-            serverUpdates[1],
-        };
+            new Update(0, "Food", Instant.EPOCH)
+        );
+        List<Update> localUpdates = Lists.newArrayList(
+            serverUpdates.get(0)
+        );
 
         uut.refreshOutdatedTables(serverUpdates, localUpdates);
     }
 
     @Test
     public void unknownTableIsIgnored() throws Exception {
-        Update[] serverUpdates = new Update[] {
+        List<Update> serverUpdates = Lists.newArrayList(
                 new Update(0, "Food", Instant.EPOCH),
-                new Update(0, "User", Instant.EPOCH),
-        };
-        Update[] localUpdates = new Update[] {
-                new Update(0, "Food", Instant.EPOCH),
-                serverUpdates[1],
-        };
+                new Update(0, "User", Instant.EPOCH)
+        );
+        List<Update> localUpdates = Lists.newArrayList(
+                serverUpdates.get(1)
+        );
 
         uut.refreshOutdatedTables(serverUpdates, localUpdates);
     }
 
     @Test
     public void gettingUsersWorks() {
-        User[] data = new User[]{};
-        Mockito.when(serverClient.getUsers(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("user", userDao, data);
+        Mockito.when(serverClient.getUsers(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("user", userDao);
     }
 
     @Test
     public void gettingUserDevicesWorks() {
-        UserDevice[] data = new UserDevice[]{};
-        Mockito.when(serverClient.getDevices(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("User_device", userDeviceDao, data);
+        Mockito.when(serverClient.getDevices(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("User_device", userDeviceDao);
     }
 
     @Test
     public void gettingLocationsWorks() {
-        Location[] data = new Location[]{};
-        Mockito.when(serverClient.getLocations(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("Location", locationDao, data);
+        Mockito.when(serverClient.getLocations(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("Location", locationDao);
     }
 
     @Test
     public void gettingFoodsWorks() {
-        Food[] data = new Food[]{};
-        Mockito.when(serverClient.getFood(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("Food", foodDao, data);
+        Mockito.when(serverClient.getFood(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("Food", foodDao);
     }
 
     @Test
     public void gettingFoodItemsWorks() {
-        FoodItem[] data = new FoodItem[]{};
-        Mockito.when(serverClient.getFoodItems(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("Food_item", foodItemDao, data);
+        Mockito.when(serverClient.getFoodItems(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("Food_item", foodItemDao);
     }
 
     @Test
     public void gettingEanNumbersWorks() {
-        EanNumber[] data = new EanNumber[]{};
-        Mockito.when(serverClient.getEanNumbers(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("EAN_number", eanNumberDao, data);
+        Mockito.when(serverClient.getEanNumbers(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("EAN_number", eanNumberDao);
     }
 
     @Test
     public void gettingUnitsWorks() {
-        Unit[] data = new Unit[]{};
-        Mockito.when(serverClient.getUnits(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("unit", unitDao, data);
+        Mockito.when(serverClient.getUnits(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("unit", unitDao);
     }
 
     @Test
     public void gettingScaledUnitsWorks() {
-        ScaledUnit[] data = new ScaledUnit[]{};
-        Mockito.when(serverClient.getScaledUnits(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("scaled_unit", scaledUnitDao, data);
+        Mockito.when(serverClient.getScaledUnits(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("scaled_unit", scaledUnitDao);
     }
 
     @Test
     public void gettingRecipesWorks() {
-        Recipe[] data = new Recipe[]{};
-        Mockito.when(serverClient.getRecipes(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("recipe", recipeDao, data);
+        Mockito.when(serverClient.getRecipes(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("recipe", recipeDao);
     }
 
     @Test
     public void gettingRecipeIngredientsWorks() {
-        RecipeIngredient[] data = new RecipeIngredient[]{};
-        Mockito.when(serverClient.getRecipeIngredients(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("recipe_ingredient", recipeIngredientDao, data);
+        Mockito.when(serverClient.getRecipeIngredients(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("recipe_ingredient", recipeIngredientDao);
     }
 
     @Test
     public void gettingRecipeProductWorks() {
-        RecipeProduct[] data = new RecipeProduct[]{};
-        Mockito.when(serverClient.getRecipeProducts(1, Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(data));
-        gettingEntityDataWorks("recipe_product", recipeProductDao, data);
+        Mockito.when(serverClient.getRecipeProducts(Config.API_DATE_FORMAT.format(Instant.EPOCH))).thenReturn(createMockCall(Lists.newArrayList()));
+        gettingEntityDataWorks("recipe_product", recipeProductDao);
     }
 
     @Test
     public void gettingAllSynchronisesUsers() {
-        gettingAllSynchronises(userDao, User.class);
+        gettingAllSynchronises(userDao);
     }
 
     @Test
     public void gettingAllSynchronisesUserDevices() {
-        gettingAllSynchronises(userDeviceDao, UserDevice.class);
+        gettingAllSynchronises(userDeviceDao);
     }
 
     @Test
     public void gettingAllSynchronisesLocations() {
-        gettingAllSynchronises(locationDao, Location.class);
+        gettingAllSynchronises(locationDao);
     }
 
     @Test
     public void gettingAllSynchronisesFoods() {
-        gettingAllSynchronises(foodDao, Food.class);
+        gettingAllSynchronises(foodDao);
     }
 
     @Test
     public void gettingAllSynchronisesFoodItems() {
-        gettingAllSynchronises(foodItemDao, FoodItem.class);
+        gettingAllSynchronises(foodItemDao);
     }
 
     @Test
     public void gettingAllSynchronisesEanNumbers() {
-        gettingAllSynchronises(eanNumberDao, EanNumber.class);
+        gettingAllSynchronises(eanNumberDao);
     }
 
     @Test
     public void gettingAllSynchronisesUnits() {
-        gettingAllSynchronises(unitDao, Unit.class);
+        gettingAllSynchronises(unitDao);
     }
 
     @Test
     public void gettingAllSynchronisesScaledUnits() {
-        gettingAllSynchronises(scaledUnitDao, ScaledUnit.class);
+        gettingAllSynchronises(scaledUnitDao);
     }
 
     @Test
     public void gettingAllSynchronisesRecipes() {
-        gettingAllSynchronises(recipeDao, Recipe.class);
+        gettingAllSynchronises(recipeDao);
     }
 
     @Test
     public void gettingAllSynchronisesRecipeIngredients() {
-        gettingAllSynchronises(recipeIngredientDao, RecipeIngredient.class);
+        gettingAllSynchronises(recipeIngredientDao);
     }
 
     @Test
     public void gettingAllSynchronisesRecipeProducts() {
-        gettingAllSynchronises(recipeProductDao, RecipeProduct.class);
+        gettingAllSynchronises(recipeProductDao);
     }
 
-    public <T> void gettingEntityDataWorks(String entityName, Inserter<T> dao, T[] data) {
+    public <T> void gettingEntityDataWorks(String entityName, Inserter<T> dao) {
         Update[] localUpdates = new Update[] {
                 new Update(1, entityName, Instant.EPOCH)
         };
-        Update[] remoteUpdates = new Update[] {
-                new Update(1, entityName, Instant.MAX)
-        };
-        Mockito.when(updateDao.getAll()).thenReturn(localUpdates);
+        ArrayList<de.njsm.stocks.common.api.Update> remoteUpdates = Lists.newArrayList(
+                de.njsm.stocks.common.api.Update.builder()
+                        .table(entityName)
+                        .lastUpdate(Instant.MAX)
+                        .build()
+        );
+        Mockito.when(updateDao.getAll()).thenReturn(Arrays.asList(localUpdates));
 
         Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
         MutableLiveData<StatusCode> result = new MutableLiveData<>();
 
         uut.synchroniseInThread(false, result);
 
-        Mockito.verify(dao).insert(data);
+        Mockito.verify(dao).insert(Lists.newArrayList());
     }
 
-    public <T> void gettingAllSynchronises(Inserter<T> dao, Class<T> clazz) {
-        Update[] emptyUpdates = new Update[] {};
-        Update[] remoteUpdates = new Update[] {
-                new Update(1, "", Instant.MAX)
-        };
+    public <T> void gettingAllSynchronises(Inserter<T> dao) {
+        ArrayList<de.njsm.stocks.common.api.Update> remoteUpdates = Lists.newArrayList(
+                de.njsm.stocks.common.api.Update.builder()
+                        .table("")
+                        .lastUpdate(Instant.MAX)
+                        .build()
+        );
 
-        Mockito.when(updateDao.getAll()).thenReturn(emptyUpdates);
+        Mockito.when(updateDao.getAll()).thenReturn(Lists.newArrayList());
         Mockito.when(serverClient.getUpdates()).thenReturn(createMockCall(remoteUpdates));
         mockAllEntityResponses();
         MutableLiveData<StatusCode> result = new MutableLiveData<>();
 
         uut.synchroniseInThread(false, result);
 
-        Mockito.verify(dao).synchronise((T[]) Array.newInstance(clazz, 0));
+        Mockito.verify(dao).synchronise(Lists.newArrayList());
     }
 
     private void mockAllEntityResponses() {
-        Mockito.when(serverClient.getUsers(1, null)).thenReturn(createMockCall(new User[]{}));
-        Mockito.when(serverClient.getDevices(1, null)).thenReturn(createMockCall(new UserDevice[]{}));
-        Mockito.when(serverClient.getFood(1, null)).thenReturn(createMockCall(new Food[]{}));
-        Mockito.when(serverClient.getFoodItems(1, null)).thenReturn(createMockCall(new FoodItem[]{}));
-        Mockito.when(serverClient.getLocations(1, null)).thenReturn(createMockCall(new Location[]{}));
-        Mockito.when(serverClient.getEanNumbers(1, null)).thenReturn(createMockCall(new EanNumber[]{}));
-        Mockito.when(serverClient.getUnits(1, null)).thenReturn(createMockCall(new Unit[]{}));
-        Mockito.when(serverClient.getScaledUnits(1, null)).thenReturn(createMockCall(new ScaledUnit[]{}));
-        Mockito.when(serverClient.getRecipes(1, null)).thenReturn(createMockCall(new Recipe[]{}));
-        Mockito.when(serverClient.getRecipeIngredients(1, null)).thenReturn(createMockCall(new RecipeIngredient[]{}));
-        Mockito.when(serverClient.getRecipeProducts(1, null)).thenReturn(createMockCall(new RecipeProduct[]{}));
+        Mockito.when(serverClient.getUsers(null)).thenReturn(createMockCall(Lists.newArrayList()));
+        Mockito.when(serverClient.getDevices(null)).thenReturn(createMockCall(Lists.newArrayList()));
+        Mockito.when(serverClient.getFood(null)).thenReturn(createMockCall(Lists.newArrayList()));
+        Mockito.when(serverClient.getFoodItems(null)).thenReturn(createMockCall(Lists.newArrayList()));
+        Mockito.when(serverClient.getLocations(null)).thenReturn(createMockCall(Lists.newArrayList()));
+        Mockito.when(serverClient.getEanNumbers(null)).thenReturn(createMockCall(Lists.newArrayList()));
+        Mockito.when(serverClient.getUnits(null)).thenReturn(createMockCall(Lists.newArrayList()));
+        Mockito.when(serverClient.getScaledUnits(null)).thenReturn(createMockCall(Lists.newArrayList()));
+        Mockito.when(serverClient.getRecipes(null)).thenReturn(createMockCall(Lists.newArrayList()));
+        Mockito.when(serverClient.getRecipeIngredients(null)).thenReturn(createMockCall(Lists.newArrayList()));
+        Mockito.when(serverClient.getRecipeProducts(null)).thenReturn(createMockCall(Lists.newArrayList()));
     }
 
-    private <T> Call<ListResponse<T>> createMockCall(T[] input) {
+    private <T> Call<ListResponse<T>> createMockCall(List<T> input) {
         return new Call<ListResponse<T>>() {
             @Override
             public Response<ListResponse<T>> execute() {

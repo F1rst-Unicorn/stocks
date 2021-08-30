@@ -23,9 +23,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.entities.ScaledUnit;
 import de.njsm.stocks.android.db.views.ScaledUnitView;
-import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.ScaledUnitRepository;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.common.api.StatusCode;
 
 import javax.inject.Inject;
 import java.util.List;

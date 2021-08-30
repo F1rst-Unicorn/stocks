@@ -24,7 +24,7 @@ import androidx.arch.core.util.Function;
 import androidx.room.Embedded;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.util.Aggregator;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,7 +38,7 @@ public class FoodSummaryView extends Food {
     private final List<ScaledAmount> amounts;
 
     public FoodSummaryView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit) {
-        super(0, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
         this.amounts = new ArrayList<>();
     }
 
@@ -61,7 +61,7 @@ public class FoodSummaryView extends Food {
         private final ScaledAmount amount;
 
         public SingleFoodSummaryView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, @NonNull String description, int storeUnit, ScaledAmount amount) {
-            super(0, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
+            super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
             this.amount = amount;
         }
 

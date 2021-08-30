@@ -23,7 +23,7 @@ import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 
 import de.njsm.stocks.android.frontend.BaseFragment;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.android.util.Logger;
 
 public class DeletionInteractor<T> {

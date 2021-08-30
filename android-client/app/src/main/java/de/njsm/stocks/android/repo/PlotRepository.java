@@ -21,21 +21,17 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-
-import org.threeten.bp.ZoneId;
-
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
 import de.njsm.stocks.android.db.dao.PlotDao;
 import de.njsm.stocks.android.db.views.PlotPoint;
 import de.njsm.stocks.android.util.Logger;
+
+import javax.inject.Inject;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PlotRepository {
 

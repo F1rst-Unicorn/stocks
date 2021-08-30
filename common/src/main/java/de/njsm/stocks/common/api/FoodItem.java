@@ -20,8 +20,10 @@
 package de.njsm.stocks.common.api;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Preconditions;
+import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 
 import java.time.Instant;
@@ -51,6 +53,7 @@ public interface FoodItem extends Entity<FoodItem> {
 
         T registers(int v);
 
+        @JsonDeserialize(using = InstantDeserialiser.class)
         T eatByDate(Instant v);
 
         T ofType(int v);

@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Preconditions;
 import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
+import de.njsm.stocks.common.api.visitor.BitemporalVisitor;
 
 import java.time.Instant;
 
@@ -69,6 +70,8 @@ public interface Bitemporal<T extends Entity<T>> extends Versionable<T> {
         Preconditions.checkState(initiates() > 0, "initiates id is invalid");
     }
 
+    <I, O> O accept(BitemporalVisitor<I, O> visitor, I data);
+
     interface Builder<T> extends Versionable.Builder<T> {
 
         @JsonDeserialize(using = InstantDeserialiser.class)
@@ -85,4 +88,6 @@ public interface Bitemporal<T extends Entity<T>> extends Versionable<T> {
 
         T initiates(int v);
     }
+
+
 }

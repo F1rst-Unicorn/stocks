@@ -22,7 +22,7 @@ package de.njsm.stocks.android.db.views;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import de.njsm.stocks.android.db.entities.Food;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.math.BigDecimal;
 
@@ -38,7 +38,7 @@ public class FoodWithLocationName extends Food {
     public final BigDecimal scale;
 
     public FoodWithLocationName(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, boolean toBuy, int expirationOffset, int location, String locationName, String description, int storeUnit, String unitAbbreviation, BigDecimal scale) {
-        super(0, id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
+        super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
         this.locationName = locationName;
         this.unitAbbreviation = unitAbbreviation;
         this.scale = scale;

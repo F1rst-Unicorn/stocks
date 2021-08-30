@@ -21,7 +21,7 @@ package de.njsm.stocks.android.db.views;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.List;
 import java.util.stream.Collectors;

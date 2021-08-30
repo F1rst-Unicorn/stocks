@@ -26,8 +26,8 @@ import de.njsm.stocks.android.db.entities.Recipe;
 import de.njsm.stocks.android.util.Config;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.threeten.bp.Duration;
-import org.threeten.bp.Instant;
+import java.time.Duration;
+import java.time.Instant;
 
 @RunWith(AndroidJUnit4.class)
 public class RecipeDaoTest extends InsertionTest<Recipe> {
@@ -54,13 +54,4 @@ public class RecipeDaoTest extends InsertionTest<Recipe> {
         data.instructions = "altered instructions";
     }
 
-    @Override
-    public Recipe[] toArray(Recipe data) {
-        return new Recipe[] {data};
-    }
-
-    @Override
-    public Recipe[] toArray(Recipe data, Recipe data2) {
-        return new Recipe[] {data, data2};
-    }
 }

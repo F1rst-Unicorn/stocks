@@ -19,7 +19,7 @@
 
 package de.njsm.stocks.android.business.data.eventlog;
 
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.function.IntFunction;
 

@@ -22,27 +22,17 @@ package de.njsm.stocks.android.db.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.Index;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.threeten.bp.Instant;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
+import java.time.Instant;
 import java.util.Objects;
 
 import static java.math.BigDecimal.*;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @Entity(tableName = "scaled_unit",
         primaryKeys = {"_id", "version", "transaction_time_start"},
         indices = {
@@ -88,9 +78,6 @@ public class ScaledUnit extends VersionedData {
         this.scale = scale;
         this.unit = unit;
     }
-
-    @Ignore
-    public ScaledUnit() {}
 
     public String normalise() {
         int exponentPivot = getExponentPivot(scale);

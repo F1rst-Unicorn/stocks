@@ -21,38 +21,23 @@ package de.njsm.stocks.android.db.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
-import androidx.room.Ignore;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import org.threeten.bp.Instant;
-
-import de.njsm.stocks.android.network.server.util.InstantDeserialiser;
-import de.njsm.stocks.android.network.server.util.InstantSerialiser;
+import java.time.Instant;
 
 public class VersionedData extends Data {
 
-    @JsonSerialize(using = InstantSerialiser.class)
-    @JsonDeserialize(using = InstantDeserialiser.class)
     @ColumnInfo(name = "valid_time_start", defaultValue = "")
     @NonNull
     public Instant validTimeStart;
 
-    @JsonSerialize(using = InstantSerialiser.class)
-    @JsonDeserialize(using = InstantDeserialiser.class)
     @ColumnInfo(name = "valid_time_end", defaultValue = "")
     @NonNull
     public Instant validTimeEnd;
 
-    @JsonSerialize(using = InstantSerialiser.class)
-    @JsonDeserialize(using = InstantDeserialiser.class)
     @ColumnInfo(name = "transaction_time_start", defaultValue = "")
     @NonNull
     public Instant transactionTimeStart;
 
-    @JsonSerialize(using = InstantSerialiser.class)
-    @JsonDeserialize(using = InstantDeserialiser.class)
     @ColumnInfo(name = "transaction_time_end", defaultValue = "")
     @NonNull
     public Instant transactionTimeEnd;
@@ -62,9 +47,6 @@ public class VersionedData extends Data {
 
     @ColumnInfo(name = "initiates")
     public int initiates;
-
-    @Ignore
-    public VersionedData() {}
 
     public VersionedData(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates) {
         super(id);
