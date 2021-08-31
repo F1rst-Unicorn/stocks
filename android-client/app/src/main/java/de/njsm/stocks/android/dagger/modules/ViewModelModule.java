@@ -38,6 +38,9 @@ import de.njsm.stocks.android.frontend.fooditem.PlotViewModel;
 import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.frontend.main.EventViewModel;
 import de.njsm.stocks.android.frontend.recipe.RecipeViewModel;
+import de.njsm.stocks.android.frontend.recipedetail.RecipeIngredientViewModel;
+import de.njsm.stocks.android.frontend.recipedetail.RecipeProductRepository;
+import de.njsm.stocks.android.frontend.recipedetail.RecipeProductViewModel;
 import de.njsm.stocks.android.frontend.search.SearchViewModel;
 import de.njsm.stocks.android.frontend.settings.SettingsUpdaterViewModel;
 import de.njsm.stocks.android.frontend.shoppinglist.FoodToBuyViewModel;
@@ -223,6 +226,22 @@ public class ViewModelModule {
     ViewModel provideRecipeViewModel(RecipeRepository repo) {
         RecipeViewModel result = new RecipeViewModel(repo);
         result.init();
+        return result;
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(RecipeIngredientViewModel.class)
+    ViewModel provideRecipeIngredientViewModel(RecipeIngredientRepository repo) {
+        RecipeIngredientViewModel result = new RecipeIngredientViewModel(repo);
+        return result;
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(RecipeProductViewModel.class)
+    ViewModel provideRecipeProductViewModel(RecipeProductRepository repo) {
+        RecipeProductViewModel result = new RecipeProductViewModel(repo);
         return result;
     }
 

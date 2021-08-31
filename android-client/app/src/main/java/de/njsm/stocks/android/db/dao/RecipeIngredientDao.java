@@ -22,6 +22,8 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.RecipeIngredient;
+import de.njsm.stocks.android.db.entities.Sql;
+import de.njsm.stocks.android.db.views.ScaledFood;
 
 import java.time.Instant;
 import java.util.List;
@@ -52,6 +54,10 @@ public abstract class RecipeIngredientDao implements Inserter<RecipeIngredient> 
         return getIngredientsOf(recipeId, DATABASE_INFINITY);
     }
 
+    public LiveData<List<ScaledFood>> getIngredientViewsOf(int recipeId) {
+        return getIngredientViewsOf(recipeId, DATABASE_INFINITY);
+    }
+
     @Query("select * " +
             "from recipe_ingredient " +
             "where valid_time_start <= " + NOW +
@@ -66,4 +72,19 @@ public abstract class RecipeIngredientDao implements Inserter<RecipeIngredient> 
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity")
     abstract List<RecipeIngredient> getIngredientsOf(int recipeId, Instant infinity);
+
+    @Query("select " +
+            Sql.FOOD_FIELDS_QUALIFIED +
+            Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+            Sql.UNIT_FIELDS_QUALIFIED +
+            Sql.RECIPE_INGREDIENT_FIELDS +
+            "1 from recipe_ingredient recipe_ingredient " +
+            Sql.FOOD_JOIN_RECIPE_INGREDIENT +
+            Sql.SCALED_UNIT_JOIN_RECIPE_INGREDIENT +
+            Sql.UNIT_JOIN_SCALED_UNIT +
+            "where recipe_ingredient.recipe = :recipeId " +
+            "and recipe_ingredient.valid_time_start <= " + NOW +
+            "and " + NOW + " < recipe_ingredient.valid_time_end " +
+            "and recipe_ingredient.transaction_time_end = :infinity")
+    abstract LiveData<List<ScaledFood>> getIngredientViewsOf(int recipeId, Instant infinity);
 }

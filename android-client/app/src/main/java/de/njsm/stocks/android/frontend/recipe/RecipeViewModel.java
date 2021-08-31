@@ -36,6 +36,8 @@ public class RecipeViewModel extends ViewModel {
 
     private LiveData<List<Recipe>> currentRecipes;
 
+    private LiveData<Recipe> currentRecipe;
+
     @Inject
     public RecipeViewModel(RecipeRepository repository) {
         this.repository = repository;
@@ -44,6 +46,12 @@ public class RecipeViewModel extends ViewModel {
     public void init() {
         if (currentRecipes == null) {
             currentRecipes = repository.getRecipes();
+        }
+    }
+
+    public void init(int recipeId) {
+        if (currentRecipe == null) {
+            currentRecipe = repository.getRecipe(recipeId);
         }
     }
 
@@ -57,5 +65,9 @@ public class RecipeViewModel extends ViewModel {
 
     public LiveData<StatusCode> deleteRecipe(Recipe recipe) {
         return repository.deleteRecipe(recipe);
+    }
+
+    public LiveData<Recipe> getRecipe() {
+        return currentRecipe;
     }
 }

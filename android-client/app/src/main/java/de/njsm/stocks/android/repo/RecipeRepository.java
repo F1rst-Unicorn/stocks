@@ -119,4 +119,8 @@ public class RecipeRepository {
 
         return result;
     }
+
+    public LiveData<Recipe> getRecipe(int recipeId) {
+        return recipeDao.getRecipe(recipeId);
+    }
 }

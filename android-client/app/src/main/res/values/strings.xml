@@ -67,6 +67,7 @@
     <string name="title_ingredients">Ingredients</string>
     <string name="title_add_recipe">Add Recipe</string>
     <string name="title_products">Products</string>
+    <string name="title_duration">Time</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>

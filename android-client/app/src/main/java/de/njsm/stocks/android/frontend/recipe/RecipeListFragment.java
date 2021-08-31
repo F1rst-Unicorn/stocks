@@ -31,11 +31,16 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.Recipe;
 import de.njsm.stocks.android.frontend.InjectedFragment;
+
+import java.util.List;
 
 public class RecipeListFragment extends InjectedFragment {
 
     private RecyclerView.Adapter<RecipeAdapter.ViewHolder> adapter;
+
+    private RecipeViewModel recipeViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,21 +50,34 @@ public class RecipeListFragment extends InjectedFragment {
         RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-        RecipeViewModel viewModel = getViewModelProvider().get(RecipeViewModel.class);
+        recipeViewModel = getViewModelProvider().get(RecipeViewModel.class);
 
-        adapter = new RecipeAdapter(viewModel.getRecipes(),
-                this::doNothing,
+        adapter = new RecipeAdapter(recipeViewModel.getRecipes(),
+                this::goToRecipe,
                 this::doNothing);
-        viewModel.getRecipes().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
+        recipeViewModel.getRecipes().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
         RecipeDeletionInteractor interactor = new RecipeDeletionInteractor(this,
-                viewModel::deleteRecipe,
+                recipeViewModel::deleteRecipe,
                 r -> adapter.notifyDataSetChanged(),
                 result);
-        addSwipeToDelete(list, viewModel.getRecipes(), R.drawable.ic_delete_white_24dp, interactor::initiateDeletion);
+        addSwipeToDelete(list, recipeViewModel.getRecipes(), R.drawable.ic_delete_white_24dp, interactor::initiateDeletion);
         initialiseSwipeRefresh(result, viewModelFactory);
         return result;
+    }
+
+    private void goToRecipe(View view) {
+        RecipeAdapter.ViewHolder holder = (RecipeAdapter.ViewHolder) view.getTag();
+        int position = holder.getAbsoluteAdapterPosition();
+        List<Recipe> data = recipeViewModel.getRecipes().getValue();
+        if (data != null) {
+            int id = data.get(position).getId();
+            RecipeListFragmentDirections.ActionNavFragmentRecipesToNavFragmentRecipe args =
+                    RecipeListFragmentDirections.actionNavFragmentRecipesToNavFragmentRecipe(id);
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(args);
+        }
     }
 
     private void goToRecipeForm(View view) {
