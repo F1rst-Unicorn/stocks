@@ -17,35 +17,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.interactor;
+package de.njsm.stocks.android.frontend.recipe;
 
+import android.view.View;
 import androidx.arch.core.util.Function;
+import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
+import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.Recipe;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.interactor.SnackbarDeletionInteractor;
 import de.njsm.stocks.common.api.StatusCode;
 
-public class DeletionInteractor<T> {
+public class RecipeDeletionInteractor extends SnackbarDeletionInteractor<Recipe> {
 
-    private final Function<T, LiveData<StatusCode>> deleter;
 
-    protected BaseFragment owner;
-
-    public DeletionInteractor(BaseFragment owner,
-                                 Function<T, LiveData<StatusCode>> deleter) {
-        this.deleter = deleter;
-        this.owner = owner;
+    public RecipeDeletionInteractor(BaseFragment owner,
+                                    Function<Recipe, LiveData<StatusCode>> deleter,
+                                    Consumer<Recipe> deletionCancler,
+                                    View snackbarParent) {
+        super(owner, deleter, deletionCancler, snackbarParent);
     }
 
-    public void initiateDeletion(T item) {
-        observeDeletion(item);
-    }
-
-    protected void observeDeletion(T item) {
-        LiveData<StatusCode> result = deleter.apply(item);
-        result.observe(owner, code -> treatErrorCode(code, item));
-    }
-
-    protected void treatErrorCode(StatusCode code, T item) {
-        owner.maybeShowDeleteError(code);
+    @Override
+    protected int getSnackbarMessageId() {
+        return R.string.dialog_recipe_was_deleted;
     }
 }

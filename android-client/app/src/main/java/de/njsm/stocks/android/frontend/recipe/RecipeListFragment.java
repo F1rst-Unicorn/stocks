@@ -53,6 +53,11 @@ public class RecipeListFragment extends InjectedFragment {
         viewModel.getRecipes().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
+        RecipeDeletionInteractor interactor = new RecipeDeletionInteractor(this,
+                viewModel::deleteRecipe,
+                r -> adapter.notifyDataSetChanged(),
+                result);
+        addSwipeToDelete(list, viewModel.getRecipes(), R.drawable.ic_delete_white_24dp, interactor::initiateDeletion);
         initialiseSwipeRefresh(result, viewModelFactory);
         return result;
     }

@@ -176,4 +176,8 @@ public class ServerClient {
     public Call<Response> addRecipe(FullRecipeForInsertion recipe) {
         return api.addRecipe(recipe);
     }
+
+    public Call<Response> deleteRecipe(FullRecipeForDeletion recipe) {
+        return api.deleteRecipe(recipe);
+    }
 }

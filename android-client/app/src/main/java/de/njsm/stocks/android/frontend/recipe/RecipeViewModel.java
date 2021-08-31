@@ -54,4 +54,8 @@ public class RecipeViewModel extends ViewModel {
     public LiveData<StatusCode> addRecipe(FullRecipeForInsertion recipe) {
         return repository.addRecipe(recipe);
     }
+
+    public LiveData<StatusCode> deleteRecipe(Recipe recipe) {
+        return repository.deleteRecipe(recipe);
+    }
 }

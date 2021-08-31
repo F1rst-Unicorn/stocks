@@ -171,6 +171,7 @@
     <string name="dialog_food_was_removed_from_shopping_list">Food was removed from shopping list</string>
     <string name="dialog_conflicting_description">The description has been edited by someone else. Merge the original text, the other person\'s text and your own text now.</string>
     <string name="dialog_new_unit">Create new unit</string>
+    <string name="dialog_recipe_was_deleted">Recipe was deleted</string>
 
     <string name="error_may_not_be_empty">Give input here</string>
     <string name="error_no_id">ID has to be filled in</string>

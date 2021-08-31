@@ -22,12 +22,12 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.RecipeProduct;
-import de.njsm.stocks.android.util.Config;
 
 import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
 public abstract class RecipeProductDao implements Inserter<RecipeProduct> {
@@ -45,7 +45,11 @@ public abstract class RecipeProductDao implements Inserter<RecipeProduct> {
     abstract void delete();
 
     public LiveData<List<RecipeProduct>> getAll() {
-        return getAll(Config.DATABASE_INFINITY);
+        return getAll(DATABASE_INFINITY);
+    }
+
+    public List<RecipeProduct> getProductsOf(int recipeId) {
+        return getProductsOf(recipeId, DATABASE_INFINITY);
     }
 
     @Query("select * " +
@@ -54,4 +58,12 @@ public abstract class RecipeProductDao implements Inserter<RecipeProduct> {
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity")
     abstract LiveData<List<RecipeProduct>> getAll(Instant infinity);
+
+    @Query("select * " +
+            "from recipe_product " +
+            "where recipe = :recipeId " +
+            "and valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = :infinity")
+    abstract List<RecipeProduct> getProductsOf(int recipeId, Instant infinity);
 }
