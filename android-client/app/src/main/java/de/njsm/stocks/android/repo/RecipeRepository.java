@@ -21,11 +21,15 @@
 package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import de.njsm.stocks.android.db.dao.RecipeDao;
 import de.njsm.stocks.android.db.entities.Recipe;
 import de.njsm.stocks.android.network.server.ServerClient;
+import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
+import de.njsm.stocks.common.api.FullRecipeForInsertion;
+import de.njsm.stocks.common.api.StatusCode;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -56,5 +60,14 @@ public class RecipeRepository {
 
     public LiveData<List<Recipe>> getRecipes() {
         return recipeDao.getAll();
+    }
+
+    public LiveData<StatusCode> addRecipe(FullRecipeForInsertion recipe) {
+        LOG.i("adding recipe " + recipe);
+        MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
+
+        webClient.addRecipe(recipe)
+                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
+        return result;
     }
 }

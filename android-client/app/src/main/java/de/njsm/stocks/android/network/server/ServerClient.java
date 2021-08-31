@@ -172,4 +172,8 @@ public class ServerClient {
     public Call<Response> addScaledUnit(String scale, int unit) {
         return api.addScaledUnit(scale, unit);
     }
+
+    public Call<Response> addRecipe(FullRecipeForInsertion recipe) {
+        return api.addRecipe(recipe);
+    }
 }

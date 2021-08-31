@@ -20,10 +20,12 @@
 -->
 
 
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/item_scaled_food">
 
     <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/item_scaled_food_amount"
@@ -31,7 +33,9 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/list_item_padding"
             android:hint="@string/hint_amount"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
         <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,25 +45,34 @@
 
     <Spinner
             android:id="@+id/item_scaled_food_unit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_default="spread"
+            app:layout_constraintStart_toEndOf="@+id/item_scaled_food_amount"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintBottom_toTopOf="@+id/item_scaled_food_food"/>
 
     <ImageButton
-            android:id="@+id/fragment_recipe_add_add_ingredient"
+            android:id="@+id/item_scaled_food_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:layout_below="@id/item_scaled_food_amount"
             android:background="?android:selectableItemBackground"
-            android:src="@drawable/baseline_delete_black_24" />
+            android:src="@drawable/baseline_delete_black_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_scaled_food_amount"/>
 
     <Spinner
             android:id="@+id/item_scaled_food_food"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/item_scaled_food_amount"/>
+            app:layout_constraintTop_toBottomOf="@+id/item_scaled_food_amount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/item_scaled_food_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"/>
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

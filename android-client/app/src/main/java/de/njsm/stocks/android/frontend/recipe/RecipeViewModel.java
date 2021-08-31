@@ -24,6 +24,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.entities.Recipe;
 import de.njsm.stocks.android.repo.RecipeRepository;
+import de.njsm.stocks.common.api.FullRecipeForInsertion;
+import de.njsm.stocks.common.api.StatusCode;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -47,5 +49,9 @@ public class RecipeViewModel extends ViewModel {
 
     public LiveData<List<Recipe>> getRecipes() {
         return currentRecipes;
+    }
+
+    public LiveData<StatusCode> addRecipe(FullRecipeForInsertion recipe) {
+        return repository.addRecipe(recipe);
     }
 }

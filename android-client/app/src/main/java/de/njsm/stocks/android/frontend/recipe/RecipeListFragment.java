@@ -53,8 +53,6 @@ public class RecipeListFragment extends InjectedFragment {
         viewModel.getRecipes().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
-
-
         initialiseSwipeRefresh(result, viewModelFactory);
         return result;
     }

@@ -36,6 +36,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Positionable;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
@@ -225,6 +226,15 @@ public class BaseFragment extends Fragment {
         } else {
             return true;
         }
+    }
+
+    protected String getTextFieldContent(int viewId) {
+        return getTextFieldContent(requireView(), viewId);
+    }
+
+    protected String getTextFieldContent(View view, int viewId) {
+        TextInputLayout field = view.findViewById(viewId);
+        return field.getEditText().getText().toString().trim();
     }
 
     protected void doNothing(DialogInterface dialogInterface, int i) {}

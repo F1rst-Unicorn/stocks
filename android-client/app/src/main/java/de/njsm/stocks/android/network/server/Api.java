@@ -181,4 +181,7 @@ public interface Api {
     @PUT("/v2/scaled-unit")
     Call<Response> addScaledUnit(@Query("scale") String scale,
                                  @Query("unit") int unit);
+
+    @PUT("/v2/recipe")
+    Call<Response> addRecipe(@Body FullRecipeForInsertion recipe);
 }

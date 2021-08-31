@@ -50,7 +50,7 @@
                 android:layout_below="@id/fragment_recipe_add_name" />
 
         <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fragment_recipe_add_amount"
+                android:id="@+id/fragment_recipe_add_duration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/list_item_padding"
@@ -68,7 +68,7 @@
                 layout="@layout/template_conflict_labels"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/fragment_recipe_add_amount" />
+                android:layout_below="@id/fragment_recipe_add_duration" />
 
         <View
                 android:id="@+id/fragment_recipe_add_divider_ingredients"
@@ -90,8 +90,6 @@
                 android:orientation="vertical"
                 android:layout_below="@id/fragment_recipe_add_label_ingredients">
 
-            <include
-                layout="@layout/item_scaled_food"/>
         </LinearLayout>
 
         <ImageButton
@@ -122,11 +120,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_below="@id/fragment_recipe_add_label_products">
-            <include
-                layout="@layout/item_scaled_food"/>
-            <include
-                layout="@layout/item_scaled_food"/>
-
         </LinearLayout>
 
         <ImageButton
