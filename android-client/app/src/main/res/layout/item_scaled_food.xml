@@ -54,23 +54,13 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintBottom_toTopOf="@+id/item_scaled_food_food"/>
 
-    <ImageButton
-            android:id="@+id/item_scaled_food_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:background="?android:selectableItemBackground"
-            android:src="@drawable/baseline_delete_black_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_scaled_food_amount"/>
-
     <Spinner
             android:id="@+id/item_scaled_food_food"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/item_scaled_food_amount"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/item_scaled_food_delete"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.5"/>
 

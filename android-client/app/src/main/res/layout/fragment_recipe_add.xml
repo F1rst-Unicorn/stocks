@@ -83,14 +83,12 @@
                 android:text="@string/title_ingredients"
                 android:layout_below="@id/fragment_recipe_add_divider_ingredients"/>
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/fragment_recipe_add_ingredient_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@id/fragment_recipe_add_label_ingredients">
-
-        </LinearLayout>
+                android:scrollbars="vertical"
+                android:layout_below="@id/fragment_recipe_add_label_ingredients"/>
 
         <ImageButton
                 android:id="@+id/fragment_recipe_add_add_ingredient"
@@ -114,13 +112,12 @@
                 android:text="@string/title_products"
                 android:layout_below="@id/fragment_recipe_add_divider_products"/>
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/fragment_recipe_add_product_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@id/fragment_recipe_add_label_products">
-        </LinearLayout>
+                android:scrollbars="vertical"
+                android:layout_below="@id/fragment_recipe_add_label_products"/>
 
         <ImageButton
                 android:id="@+id/fragment_recipe_add_add_product"

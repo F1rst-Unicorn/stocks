@@ -180,4 +180,8 @@ public class ServerClient {
     public Call<Response> deleteRecipe(FullRecipeForDeletion recipe) {
         return api.deleteRecipe(recipe);
     }
+
+    public Call<Response> editRecipe(FullRecipeForEditing recipe) {
+        return api.editRecipe(recipe);
+    }
 }

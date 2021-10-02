@@ -120,6 +120,15 @@ public class RecipeRepository {
         return result;
     }
 
+    public LiveData<StatusCode> editRecipe(FullRecipeForEditing recipe) {
+        LOG.i("editing recipe " + recipe);
+        MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
+
+        webClient.editRecipe(recipe)
+                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
+        return result;
+    }
+
     public LiveData<Recipe> getRecipe(int recipeId) {
         return recipeDao.getRecipe(recipeId);
     }

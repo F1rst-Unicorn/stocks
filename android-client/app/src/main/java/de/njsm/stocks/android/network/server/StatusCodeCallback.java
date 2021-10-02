@@ -163,19 +163,19 @@ public class StatusCodeCallback implements Callback<Response> {
 
     private static <T> void logResponse(retrofit2.Response<T> r) {
         if (r.body() != null)
-            LOG.e("Response was an error:\n" + r.body().toString());
+            LOG.e("Response was an " + r.code() + " error:\n" + r.body().toString());
         else
-            LOG.e("Response was an error without body");
+            LOG.e("Response was an " + r.code() + " error without body");
 
         if (r.errorBody() != null)
             try {
-                LOG.e("Response was an error:\n" +
+                LOG.e("Response was an  " + r.code() + " error:\n" +
                         r.errorBody().string());
             } catch (IOException e) {
-                LOG.e("Response was an error and the body returned an exception");
+                LOG.e("Response was an " + r.code() + " error and the body returned an exception");
             }
         else
-            LOG.e("Response was an error without error body");
+            LOG.e("Response was an " + r.code() + " error without error body");
     }
 
 }
