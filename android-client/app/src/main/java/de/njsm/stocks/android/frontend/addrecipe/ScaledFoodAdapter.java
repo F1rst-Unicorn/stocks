@@ -39,7 +39,6 @@ import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.views.ScaledUnitView;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.Utility;
-import de.njsm.stocks.common.api.RecipeIngredientForInsertion;
 import de.njsm.stocks.common.api.SelfValidating;
 
 import java.util.ArrayList;
@@ -47,11 +46,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.ViewHolder> {
+public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends SelfValidating.Builder<D>> extends RecyclerView.Adapter<ScaledFoodAdapter<D, B>.ViewHolder> {
 
     private static final Logger LOG = new Logger(ScaledFoodAdapter.class);
 
-    private final List<RecipeIngredientForInsertion.Builder> ingredients;
+    private final List<B> ingredients;
 
     private final LiveData<List<ScaledUnitView>> units;
 
@@ -63,7 +62,7 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
         this.food = food;
     }
 
-    protected class ViewHolder extends RecyclerView.ViewHolder {
+    protected abstract class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextInputLayout amount;
 
@@ -71,7 +70,7 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
 
         private final Spinner foodSpinner;
 
-        private RecipeIngredientForInsertion.Builder data;
+        B data;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -89,7 +88,7 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
                 @Override
                 public void afterTextChanged(@NonNull Editable s) {
                     try {
-                        data.amount(Integer.parseInt(amount.getEditText().getText().toString()));
+                        updateAmount(Integer.parseInt(amount.getEditText().getText().toString()));
                     } catch (NumberFormatException e) {
                         LOG.w("recipe amount failed to parse: " + e.getMessage());
                     }
@@ -103,7 +102,7 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
                     if (list == null)
                         return;
 
-                    data.unit(list.get(position).getId());
+                    updateUnit(list.get(position).getId());
                 }
 
                 @Override
@@ -119,7 +118,7 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
                     if (list == null)
                         return;
 
-                    data.ingredient(list.get(position).getId());
+                    updateFood(list.get(position).getId());
                 }
 
                 @Override
@@ -129,18 +128,36 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
             });
         }
 
-        public void bindData(RecipeIngredientForInsertion.Builder data) {
+        private void bindData(B data) {
             this.data = data;
-            RecipeIngredientForInsertion currentState = data.build();
-            amount.getEditText().setText(String.valueOf(currentState.amount()));
-            Utility.find(currentState.unit(), units.getValue()).ifPresent(unitSpinner::setSelection);
-            Utility.find(currentState.ingredient(), ScaledFoodAdapter.this.food.getValue()).ifPresent(foodSpinner::setSelection);
+            D currentState = data.build();
+            bindData(currentState);
         }
 
+        abstract void bindData(D currentState);
+
+        abstract void updateAmount(int amount);
+
+        abstract void updateUnit(int unit);
+
+        abstract void updateFood(int food);
+
+        void setAmount(int amount) {
+            this.amount.getEditText().setText(String.valueOf(amount));
+        }
+
+        void setUnit(int unit) {
+            Utility.find(unit, units.getValue()).ifPresent(unitSpinner::setSelection);
+        }
+
+        void setFood(int food) {
+            Utility.find(food, ScaledFoodAdapter.this.food.getValue()).ifPresent(foodSpinner::setSelection);
+        }
     }
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        RecipeIngredientForInsertion.Builder item = ingredients.get(position);
+        B item = ingredients.get(position);
         holder.bindData(item);
     }
 
@@ -149,7 +166,7 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         ConstraintLayout v = (ConstraintLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_scaled_food, parent, false);
-        ViewHolder result = new ViewHolder(v);
+        ViewHolder result = newViewHolder(v);
         v.setTag(result);
 
         initialiseUnitSpinner(parent.getContext(), v);
@@ -157,6 +174,8 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
 
         return result;
     }
+
+    abstract ViewHolder newViewHolder(View v);
 
     public void addItem() {
         List<ScaledUnitView> units = this.units.getValue();
@@ -167,13 +186,12 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
         if (food == null || food.isEmpty())
             return;
 
-        RecipeIngredientForInsertion.Builder item = RecipeIngredientForInsertion.builder()
-                .amount(1)
-                .unit(units.get(0).getId())
-                .ingredient(food.get(0).getId());
+        B item = newBuilder(units, food);
         ingredients.add(item);
         notifyItemInserted(ingredients.size() - 1);
     }
+
+    abstract B newBuilder(List<ScaledUnitView> units, List<Food> food);
 
     public void removeItem(int i) {
         ingredients.remove(i);
@@ -185,7 +203,7 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
         return ingredients.size();
     }
 
-    public List<RecipeIngredientForInsertion> getIngredients() {
+    public List<D> getScaledFood() {
         return ingredients.stream().map(SelfValidating.Builder::build).collect(Collectors.toList());
     }
 

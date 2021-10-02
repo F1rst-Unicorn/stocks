@@ -40,10 +40,10 @@ import de.njsm.stocks.android.frontend.recipe.RecipeViewModel;
 import de.njsm.stocks.android.frontend.units.ScaledUnitViewModel;
 import de.njsm.stocks.common.api.FullRecipeForInsertion;
 import de.njsm.stocks.common.api.RecipeForInsertion;
+import de.njsm.stocks.common.api.SelfValidating;
 import de.njsm.stocks.common.api.StatusCode;
 
 import java.time.Duration;
-import java.util.Collections;
 
 import static de.njsm.stocks.android.error.StatusCodeMessages.getAddErrorMessage;
 
@@ -59,7 +59,9 @@ public class RecipeAddFragment extends InjectedFragment {
 
     ScaledUnitViewModel scaledUnitViewModel;
 
-    ScaledFoodAdapter ingredientAdapter;
+    RecipeIngredientForInsertionAdapter ingredientAdapter;
+
+    RecipeProductForInsertionAdapter productAdapter;
 
     @Nullable
     @Override
@@ -67,28 +69,40 @@ public class RecipeAddFragment extends InjectedFragment {
         setHasOptionsMenu(true);
         View result = inflater.inflate(R.layout.fragment_recipe_add, container, false);
 
-        RecyclerView ingredientList = result.findViewById(R.id.fragment_recipe_add_ingredient_list);
-        ingredientList.setLayoutManager(new LinearLayoutManager(requireContext()));
-
         foodViewModel = new ViewModelProvider(this, viewModelFactory).get(FoodViewModel.class);
         foodViewModel.initAllFood();
         scaledUnitViewModel = new ViewModelProvider(this, viewModelFactory).get(ScaledUnitViewModel.class);
         recipeViewModel = new ViewModelProvider(this, viewModelFactory).get(RecipeViewModel.class);
-
         scaledUnitViewModel.getUnits().observe(getViewLifecycleOwner(), v -> {});
         foodViewModel.getAllFood().observe(getViewLifecycleOwner(), v -> {});
 
-        ingredientAdapter = new ScaledFoodAdapter(scaledUnitViewModel.getUnits(), foodViewModel.getAllFood());
-        ingredientList.setAdapter(ingredientAdapter);
+        initialiseIngredientList(result);
+        initialiseProductList(result);
+
+        return result;
+    }
+
+    private void initialiseIngredientList(View result) {
+        ingredientAdapter = new RecipeIngredientForInsertionAdapter(scaledUnitViewModel.getUnits(), foodViewModel.getAllFood());
+        initialiseItemList(result, ingredientAdapter, R.id.fragment_recipe_add_ingredient_list, R.id.fragment_recipe_add_add_ingredient);
+    }
+
+    private void initialiseProductList(View result) {
+        productAdapter = new RecipeProductForInsertionAdapter(scaledUnitViewModel.getUnits(), foodViewModel.getAllFood());
+        initialiseItemList(result, productAdapter, R.id.fragment_recipe_add_product_list, R.id.fragment_recipe_add_add_product);
+    }
+
+    private <D extends SelfValidating, B extends SelfValidating.Builder<D>> void initialiseItemList(View result, ScaledFoodAdapter<D, B> adapter, int listId, int addButtonId) {
+        RecyclerView productList = result.findViewById(listId);
+        productList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        productList.setAdapter(adapter);
         DeletionSwiper callback = new DeletionSwiper(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
                 new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
-                v -> ingredientAdapter.removeItem(v));
-        new ItemTouchHelper(callback).attachToRecyclerView(ingredientList);
+                adapter::removeItem);
+        new ItemTouchHelper(callback).attachToRecyclerView(productList);
+        result.findViewById(addButtonId).setOnClickListener(v -> adapter.addItem());
 
-        result.findViewById(R.id.fragment_recipe_add_add_ingredient).setOnClickListener(this::addIngredientView);
-
-        return result;
     }
 
     @Override
@@ -147,8 +161,8 @@ public class RecipeAddFragment extends InjectedFragment {
 
         return FullRecipeForInsertion.builder()
                 .recipe(recipeForInsertion)
-                .ingredients(ingredientAdapter.getIngredients())
-                .products(Collections.emptyList())
+                .ingredients(ingredientAdapter.getScaledFood())
+                .products(productAdapter.getScaledFood())
                 .build();
     }
 
@@ -163,9 +177,5 @@ public class RecipeAddFragment extends InjectedFragment {
     private void hideConflictLabels() {
         requireView().findViewById(R.id.fragment_recipe_add_name_conflict).setVisibility(View.GONE);
         requireView().findViewById(R.id.fragment_recipe_add_duration_conflict).setVisibility(View.GONE);
-    }
-
-    private void addIngredientView(View view) {
-        ingredientAdapter.addItem();
     }
 }
