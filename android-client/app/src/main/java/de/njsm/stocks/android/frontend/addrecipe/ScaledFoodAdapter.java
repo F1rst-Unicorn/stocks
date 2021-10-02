@@ -136,8 +136,8 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
             Utility.find(currentState.unit(), units.getValue()).ifPresent(unitSpinner::setSelection);
             Utility.find(currentState.ingredient(), ScaledFoodAdapter.this.food.getValue()).ifPresent(foodSpinner::setSelection);
         }
-    }
 
+    }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         RecipeIngredientForInsertion.Builder item = ingredients.get(position);
@@ -173,6 +173,11 @@ public class ScaledFoodAdapter extends RecyclerView.Adapter<ScaledFoodAdapter.Vi
                 .ingredient(food.get(0).getId());
         ingredients.add(item);
         notifyItemInserted(ingredients.size() - 1);
+    }
+
+    public void removeItem(int i) {
+        ingredients.remove(i);
+        notifyItemRemoved(i);
     }
 
     @Override

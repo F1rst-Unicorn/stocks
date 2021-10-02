@@ -20,13 +20,16 @@
 
 package de.njsm.stocks.android.frontend.addrecipe;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
@@ -77,6 +80,11 @@ public class RecipeAddFragment extends InjectedFragment {
 
         ingredientAdapter = new ScaledFoodAdapter(scaledUnitViewModel.getUnits(), foodViewModel.getAllFood());
         ingredientList.setAdapter(ingredientAdapter);
+        DeletionSwiper callback = new DeletionSwiper(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
+                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
+                v -> ingredientAdapter.removeItem(v));
+        new ItemTouchHelper(callback).attachToRecyclerView(ingredientList);
 
         result.findViewById(R.id.fragment_recipe_add_add_ingredient).setOnClickListener(this::addIngredientView);
 
