@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.5.0.1]
+
 ### Fixed
 
 * Allow recipe editing endpoint to add and delete ingredients and products
