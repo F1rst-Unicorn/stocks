@@ -66,10 +66,30 @@ public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
                                         (code, item) ->
                                                 code.bind(() -> recipeIngredientHandler.edit(item)),
                                         (x,y) -> x))
+                        .bind(() -> input.ingredientsToDelete().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) ->
+                                                code.bind(() -> recipeIngredientHandler.delete(item)),
+                                        (x,y) -> x))
+                        .bind(() -> input.ingredientsToInsert().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) ->
+                                                code.bind(() -> recipeIngredientHandler.add(item.withRecipe(input.recipe().id()))),
+                                        (x,y) -> x))
                         .bind(() -> input.products().stream()
                                 .reduce(StatusCode.SUCCESS,
                                         (code, item) ->
                                                 code.bind(() -> recipeProductHandler.edit(item)),
+                                        (x,y) -> x))
+                        .bind(() -> input.productsToDelete().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) ->
+                                                code.bind(() -> recipeProductHandler.delete(item)),
+                                        (x,y) -> x))
+                        .bind(() -> input.productsToInsert().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) ->
+                                                code.bind(() -> recipeProductHandler.add(item.withRecipe(input.recipe().id()))),
                                         (x,y) -> x))
                         .bind(() -> dbHandler.edit(input.recipe()))
         );

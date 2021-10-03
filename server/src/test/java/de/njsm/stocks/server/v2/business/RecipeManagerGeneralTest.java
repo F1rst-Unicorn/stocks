@@ -20,12 +20,7 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.server.v2.db.RecipeHandler;
-import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;
-import de.njsm.stocks.server.v2.db.RecipeProductHandler;
 import fj.data.Validation;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -33,43 +28,16 @@ import org.mockito.Mockito;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static java.util.Collections.emptySet;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class RecipeManagerTest {
-
-    private RecipeManager uut;
-
-    private RecipeHandler recipeHandler;
-
-    private RecipeIngredientHandler ingredientHandler;
-
-    private RecipeProductHandler productHandler;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        recipeHandler = Mockito.mock(RecipeHandler.class);
-        ingredientHandler = Mockito.mock(RecipeIngredientHandler.class);
-        productHandler = Mockito.mock(RecipeProductHandler.class);
-        uut = new RecipeManager(recipeHandler, ingredientHandler, productHandler);
-        uut.setPrincipals(TEST_USER);
-    }
-
-    @AfterEach
-    public void tearDown() throws Exception {
-        verify(recipeHandler).setPrincipals(TEST_USER);
-        Mockito.verifyNoMoreInteractions(recipeHandler);
-    }
+public class RecipeManagerGeneralTest extends RecipeManagerTestBase {
 
     @Test
     public void addingSimpleRecipeWorks() {
@@ -245,246 +213,6 @@ public class RecipeManagerTest {
         verify(productHandler).areEntitiesComplete(recipe, emptySet());
         verify(productHandler).deleteAllOf(recipe);
         verify(recipeHandler).delete(recipe);
-        verify(recipeHandler).commit();
-    }
-
-    @Test
-    void editingWithWrongIngredientsPropagates() {
-        RecipeForEditing recipe = RecipeForEditing.builder()
-                .id(1)
-                .version(0)
-                .name("name")
-                .instructions("instructions")
-                .duration(Duration.ofHours(1))
-                .build();
-        RecipeIngredientForDeletion ingredientForDeletion = RecipeIngredientForDeletion.builder()
-                .id(1)
-                .version(2)
-                .build();
-        FullRecipeForEditing input = FullRecipeForEditing.builder()
-                .recipe(recipe)
-                .ingredients(emptySet())
-                .ingredientsToInsert(emptySet())
-                .ingredientsToDelete(Set.of(ingredientForDeletion))
-                .products(emptySet())
-                .productsToInsert(emptySet())
-                .productsToDelete(emptySet())
-                .build();
-        when(ingredientHandler.areEntitiesComplete(recipe, input.existingIngredients()))
-                .thenReturn(StatusCode.INVALID_DATA_VERSION);
-
-        StatusCode result = uut.edit(input);
-
-        assertThat(result, is(StatusCode.INVALID_DATA_VERSION));
-        verify(ingredientHandler).areEntitiesComplete(recipe, input.existingIngredients());
-        verify(recipeHandler).rollback();
-    }
-
-    @Test
-    void editingWithWrongProductsPropagates() {
-        RecipeForEditing recipe = RecipeForEditing.builder()
-                .id(1)
-                .version(0)
-                .name("name")
-                .instructions("instructions")
-                .duration(Duration.ofHours(1))
-                .build();
-        RecipeProductForDeletion productForDeletion = RecipeProductForDeletion.builder()
-                .id(1)
-                .version(2)
-                .build();
-        FullRecipeForEditing input = FullRecipeForEditing.builder()
-                .recipe(recipe)
-                .ingredients(emptySet())
-                .ingredientsToInsert(emptySet())
-                .ingredientsToDelete(emptySet())
-                .products(emptySet())
-                .productsToInsert(emptySet())
-                .productsToDelete(Set.of(productForDeletion))
-                .build();
-        when(ingredientHandler.areEntitiesComplete(recipe, input.existingIngredients())).thenReturn(StatusCode.SUCCESS);
-        when(productHandler.areEntitiesComplete(recipe, input.existingProducts())).thenReturn(StatusCode.INVALID_DATA_VERSION);
-
-        StatusCode result = uut.edit(input);
-
-        assertThat(result, is(StatusCode.INVALID_DATA_VERSION));
-        verify(ingredientHandler).areEntitiesComplete(recipe, input.existingIngredients());
-        verify(productHandler).areEntitiesComplete(recipe, input.existingProducts());
-        verify(recipeHandler).rollback();
-    }
-
-    @Test
-    void editingWithFailingIngredientsPropagates() {
-        RecipeForEditing recipe = RecipeForEditing.builder()
-                .id(1)
-                .version(0)
-                .name("name")
-                .instructions("instructions")
-                .duration(Duration.ofHours(1))
-                .build();
-        RecipeIngredientForEditing ingredient = RecipeIngredientForEditing.builder()
-                .id(1)
-                .version(0)
-                .amount(2)
-                .recipe(3)
-                .ingredient(4)
-                .unit(5)
-                .build();
-        FullRecipeForEditing input = FullRecipeForEditing.builder()
-                .recipe(recipe)
-                .ingredients(Set.of(ingredient))
-                .products(emptySet())
-                .build();
-        when(ingredientHandler.areEntitiesComplete(recipe, input.ingredients())).thenReturn(StatusCode.SUCCESS);
-        when(productHandler.areEntitiesComplete(recipe, input.products())).thenReturn(StatusCode.SUCCESS);
-        when(ingredientHandler.edit(ingredient)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
-
-        StatusCode result = uut.edit(input);
-
-        assertThat(result, is(StatusCode.DATABASE_UNREACHABLE));
-        verify(ingredientHandler).areEntitiesComplete(recipe, input.ingredients());
-        verify(productHandler).areEntitiesComplete(recipe, input.products());
-        verify(ingredientHandler).edit(ingredient);
-        verify(recipeHandler).rollback();
-    }
-
-    @Test
-    void editingWithFailingProductPropagates() {
-        RecipeForEditing recipe = RecipeForEditing.builder()
-                .id(1)
-                .version(0)
-                .name("name")
-                .instructions("instructions")
-                .duration(Duration.ofHours(1))
-                .build();
-        RecipeIngredientForEditing ingredient = RecipeIngredientForEditing.builder()
-                .id(1)
-                .version(0)
-                .amount(2)
-                .recipe(3)
-                .ingredient(4)
-                .unit(5)
-                .build();
-        RecipeProductForEditing product = RecipeProductForEditing.builder()
-                .id(1)
-                .version(0)
-                .amount(2)
-                .recipe(3)
-                .product(4)
-                .unit(5)
-                .build();
-        FullRecipeForEditing input = FullRecipeForEditing.builder()
-                .recipe(recipe)
-                .ingredients(Set.of(ingredient))
-                .products(Set.of(product))
-                .build();
-        when(ingredientHandler.areEntitiesComplete(recipe, input.ingredients())).thenReturn(StatusCode.SUCCESS);
-        when(productHandler.areEntitiesComplete(recipe, input.products())).thenReturn(StatusCode.SUCCESS);
-        when(ingredientHandler.edit(ingredient)).thenReturn(StatusCode.SUCCESS);
-        when(productHandler.edit(product)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
-
-        StatusCode result = uut.edit(input);
-
-        assertThat(result, is(StatusCode.DATABASE_UNREACHABLE));
-        verify(ingredientHandler).areEntitiesComplete(recipe, input.ingredients());
-        verify(productHandler).areEntitiesComplete(recipe, input.products());
-        verify(ingredientHandler).edit(ingredient);
-        verify(productHandler).edit(product);
-        verify(recipeHandler).rollback();
-    }
-
-    @Test
-    void editingWithFailingRecipePropagates() {
-        RecipeForEditing recipe = RecipeForEditing.builder()
-                .id(1)
-                .version(0)
-                .name("name")
-                .instructions("instructions")
-                .duration(Duration.ofHours(1))
-                .build();
-        RecipeIngredientForEditing ingredient = RecipeIngredientForEditing.builder()
-                .id(1)
-                .version(0)
-                .amount(2)
-                .recipe(3)
-                .ingredient(4)
-                .unit(5)
-                .build();
-        RecipeProductForEditing product = RecipeProductForEditing.builder()
-                .id(1)
-                .version(0)
-                .amount(2)
-                .recipe(3)
-                .product(4)
-                .unit(5)
-                .build();
-        FullRecipeForEditing input = FullRecipeForEditing.builder()
-                .recipe(recipe)
-                .ingredients(Set.of(ingredient))
-                .products(Set.of(product))
-                .build();
-        when(ingredientHandler.areEntitiesComplete(recipe, input.ingredients())).thenReturn(StatusCode.SUCCESS);
-        when(productHandler.areEntitiesComplete(recipe, input.products())).thenReturn(StatusCode.SUCCESS);
-        when(ingredientHandler.edit(ingredient)).thenReturn(StatusCode.SUCCESS);
-        when(productHandler.edit(product)).thenReturn(StatusCode.SUCCESS);
-        when(recipeHandler.edit(recipe)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
-
-        StatusCode result = uut.edit(input);
-
-        assertThat(result, is(StatusCode.DATABASE_UNREACHABLE));
-        verify(ingredientHandler).areEntitiesComplete(recipe, input.ingredients());
-        verify(productHandler).areEntitiesComplete(recipe, input.products());
-        verify(ingredientHandler).edit(ingredient);
-        verify(productHandler).edit(product);
-        verify(recipeHandler).edit(recipe);
-        verify(recipeHandler).rollback();
-    }
-
-    @Test
-    void editingSuccessfullyWorks() {
-        RecipeForEditing recipe = RecipeForEditing.builder()
-                .id(1)
-                .version(0)
-                .name("name")
-                .instructions("instructions")
-                .duration(Duration.ofHours(1))
-                .build();
-        RecipeIngredientForEditing ingredient = RecipeIngredientForEditing.builder()
-                .id(1)
-                .version(0)
-                .amount(2)
-                .recipe(3)
-                .ingredient(4)
-                .unit(5)
-                .build();
-        RecipeProductForEditing product = RecipeProductForEditing.builder()
-                .id(1)
-                .version(0)
-                .amount(2)
-                .recipe(3)
-                .product(4)
-                .unit(5)
-                .build();
-        FullRecipeForEditing input = FullRecipeForEditing.builder()
-                .recipe(recipe)
-                .ingredients(Set.of(ingredient))
-                .products(Set.of(product))
-                .build();
-        when(ingredientHandler.areEntitiesComplete(recipe, input.ingredients())).thenReturn(StatusCode.SUCCESS);
-        when(productHandler.areEntitiesComplete(recipe, input.products())).thenReturn(StatusCode.SUCCESS);
-        when(ingredientHandler.edit(ingredient)).thenReturn(StatusCode.SUCCESS);
-        when(productHandler.edit(product)).thenReturn(StatusCode.SUCCESS);
-        when(recipeHandler.edit(recipe)).thenReturn(StatusCode.SUCCESS);
-        when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
-
-        StatusCode result = uut.edit(input);
-
-        assertThat(result, is(StatusCode.SUCCESS));
-        verify(ingredientHandler).areEntitiesComplete(recipe, input.ingredients());
-        verify(productHandler).areEntitiesComplete(recipe, input.products());
-        verify(ingredientHandler).edit(ingredient);
-        verify(productHandler).edit(product);
-        verify(recipeHandler).edit(recipe);
         verify(recipeHandler).commit();
     }
 
