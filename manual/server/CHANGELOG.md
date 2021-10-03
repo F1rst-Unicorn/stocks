@@ -2,7 +2,13 @@
 
 ## Unreleased
 
+### Fixed
+
+* Allow recipe editing endpoint to add and delete ingredients and products
+
 ## [5.5.0.0]
+
+### Added
 
 * STOCKS-115: Extend API to support food and food item unit editing
 

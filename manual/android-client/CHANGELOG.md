@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Allow management of recipes. This means adding, viewing, modifying and
+  deleting them ([#1](https://gitlab.com/veenj/stocks/-/issues/1))
+
 ## [3.10.0.2]
 
 ### Fixed
