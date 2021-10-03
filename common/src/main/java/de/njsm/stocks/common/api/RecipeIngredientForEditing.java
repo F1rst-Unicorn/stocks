@@ -32,6 +32,8 @@ public abstract class RecipeIngredientForEditing implements RecipeIngredientWith
         return new AutoValue_RecipeIngredientForEditing.Builder();
     }
 
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder

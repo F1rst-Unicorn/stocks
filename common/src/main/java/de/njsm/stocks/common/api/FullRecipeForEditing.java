@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import java.util.Set;
 
@@ -39,7 +40,19 @@ public abstract class FullRecipeForEditing implements Versionable<Recipe>, SelfV
     public abstract ImmutableSet<RecipeIngredientForEditing> ingredients();
 
     @JsonGetter
+    public abstract ImmutableSet<RecipeIngredientForInsertion> ingredientsToInsert();
+
+    @JsonGetter
+    public abstract ImmutableSet<RecipeIngredientForDeletion> ingredientsToDelete();
+
+    @JsonGetter
     public abstract ImmutableSet<RecipeProductForEditing> products();
+
+    @JsonGetter
+    public abstract ImmutableSet<RecipeProductForInsertion> productsToInsert();
+
+    @JsonGetter
+    public abstract ImmutableSet<RecipeProductForDeletion> productsToDelete();
 
     public static Builder builder() {
         return new AutoValue_FullRecipeForEditing.Builder();
@@ -64,7 +77,15 @@ public abstract class FullRecipeForEditing implements Versionable<Recipe>, SelfV
 
         public abstract Builder ingredients(Set<RecipeIngredientForEditing> v);
 
+        public abstract Builder ingredientsToInsert(Set<RecipeIngredientForInsertion> v);
+
+        public abstract Builder ingredientsToDelete(Set<RecipeIngredientForDeletion> v);
+
         public abstract Builder products(Set<RecipeProductForEditing> v);
+
+        public abstract Builder productsToInsert(Set<RecipeProductForInsertion> v);
+
+        public abstract Builder productsToDelete(Set<RecipeProductForDeletion> v);
     }
 
     @Override
@@ -72,5 +93,13 @@ public abstract class FullRecipeForEditing implements Versionable<Recipe>, SelfV
         recipe().validate();
         ingredients().forEach(RecipeIngredientForEditing::validate);
         products().forEach(RecipeProductForEditing::validate);
+    }
+
+    public Set<Versionable<RecipeIngredient>> existingIngredients() {
+        return Sets.union(ingredients(), ingredientsToDelete());
+    }
+
+    public Set<Versionable<RecipeProduct>> existingProducts() {
+        return Sets.union(products(), productsToDelete());
     }
 }
