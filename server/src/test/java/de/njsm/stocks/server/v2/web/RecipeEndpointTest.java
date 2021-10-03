@@ -29,12 +29,12 @@ import org.mockito.Mockito;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Set;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static java.util.Collections.emptySet;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -86,26 +86,14 @@ public class RecipeEndpointTest {
                 .instructions("instructions")
                 .duration(Duration.ofHours(1))
                 .build();
-        RecipeIngredientForEditing ingredient = RecipeIngredientForEditing.builder()
-                .id(1)
-                .version(0)
-                .amount(2)
-                .recipe(3)
-                .ingredient(4)
-                .unit(5)
-                .build();
-        RecipeProductForEditing product = RecipeProductForEditing.builder()
-                .id(1)
-                .version(0)
-                .amount(2)
-                .recipe(3)
-                .product(4)
-                .unit(5)
-                .build();
         FullRecipeForEditing input = FullRecipeForEditing.builder()
                 .recipe(recipe)
-                .ingredients(Set.of(ingredient))
-                .products(Set.of(product))
+                .ingredients(emptySet())
+                .ingredientsToInsert(emptySet())
+                .ingredientsToDelete(emptySet())
+                .products(emptySet())
+                .productsToInsert(emptySet())
+                .productsToDelete(emptySet())
                 .build();
         when(recipeManager.edit(input)).thenReturn(StatusCode.SUCCESS);
 
