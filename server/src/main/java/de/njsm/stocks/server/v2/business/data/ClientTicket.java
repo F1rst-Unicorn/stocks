@@ -19,49 +19,19 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-public class ClientTicket {
+import com.google.auto.value.AutoValue;
 
-    private final int deviceId;
+@AutoValue
+public abstract class ClientTicket implements TicketData {
 
-    private final String ticket;
+    public abstract String pemFile();
 
-    private final String pemFile;
-
-    public ClientTicket(int deviceId, String ticket, String pemFile) {
-        this.deviceId = deviceId;
-        this.ticket = ticket;
-        this.pemFile = pemFile;
+    public static Builder builder() {
+        return new AutoValue_ClientTicket.Builder();
     }
 
-    public int getDeviceId() {
-        return deviceId;
-    }
-
-    public String getTicket() {
-        return ticket;
-    }
-
-    public String getPemFile() {
-        return pemFile;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ClientTicket ticket1 = (ClientTicket) o;
-
-        if (deviceId != ticket1.deviceId) return false;
-        if (!ticket.equals(ticket1.ticket)) return false;
-        return pemFile.equals(ticket1.pemFile);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = deviceId;
-        result = 31 * result + ticket.hashCode();
-        result = 31 * result + pemFile.hashCode();
-        return result;
+    @AutoValue.Builder
+    public abstract static class Builder implements TicketData.Builder<Builder, ClientTicket>{
+        public abstract Builder pemFile(String v);
     }
 }

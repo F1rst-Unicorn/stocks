@@ -21,8 +21,8 @@ package de.njsm.stocks.android.db;
 
 import androidx.room.TypeConverter;
 import de.njsm.stocks.android.util.Config;
-import org.threeten.bp.Duration;
-import org.threeten.bp.Instant;
+import java.time.Duration;
+import java.time.Instant;
 
 import java.math.BigDecimal;
 

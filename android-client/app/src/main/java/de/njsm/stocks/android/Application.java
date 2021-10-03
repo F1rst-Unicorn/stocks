@@ -21,14 +21,8 @@ package de.njsm.stocks.android;
 
 import android.app.Activity;
 import android.content.ContentProvider;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
-import com.jakewharton.threetenabp.AndroidThreeTen;
-
-import javax.inject.Inject;
-
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
@@ -37,6 +31,8 @@ import dagger.android.support.HasSupportFragmentInjector;
 import de.njsm.stocks.android.dagger.DaggerRootComponent;
 import de.njsm.stocks.android.dagger.RootComponent;
 import de.njsm.stocks.android.util.ExceptionHandler;
+
+import javax.inject.Inject;
 
 public class Application
         extends android.app.Application
@@ -50,7 +46,6 @@ public class Application
 
     @Override public void onCreate() {
         super.onCreate();
-        AndroidThreeTen.init(this);
         buildDaggerComponent()
                 .inject(this);
 

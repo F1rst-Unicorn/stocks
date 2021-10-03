@@ -21,7 +21,7 @@ package de.njsm.stocks.server.util;
 
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import fj.data.Validation;
 import org.apache.commons.io.IOUtils;

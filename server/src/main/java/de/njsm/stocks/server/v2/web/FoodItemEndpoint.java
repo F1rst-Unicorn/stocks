@@ -19,17 +19,17 @@
 
 package de.njsm.stocks.server.v2.web;
 
+
+import de.njsm.stocks.common.api.FoodItem;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.FoodItemForDeletion;
+import de.njsm.stocks.common.api.FoodItemForEditing;
+import de.njsm.stocks.common.api.FoodItemForInsertion;
+import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.business.data.FoodItemForDeletion;
-import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
-import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
-import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
-import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -69,8 +69,14 @@ public class FoodItemEndpoint extends Endpoint implements
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
             manager.setPrincipals(user);
-            Validation<StatusCode, Integer> status = manager.add(new FoodItemForInsertion(eatByDate,
-                    ofType, storedIn, user.getDid(), user.getUid(), unit));
+            StatusCode status = manager.add(FoodItemForInsertion.builder()
+                    .eatByDate(eatByDate)
+                    .ofType(ofType)
+                    .storedIn(storedIn)
+                    .registers(user.getDid())
+                    .buys(user.getUid())
+                    .unit(unit)
+                    .build());
             return new Response(status);
 
         } else {
@@ -95,9 +101,13 @@ public class FoodItemEndpoint extends Endpoint implements
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
             manager.setPrincipals(user);
-            StatusCode result = manager.edit(new FoodItemForEditing(id, version,
-                    eatByDate, storedIn, unit));
-
+            StatusCode result = manager.edit(FoodItemForEditing.builder()
+                    .id(id)
+                    .version(version)
+                    .eatBy(eatByDate)
+                    .storedIn(storedIn)
+                    .unit(unit)
+                    .build());
             return new Response(result);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -111,6 +121,9 @@ public class FoodItemEndpoint extends Endpoint implements
 
     @Override
     public FoodItemForDeletion wrapParameters(int id, int version) {
-        return new FoodItemForDeletion(id, version);
+        return FoodItemForDeletion.builder()
+                .id(id)
+                .version(version)
+                .build();
     }
 }

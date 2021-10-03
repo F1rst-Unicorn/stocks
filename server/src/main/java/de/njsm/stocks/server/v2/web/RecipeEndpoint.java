@@ -19,16 +19,22 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.RecipeManager;
-import de.njsm.stocks.server.v2.business.data.Recipe;
-import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
 @Path("v2/recipe")
-public class RecipeEndpoint extends Endpoint implements Get<RecipeRecord, Recipe>, Delete<RecipeForDeletion, Recipe> {
+public class RecipeEndpoint extends Endpoint implements Get<RecipeRecord, Recipe>, JsonDelete<FullRecipeForDeletion, Recipe> {
 
     private final RecipeManager manager;
 
@@ -37,13 +43,29 @@ public class RecipeEndpoint extends Endpoint implements Get<RecipeRecord, Recipe
         this.manager = manager;
     }
 
-    @Override
-    public RecipeManager getManager() {
-        return manager;
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response put(@Context HttpServletRequest request,
+                        @NotNull FullRecipeForInsertion input) {
+        manager.setPrincipals(getPrincipals(request));
+        StatusCode result = manager.add(input);
+        return new Response(result);
+    }
+
+    @PUT
+    @Path("edit")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response edit(@Context HttpServletRequest request,
+                         @NotNull FullRecipeForEditing input) {
+        manager.setPrincipals(getPrincipals(request));
+        StatusCode result = manager.edit(input);
+        return new Response(result);
     }
 
     @Override
-    public RecipeForDeletion wrapParameters(int id, int version) {
-        return new RecipeForDeletion(id, version);
+    public RecipeManager getManager() {
+        return manager;
     }
 }

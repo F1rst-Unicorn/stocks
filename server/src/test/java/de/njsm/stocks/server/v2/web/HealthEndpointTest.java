@@ -19,15 +19,15 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.DataResponse;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.Health;
 import de.njsm.stocks.server.v2.business.HealthManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Health;
-import de.njsm.stocks.server.v2.web.data.DataResponse;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +37,7 @@ public class HealthEndpointTest {
 
     private HealthManager businessMock;
 
-    @Before
+    @BeforeEach
     public void setup() {
         businessMock = mock(HealthManager.class);
         uut = new HealthEndpoint(businessMock);

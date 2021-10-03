@@ -19,19 +19,18 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.FoodItem;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.StreamResponse;
+import de.njsm.stocks.common.api.FoodItemForDeletion;
+import de.njsm.stocks.common.api.FoodItemForEditing;
+import de.njsm.stocks.common.api.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.business.data.FoodItemForDeletion;
-import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
-import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
-import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -42,7 +41,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 public class FoodItemEndpointTest {
@@ -53,13 +52,13 @@ public class FoodItemEndpointTest {
 
     private FoodItemManager manager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         manager = Mockito.mock(FoodItemManager.class);
         uut = new FoodItemEndpoint(manager);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(manager);
     }
@@ -86,7 +85,7 @@ public class FoodItemEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        TestCase.assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
+        assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test
@@ -115,12 +114,17 @@ public class FoodItemEndpointTest {
 
     @Test
     public void validInsertHappens() throws IOException {
-        FoodItemForInsertion expected = new FoodItemForInsertion(Instant.EPOCH, 2, 2,
-                PrincipalFilterTest.TEST_USER.getDid(),
-                PrincipalFilterTest.TEST_USER.getUid(), 1);
-        Mockito.when(manager.add(expected)).thenReturn(Validation.success(5));
+        FoodItemForInsertion expected = FoodItemForInsertion.builder()
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(2)
+                .registers(TEST_USER.getDid())
+                .buys(TEST_USER.getUid())
+                .unit(1)
+                .build();
+        Mockito.when(manager.add(expected)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.putItem(Util.createMockRequest(), DATE, expected.getStoredIn(), expected.getOfType(), expected.getUnit().get());
+        Response result = uut.putItem(Util.createMockRequest(), DATE, expected.storedIn(), expected.ofType(), expected.unit().get());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).add(expected);
@@ -161,11 +165,17 @@ public class FoodItemEndpointTest {
 
     @Test
     public void validEditingHappens() throws IOException {
-        FoodItemForEditing expected = new FoodItemForEditing(2, 2, Instant.EPOCH, 2, 1);
+        FoodItemForEditing expected = FoodItemForEditing.builder()
+                .id(2)
+                .version(2)
+                .eatBy(Instant.EPOCH)
+                .storedIn(2)
+                .unit(1)
+                .build();
         Mockito.when(manager.edit(expected)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.editItem(Util.createMockRequest(),
-                expected.getId(), expected.getVersion(), DATE, expected.getStoredIn(), expected.getUnitOptional().get());
+                expected.id(), expected.version(), DATE, expected.storedIn(), expected.unit().get());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).edit(expected);
@@ -190,10 +200,13 @@ public class FoodItemEndpointTest {
 
     @Test
     public void validDeletionHappens() {
-        FoodItemForDeletion expected = new FoodItemForDeletion(2, 2);
+        FoodItemForDeletion expected = FoodItemForDeletion.builder()
+                .id(2)
+                .version(2)
+                .build();
         Mockito.when(manager.delete(expected)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.delete(createMockRequest(), expected.getId(), expected.getVersion());
+        Response result = uut.delete(createMockRequest(), expected.id(), expected.version());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).delete(expected);

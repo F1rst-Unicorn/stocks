@@ -27,7 +27,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.njsm.stocks.android.db.entities.Location;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.android.repo.LocationRepository;
 import de.njsm.stocks.android.util.Logger;
 

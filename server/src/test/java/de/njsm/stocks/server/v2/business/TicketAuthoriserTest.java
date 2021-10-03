@@ -19,21 +19,22 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
 import de.njsm.stocks.server.v2.business.data.ServerTicket;
 import de.njsm.stocks.server.v2.db.TicketHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
@@ -50,14 +51,14 @@ public class TicketAuthoriserTest {
 
     private final int validityTime = 10 * 60 * 1000;
 
-    @Before
+    @BeforeEach
     public void setup() {
         authAdmin = Mockito.mock(AuthAdmin.class);
         databaseHandler = Mockito.mock(TicketHandler.class);
         uut = new TicketAuthoriser(authAdmin, databaseHandler, validityTime / (60 * 1000));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         verifyNoMoreInteractions(authAdmin);
         verifyNoMoreInteractions(databaseHandler);
@@ -65,12 +66,16 @@ public class TicketAuthoriserTest {
 
     @Test
     public void invalidTicketsDontEraseCertificates() {
-        ClientTicket stub = new ClientTicket(0, "", "");
+        ClientTicket stub = ClientTicket.builder()
+                .deviceId(0)
+                .ticket("")
+                .pemFile("")
+                .build();
         Mockito.when(databaseHandler.getTicket(any())).thenReturn(Validation.fail(StatusCode.NOT_FOUND));
 
         Validation<StatusCode, String> result = uut.handleTicket(stub);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(stub);
         verify(databaseHandler).rollback();
@@ -78,52 +83,79 @@ public class TicketAuthoriserTest {
 
     @Test
     public void thoroughValidationFailsAndWipesCsr() {
-        ClientTicket stub = new ClientTicket(3, "", "");
-        ServerTicket storedTicket = new ServerTicket(0, new Date(), stub.getDeviceId(), "");
+        ClientTicket stub = ClientTicket.builder()
+                .deviceId(3)
+                .ticket("")
+                .pemFile("")
+                .build();
+        ServerTicket storedTicket = ServerTicket.builder()
+                .id(0)
+                .creationDate(new Date())
+                .deviceId(stub.deviceId())
+                .ticket("")
+                .build();
         Mockito.when(databaseHandler.getTicket(stub)).thenReturn(Validation.success(storedTicket));
         Mockito.when(databaseHandler.getPrincipalsForTicket(any())).thenReturn(Validation.fail(StatusCode.NOT_FOUND));
         Mockito.when(authAdmin.saveCsr(anyInt(), anyString())).thenReturn(StatusCode.SUCCESS);
 
         Validation<StatusCode, String> result = uut.handleTicket(stub);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(stub);
-        verify(databaseHandler).getPrincipalsForTicket(stub.getTicket());
+        verify(databaseHandler).getPrincipalsForTicket(stub.ticket());
         verify(databaseHandler).rollback();
-        verify(authAdmin).saveCsr(stub.getDeviceId(), stub.getPemFile());
-        verify(authAdmin).getPrincipals(stub.getDeviceId());
-        verify(authAdmin).wipeDeviceCredentials(stub.getDeviceId());
+        verify(authAdmin).saveCsr(stub.deviceId(), stub.pemFile());
+        verify(authAdmin).getPrincipals(stub.deviceId());
+        verify(authAdmin).wipeDeviceCredentials(stub.deviceId());
     }
 
     @Test
     public void failingToSaveCsrFailsTheRequest() {
-        ClientTicket stub = new ClientTicket(3, "", "");
-        ServerTicket storedTicket = new ServerTicket(0, new Date(), stub.getDeviceId(), "");
+        ClientTicket stub = ClientTicket.builder()
+                .deviceId(3)
+                .ticket("")
+                .pemFile("")
+                .build();
+        ServerTicket storedTicket = ServerTicket.builder()
+                .id(0)
+                .creationDate(new Date())
+                .deviceId(stub.deviceId())
+                .ticket("")
+                .build();
         Mockito.when(databaseHandler.getTicket(stub)).thenReturn(Validation.success(storedTicket));
         Mockito.when(databaseHandler.getPrincipalsForTicket(any())).thenReturn(Validation.fail(StatusCode.NOT_FOUND));
         Mockito.when(authAdmin.saveCsr(anyInt(), anyString())).thenReturn(StatusCode.CA_UNREACHABLE);
 
         Validation<StatusCode, String> result = uut.handleTicket(stub);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(stub);
         verify(databaseHandler).rollback();
-        verify(authAdmin).saveCsr(stub.getDeviceId(), stub.getPemFile());
-        verify(authAdmin).wipeDeviceCredentials(stub.getDeviceId());
+        verify(authAdmin).saveCsr(stub.deviceId(), stub.pemFile());
+        verify(authAdmin).wipeDeviceCredentials(stub.deviceId());
     }
 
     @Test
     public void expiredTicketsAreRejected() {
         int deviceId = 3;
-        ClientTicket input = new ClientTicket(deviceId, "", "");
-        ServerTicket storedTicket = new ServerTicket(0, new Date(System.currentTimeMillis() - validityTime - 1), deviceId, "");
+        ClientTicket input = ClientTicket.builder()
+                .deviceId(deviceId)
+                .ticket("")
+                .pemFile("")
+                .build();
+        ServerTicket storedTicket = ServerTicket.builder()
+                .id(0)
+                .creationDate(new Date(System.currentTimeMillis() - validityTime - 1))
+                .deviceId(deviceId)
+                .ticket("")
+                .build();
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).rollback();
@@ -132,13 +164,22 @@ public class TicketAuthoriserTest {
     @Test
     public void wrongDeviceIdIsRejected() {
         int deviceId = 3;
-        ClientTicket input = new ClientTicket(deviceId, "", "");
-        ServerTicket storedTicket = new ServerTicket(0, new Date(), deviceId-1, "");
+        ClientTicket input = ClientTicket.builder()
+                .deviceId(deviceId)
+                .ticket("")
+                .pemFile("")
+                .build();
+        ServerTicket storedTicket = ServerTicket.builder()
+                .id(0)
+                .creationDate(new Date())
+                .deviceId(deviceId-1)
+                .ticket("")
+                .build();
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
         verify(databaseHandler).rollback();
@@ -147,19 +188,28 @@ public class TicketAuthoriserTest {
     @Test
     public void noPrincipalsInDbIsRejected() {
         int deviceId = 3;
-        ClientTicket input = new ClientTicket(deviceId, "", "");
-        ServerTicket storedTicket = new ServerTicket(0, new Date(), deviceId, "");
+        ClientTicket input = ClientTicket.builder()
+                .deviceId(deviceId)
+                .ticket("")
+                .pemFile("")
+                .build();
+        ServerTicket storedTicket = ServerTicket.builder()
+                .id(0)
+                .creationDate(new Date())
+                .deviceId(deviceId)
+                .ticket("")
+                .build();
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
-        Mockito.when(databaseHandler.getPrincipalsForTicket(input.getTicket())).thenReturn(Validation.fail(StatusCode.NOT_FOUND));
+        Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket())).thenReturn(Validation.fail(StatusCode.NOT_FOUND));
         Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.success(new Principals("", "", 1, deviceId)));
         Mockito.when(authAdmin.saveCsr(anyInt(), anyString())).thenReturn(StatusCode.SUCCESS);
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
-        verify(databaseHandler).getPrincipalsForTicket(input.getTicket());
+        verify(databaseHandler).getPrincipalsForTicket(input.ticket());
         verify(databaseHandler).rollback();
         verify(authAdmin).saveCsr(deviceId, "");
         verify(authAdmin).getPrincipals(deviceId);
@@ -169,20 +219,29 @@ public class TicketAuthoriserTest {
     @Test
     public void wrongPrincipalsRejected() {
         int deviceId = 3;
-        ClientTicket input = new ClientTicket(deviceId, "", "");
-        ServerTicket storedTicket = new ServerTicket(0, new Date(), deviceId, "");
+        ClientTicket input = ClientTicket.builder()
+                .deviceId(deviceId)
+                .ticket("")
+                .pemFile("")
+                .build();
+        ServerTicket storedTicket = ServerTicket.builder()
+                .id(0)
+                .creationDate(new Date())
+                .deviceId(deviceId)
+                .ticket("")
+                .build();
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
-        Mockito.when(databaseHandler.getPrincipalsForTicket(input.getTicket())).thenReturn(
+        Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket())).thenReturn(
                 Validation.success(new Principals("", "", 2, deviceId)));
         Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.success(new Principals("", "", 1, deviceId)));
         Mockito.when(authAdmin.saveCsr(anyInt(), anyString())).thenReturn(StatusCode.SUCCESS);
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
-        verify(databaseHandler).getPrincipalsForTicket(input.getTicket());
+        verify(databaseHandler).getPrincipalsForTicket(input.ticket());
         verify(databaseHandler).rollback();
         verify(authAdmin).saveCsr(deviceId, "");
         verify(authAdmin).getPrincipals(deviceId);
@@ -192,20 +251,29 @@ public class TicketAuthoriserTest {
     @Test
     public void invalidCsrIsRejected() {
         int deviceId = 3;
-        ClientTicket input = new ClientTicket(deviceId, "", "");
-        ServerTicket storedTicket = new ServerTicket(0, new Date(), deviceId, "");
+        ClientTicket input = ClientTicket.builder()
+                .deviceId(deviceId)
+                .ticket("")
+                .pemFile("")
+                .build();
+        ServerTicket storedTicket = ServerTicket.builder()
+                .id(0)
+                .creationDate(new Date())
+                .deviceId(deviceId)
+                .ticket("")
+                .build();
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
-        Mockito.when(databaseHandler.getPrincipalsForTicket(input.getTicket())).thenReturn(
+        Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket())).thenReturn(
                 Validation.success(new Principals("", "", 2, deviceId)));
         Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.fail(StatusCode.INVALID_ARGUMENT));
         Mockito.when(authAdmin.saveCsr(anyInt(), anyString())).thenReturn(StatusCode.SUCCESS);
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.ACCESS_DENIED, result.fail());
         verify(databaseHandler).getTicket(input);
-        verify(databaseHandler).getPrincipalsForTicket(input.getTicket());
+        verify(databaseHandler).getPrincipalsForTicket(input.ticket());
         verify(databaseHandler).rollback();
         verify(authAdmin).saveCsr(deviceId, "");
         verify(authAdmin).getPrincipals(deviceId);
@@ -216,10 +284,19 @@ public class TicketAuthoriserTest {
     public void authorisationProceedsIfTicketIsNotFound() {
         int deviceId = 3;
         Principals p = new Principals("Jack", "Device", 1, deviceId);
-        ClientTicket input = new ClientTicket(deviceId, "", "");
-        ServerTicket storedTicket = new ServerTicket(0, new Date(), deviceId, "");
+        ClientTicket input = ClientTicket.builder()
+                .deviceId(deviceId)
+                .ticket("")
+                .pemFile("")
+                .build();
+        ServerTicket storedTicket = ServerTicket.builder()
+                .id(0)
+                .creationDate(new Date())
+                .deviceId(deviceId)
+                .ticket("")
+                .build();
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
-        Mockito.when(databaseHandler.getPrincipalsForTicket(input.getTicket())).thenReturn(Validation.success(p));
+        Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket())).thenReturn(Validation.success(p));
         Mockito.when(databaseHandler.removeTicket(storedTicket)).thenReturn(StatusCode.NOT_FOUND);
         Mockito.when(databaseHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.success(p));
@@ -228,10 +305,10 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         assertEquals("certificate", result.success());
         verify(databaseHandler).getTicket(input);
-        verify(databaseHandler).getPrincipalsForTicket(input.getTicket());
+        verify(databaseHandler).getPrincipalsForTicket(input.ticket());
         verify(databaseHandler).removeTicket(storedTicket);
         verify(databaseHandler).commit();
         verify(authAdmin).saveCsr(deviceId, "");
@@ -244,10 +321,19 @@ public class TicketAuthoriserTest {
     public void authorisationAbortsIfCertificateIsNotFound() {
         int deviceId = 3;
         Principals p = new Principals("Jack", "Device", 1, deviceId);
-        ClientTicket input = new ClientTicket(deviceId, "", "");
-        ServerTicket storedTicket = new ServerTicket(0, new Date(), deviceId, "");
+        ClientTicket input = ClientTicket.builder()
+                .deviceId(deviceId)
+                .ticket("")
+                .pemFile("")
+                .build();
+        ServerTicket storedTicket = ServerTicket.builder()
+                .id(0)
+                .creationDate(new Date())
+                .deviceId(deviceId)
+                .ticket("")
+                .build();
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
-        Mockito.when(databaseHandler.getPrincipalsForTicket(input.getTicket())).thenReturn(Validation.success(p));
+        Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket())).thenReturn(Validation.success(p));
         Mockito.when(databaseHandler.removeTicket(storedTicket)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.success(p));
         Mockito.when(authAdmin.getCertificate(deviceId)).thenReturn(Validation.fail(StatusCode.NOT_FOUND));
@@ -255,10 +341,10 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isFail());
+        assertTrue(result.isFail());
         assertEquals(StatusCode.NOT_FOUND, result.fail());
         verify(databaseHandler).getTicket(input);
-        verify(databaseHandler).getPrincipalsForTicket(input.getTicket());
+        verify(databaseHandler).getPrincipalsForTicket(input.ticket());
         verify(databaseHandler).removeTicket(storedTicket);
         verify(databaseHandler).rollback();
         verify(authAdmin).saveCsr(deviceId, "");
@@ -271,10 +357,19 @@ public class TicketAuthoriserTest {
     public void correctTicketIsHandled() {
         int deviceId = 3;
         Principals p = new Principals("Jack", "Device", 1, deviceId);
-        ClientTicket input = new ClientTicket(deviceId, "", "");
-        ServerTicket storedTicket = new ServerTicket(0, new Date(), deviceId, "");
+        ClientTicket input = ClientTicket.builder()
+                .deviceId(deviceId)
+                .ticket("")
+                .pemFile("")
+                .build();
+        ServerTicket storedTicket = ServerTicket.builder()
+                .id(0)
+                .creationDate(new Date())
+                .deviceId(deviceId)
+                .ticket("")
+                .build();
         Mockito.when(databaseHandler.getTicket(input)).thenReturn(Validation.success(storedTicket));
-        Mockito.when(databaseHandler.getPrincipalsForTicket(input.getTicket())).thenReturn(Validation.success(p));
+        Mockito.when(databaseHandler.getPrincipalsForTicket(input.ticket())).thenReturn(Validation.success(p));
         Mockito.when(databaseHandler.removeTicket(storedTicket)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(databaseHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(authAdmin.getPrincipals(deviceId)).thenReturn(Validation.success(p));
@@ -283,10 +378,10 @@ public class TicketAuthoriserTest {
 
         Validation<StatusCode, String> result = uut.handleTicket(input);
 
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         assertEquals("certificate", result.success());
         verify(databaseHandler).getTicket(input);
-        verify(databaseHandler).getPrincipalsForTicket(input.getTicket());
+        verify(databaseHandler).getPrincipalsForTicket(input.ticket());
         verify(databaseHandler).removeTicket(storedTicket);
         verify(databaseHandler).commit();
         verify(authAdmin).saveCsr(deviceId, "");

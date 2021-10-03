@@ -19,8 +19,9 @@
 
 package de.njsm.stocks.server.v2.web.servlet;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.web.data.Response;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,13 +66,26 @@ public class ExceptionHandler {
         return processError(request, response);
     }
 
-    private Response processError(@Context HttpServletRequest request, @Context HttpServletResponse response) {
+    private Response processError(HttpServletRequest request, HttpServletResponse response) {
         Throwable throwable = (Throwable) request.getAttribute(EXCEPTION_KEY);
 
-        LOG.error("Caught exception leaving web app", throwable);
-
-        response.setStatus(500);
-        return new Response(StatusCode.GENERAL_ERROR);
+        if (inputInstantiationFailed(throwable)) {
+            LOG.debug("Caught exception leaving web app", throwable);
+            LOG.info("invalid input: " + throwable.getCause().getMessage());
+            return setErrorStatus(response, StatusCode.INVALID_ARGUMENT);
+        } else {
+            LOG.error("Caught exception leaving web app", throwable);
+            return setErrorStatus(response, StatusCode.GENERAL_ERROR);
+        }
     }
 
+    private boolean inputInstantiationFailed(Throwable throwable) {
+        return throwable.getCause() instanceof IllegalStateException ||
+                throwable.getCause() instanceof JsonProcessingException;
+    }
+
+    private Response setErrorStatus(HttpServletResponse response, StatusCode invalidArgument) {
+        response.setStatus(invalidArgument.toHttpStatus().getStatusCode());
+        return new Response(invalidArgument);
+    }
 }

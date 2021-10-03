@@ -19,22 +19,23 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.ScaledUnitForDeletion;
+import de.njsm.stocks.common.api.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForInsertion;
-import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,37 +46,44 @@ public class ScaledUnitEndpointTest {
 
     private ScaledUnitManager manager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         manager = Mockito.mock(ScaledUnitManager.class);
         uut = new ScaledUnitEndpoint(manager);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(manager);
     }
 
     @Test
-    public void puttingInvalidScaleIsRejected() {
-        Response response = uut.put(createMockRequest(), "hi there", 1);
+    public void puttingNullScaleIsRejected() {
+        assertThrows(IllegalStateException.class, () ->  uut.put(createMockRequest(), null, 1));
+        verify(manager).setPrincipals(TEST_USER);
+    }
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
+    @Test
+    public void puttingInvalidScaleIsRejected() {
+        assertThrows(IllegalStateException.class, () ->  uut.put(createMockRequest(), "hi there", 1));
+        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
     public void puttingInvalidUnitIsRejected() {
-        Response response = uut.put(createMockRequest(), BigDecimal.ONE.toPlainString(), 0);
-
-        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
+        assertThrows(IllegalStateException.class, () -> uut.put(createMockRequest(), BigDecimal.ONE.toPlainString(), 0));
+        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
     public void validPuttingIsDone() {
-        ScaledUnitForInsertion input = new ScaledUnitForInsertion(BigDecimal.ONE, 1);
-        when(manager.add(any())).thenReturn(Validation.success(1));
+        ScaledUnitForInsertion input = ScaledUnitForInsertion.builder()
+                .scale(BigDecimal.ONE)
+                .unit(1)
+                .build();
+        when(manager.add(any())).thenReturn(StatusCode.SUCCESS);
 
-        Response response = uut.put(createMockRequest(), input.getScale().toPlainString(), input.getUnit());
+        Response response = uut.put(createMockRequest(), input.scale().toPlainString(), input.unit());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).add(input);
@@ -84,10 +92,13 @@ public class ScaledUnitEndpointTest {
 
     @Test
     public void invalidBusinessPuttingIsPropagated() {
-        ScaledUnitForInsertion input = new ScaledUnitForInsertion(BigDecimal.ONE, 1);
-        when(manager.add(any())).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+        ScaledUnitForInsertion input = ScaledUnitForInsertion.builder()
+                .scale(BigDecimal.ONE)
+                .unit(1)
+                .build();
+        when(manager.add(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        Response response = uut.put(createMockRequest(), input.getScale().toPlainString(), input.getUnit());
+        Response response = uut.put(createMockRequest(), input.scale().toPlainString(), input.unit());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).add(input);
@@ -96,10 +107,15 @@ public class ScaledUnitEndpointTest {
 
     @Test
     public void validEditingWorks() {
-        ScaledUnitForEditing data = new ScaledUnitForEditing(1, 0, BigDecimal.ONE, 2);
+        ScaledUnitForEditing data = ScaledUnitForEditing.builder()
+                .id(1)
+                .version(0)
+                .scale(BigDecimal.ONE)
+                .unit(2)
+                .build();
         when(manager.edit(data)).thenReturn(StatusCode.SUCCESS);
 
-        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+        Response response = uut.edit(createMockRequest(), data.id(), data.version(), data.scale().toString(), data.unit());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).edit(data);
@@ -108,37 +124,68 @@ public class ScaledUnitEndpointTest {
 
     @Test
     public void invalidVersionWhenEditingIsRejected() {
-        ScaledUnitForEditing data = new ScaledUnitForEditing(1, -1, BigDecimal.ONE, 2);
+        ScaledUnitForEditing data = ScaledUnitForEditing.builder()
+                .id(1)
+                .version(999)
+                .scale(BigDecimal.ONE)
+                .unit(2)
+                .build();
 
-        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+        assertThrows(IllegalStateException.class, () -> uut.edit(createMockRequest(), data.id(), -1, data.scale().toString(), data.unit()));
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
+        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
     public void invalidScaleWhenEditingIsRejected() {
-        ScaledUnitForEditing data = new ScaledUnitForEditing(1, 0, BigDecimal.ONE, 2);
+        ScaledUnitForEditing data = ScaledUnitForEditing.builder()
+                .id(1)
+                .version(0)
+                .scale(BigDecimal.ONE)
+                .unit(2)
+                .build();
 
-        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), "not a number", data.getUnit());
+        assertThrows(IllegalStateException.class, () -> uut.edit(createMockRequest(), data.id(), data.version(), "not a number", data.unit()));
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
+        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
     public void invalidIdWhenEditingIsRejected() {
-        ScaledUnitForEditing data = new ScaledUnitForEditing(0, 0, BigDecimal.ONE, 2);
+        ScaledUnitForEditing data = ScaledUnitForEditing.builder()
+                .id(999)
+                .version(0)
+                .scale(BigDecimal.ONE)
+                .unit(2)
+                .build();
 
-        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+        assertThrows(IllegalStateException.class, () -> uut.edit(createMockRequest(), 0, data.version(), data.scale().toString(), data.unit()));
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
+        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
     public void invalidUnitWhenEditingIsRejected() {
-        ScaledUnitForEditing data = new ScaledUnitForEditing(1, 0, BigDecimal.ONE, 0);
+        ScaledUnitForEditing data = ScaledUnitForEditing.builder()
+                .id(1)
+                .version(0)
+                .scale(BigDecimal.ONE)
+                .unit(999)
+                .build();
 
-        Response response = uut.edit(createMockRequest(), data.getId(), data.getVersion(), data.getScale().toString(), data.getUnit());
+        assertThrows(IllegalStateException.class, () -> uut.edit(createMockRequest(), data.id(), data.version(), data.scale().toString(), 0));
 
-        assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
+        verify(manager).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void wrappingDeletionParameterWorks() {
+        int id = 1;
+        int version = 2;
+
+        ScaledUnitForDeletion result = uut.wrapParameters(id, version);
+
+        assertEquals(id, result.id());
+        assertEquals(version, result.version());
     }
 }

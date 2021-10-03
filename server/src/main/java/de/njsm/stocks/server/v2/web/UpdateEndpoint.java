@@ -19,10 +19,11 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.StreamResponse;
+import de.njsm.stocks.common.api.Update;
 import de.njsm.stocks.server.v2.business.UpdateManager;
-import de.njsm.stocks.server.v2.business.data.Update;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
 
 import javax.inject.Inject;

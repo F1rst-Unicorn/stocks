@@ -21,14 +21,10 @@ package de.njsm.stocks.android.frontend.interactor;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
-
 import de.njsm.stocks.android.frontend.BaseFragment;
-import de.njsm.stocks.android.network.server.StatusCode;
-import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.common.api.StatusCode;
 
 public class DeletionInteractor<T> {
-
-    private static final Logger LOG = new Logger(DeletionInteractor.class);
 
     private final Function<T, LiveData<StatusCode>> deleter;
 

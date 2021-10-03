@@ -19,7 +19,8 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.Entity;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
 import fj.data.Validation;
 import org.jooq.TableRecord;

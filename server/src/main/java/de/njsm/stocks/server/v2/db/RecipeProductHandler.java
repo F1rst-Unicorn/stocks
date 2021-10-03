@@ -19,28 +19,69 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.data.BitemporalRecipeProduct;
-import de.njsm.stocks.server.v2.business.data.RecipeProduct;
-import de.njsm.stocks.server.v2.business.data.RecipeProductForGetting;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeProductRecord;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE_PRODUCT;
 
 
-public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecord, RecipeProduct> {
+public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecord, RecipeProduct> implements CompleteReferenceChecker<Recipe, RecipeProduct> {
 
 
     public RecipeProductHandler(ConnectionFactory connectionFactory,
                                 String resourceIdentifier,
                                 int timeout) {
         super(connectionFactory, resourceIdentifier, timeout);
+    }
+
+    @Override
+    public StatusCode areEntitiesComplete(Identifiable<Recipe> recipe, Set<? extends Versionable<RecipeProduct>> products) {
+        return runCommand(context -> new CompleteEntityReferenceChecker<Recipe, RecipeProduct, RecipeProductRecord>(
+                getIdField(),
+                getVersionField(),
+                RECIPE_PRODUCT.VALID_TIME_START,
+                RECIPE_PRODUCT.VALID_TIME_END,
+                RECIPE_PRODUCT.TRANSACTION_TIME_END,
+                RECIPE_PRODUCT.RECIPE,
+                getTable()
+        ).check(context, recipe, products));
+    }
+
+    public StatusCode edit(RecipeProductForEditing data) {
+        return runCommand(context -> checkPresenceInThisVersion(data, context)
+                .bind(() -> currentUpdate(context, List.of(
+                            RECIPE_PRODUCT.ID,
+                            RECIPE_PRODUCT.VERSION.add(1),
+                            DSL.inline(data.amount()),
+                            DSL.inline(data.product()),
+                            DSL.inline(data.recipe()),
+                            DSL.inline(data.unit())
+                    ),
+                    RECIPE_PRODUCT.ID.eq(data.id())
+                            .and(RECIPE_PRODUCT.VERSION.eq(data.version()))
+                            .and(RECIPE_PRODUCT.AMOUNT.ne(data.amount())
+                                    .or(RECIPE_PRODUCT.RECIPE.ne(data.recipe()))
+                                    .or(RECIPE_PRODUCT.PRODUCT.ne(data.product()))
+                                    .or(RECIPE_PRODUCT.UNIT.ne(data.unit())))
+            )
+                    .map(this::notFoundIsOk))
+        );
+    }
+
+
+
+    public StatusCode deleteAllOf(RecipeForDeletion recipe) {
+        return currentDelete(RECIPE_PRODUCT.RECIPE.eq(recipe.id()))
+                .map(this::notFoundIsOk);
     }
 
     @Override
@@ -61,28 +102,28 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
     @Override
     protected Function<RecipeProductRecord, RecipeProduct> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalRecipeProduct(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getAmount(),
-                    cursor.getProduct(),
-                    cursor.getRecipe(),
-                    cursor.getUnit()
-            );
+            return cursor -> BitemporalRecipeProduct.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .amount(cursor.getAmount())
+                    .product(cursor.getProduct())
+                    .recipe(cursor.getRecipe())
+                    .unit(cursor.getUnit())
+                    .build();
         else
-            return cursor -> new RecipeProductForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getAmount(),
-                    cursor.getProduct(),
-                    cursor.getRecipe(),
-                    cursor.getUnit()
-            );
+            return cursor -> RecipeProductForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .amount(cursor.getAmount())
+                    .product(cursor.getProduct())
+                    .recipe(cursor.getRecipe())
+                    .unit(cursor.getUnit())
+                    .build();
     }
 
     @Override

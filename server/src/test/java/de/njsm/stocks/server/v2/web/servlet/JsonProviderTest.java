@@ -19,9 +19,9 @@
 
 package de.njsm.stocks.server.v2.web.servlet;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.*;
 
 public class JsonProviderTest {

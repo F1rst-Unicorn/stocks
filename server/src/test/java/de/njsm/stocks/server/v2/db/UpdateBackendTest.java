@@ -19,22 +19,22 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Update;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.Update;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UpdateBackendTest extends DbTestCase {
 
     private UpdateBackend uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new UpdateBackend(getConnectionFactory(),
                 getNewResourceIdentifier(),

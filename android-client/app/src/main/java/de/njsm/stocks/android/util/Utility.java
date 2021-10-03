@@ -20,6 +20,7 @@
 
 package de.njsm.stocks.android.util;
 
+import androidx.annotation.Nullable;
 import de.njsm.stocks.android.db.entities.Data;
 
 import java.util.List;
@@ -27,7 +28,10 @@ import java.util.Optional;
 
 public class Utility {
 
-    public static <T extends Data> Optional<Integer> find(int id, List<T> list) {
+    public static <T extends Data> Optional<Integer> find(int id, @Nullable List<T> list) {
+        if (list == null)
+            return Optional.empty();
+
         int position = 0;
         for (T l : list) {
             if (l.id == id) {

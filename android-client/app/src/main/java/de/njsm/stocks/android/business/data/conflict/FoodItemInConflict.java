@@ -24,7 +24,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import de.njsm.stocks.android.db.entities.FoodItem;
 import de.njsm.stocks.android.util.Config;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 public class FoodItemInConflict implements Parcelable {
 

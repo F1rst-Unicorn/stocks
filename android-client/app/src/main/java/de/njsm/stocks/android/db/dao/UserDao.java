@@ -22,8 +22,8 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.User;
-import org.threeten.bp.Instant;
 
+import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
@@ -33,7 +33,7 @@ import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 public abstract class UserDao implements Inserter<User> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(User[] users);
+    public abstract void insert(List<User> users);
 
     public LiveData<List<User>> getAll() {
         return getAll(DATABASE_INFINITY);
@@ -44,7 +44,7 @@ public abstract class UserDao implements Inserter<User> {
     }
 
     @Transaction
-    public void synchronise(User[] users) {
+    public void synchronise(List<User> users) {
         delete();
         insert(users);
     }

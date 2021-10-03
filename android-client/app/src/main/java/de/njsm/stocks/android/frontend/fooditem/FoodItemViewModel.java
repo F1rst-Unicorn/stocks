@@ -23,9 +23,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.db.views.ScaledAmount;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.android.repo.FoodItemRepository;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.List;
 

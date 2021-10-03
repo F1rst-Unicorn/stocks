@@ -1,3 +1,21 @@
+' stocks is client-server program to manage a household's food stock
+' Copyright (C) 2019  The stocks developers
+'
+' This file is part of the stocks program suite.
+'
+' stocks is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' stocks is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 @startuml
 
 class user {
@@ -163,29 +181,29 @@ recipe_product --> user_device : initiates
 unit --> user_device : initiates
 scaled_unit --> user_device : initiates
 
-user_device --> user : belongs_to
+user_device -[dashed]-> user : belongs_to
 
-ean_number --> food : identifies
+ean_number -[dashed]-> food : identifies
 
 food --> location : location?
 food --> scaled_unit : store_unit
 
 food_item --> location : stored_in
-food_item --> food : of_type
+food_item -[dashed]-> food : of_type
 food_item --> user : buys
 food_item --> user_device : registers
 food_item --> scaled_unit : unit
 
-recipe_ingredient --> recipe : recipe
+recipe_ingredient -[dashed]-> recipe : recipe
 recipe_ingredient --> food : ingredient
 recipe_ingredient --> scaled_unit : unit
 
-recipe_product --> recipe : recipe
+recipe_product -[dashed]-> recipe : recipe
 recipe_product --> food : product
 recipe_product --> scaled_unit : unit
 
 scaled_unit --> unit : unit
 
-ticket --> user_device : belongs_device
+ticket -[dashed]-> user_device : belongs_device
 
 @enduml

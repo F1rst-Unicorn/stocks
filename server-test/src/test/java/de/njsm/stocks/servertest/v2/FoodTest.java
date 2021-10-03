@@ -27,11 +27,11 @@ import org.junit.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class FoodTest implements Deleter {
+public class FoodTest extends Base implements Deleter {
 
     @Test
     public void testBitemporalFood() {
-        addFoodType("testBitemporalFood");
+        addFoodType(getUniqueName("testBitemporalFood"));
 
         assertOnFood(true)
                 .body("data.validTimeStart", not(emptyIterable()))
@@ -43,18 +43,19 @@ public class FoodTest implements Deleter {
 
     @Test
     public void addAnItem() {
-        addFoodType("Carrot");
+        String name = getUniqueName("addAnItem");
+        addFoodType(name);
 
         assertOnFood()
-                .body("data.name", hasItem("Carrot"));
+                .body("data.name", hasItem(name));
     }
 
     @Test
     public void renameFood() {
-        String name = "Cake";
-        String newName = "Cabal";
+        String name = getUniqueName("renameFood");
+        String newName = name + ".new";
         int id = createNewFoodType(name);
-        int locationId = LocationTest.createNewLocationType("renamefood");
+        int locationId = LocationTest.createNewLocationType(name);
 
         assertOnRename(id, 0, newName, 42, locationId)
                 .statusCode(200)
@@ -68,10 +69,10 @@ public class FoodTest implements Deleter {
 
     @Test
     public void renameFoodWithDescription() {
-        String name = "Cake";
-        String newName = "Cabal";
+        String name = getUniqueName("renameFoodWithDescription");
+        String newName = name + ".new";
         int id = createNewFoodType(name);
-        int locationId = LocationTest.createNewLocationType("renamefood");
+        int locationId = LocationTest.createNewLocationType(name);
         String description = "description";
 
         assertOnEdit(id, 0, newName, 42, locationId, description)
@@ -87,7 +88,7 @@ public class FoodTest implements Deleter {
 
     @Test
     public void alterFoodDescription() {
-        String name = "Cake";
+        String name = getUniqueName("alterFoodDescription");
         String newDescription = "new description";
         int id = createNewFoodType(name);
 
@@ -110,7 +111,7 @@ public class FoodTest implements Deleter {
 
     @Test
     public void setBuyStatus() {
-        String name = "Cake";
+        String name = getUniqueName("setBuyStatus");
         int id = createNewFoodType(name);
 
         assertOnSetBuyStatus(id, 0, true)
@@ -124,8 +125,8 @@ public class FoodTest implements Deleter {
 
     @Test
     public void renamingFailsWithWrongVersion() {
-        String name = "Cinnamon";
-        String newName = "Cabal";
+        String name = getUniqueName("renamingFailsWithWrongVersion");
+        String newName = name + ".new";
         int id = createNewFoodType(name);
 
         assertOnRename(id, 99, newName, 0, 0)
@@ -135,16 +136,14 @@ public class FoodTest implements Deleter {
 
     @Test
     public void renamingUnknownIdIsReported() {
-        String newName = "Cabal";
-
-        assertOnRename(9999, 0, newName, 0, 0)
+        assertOnRename(9999, 0, "dummy", 0, 0)
                 .statusCode(404)
                 .body("status", equalTo(2));
     }
 
     @Test
     public void deleteFood() {
-        String name = "Cookie";
+        String name = getUniqueName("deleteFood");
         int id = createNewFoodType(name);
 
         assertOnDelete(id, 0)
@@ -154,7 +153,7 @@ public class FoodTest implements Deleter {
 
     @Test
     public void deletingFailsWithWrongVersion() {
-        String name = "Cookie";
+        String name = getUniqueName("deletingFailsWithWrongVersion");
         int id = createNewFoodType(name);
 
         assertOnDelete(id, 99)
@@ -169,7 +168,7 @@ public class FoodTest implements Deleter {
                 .body("status", equalTo(2));
     }
 
-    static int createNewFoodType(String name) {
+    public static int createNewFoodType(String name) {
         addFoodType(name);
         return getIdOfFood(name);
     }
@@ -247,7 +246,7 @@ public class FoodTest implements Deleter {
         return assertOnFood(false);
     }
 
-    private static ValidatableResponse assertOnFood(boolean bitemporal) {
+    public static ValidatableResponse assertOnFood(boolean bitemporal) {
         return
         given()
                 .log().ifValidationFails()

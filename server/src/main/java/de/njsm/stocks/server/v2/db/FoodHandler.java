@@ -19,8 +19,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -54,15 +53,15 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     FOOD.ID,
                     FOOD.NAME,
                     FOOD.VERSION.add(1),
-                    DSL.inline(item.isToBuy()),
+                    DSL.inline(item.toBuy()),
                     FOOD.EXPIRATION_OFFSET,
                     FOOD.LOCATION,
                     FOOD.DESCRIPTION,
                     FOOD.STORE_UNIT
                     ),
-                    getIdField().eq(item.getId())
-                            .and(getVersionField().eq(item.getVersion()))
-                            .and(FOOD.TO_BUY.ne(item.isToBuy())))
+                    getIdField().eq(item.id())
+                            .and(getVersionField().eq(item.version()))
+                            .and(FOOD.TO_BUY.ne(item.toBuy())))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }
@@ -78,7 +77,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                 FOOD.DESCRIPTION,
                 FOOD.STORE_UNIT
                 ),
-                getIdField().eq(item.getId())
+                getIdField().eq(item.id())
                         .and(FOOD.TO_BUY.ne(value)))
                 .map(this::notFoundIsOk);
     }
@@ -88,7 +87,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
 
-            Field<?> locationField = item.getLocationOptional()
+            Field<?> locationField = item.location()
                     .map(v -> {
                         if (v != 0) {
                             return (Field<Integer>) DSL.inline(v);
@@ -98,46 +97,46 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     })
                     .orElse(FOOD.LOCATION);
 
-            Field<?> expirationOffsetField = item.getExpirationOffsetOptional()
+            Field<?> expirationOffsetField = item.expirationOffset()
                     .map(v -> (Field<Period>) DSL.inline(v))
                     .orElse(FOOD.EXPIRATION_OFFSET);
 
-            Field<?> descriptionField = item.getDescription()
+            Field<?> descriptionField = item.description()
                     .map(v -> (Field<String>) DSL.inline(v))
                     .orElse(FOOD.DESCRIPTION);
 
-            Field<?> storeUnitField = item.getStoreUnit()
+            Field<?> storeUnitField = item.storeUnit()
                     .map(v -> (Field<Integer>) DSL.inline(v))
                     .orElse(FOOD.STORE_UNIT);
 
-            Condition locationCondition = item.getLocationOptional()
+            Condition locationCondition = item.location()
                     .map(FOOD.LOCATION::isDistinctFrom)
                     .orElseGet(DSL::falseCondition);
 
-            Condition expirationOffsetCondition = item.getExpirationOffsetOptional()
+            Condition expirationOffsetCondition = item.expirationOffset()
                     .map(FOOD.EXPIRATION_OFFSET::ne)
                     .orElseGet(DSL::falseCondition);
 
-            Condition descriptionCondition = item.getDescription()
+            Condition descriptionCondition = item.description()
                     .map(FOOD.DESCRIPTION::ne)
                     .orElseGet(DSL::falseCondition);
 
-            Condition storeUnitCondition = item.getStoreUnit()
+            Condition storeUnitCondition = item.storeUnit()
                     .map(FOOD.STORE_UNIT::ne)
                     .orElseGet(DSL::falseCondition);
 
             return currentUpdate(context, Arrays.asList(
                     FOOD.ID,
-                    DSL.inline(item.getNewName()),
+                    DSL.inline(item.name()),
                     FOOD.VERSION.add(1),
                     FOOD.TO_BUY,
                     expirationOffsetField,
                     locationField,
                     descriptionField,
                     storeUnitField),
-                    getIdField().eq(item.getId())
-                            .and(getVersionField().eq(item.getVersion())
-                                    .and(FOOD.NAME.ne(item.getNewName())
+                    getIdField().eq(item.id())
+                            .and(getVersionField().eq(item.version())
+                                    .and(FOOD.NAME.ne(item.name())
                                             .or(expirationOffsetCondition)
                                             .or(locationCondition)
                                             .or(descriptionCondition)
@@ -158,7 +157,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                 DSL.inline((Integer) null),
                 FOOD.DESCRIPTION,
                 FOOD.STORE_UNIT),
-                FOOD.LOCATION.eq(l.getId()))
+                FOOD.LOCATION.eq(l.id()))
                 .map(this::notFoundIsOk);
     }
 
@@ -174,11 +173,11 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     FOOD.TO_BUY,
                     FOOD.EXPIRATION_OFFSET,
                     FOOD.LOCATION,
-                    DSL.inline(item.getDescription()),
+                    DSL.inline(item.description()),
                     FOOD.STORE_UNIT),
-                    getIdField().eq(item.getId())
-                            .and(getVersionField().eq(item.getVersion()))
-                            .and(FOOD.DESCRIPTION.ne(item.getDescription())))
+                    getIdField().eq(item.id())
+                            .and(getVersionField().eq(item.version()))
+                            .and(FOOD.DESCRIPTION.ne(item.description())))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }
@@ -201,31 +200,32 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
     @Override
     protected Function<FoodRecord, Food> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalFood(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getName(),
-                    cursor.getToBuy(),
-                    cursor.getExpirationOffset(),
-                    cursor.getLocation(),
-                    cursor.getDescription(),
-                    cursor.getStoreUnit()
-            );
+            return cursor -> BitemporalFood.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .name(cursor.getName())
+                    .toBuy(cursor.getToBuy())
+                    .expirationOffset(cursor.getExpirationOffset())
+                    .location(cursor.getLocation())
+                    .description(cursor.getDescription())
+                    .storeUnit(cursor.getStoreUnit())
+                    .build();
         else
-            return cursor -> new FoodForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getName(),
-                    cursor.getToBuy(),
-                    cursor.getExpirationOffset(),
-                    cursor.getLocation(),
-                    cursor.getDescription(),
-                    cursor.getStoreUnit());
+            return cursor -> FoodForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .name(cursor.getName())
+                    .toBuy(cursor.getToBuy())
+                    .expirationOffset(cursor.getExpirationOffset())
+                    .location(cursor.getLocation())
+                    .description(cursor.getDescription())
+                    .storeUnit(cursor.getStoreUnit())
+                    .build();
     }
 
     @Override

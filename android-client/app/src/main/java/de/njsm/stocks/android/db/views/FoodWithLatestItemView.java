@@ -20,11 +20,10 @@
 package de.njsm.stocks.android.db.views;
 
 import androidx.annotation.NonNull;
-
-import org.threeten.bp.Instant;
-
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.VersionedData;
+
+import java.time.Instant;
 
 public class FoodWithLatestItemView extends VersionedData {
 
@@ -57,7 +56,7 @@ public class FoodWithLatestItemView extends VersionedData {
     }
 
     public Food mapToFood() {
-        return new Food(getPosition(), id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
+        return new Food(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates, name, toBuy, expirationOffset, location, description, storeUnit);
     }
 
     public int getAmount() {

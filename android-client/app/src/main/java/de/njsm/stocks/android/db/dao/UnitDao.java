@@ -23,8 +23,8 @@ import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.Unit;
 import de.njsm.stocks.android.util.Config;
-import org.threeten.bp.Instant;
 
+import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
@@ -33,10 +33,10 @@ import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 public abstract class UnitDao implements Inserter<Unit> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(Unit[] data);
+    public abstract void insert(List<Unit> data);
 
     @Transaction
-    public void synchronise(Unit[] data) {
+    public void synchronise(List<Unit> data) {
         delete();
         insert(data);
     }

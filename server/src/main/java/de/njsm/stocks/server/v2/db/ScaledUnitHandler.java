@@ -19,11 +19,11 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.BitemporalScaledUnit;
-import de.njsm.stocks.server.v2.business.data.ScaledUnit;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForGetting;
+import de.njsm.stocks.common.api.ScaledUnit;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.BitemporalScaledUnit;
+import de.njsm.stocks.common.api.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.ScaledUnitForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -55,13 +55,13 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
                     Arrays.asList(
                             SCALED_UNIT.ID,
                             SCALED_UNIT.VERSION.add(1),
-                            DSL.inline(data.getScale()),
-                            DSL.inline(data.getUnit())
+                            DSL.inline(data.scale()),
+                            DSL.inline(data.unit())
                     ),
-                    getIdField().eq(data.getId())
-                            .and(getVersionField().eq(data.getVersion()))
-                            .and(SCALED_UNIT.SCALE.ne(data.getScale())
-                                    .or(SCALED_UNIT.UNIT.ne(data.getUnit())))
+                    getIdField().eq(data.id())
+                            .and(getVersionField().eq(data.version()))
+                            .and(SCALED_UNIT.SCALE.ne(data.scale())
+                                    .or(SCALED_UNIT.UNIT.ne(data.unit())))
 
             )
                     .map(this::notFoundMeansInvalidVersion);
@@ -86,24 +86,24 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
     @Override
     protected Function<ScaledUnitRecord, ScaledUnit> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalScaledUnit(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getScale(),
-                    cursor.getUnit()
-            );
+            return cursor -> BitemporalScaledUnit.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .scale(cursor.getScale())
+                    .unit(cursor.getUnit())
+                    .build();
         else
-            return cursor -> new ScaledUnitForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getScale(),
-                    cursor.getUnit()
-            );
+            return cursor -> ScaledUnitForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .scale(cursor.getScale())
+                    .unit(cursor.getUnit())
+                    .build();
     }
 
     @Override

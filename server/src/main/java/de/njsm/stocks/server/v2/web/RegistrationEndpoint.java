@@ -19,10 +19,10 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.DataResponse;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.business.TicketAuthoriser;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
-import de.njsm.stocks.server.v2.web.data.DataResponse;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,7 +61,11 @@ public class RegistrationEndpoint extends Endpoint {
                 isValid(token, "token") &&
                 isValid(csr, "csr")) {
 
-            Validation<StatusCode, String> response = authoriser.handleTicket(new ClientTicket(device, token, csr));
+            Validation<StatusCode, String> response = authoriser.handleTicket(ClientTicket.builder()
+                    .deviceId(device)
+                    .ticket(token)
+                    .pemFile(csr)
+                    .build());
 
             return new DataResponse<>(response);
         } else {

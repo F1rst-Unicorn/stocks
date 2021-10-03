@@ -22,21 +22,23 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.RecipeProduct;
-import de.njsm.stocks.android.util.Config;
-import org.threeten.bp.Instant;
+import de.njsm.stocks.android.db.entities.Sql;
+import de.njsm.stocks.android.db.views.ScaledFood;
 
+import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
 public abstract class RecipeProductDao implements Inserter<RecipeProduct> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(RecipeProduct[] data);
+    public abstract void insert(List<RecipeProduct> data);
 
     @Transaction
-    public void synchronise(RecipeProduct[] data) {
+    public void synchronise(List<RecipeProduct> data) {
         delete();
         insert(data);
     }
@@ -45,7 +47,19 @@ public abstract class RecipeProductDao implements Inserter<RecipeProduct> {
     abstract void delete();
 
     public LiveData<List<RecipeProduct>> getAll() {
-        return getAll(Config.DATABASE_INFINITY);
+        return getAll(DATABASE_INFINITY);
+    }
+
+    public List<RecipeProduct> getProductsOf(int recipeId) {
+        return getProductsOf(recipeId, DATABASE_INFINITY);
+    }
+
+    public LiveData<List<RecipeProduct>> getLiveProductsOf(int recipeId) {
+        return getLiveProductsOf(recipeId, DATABASE_INFINITY);
+    }
+
+    public LiveData<List<ScaledFood>> getProductViewsOf(int recipeId) {
+        return getProductViewsOf(recipeId, DATABASE_INFINITY);
     }
 
     @Query("select * " +
@@ -54,4 +68,37 @@ public abstract class RecipeProductDao implements Inserter<RecipeProduct> {
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity")
     abstract LiveData<List<RecipeProduct>> getAll(Instant infinity);
+
+    @Query("select * " +
+            "from recipe_product " +
+            "where recipe = :recipeId " +
+            "and valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = :infinity")
+    abstract List<RecipeProduct> getProductsOf(int recipeId, Instant infinity);
+
+    @Query("select * " +
+            "from recipe_product " +
+            "where recipe = :recipeId " +
+            "and valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = :infinity")
+    abstract LiveData<List<RecipeProduct>> getLiveProductsOf(int recipeId, Instant infinity);
+
+    @Query("select " +
+            Sql.FOOD_FIELDS_QUALIFIED +
+            Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+            Sql.UNIT_FIELDS_QUALIFIED +
+            Sql.RECIPE_PRODUCT_FIELDS +
+            "1 from recipe_product recipe_product " +
+            Sql.FOOD_JOIN_RECIPE_PRODUCT +
+            Sql.SCALED_UNIT_JOIN_RECIPE_PRODUCT +
+            Sql.UNIT_JOIN_SCALED_UNIT +
+            "where recipe_product.recipe = :recipeId " +
+            "and recipe_product.valid_time_start <= " + NOW +
+            "and " + NOW + " < recipe_product.valid_time_end " +
+            "and recipe_product.transaction_time_end = :infinity " +
+            "order by food_name")
+    abstract LiveData<List<ScaledFood>> getProductViewsOf(int recipeId, Instant infinity);
+
 }

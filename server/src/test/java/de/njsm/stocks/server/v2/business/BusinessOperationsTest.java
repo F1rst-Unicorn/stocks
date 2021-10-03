@@ -21,17 +21,16 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BusinessOperationsTest {
 
     private BusinessOperations uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new BusinessOperations() {
             @Override
@@ -46,8 +45,8 @@ public class BusinessOperationsTest {
         };
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void missingPrincipalsAreThrown() {
-        uut.assertPrincipalsAreSet();
+        assertThrows(IllegalArgumentException.class, () -> uut.assertPrincipalsAreSet());
     }
 }

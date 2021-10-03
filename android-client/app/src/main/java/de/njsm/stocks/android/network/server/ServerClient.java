@@ -20,168 +20,168 @@
 package de.njsm.stocks.android.network.server;
 
 
-import de.njsm.stocks.android.db.entities.*;
 import de.njsm.stocks.android.frontend.device.ServerTicket;
-import de.njsm.stocks.android.network.server.data.DataResponse;
-import de.njsm.stocks.android.network.server.data.ListResponse;
-import de.njsm.stocks.android.network.server.data.Response;
+import de.njsm.stocks.common.api.*;
 import retrofit2.Call;
-import retrofit2.http.*;
 
-public interface ServerClient {
+public class ServerClient {
 
-    @PUT("/v2/user")
-    Call<Response> addUser(@Query("name") String name);
+    private final Api api;
 
-    @GET("/v2/user")
-    Call<ListResponse<User>> getUsers(@Query("bitemporal") int bitemporal,
-                                      @Query("startingFrom") String startingFrom);
+    public ServerClient(Api api) {
+        this.api = api;
+    }
 
-    @DELETE("/v2/user")
-    Call<Response> deleteUser(@Query("id") int id,
-                              @Query("version") int version);
+    public Call<ListResponse<BitemporalUser>> getUsers(String startingFrom) {
+        return api.getUsers(1, startingFrom);
+    }
 
-    @PUT("/v2/device")
-    Call<DataResponse<ServerTicket>> addDevice(@Query("name") String name,
-                                               @Query("belongsTo") int uid);
+    public Call<ListResponse<BitemporalUserDevice>> getDevices(String startingFrom) {
+        return api.getDevices(1, startingFrom);
+    }
 
-    @GET("/v2/device")
-    Call<ListResponse<UserDevice>> getDevices(@Query("bitemporal") int bitemporal,
-                                              @Query("startingFrom") String startingFrom);
+    public Call<ListResponse<BitemporalLocation>> getLocations(String startingFrom) {
+        return api.getLocations(1, startingFrom);
+    }
 
-    @DELETE("/v2/device")
-    Call<Response> deleteDevice(@Query("id") int id,
-                                @Query("version") int version);
-
-    @GET("/v2/update")
-    Call<ListResponse<Update>> getUpdates();
-
-    @GET("/v2/location")
-    Call<ListResponse<Location>> getLocations(@Query("bitemporal") int bitemporal,
-                                              @Query("startingFrom") String startingFrom);
-
-    @PUT("/v2/location")
-    Call<Response> addLocation(@Query("name") String name);
-
-    @PUT("/v2/location/rename")
-    Call<Response> renameLocation(@Query("id") int id,
-                                  @Query("version") int version,
-                                  @Query("new") String newName);
-
-    @FormUrlEncoded
-    @POST("/v2/location/description")
-    Call<Response> setLocationDescription(@Query("id") int id,
-                                          @Query("version") int version,
-                                          @Field("description") String description);
-
-    @DELETE("/v2/location")
-    Call<Response> deleteLocation(@Query("id") int id,
-                                  @Query("version") int version,
-                                  @Query("cascade") int cascade);
-
-    @GET("/v2/food")
-    Call<ListResponse<Food>> getFood(@Query("bitemporal") int bitemporal,
-                                     @Query("startingFrom") String startingFrom);
-
-    @PUT("/v2/food")
-    Call<Response> addFood(@Query("name") String name);
-
-    @FormUrlEncoded
-    @PUT("/v2/food/edit")
-    Call<Response> editFood(@Query("id") int id,
-                            @Query("version") int version,
-                            @Query("new") String newName,
-                            @Query("expirationoffset") int expirationOffset,
-                            @Query("location") int location,
-                            @Field("description") String description,
-                            @Query("storeunit") int storeUnit);
-
-    @PUT("/v2/food/buy")
-    Call<Response> setToBuyStatus(@Query("id") int id,
-                                  @Query("version") int version,
-                                  @Query("buy") int toBuy);
-
-    @DELETE("/v2/food")
-    Call<Response> deleteFood(@Query("id") int id,
-                              @Query("version") int version);
+    public Call<ListResponse<BitemporalFood>> getFood(String startingFrom) {
+        return api.getFood(1, startingFrom);
+    }
 
 
-    @GET("/v2/fooditem")
-    Call<ListResponse<FoodItem>> getFoodItems(@Query("bitemporal") int bitemporal,
-                                              @Query("startingFrom") String startingFrom);
+    public Call<ListResponse<BitemporalFoodItem>> getFoodItems(String startingFrom) {
+        return api.getFoodItems(1, startingFrom);
+    }
 
-    @PUT("/v2/fooditem")
-    Call<Response> addFoodItem(@Query("eatByDate") String eatByDate,
-                               @Query("storedIn") int storedIn,
-                               @Query("ofType") int ofType,
-                               @Query("unit") int unit);
+    public Call<ListResponse<BitemporalEanNumber>> getEanNumbers(String startingFrom) {
+        return api.getEanNumbers(1, startingFrom);
+    }
 
-    @PUT("/v2/fooditem/edit")
-    Call<Response> editFoodItem(@Query("id") int id,
-                                @Query("version") int version,
-                                @Query("eatByDate") String eatByDate,
-                                @Query("storedIn") int storedIn,
-                                @Query("unit") int unit);
+    public Call<ListResponse<BitemporalUnit>> getUnits(String startingFrom) {
+        return api.getUnits(1, startingFrom);
+    }
 
-    @DELETE("/v2/fooditem")
-    Call<Response> deleteFoodItem(@Query("id") int id,
-                                  @Query("version") int version);
+    public Call<ListResponse<BitemporalScaledUnit>> getScaledUnits(String startingFrom) {
+        return api.getScaledUnits(1, startingFrom);
+    }
 
-    @PUT("/v2/ean")
-    Call<Response> addEanNumber(@Query("code") String code,
-                                @Query("identifies") int identifies);
+    public Call<ListResponse<BitemporalRecipe>> getRecipes(String startingFrom) {
+        return api.getRecipes(1, startingFrom);
+    }
 
-    @GET("/v2/ean")
-    Call<ListResponse<EanNumber>> getEanNumbers(@Query("bitemporal") int bitemporal,
-                                                @Query("startingFrom") String startingFrom);
+    public Call<ListResponse<BitemporalRecipeIngredient>> getRecipeIngredients(String startingFrom) {
+        return api.getRecipeIngredients(1, startingFrom);
+    }
 
-    @DELETE("/v2/ean")
-    Call<Response> deleteEanNumber(@Query("id") int id,
-                                   @Query("version") int version);
+    public Call<ListResponse<BitemporalRecipeProduct>> getRecipeProducts(String startingFrom) {
+        return api.getRecipeProducts(1, startingFrom);
+    }
 
-    @GET("/v2/unit")
-    Call<ListResponse<Unit>> getUnits(@Query("bitemporal") int bitemporal,
-                                      @Query("startingFrom") String startingFrom);
+    public Call<Response> addUser(String name) {
+        return api.addUser(name);
+    }
 
-    @GET("/v2/scaled-unit")
-    Call<ListResponse<ScaledUnit>> getScaledUnits(@Query("bitemporal") int bitemporal,
-                                                  @Query("startingFrom") String startingFrom);
+    public Call<Response> deleteUser(int id, int version) {
+        return api.deleteUser(id, version);
+    }
 
-    @GET("/v2/recipe")
-    Call<ListResponse<Recipe>> getRecipes(@Query("bitemporal") int bitemporal,
-                                          @Query("startingFrom") String startingFrom);
+    public Call<DataResponse<ServerTicket>> addDevice(String name, int uid) {
+        return api.addDevice(name, uid);
+    }
 
-    @GET("/v2/recipe-ingredient")
-    Call<ListResponse<RecipeIngredient>> getRecipeIngredients(@Query("bitemporal") int bitemporal,
-                                                              @Query("startingFrom") String startingFrom);
+    public Call<Response> deleteDevice(int id, int version) {
+        return api.deleteDevice(id, version);
+    }
 
-    @GET("/v2/recipe-product")
-    Call<ListResponse<RecipeProduct>> getRecipeProducts(@Query("bitemporal") int bitemporal,
-                                                        @Query("startingFrom") String startingFrom);
+    public Call<ListResponse<Update>> getUpdates() {
+        return api.getUpdates();
+    }
 
-    @DELETE("/v2/unit")
-    Call<Response> deleteUnit(@Query("id") int id,
-                              @Query("version") int version);
+    public Call<Response> addLocation(String name) {
+        return api.addLocation(name);
+    }
 
-    @PUT("/v2/unit/rename")
-    Call<Response> editUnit(@Query("id") int id,
-                            @Query("version") int version,
-                            @Query("name") String newName,
-                            @Query("abbreviation") String newAbbreviation);
-    @PUT("/v2/unit")
-    Call<Response> addUnit(@Query("name") String name,
-                             @Query("abbreviation") String abbreviation);
+    public Call<Response> renameLocation(int id, int version, String newName) {
+        return api.renameLocation(id, version, newName);
+    }
 
-    @DELETE("/v2/scaled-unit")
-    Call<Response> deleteScaledUnit(@Query("id") int id,
-                                    @Query("version") int version);
+    public Call<Response> setLocationDescription(int id, int version, String description) {
+        return api.setLocationDescription(id, version, description);
+    }
 
-    @PUT("/v2/scaled-unit/edit")
-    Call<Response> editScaledUnit(@Query("id") int id,
-                                  @Query("version") int version,
-                                  @Query("scale") String scale,
-                                  @Query("unit") int unit);
-    @PUT("/v2/scaled-unit")
-    Call<Response> addScaledUnit(@Query("scale") String scale,
-                                 @Query("unit") int unit);
+    public Call<Response> deleteLocation(int id, int version, int cascade) {
+        return api.deleteLocation(id, version, cascade);
+    }
+
+    public Call<Response> addFood(String name) {
+        return api.addFood(name);
+    }
+
+    public Call<Response> editFood(int id, int version, String newName, int expirationOffset, int location, String description, int storeUnit) {
+        return api.editFood(id, version, newName, expirationOffset, location, description, storeUnit);
+    }
+
+    public Call<Response> setToBuyStatus(int id, int version, int toBuy) {
+        return api.setToBuyStatus(id, version, toBuy);
+    }
+
+    public Call<Response> deleteFood(int id, int version) {
+        return api.deleteFood(id, version);
+    }
+
+    public Call<Response> addFoodItem(String eatByDate, int storedIn, int ofType, int unit) {
+        return api.addFoodItem(eatByDate, storedIn, ofType, unit);
+    }
+
+    public Call<Response> editFoodItem(int id, int version, String eatByDate, int storedIn, int unit) {
+        return api.editFoodItem(id, version, eatByDate, storedIn, unit);
+    }
+
+    public Call<Response> deleteFoodItem(int id, int version) {
+        return api.deleteFoodItem(id, version);
+    }
+
+    public Call<Response> addEanNumber(String code, int identifies) {
+        return api.addEanNumber(code, identifies);
+    }
+
+    public Call<Response> deleteEanNumber(int id, int version) {
+        return api.deleteEanNumber(id, version);
+    }
+
+    public Call<Response> deleteUnit(int id, int version) {
+        return api.deleteUnit(id, version);
+    }
+
+    public Call<Response> editUnit(int id, int version, String newName, String newAbbreviation) {
+        return api.editUnit(id, version, newName, newAbbreviation);
+    }
+
+    public Call<Response> addUnit(String name, String abbreviation) {
+        return api.addUnit(name, abbreviation);
+    }
+
+    public Call<Response> deleteScaledUnit(int id, int version) {
+        return api.deleteScaledUnit(id, version);
+    }
+
+    public Call<Response> editScaledUnit(int id, int version, String scale, int unit) {
+        return api.editScaledUnit(id, version, scale, unit);
+    }
+
+    public Call<Response> addScaledUnit(String scale, int unit) {
+        return api.addScaledUnit(scale, unit);
+    }
+
+    public Call<Response> addRecipe(FullRecipeForInsertion recipe) {
+        return api.addRecipe(recipe);
+    }
+
+    public Call<Response> deleteRecipe(FullRecipeForDeletion recipe) {
+        return api.deleteRecipe(recipe);
+    }
+
+    public Call<Response> editRecipe(FullRecipeForEditing recipe) {
+        return api.editRecipe(recipe);
+    }
 }

@@ -19,23 +19,22 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConnectionHandlerTest extends DbTestCase {
 
     private ConnectionHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new ConnectionHandler(getNewResourceIdentifier(),
                 getConnectionFactory(),
@@ -88,11 +87,11 @@ public class ConnectionHandlerTest extends DbTestCase {
         assertEquals(StatusCode.SERIALISATION_CONFLICT, result.fail());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void otherExceptionIsThrown() {
         RuntimeException e = new RuntimeException("", new SQLException("", "40002", null));
 
-        ConnectionHandler.lookForSqlException(e);
+        assertThrows(e.getClass(), () -> ConnectionHandler.lookForSqlException(e));
     }
 
     @Test

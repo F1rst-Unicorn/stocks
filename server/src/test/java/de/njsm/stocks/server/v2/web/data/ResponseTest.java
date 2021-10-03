@@ -19,11 +19,12 @@
 
 package de.njsm.stocks.server.v2.web.data;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
 import fj.data.Validation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ResponseTest {
 
@@ -33,6 +34,15 @@ public class ResponseTest {
 
         Response uut = new Response(input);
 
-        assertEquals(StatusCode.NOT_FOUND, uut.status);
+        assertEquals(StatusCode.NOT_FOUND, uut.getStatus());
+    }
+
+    @Test
+    public void successfulValidationIsSet() {
+        Validation<StatusCode, Integer> input = Validation.success(4);
+
+        Response uut = new Response(input);
+
+        assertEquals(StatusCode.SUCCESS, uut.getStatus());
     }
 }

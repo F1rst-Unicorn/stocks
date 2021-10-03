@@ -30,7 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
@@ -39,7 +39,7 @@ import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.DeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.Editor;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 
 public class UnitFragment extends InjectedFragment implements Editor<Unit> {
 
@@ -56,7 +56,7 @@ public class UnitFragment extends InjectedFragment implements Editor<Unit> {
         RecyclerView list = result.findViewById(R.id.fragment_units_list);
         list.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(UnitViewModel.class);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(UnitViewModel.class);
 
         adapter = new UnitAdapter(viewModel.getUnits(),
                 v -> initiateEditing(v, viewModel.getUnits(), R.string.dialog_edit),
@@ -71,7 +71,7 @@ public class UnitFragment extends InjectedFragment implements Editor<Unit> {
     }
 
     private void addUnit(View view) {
-        View form = getEditLayout(new Unit(), getLayoutInflater());
+        View form = getEditingLayout(getLayoutInflater());
 
         new AlertDialog.Builder(requireActivity())
                 .setTitle(getResources().getString(R.string.dialog_new_unit))
@@ -92,15 +92,22 @@ public class UnitFragment extends InjectedFragment implements Editor<Unit> {
         return viewModel.edit(item, newName, newAbbreviation);
     }
 
-    @Override
-    public View getEditLayout(Unit item, LayoutInflater layoutInflater) {
+    public View getEditingLayout(LayoutInflater layoutInflater) {
         View result = layoutInflater.inflate(R.layout.form_unit, null);
         EditText nameField = result.findViewById(R.id.form_unit_name);
-        nameField.setText(item.getName());
         nameField.addTextChangedListener(new NonEmptyValidator(nameField, this::showEmptyInputError));
         EditText abbreviationField = result.findViewById(R.id.form_unit_abbreviation);
-        abbreviationField.setText(item.getAbbreviation());
         abbreviationField.addTextChangedListener(new NonEmptyValidator(abbreviationField, this::showEmptyInputError));
+        return result;
+    }
+
+    @Override
+    public View getEditLayout(Unit item, LayoutInflater layoutInflater) {
+        View result = getEditingLayout(layoutInflater);
+        EditText nameField = result.findViewById(R.id.form_unit_name);
+        nameField.setText(item.getName());
+        EditText abbreviationField = result.findViewById(R.id.form_unit_abbreviation);
+        abbreviationField.setText(item.getAbbreviation());
         return result;
     }
 

@@ -29,8 +29,8 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.test.system.SystemTestSuite;
 import org.hamcrest.Matcher;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import java.util.Locale;
 

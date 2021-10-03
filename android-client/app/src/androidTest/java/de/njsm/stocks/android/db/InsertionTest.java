@@ -25,11 +25,13 @@ import de.njsm.stocks.android.db.dao.Inserter;
 import de.njsm.stocks.android.db.entities.VersionedData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.Collections;
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
@@ -41,30 +43,26 @@ public abstract class InsertionTest<T extends VersionedData> extends DbTestCase 
 
     abstract void alterDto(T data);
 
-    abstract T[] toArray(T data);
-
-    abstract T[] toArray(T data, T data2);
-
     @Test
     public void insertionWorks() {
         T data = getDto();
 
-        getDao().insert(toArray(data));
+        getDao().insert(singletonList(data));
 
         LiveData<List<T>> actual = getDao().getAll();
-        actual.observeForever(v -> assertEquals(Collections.singletonList(data), v));
+        actual.observeForever(v -> assertEquals(singletonList(data), v));
     }
 
     @Test
     public void insertionWithConflictReplaces() {
         Instant now = Instant.now();
         T dataToBeTerminated = getDto();
-        getDao().insert(toArray(dataToBeTerminated));
+        getDao().insert(singletonList(dataToBeTerminated));
         dataToBeTerminated.transactionTimeEnd = now;
         T terminatedData = getDto();
         terminatedData.validTimeEnd = now;
 
-        getDao().insert(toArray(dataToBeTerminated, terminatedData));
+        getDao().insert(newArrayList(dataToBeTerminated, terminatedData));
 
         setArtificialDbNow(now);
         LiveData<List<T>> actual = getDao().getAll();
@@ -74,12 +72,12 @@ public abstract class InsertionTest<T extends VersionedData> extends DbTestCase 
     @Test
     public void synchronisingWorks() {
         T data = getDto();
-        getDao().insert(toArray(data));
+        getDao().insert(singletonList(data));
         alterDto(data);
 
-        getDao().synchronise(toArray(data));
+        getDao().synchronise(singletonList(data));
 
         LiveData<List<T>> actual = getDao().getAll();
-        actual.observeForever(v -> assertEquals(Collections.singletonList(data), v));
+        actual.observeForever(v -> assertEquals(singletonList(data), v));
     }
 }

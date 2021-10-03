@@ -22,15 +22,17 @@ package de.njsm.stocks.android.db.dao;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.Update;
 
+import java.util.List;
+
 
 @Dao
 public abstract class UpdateDao {
 
     @Query("SELECT * FROM updates")
-    public abstract Update[] getAll();
+    public abstract List<Update> getAll();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void set(Update... u);
+    public abstract void set(List<Update> u);
 
     @Transaction
     public void reset() {

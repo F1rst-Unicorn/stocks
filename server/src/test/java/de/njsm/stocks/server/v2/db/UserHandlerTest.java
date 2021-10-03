@@ -19,31 +19,27 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class UserHandlerTest extends DbTestCase {
+public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<UserRecord, User> {
 
     private UserHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new UserHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
@@ -59,10 +55,26 @@ public class UserHandlerTest extends DbTestCase {
         assertTrue(result.isSuccess());
         List<User> list = result.success().collect(Collectors.toList());
         assertEquals(4, list.size());
-        assertThat(list, hasItem(new UserForGetting(1, 0, "Default")));
-        assertThat(list, hasItem(new UserForGetting(2, 0, "Bob")));
-        assertThat(list, hasItem(new UserForGetting(3, 0, "Alice")));
-        assertThat(list, hasItem(new UserForGetting(4, 0, "Jack")));
+        assertThat(list, hasItem(UserForGetting.builder()
+                .id(1)
+                .version(0)
+                .name("Default")
+                .build()));
+        assertThat(list, hasItem(UserForGetting.builder()
+                .id(2)
+                .version(0)
+                .name("Bob")
+                .build()));
+        assertThat(list, hasItem(UserForGetting.builder()
+                .id(3)
+                .version(0)
+                .name("Alice")
+                .build()));
+        assertThat(list, hasItem(UserForGetting.builder()
+                .id(4)
+                .version(0)
+                .name("Jack")
+                .build()));
     }
 
     @Test
@@ -71,56 +83,50 @@ public class UserHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<User>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalUser sample = (BitemporalUser) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
-    @Test
-    public void addingUserWorks() {
-        UserForInsertion input = new UserForInsertion("testuser");
-
-        Validation<StatusCode, Integer> result = uut.add(input);
-
-        Validation<StatusCode, Stream<User>> users = uut.get(false, Instant.EPOCH);
-        assertTrue(result.isSuccess());
-        List<User> list = users.success().collect(Collectors.toList());
-        assertEquals(Integer.valueOf(5), result.success());
-        assertTrue(users.isSuccess());
-        assertEquals(5, list.size());
-        assertThat(list, hasItem(matchesInsertable(input)));
+    @Override
+    public UserForInsertion getInsertable() {
+        return UserForInsertion.builder()
+                .name("testuser")
+                .build();
     }
 
-    @Test
-    public void deletingUnknownIdIsReported() {
-
-        StatusCode result = uut.delete(new UserForDeletion(99999, 0));
-
-        assertEquals(StatusCode.NOT_FOUND, result);
+    @Override
+    public CrudDatabaseHandler<UserRecord, User> getDbHandler() {
+        return uut;
     }
 
-    @Test
-    public void deletingInvalidVersionIsReported() {
-
-        StatusCode result = uut.delete(new UserForDeletion(1, 999));
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    @Override
+    public int getNumberOfEntities() {
+        return 4;
     }
 
-    @Test
-    public void deletingValidDeviceWorks() {
-        UserForDeletion input = new UserForDeletion(1, 0);
-
-        StatusCode result = uut.delete(input);
-
-        Validation<StatusCode, Stream<User>> users = uut.get(false, Instant.EPOCH);
-        assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(users.isSuccess());
-        List<User> list = users.success().collect(Collectors.toList());
-        assertEquals(3, list.size());
-        UserForGetting expectedAbsent = new UserForGetting(1, 0, "Bob");
-        assertThat(list, not(hasItem(expectedAbsent)));
+    @Override
+    public Versionable<User> getUnknownEntity() {
+        return UserForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
     }
 
+    @Override
+    public Versionable<User> getWrongVersionEntity() {
+        return UserForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public Versionable<User> getValidEntity() {
+        return UserForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+    }
 }

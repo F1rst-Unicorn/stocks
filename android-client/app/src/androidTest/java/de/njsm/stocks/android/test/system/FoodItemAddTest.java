@@ -23,7 +23,7 @@ package de.njsm.stocks.android.test.system;
 import androidx.test.filters.LargeTest;
 
 import org.junit.Test;
-import org.threeten.bp.LocalDate;
+import java.time.LocalDate;
 
 import de.njsm.stocks.android.test.system.screen.FoodScreen;
 import de.njsm.stocks.android.test.system.screen.OutlineScreen;

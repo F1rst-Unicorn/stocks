@@ -25,12 +25,12 @@ import de.njsm.stocks.android.db.entities.FoodItem;
 import de.njsm.stocks.android.db.entities.Sql;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.db.views.ScaledAmount;
-import org.threeten.bp.Instant;
 
+import java.time.Instant;
 import java.util.List;
 
-import static de.njsm.stocks.android.db.entities.Sql.*;
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.db.entities.Sql.*;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
@@ -38,10 +38,10 @@ import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 public abstract class FoodItemDao implements Inserter<FoodItem> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(FoodItem[] food);
+    public abstract void insert(List<FoodItem> food);
 
     @Transaction
-    public void synchronise(FoodItem[] food) {
+    public void synchronise(List<FoodItem> food) {
         delete();
         insert(food);
     }

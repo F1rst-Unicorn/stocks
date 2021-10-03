@@ -621,6 +621,44 @@
         android:label="@string/title_unit_activity"
         tools:layout="@layout/template_swipe_list">
     </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_recipes"
+        android:name="de.njsm.stocks.android.frontend.recipe.RecipeListFragment"
+        android:label="@string/title_recipes"
+        tools:layout="@layout/template_swipe_list">
+        <action
+                android:id="@+id/action_nav_fragment_recipes_to_nav_fragment_add_recipe"
+                app:destination="@id/nav_fragment_add_recipe"/>
+        <action
+                android:id="@+id/action_nav_fragment_recipes_to_nav_fragment_recipe"
+                app:destination="@id/nav_fragment_recipe"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_add_recipe"
+        android:name="de.njsm.stocks.android.frontend.addrecipe.RecipeAddFragment"
+        android:label="@string/title_add_recipe"
+        tools:layout="@layout/fragment_recipe_add"/>
+    <fragment
+        android:id="@+id/nav_fragment_edit_recipe"
+        android:name="de.njsm.stocks.android.frontend.addrecipe.RecipeEditFragment"
+        android:label="@string/title_edit_recipe"
+        tools:layout="@layout/fragment_recipe_add">
+        <argument
+            android:name="recipeId"
+            app:argType="integer"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_recipe"
+        android:name="de.njsm.stocks.android.frontend.recipedetail.RecipeFragment"
+        tools:layout="@layout/fragment_recipe">
+        <argument
+                android:name="recipeId"
+                app:argType="integer"/>
+        <action
+                android:id="@+id/action_nav_fragment_recipe_to_nav_fragment_edit_recipe"
+                app:destination="@id/nav_fragment_edit_recipe"
+                app:popUpTo="@id/nav_fragment_recipe"/>
+    </fragment>
     <action
         android:id="@+id/action_global_nav_fragment_settings"
         app:destination="@id/nav_fragment_settings"
@@ -656,6 +694,14 @@
     <action
         android:id="@+id/action_global_nav_fragment_units"
         app:destination="@id/nav_fragment_units"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/nav_fragment_outline" />
+    <action
+        android:id="@+id/action_global_nav_fragment_recipes"
+        app:destination="@id/nav_fragment_recipes"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"

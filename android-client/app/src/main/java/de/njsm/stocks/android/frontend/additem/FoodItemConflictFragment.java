@@ -33,7 +33,7 @@ import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.db.views.ScaledUnitView;
 import de.njsm.stocks.android.util.Config;
 import de.njsm.stocks.android.util.livedata.ThreeWayJoiningLiveData;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 public class FoodItemConflictFragment extends EditItemFragment {
 

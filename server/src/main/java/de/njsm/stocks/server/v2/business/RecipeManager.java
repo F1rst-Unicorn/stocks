@@ -19,23 +19,97 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.Recipe;
-import de.njsm.stocks.server.v2.business.data.RecipeForDeletion;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.RecipeHandler;
+import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;
+import de.njsm.stocks.server.v2.db.RecipeProductHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 
 public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
         implements BusinessGettable<RecipeRecord, Recipe>,
-                   BusinessDeletable<RecipeForDeletion, Recipe> {
+                   BusinessDeletable<FullRecipeForDeletion, Recipe> {
 
     private final RecipeHandler dbHandler;
 
-    public RecipeManager(RecipeHandler dbHandler) {
+    private final RecipeIngredientHandler recipeIngredientHandler;
+
+    private final RecipeProductHandler recipeProductHandler;
+
+    public RecipeManager(RecipeHandler dbHandler, RecipeIngredientHandler ingredientHandler, RecipeProductHandler recipeProductHandler) {
         super(dbHandler);
         this.dbHandler = dbHandler;
+        recipeIngredientHandler = ingredientHandler;
+        this.recipeProductHandler = recipeProductHandler;
     }
 
-    public StatusCode delete(RecipeForDeletion Recipe) {
-        return runOperation(() -> dbHandler.delete(Recipe));
+    public StatusCode add(FullRecipeForInsertion fullRecipeForInsertion) {
+        return runOperation(() -> dbHandler.addReturningId(fullRecipeForInsertion.recipe())
+                .map(recipeId -> fullRecipeForInsertion.ingredients().stream()
+                        .reduce(StatusCode.SUCCESS,
+                                (code, item) ->
+                                        code.bind(() -> recipeIngredientHandler.add(item.withRecipe(recipeId))),
+                                (x, y) -> x)
+                        .bind(() -> fullRecipeForInsertion.products().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) -> code.bind(() -> recipeProductHandler.add(item.withRecipe(recipeId))),
+                                        (x,y) -> x))).toEither().right().orValue(() -> StatusCode.SUCCESS)
+        );
+    }
+
+    public StatusCode edit(FullRecipeForEditing input) {
+        return runOperation(() ->
+                recipeIngredientHandler.areEntitiesComplete(input.recipe(), input.existingIngredients())
+                        .bind(() -> recipeProductHandler.areEntitiesComplete(input.recipe(), input.existingProducts()))
+                        .bind(() -> input.ingredients().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) ->
+                                                code.bind(() -> recipeIngredientHandler.edit(item)),
+                                        (x,y) -> x))
+                        .bind(() -> input.ingredientsToDelete().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) ->
+                                                code.bind(() -> recipeIngredientHandler.delete(item)),
+                                        (x,y) -> x))
+                        .bind(() -> input.ingredientsToInsert().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) ->
+                                                code.bind(() -> recipeIngredientHandler.add(item.withRecipe(input.recipe().id()))),
+                                        (x,y) -> x))
+                        .bind(() -> input.products().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) ->
+                                                code.bind(() -> recipeProductHandler.edit(item)),
+                                        (x,y) -> x))
+                        .bind(() -> input.productsToDelete().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) ->
+                                                code.bind(() -> recipeProductHandler.delete(item)),
+                                        (x,y) -> x))
+                        .bind(() -> input.productsToInsert().stream()
+                                .reduce(StatusCode.SUCCESS,
+                                        (code, item) ->
+                                                code.bind(() -> recipeProductHandler.add(item.withRecipe(input.recipe().id()))),
+                                        (x,y) -> x))
+                        .bind(() -> dbHandler.edit(input.recipe()))
+        );
+    }
+
+    @Override
+    public StatusCode delete(FullRecipeForDeletion recipe) {
+        return runOperation(() ->
+                recipeIngredientHandler.areEntitiesComplete(recipe.recipe(), recipe.ingredients())
+                        .bind(() -> recipeProductHandler.areEntitiesComplete(recipe.recipe(), recipe.products()))
+                        .bind(() -> recipeIngredientHandler.deleteAllOf(recipe.recipe()))
+                        .bind(() -> recipeProductHandler.deleteAllOf(recipe.recipe()))
+                        .bind(() -> dbHandler.delete(recipe.recipe()))
+        );
+    }
+
+    @Override
+    public void setPrincipals(Principals principals) {
+        super.setPrincipals(principals);
+        recipeIngredientHandler.setPrincipals(principals);
+        recipeProductHandler.setPrincipals(principals);
     }
 }

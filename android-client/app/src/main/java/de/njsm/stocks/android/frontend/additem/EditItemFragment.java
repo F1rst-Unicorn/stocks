@@ -30,10 +30,12 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.business.data.conflict.FoodItemInConflict;
 import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.views.FoodItemView;
-import de.njsm.stocks.android.network.server.StatusCode;
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZoneId;
+import de.njsm.stocks.common.api.StatusCode;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+import static de.njsm.stocks.android.error.StatusCodeMessages.getEditErrorMessage;
 
 
 public class EditItemFragment extends AddItemFragment {
@@ -131,7 +133,7 @@ public class EditItemFragment extends AddItemFragment {
             } else if (code == StatusCode.INVALID_DATA_VERSION) {
                 resolveConflict(editedItem);
             } else {
-                showErrorMessage(requireActivity(), code.getEditErrorMessage());
+                showErrorMessage(requireActivity(), getEditErrorMessage(code));
             }
         });
     }

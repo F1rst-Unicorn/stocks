@@ -19,10 +19,10 @@
 
 package de.njsm.stocks.server.v2.web.servlet;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.web.data.Response;
-import org.junit.After;
-import org.junit.Test;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.ContainerResponseContext;
@@ -34,7 +34,7 @@ public class StatusCodeFilterTest {
 
     private ContainerResponseContext context = Mockito.mock(ContainerResponseContext.class);
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(context);
     }

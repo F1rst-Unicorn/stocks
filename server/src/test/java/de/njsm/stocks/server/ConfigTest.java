@@ -19,21 +19,22 @@
 
 package de.njsm.stocks.server;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.Properties;
 
 import static de.njsm.stocks.server.Config.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ConfigTest {
 
     private Properties p;
 
-    @Before
+    @BeforeEach
     public void setup() {
         p = new Properties();
         p.put(DB_ADDRESS_KEY, "localhost");
@@ -60,24 +61,24 @@ public class ConfigTest {
         assertEquals(Period.ofYears(3), uut.getDbHistoryMaxPeriod());
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void testInvalidNumberInTicketValidity() {
         p.put(DB_VALIDITY_KEY, "invalidNumber");
 
-        new Config(p);
+        assertThrows(NumberFormatException.class, () -> new Config(p));
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void testInvalidNumberInCircuitBreakerTimeout() {
         p.put(DB_CIRCUIT_BREAKER_TIMEOUT_KEY, "invalidNumber");
 
-        new Config(p);
+        assertThrows(NumberFormatException.class, () -> new Config(p));
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test
     public void testInvalidPeriodInMaxHistory() {
         p.put(DB_HISTORY_MAX_PERIOD, "invalidPeriod");
 
-        new Config(p);
+        assertThrows(DateTimeParseException.class, () -> new Config(p));
     }
 }

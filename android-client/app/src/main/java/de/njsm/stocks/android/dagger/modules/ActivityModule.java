@@ -25,6 +25,8 @@ import de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider;
 import de.njsm.stocks.android.frontend.additem.AddItemFragment;
 import de.njsm.stocks.android.frontend.additem.EditItemFragment;
 import de.njsm.stocks.android.frontend.additem.FoodItemConflictFragment;
+import de.njsm.stocks.android.frontend.addrecipe.RecipeAddFragment;
+import de.njsm.stocks.android.frontend.addrecipe.RecipeEditFragment;
 import de.njsm.stocks.android.frontend.allfood.AllFoodFragment;
 import de.njsm.stocks.android.frontend.crashlog.CrashLogListFragment;
 import de.njsm.stocks.android.frontend.device.DeviceFragment;
@@ -42,6 +44,8 @@ import de.njsm.stocks.android.frontend.locationhistory.LocationHistoryFragment;
 import de.njsm.stocks.android.frontend.locations.LocationFragment;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.frontend.main.OutlineFragment;
+import de.njsm.stocks.android.frontend.recipe.RecipeListFragment;
+import de.njsm.stocks.android.frontend.recipedetail.RecipeFragment;
 import de.njsm.stocks.android.frontend.search.SearchFragment;
 import de.njsm.stocks.android.frontend.settings.SettingsFragment;
 import de.njsm.stocks.android.frontend.shoppinglist.ShoppingListFragment;
@@ -138,6 +142,18 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract UnitHistoryFragment contributeUnitHistoryFragment();
+
+    @ContributesAndroidInjector
+    abstract RecipeListFragment contributeRecipeListFragment();
+
+    @ContributesAndroidInjector
+    abstract RecipeAddFragment contributeRecipeAddFragment();
+
+    @ContributesAndroidInjector
+    abstract RecipeFragment contributeRecipeFragment();
+
+    @ContributesAndroidInjector
+    abstract RecipeEditFragment contributeRecipeEditFragment();
 
     @ContributesAndroidInjector
     abstract MainActivity contributeMainActivity();

@@ -19,15 +19,16 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.UnitForDeletion;
-import de.njsm.stocks.server.v2.business.data.UnitForRenaming;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.UnitForDeletion;
+import de.njsm.stocks.common.api.UnitForRenaming;
 import de.njsm.stocks.server.v2.db.UnitHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class UnitManagerTest {
@@ -36,7 +37,7 @@ public class UnitManagerTest {
 
     private UnitHandler dbHandler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         dbHandler = mock(UnitHandler.class);
         when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
@@ -44,7 +45,7 @@ public class UnitManagerTest {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         verify(dbHandler).setPrincipals(TEST_USER);
         verifyNoMoreInteractions(dbHandler);
@@ -52,7 +53,12 @@ public class UnitManagerTest {
 
     @Test
     public void renamingWorks() {
-        UnitForRenaming data = new UnitForRenaming(1, 2, "name", "abbreviation");
+        UnitForRenaming data = UnitForRenaming.builder()
+                .id(1)
+                .version(2)
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
         when(dbHandler.rename(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.rename(data);
@@ -64,7 +70,10 @@ public class UnitManagerTest {
 
     @Test
     public void deletingWorks() {
-        UnitForDeletion data = new UnitForDeletion(1, 2);
+        UnitForDeletion data = UnitForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         when(dbHandler.delete(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);

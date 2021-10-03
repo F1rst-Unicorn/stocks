@@ -19,11 +19,11 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.Instant;
@@ -31,21 +31,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 
-public class LocationHandlerTest extends DbTestCase {
+public class LocationHandlerTest extends DbTestCase implements CrudOperationsTest<LocationRecord, Location> {
 
     private LocationHandler uut;
 
     private FoodItemHandler foodItemHandler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
@@ -66,18 +62,18 @@ public class LocationHandlerTest extends DbTestCase {
                 .map(v -> (BitemporalLocation) v).collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 1 &&
-                        l.getVersion() == 0 &&
-                        l.getName().equals("Fridge") &&
-                        l.getDescription().equals("fridge description") &&
-                        l.getInitiates() == 1));
+                l.id() == 1 &&
+                        l.version() == 0 &&
+                        l.name().equals("Fridge") &&
+                        l.description().equals("fridge description") &&
+                        l.initiates() == 1));
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 2 &&
-                        l.getVersion() == 0 &&
-                        l.getName().equals("Cupboard") &&
-                        l.getDescription().equals("cupboard description") &&
-                        l.getInitiates() == 1));
+                l.id() == 2 &&
+                        l.version() == 0 &&
+                        l.name().equals("Cupboard") &&
+                        l.description().equals("cupboard description") &&
+                        l.initiates() == 1));
     }
 
     @Test
@@ -89,55 +85,45 @@ public class LocationHandlerTest extends DbTestCase {
         List<Location> data = result.success().collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 1 &&
-                        l.getVersion() == 0 &&
-                        l.getName().equals("Fridge") &&
-                        l.getDescription().equals("fridge description")));
+                l.id() == 1 &&
+                        l.version() == 0 &&
+                        l.name().equals("Fridge") &&
+                        l.description().equals("fridge description")));
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 2 &&
-                        l.getVersion() == 0 &&
-                        l.getName().equals("Cupboard") &&
-                        l.getDescription().equals("cupboard description")));
+                l.id() == 2 &&
+                        l.version() == 0 &&
+                        l.name().equals("Cupboard") &&
+                        l.description().equals("cupboard description")));
     }
 
-    @Test
-    public void addALocation() {
-        LocationForInsertion data = new LocationForInsertion("Fridge");
-
-        Validation<StatusCode, Integer> code = uut.add(data);
-
-        assertTrue(code.isSuccess());
-
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-        assertThat(dbData.success().collect(Collectors.toList()),
-                hasItem(matchesInsertable(data)));
+    @Override
+    public LocationForInsertion getInsertable() {
+        return LocationForInsertion.builder()
+                .name("Fridge")
+                .build();
     }
 
     @Test
     public void renameALocation() {
-        LocationForRenaming data = new LocationForRenaming(2, 0, "Basement");
+        LocationForRenaming data = LocationForRenaming.builder()
+                .id(2)
+                .version(0)
+                .name("Basement")
+                .build();
 
         StatusCode result = uut.rename(data);
 
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f ->
-                f.getName().equals("Basement")
-                        && f.getId() == 2
-                        && f.getVersion() == 1
-                        && f.getInitiates() == TEST_USER.getDid()));
+        assertEditingWorked(data, result);
     }
 
     @Test
     public void wrongVersionIsNotRenamed() {
-        LocationForRenaming data = new LocationForRenaming(2, 100, "Basement");
+        LocationForRenaming data = LocationForRenaming.builder()
+                .id(2)
+                .version(100)
+                .name("Basement")
+                .build();
 
         StatusCode result = uut.rename(data);
 
@@ -146,7 +132,11 @@ public class LocationHandlerTest extends DbTestCase {
 
     @Test
     public void unknownIsReported() {
-        LocationForRenaming data = new LocationForRenaming(100, 1, "Basement");
+        LocationForRenaming data = LocationForRenaming.builder()
+                .id(100)
+                .version(1)
+                .name("Basement")
+                .build();
 
         StatusCode result = uut.rename(data);
 
@@ -154,30 +144,11 @@ public class LocationHandlerTest extends DbTestCase {
     }
 
     @Test
-    public void deleteALocation() {
-        LocationForDeletion data = new LocationForDeletion(2, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(Location::getName).noneMatch(name -> name.equals("Cupboard")));
-
-        dbData = uut.get(true, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.getName().equals("Cupboard")
-                && f.getId() == 2
-                && f.getVersion() == 0
-                && !f.getValidTimeEnd().equals(INFINITY.toInstant())
-                && f.getTransactionTimeEnd().equals(INFINITY.toInstant())
-                && f.getInitiates() == TEST_USER.getDid()));
-    }
-
-    @Test
     public void deleteALocationWithItemsInsideFails() {
-        LocationForDeletion data = new LocationForDeletion(1, 0);
+        LocationForDeletion data = LocationForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
         Mockito.when(foodItemHandler.areItemsStoredIn(any(), any())).thenReturn(true);
 
         StatusCode result = uut.delete(data);
@@ -186,59 +157,43 @@ public class LocationHandlerTest extends DbTestCase {
     }
 
     @Test
-    public void invalidDataVersionIsRejected() {
-        LocationForDeletion data = new LocationForDeletion(2, 100);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertEquals(2, dbData.success().count());
-    }
-
-    @Test
-    public void unknownDeletionsAreReported() {
-        LocationForDeletion data = new LocationForDeletion(100, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.NOT_FOUND, result);
-    }
-
-    @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
         Validation<StatusCode, Stream<Location>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalLocation sample = (BitemporalLocation) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test
     public void settingDescriptionWorks() {
-        LocationForSetDescription data = new LocationForSetDescription(1, 0, "new description");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(1)
+                .version(0)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue("expected description '" + data.getDescription() + "' not found",
-                uut.get(false, Instant.EPOCH)
+        assertTrue(uut.get(false, Instant.EPOCH)
                         .success()
-                        .anyMatch(f -> f.getId() == data.getId() &&
-                                data.getVersion() + 1 == f.getVersion() &&
-                                data.getDescription().equals(f.getDescription())));
+                        .anyMatch(f -> f.id() == data.id() &&
+                                data.version() + 1 == f.version() &&
+                                data.description().equals(f.description())),
+                () -> "expected description '" + data.description() + "' not found");
     }
 
     @Test
     public void settingDescriptionOnAbsentLocationIsReported() {
-        LocationForSetDescription data = new LocationForSetDescription(-1, 0, "new description");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -247,7 +202,11 @@ public class LocationHandlerTest extends DbTestCase {
 
     @Test
     public void settingDescriptionOnInvalidVersionIsReported() {
-        LocationForSetDescription data = new LocationForSetDescription(1, 1, "new description");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(1)
+                .version(1)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -256,10 +215,48 @@ public class LocationHandlerTest extends DbTestCase {
 
     @Test
     public void settingDescriptionWithoutChangeIsPrevented() {
-        LocationForSetDescription data = new LocationForSetDescription(1, 0, "fridge description");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(1)
+                .version(0)
+                .description("fridge description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
+
+    @Override
+    public CrudDatabaseHandler<LocationRecord, Location> getDbHandler() {
+        return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 2;
+    }
+
+    @Override
+    public LocationForDeletion getUnknownEntity() {
+        return LocationForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(getValidEntity().version())
+                .build();
+    }
+
+    @Override
+    public LocationForDeletion getWrongVersionEntity() {
+        return LocationForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public LocationForDeletion getValidEntity() {
+        return LocationForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
     }
 }

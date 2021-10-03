@@ -19,20 +19,20 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.UnitForDeletion;
+import de.njsm.stocks.common.api.UnitForInsertion;
+import de.njsm.stocks.common.api.UnitForRenaming;
 import de.njsm.stocks.server.v2.business.UnitManager;
-import de.njsm.stocks.server.v2.business.data.UnitForInsertion;
-import de.njsm.stocks.server.v2.business.data.UnitForRenaming;
-import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,13 +43,13 @@ public class UnitEndpointTest {
 
     private UnitManager manager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         manager = Mockito.mock(UnitManager.class);
         uut = new UnitEndpoint(manager);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(manager);
     }
@@ -70,10 +70,13 @@ public class UnitEndpointTest {
 
     @Test
     public void validPuttingIsDone() {
-        UnitForInsertion input = new UnitForInsertion("name", "abbreviation");
-        when(manager.add(any())).thenReturn(Validation.success(1));
+        UnitForInsertion input = UnitForInsertion.builder()
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
+        when(manager.add(any())).thenReturn(StatusCode.SUCCESS);
 
-        Response response = uut.put(createMockRequest(), input.getName(), input.getAbbreviation());
+        Response response = uut.put(createMockRequest(), input.name(), input.abbreviation());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).add(input);
@@ -82,10 +85,13 @@ public class UnitEndpointTest {
 
     @Test
     public void invalidBusinessPuttingIsPropagated() {
-        UnitForInsertion input = new UnitForInsertion("name", "abbreviation");
-        when(manager.add(any())).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+        UnitForInsertion input = UnitForInsertion.builder()
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
+        when(manager.add(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        Response response = uut.put(createMockRequest(), input.getName(), input.getAbbreviation());
+        Response response = uut.put(createMockRequest(), input.name(), input.abbreviation());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).add(input);
@@ -122,10 +128,15 @@ public class UnitEndpointTest {
 
     @Test
     public void invalidBusinessRenamingIsPropagated() {
-        UnitForRenaming input = new UnitForRenaming(1, 1, "name", "abbreviation");
+        UnitForRenaming input = UnitForRenaming.builder()
+                .id(1)
+                .version(1)
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
         when(manager.rename(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        Response response = uut.rename(createMockRequest(), input.getId(), input.getVersion(), input.getName(), input.getAbbreviation());
+        Response response = uut.rename(createMockRequest(), input.id(), input.version(), input.name(), input.abbreviation());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).rename(input);
@@ -134,13 +145,30 @@ public class UnitEndpointTest {
 
     @Test
     public void validRenamingWorks() {
-        UnitForRenaming input = new UnitForRenaming(1, 1, "name", "abbreviation");
+        UnitForRenaming input = UnitForRenaming.builder()
+                .id(1)
+                .version(1)
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
         when(manager.rename(any())).thenReturn(StatusCode.SUCCESS);
 
-        Response response = uut.rename(createMockRequest(), input.getId(), input.getVersion(), input.getName(), input.getAbbreviation());
+        Response response = uut.rename(createMockRequest(), input.id(), input.version(), input.name(), input.abbreviation());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).rename(input);
         verify(manager).setPrincipals(TEST_USER);
+    }
+
+
+    @Test
+    public void wrappingDeletionParameterWorks() {
+        int id = 1;
+        int version = 2;
+
+        UnitForDeletion result = uut.wrapParameters(id, version);
+
+        assertEquals(id, result.id());
+        assertEquals(version, result.version());
     }
 }

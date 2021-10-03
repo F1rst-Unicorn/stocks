@@ -19,18 +19,21 @@
 
 package de.njsm.stocks.server.v2.web;
 
+
+import de.njsm.stocks.common.api.EanNumber;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.EanNumberForDeletion;
+import de.njsm.stocks.common.api.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.EanNumber;
-import de.njsm.stocks.server.v2.business.data.EanNumberForDeletion;
-import de.njsm.stocks.server.v2.business.data.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
-import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -55,7 +58,10 @@ public class EanNumberEndpoint extends Endpoint implements
                 isValid(foodId, "foodId")) {
 
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new EanNumberForInsertion(foodId, code));
+            StatusCode status = manager.add(EanNumberForInsertion.builder()
+                    .identifiesFood(foodId)
+                    .eanNumber(code)
+                    .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -69,6 +75,9 @@ public class EanNumberEndpoint extends Endpoint implements
 
     @Override
     public EanNumberForDeletion wrapParameters(int id, int version) {
-        return new EanNumberForDeletion(id, version);
+        return EanNumberForDeletion.builder()
+                .id(id)
+                .version(version)
+                .build();
     }
 }

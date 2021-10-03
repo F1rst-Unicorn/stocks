@@ -20,9 +20,9 @@
 package de.njsm.stocks.server.util;
 
 import com.netflix.hystrix.exception.HystrixRuntimeException;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
-import de.njsm.stocks.server.v2.business.StatusCode;
 import fj.data.Validation;
 import io.prometheus.client.Counter;
 import org.apache.logging.log4j.LogManager;

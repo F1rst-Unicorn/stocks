@@ -19,19 +19,16 @@
 
 package de.njsm.stocks.server.v2.web;
 
+
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.FoodManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
-import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.time.Period;
 
 @Path("v2/food")
 public class FoodEndpoint extends Endpoint implements
@@ -52,7 +49,10 @@ public class FoodEndpoint extends Endpoint implements
                             @QueryParam("unit") Integer storeUnit) {
         if (isValid(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new FoodForInsertion(name, storeUnit));
+            StatusCode status = manager.add(FoodForInsertion.builder()
+                    .name(name)
+                    .storeUnit(storeUnit)
+                    .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -77,14 +77,15 @@ public class FoodEndpoint extends Endpoint implements
 
             manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.rename(
-                    new FoodForEditing(
-                            id,
-                            version,
-                            newName,
-                            expirationOffset == null ? null : Period.ofDays(expirationOffset),
-                            location,
-                            description,
-                            storeUnit));
+                    FoodForEditing.builder()
+                            .id(id)
+                            .version(version)
+                            .name(newName)
+                            .expirationOffset(expirationOffset)
+                            .location(location)
+                            .description(description)
+                            .storeUnit(storeUnit)
+                            .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -116,7 +117,11 @@ public class FoodEndpoint extends Endpoint implements
 
             manager.setPrincipals(getPrincipals(request));
             boolean toBuy = toBuyParameter == 1;
-            StatusCode status = manager.setToBuyStatus(new FoodForSetToBuy(id, version, toBuy));
+            StatusCode status = manager.setToBuyStatus(FoodForSetToBuy.builder()
+                    .id(id)
+                    .version(version)
+                    .toBuy(toBuy)
+                    .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -133,7 +138,11 @@ public class FoodEndpoint extends Endpoint implements
                                    @FormParam("description") String description) {
         if (isValid(id, "id") && isValidVersion(version, "version") && isValidOrEmpty(description, "description")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.setDescription(new FoodForSetDescription(id, version, description));
+            StatusCode result = manager.setDescription(FoodForSetDescription.builder()
+                    .id(id)
+                    .version(version)
+                    .description(description)
+                    .build());
             return new Response(result);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -147,6 +156,9 @@ public class FoodEndpoint extends Endpoint implements
 
     @Override
     public FoodForDeletion wrapParameters(int id, int version) {
-        return new FoodForDeletion(id, version);
+        return FoodForDeletion.builder()
+                .id(id)
+                .version(version)
+                .build();
     }
 }

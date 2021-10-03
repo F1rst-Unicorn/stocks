@@ -19,15 +19,9 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.ScaledUnit;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForDeletion;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForEditing;
-import de.njsm.stocks.server.v2.business.data.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
-import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +31,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.math.BigDecimal;
 
 @Path("v2/scaled-unit")
 public class ScaledUnitEndpoint extends Endpoint implements Get<ScaledUnitRecord, ScaledUnit>, Delete<ScaledUnitForDeletion, ScaledUnit> {
@@ -52,15 +45,14 @@ public class ScaledUnitEndpoint extends Endpoint implements Get<ScaledUnitRecord
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response put(@Context HttpServletRequest request,
-                            @QueryParam("scale") String scale,
-                            @QueryParam("unit") int unit) {
-        if (isValidBigDecimal(scale, "scale") && isValid(unit, "unit")) {
-            manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new ScaledUnitForInsertion(new BigDecimal(scale), unit));
-            return new Response(status);
-        } else {
-            return new Response(StatusCode.INVALID_ARGUMENT);
-        }
+                        @QueryParam("scale") String scale,
+                        @QueryParam("unit") int unit) {
+        manager.setPrincipals(getPrincipals(request));
+        StatusCode status = manager.add(ScaledUnitForInsertion.builder()
+                .scale(scale)
+                .unit(unit)
+                .build());
+        return new Response(status);
     }
 
     @PUT
@@ -71,16 +63,14 @@ public class ScaledUnitEndpoint extends Endpoint implements Get<ScaledUnitRecord
                          @QueryParam("version") int version,
                          @QueryParam("scale") String scale,
                          @QueryParam("unit") int unit) {
-        if (isValid(id, "id") &&
-                isValidVersion(version, "version") &&
-                isValidBigDecimal(scale, "scale") &&
-                isValid(unit, "unit")) {
-            manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.edit(new ScaledUnitForEditing(id, version, new BigDecimal(scale), unit));
-            return new Response(status);
-        } else {
-            return new Response(StatusCode.INVALID_ARGUMENT);
-        }
+        manager.setPrincipals(getPrincipals(request));
+        StatusCode status = manager.edit(ScaledUnitForEditing.builder()
+                .id(id)
+                .version(version)
+                .scale(scale)
+                .unit(unit)
+                .build());
+        return new Response(status);
     }
 
     @Override
@@ -90,6 +80,9 @@ public class ScaledUnitEndpoint extends Endpoint implements Get<ScaledUnitRecord
 
     @Override
     public ScaledUnitForDeletion wrapParameters(int id, int version) {
-        return new ScaledUnitForDeletion(id, version);
+        return ScaledUnitForDeletion.builder()
+                .id(id)
+                .version(version)
+                .build();
     }
 }

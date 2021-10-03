@@ -19,51 +19,15 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-import java.util.Objects;
+import com.google.auto.value.AutoValue;
 
-public class NewDeviceTicket {
+@AutoValue
+public abstract class NewDeviceTicket implements TicketData {
 
-    private final int deviceId;
-
-    private final String ticket;
-
-    public NewDeviceTicket(int deviceId, String ticket) {
-        this.deviceId = deviceId;
-        this.ticket = ticket;
+    public static Builder builder() {
+        return new AutoValue_NewDeviceTicket.Builder();
     }
 
-    public int getDeviceId() {
-        return deviceId;
-    }
-
-    public String getTicket() {
-        return ticket;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        NewDeviceTicket that = (NewDeviceTicket) o;
-
-        if (deviceId != that.deviceId) return false;
-        return Objects.equals(ticket, that.ticket);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = deviceId;
-        result = 31 * result + (ticket != null ? ticket.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "NewDeviceTicket{" +
-                "deviceId=" + deviceId +
-                ", ticket='" + ticket + '\'' +
-                '}';
-    }
+    @AutoValue.Builder
+    public abstract static class Builder implements TicketData.Builder<Builder, NewDeviceTicket> {}
 }

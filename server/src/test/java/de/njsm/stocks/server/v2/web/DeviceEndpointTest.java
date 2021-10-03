@@ -19,19 +19,15 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.UserDeviceForDeletion;
+import de.njsm.stocks.common.api.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.business.DeviceManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
-import de.njsm.stocks.server.v2.business.data.UserDeviceForDeletion;
-import de.njsm.stocks.server.v2.business.data.UserDeviceForInsertion;
-import de.njsm.stocks.server.v2.web.data.DataResponse;
-import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -41,7 +37,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 public class DeviceEndpointTest {
@@ -50,14 +46,14 @@ public class DeviceEndpointTest {
 
     private DeviceEndpoint uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         businessObject = Mockito.mock(DeviceManager.class);
 
         uut = new DeviceEndpoint(businessObject);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(businessObject);
     }
@@ -89,10 +85,16 @@ public class DeviceEndpointTest {
 
     @Test
     public void addDevice() {
-        UserDeviceForInsertion device = new UserDeviceForInsertion("test", 2);
-        Mockito.when(businessObject.addDevice(device)).thenReturn(Validation.success(new NewDeviceTicket(0, "")));
+        UserDeviceForInsertion device = UserDeviceForInsertion.builder()
+                .name("test")
+                .belongsTo(2)
+                .build();
+        Mockito.when(businessObject.addDevice(device)).thenReturn(Validation.success(NewDeviceTicket.builder()
+                .deviceId(0)
+                .ticket("")
+                .build()));
 
-        DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), device.getName(), device.getBelongsTo());
+        DataResponse<NewDeviceTicket> result = uut.putDevice(createMockRequest(), device.name(), device.belongsTo());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(businessObject).addDevice(device);
@@ -141,12 +143,15 @@ public class DeviceEndpointTest {
 
     @Test
     public void deleteDevice() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(4, 3);
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(4)
+                .version(3)
+                .build();
         Mockito.when(businessObject.delete(device)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.deleteDevice(createMockRequest(),
-                device.getId(),
-                device.getVersion());
+                device.id(),
+                device.version());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(businessObject).delete(device);
@@ -177,12 +182,15 @@ public class DeviceEndpointTest {
 
     @Test
     public void revokeDevice() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(4, 3);
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(4)
+                .version(3)
+                .build();
         Mockito.when(businessObject.revokeDevice(device)).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.revokeDevice(Util.createMockRequest(),
-                device.getId(),
-                device.getVersion());
+                device.id(),
+                device.version());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(businessObject).revokeDevice(device);

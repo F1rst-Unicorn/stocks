@@ -19,12 +19,12 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.Instant;
@@ -33,16 +33,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
-public class FoodItemHandlerTest extends DbTestCase {
+public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTest<FoodItemRecord, FoodItem> {
 
     private FoodItemHandler uut;
 
@@ -50,7 +46,7 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     private PresenceChecker<User> userPresenceChecker;
 
-    @Before
+    @BeforeEach
     public void setup() {
         userDevicePresenceChecker = (PresenceChecker) Mockito.mock(PresenceChecker.class);
         userPresenceChecker = (PresenceChecker) Mockito.mock(PresenceChecker.class);
@@ -63,7 +59,7 @@ public class FoodItemHandlerTest extends DbTestCase {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void verifyMocks() {
         Mockito.verifyNoMoreInteractions(userDevicePresenceChecker);
     }
@@ -74,25 +70,10 @@ public class FoodItemHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<FoodItem>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalFoodItem sample = (BitemporalFoodItem) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
-    }
-
-    @Test
-    public void testInserting() {
-        FoodItemForInsertion item = new FoodItemForInsertion(Instant.EPOCH, 2, 1, 1, 1, 1);
-
-        Validation<StatusCode, Integer> result = uut.add(item);
-
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
-        assertTrue(result.isSuccess());
-        assertTrue(items.isSuccess());
-
-        List<FoodItem> list = items.success().collect(Collectors.toList());
-        assertEquals(4, list.size());
-        assertThat(list, hasItem(matchesInsertable(item)));
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test
@@ -103,74 +84,77 @@ public class FoodItemHandlerTest extends DbTestCase {
         assertTrue(result.isSuccess());
         List<FoodItem> list = result.success().collect(Collectors.toList());
         assertEquals(3, list.size());
-        assertEquals(new FoodItemForGetting(1, 0, Instant.EPOCH, 2, 1, 3, 2, 1), list.get(0));
-        assertEquals(new FoodItemForGetting(2, 0, Instant.EPOCH, 2, 1, 3, 2, 1), list.get(1));
-        assertEquals(new FoodItemForGetting(3, 0, Instant.EPOCH, 2, 1, 3, 2, 1), list.get(2));
-    }
-
-    @Test
-    public void deletingUnknownIsReported() {
-
-        StatusCode result = uut.delete(new FoodItemForDeletion(4, 0));
-
-        assertEquals(StatusCode.NOT_FOUND, result);
-    }
-
-    @Test
-    public void deletingWrongVersionIsReported() {
-
-        StatusCode result = uut.delete(new FoodItemForDeletion(1, 99));
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-    }
-
-    @Test
-    public void validDeletionHappens() {
-
-        StatusCode result = uut.delete(new FoodItemForDeletion(1, 0));
-
-        assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
-        assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.isSuccess());
-        assertEquals(2, items.success().count());
+        assertEquals(FoodItemForGetting.builder()
+                .id(1)
+                .version(0)
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(1)
+                .registers(3)
+                .buys(2)
+                .unit(1)
+                .build(), list.get(0));
+        assertEquals(FoodItemForGetting.builder()
+                .id(2)
+                .version(0)
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(1)
+                .registers(3)
+                .buys(2)
+                .unit(1)
+                .build(), list.get(1));
+        assertEquals(FoodItemForGetting.builder()
+                .id(3)
+                .version(0)
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(1)
+                .registers(3)
+                .buys(2)
+                .unit(1)
+                .build(), list.get(2));
     }
 
     @Test
     public void validEditingHappens() {
-        FoodItemForEditing item = new FoodItemForEditing(1, 0, Instant.ofEpochMilli(42), 2, 2);
+        FoodItemForEditing item = FoodItemForEditing.builder()
+                .id(1)
+                .version(0)
+                .eatBy(Instant.ofEpochMilli(42))
+                .storedIn(2)
+                .unit(2)
+                .build();
 
         StatusCode result = uut.edit(item);
 
-        assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
-        assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.isSuccess());
-        List<FoodItem> list = items.success().collect(Collectors.toList());
-        assertEquals(3, list.size());
-        assertThat(list, hasItem(new FoodItemForGetting(1, 1, item.getEatBy(), 2, item.getStoredIn(), 3, 2, 2)));
+        assertEditingWorked(item, result);
     }
 
     @Test
     public void editingUnitWorks() {
-        FoodItemForEditing data = new FoodItemForEditing(1, 0, Instant.EPOCH, 1, 2);
+        FoodItemForEditing data = FoodItemForEditing.builder()
+                .id(1)
+                .version(0)
+                .eatBy(Instant.EPOCH)
+                .storedIn(1)
+                .unit(2)
+                .build();
 
         StatusCode result = uut.edit(data);
 
         assertEditingWorked(data, result);
     }
 
-    private void assertEditingWorked(FoodItemForEditing data, StatusCode result) {
-        assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<FoodItem>> dbData = uut.get(false, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        List<FoodItem> currentData = dbData.success().collect(Collectors.toList());
-        assertThat(currentData, hasItem(matchesVersionable(data)));
-    }
-
     @Test
     public void editingWrongVersionIsReported() {
-        FoodItemForEditing item = new FoodItemForEditing(1, 99, Instant.ofEpochMilli(42), 2, 1);
+        FoodItemForEditing item = FoodItemForEditing.builder()
+                .id(1)
+                .version(99)
+                .eatBy(Instant.EPOCH)
+                .storedIn(2)
+                .unit(1)
+                .build();
 
         StatusCode result = uut.edit(item);
 
@@ -179,7 +163,13 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void editingUnknownIdIsReported() {
-        FoodItemForEditing item = new FoodItemForEditing(100, 0, Instant.ofEpochMilli(42), 2, 1);
+        FoodItemForEditing item = FoodItemForEditing.builder()
+                .id(100)
+                .version(0)
+                .eatBy(Instant.EPOCH)
+                .storedIn(2)
+                .unit(1)
+                .build();
 
         StatusCode result = uut.edit(item);
 
@@ -188,8 +178,14 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void movingFromUnknownDeviceIsReported() {
-        UserDeviceForDeletion from = new UserDeviceForDeletion(1, 0);
-        UserDeviceForDeletion to = new UserDeviceForDeletion(3, 0);
+        UserDeviceForDeletion from = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserDeviceForDeletion to = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(true);
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
@@ -201,8 +197,14 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void movingToUnknownDeviceIsReported() {
-        UserDeviceForDeletion from = new UserDeviceForDeletion(1, 0);
-        UserDeviceForDeletion to = new UserDeviceForDeletion(3, 0);
+        UserDeviceForDeletion from = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserDeviceForDeletion to = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(true);
 
@@ -215,8 +217,14 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void successfulTransfer() {
-        UserDeviceForDeletion from = new UserDeviceForDeletion(3, 0);
-        UserDeviceForDeletion to = new UserDeviceForDeletion(1, 0);
+        UserDeviceForDeletion from = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
+        UserDeviceForDeletion to = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
         Mockito.when(userDevicePresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
@@ -224,18 +232,33 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.allMatch(item -> (item.getVersion() == 1) == (item.getRegisters() == to.getId())));
+        assertTrue(items.allMatch(item -> (item.version() == 1) == (item.registers() == to.id())));
         Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(from), any());
         Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(to), any());
     }
 
     @Test
     public void movingFromUnknownUserIsReported() {
-        UserForDeletion from = new UserForDeletion(1, 0);
-        UserForDeletion to = new UserForDeletion(2, 0);
-        UserDeviceForDeletion from1 = new UserDeviceForDeletion(1, 0);
-        UserDeviceForDeletion from2 = new UserDeviceForDeletion(2, 0);
-        UserDeviceForDeletion toDevice = new UserDeviceForDeletion(3, 0);
+        UserForDeletion from = UserForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserForDeletion to = UserForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        UserDeviceForDeletion from1 = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserDeviceForDeletion from2 = UserDeviceForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        UserDeviceForDeletion toDevice = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(true);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
@@ -247,11 +270,26 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void movingToUnknownUserIsReported() {
-        UserForDeletion from = new UserForDeletion(1, 0);
-        UserForDeletion to = new UserForDeletion(2, 0);
-        UserDeviceForDeletion from1 = new UserDeviceForDeletion(1, 0);
-        UserDeviceForDeletion from2 = new UserDeviceForDeletion(2, 0);
-        UserDeviceForDeletion toDevice = new UserDeviceForDeletion(3, 0);
+        UserForDeletion from = UserForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserForDeletion to = UserForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        UserDeviceForDeletion from1 = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserDeviceForDeletion from2 = UserDeviceForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        UserDeviceForDeletion toDevice = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(true);
 
@@ -263,11 +301,26 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void moveUserSuccessfully() {
-        UserForDeletion from = new UserForDeletion(1, 0);
-        UserForDeletion to = new UserForDeletion(2, 0);
-        UserDeviceForDeletion from1 = new UserDeviceForDeletion(1, 0);
-        UserDeviceForDeletion from2 = new UserDeviceForDeletion(2, 0);
-        UserDeviceForDeletion toDevice = new UserDeviceForDeletion(3, 0);
+        UserForDeletion from = UserForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserForDeletion to = UserForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        UserDeviceForDeletion from1 = UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+        UserDeviceForDeletion from2 = UserDeviceForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        UserDeviceForDeletion toDevice = UserDeviceForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(from), any())).thenReturn(false);
         Mockito.when(userPresenceChecker.isCurrentlyMissing(eq(to), any())).thenReturn(false);
 
@@ -275,14 +328,17 @@ public class FoodItemHandlerTest extends DbTestCase {
 
         Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(items.allMatch(item -> (item.getVersion() == 1) == (item.getRegisters() == to.getId())));
+        assertTrue(items.allMatch(item -> (item.version() == 1) == (item.registers() == to.id())));
         Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(from), any());
         Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(to), any());
     }
 
     @Test
     public void deleteItemsInLocationWorks() {
-        LocationForDeletion input = new LocationForDeletion(1, 0);
+        LocationForDeletion input = LocationForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
 
         StatusCode deleteResult = uut.deleteItemsStoredIn(input);
 
@@ -295,14 +351,23 @@ public class FoodItemHandlerTest extends DbTestCase {
 
     @Test
     public void testingAreItemsStoredIn() {
-        assertTrue(uut.areItemsStoredIn(new LocationForDeletion(1, 0), getDSLContext()));
-        assertFalse(uut.areItemsStoredIn(new LocationForDeletion(2, 0), getDSLContext()));
+        assertTrue(uut.areItemsStoredIn(LocationForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build(), getDSLContext()));
+        assertFalse(uut.areItemsStoredIn(LocationForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build(), getDSLContext()));
     }
 
     @Test
     public void deletingFoodWithoutItemsIsOk() {
 
-        StatusCode result = uut.deleteItemsOfType(new FoodForDeletion(1, 1));
+        StatusCode result = uut.deleteItemsOfType(FoodForDeletion.builder()
+                .id(1)
+                .version(1)
+                .build());
 
         assertEquals(StatusCode.SUCCESS, result);
     }
@@ -312,10 +377,59 @@ public class FoodItemHandlerTest extends DbTestCase {
         long entities = uut.get(false, Instant.EPOCH).success().count();
         assertEquals(3, entities);
 
-        StatusCode result = uut.deleteItemsOfType(new FoodForDeletion(2, 1));
+        StatusCode result = uut.deleteItemsOfType(FoodForDeletion.builder()
+                .id(2)
+                .version(1)
+                .build());
 
         assertEquals(StatusCode.SUCCESS, result);
         entities = uut.get(false, Instant.EPOCH).success().count();
         assertEquals(0, entities);
+    }
+
+    @Override
+    public CrudDatabaseHandler<FoodItemRecord, FoodItem> getDbHandler() {
+        return uut;
+    }
+
+    @Override
+    public Insertable<FoodItem> getInsertable() {
+        return FoodItemForInsertion.builder()
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(1)
+                .registers(1)
+                .buys(1)
+                .unit(1)
+                .build();
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 3;
+    }
+
+    @Override
+    public Versionable<FoodItem> getUnknownEntity() {
+        return FoodItemForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public Versionable<FoodItem> getWrongVersionEntity() {
+        return FoodItemForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public Versionable<FoodItem> getValidEntity() {
+        return FoodItemForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
     }
 }

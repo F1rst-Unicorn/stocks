@@ -36,7 +36,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.FoodSummaryWithExpirationView;
 import de.njsm.stocks.android.frontend.BaseAdapter;
 import de.njsm.stocks.android.frontend.fooditem.FoodItemAdapter;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.List;
 

@@ -19,29 +19,23 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EanNumberHandlerTest extends DbTestCase {
+public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTest<EanNumberRecord, EanNumber> {
 
     private EanNumberHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new EanNumberHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
@@ -50,79 +44,27 @@ public class EanNumberHandlerTest extends DbTestCase {
     }
 
     @Test
-    public void addAEanNumber() {
-        EanNumberForInsertion data = new EanNumberForInsertion(1, "Code");
-
-        Validation<StatusCode, Integer> code = uut.add(data);
-
-        assertTrue(code.isSuccess());
-        assertEquals(Integer.valueOf(2), code.success());
-
-        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-        assertThat(dbData.success().collect(Collectors.toList()),
-                hasItem(matchesInsertable(data)));
-    }
-
-    @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
         Validation<StatusCode, Stream<EanNumber>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalEanNumber sample = (BitemporalEanNumber) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
 
-        assertEquals(2, sample.getIdentifiesFood());
-        assertEquals(1, sample.getInitiates());
-    }
-
-    @Test
-    public void deleteAEanNumber() {
-        EanNumberForDeletion data = new EanNumberForDeletion(1, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertEquals(0, dbData.success().count());
-    }
-
-    @Test
-    public void invalidDataVersionIsRejected() {
-        EanNumberForDeletion data = new EanNumberForDeletion(1, 1);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-
-        Validation<StatusCode, Stream<EanNumber>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertEquals(1, dbData.success().count());
-    }
-
-    @Test
-    public void unknownDeletionsAreReported() {
-        EanNumberForDeletion data = new EanNumberForDeletion(100, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.NOT_FOUND, result);
+        assertEquals(2, sample.identifiesFood());
+        assertEquals(1, sample.initiates());
     }
 
     @Test
     public void deletingCodesWithoutFoodIsOk() {
 
-        StatusCode result = uut.deleteOwnedByFood(new FoodForDeletion(1, 1));
+        StatusCode result = uut.deleteOwnedByFood(FoodForDeletion.builder()
+                .id(1)
+                .version(1)
+                .build());
 
         assertEquals(StatusCode.SUCCESS, result);
     }
@@ -132,10 +74,55 @@ public class EanNumberHandlerTest extends DbTestCase {
         long codes = uut.get(false, Instant.EPOCH).success().count();
         assertEquals(1, codes);
 
-        StatusCode result = uut.deleteOwnedByFood(new FoodForDeletion(2, 1));
+        StatusCode result = uut.deleteOwnedByFood(FoodForDeletion.builder()
+                        .id(2)
+                        .version(1)
+                        .build());
 
         assertEquals(StatusCode.SUCCESS, result);
         codes = uut.get(false, Instant.EPOCH).success().count();
         assertEquals(0, codes);
+    }
+
+    @Override
+    public CrudDatabaseHandler<EanNumberRecord, EanNumber> getDbHandler() {
+        return uut;
+    }
+
+    @Override
+    public Insertable<EanNumber> getInsertable() {
+        return EanNumberForInsertion.builder()
+                .identifiesFood(1)
+                .eanNumber("Code")
+                .build();
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 1;
+    }
+
+    @Override
+    public EanNumberForDeletion getUnknownEntity() {
+        return EanNumberForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public EanNumberForDeletion getWrongVersionEntity() {
+        return EanNumberForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public EanNumberForDeletion getValidEntity() {
+        return EanNumberForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
     }
 }

@@ -19,14 +19,10 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.UserManager;
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.UserForDeletion;
-import de.njsm.stocks.server.v2.business.data.UserForInsertion;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
-import de.njsm.stocks.server.v2.web.data.DataResponse;
-import de.njsm.stocks.server.v2.web.data.Response;
 import fj.data.Validation;
 
 import javax.inject.Inject;
@@ -54,7 +50,9 @@ public class UserEndpoint extends Endpoint implements Get<UserRecord, User>, Del
 
         if (isValidName(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.addUser(new UserForInsertion(name));
+            StatusCode result = manager.add(UserForInsertion.builder()
+                    .name(name)
+                    .build());
             return new Response(result);
 
         } else {
@@ -69,6 +67,9 @@ public class UserEndpoint extends Endpoint implements Get<UserRecord, User>, Del
 
     @Override
     public UserForDeletion wrapParameters(int id, int version) {
-        return new UserForDeletion(id, version);
+        return UserForDeletion.builder()
+                .id(id)
+                .version(version)
+                .build();
     }
 }

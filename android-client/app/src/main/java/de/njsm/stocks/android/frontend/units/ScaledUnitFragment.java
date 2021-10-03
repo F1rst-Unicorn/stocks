@@ -44,7 +44,7 @@ import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.DeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.Editor;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 
 import java.util.ArrayList;
 import java.util.List;

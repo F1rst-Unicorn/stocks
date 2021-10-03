@@ -22,8 +22,8 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.EanNumber;
-import org.threeten.bp.Instant;
 
+import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
@@ -33,14 +33,14 @@ import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 public abstract class EanNumberDao implements Inserter<EanNumber> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(EanNumber[] food);
+    public abstract void insert(List<EanNumber> food);
 
     public LiveData<List<EanNumber>> getEanNumbersOf(int foodId) {
         return getEanNumbersOf(foodId, DATABASE_INFINITY);
     }
 
     @Transaction
-    public void synchronise(EanNumber[] food) {
+    public void synchronise(List<EanNumber> food) {
         delete();
         insert(food);
     }

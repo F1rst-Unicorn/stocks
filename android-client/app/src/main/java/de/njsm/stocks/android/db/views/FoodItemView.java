@@ -22,7 +22,7 @@ package de.njsm.stocks.android.db.views;
 import androidx.annotation.NonNull;
 import androidx.room.Embedded;
 import de.njsm.stocks.android.db.entities.*;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.Objects;
 

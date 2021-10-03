@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-BRANCH=$(git branch | egrep '^\*.*' | sed -r 's/^\* (.*)$/\1/g')
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 if [ "$BRANCH" = "master" -o \
         "$BRANCH" = "dev-server" -o \
@@ -26,9 +26,17 @@ if [ "$BRANCH" = "master" -o \
         "$BRANCH" = "dev-android" ] ; then
         exit 0
 else
-        # First line must carry ticket name in front
-        cat $1 | head -n 1 | egrep "^$STOCKS-[0-9]*: .*\$" >/dev/null
+        if ! cat $1 | head -n 1 | egrep '^Issue #[0-9]+ .*$' -q ; then
+            echo "First line must start with issue number"
+            exit 1
+        fi
 
-        # Second line must be empty
-        cat $1 | head -n 2 | tail -n 1 | egrep '^$' >/dev/null
+        if [[ "$(egrep -v '^#' $1 | wc -l)" -eq 1 ]] ; then
+            exit 0
+        fi
+
+        if ! cat $1 | head -n 2 | tail -n 1 | egrep '^$' -q ; then
+            echo "Second line must be empty"
+            exit 1
+        fi
 fi

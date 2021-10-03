@@ -23,7 +23,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.entities.VersionedData;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.ArrayList;
 import java.util.List;

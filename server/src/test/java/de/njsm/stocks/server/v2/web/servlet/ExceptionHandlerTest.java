@@ -19,17 +19,21 @@
 
 package de.njsm.stocks.server.v2.web.servlet;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.web.data.Response;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import org.glassfish.jersey.server.ContainerException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExceptionHandlerTest {
 
@@ -41,7 +45,7 @@ public class ExceptionHandlerTest {
 
     private ExceptionHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         request = Mockito.mock(HttpServletRequest.class);
         response = Mockito.mock(HttpServletResponse.class);
@@ -52,7 +56,7 @@ public class ExceptionHandlerTest {
         Mockito.when(request.getAttribute(ExceptionHandler.EXCEPTION_KEY)).thenReturn(exception);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(request);
         Mockito.verifyNoMoreInteractions(response);
@@ -91,6 +95,45 @@ public class ExceptionHandlerTest {
 
         assertEquals(StatusCode.GENERAL_ERROR, result.getStatus());
         Mockito.verify(response).setStatus(500);
+        Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
+    }
+
+    @Test
+    public void valueInstantiationExceptionYieldsInvalidInput() {
+        JsonMappingException nestedException = ValueInstantiationException.from((JsonParser) null, "test");
+        ContainerException exception = new ContainerException(nestedException);
+        Mockito.when(request.getAttribute(ExceptionHandler.EXCEPTION_KEY)).thenReturn(exception);
+
+        Response result = uut.put(request, response);
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
+        Mockito.verify(response).setStatus(400);
+        Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
+    }
+
+    @Test
+    public void nestedIllegalStateExceptionYieldsInvalidInput() {
+        IllegalStateException illegalStateException = new IllegalStateException("test");
+        JsonMappingException nestedException = ValueInstantiationException.from((JsonParser) null, "test", illegalStateException);
+        ContainerException exception = new ContainerException(nestedException);
+        Mockito.when(request.getAttribute(ExceptionHandler.EXCEPTION_KEY)).thenReturn(exception);
+
+        Response result = uut.put(request, response);
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
+        Mockito.verify(response).setStatus(400);
+        Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
+    }
+
+    @Test
+    public void illegalStateExceptionYieldsInvalidInput() {
+        ContainerException exception = new ContainerException(new IllegalStateException("test"));
+        Mockito.when(request.getAttribute(ExceptionHandler.EXCEPTION_KEY)).thenReturn(exception);
+
+        Response result = uut.put(request, response);
+
+        assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
+        Mockito.verify(response).setStatus(400);
         Mockito.verify(request).getAttribute(ExceptionHandler.EXCEPTION_KEY);
     }
 }

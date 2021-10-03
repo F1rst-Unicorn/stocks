@@ -19,8 +19,13 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.Identifiable;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.User;
+import de.njsm.stocks.common.api.UserDevice;
+import de.njsm.stocks.common.api.BitemporalUserDevice;
+import de.njsm.stocks.common.api.UserDeviceForGetting;
+import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
 import org.jooq.Field;
@@ -47,11 +52,13 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
         return runFunction(context -> {
             List<Identifiable<UserDevice>> result = context
                     .selectFrom(USER_DEVICE)
-                    .where(USER_DEVICE.BELONGS_TO.eq(user.getId())
+                    .where(USER_DEVICE.BELONGS_TO.eq(user.id())
                         .and(nowAsBestKnown()))
                     .fetch()
                     .stream()
-                    .map(r -> new UserDeviceForPrincipals(r.getId()))
+                    .map(r -> UserDeviceForPrincipals.builder()
+                            .id(r.getId())
+                            .build())
                     .collect(Collectors.toList());
 
             return Validation.success(result);
@@ -67,25 +74,24 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
     @Override
     protected Function<UserDeviceRecord, UserDevice> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalUserDevice(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getName(),
-                    cursor.getBelongsTo()
-            );
-
+            return cursor -> BitemporalUserDevice.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .name(cursor.getName())
+                    .belongsTo(cursor.getBelongsTo())
+                    .build();
         else
-        return cursor -> new UserDeviceForGetting(
-                cursor.getId(),
-                cursor.getVersion(),
-                cursor.getName(),
-                cursor.getBelongsTo()
-        );
+            return cursor -> UserDeviceForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .name(cursor.getName())
+                    .belongsTo(cursor.getBelongsTo())
+                    .build();
     }
 
     @Override

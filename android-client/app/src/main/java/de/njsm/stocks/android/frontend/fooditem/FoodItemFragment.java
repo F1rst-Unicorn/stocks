@@ -34,7 +34,7 @@ import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.eannumber.EanNumberViewModel;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 
 public class FoodItemFragment extends InjectedFragment implements SwipeListener {
 

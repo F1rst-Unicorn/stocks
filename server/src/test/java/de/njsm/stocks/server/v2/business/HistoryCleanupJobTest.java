@@ -19,11 +19,12 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
 import de.njsm.stocks.server.v2.db.TransactionHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.Period;
@@ -39,7 +40,7 @@ public class HistoryCleanupJobTest {
 
     private CrudDatabaseHandler<?, ?> tableHandler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         maxHistory = Period.ofDays(1);
         transactionHandler = Mockito.mock(TransactionHandler.class);
@@ -47,7 +48,7 @@ public class HistoryCleanupJobTest {
         uut = new HistoryCleanupJob(maxHistory, transactionHandler, Collections.singletonList(tableHandler));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(transactionHandler);
         Mockito.verifyNoMoreInteractions(tableHandler);

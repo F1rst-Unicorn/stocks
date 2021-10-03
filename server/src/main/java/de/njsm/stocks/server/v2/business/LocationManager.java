@@ -19,8 +19,14 @@
 
 package de.njsm.stocks.server.v2.business;
 
+
+import de.njsm.stocks.common.api.Location;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.LocationForDeletion;
+import de.njsm.stocks.common.api.LocationForInsertion;
+import de.njsm.stocks.common.api.LocationForRenaming;
+import de.njsm.stocks.common.api.LocationForSetDescription;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
@@ -46,7 +52,7 @@ public class LocationManager extends BusinessObject<LocationRecord, Location> im
     }
 
     public StatusCode put(LocationForInsertion location) {
-        return add(location).toEither().left().orValue(StatusCode.SUCCESS);
+        return add(location);
     }
 
     public StatusCode rename(LocationForRenaming item) {
@@ -55,7 +61,7 @@ public class LocationManager extends BusinessObject<LocationRecord, Location> im
 
     public StatusCode delete(LocationForDeletion l) {
         return runOperation(() -> {
-            if (l.isCascade()) {
+            if (l.cascade()) {
                 StatusCode deleteFoodResult = foodItemHandler.deleteItemsStoredIn(l);
 
                 if (deleteFoodResult != StatusCode.SUCCESS)

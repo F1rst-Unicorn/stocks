@@ -19,13 +19,12 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.data.BitemporalRecipe;
-import de.njsm.stocks.server.v2.business.data.Recipe;
-import de.njsm.stocks.server.v2.business.data.RecipeForGetting;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +40,28 @@ public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
                          String resourceIdentifier,
                          int timeout) {
         super(connectionFactory, resourceIdentifier, timeout);
+    }
+
+    public StatusCode edit(RecipeForEditing recipe) {
+        return runCommand(context -> checkPresenceInThisVersion(recipe, context)
+                .bind(() ->
+                        currentUpdate(context, List.of(
+                                    RECIPE.ID,
+                                    RECIPE.VERSION.add(1),
+                                    DSL.inline(recipe.name()),
+                                    DSL.inline(recipe.instructions()),
+                                    DSL.inline(recipe.duration())
+                            ),
+                            RECIPE.ID.eq(recipe.id())
+                                    .and(RECIPE.VERSION.eq(recipe.version()))
+                                    .and(
+                                            RECIPE.NAME.ne(recipe.name())
+                                                    .or(RECIPE.INSTRUCTIONS.ne(recipe.instructions()))
+                                                    .or(RECIPE.DURATION.ne(recipe.duration()))
+                                    )
+                        ).map(this::notFoundIsOk)
+                )
+        );
     }
 
     @Override
@@ -61,26 +82,26 @@ public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
     @Override
     protected Function<RecipeRecord, Recipe> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalRecipe(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getName(),
-                    cursor.getInstructions(),
-                    cursor.getDuration()
-            );
+            return cursor -> BitemporalRecipe.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .name(cursor.getName())
+                    .instructions(cursor.getInstructions())
+                    .duration(cursor.getDuration())
+                    .build();
         else
-            return cursor -> new RecipeForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getName(),
-                    cursor.getInstructions(),
-                    cursor.getDuration()
-            );
+            return cursor -> RecipeForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .name(cursor.getName())
+                    .instructions(cursor.getInstructions())
+                    .duration(cursor.getDuration())
+                    .build();
     }
 
     @Override

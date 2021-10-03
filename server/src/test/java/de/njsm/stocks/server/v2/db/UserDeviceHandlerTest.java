@@ -19,31 +19,28 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class UserDeviceHandlerTest extends DbTestCase {
+public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsTest<UserDeviceRecord, UserDevice> {
 
     private UserDeviceHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new UserDeviceHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
@@ -60,11 +57,36 @@ public class UserDeviceHandlerTest extends DbTestCase {
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
         assertEquals(5, list.size());
-        assertThat(list, hasItem(new UserDeviceForGetting(1, 0, "Default", 1)));
-        assertThat(list, hasItem(new UserDeviceForGetting(2, 0, "mobile", 2)));
-        assertThat(list, hasItem(new UserDeviceForGetting(3, 0, "mobile2", 2)));
-        assertThat(list, hasItem(new UserDeviceForGetting(4, 0, "laptop", 3)));
-        assertThat(list, hasItem(new UserDeviceForGetting(5, 0, "pending_device", 3)));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(1)
+                .version(0)
+                .name("Default")
+                .belongsTo(1)
+                .build()));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(2)
+                .version(0)
+                .name("mobile")
+                .belongsTo(2)
+                .build()));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(3)
+                .version(0)
+                .name("mobile2")
+                .belongsTo(2)
+                .build()));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(4)
+                .version(0)
+                .name("laptop")
+                .belongsTo(3)
+                .build()));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(5)
+                .version(0)
+                .name("pending_device")
+                .belongsTo(3)
+                .build()));
     }
 
     @Test
@@ -73,66 +95,65 @@ public class UserDeviceHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<UserDevice>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalUserDevice sample = (BitemporalUserDevice) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
-    @Test
-    public void addingNewDeviceWorks() {
-        UserDeviceForInsertion device = new UserDeviceForInsertion("newDevice", 1);
-
-        Validation<StatusCode, Integer> result = uut.add(device);
-
-
-        Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false, Instant.EPOCH);
-        assertTrue(result.isSuccess());
-        assertEquals(Integer.valueOf(6), result.success());
-        assertTrue(devices.isSuccess());
-        List<UserDevice> list = devices.success().collect(Collectors.toList());
-        assertEquals(6, list.size());
-        assertThat(list, hasItem(matchesInsertable(device)));
-    }
-
-    @Test
-    public void deletingUnknownIdIsReported() {
-
-        StatusCode result = uut.delete(new UserDeviceForDeletion(99999, 0));
-
-        assertEquals(StatusCode.NOT_FOUND, result);
-    }
-
-    @Test
-    public void deletingInvalidVersionIsReported() {
-
-        StatusCode result = uut.delete(new UserDeviceForDeletion(1, 9999));
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-    }
-
-    @Test
-    public void deletingValidDeviceWorks() {
-        UserDeviceForDeletion device = new UserDeviceForDeletion(2, 0);
-
-        StatusCode result = uut.delete(device);
-
-        Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false, Instant.EPOCH);
-        assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(devices.isSuccess());
-        List<UserDevice> list = devices.success().collect(Collectors.toList());
-        assertEquals(4, list.size());
-        assertThat(list, not(hasItem(new UserDeviceForGetting(2, 0, "mobile", 2))));
+    @Override
+    public UserDeviceForInsertion getInsertable() {
+        return UserDeviceForInsertion.builder()
+                .name("newDevice")
+                .belongsTo(1)
+                .build();
     }
 
     @Test
     public void gettingDevicesOfUserWorks() {
 
-        Validation<StatusCode, List<Identifiable<UserDevice>>> result = uut.getDevicesOfUser(new UserForDeletion(2, 2));
+        Validation<StatusCode, List<Identifiable<UserDevice>>> result = uut.getDevicesOfUser(UserForDeletion.builder()
+                .id(2)
+                .version(2)
+                .build());
 
         assertTrue(result.isSuccess());
         assertEquals(2, result.success().size());
-        assertThat(result.success(), hasItem(new UserDeviceForPrincipals(2)));
-        assertThat(result.success(), hasItem(new UserDeviceForPrincipals(3)));
+        assertThat(result.success(), hasItem(UserDeviceForPrincipals.builder().id(2).build()));
+        assertThat(result.success(), hasItem(UserDeviceForPrincipals.builder().id(3).build()));
+    }
+
+    @Override
+    public CrudDatabaseHandler<UserDeviceRecord, UserDevice> getDbHandler() {
+        return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 5;
+    }
+
+    @Override
+    public Versionable<UserDevice> getUnknownEntity() {
+        return UserDeviceForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public Versionable<UserDevice> getWrongVersionEntity() {
+        return UserDeviceForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public Versionable<UserDevice> getValidEntity() {
+        return UserDeviceForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
     }
 }

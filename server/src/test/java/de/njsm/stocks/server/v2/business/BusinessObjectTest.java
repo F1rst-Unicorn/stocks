@@ -19,21 +19,22 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.Food;
+import de.njsm.stocks.common.api.Food;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.CompletionCallback;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 
 public class BusinessObjectTest {
@@ -42,14 +43,14 @@ public class BusinessObjectTest {
 
     private CrudDatabaseHandler<FoodRecord, Food> backend;
 
-    @Before
+    @BeforeEach
     public void setup() {
         backend = Mockito.mock(CrudDatabaseHandler.class);
         uut = new BusinessObject<>(backend);
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verify(backend).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(backend);

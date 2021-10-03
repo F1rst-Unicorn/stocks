@@ -873,6 +873,75 @@ Recipe {
 
 ```
 
+`PUT /v2/recipe/edit`: Edit a recipe in the system
+
+Request body: `application/json`
+
+```
+{
+    recipe: Recipe
+    ingredients: List<RecipeIngredient>
+    products: List<RecipeProduct>
+}
+
+Recipe {
+    id: int
+    version: int
+    name: String
+    instructions: String
+    duration: String
+}
+
+RecipeIngredient {
+    id: int
+    version: int
+    amount: int
+    recipe: int
+    ingredient: int
+    unit: int
+}
+
+RecipeProduct {
+    id: int
+    version: int
+    amount: int
+    recipe: int
+    product: int
+    unit: int
+}
+```
+
+Result: `application/json`, `Response`
+
+`DELETE /v2/recipe`: Delete a recipe in the system
+
+Request body: `application/json`
+
+```
+{
+    recipe: Recipe
+    ingredients: List<RecipeIngredient>
+    products: List<RecipeProduct>
+}
+
+Recipe {
+    id: int
+    version: int
+}
+
+RecipeIngredient {
+    id: int
+    version: int
+}
+
+RecipeProduct {
+    id: int
+    version: int
+}
+```
+
+Result: `application/json`, `Response`
+
 #### Recipe Ingredients
 
 `GET /v2/recipe-ingredient`: Get all recipe ingredients in the system

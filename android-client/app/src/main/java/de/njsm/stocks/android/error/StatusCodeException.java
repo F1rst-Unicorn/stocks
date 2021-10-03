@@ -19,7 +19,8 @@
 
 package de.njsm.stocks.android.error;
 
-import de.njsm.stocks.android.network.server.StatusCode;
+
+import de.njsm.stocks.common.api.StatusCode;
 
 public class StatusCodeException extends Exception {
 

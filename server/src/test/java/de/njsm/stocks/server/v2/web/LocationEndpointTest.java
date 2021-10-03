@@ -19,15 +19,12 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.LocationManager;
-import de.njsm.stocks.server.v2.business.data.*;
-import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -37,10 +34,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.njsm.stocks.server.v2.business.StatusCode.*;
+import static de.njsm.stocks.common.api.StatusCode.*;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,13 +47,13 @@ public class LocationEndpointTest {
 
     private LocationManager businessLayer;
 
-    @Before
+    @BeforeEach
     public void setup() {
         businessLayer = Mockito.mock(LocationManager.class);
         uut = new LocationEndpoint(businessLayer);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(businessLayer);
     }
@@ -119,10 +116,12 @@ public class LocationEndpointTest {
 
     @Test
     public void locationIsAdded() {
-        LocationForInsertion data = new LocationForInsertion("Banana");
+        LocationForInsertion data = LocationForInsertion.builder()
+                .name("Banana")
+                .build();
         when(businessLayer.put(data)).thenReturn(SUCCESS);
 
-        Response response = uut.putLocation(createMockRequest(), data.getName());
+        Response response = uut.putLocation(createMockRequest(), data.name());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).put(data);
@@ -132,7 +131,13 @@ public class LocationEndpointTest {
     @Test
     public void getLocationReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        List<Location> data = Collections.singletonList(new LocationForGetting(2, 3, "Banana", ""));
+        LocationForGetting item = LocationForGetting.builder()
+                .id(2)
+                .version(3)
+                .name("Banana")
+                .description("")
+                .build();
+        List<Location> data = Collections.singletonList(item);
         when(businessLayer.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
         uut.get(r, 0, null);
@@ -152,15 +157,19 @@ public class LocationEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        TestCase.assertEquals(INVALID_ARGUMENT, c.getValue().getStatus());
+        assertEquals(INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test
     public void renameLocationWorks() {
-        LocationForRenaming data = new LocationForRenaming(1, 3, "Bread");
+        LocationForRenaming data = LocationForRenaming.builder()
+                .id(1)
+                .version(3)
+                .name("Bread")
+                .build();
         when(businessLayer.rename(data)).thenReturn(SUCCESS);
 
-        Response response = uut.renameLocation(createMockRequest(), data.getId(), data.getVersion(), data.getNewName());
+        Response response = uut.renameLocation(createMockRequest(), data.id(), data.version(), data.name());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).rename(data);
@@ -169,10 +178,14 @@ public class LocationEndpointTest {
 
     @Test
     public void deleteLocationWorks() {
-        LocationForDeletion data = new LocationForDeletion(1, 2, false);
+        LocationForDeletion data = LocationForDeletion.builder()
+                .id(1)
+                .version(2)
+                .cascade(false)
+                .build();
         when(businessLayer.delete(data)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteLocation(createMockRequest(), data.getId(), data.getVersion(), 0);
+        Response response = uut.deleteLocation(createMockRequest(), data.id(), data.version(), 0);
 
         assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).delete(data);
@@ -181,10 +194,14 @@ public class LocationEndpointTest {
 
     @Test
     public void deleteLocationWorksCascading() {
-        LocationForDeletion data = new LocationForDeletion(1, 2, true);
+        LocationForDeletion data = LocationForDeletion.builder()
+                .id(1)
+                .version(2)
+                .cascade(true)
+                .build();
         when(businessLayer.delete(data)).thenReturn(SUCCESS);
 
-        Response response = uut.deleteLocation(createMockRequest(), data.getId(), data.getVersion(), 1);
+        Response response = uut.deleteLocation(createMockRequest(), data.id(), data.version(), 1);
 
         assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).delete(data);
@@ -193,10 +210,14 @@ public class LocationEndpointTest {
 
     @Test
     public void settingDescriptionIsForwarded() {
-        LocationForSetDescription data = new LocationForSetDescription(1, 2, "new description");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(1)
+                .version(2)
+                .description("new description")
+                .build();
         when(businessLayer.setDescription(data)).thenReturn(SUCCESS);
 
-        Response response = uut.setDescription(createMockRequest(), data.getId(), data.getVersion(), data.getDescription());
+        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.description());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).setDescription(data);
@@ -205,10 +226,14 @@ public class LocationEndpointTest {
 
     @Test
     public void emptyDescriptionIsForwarded() {
-        LocationForSetDescription data = new LocationForSetDescription(1, 2, "");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(1)
+                .version(2)
+                .description("")
+                .build();
         when(businessLayer.setDescription(data)).thenReturn(SUCCESS);
 
-        Response response = uut.setDescription(createMockRequest(), data.getId(), data.getVersion(), data.getDescription());
+        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.description());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(businessLayer).setDescription(data);
@@ -217,10 +242,14 @@ public class LocationEndpointTest {
 
     @Test
     public void errorFromBackendIsPropagated() {
-        LocationForSetDescription data = new LocationForSetDescription(1, 2, "new description");
+        LocationForSetDescription data = LocationForSetDescription.builder()
+                .id(1)
+                .version(2)
+                .description("new description")
+                .build();
         when(businessLayer.setDescription(data)).thenReturn(INVALID_DATA_VERSION);
 
-        Response response = uut.setDescription(createMockRequest(), data.getId(), data.getVersion(), data.getDescription());
+        Response response = uut.setDescription(createMockRequest(), data.id(), data.version(), data.description());
 
         assertEquals(INVALID_DATA_VERSION, response.getStatus());
         verify(businessLayer).setDescription(data);

@@ -19,16 +19,16 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.DataResponse;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.UserDevice;
+import de.njsm.stocks.common.api.UserDeviceForDeletion;
+import de.njsm.stocks.common.api.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.DeviceManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
-import de.njsm.stocks.server.v2.business.data.UserDeviceForDeletion;
-import de.njsm.stocks.server.v2.business.data.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
-import de.njsm.stocks.server.v2.web.data.DataResponse;
-import de.njsm.stocks.server.v2.web.data.Response;
 import fj.data.Validation;
 
 import javax.inject.Inject;
@@ -57,7 +57,10 @@ public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, Us
         if (isValidName(name, "name") &&
                 isValid(userId, "userId")) {
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, NewDeviceTicket> result = manager.addDevice(new UserDeviceForInsertion(name, userId));
+            Validation<StatusCode, NewDeviceTicket> result = manager.addDevice(UserDeviceForInsertion.builder()
+                    .name(name)
+                    .belongsTo(userId)
+                    .build());
             return new DataResponse<>(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
@@ -73,7 +76,10 @@ public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, Us
                 isValidVersion(version, "version")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.delete(new UserDeviceForDeletion(id, version));
+            StatusCode result = manager.delete(UserDeviceForDeletion.builder()
+                    .id(id)
+                    .version(version)
+                    .build());
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
@@ -90,7 +96,10 @@ public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, Us
                 isValidVersion(version, "version")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.revokeDevice(new UserDeviceForDeletion(id, version));
+            StatusCode result = manager.revokeDevice(UserDeviceForDeletion.builder()
+                    .id(id)
+                    .version(version)
+                    .build());
             return new Response(result);
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));

@@ -38,7 +38,7 @@ import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.interactor.LocationDeletionInteractor;
 import de.njsm.stocks.android.frontend.interactor.LocationEditInteractor;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 
 import java.util.List;
 

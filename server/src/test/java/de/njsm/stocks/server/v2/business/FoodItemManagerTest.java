@@ -19,16 +19,18 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.FoodItem;
-import de.njsm.stocks.server.v2.business.data.FoodItemForDeletion;
-import de.njsm.stocks.server.v2.business.data.FoodItemForEditing;
-import de.njsm.stocks.server.v2.business.data.FoodItemForInsertion;
+
+import de.njsm.stocks.common.api.FoodItem;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.FoodItemForDeletion;
+import de.njsm.stocks.common.api.FoodItemForEditing;
+import de.njsm.stocks.common.api.FoodItemForInsertion;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
@@ -36,8 +38,8 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
@@ -49,7 +51,7 @@ public class FoodItemManagerTest {
 
     private FoodHandler foodHandler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         backend = Mockito.mock(FoodItemHandler.class);
         foodHandler = Mockito.mock(FoodHandler.class);
@@ -58,7 +60,7 @@ public class FoodItemManagerTest {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verify(backend).setPrincipals(TEST_USER);
         Mockito.verify(foodHandler).setPrincipals(TEST_USER);
@@ -80,11 +82,18 @@ public class FoodItemManagerTest {
 
     @Test
     public void testAddingItem() {
-        FoodItemForInsertion data = new FoodItemForInsertion(Instant.now(), 2, 2, 3, 3, 1);
-        Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
+        FoodItemForInsertion data = FoodItemForInsertion.builder()
+                .eatByDate(Instant.EPOCH)
+                .ofType(2)
+                .storedIn(2)
+                .registers(3)
+                .buys(3)
+                .unit(1)
+                .build();
+        Mockito.when(backend.add(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodHandler.setToBuyStatus(any(), eq(false))).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Integer> result = uut.add(data);
+        StatusCode result = uut.add(data);
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).add(data);
@@ -94,7 +103,13 @@ public class FoodItemManagerTest {
 
     @Test
     public void testRenamingItem() {
-        FoodItemForEditing data = new FoodItemForEditing(1, 2, Instant.now(), 3, 1);
+        FoodItemForEditing data = FoodItemForEditing.builder()
+                .id(1)
+                .version(2)
+                .eatBy(Instant.EPOCH)
+                .storedIn(3)
+                .unit(1)
+                .build();
         Mockito.when(backend.edit(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.edit(data);
@@ -106,7 +121,10 @@ public class FoodItemManagerTest {
 
     @Test
     public void testDeletingItem() {
-        FoodItemForDeletion data = new FoodItemForDeletion(1, 2);
+        FoodItemForDeletion data = FoodItemForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.delete(data);

@@ -19,8 +19,21 @@
 
 package de.njsm.stocks.server.v2.business.data;
 
-public class UserForPrincipals extends Data implements Identifiable<User> {
-    public UserForPrincipals(int id) {
-        super(id);
+import com.google.auto.value.AutoValue;
+import de.njsm.stocks.common.api.Identifiable;
+import de.njsm.stocks.common.api.SelfValidating;
+import de.njsm.stocks.common.api.User;
+
+@AutoValue
+public abstract class UserForPrincipals implements Identifiable<User> {
+
+    public static Builder builder() {
+        return new AutoValue_UserForPrincipals.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder
+            extends SelfValidating.Builder<UserForPrincipals>
+            implements Identifiable.Builder<Builder> {
     }
 }

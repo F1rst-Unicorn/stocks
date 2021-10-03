@@ -19,9 +19,10 @@
 
 package de.njsm.stocks.server.v2.web.data;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.ListResponse;
+import de.njsm.stocks.common.api.StatusCode;
 import fj.data.Validation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ListResponseTest {
 

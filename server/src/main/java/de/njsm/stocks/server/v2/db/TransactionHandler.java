@@ -19,7 +19,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+
+import de.njsm.stocks.common.api.StatusCode;
 
 public interface TransactionHandler {
     StatusCode commit();

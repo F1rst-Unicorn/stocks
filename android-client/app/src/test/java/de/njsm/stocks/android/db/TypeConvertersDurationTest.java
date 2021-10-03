@@ -22,7 +22,7 @@ package de.njsm.stocks.android.db;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.threeten.bp.Duration;
+import java.time.Duration;
 
 import java.util.Arrays;
 import java.util.Collection;

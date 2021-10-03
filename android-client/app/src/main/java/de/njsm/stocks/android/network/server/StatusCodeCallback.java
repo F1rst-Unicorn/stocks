@@ -23,11 +23,12 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import de.njsm.stocks.android.error.StatusCodeException;
-import de.njsm.stocks.android.network.server.data.DataResponse;
-import de.njsm.stocks.android.network.server.data.Response;
 import de.njsm.stocks.android.repo.Synchroniser;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
+import de.njsm.stocks.common.api.DataResponse;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
 import fj.data.Validation;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -86,7 +87,7 @@ public class StatusCodeCallback implements Callback<Response> {
     static <T extends Response> StatusCode handleResponse(retrofit2.Response<T> response) {
         if (!response.isSuccessful()
                 || response.body() == null
-                || response.body().status != StatusCode.SUCCESS)
+                || response.body().getStatus() != StatusCode.SUCCESS)
             return error(response);
         else
             return StatusCode.SUCCESS;
@@ -95,7 +96,7 @@ public class StatusCodeCallback implements Callback<Response> {
     static <T> Validation<StatusCode, T> returnResponse(retrofit2.Response<DataResponse<T>> response) {
         if (!response.isSuccessful()
                 || response.body() == null
-                || response.body().status != StatusCode.SUCCESS)
+                || response.body().getStatus() != StatusCode.SUCCESS)
             return Validation.fail(error(response));
         else
             return Validation.success(response.body().data);
@@ -116,7 +117,7 @@ public class StatusCodeCallback implements Callback<Response> {
 
         if (!response.isSuccessful()
                 || response.body() == null
-                || response.body().status != StatusCode.SUCCESS)
+                || response.body().getStatus() != StatusCode.SUCCESS)
             throw new StatusCodeException(error(response));
         else
             return response.body().data;
@@ -126,7 +127,7 @@ public class StatusCodeCallback implements Callback<Response> {
         Response response = r.body();
 
         if (response != null)
-            return response.status;
+            return response.getStatus();
         else if (r.errorBody() != null)
             return unmarshalResponseOurselves(r);
         else {
@@ -153,7 +154,7 @@ public class StatusCodeCallback implements Callback<Response> {
         }
 
         if (response != null)
-            return response.status;
+            return response.getStatus();
         else {
             logResponse(r);
             return StatusCode.GENERAL_ERROR;
@@ -162,19 +163,19 @@ public class StatusCodeCallback implements Callback<Response> {
 
     private static <T> void logResponse(retrofit2.Response<T> r) {
         if (r.body() != null)
-            LOG.e("Response was an error:\n" + r.body().toString());
+            LOG.e("Response was an " + r.code() + " error:\n" + r.body().toString());
         else
-            LOG.e("Response was an error without body");
+            LOG.e("Response was an " + r.code() + " error without body");
 
         if (r.errorBody() != null)
             try {
-                LOG.e("Response was an error:\n" +
+                LOG.e("Response was an  " + r.code() + " error:\n" +
                         r.errorBody().string());
             } catch (IOException e) {
-                LOG.e("Response was an error and the body returned an exception");
+                LOG.e("Response was an " + r.code() + " error and the body returned an exception");
             }
         else
-            LOG.e("Response was an error without error body");
+            LOG.e("Response was an " + r.code() + " error without error body");
     }
 
 }

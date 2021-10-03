@@ -20,6 +20,7 @@
 package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.servertest.TestSuite;
+import de.njsm.stocks.servertest.v2.repo.FoodRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class EanTest implements Deleter {
     @Test
     public void addAEan() {
         String code = "1231231231231";
-        int foodId = FoodTest.createNewFoodType("Banana");
+        int foodId = FoodRepository.getAnyFoodId();
 
         addEan(code, foodId);
 
@@ -47,7 +48,7 @@ public class EanTest implements Deleter {
     @Test
     public void removeAEan() {
         String name = "1231231231232";
-        int foodId = FoodTest.createNewFoodType("Banana");
+        int foodId = FoodRepository.getAnyFoodId();
         addEan(name, foodId);
         int id = getIdOfEan(name);
 

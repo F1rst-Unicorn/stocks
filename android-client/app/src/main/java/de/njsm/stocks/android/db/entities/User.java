@@ -23,27 +23,11 @@ package de.njsm.stocks.android.db.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
-
 import androidx.room.Index;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
-import org.threeten.bp.Instant;
-
+import java.time.Instant;
 import java.util.Objects;
 
-
-
-
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @Entity(tableName = "user", primaryKeys = {"_id", "version", "transaction_time_start"},
         indices = {
                 @Index(value = {"_id", "valid_time_start", "valid_time_end"}, name = "user_current"),
@@ -60,9 +44,6 @@ public class User extends VersionedData {
         super(id, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, version, initiates);
         this.name = name;
     }
-
-    @Ignore
-    public User() {}
 
     @Override
     public boolean equals(Object o) {

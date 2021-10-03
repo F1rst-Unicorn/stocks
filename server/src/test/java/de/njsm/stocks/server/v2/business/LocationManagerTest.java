@@ -19,14 +19,19 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.Location;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.LocationForDeletion;
+import de.njsm.stocks.common.api.LocationForInsertion;
+import de.njsm.stocks.common.api.LocationForRenaming;
+import de.njsm.stocks.common.api.LocationForSetDescription;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
@@ -34,8 +39,8 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LocationManagerTest {
 
@@ -47,7 +52,7 @@ public class LocationManagerTest {
 
     private FoodItemHandler foodItemDbLayer;
 
-    @Before
+    @BeforeEach
     public void setup() {
         dbLayer = Mockito.mock(LocationHandler.class);
         foodItemDbLayer = Mockito.mock(FoodItemHandler.class);
@@ -57,7 +62,7 @@ public class LocationManagerTest {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verify(dbLayer).setPrincipals(TEST_USER);
         Mockito.verify(foodItemDbLayer).setPrincipals(TEST_USER);
@@ -69,8 +74,10 @@ public class LocationManagerTest {
 
     @Test
     public void puttingIsDelegated() {
-        LocationForInsertion input = new LocationForInsertion("test");
-        Mockito.when(dbLayer.add(input)).thenReturn(Validation.success(1));
+        LocationForInsertion input = LocationForInsertion.builder()
+                .name("test")
+                .build();
+        Mockito.when(dbLayer.add(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.put(input);
@@ -96,8 +103,11 @@ public class LocationManagerTest {
 
     @Test
     public void renamingIsDelegated() {
-        String newName = "newName";
-        LocationForRenaming input = new LocationForRenaming(1, 2, newName);
+        LocationForRenaming input = LocationForRenaming.builder()
+                .id(1)
+                .version(2)
+                .name("new name")
+                .build();
         Mockito.when(dbLayer.rename(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
 
@@ -111,7 +121,11 @@ public class LocationManagerTest {
 
     @Test
     public void deleteWithoutCascade() {
-        LocationForDeletion input = new LocationForDeletion(1, 2, false);
+        LocationForDeletion input = LocationForDeletion.builder()
+                .id(1)
+                .version(2)
+                .cascade(false)
+                .build();
         Mockito.when(dbLayer.delete(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodHandler.unregisterDefaultLocation(input)).thenReturn(StatusCode.SUCCESS);
@@ -126,7 +140,11 @@ public class LocationManagerTest {
 
     @Test
     public void deleteWithCascadeSucceeds() {
-        LocationForDeletion input = new LocationForDeletion(1, 2, true);
+        LocationForDeletion input = LocationForDeletion.builder()
+                .id(1)
+                .version(2)
+                .cascade(true)
+                .build();
         Mockito.when(foodItemDbLayer.deleteItemsStoredIn(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.delete(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
@@ -143,7 +161,11 @@ public class LocationManagerTest {
 
     @Test
     public void deleteWithCascadeFailsWhileDeletingItems() {
-        LocationForDeletion input = new LocationForDeletion(1, 2, true);
+        LocationForDeletion input = LocationForDeletion.builder()
+                .id(1)
+                .version(2)
+                .cascade(true)
+                .build();
         Mockito.when(foodItemDbLayer.deleteItemsStoredIn(input)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         Mockito.when(foodItemDbLayer.rollback()).thenReturn(StatusCode.SUCCESS);
 
@@ -156,7 +178,11 @@ public class LocationManagerTest {
 
     @Test
     public void settingDescriptionIsForwarded() {
-        LocationForSetDescription input = new LocationForSetDescription(1, 2, "new description");
+        LocationForSetDescription input = LocationForSetDescription.builder()
+                .id(1)
+                .version(2)
+                .description("new description")
+                .build();
         Mockito.when(dbLayer.setDescription(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
 

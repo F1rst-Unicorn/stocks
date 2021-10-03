@@ -19,19 +19,22 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.Unit;
+import de.njsm.stocks.common.api.UnitForDeletion;
+import de.njsm.stocks.common.api.UnitForInsertion;
+import de.njsm.stocks.common.api.UnitForRenaming;
 import de.njsm.stocks.server.v2.business.UnitManager;
-import de.njsm.stocks.server.v2.business.data.Unit;
-import de.njsm.stocks.server.v2.business.data.UnitForDeletion;
-import de.njsm.stocks.server.v2.business.data.UnitForInsertion;
-import de.njsm.stocks.server.v2.business.data.UnitForRenaming;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
-import de.njsm.stocks.server.v2.web.data.Response;
-import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -48,11 +51,14 @@ public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Del
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response put(@Context HttpServletRequest request,
-                            @QueryParam("name") String name,
-                            @QueryParam("abbreviation") String abbreviation) {
+                        @QueryParam("name") String name,
+                        @QueryParam("abbreviation") String abbreviation) {
         if (isValid(name, "name") && isValid(abbreviation, "abbreviation")) {
             manager.setPrincipals(getPrincipals(request));
-            Validation<StatusCode, Integer> status = manager.add(new UnitForInsertion(name, abbreviation));
+            StatusCode status = manager.add(UnitForInsertion.builder()
+                    .name(name)
+                    .abbreviation(abbreviation)
+                    .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -73,13 +79,12 @@ public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Del
                 isValid(abbreviation, "abbreviation")) {
 
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.rename(
-                    new UnitForRenaming(
-                            id,
-                            version,
-                            name,
-                            abbreviation
-                    ));
+            StatusCode status = manager.rename(UnitForRenaming.builder()
+                    .id(id)
+                    .version(version)
+                    .name(name)
+                    .abbreviation(abbreviation)
+                    .build());
             return new Response(status);
 
         } else {
@@ -94,6 +99,9 @@ public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Del
 
     @Override
     public UnitForDeletion wrapParameters(int id, int version) {
-        return new UnitForDeletion(id, version);
+        return UnitForDeletion.builder()
+                .id(id)
+                .version(version)
+                .build();
     }
 }

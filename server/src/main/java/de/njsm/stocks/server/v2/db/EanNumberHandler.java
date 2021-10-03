@@ -19,8 +19,12 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.EanNumber;
+import de.njsm.stocks.common.api.Food;
+import de.njsm.stocks.common.api.Identifiable;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.BitemporalEanNumber;
+import de.njsm.stocks.common.api.EanNumberForGetting;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -42,7 +46,7 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
     }
 
     public StatusCode deleteOwnedByFood(Identifiable<Food> food) {
-        return currentDelete(EAN_NUMBER.IDENTIFIES.eq(food.getId()))
+        return currentDelete(EAN_NUMBER.IDENTIFIES.eq(food.id()))
                 .map(this::notFoundIsOk);
     }
 
@@ -64,24 +68,24 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
     @Override
     protected Function<EanNumberRecord, EanNumber> getDtoMap(boolean bitemporal) {
         if (bitemporal)
-            return cursor -> new BitemporalEanNumber(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getValidTimeStart().toInstant(),
-                    cursor.getValidTimeEnd().toInstant(),
-                    cursor.getTransactionTimeStart().toInstant(),
-                    cursor.getTransactionTimeEnd().toInstant(),
-                    cursor.getInitiates(),
-                    cursor.getIdentifies(),
-                    cursor.getNumber()
-                    );
+            return cursor -> BitemporalEanNumber.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .validTimeStart(cursor.getValidTimeStart().toInstant())
+                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                    .initiates(cursor.getInitiates())
+                    .identifiesFood(cursor.getIdentifies())
+                    .eanNumber(cursor.getNumber())
+                    .build();
         else
-            return cursor -> new EanNumberForGetting(
-                    cursor.getId(),
-                    cursor.getVersion(),
-                    cursor.getIdentifies(),
-                    cursor.getNumber()
-                    );
+            return cursor -> EanNumberForGetting.builder()
+                    .id(cursor.getId())
+                    .version(cursor.getVersion())
+                    .identifiesFood(cursor.getIdentifies())
+                    .eanNumber(cursor.getNumber())
+                    .build();
     }
 
     @Override

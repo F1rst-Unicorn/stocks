@@ -19,8 +19,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.Update;
+import de.njsm.stocks.common.api.*;
 import fj.data.Validation;
 
 import java.util.stream.Stream;
@@ -40,9 +39,10 @@ public class UpdateBackend extends FailSafeDatabaseHandler {
             Stream<Update> dbResult = context
                     .selectFrom(UPDATES)
                     .stream()
-                    .map(record -> new Update(
-                            record.getTableName(),
-                            record.getLastUpdate().toInstant()));
+                    .map(record -> Update.builder()
+                            .table(record.getTableName())
+                            .lastUpdate(record.getLastUpdate().toInstant())
+                            .build());
             return Validation.success(dbResult);
         });
     }

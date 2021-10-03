@@ -19,17 +19,17 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.DataResponse;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.business.TicketAuthoriser;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
-import de.njsm.stocks.server.v2.web.data.DataResponse;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RegistrationEndpointTest {
 
@@ -37,13 +37,13 @@ public class RegistrationEndpointTest {
 
     private TicketAuthoriser authoriser;
 
-    @Before
+    @BeforeEach
     public void setup() {
         authoriser = Mockito.mock(TicketAuthoriser.class);
         uut = new RegistrationEndpoint(authoriser);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(authoriser);
     }
@@ -74,10 +74,14 @@ public class RegistrationEndpointTest {
 
     @Test
     public void testBusinessObjectCreation() {
-        ClientTicket ticket = new ClientTicket(3, "ticket", "csr");
+        ClientTicket ticket = ClientTicket.builder()
+                .deviceId(3)
+                .ticket("ticket")
+                .pemFile("csr")
+                .build();
         Mockito.when(authoriser.handleTicket(ticket)).thenReturn(Validation.success("certificate"));
 
-        DataResponse<String> result = uut.getNewCertificate(ticket.getDeviceId(), ticket.getTicket(), ticket.getPemFile());
+        DataResponse<String> result = uut.getNewCertificate(ticket.deviceId(), ticket.ticket(), ticket.pemFile());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         assertEquals("certificate", result.data);

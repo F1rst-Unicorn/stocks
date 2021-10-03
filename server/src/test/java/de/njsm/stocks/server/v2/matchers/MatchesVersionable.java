@@ -19,12 +19,12 @@
 
 package de.njsm.stocks.server.v2.matchers;
 
-import de.njsm.stocks.server.v2.business.data.Entity;
-import de.njsm.stocks.server.v2.business.data.Versionable;
-import org.hamcrest.BaseMatcher;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.Versionable;
 import org.hamcrest.Description;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-public class MatchesVersionable<T extends Entity<T>> extends BaseMatcher<Entity<T>> {
+public abstract class MatchesVersionable<T extends Entity<T>> extends TypeSafeDiagnosingMatcher<Entity<T>> {
 
     private final Versionable<T> contentData;
 
@@ -33,20 +33,32 @@ public class MatchesVersionable<T extends Entity<T>> extends BaseMatcher<Entity<
     }
 
     @Override
-    public boolean matches(Object item) {
-        if (!(item instanceof Entity)) {
+    protected boolean matchesSafely(Entity<T> item, Description mismatchDescription) {
+        T entity;
+        try {
+            entity = (T) item;
+        } catch (ClassCastException e) {
+            mismatchDescription.appendText("was of wrong type");
             return false;
         }
 
-        try {
-            return contentData.isContainedIn((T) item);
-        } catch (ClassCastException e) {
-            return false;
-        }
+        boolean matches = contentData.isContainedIn(entity, getIncrement());
+        if (!matches)
+            mismatchDescription.appendText("does not describe ")
+                    .appendValue(contentData);
+        return matches;
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendValue(contentData);
+        description
+                .appendText("matches ")
+                .appendText(getIncrement() ? "updated " : "")
+                .appendText("versionable ")
+                .appendText(getIncrement() ? "" : "exactly ")
+                .appendValue(contentData);
+
     }
+
+    abstract boolean getIncrement();
 }

@@ -19,11 +19,16 @@
 
 package de.njsm.stocks.server.v2.web;
 
+
+import de.njsm.stocks.common.api.Location;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.LocationForDeletion;
+import de.njsm.stocks.common.api.LocationForInsertion;
+import de.njsm.stocks.common.api.LocationForRenaming;
+import de.njsm.stocks.common.api.LocationForSetDescription;
 import de.njsm.stocks.server.v2.business.LocationManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
-import de.njsm.stocks.server.v2.web.data.Response;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +54,9 @@ public class LocationEndpoint extends Endpoint implements
                                 @QueryParam("name") String name) {
         if (isValid(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.put(new LocationForInsertion(name));
+            StatusCode status = manager.put(LocationForInsertion.builder()
+                    .name(name)
+                    .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -68,7 +75,11 @@ public class LocationEndpoint extends Endpoint implements
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.rename(new LocationForRenaming(id, version, newName));
+            StatusCode status = manager.rename(LocationForRenaming.builder()
+                    .id(id)
+                    .version(version)
+                    .name(newName)
+                    .build());
             return new Response(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
@@ -83,7 +94,11 @@ public class LocationEndpoint extends Endpoint implements
                                    @QueryParam("cascade") int cascadeParameter) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-            return delete(request, () -> new LocationForDeletion(id, version, cascadeParameter == 1));
+            return delete(request, () -> LocationForDeletion.builder()
+                    .id(id)
+                    .version(version)
+                    .cascade(cascadeParameter == 1)
+                    .build());
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
         }
@@ -99,7 +114,11 @@ public class LocationEndpoint extends Endpoint implements
                                    @FormParam("description") String description) {
         if (isValid(id, "id") && isValidVersion(version, "version") && isValidOrEmpty(description, "description")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.setDescription(new LocationForSetDescription(id, version, description));
+            StatusCode result = manager.setDescription(LocationForSetDescription.builder()
+                    .id(id)
+                    .version(version)
+                    .description(description)
+                    .build());
             return new Response(result);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

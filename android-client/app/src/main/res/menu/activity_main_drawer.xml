@@ -28,6 +28,10 @@
             android:icon="@drawable/ic_shopping_cart_black_24"
             android:title="@string/action_shopping_list" />
         <item
+            android:id="@+id/activity_main_drawer_recipes"
+            android:icon="@drawable/baseline_text_snippet_black_24"
+            android:title="@string/action_recipes" />
+        <item
             android:id="@+id/activity_main_drawer_locations"
             android:icon="@drawable/baseline_kitchen_black_24"
             android:title="@string/action_locations" />

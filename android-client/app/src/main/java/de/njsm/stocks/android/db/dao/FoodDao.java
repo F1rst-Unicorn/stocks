@@ -25,7 +25,7 @@ import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.Sql;
 import de.njsm.stocks.android.db.views.FoodSummaryView;
 import de.njsm.stocks.android.db.views.FoodSummaryWithExpirationView;
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 import java.util.List;
 
@@ -37,10 +37,10 @@ import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY_STRING;
 public abstract class FoodDao implements Inserter<Food> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(Food[] food);
+    public abstract void insert(List<Food> food);
 
     @Transaction
-    public void synchronise(Food[] food) {
+    public void synchronise(List<Food> food) {
         delete();
         insert(food);
     }

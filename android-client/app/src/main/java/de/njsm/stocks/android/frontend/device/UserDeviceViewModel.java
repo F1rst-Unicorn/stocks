@@ -22,7 +22,7 @@ package de.njsm.stocks.android.frontend.device;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.entities.UserDevice;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.android.repo.UserDeviceRepository;
 import de.njsm.stocks.android.util.Logger;
 import fj.data.Validation;

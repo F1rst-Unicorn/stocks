@@ -19,11 +19,11 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -31,18 +31,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ScaledUnitHandlerTest extends DbTestCase {
+public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsTest<ScaledUnitRecord, ScaledUnit> {
 
     private ScaledUnitHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new ScaledUnitHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
@@ -50,19 +46,12 @@ public class ScaledUnitHandlerTest extends DbTestCase {
         uut.setPrincipals(TEST_USER);
     }
 
-    @Test
-    public void insertingWorks() {
-        ScaledUnitForInsertion data = new ScaledUnitForInsertion(BigDecimal.ONE, 1);
-
-        Validation<StatusCode, Integer> result = uut.add(data);
-
-        assertTrue(result.isSuccess());
-        assertEquals(Integer.valueOf(3), result.success());
-        Validation<StatusCode, Stream<ScaledUnit>> units = uut.get(false, Instant.EPOCH);
-        List<ScaledUnit> list = units.success().collect(Collectors.toList());
-        assertTrue(units.isSuccess());
-        assertEquals(3, list.size());
-        assertThat(list, hasItem(matchesInsertable(data)));
+    @Override
+    public ScaledUnitForInsertion getInsertable() {
+        return ScaledUnitForInsertion.builder()
+                .scale(BigDecimal.ONE)
+                .unit(1)
+                .build();
     }
 
     @Test
@@ -71,10 +60,10 @@ public class ScaledUnitHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<ScaledUnit>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalScaledUnit sample = (BitemporalScaledUnit) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test
@@ -86,11 +75,11 @@ public class ScaledUnitHandlerTest extends DbTestCase {
                 .map(v -> (BitemporalScaledUnit) v).collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                        l.getId() == 2 &&
-                        l.getVersion() == 0 &&
-                        l.getScale().equals(new BigDecimal(3)) &&
-                        l.getUnit() == 2 &&
-                        l.getInitiates() == 1));
+                        l.id() == 2 &&
+                        l.version() == 0 &&
+                        l.scale().equals(new BigDecimal(3)) &&
+                        l.unit() == 2 &&
+                        l.initiates() == 1));
     }
 
     @Test
@@ -101,39 +90,96 @@ public class ScaledUnitHandlerTest extends DbTestCase {
         List<ScaledUnit> data = result.success().collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 2 &&
-                l.getVersion() == 0 &&
-                l.getScale().equals(new BigDecimal(3)) &&
-                l.getUnit() == 2));
+                l.id() == 2 &&
+                l.version() == 0 &&
+                l.scale().equals(new BigDecimal(3)) &&
+                l.unit() == 2));
     }
 
     @Test
     public void deletingWithForeignReferencesIsRejected() {
-        StatusCode result = uut.delete(new ScaledUnitForDeletion(1, 0))
+        StatusCode result = uut.delete(ScaledUnitForDeletion.builder()
+                        .id(1)
+                        .version(0)
+                        .build())
                 .bind(uut::commit);
 
         assertEquals(StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION, result);
     }
 
     @Test
-    public void editingScaleWorks() {
-        ScaledUnitForEditing input = new ScaledUnitForEditing(1, 0, new BigDecimal(2), 1);
+    public void editingMissingScaleIsReported() {
+        ScaledUnitForEditing input = ScaledUnitForEditing.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .scale(BigDecimal.valueOf(2))
+                .unit(1)
+                .build();
 
         StatusCode result = uut.edit(input);
 
-        assertEquals(StatusCode.SUCCESS, result);
-        List<ScaledUnit> data = uut.get(false, Instant.EPOCH).success().collect(Collectors.toList());
-        assertThat(data, hasItem(matchesVersionable(input)));
+        assertEquals(StatusCode.NOT_FOUND, result);
+    }
+
+    @Test
+    public void editingScaleWorks() {
+        ScaledUnitForEditing input = ScaledUnitForEditing.builder()
+                .id(1)
+                .version(0)
+                .scale(BigDecimal.valueOf(2))
+                .unit(1)
+                .build();
+
+        StatusCode result = uut.edit(input);
+
+        assertEditingWorked(input, result);
     }
 
     @Test
     public void editingUnitWorks() {
-        ScaledUnitForEditing input = new ScaledUnitForEditing(1, 0, new BigDecimal(1), 2);
+        ScaledUnitForEditing input = ScaledUnitForEditing.builder()
+                .id(1)
+                .version(0)
+                .scale(BigDecimal.valueOf(1))
+                .unit(2)
+                .build();
 
         StatusCode result = uut.edit(input);
 
-        assertEquals(StatusCode.SUCCESS, result);
-        List<ScaledUnit> data = uut.get(false, Instant.EPOCH).success().collect(Collectors.toList());
-        assertThat(data, hasItem(matchesVersionable(input)));
+        assertEditingWorked(input, result);
+    }
+
+    @Override
+    public CrudDatabaseHandler<ScaledUnitRecord, ScaledUnit> getDbHandler() {
+        return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 3;
+    }
+
+    @Override
+    public ScaledUnitForDeletion getUnknownEntity() {
+        return ScaledUnitForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public ScaledUnitForDeletion getWrongVersionEntity() {
+        return ScaledUnitForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public ScaledUnitForDeletion getValidEntity() {
+        return ScaledUnitForDeletion.builder()
+                .id(3)
+                .version(0)
+                .build();
     }
 }

@@ -36,6 +36,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Positionable;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
@@ -43,11 +44,13 @@ import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.frontend.util.RefreshViewModel;
 import de.njsm.stocks.android.frontend.util.SwipeCallback;
 import de.njsm.stocks.android.frontend.util.SwipeSyncCallback;
-import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.util.Logger;
+import de.njsm.stocks.common.api.StatusCode;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import static de.njsm.stocks.android.error.StatusCodeMessages.*;
 
 public class BaseFragment extends Fragment {
 
@@ -63,7 +66,7 @@ public class BaseFragment extends Fragment {
 
     protected void maybeShowAddError(StatusCode code) {
         if (code != StatusCode.SUCCESS) {
-            showErrorMessage(requireActivity(), code.getAddErrorMessage());
+            showErrorMessage(requireActivity(), getAddErrorMessage(code));
         }
     }
 
@@ -73,19 +76,19 @@ public class BaseFragment extends Fragment {
 
     public void maybeShowEditError(StatusCode code) {
         if (code != StatusCode.SUCCESS) {
-            showErrorMessage(requireActivity(), code.getEditErrorMessage());
+            showErrorMessage(requireActivity(), getEditErrorMessage(code));
         }
     }
 
     public void maybeShowDeleteError(StatusCode code) {
         if (code != StatusCode.SUCCESS) {
-            showErrorMessage(requireActivity(), code.getDeleteErrorMessage());
+            showErrorMessage(requireActivity(), getDeleteErrorMessage(code));
         }
     }
 
     public static void maybeShowReadError(Activity a, StatusCode code) {
         if (code != StatusCode.SUCCESS) {
-            showErrorMessage(a, code.getReadErrorMessage());
+            showErrorMessage(a, getReadErrorMessage(code));
         }
     }
 
@@ -223,6 +226,15 @@ public class BaseFragment extends Fragment {
         } else {
             return true;
         }
+    }
+
+    protected String getTextFieldContent(int viewId) {
+        return getTextFieldContent(requireView(), viewId);
+    }
+
+    protected String getTextFieldContent(View view, int viewId) {
+        TextInputLayout field = view.findViewById(viewId);
+        return field.getEditText().getText().toString().trim();
     }
 
     protected void doNothing(DialogInterface dialogInterface, int i) {}

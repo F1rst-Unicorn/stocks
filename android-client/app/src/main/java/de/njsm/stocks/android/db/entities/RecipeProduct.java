@@ -22,21 +22,11 @@ package de.njsm.stocks.android.db.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.Index;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.threeten.bp.Instant;
 
+import java.time.Instant;
 import java.util.Objects;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        creatorVisibility = JsonAutoDetect.Visibility.NONE)
 @Entity(tableName = "recipe_product",
         primaryKeys = {"_id", "version", "transaction_time_start"},
         indices = {
@@ -69,10 +59,6 @@ public class RecipeProduct extends VersionedData {
         this.product = product;
         this.recipe = recipe;
         this.unit = unit;
-    }
-
-    @Ignore
-    public RecipeProduct() {
     }
 
     public int getAmount() {

@@ -19,13 +19,12 @@
 
 package de.njsm.stocks.server.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PrincipalsTest {
 
@@ -61,7 +60,7 @@ public class PrincipalsTest {
         assertEquals(did, uut.getDid());
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void invalidNumber() {
         String uname = "username";
         String dname = "device";
@@ -74,10 +73,10 @@ public class PrincipalsTest {
                 String.valueOf(did)
         };
 
-        new Principals(rawInput);
+        assertThrows(SecurityException.class, () -> new Principals(rawInput));
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void invalidArray() {
         String uname = "username";
         String dname = "device";
@@ -92,10 +91,10 @@ public class PrincipalsTest {
                 "I'm evil :)"
         };
 
-        new Principals(rawInput);
+        assertThrows(SecurityException.class, () -> new Principals(rawInput));
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void testWrongLength() {
         String[] input = {
                 "user",
@@ -103,7 +102,7 @@ public class PrincipalsTest {
                 "device",
         };
 
-        new Principals(input);
+        assertThrows(SecurityException.class, () -> new Principals(input));
     }
 
 
@@ -112,10 +111,10 @@ public class PrincipalsTest {
         Principals uut1 = new Principals("test", "test", 1, 2);
         Principals uut2 = new Principals("test", "test", 1, 3);
 
-        Assert.assertTrue(uut1.equals(uut1));
-        Assert.assertTrue(uut2.equals(uut2));
-        Assert.assertFalse(uut1.equals(new Object()));
-        Assert.assertFalse(uut1.equals(uut2));
+        assertTrue(uut1.equals(uut1));
+        assertTrue(uut2.equals(uut2));
+        assertFalse(uut1.equals(new Object()));
+        assertFalse(uut1.equals(uut2));
     }
 
     @Test
@@ -138,7 +137,7 @@ public class PrincipalsTest {
         inputList.add("!\"\\^,.;:§%&/()?+*#'-_<>|");
 
         for (String input : inputList) {
-            Assert.assertTrue(Principals.isNameValid(input));
+            assertTrue(Principals.isNameValid(input));
         }
     }
 
@@ -151,7 +150,7 @@ public class PrincipalsTest {
         inputList.add("==> Fool <==");
 
         for (String input : inputList) {
-            Assert.assertFalse(Principals.isNameValid(input));
+            assertFalse(Principals.isNameValid(input));
         }
     }
 

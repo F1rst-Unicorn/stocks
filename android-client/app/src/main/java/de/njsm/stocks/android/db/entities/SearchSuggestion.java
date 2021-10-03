@@ -25,7 +25,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import org.threeten.bp.Instant;
+import java.time.Instant;
 
 @Entity(tableName = "search_suggestion")
 public class SearchSuggestion {

@@ -32,5 +32,3 @@ server-test/keystore_test
 # Ansible
 *.retry
 cache
-
-server-test/bin/dump-prod.sh

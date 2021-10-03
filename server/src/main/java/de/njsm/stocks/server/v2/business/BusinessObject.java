@@ -19,8 +19,8 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.common.api.Entity;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.Entity;
 import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
 import org.jooq.TableRecord;
 

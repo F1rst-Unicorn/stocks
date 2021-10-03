@@ -38,8 +38,8 @@ import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.db.views.ScaledUnitView;
 import de.njsm.stocks.android.frontend.BaseAdapter;
 import de.njsm.stocks.android.util.Config;
-import org.threeten.bp.Duration;
-import org.threeten.bp.Instant;
+import java.time.Duration;
+import java.time.Instant;
 
 import java.util.List;
 

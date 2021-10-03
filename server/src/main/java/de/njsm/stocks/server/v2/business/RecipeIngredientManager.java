@@ -19,23 +19,14 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.RecipeIngredient;
-import de.njsm.stocks.server.v2.business.data.RecipeIngredientForDeletion;
+import de.njsm.stocks.common.api.RecipeIngredient;
 import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
 
 public class RecipeIngredientManager extends BusinessObject<RecipeIngredientRecord, RecipeIngredient>
-        implements BusinessGettable<RecipeIngredientRecord, RecipeIngredient>,
-                   BusinessDeletable<RecipeIngredientForDeletion, RecipeIngredient> {
-
-    private final RecipeIngredientHandler dbHandler;
+        implements BusinessGettable<RecipeIngredientRecord, RecipeIngredient> {
 
     public RecipeIngredientManager(RecipeIngredientHandler dbHandler) {
         super(dbHandler);
-        this.dbHandler = dbHandler;
-    }
-
-    public StatusCode delete(RecipeIngredientForDeletion Recipe) {
-        return runOperation(() -> dbHandler.delete(Recipe));
     }
 }

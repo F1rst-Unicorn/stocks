@@ -113,10 +113,21 @@ object Build : BuildType({
             coverageEngine = idea {
                 includeClasses = "de.njsm.stocks.*"
                 excludeClasses = """
+                    de.njsm.stocks.client.storage.jooq.tables.*
+                    de.njsm.stocks.server.v2.db.jooq.tables.*
+                    de.njsm.stocks.server.v2.db.jooq.Sequences
+                    de.njsm.stocks.server.v2.db.jooq.Keys
+                    de.njsm.stocks.server.v2.db.jooq.Public
+                    de.njsm.stocks.server.v2.db.jooq.Tables
+                    de.njsm.stocks.server.v2.db.jooq.DefaultCatalog
+                    de.njsm.stocks.server.v2.db.jooq.Indexes
+                    de.njsm.stocks.server.v2.business.data.AutoValue_*
+
+                    de.njsm.stocks.common.api.AutoValue_*
+
                     de.njsm.*.*Test
-                    de.njsm.stocks.server.v2.db.jooq.*
-                    de.njsm.stocks.client.storage.jooq.*
                     de.njsm.stocks.server.v2.matchers.*
+                    de.njsm.stocks.server.v2.web.Util
                 """.trimIndent()
             }
         }

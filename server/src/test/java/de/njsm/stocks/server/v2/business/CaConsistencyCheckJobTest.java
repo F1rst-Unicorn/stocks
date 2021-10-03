@@ -19,14 +19,15 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.PrincipalsHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Collections;
@@ -46,7 +47,7 @@ public class CaConsistencyCheckJobTest {
 
     private UserDeviceHandler deviceHandler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         authAdmin = Mockito.mock(AuthAdmin.class);
         dbHandler = Mockito.mock(PrincipalsHandler.class);
@@ -54,7 +55,7 @@ public class CaConsistencyCheckJobTest {
         uut = new CaConsistencyCheckJob(authAdmin, dbHandler, deviceHandler);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(authAdmin);
         Mockito.verifyNoMoreInteractions(dbHandler);

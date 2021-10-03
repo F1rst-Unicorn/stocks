@@ -19,17 +19,17 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.StreamResponse;
+import de.njsm.stocks.common.api.User;
+import de.njsm.stocks.common.api.UserForDeletion;
+import de.njsm.stocks.common.api.UserForInsertion;
 import de.njsm.stocks.server.v2.business.UserManager;
-import de.njsm.stocks.server.v2.business.data.User;
-import de.njsm.stocks.server.v2.business.data.UserForDeletion;
-import de.njsm.stocks.server.v2.business.data.UserForInsertion;
-import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -49,14 +49,14 @@ public class UserEndpointTest {
 
     private UserManager userManager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         userManager = Mockito.mock(UserManager.class);
 
         uut = new UserEndpoint(userManager);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(userManager);
     }
@@ -109,12 +109,14 @@ public class UserEndpointTest {
     @Test
     public void validAddingIsSuccessful() {
         String name = "user";
-        Mockito.when(userManager.addUser(any())).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(userManager.add(any())).thenReturn(StatusCode.SUCCESS);
 
         Response result = uut.putUser(createMockRequest(), name);
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
-        Mockito.verify(userManager).addUser(new UserForInsertion(name));
+        Mockito.verify(userManager).add(UserForInsertion.builder()
+                .name(name)
+                .build());
         Mockito.verify(userManager).setPrincipals(TEST_USER);
     }
 
@@ -143,7 +145,10 @@ public class UserEndpointTest {
         Response result = uut.delete(Util.createMockRequest(), 1, 2);
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
-        Mockito.verify(userManager).delete(new UserForDeletion(1, 2));
+        Mockito.verify(userManager).delete(UserForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build());
         Mockito.verify(userManager).setPrincipals(TEST_USER);
     }
 }

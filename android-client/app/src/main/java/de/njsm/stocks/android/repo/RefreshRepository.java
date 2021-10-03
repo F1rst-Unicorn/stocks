@@ -20,10 +20,9 @@
 package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
+import de.njsm.stocks.common.api.StatusCode;
 
 import javax.inject.Inject;
-
-import de.njsm.stocks.android.network.server.StatusCode;
 
 public class RefreshRepository {
 

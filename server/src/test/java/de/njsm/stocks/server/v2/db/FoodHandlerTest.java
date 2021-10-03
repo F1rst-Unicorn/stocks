@@ -19,30 +19,23 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.time.Period;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
-import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionable;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class FoodHandlerTest extends DbTestCase {
+public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<FoodRecord, Food> {
 
     private FoodHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new FoodHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
@@ -56,30 +49,30 @@ public class FoodHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<Food>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalFood sample = (BitemporalFood) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
-    @Test
-    public void addAFood() {
-        FoodForInsertion data = new FoodForInsertion("Banana", 1);
-
-        Validation<StatusCode, Integer> code = uut.add(data);
-
-        assertTrue(code.isSuccess());
-
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-        assertThat(dbData.success().collect(Collectors.toList()),
-                hasItem(matchesInsertable(data)));
+    @Override
+    public FoodForInsertion getInsertable() {
+        return FoodForInsertion.builder()
+                .name("Banana")
+                .storeUnit(1)
+                .build();
     }
 
     @Test
     public void editAFood() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ofDays(3), 2, null, 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(2)
+                .version(0)
+                .name("Beer")
+                .expirationOffset(3)
+                .location(2)
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -88,7 +81,14 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void editFoodStoreUnit() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ofDays(3), 2, null, 2);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(2)
+                .version(0)
+                .name("Beer")
+                .expirationOffset(3)
+                .location(2)
+                .storeUnit(2)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -97,7 +97,14 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void editAFoodDefaultLocation() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", Period.ZERO.plusDays(2), 2, null, 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(2)
+                .version(0)
+                .name("Beer")
+                .expirationOffset(2)
+                .location(2)
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -106,7 +113,14 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void editAFoodDefaultLocationBySettingNull() {
-        FoodForEditing data = new FoodForEditing(3, 0, "Cheese", Period.ZERO.plusDays(3), 0, null, 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(3)
+                .version(0)
+                .name("Cheese")
+                .expirationOffset(3)
+                .location(0)
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -115,7 +129,15 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void editAFoodExpirationOffset() {
-        FoodForEditing data = new FoodForEditing(3, 0, "Cheese", Period.ZERO.plusDays(2), 1, null, 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(3)
+                .version(0)
+                .name("Cheese")
+                .expirationOffset(2)
+                .location(1)
+                .description("new description")
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -124,7 +146,11 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void editAFoodWithoutExpirationOrDefaultLocationDoesntUpdateThem() {
-        FoodForEditing data = new FoodForEditing(3, 0, "Cheddar", null, null, null, null);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(3)
+                .version(0)
+                .name("Cheddar")
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -133,24 +159,30 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void editingDescriptionWorks() {
-        FoodForEditing data = new FoodForEditing(2, 0, "Beer", null, null, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(2)
+                .version(0)
+                .name("Beer")
+                .description("new description")
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
         assertEditingWorked(data, result);
     }
 
-    private void assertEditingWorked(FoodForEditing data, StatusCode result) {
-        assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-        assertTrue(dbData.isSuccess());
-        List<Food> currentFood = dbData.success().collect(Collectors.toList());
-        assertThat(currentFood, hasItem(matchesVersionable(data)));
-    }
-
     @Test
     public void wrongVersionIsNotRenamed() {
-        FoodForEditing data = new FoodForEditing(2, 100, "Wine", Period.ZERO, 2, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(2)
+                .version(100)
+                .name("Wine")
+                .expirationOffset(0)
+                .location(2)
+                .description("new description")
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -159,7 +191,15 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void unknownIsReported() {
-        FoodForEditing data = new FoodForEditing(100, 0, "Wine", Period.ZERO, 2, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(100)
+                .version(0)
+                .name("Wine")
+                .expirationOffset(0)
+                .location(2)
+                .description("new description")
+                .storeUnit(1)
+                .build();
 
         StatusCode result = uut.edit(data);
 
@@ -167,47 +207,12 @@ public class FoodHandlerTest extends DbTestCase {
     }
 
     @Test
-    public void deleteAFood() {
-        FoodForDeletion data = new FoodForDeletion(2, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.SUCCESS, result);
-
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertTrue(dbData.success().map(Food::getName).noneMatch(name -> name.equals("Beer")));
-    }
-
-    @Test
-    public void invalidDataVersionIsRejected() {
-        FoodForDeletion data = new FoodForDeletion(2, 100);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-
-        Validation<StatusCode, Stream<Food>> dbData = uut.get(false, Instant.EPOCH);
-
-        assertTrue(dbData.isSuccess());
-
-        assertEquals(3, dbData.success().count());
-    }
-
-    @Test
-    public void unknownDeletionsAreReported() {
-        FoodForDeletion data = new FoodForDeletion(100, 0);
-
-        StatusCode result = uut.delete(data);
-
-        assertEquals(StatusCode.NOT_FOUND, result);
-    }
-
-    @Test
     public void foodToBuyIsMarked() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 0, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(1)
+                .version(0)
+                .toBuy(true)
+                .build();
 
         StatusCode result = uut.setToBuyStatus(data);
 
@@ -216,7 +221,11 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void foodToBuyWithInvalidVersionIsNotMarked() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 2, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(1)
+                .version(2)
+                .toBuy(true)
+                .build();
 
         StatusCode result = uut.setToBuyStatus(data);
 
@@ -225,7 +234,11 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void missingFoodToBuyIsReported() {
-        FoodForSetToBuy data = new FoodForSetToBuy(100, 0, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(100)
+                .version(0)
+                .toBuy(true)
+                .build();
 
         StatusCode result = uut.setToBuyStatus(data);
 
@@ -234,18 +247,26 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void settingExplicitBuyStatusWorks() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 0, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(1)
+                .version(0)
+                .toBuy(true)
+                .build();
 
         StatusCode result = uut.setToBuyStatus(data, false);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Food changedData = uut.get(false, Instant.EPOCH).success().filter(f -> f.getId() == data.getId()).findFirst().get();
-        assertFalse(changedData.isToBuy());
+        Food changedData = uut.get(false, Instant.EPOCH).success().filter(f -> f.id() == data.id()).findFirst().get();
+        assertFalse(changedData.toBuy());
     }
 
     @Test
     public void settingExplicitBuyStatusWithoutFindingAnyFoodIsOk() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 0, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(2)
+                .version(1)
+                .toBuy(true)
+                .build();
 
         StatusCode result = uut.setToBuyStatus(data, true);
 
@@ -254,7 +275,10 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void unregisteringALocationWithoutFoodIsOk() {
-        LocationForDeletion l = new LocationForDeletion(2, 1);
+        LocationForDeletion l = LocationForDeletion.builder()
+                .id(2)
+                .version(1)
+                .build();
 
         StatusCode result = uut.unregisterDefaultLocation(l);
 
@@ -263,33 +287,44 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void unregisteringALocationWorks() {
-        LocationForDeletion l = new LocationForDeletion(1, 1);
+        LocationForDeletion l = LocationForDeletion.builder()
+                .id(1)
+                .version(1)
+                .build();
 
         StatusCode result = uut.unregisterDefaultLocation(l);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Food changedFood = uut.get(false, Instant.EPOCH).success().filter(f -> f.getId() == 3).findAny().get();
-        assertNull(changedFood.getLocation());
+        Food changedFood = uut.get(false, Instant.EPOCH).success().filter(f -> f.id() == 3).findAny().get();
+        assertNull(changedFood.location());
     }
 
     @Test
     public void settingDescriptionWorks() {
-        FoodForSetDescription data = new FoodForSetDescription(2, 0, "new description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(2)
+                .version(0)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue("expected description '" + data.getDescription() + "' not found",
-                uut.get(false, Instant.EPOCH)
+        assertTrue(uut.get(false, Instant.EPOCH)
                 .success()
-                .anyMatch(f -> f.getId() == data.getId() &&
-                        data.getVersion() + 1 == f.getVersion() &&
-                        data.getDescription().equals(f.getDescription())));
+                .anyMatch(f -> f.id() == data.id() &&
+                        data.version() + 1 == f.version() &&
+                        data.description().equals(f.description())),
+                () -> "expected description '" + data.description() + "' not found");
     }
 
     @Test
     public void settingDescriptionOnAbsentFoodIsReported() {
-        FoodForSetDescription data = new FoodForSetDescription(4, 0, "new description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(4)
+                .version(0)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -298,7 +333,11 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void settingDescriptionOnInvalidVersionIsReported() {
-        FoodForSetDescription data = new FoodForSetDescription(2, 1, "new description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(2)
+                .version(1)
+                .description("new description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
@@ -307,10 +346,48 @@ public class FoodHandlerTest extends DbTestCase {
 
     @Test
     public void settingDescriptionWithoutChangeIsPrevented() {
-        FoodForSetDescription data = new FoodForSetDescription(2, 0, "beer description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(2)
+                .version(0)
+                .description("beer description")
+                .build();
 
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
+
+    @Override
+    public CrudDatabaseHandler<FoodRecord, Food> getDbHandler() {
+        return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 3;
+    }
+
+    @Override
+    public Versionable<Food> getUnknownEntity() {
+        return FoodForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public Versionable<Food> getWrongVersionEntity() {
+        return FoodForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public Versionable<Food> getValidEntity() {
+        return FoodForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
     }
 }

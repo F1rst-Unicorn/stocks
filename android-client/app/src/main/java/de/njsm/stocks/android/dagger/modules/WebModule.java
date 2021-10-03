@@ -22,20 +22,9 @@ package de.njsm.stocks.android.dagger.modules;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.security.KeyStore;
-import java.security.SecureRandom;
-
-import javax.inject.Singleton;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.android.network.server.Api;
 import de.njsm.stocks.android.network.server.HostnameInterceptor;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.util.Config;
@@ -43,6 +32,16 @@ import de.njsm.stocks.android.util.Logger;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import javax.inject.Singleton;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 
 
 @Module
@@ -104,7 +103,13 @@ public class WebModule {
 
     @Provides
     @Singleton
-    static ServerClient provideServerClient(SharedPreferences prefs, OkHttpClient httpClient) {
+    static ServerClient provideServerClient(Api api) {
+        return new ServerClient(api);
+    }
+
+    @Provides
+    @Singleton
+    static Api provideApi(SharedPreferences prefs, OkHttpClient httpClient) {
         try {
             String url = Config.formatServerUrl(prefs);
 
@@ -114,7 +119,7 @@ public class WebModule {
                     .addConverterFactory(JacksonConverterFactory.create())
                     .build();
 
-            return retrofit.create(ServerClient.class);
+            return retrofit.create(Api.class);
         } catch (Exception e) {
             LOG.e("Could not create server client", e);
             throw new RuntimeException(e);

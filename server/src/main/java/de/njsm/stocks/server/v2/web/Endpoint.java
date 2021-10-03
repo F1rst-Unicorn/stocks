@@ -19,15 +19,14 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.json.InstantDeserialiser;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -39,7 +38,7 @@ public class Endpoint {
         return (Principals) request.getAttribute(PrincipalFilter.STOCKS_PRINCIPAL);
     }
 
-    protected static boolean isValid(String parameter, String name) {
+    public static boolean isValid(String parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter != null && ! parameter.isEmpty()) {
@@ -50,7 +49,7 @@ public class Endpoint {
         return false;
     }
 
-    protected boolean isValidOrEmpty(String parameter, String name) {
+    public boolean isValidOrEmpty(String parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter != null) {
@@ -61,7 +60,7 @@ public class Endpoint {
         return false;
     }
 
-    protected static boolean isValid(int parameter, String name) {
+    public static boolean isValid(int parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter > 0) {
@@ -72,13 +71,13 @@ public class Endpoint {
         return false;
     }
 
-    protected boolean isValidName(String value, String name) {
+    public boolean isValidName(String value, String name) {
         LOG.debug("Checking parameter " + name);
 
         return isValid(value, name) && Principals.isNameValid(value);
     }
 
-    protected static boolean isValidVersion(int parameter, String name) {
+    public static boolean isValidVersion(int parameter, String name) {
         LOG.debug("Checking parameter " + name);
 
         if (parameter >= 0) {
@@ -89,7 +88,7 @@ public class Endpoint {
         return false;
     }
 
-    protected boolean isValidInstant(String rawInstant, String name) {
+    public boolean isValidInstant(String rawInstant, String name) {
         LOG.debug("Checking parameter " + name);
 
         try {
@@ -97,27 +96,6 @@ public class Endpoint {
             return true;
         } catch (IOException e) {
             LOG.info("Request is invalid as " + name + " has value '" + rawInstant + "'");
-            return false;
-        }
-    }
-
-    protected static boolean isValidBigDecimal(String rawNumber, String name) {
-        LOG.debug("Checking parameter " + name);
-
-        if (!isValid(rawNumber, name)) {
-            return false;
-        }
-
-        if (rawNumber.length() > 20) {
-            LOG.info("Request is invalid as " + name + " is longer than 20 characters");
-            return false;
-        }
-
-        try {
-            new BigDecimal(rawNumber);
-            return true;
-        } catch (NumberFormatException e) {
-            LOG.info("Request is invalid as " + name + " is not a number");
             return false;
         }
     }

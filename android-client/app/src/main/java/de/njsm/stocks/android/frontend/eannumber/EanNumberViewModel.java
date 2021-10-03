@@ -22,7 +22,7 @@ package de.njsm.stocks.android.frontend.eannumber;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.entities.EanNumber;
-import de.njsm.stocks.android.network.server.StatusCode;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.android.repo.EanNumberRepository;
 
 import java.util.List;

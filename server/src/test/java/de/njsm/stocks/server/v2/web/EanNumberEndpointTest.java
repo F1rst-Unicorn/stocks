@@ -19,19 +19,17 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.EanNumber;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StreamResponse;
+import de.njsm.stocks.common.api.EanNumberForDeletion;
+import de.njsm.stocks.common.api.EanNumberForGetting;
+import de.njsm.stocks.common.api.EanNumberForInsertion;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.EanNumber;
-import de.njsm.stocks.server.v2.business.data.EanNumberForDeletion;
-import de.njsm.stocks.server.v2.business.data.EanNumberForGetting;
-import de.njsm.stocks.server.v2.business.data.EanNumberForInsertion;
-import de.njsm.stocks.server.v2.web.data.Response;
-import de.njsm.stocks.server.v2.web.data.StreamResponse;
 import fj.data.Validation;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -41,11 +39,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.njsm.stocks.server.v2.business.StatusCode.INVALID_ARGUMENT;
-import static de.njsm.stocks.server.v2.business.StatusCode.SUCCESS;
+import static de.njsm.stocks.common.api.StatusCode.INVALID_ARGUMENT;
+import static de.njsm.stocks.common.api.StatusCode.SUCCESS;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,13 +53,13 @@ public class EanNumberEndpointTest {
 
     private EanNumberManager manager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         manager = Mockito.mock(EanNumberManager.class);
         uut = new EanNumberEndpoint(manager);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verifyNoMoreInteractions(manager);
     }
@@ -108,10 +106,13 @@ public class EanNumberEndpointTest {
 
     @Test
     public void eanNumberIsAdded() {
-        EanNumberForInsertion data = new EanNumberForInsertion(2, "CODE");
-        when(manager.add(data)).thenReturn(Validation.success(5));
+        EanNumberForInsertion data = EanNumberForInsertion.builder()
+                .eanNumber("CODE")
+                .identifiesFood(2)
+                .build();
+        when(manager.add(data)).thenReturn(SUCCESS);
 
-        Response response = uut.putEanNumber(createMockRequest(), data.getEanNumber(), data.getIdentifiesFood());
+        Response response = uut.putEanNumber(createMockRequest(), data.eanNumber(), data.identifiesFood());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).add(data);
@@ -121,7 +122,12 @@ public class EanNumberEndpointTest {
     @Test
     public void getEanNumberReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        List<EanNumber> data = Collections.singletonList(new EanNumberForGetting(1, 2, 2, "CODE"));
+        List<EanNumber> data = Collections.singletonList(EanNumberForGetting.builder()
+                .id(1)
+                .version(2)
+                .identifiesFood(2)
+                .eanNumber("CODE")
+                .build());
         when(manager.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
         uut.get(r, 0, null);
@@ -141,15 +147,18 @@ public class EanNumberEndpointTest {
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
-        TestCase.assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
+        assertEquals(INVALID_ARGUMENT, c.getValue().getStatus());
     }
 
     @Test
     public void deleteWorks() {
-        EanNumberForDeletion data = new EanNumberForDeletion(1, 0);
+        EanNumberForDeletion data = EanNumberForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
         when(manager.delete(data)).thenReturn(SUCCESS);
 
-        Response response = uut.delete(createMockRequest(), data.getId(), data.getVersion());
+        Response response = uut.delete(createMockRequest(), data.id(), data.version());
 
         assertEquals(SUCCESS, response.getStatus());
         verify(manager).delete(data);

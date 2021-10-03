@@ -19,9 +19,12 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.common.api.Identifiable;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.UserDevice;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.*;
+import de.njsm.stocks.server.v2.business.data.ClientTicket;
+import de.njsm.stocks.server.v2.business.data.ServerTicket;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.TicketRecord;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
@@ -63,7 +66,7 @@ public class TicketHandler extends FailSafeDatabaseHandler {
     public Validation<StatusCode, ServerTicket> getTicket(ClientTicket ticket) {
         return runFunction(context -> {
             Result<TicketRecord> dbResult = context.selectFrom(TICKET)
-                    .where(TICKET.TICKET_.eq(ticket.getTicket()))
+                    .where(TICKET.TICKET_.eq(ticket.ticket()))
                     .limit(1)
                     .fetch();
 
@@ -73,11 +76,12 @@ public class TicketHandler extends FailSafeDatabaseHandler {
             } else {
                 TicketRecord record = dbResult.get(0);
 
-                return Validation.success(new ServerTicket(
-                        record.getId(),
-                        new Date(record.getCreatedOn().toInstant().toEpochMilli()),
-                        record.getBelongsDevice(),
-                        record.getTicket()));
+                return Validation.success(ServerTicket.builder()
+                        .id(record.getId())
+                        .creationDate(new Date(record.getCreatedOn().toInstant().toEpochMilli()))
+                        .deviceId(record.getBelongsDevice())
+                        .ticket(record.getTicket())
+                        .build());
             }
         });
     }
@@ -85,7 +89,7 @@ public class TicketHandler extends FailSafeDatabaseHandler {
     public StatusCode removeTicket(ServerTicket ticket) {
         return runCommand(context -> {
             int changedItems = context.deleteFrom(TICKET)
-                    .where(TICKET.ID.eq(ticket.getId()))
+                    .where(TICKET.ID.eq(ticket.id()))
                     .execute();
 
             if (changedItems == 1) {
@@ -100,7 +104,7 @@ public class TicketHandler extends FailSafeDatabaseHandler {
     public StatusCode removeTicketOfDevice(Identifiable<UserDevice> device) {
         return runCommand(context -> {
             context.deleteFrom(TICKET)
-                    .where(TICKET.BELONGS_DEVICE.eq(device.getId()))
+                    .where(TICKET.BELONGS_DEVICE.eq(device.id()))
                     .execute();
 
             return StatusCode.SUCCESS;

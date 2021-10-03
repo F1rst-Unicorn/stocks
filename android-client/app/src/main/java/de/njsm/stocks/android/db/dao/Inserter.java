@@ -25,9 +25,9 @@ import java.util.List;
 
 public interface Inserter<T> {
 
-    void insert(T[] data);
+    void insert(List<T> data);
 
-    void synchronise(T[] data);
+    void synchronise(List<T> data);
 
     LiveData<List<T>> getAll();
 }

@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.Instant;
 import java.util.Locale;
 
 import static java.math.BigDecimal.ONE;
@@ -91,7 +92,7 @@ public class ScaledUnitTest {
 
     @Test
     public void normaliseScaledUnitWorks() {
-        ScaledUnit uut = new ScaledUnit();
+        ScaledUnit uut = new ScaledUnit(0, Instant.EPOCH, Instant.EPOCH, Instant.EPOCH, Instant.EPOCH, 0, 0, ONE, 0);
         uut.scale = new BigDecimal(10000);
         assertEquals("10k", uut.normalise());
     }
@@ -100,7 +101,7 @@ public class ScaledUnitTest {
     public void normaliseScaledUnitWithFractionWorks() {
         Locale defaultLocale = Locale.getDefault();
         Locale.setDefault(Locale.US);
-        ScaledUnit uut = new ScaledUnit();
+        ScaledUnit uut = new ScaledUnit(0, Instant.EPOCH, Instant.EPOCH, Instant.EPOCH, Instant.EPOCH, 0, 0, ONE, 0);
         uut.scale = new BigDecimal(10500);
         assertEquals("10.5k", uut.normalise());
         Locale.setDefault(Locale.GERMANY);

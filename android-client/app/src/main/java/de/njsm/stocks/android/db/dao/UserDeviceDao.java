@@ -22,8 +22,8 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.UserDevice;
-import org.threeten.bp.Instant;
 
+import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
@@ -33,14 +33,14 @@ import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 public abstract class UserDeviceDao implements Inserter<UserDevice> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(UserDevice[] users);
+    public abstract void insert(List<UserDevice> users);
 
     public LiveData<List<UserDevice>> getDevicesOfUser(int userId) {
         return getCurrentDevicesOfUser(userId, DATABASE_INFINITY);
     }
 
     @Transaction
-    public void synchronise(UserDevice[] users) {
+    public void synchronise(List<UserDevice> users) {
         delete();
         insert(users);
     }

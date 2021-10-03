@@ -86,11 +86,15 @@ public class Principals {
     }
 
     public UserForPrincipals toUser() {
-        return new UserForPrincipals(uid);
+        return UserForPrincipals.builder()
+                .id(getUid())
+                .build();
     }
 
     public UserDeviceForPrincipals toDevice() {
-        return new UserDeviceForPrincipals(did);
+        return UserDeviceForPrincipals.builder()
+                .id(did)
+                .build();
     }
 
     @Override

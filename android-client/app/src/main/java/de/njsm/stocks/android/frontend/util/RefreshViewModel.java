@@ -21,8 +21,8 @@ package de.njsm.stocks.android.frontend.util;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import de.njsm.stocks.android.network.server.StatusCode;
 import de.njsm.stocks.android.repo.RefreshRepository;
+import de.njsm.stocks.common.api.StatusCode;
 
 import javax.inject.Inject;
 

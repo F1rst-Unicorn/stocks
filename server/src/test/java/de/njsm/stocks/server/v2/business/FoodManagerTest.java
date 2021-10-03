@@ -19,24 +19,24 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.server.v2.business.data.*;
+
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.container.AsyncResponse;
 import java.time.Instant;
-import java.time.Period;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FoodManagerTest {
 
@@ -48,7 +48,7 @@ public class FoodManagerTest {
 
     private EanNumberHandler eanNumberHandler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         backend = Mockito.mock(FoodHandler.class);
         foodItemHandler = Mockito.mock(FoodItemHandler.class);
@@ -58,7 +58,7 @@ public class FoodManagerTest {
         uut.setPrincipals(TEST_USER);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Mockito.verify(backend).setPrincipals(TEST_USER);
         Mockito.verify(foodItemHandler).setPrincipals(TEST_USER);
@@ -82,20 +82,30 @@ public class FoodManagerTest {
 
     @Test
     public void testAddingItem() {
-        FoodForInsertion data = new FoodForInsertion("Cheese", 1);
-        Mockito.when(backend.add(data)).thenReturn(Validation.success(1));
+        FoodForInsertion data = FoodForInsertion.builder()
+                .name("Cheese")
+                .storeUnit(1)
+                .build();
+        Mockito.when(backend.add(data)).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Integer> result = uut.add(data);
+        StatusCode result = uut.add(data);
 
-        assertTrue(result.isSuccess());
+        assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(backend).add(data);
         Mockito.verify(backend).commit();
     }
 
     @Test
     public void testRenamingItem() {
-        String newName = "Sausage";
-        FoodForEditing data = new FoodForEditing(1, 2, newName, Period.ZERO, 1, "new description", 1);
+        FoodForEditing data = FoodForEditing.builder()
+                .id(1)
+                .version(2)
+                .name("Sausage")
+                .expirationOffset(0)
+                .location(1)
+                .description("new description")
+                .storeUnit(1)
+                .build();
         Mockito.when(backend.edit(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.rename(data);
@@ -107,7 +117,11 @@ public class FoodManagerTest {
 
     @Test
     public void testSettingBuyStatusItem() {
-        FoodForSetToBuy data = new FoodForSetToBuy(1, 2, true);
+        FoodForSetToBuy data = FoodForSetToBuy.builder()
+                .id(1)
+                .version(2)
+                .toBuy(true)
+                .build();
         Mockito.when(backend.setToBuyStatus(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.setToBuyStatus(data);
@@ -119,7 +133,10 @@ public class FoodManagerTest {
 
     @Test
     public void testDeletingItem() {
-        FoodForDeletion data = new FoodForDeletion(1, 2);
+        FoodForDeletion data = FoodForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         Mockito.when(backend.delete(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(foodItemHandler.deleteItemsOfType(data)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(eanNumberHandler.deleteOwnedByFood(data)).thenReturn(StatusCode.SUCCESS);
@@ -135,7 +152,11 @@ public class FoodManagerTest {
 
     @Test
     public void settingDescriptionWorks() {
-        FoodForSetDescription data = new FoodForSetDescription(1, 2, "some description");
+        FoodForSetDescription data = FoodForSetDescription.builder()
+                .id(1)
+                .version(2)
+                .description("some description")
+                .build();
         Mockito.when(backend.setDescription(data)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.setDescription(data);

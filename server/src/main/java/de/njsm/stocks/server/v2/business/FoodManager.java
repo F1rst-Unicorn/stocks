@@ -19,8 +19,13 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.common.api.Food;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.FoodForDeletion;
+import de.njsm.stocks.common.api.FoodForEditing;
+import de.njsm.stocks.common.api.FoodForSetDescription;
+import de.njsm.stocks.common.api.FoodForSetToBuy;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.business.data.*;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;

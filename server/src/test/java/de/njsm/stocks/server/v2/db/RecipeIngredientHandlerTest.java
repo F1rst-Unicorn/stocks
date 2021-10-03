@@ -19,32 +19,48 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.server.v2.business.StatusCode;
-import de.njsm.stocks.server.v2.business.data.BitemporalRecipeIngredient;
-import de.njsm.stocks.server.v2.business.data.RecipeIngredient;
-import de.njsm.stocks.server.v2.business.data.RecipeIngredientForDeletion;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
 import fj.data.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.common.api.StatusCode.INVALID_DATA_VERSION;
+import static de.njsm.stocks.common.api.StatusCode.NOT_FOUND;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class RecipeIngredientHandlerTest extends DbTestCase {
+public class RecipeIngredientHandlerTest
+        extends DbTestCase
+        implements CrudOperationsTest<RecipeIngredientRecord, RecipeIngredient>,
+                CompleteEntityReferenceCheckerTest<Recipe, RecipeIngredient>,
+                EditingTest<RecipeIngredientRecord, RecipeIngredient> {
 
     private RecipeIngredientHandler uut;
 
-    @Before
+    @BeforeEach
     public void setup() {
         uut = new RecipeIngredientHandler(getConnectionFactory(),
                 getNewResourceIdentifier(),
                 CIRCUIT_BREAKER_TIMEOUT);
         uut.setPrincipals(TEST_USER);
+    }
+
+    @Override
+    public RecipeIngredientWithIdForInsertion getInsertable() {
+        return RecipeIngredientWithIdForInsertion.builder()
+                .amount(5)
+                .ingredient(3)
+                .unit(1)
+                .recipe(4)
+                .build();
     }
 
     @Test
@@ -53,10 +69,10 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
         Validation<StatusCode, Stream<RecipeIngredient>> result = uut.get(true, Instant.EPOCH);
 
         BitemporalRecipeIngredient sample = (BitemporalRecipeIngredient) result.success().findAny().get();
-        assertNotNull(sample.getValidTimeStart());
-        assertNotNull(sample.getValidTimeEnd());
-        assertNotNull(sample.getTransactionTimeStart());
-        assertNotNull(sample.getTransactionTimeEnd());
+        assertNotNull(sample.validTimeStart());
+        assertNotNull(sample.validTimeEnd());
+        assertNotNull(sample.transactionTimeStart());
+        assertNotNull(sample.transactionTimeEnd());
     }
 
     @Test
@@ -68,13 +84,13 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
                 .map(v -> (BitemporalRecipeIngredient) v).collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                        l.getId() == 1 &&
-                        l.getVersion() == 0 &&
-                        l.getAmount() == 2 &&
-                        l.getIngredient() == 3 &&
-                        l.getRecipe() == 1 &&
-                        l.getUnit() == 2 &&
-                        l.getInitiates() == 1));
+                        l.id() == 1 &&
+                        l.version() == 0 &&
+                        l.amount() == 2 &&
+                        l.ingredient() == 3 &&
+                        l.recipe() == 1 &&
+                        l.unit() == 2 &&
+                        l.initiates() == 1));
     }
 
     @Test
@@ -85,21 +101,248 @@ public class RecipeIngredientHandlerTest extends DbTestCase {
         List<RecipeIngredient> data = result.success().collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
-                l.getId() == 1 &&
-                        l.getVersion() == 0 &&
-                        l.getAmount() == 2 &&
-                        l.getIngredient() == 3 &&
-                        l.getRecipe() == 1 &&
-                        l.getUnit() == 2));
+                l.id() == 1 &&
+                        l.version() == 0 &&
+                        l.amount() == 2 &&
+                        l.ingredient() == 3 &&
+                        l.recipe() == 1 &&
+                        l.unit() == 2));
     }
 
     @Test
-    public void deletingWorks() {
-        StatusCode result = uut.delete(new RecipeIngredientForDeletion(1, 0));
+    void editingMissingIsRejected() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .amount(2)
+                .ingredient(3)
+                .recipe(4)
+                .unit(5)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertThat(result, is(NOT_FOUND));
+    }
+
+    @Test
+    void editingWrongVersionIsRejected() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(1)
+                .amount(2)
+                .ingredient(3)
+                .recipe(4)
+                .unit(5)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertThat(result, is(INVALID_DATA_VERSION));
+    }
+
+    @Test
+    void editingWithoutChangeWorksWithoutChange() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(2)
+                .ingredient(3)
+                .recipe(1)
+                .unit(2)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditedDataIsPresentWithoutUpdate(data, result);
+    }
+
+    @Test
+    void editingAmountWorks() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(3)
+                .ingredient(3)
+                .recipe(1)
+                .unit(2)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    @Test
+    void editingIngredientWorks() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(2)
+                .ingredient(2)
+                .recipe(1)
+                .unit(2)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    @Test
+    void editingRecipeWorks() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(2)
+                .ingredient(3)
+                .recipe(2)
+                .unit(2)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    @Test
+    void editingUnitWorks() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(2)
+                .ingredient(3)
+                .recipe(1)
+                .unit(1)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    @Test
+    void fullEditingUnitWorks() {
+        RecipeIngredientForEditing data = RecipeIngredientForEditing.builder()
+                .id(1)
+                .version(0)
+                .amount(3)
+                .ingredient(2)
+                .recipe(2)
+                .unit(1)
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    @Test
+    public void deletingAllOfRecipeWorks() {
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+
+        StatusCode result = uut.deleteAllOf(recipe);
 
         assertEquals(StatusCode.SUCCESS, result);
         Validation<StatusCode, Stream<RecipeIngredient>> stream = uut.get(false, Instant.EPOCH);
         assertTrue(stream.isSuccess());
         assertEquals(0, stream.success().count());
+    }
+
+    @Test
+    public void deletingAllOfAbsentRecipeWorks() {
+        RecipeForDeletion recipe = RecipeForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+
+        StatusCode result = uut.deleteAllOf(recipe);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        Validation<StatusCode, Stream<RecipeIngredient>> stream = uut.get(false, Instant.EPOCH);
+        assertTrue(stream.isSuccess());
+        assertEquals(1, stream.success().count());
+    }
+
+    @Override
+    public RecipeIngredientHandler getDbHandler() {
+        return uut;
+    }
+
+    @Override
+    public int getNumberOfEntities() {
+        return 1;
+    }
+
+    @Override
+    public RecipeIngredientHandler getUnitUnderTest() {
+        return getDbHandler();
+    }
+
+    @Override
+    public Versionable<Recipe> getPrimary() {
+        return RecipeForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public Versionable<RecipeIngredient> getValidForeign() {
+        return RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public Versionable<RecipeIngredient> getUnreferencedForeign() {
+        return RecipeIngredientForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public Versionable<RecipeIngredient> getWrongVersionForeign() {
+        return RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(1)
+                .build();
+    }
+
+    @Override
+    public Versionable<RecipeIngredient> getWrongIdForeign() {
+        return RecipeIngredientForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public RecipeIngredientForDeletion getUnknownEntity() {
+        return RecipeIngredientForDeletion.builder()
+                .id(getNumberOfEntities() + 1)
+                .version(0)
+                .build();
+    }
+
+    @Override
+    public RecipeIngredientForDeletion getWrongVersionEntity() {
+        return RecipeIngredientForDeletion.builder()
+                .id(getValidEntity().id())
+                .version(getValidEntity().version() + 1)
+                .build();
+    }
+
+    @Override
+    public RecipeIngredientForDeletion getValidEntity() {
+        return RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build();
     }
 }

@@ -19,12 +19,13 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.UserDevice;
+import de.njsm.stocks.common.api.UserDeviceForDeletion;
+import de.njsm.stocks.common.api.UserDeviceForInsertion;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
-import de.njsm.stocks.server.v2.business.data.UserDevice;
-import de.njsm.stocks.server.v2.business.data.UserDeviceForDeletion;
-import de.njsm.stocks.server.v2.business.data.UserDeviceForInsertion;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.TicketHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
@@ -61,7 +62,7 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
     public Validation<StatusCode, NewDeviceTicket> addDevice(UserDeviceForInsertion device) {
         return runFunction(() -> {
 
-            Validation<StatusCode, Integer> deviceAddResult = userDeviceHandler.add(device);
+            Validation<StatusCode, Integer> deviceAddResult = userDeviceHandler.addReturningId(device);
             if (deviceAddResult.isFail())
                 return Validation.fail(deviceAddResult.fail());
 
@@ -72,7 +73,10 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
             if (ticketAddResult != StatusCode.SUCCESS)
                 return Validation.fail(ticketAddResult);
 
-            NewDeviceTicket result = new NewDeviceTicket(deviceAddResult.success(), ticket);
+            NewDeviceTicket result = NewDeviceTicket.builder()
+                    .deviceId(deviceAddResult.success())
+                    .ticket(ticket)
+                    .build();
             return Validation.success(result);
         });
     }
@@ -84,7 +88,7 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
     public StatusCode revokeDevice(UserDeviceForDeletion device) {
         return runOperation(() -> {
             userDeviceHandler.setReadOnly();
-            return authAdmin.revokeCertificate(device.getId());
+            return authAdmin.revokeCertificate(device.id());
         });
     }
 
@@ -92,7 +96,7 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
         return foodItemHandler.transferFoodItems(device, principals.toDevice())
                 .bind(() -> ticketHandler.removeTicketOfDevice(device))
                 .bind(() -> userDeviceHandler.delete(device))
-                .bind(() -> authAdmin.revokeCertificate(device.getId()));
+                .bind(() -> authAdmin.revokeCertificate(device.id()));
     }
 
     private static String generateTicket() {
