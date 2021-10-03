@@ -59,8 +59,8 @@ public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
 
     public StatusCode edit(FullRecipeForEditing input) {
         return runOperation(() ->
-                recipeIngredientHandler.areEntitiesComplete(input.recipe(), input.ingredients())
-                        .bind(() -> recipeProductHandler.areEntitiesComplete(input.recipe(), input.products()))
+                recipeIngredientHandler.areEntitiesComplete(input.recipe(), input.existingIngredients())
+                        .bind(() -> recipeProductHandler.areEntitiesComplete(input.recipe(), input.existingProducts()))
                         .bind(() -> input.ingredients().stream()
                                 .reduce(StatusCode.SUCCESS,
                                         (code, item) ->

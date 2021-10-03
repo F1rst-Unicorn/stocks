@@ -257,17 +257,26 @@ public class RecipeManagerTest {
                 .instructions("instructions")
                 .duration(Duration.ofHours(1))
                 .build();
+        RecipeIngredientForDeletion ingredientForDeletion = RecipeIngredientForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         FullRecipeForEditing input = FullRecipeForEditing.builder()
                 .recipe(recipe)
                 .ingredients(emptySet())
+                .ingredientsToInsert(emptySet())
+                .ingredientsToDelete(Set.of(ingredientForDeletion))
                 .products(emptySet())
+                .productsToInsert(emptySet())
+                .productsToDelete(emptySet())
                 .build();
-        when(ingredientHandler.areEntitiesComplete(recipe, input.ingredients())).thenReturn(StatusCode.INVALID_DATA_VERSION);
+        when(ingredientHandler.areEntitiesComplete(recipe, input.existingIngredients()))
+                .thenReturn(StatusCode.INVALID_DATA_VERSION);
 
         StatusCode result = uut.edit(input);
 
         assertThat(result, is(StatusCode.INVALID_DATA_VERSION));
-        verify(ingredientHandler).areEntitiesComplete(recipe, input.ingredients());
+        verify(ingredientHandler).areEntitiesComplete(recipe, input.existingIngredients());
         verify(recipeHandler).rollback();
     }
 
@@ -280,19 +289,27 @@ public class RecipeManagerTest {
                 .instructions("instructions")
                 .duration(Duration.ofHours(1))
                 .build();
+        RecipeProductForDeletion productForDeletion = RecipeProductForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
         FullRecipeForEditing input = FullRecipeForEditing.builder()
                 .recipe(recipe)
                 .ingredients(emptySet())
+                .ingredientsToInsert(emptySet())
+                .ingredientsToDelete(emptySet())
                 .products(emptySet())
+                .productsToInsert(emptySet())
+                .productsToDelete(Set.of(productForDeletion))
                 .build();
-        when(ingredientHandler.areEntitiesComplete(recipe, input.ingredients())).thenReturn(StatusCode.SUCCESS);
-        when(productHandler.areEntitiesComplete(recipe, input.products())).thenReturn(StatusCode.INVALID_DATA_VERSION);
+        when(ingredientHandler.areEntitiesComplete(recipe, input.existingIngredients())).thenReturn(StatusCode.SUCCESS);
+        when(productHandler.areEntitiesComplete(recipe, input.existingProducts())).thenReturn(StatusCode.INVALID_DATA_VERSION);
 
         StatusCode result = uut.edit(input);
 
         assertThat(result, is(StatusCode.INVALID_DATA_VERSION));
-        verify(ingredientHandler).areEntitiesComplete(recipe, input.ingredients());
-        verify(productHandler).areEntitiesComplete(recipe, input.products());
+        verify(ingredientHandler).areEntitiesComplete(recipe, input.existingIngredients());
+        verify(productHandler).areEntitiesComplete(recipe, input.existingProducts());
         verify(recipeHandler).rollback();
     }
 
