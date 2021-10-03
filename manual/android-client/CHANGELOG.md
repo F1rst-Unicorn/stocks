@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.11.0.0]
+
 ### Added
 
 * Allow management of recipes. This means adding, viewing, modifying and
