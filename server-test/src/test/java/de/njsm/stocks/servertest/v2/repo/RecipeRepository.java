@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Collections.emptySet;
 import static org.hamcrest.Matchers.equalTo;
 
 public class RecipeRepository {
@@ -114,6 +115,8 @@ public class RecipeRepository {
                                         .build())
                                 .collect(Collectors.toSet())
                 )
+                .ingredientsToInsert(emptySet())
+                .ingredientsToDelete(emptySet())
                 .products(
                         products.stream()
                                 .map(v -> RecipeProductForEditing.builder()
@@ -126,6 +129,8 @@ public class RecipeRepository {
                                         .build())
                                 .collect(Collectors.toSet())
                 )
+                .productsToDelete(emptySet())
+                .productsToInsert(emptySet())
                 .build();
     }
 }
