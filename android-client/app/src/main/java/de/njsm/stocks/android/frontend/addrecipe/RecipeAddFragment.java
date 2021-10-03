@@ -82,17 +82,18 @@ public class RecipeAddFragment extends InjectedFragment {
         return result;
     }
 
-    private void initialiseIngredientList(View result) {
+    void initialiseIngredientList(View result) {
         ingredientAdapter = new RecipeIngredientForInsertionAdapter(scaledUnitViewModel.getUnits(), foodViewModel.getAllFood());
         initialiseItemList(result, ingredientAdapter, R.id.fragment_recipe_add_ingredient_list, R.id.fragment_recipe_add_add_ingredient);
     }
 
-    private void initialiseProductList(View result) {
+    void initialiseProductList(View result) {
         productAdapter = new RecipeProductForInsertionAdapter(scaledUnitViewModel.getUnits(), foodViewModel.getAllFood());
         initialiseItemList(result, productAdapter, R.id.fragment_recipe_add_product_list, R.id.fragment_recipe_add_add_product);
     }
 
-    private <D extends SelfValidating, B extends SelfValidating.Builder<D>> void initialiseItemList(View result, ScaledFoodAdapter<D, B> adapter, int listId, int addButtonId) {
+    <D extends SelfValidating, B extends SelfValidating.Builder<D>, DN extends SelfValidating, BN extends SelfValidating.Builder<DN>>
+    void initialiseItemList(View result, ScaledFoodAdapter<D, B, DN, BN> adapter, int listId, int addButtonId) {
         RecyclerView productList = result.findViewById(listId);
         productList.setLayoutManager(new LinearLayoutManager(requireContext()));
         productList.setAdapter(adapter);
@@ -102,7 +103,6 @@ public class RecipeAddFragment extends InjectedFragment {
                 adapter::removeItem);
         new ItemTouchHelper(callback).attachToRecyclerView(productList);
         result.findViewById(addButtonId).setOnClickListener(v -> adapter.addItem());
-
     }
 
     @Override
@@ -134,20 +134,24 @@ public class RecipeAddFragment extends InjectedFragment {
         submitButton.setVisible(false);
 
         try {
-            FullRecipeForInsertion recipe = readFormData();
-            LiveData<StatusCode> result = recipeViewModel.addRecipe(recipe);
-            result.observe(this, v -> {
-                if (v == StatusCode.SUCCESS)
-                    Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
-                            .navigateUp();
-                else
-                    showErrorMessage(requireActivity(), getAddErrorMessage(v));
-            });
+            submitForm();
         } catch (TextResourceException e) {
             showErrorMessage(requireActivity(), e.getResourceId());
             indicator.setVisible(false);
             submitButton.setVisible(true);
         }
+    }
+
+    void submitForm() throws TextResourceException {
+        FullRecipeForInsertion recipe = readFormData();
+        LiveData<StatusCode> result = recipeViewModel.addRecipe(recipe);
+        result.observe(this, v -> {
+            if (v == StatusCode.SUCCESS)
+                Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                        .navigateUp();
+            else
+                showErrorMessage(requireActivity(), getAddErrorMessage(v));
+        });
     }
 
     private FullRecipeForInsertion readFormData() throws TextResourceException {
@@ -166,7 +170,7 @@ public class RecipeAddFragment extends InjectedFragment {
                 .build();
     }
 
-    private int readInteger(View view, int errorStringId, int viewId) throws TextResourceException {
+    int readInteger(View view, int errorStringId, int viewId) throws TextResourceException {
         try {
             return Integer.parseInt(getTextFieldContent(view, viewId));
         } catch (NumberFormatException e) {

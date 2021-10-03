@@ -29,44 +29,45 @@ import de.njsm.stocks.common.api.RecipeIngredientForInsertion;
 
 import java.util.List;
 
-public class RecipeIngredientForInsertionAdapter extends ScaledFoodAdapter<RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder> {
+public class RecipeIngredientForInsertionAdapter extends ScaledFoodAdapter<RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder, RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder> {
 
     public RecipeIngredientForInsertionAdapter(LiveData<List<ScaledUnitView>> units, LiveData<List<Food>> food) {
         super(units, food);
     }
 
-    private class ViewHolder extends ScaledFoodAdapter<RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder>.ViewHolder {
+    private class ViewHolder extends ScaledFoodAdapter<RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder, RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder>.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 
         @Override
-        void bindData(RecipeIngredientForInsertion currentState) {
-            setAmount(currentState.amount());
-            setUnit(currentState.unit());
-            setFood(currentState.ingredient());
+        void updateAmount(int position, int amount) {
+            entities.get(position).amount(amount);
         }
 
         @Override
-        void updateAmount(int amount) {
-            data.amount(amount);
+        void updateUnit(int position, int unit) {
+            entities.get(position).unit(unit);
         }
 
         @Override
-        void updateUnit(int unit) {
-            data.unit(unit);
+        void updateFood(int position, int food) {
+            entities.get(position).ingredient(food);
         }
-
-        @Override
-        void updateFood(int food) {
-            data.ingredient(food);
-        }
-
     }
 
     @Override
-    ScaledFoodAdapter<RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder>.ViewHolder
+    public void onBindViewHolder(@NonNull ScaledFoodAdapter<RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder, RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder>.ViewHolder holder,
+                                 int position) {
+        RecipeIngredientForInsertion currentState = entities.get(position).build();
+        holder.setAmount(currentState.amount());
+        holder.setUnit(currentState.unit());
+        holder.setFood(currentState.ingredient());
+    }
+
+    @Override
+    ScaledFoodAdapter<RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder, RecipeIngredientForInsertion, RecipeIngredientForInsertion.Builder>.ViewHolder
     newViewHolder(View v) {
         return new ViewHolder(v);
     }

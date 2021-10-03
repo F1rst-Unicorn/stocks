@@ -46,39 +46,38 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends SelfValidating.Builder<D>> extends RecyclerView.Adapter<ScaledFoodAdapter<D, B>.ViewHolder> {
+public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends SelfValidating.Builder<D>,
+                                        DN extends SelfValidating, BN extends SelfValidating.Builder<DN>> extends RecyclerView.Adapter<ScaledFoodAdapter<D, B, DN, BN>.ViewHolder> {
 
     private static final Logger LOG = new Logger(ScaledFoodAdapter.class);
 
-    private final List<B> ingredients;
+    final List<BN> entities;
 
     private final LiveData<List<ScaledUnitView>> units;
 
     private final LiveData<List<Food>> food;
 
     public ScaledFoodAdapter(LiveData<List<ScaledUnitView>> units, LiveData<List<Food>> food) {
-        this.ingredients = new ArrayList<>();
+        this.entities = new ArrayList<>();
         this.units = units;
         this.food = food;
     }
 
     protected abstract class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextInputLayout amount;
+        private final TextInputLayout amountField;
 
         private final Spinner unitSpinner;
 
         private final Spinner foodSpinner;
 
-        B data;
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            amount = itemView.findViewById(R.id.item_scaled_food_amount);
+            amountField = itemView.findViewById(R.id.item_scaled_food_amount);
             unitSpinner = itemView.findViewById(R.id.item_scaled_food_unit);
             foodSpinner = itemView.findViewById(R.id.item_scaled_food_food);
 
-            amount.getEditText().addTextChangedListener(new TextWatcher() {
+            amountField.getEditText().addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -88,7 +87,7 @@ public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends Self
                 @Override
                 public void afterTextChanged(@NonNull Editable s) {
                     try {
-                        updateAmount(Integer.parseInt(amount.getEditText().getText().toString()));
+                        updateAmount(getAbsoluteAdapterPosition(), Integer.parseInt(amountField.getEditText().getText().toString()));
                     } catch (NumberFormatException e) {
                         LOG.w("recipe amount failed to parse: " + e.getMessage());
                     }
@@ -102,7 +101,7 @@ public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends Self
                     if (list == null)
                         return;
 
-                    updateUnit(list.get(position).getId());
+                    updateUnit(getAbsoluteAdapterPosition(), list.get(position).getId());
                 }
 
                 @Override
@@ -118,7 +117,7 @@ public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends Self
                     if (list == null)
                         return;
 
-                    updateFood(list.get(position).getId());
+                    updateFood(getAbsoluteAdapterPosition(), list.get(position).getId());
                 }
 
                 @Override
@@ -128,22 +127,14 @@ public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends Self
             });
         }
 
-        private void bindData(B data) {
-            this.data = data;
-            D currentState = data.build();
-            bindData(currentState);
-        }
+        abstract void updateAmount(int position, int amount);
 
-        abstract void bindData(D currentState);
+        abstract void updateUnit(int position, int unit);
 
-        abstract void updateAmount(int amount);
-
-        abstract void updateUnit(int unit);
-
-        abstract void updateFood(int food);
+        abstract void updateFood(int position, int food);
 
         void setAmount(int amount) {
-            this.amount.getEditText().setText(String.valueOf(amount));
+            this.amountField.getEditText().setText(String.valueOf(amount));
         }
 
         void setUnit(int unit) {
@@ -153,12 +144,6 @@ public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends Self
         void setFood(int food) {
             Utility.find(food, ScaledFoodAdapter.this.food.getValue()).ifPresent(foodSpinner::setSelection);
         }
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        B item = ingredients.get(position);
-        holder.bindData(item);
     }
 
     @NonNull
@@ -186,25 +171,25 @@ public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends Self
         if (food == null || food.isEmpty())
             return;
 
-        B item = newBuilder(units, food);
-        ingredients.add(item);
-        notifyItemInserted(ingredients.size() - 1);
+        BN item = newBuilder(units, food);
+        entities.add(item);
+        notifyItemInserted(getItemCount() - 1);
     }
 
-    abstract B newBuilder(List<ScaledUnitView> units, List<Food> food);
+    abstract BN newBuilder(List<ScaledUnitView> units, List<Food> food);
 
     public void removeItem(int i) {
-        ingredients.remove(i);
+        entities.remove(i);
         notifyItemRemoved(i);
     }
 
     @Override
     public int getItemCount() {
-        return ingredients.size();
+        return entities.size();
     }
 
-    public List<D> getScaledFood() {
-        return ingredients.stream().map(SelfValidating.Builder::build).collect(Collectors.toList());
+    public List<DN> getScaledFood() {
+        return entities.stream().map(SelfValidating.Builder::build).collect(Collectors.toList());
     }
 
     private void initialiseUnitSpinner(Context context, View scaledFoodView) {

@@ -24,13 +24,13 @@ import android.icu.text.MeasureFormat;
 import android.icu.util.Measure;
 import android.icu.util.MeasureUnit;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.Navigation;
 import de.njsm.stocks.R;
+import de.njsm.stocks.android.db.entities.Recipe;
 import de.njsm.stocks.android.db.views.ScaledFood;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.recipe.RecipeViewModel;
@@ -52,6 +52,7 @@ public class RecipeFragment extends InjectedFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View result = inflater.inflate(R.layout.fragment_recipe, container, false);
 
         RecipeFragmentArgs input = RecipeFragmentArgs.fromBundle(getArguments());
@@ -76,8 +77,28 @@ public class RecipeFragment extends InjectedFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        recipeIngredientViewModel.getIngredients().observe(getViewLifecycleOwner(), this::showIngredients);
-        recipeProductViewModel.getProducts().observe(getViewLifecycleOwner(), this::showProducts);
+        recipeIngredientViewModel.getIngredientViews().observe(getViewLifecycleOwner(), this::showIngredients);
+        recipeProductViewModel.getProductViews().observe(getViewLifecycleOwner(), this::showProducts);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_recipe_options, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.fragment_recipe_options_edit) {
+            Recipe recipe = recipeViewModel.getRecipe().getValue();
+            if (recipe == null)
+                return true;
+
+            RecipeFragmentDirections.ActionNavFragmentRecipeToNavFragmentEditRecipe args =
+                    RecipeFragmentDirections.actionNavFragmentRecipeToNavFragmentEditRecipe(recipe.getId());
+            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                    .navigate(args);
+        }
+        return true;
     }
 
     private void showIngredients(List<ScaledFood> scaledFoods) {
@@ -85,6 +106,8 @@ public class RecipeFragment extends InjectedFragment {
             requireView().findViewById(R.id.fragment_recipe_ingredient_list).setVisibility(View.GONE);
             requireView().findViewById(R.id.fragment_recipe_title_ingredients).setVisibility(View.GONE);
         } else {
+            requireView().findViewById(R.id.fragment_recipe_ingredient_list).setVisibility(View.VISIBLE);
+            requireView().findViewById(R.id.fragment_recipe_title_ingredients).setVisibility(View.VISIBLE);
             setScaledFoodList(scaledFoods, R.id.fragment_recipe_ingredient_list);
         }
     }
@@ -94,6 +117,8 @@ public class RecipeFragment extends InjectedFragment {
             requireView().findViewById(R.id.fragment_recipe_product_list).setVisibility(View.GONE);
             requireView().findViewById(R.id.fragment_recipe_title_products).setVisibility(View.GONE);
         } else {
+            requireView().findViewById(R.id.fragment_recipe_product_list).setVisibility(View.VISIBLE);
+            requireView().findViewById(R.id.fragment_recipe_title_products).setVisibility(View.VISIBLE);
             setScaledFoodList(scaledFoods, R.id.fragment_recipe_product_list);
         }
     }

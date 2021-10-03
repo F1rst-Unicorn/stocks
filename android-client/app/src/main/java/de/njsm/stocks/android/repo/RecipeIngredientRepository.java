@@ -22,6 +22,7 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import de.njsm.stocks.android.db.dao.RecipeIngredientDao;
+import de.njsm.stocks.android.db.entities.RecipeIngredient;
 import de.njsm.stocks.android.db.views.ScaledFood;
 import de.njsm.stocks.android.util.Logger;
 
@@ -39,7 +40,11 @@ public class RecipeIngredientRepository {
         this.recipeIngredientDao = recipeIngredientDao;
     }
 
-    public LiveData<List<ScaledFood>> getIngredientsOf(int recipeId) {
+    public LiveData<List<ScaledFood>> getIngredientViewsOf(int recipeId) {
         return recipeIngredientDao.getIngredientViewsOf(recipeId);
+    }
+
+    public LiveData<List<RecipeIngredient>> getIngredientsOf(int recipeId) {
+        return recipeIngredientDao.getLiveIngredientsOf(recipeId);
     }
 }

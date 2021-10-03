@@ -54,6 +54,10 @@ public abstract class RecipeIngredientDao implements Inserter<RecipeIngredient> 
         return getIngredientsOf(recipeId, DATABASE_INFINITY);
     }
 
+    public LiveData<List<RecipeIngredient>> getLiveIngredientsOf(int recipeId) {
+        return getLiveIngredientsOf(recipeId, DATABASE_INFINITY);
+    }
+
     public LiveData<List<ScaledFood>> getIngredientViewsOf(int recipeId) {
         return getIngredientViewsOf(recipeId, DATABASE_INFINITY);
     }
@@ -72,6 +76,14 @@ public abstract class RecipeIngredientDao implements Inserter<RecipeIngredient> 
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = :infinity")
     abstract List<RecipeIngredient> getIngredientsOf(int recipeId, Instant infinity);
+
+    @Query("select * " +
+            "from recipe_ingredient " +
+            "where recipe = :recipeId " +
+            "and valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = :infinity")
+    abstract LiveData<List<RecipeIngredient>> getLiveIngredientsOf(int recipeId, Instant infinity);
 
     @Query("select " +
             Sql.FOOD_FIELDS_QUALIFIED +

@@ -26,6 +26,7 @@ import de.njsm.stocks.android.frontend.additem.AddItemFragment;
 import de.njsm.stocks.android.frontend.additem.EditItemFragment;
 import de.njsm.stocks.android.frontend.additem.FoodItemConflictFragment;
 import de.njsm.stocks.android.frontend.addrecipe.RecipeAddFragment;
+import de.njsm.stocks.android.frontend.addrecipe.RecipeEditFragment;
 import de.njsm.stocks.android.frontend.allfood.AllFoodFragment;
 import de.njsm.stocks.android.frontend.crashlog.CrashLogListFragment;
 import de.njsm.stocks.android.frontend.device.DeviceFragment;
@@ -150,6 +151,9 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract RecipeFragment contributeRecipeFragment();
+
+    @ContributesAndroidInjector
+    abstract RecipeEditFragment contributeRecipeEditFragment();
 
     @ContributesAndroidInjector
     abstract MainActivity contributeMainActivity();

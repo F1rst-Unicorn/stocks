@@ -29,44 +29,45 @@ import de.njsm.stocks.common.api.RecipeProductForInsertion;
 
 import java.util.List;
 
-public class RecipeProductForInsertionAdapter extends ScaledFoodAdapter<RecipeProductForInsertion, RecipeProductForInsertion.Builder> {
+public class RecipeProductForInsertionAdapter extends ScaledFoodAdapter<RecipeProductForInsertion, RecipeProductForInsertion.Builder, RecipeProductForInsertion, RecipeProductForInsertion.Builder> {
 
     public RecipeProductForInsertionAdapter(LiveData<List<ScaledUnitView>> units, LiveData<List<Food>> food) {
         super(units, food);
     }
 
-    private class ViewHolder extends ScaledFoodAdapter<RecipeProductForInsertion, RecipeProductForInsertion.Builder>.ViewHolder {
+    private class ViewHolder extends ScaledFoodAdapter<RecipeProductForInsertion, RecipeProductForInsertion.Builder, RecipeProductForInsertion, RecipeProductForInsertion.Builder>.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 
         @Override
-        void bindData(RecipeProductForInsertion currentState) {
-            setAmount(currentState.amount());
-            setUnit(currentState.unit());
-            setFood(currentState.product());
+        void updateAmount(int position, int amount) {
+            entities.get(position).amount(amount);
         }
 
         @Override
-        void updateAmount(int amount) {
-            data.amount(amount);
+        void updateUnit(int position, int unit) {
+            entities.get(position).unit(unit);
         }
 
         @Override
-        void updateUnit(int unit) {
-            data.unit(unit);
+        void updateFood(int position, int food) {
+            entities.get(position).product(food);
         }
-
-        @Override
-        void updateFood(int food) {
-            data.product(food);
-        }
-
     }
 
     @Override
-    ScaledFoodAdapter<RecipeProductForInsertion, RecipeProductForInsertion.Builder>.ViewHolder
+    public void onBindViewHolder(@NonNull ScaledFoodAdapter<RecipeProductForInsertion, RecipeProductForInsertion.Builder, RecipeProductForInsertion, RecipeProductForInsertion.Builder>.ViewHolder holder,
+                                 int position) {
+        RecipeProductForInsertion currentState = entities.get(position).build();
+        holder.setAmount(currentState.amount());
+        holder.setUnit(currentState.unit());
+        holder.setFood(currentState.product());
+    }
+
+    @Override
+    ScaledFoodAdapter<RecipeProductForInsertion, RecipeProductForInsertion.Builder, RecipeProductForInsertion, RecipeProductForInsertion.Builder>.ViewHolder
     newViewHolder(View v) {
         return new ViewHolder(v);
     }
