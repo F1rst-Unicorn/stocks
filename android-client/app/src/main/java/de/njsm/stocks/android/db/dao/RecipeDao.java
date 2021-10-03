@@ -57,7 +57,8 @@ public abstract class RecipeDao implements Inserter<Recipe> {
             "from recipe " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity")
+            "and transaction_time_end = :infinity " +
+            "order by name")
     abstract LiveData<List<Recipe>> getAll(Instant infinity);
 
     @Query("select * " +

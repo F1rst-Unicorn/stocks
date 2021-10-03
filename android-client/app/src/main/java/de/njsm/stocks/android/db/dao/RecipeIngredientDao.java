@@ -97,6 +97,7 @@ public abstract class RecipeIngredientDao implements Inserter<RecipeIngredient> 
             "where recipe_ingredient.recipe = :recipeId " +
             "and recipe_ingredient.valid_time_start <= " + NOW +
             "and " + NOW + " < recipe_ingredient.valid_time_end " +
-            "and recipe_ingredient.transaction_time_end = :infinity")
+            "and recipe_ingredient.transaction_time_end = :infinity " +
+            "order by food_name")
     abstract LiveData<List<ScaledFood>> getIngredientViewsOf(int recipeId, Instant infinity);
 }
