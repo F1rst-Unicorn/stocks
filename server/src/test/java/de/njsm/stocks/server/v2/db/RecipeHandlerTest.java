@@ -120,7 +120,7 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
 
         StatusCode result = uut.edit(recipe);
 
-        assertThat(result, is(StatusCode.INVALID_DATA_VERSION));
+        assertThat(result, is(StatusCode.SUCCESS));
     }
 
     @Test
