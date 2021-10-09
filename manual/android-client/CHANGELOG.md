@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.11.0.1]
+
 ### Fixed
 
 * Fix crash which would occur if a server cleanup job removes old devices
