@@ -19,9 +19,7 @@
 
 package de.njsm.stocks.android.business.data.eventlog;
 
-import de.njsm.stocks.android.business.data.eventlog.differ.FoodItemExpirationChangedGenerator;
-import de.njsm.stocks.android.business.data.eventlog.differ.FoodItemLocationChangedGenerator;
-import de.njsm.stocks.android.business.data.eventlog.differ.FoodItemUnitChangedGenerator;
+import de.njsm.stocks.android.business.data.eventlog.differ.*;
 import de.njsm.stocks.android.db.entities.User;
 import de.njsm.stocks.android.db.entities.UserDevice;
 import de.njsm.stocks.android.db.views.FoodItemViewWithFood;
@@ -42,6 +40,8 @@ public class ChangedFoodItemEvent extends ChangedEntityEvent<FoodItemViewWithFoo
         differs.add(new FoodItemLocationChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
         differs.add(new FoodItemExpirationChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
         differs.add(new FoodItemUnitChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodItemRegistersChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
+        differs.add(new FoodItemBuysChangedGenerator(stringResourceResolver, oldEntity, newEntity, object));
         return differs;
     }
 

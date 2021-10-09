@@ -155,6 +155,7 @@
     <string name="dialog_user_was_deleted">Benutzer wurde gelöscht</string>
     <string name="dialog_delete_but_edited">Das Objekt wurde in der Zwischenzeit verändert. Aktualisiere und prüfe, ob du es wirklich entfernen möchtest.</string>
     <string name="dialog_delete_but_dependants">Das Objekt kann nicht gelöscht werden, da andere Objekte noch damit verknüpft sind. Z.B. ein Ort, der noch Waren enthält.</string>
+    <string name="dialog_delete_but_access_denied">Zugriff verweigert.</string>
     <string name="dialog_edit_but_edited">Das Objekt wurde in der Zwischenzeit geändert. Aktualisiere und prüfe deine Änderungen erneut.</string>
     <string name="dialog_create_device">Erstelle neues Gerät</string>
     <string name="dialog_device_was_deleted">Gerät wurde gelöscht</string>
@@ -236,6 +237,8 @@
     <string name="event_food_item_changed_location">hat %s von %s nach %s verlegt</string>
     <string name="event_food_item_changed_eat_by">hat das Mindesthaltbarkeitsdatum%s von %s zu %s geändert</string>
     <string name="event_food_item_changed_scaled_unit">hat die Maßeinheit%s von %s zu %s geändert</string>
+    <string name="event_food_item_changed_registers">hat das registrierende Gerät%s geändert</string>
+    <string name="event_food_item_changed_buys">hat den ursprünglichen Käufer%s</string>
     <string name="event_unit_created">%s hat %s (%s) erstellt.</string>
     <string name="event_unit_deleted">%s hat %s (%s) gelöscht.</string>
     <string name="event_unit_renamed">hat %s zu %s umbenannt</string>

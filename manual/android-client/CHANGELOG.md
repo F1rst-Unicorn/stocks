@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* Fix crash which would occur if a server cleanup job removes old devices
+  ([#9](https://gitlab.com/veenj/stocks/-/issues/9))
+
 ## [3.11.0.0]
 
 ### Added

@@ -123,6 +123,7 @@ public final class StatusCodeMessages {
             case FOREIGN_KEY_CONSTRAINT_VIOLATION:
                 return R.string.dialog_delete_but_dependants;
             case ACCESS_DENIED:
+                return R.string.dialog_delete_but_access_denied;
             case SERIALISATION_CONFLICT:
                 LOG.e("Server should not reply with " + statusCode.name() + " when deleting");
                 return R.string.dialog_done;

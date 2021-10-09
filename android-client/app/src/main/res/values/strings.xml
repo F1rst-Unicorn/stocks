@@ -153,6 +153,7 @@
     <string name="dialog_not_found">Object already deleted by someone else</string>
     <string name="dialog_delete_but_edited">The object was changed in the meantime. Refresh and check if you really want to delete it.</string>
     <string name="dialog_delete_but_dependants">The object can\'t be deleted because it is still linked to other objects. E.g. a location still contains food items.</string>
+    <string name="dialog_delete_but_access_denied">Access denied.</string>
     <string name="dialog_edit_but_edited">The object was edited in the meantime. Refresh and check your change again.</string>
     <string name="dialog_create_device">Creating new device</string>
     <string name="dialog_error">An unforeseen error has occurred.</string>
@@ -236,6 +237,8 @@
     <string name="event_food_item_changed_location">has moved %s from %s to %s</string>
     <string name="event_food_item_changed_eat_by">has changed the expiration date%s from %s to %s</string>
     <string name="event_food_item_changed_scaled_unit">has changed the unit%s from %s to %s</string>
+    <string name="event_food_item_changed_registers">has changed the registering device%s</string>
+    <string name="event_food_item_changed_buys">has changed the original buyer%s</string>
     <string name="event_unit_created">%s has created %s (%s).</string>
     <string name="event_unit_deleted">%s has deleted %s (%s).</string>
     <string name="event_unit_renamed">has renamed %s to %s</string>
