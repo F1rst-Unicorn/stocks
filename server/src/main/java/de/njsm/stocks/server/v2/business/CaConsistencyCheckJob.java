@@ -22,16 +22,19 @@ package de.njsm.stocks.server.v2.business;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.PrincipalsHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
-import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class CaConsistencyCheckJob {
+import static de.njsm.stocks.common.api.StatusCode.asCode;
+import static fj.Semigroup.firstSemigroup;
+
+public class CaConsistencyCheckJob extends QuartzJob {
 
     private static final Logger LOG = LogManager.getLogger(CaConsistencyCheckJob.class);
 
@@ -39,39 +42,33 @@ public class CaConsistencyCheckJob {
 
     private final PrincipalsHandler dbHandler;
 
-    private final UserDeviceHandler deviceHandler;
+    private final UserDeviceHandler userDeviceHandler;
 
-    public CaConsistencyCheckJob(AuthAdmin authAdmin, PrincipalsHandler dbHandler, UserDeviceHandler deviceHandler) {
+    private final FoodItemHandler foodItemHandler;
+
+    public CaConsistencyCheckJob(AuthAdmin authAdmin, PrincipalsHandler dbHandler, UserDeviceHandler userDeviceHandler, FoodItemHandler foodItemHandler) {
+        super(dbHandler);
         this.authAdmin = authAdmin;
         this.dbHandler = dbHandler;
-        this.deviceHandler = deviceHandler;
+        this.userDeviceHandler = userDeviceHandler;
+        this.foodItemHandler = foodItemHandler;
     }
 
-    public void run() {
-        LOG.debug("Started");
+    public StatusCode run() {
+        return asCode(
+                dbHandler.getPrincipals().accumulate(firstSemigroup(), authAdmin.getValidPrincipals(), (dbPrincipals, caPrincipals) -> {
+                    revokeDevicesWithoutDbEntry(caPrincipals, dbPrincipals);
+                    removeRevokedDevicesFromDb(caPrincipals, dbPrincipals);
+                    return StatusCode.SUCCESS;
+                })
+        );
+    }
 
-        Validation<StatusCode, Set<Principals>> dbResult = dbHandler.getPrincipals();
-        if (dbResult.isFail()) {
-            LOG.error("Failed on DB: {}", dbResult.fail());
-            dbHandler.rollback();
-            return;
-        }
-
-        Validation<StatusCode, Set<Principals>> caResult = authAdmin.getValidPrincipals();
-        if (caResult.isFail()) {
-            LOG.error("Failed on CA: {}", caResult.fail());
-            dbHandler.rollback();
-            return;
-        }
-
-        Set<Principals> caPrincipals = caResult.success();
-        Set<Principals> dbPrincipals = dbResult.success();
-
-        revokeDevicesWithoutDbEntry(caPrincipals, dbPrincipals);
-        removeRevokedDevicesFromDb(caPrincipals, dbPrincipals);
-
-        dbHandler.commit();
-        LOG.debug("Stopped");
+    @Override
+    protected void setPrincipalsOnDbHandlers(Principals principals) {
+        dbHandler.setPrincipals(principals);
+        userDeviceHandler.setPrincipals(principals);
+        foodItemHandler.setPrincipals(principals);
     }
 
     private void revokeDevicesWithoutDbEntry(Set<Principals> caPrincipals, Set<Principals> dbPrincipals) {
@@ -93,7 +90,8 @@ public class CaConsistencyCheckJob {
         toRemove.removeAll(caPrincipals);
 
         for (Principals p : toRemove) {
-            StatusCode result = deviceHandler.delete(p.toDevice());
+            StatusCode result = foodItemHandler.transferFoodItems(p.toDevice(), getPrincipals().toDevice())
+                    .bind(() -> userDeviceHandler.delete(p.toDevice()));
             if (result == StatusCode.SUCCESS) {
                 LOG.info("Removed revoked device {} a.k.a. {} from DB", p.getReadableString(), p);
             } else {

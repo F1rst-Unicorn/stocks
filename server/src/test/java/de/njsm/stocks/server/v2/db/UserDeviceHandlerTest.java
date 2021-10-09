@@ -129,6 +129,29 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
         assertThat(result.success(), hasItem(UserDeviceForPrincipals.builder().id(4).build()));
     }
 
+    @Test
+    void gettingDevicesOfUserOmitsTechnicalUsers() {
+        Validation<StatusCode, List<Identifiable<UserDevice>>> result = uut.getDevicesOfUser(UserForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build());
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, result.success().size());
+    }
+
+    @Test
+    void technicalUserIsReportedCorrectly() {
+        assertTrue(uut.isTechnicalUser(UserDeviceForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build()).success());
+        assertFalse(uut.isTechnicalUser(UserDeviceForDeletion.builder()
+                .id(1)
+                .version(0)
+                .build()).success());
+    }
+
     @Override
     public CrudDatabaseHandler<UserDeviceRecord, UserDevice> getDbHandler() {
         return uut;

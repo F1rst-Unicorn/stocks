@@ -19,19 +19,16 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.Identifiable;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.User;
-import de.njsm.stocks.common.api.UserDevice;
-import de.njsm.stocks.common.api.BitemporalUserDevice;
-import de.njsm.stocks.common.api.UserDeviceForGetting;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -53,7 +50,8 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
             List<Identifiable<UserDevice>> result = context
                     .selectFrom(USER_DEVICE)
                     .where(USER_DEVICE.BELONGS_TO.eq(user.id())
-                        .and(nowAsBestKnown()))
+                            .and(USER_DEVICE.TECHNICAL_USE_CASE.isNull())
+                            .and(nowAsBestKnown()))
                     .fetch()
                     .stream()
                     .map(r -> UserDeviceForPrincipals.builder()
@@ -63,6 +61,20 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
 
             return Validation.success(result);
 
+        });
+    }
+
+    public Validation<StatusCode, Boolean> isTechnicalUser(Identifiable<UserDevice> deviceId) {
+        return runFunction(context -> {
+            Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+            UserDeviceRecord userDevice = context.selectFrom(USER_DEVICE)
+                    .where(USER_DEVICE.ID.eq(deviceId.id())
+                            .and(getValidTimeStartField().le(now))
+                            .and(now.lt(getValidTimeEndField()))
+                            .and(getTransactionTimeEndField().eq(INFINITY)))
+                    .fetchOne();
+
+            return Validation.success(userDevice.getTechnicalUseCase() != null);
         });
     }
 

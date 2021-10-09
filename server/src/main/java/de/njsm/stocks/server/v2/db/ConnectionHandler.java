@@ -28,7 +28,7 @@ import fj.data.Validation;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionHandler implements HystrixWrapper<Connection, SQLException>, TransactionHandler {
+public class ConnectionHandler implements HystrixWrapper<Connection, SQLException> {
 
     private static final String SERIALISATION_FAILURE_SQL_STATE = "40001";
 
@@ -48,7 +48,6 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
         this.timeout = timeout;
     }
 
-    @Override
     public StatusCode commit() {
         return runCommand(con -> {
             connectionFactory.reset();
@@ -59,7 +58,6 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
         });
     }
 
-    @Override
     public StatusCode rollback() {
         return runCommand(con -> {
             connectionFactory.reset();
@@ -70,7 +68,6 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
         });
     }
 
-    @Override
     public StatusCode setReadOnly() {
         return runCommand(con -> {
             con.setReadOnly(true);
@@ -116,7 +113,7 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
         String sqlState = e.getSQLState();
 
         if (sqlState != null && sqlState.equals(CHECK_VIOLATION_SQL_STATE)) {
-            LOG.info("Constraint violation, transaction was rolled back");
+            LOG.info("Constraint violation, transaction was rolled back: " + e.getMessage());
             return true;
         }
 

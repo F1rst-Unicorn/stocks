@@ -175,6 +175,22 @@ public class DeviceManagerTest {
     }
 
     @Test
+    public void removeTechnicalDeviceIsRejected() {
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(2)
+                .version(0)
+                .build();
+        Mockito.when(dbHandler.isTechnicalUser(device)).thenReturn(Validation.success(true));
+        Mockito.when(dbHandler.rollback()).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.delete(device);
+
+        assertEquals(StatusCode.ACCESS_DENIED, result);
+        Mockito.verify(dbHandler).isTechnicalUser(device);
+        Mockito.verify(dbHandler).rollback();
+    }
+
+    @Test
     public void revokingDeviceWorks() {
         UserDeviceForDeletion device = UserDeviceForDeletion.builder()
                 .id(1)

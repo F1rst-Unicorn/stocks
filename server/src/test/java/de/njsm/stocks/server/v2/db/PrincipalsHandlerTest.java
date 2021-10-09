@@ -57,7 +57,7 @@ public class PrincipalsHandlerTest extends DbTestCase {
 
     @Test
     public void fetchPrincipals() {
-        int numberOfDevices = new UserDeviceHandlerTest().getNumberOfEntities() - 1; // don't return pending device
+        int numberOfDevices = new UserDeviceHandlerTest().getNumberOfEntities() - 2; // don't return pending device or technical users
 
         Validation<StatusCode, Set<Principals>> output = uut.getPrincipals();
 

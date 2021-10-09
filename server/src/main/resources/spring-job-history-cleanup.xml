@@ -69,9 +69,15 @@
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
     </bean>
 
+    <bean name="historyCleanupPrincipalsDbHandler" class="de.njsm.stocks.server.v2.db.PrincipalsHandler">
+        <constructor-arg index="0" ref="historyCleanupConnectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+    </bean>
+
     <bean id="historyCleanupJob" class="de.njsm.stocks.server.v2.business.HistoryCleanupJob">
         <constructor-arg index="0" ref="maxHistory"/>
-        <constructor-arg index="1" ref="historyCleanupFoodItemBackend" />
+        <constructor-arg index="1" ref="historyCleanupPrincipalsDbHandler" />
         <constructor-arg index="2">
             <list>
                 <ref bean="historyCleanupFoodItemBackend"/>

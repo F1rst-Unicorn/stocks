@@ -47,41 +47,65 @@ public class CaConsistencyCheckJobTest {
 
     private UserDeviceHandler deviceHandler;
 
+    public static final Principals TEST_USER = new Principals("Stocks", "Job Runner", 2, 2);
+
     @BeforeEach
     public void setup() {
         authAdmin = Mockito.mock(AuthAdmin.class);
+
         dbHandler = Mockito.mock(PrincipalsHandler.class);
+
         deviceHandler = Mockito.mock(UserDeviceHandler.class);
-        uut = new CaConsistencyCheckJob(authAdmin, dbHandler, deviceHandler);
+
+        uut = new CaConsistencyCheckJob(authAdmin, dbHandler, deviceHandler, foodItemHandler);
     }
 
     @AfterEach
     public void tearDown() {
+        verify(dbHandler).getJobRunnerPrincipal();
+
         Mockito.verifyNoMoreInteractions(authAdmin);
         Mockito.verifyNoMoreInteractions(dbHandler);
         Mockito.verifyNoMoreInteractions(deviceHandler);
     }
 
     @Test
-    public void failingDbDoesNothing() {
-        when(dbHandler.getPrincipals()).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+    public void failingJobRunnerPrincipalGettingDoesNothing() {
+        when(dbHandler.getJobRunnerPrincipal()).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
 
-        uut.run();
+        uut.runJob();
 
-        verify(dbHandler).getPrincipals();
         verify(dbHandler).rollback();
     }
 
     @Test
-    public void failingCaDoesNothing() {
-        when(dbHandler.getPrincipals()).thenReturn(Validation.success(Collections.emptySet()));
-        when(authAdmin.getValidPrincipals()).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+    public void failingDbDoesNothing() {
+        when(dbHandler.getJobRunnerPrincipal()).thenReturn(Validation.success(TEST_USER));
+        when(dbHandler.getPrincipals()).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+        when(authAdmin.getValidPrincipals()).thenReturn(Validation.success(Collections.emptySet()));
 
-        uut.run();
+        uut.runJob();
 
         verify(dbHandler).getPrincipals();
         verify(dbHandler).rollback();
         verify(authAdmin).getValidPrincipals();
+        verify(dbHandler).setPrincipals(TEST_USER);
+        verify(deviceHandler).setPrincipals(TEST_USER);
+    }
+
+    @Test
+    public void failingCaDoesNothing() {
+        when(dbHandler.getJobRunnerPrincipal()).thenReturn(Validation.success(TEST_USER));
+        when(dbHandler.getPrincipals()).thenReturn(Validation.success(Collections.emptySet()));
+        when(authAdmin.getValidPrincipals()).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+
+        uut.runJob();
+
+        verify(dbHandler).getPrincipals();
+        verify(dbHandler).rollback();
+        verify(authAdmin).getValidPrincipals();
+        verify(dbHandler).setPrincipals(TEST_USER);
+        verify(deviceHandler).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -106,6 +130,7 @@ public class CaConsistencyCheckJobTest {
         caPrincipals.add(caOnlySuccessful);
         caPrincipals.add(caOnlyFailing);
 
+        when(dbHandler.getJobRunnerPrincipal()).thenReturn(Validation.success(TEST_USER));
         when(dbHandler.getPrincipals()).thenReturn(Validation.success(dbPrincipals));
         when(authAdmin.getValidPrincipals()).thenReturn(Validation.success(caPrincipals));
         when(authAdmin.revokeCertificate(caOnlySuccessful.getDid())).thenReturn(StatusCode.SUCCESS);
@@ -113,7 +138,7 @@ public class CaConsistencyCheckJobTest {
         when(deviceHandler.delete(dbOnlyFailing.toDevice())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         when(deviceHandler.delete(dbOnlySuccessful.toDevice())).thenReturn(StatusCode.SUCCESS);
 
-        uut.run();
+        uut.runJob();
 
         verify(dbHandler).getPrincipals();
         verify(authAdmin).getValidPrincipals();
@@ -122,5 +147,7 @@ public class CaConsistencyCheckJobTest {
         verify(authAdmin).revokeCertificate(caOnlySuccessful.getDid());
         verify(authAdmin).revokeCertificate(caOnlyFailing.getDid());
         verify(dbHandler).commit();
+        verify(dbHandler).setPrincipals(TEST_USER);
+        verify(deviceHandler).setPrincipals(TEST_USER);
     }
 }

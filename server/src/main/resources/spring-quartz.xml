@@ -39,22 +39,22 @@
 
     <bean id="job1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="caConsistencyCheckJob"/>
-        <property name="targetMethod" value="run"/>
+        <property name="targetMethod" value="runJob"/>
     </bean>
 
     <bean id="job2" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="historyCleanupJob"/>
-        <property name="targetMethod" value="run"/>
+        <property name="targetMethod" value="runJob"/>
     </bean>
 
     <bean id="trigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="job1"/>
-        <property name="cronExpression" value="0 0 * * * ? *"/>
+        <property name="cronExpression" value="0,30 * * * * ? *"/>
     </bean>
 
     <bean id="trigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="job2"/>
-        <property name="cronExpression" value="0 30 * * * ? *"/>
+        <property name="cronExpression" value="15,45 * * * * ? *"/>
     </bean>
 
     <bean name="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

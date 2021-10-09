@@ -19,10 +19,7 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.UserDevice;
-import de.njsm.stocks.common.api.UserDeviceForDeletion;
-import de.njsm.stocks.common.api.UserDeviceForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
@@ -93,10 +90,20 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
     }
 
     StatusCode removeDeviceInternally(UserDeviceForDeletion device) {
-        return foodItemHandler.transferFoodItems(device, principals.toDevice())
+        return checkTechnicalDeviceStatus(device)
+                .bind(() -> foodItemHandler.transferFoodItems(device, principals.toDevice()))
                 .bind(() -> ticketHandler.removeTicketOfDevice(device))
                 .bind(() -> userDeviceHandler.delete(device))
                 .bind(() -> authAdmin.revokeCertificate(device.id()));
+    }
+
+    private StatusCode checkTechnicalDeviceStatus(Identifiable<UserDevice> userDevice) {
+        return userDeviceHandler.isTechnicalUser(userDevice).map(v -> {
+            if (v)
+                return StatusCode.ACCESS_DENIED;
+            else
+                return StatusCode.SUCCESS;
+        }).validation(v -> v, v -> v);
     }
 
     private static String generateTicket() {

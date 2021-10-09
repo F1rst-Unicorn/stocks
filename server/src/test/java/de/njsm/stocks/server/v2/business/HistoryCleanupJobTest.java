@@ -21,14 +21,17 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
-import de.njsm.stocks.server.v2.db.TransactionHandler;
+import de.njsm.stocks.server.v2.db.PrincipalsHandler;
+import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.time.Period;
-import java.util.Collections;
+import java.util.List;
+
+import static de.njsm.stocks.server.v2.business.CaConsistencyCheckJobTest.TEST_USER;
+import static org.mockito.Mockito.*;
 
 public class HistoryCleanupJobTest {
 
@@ -36,66 +39,69 @@ public class HistoryCleanupJobTest {
 
     private Period maxHistory;
 
-    private TransactionHandler transactionHandler;
+    private PrincipalsHandler principalsHandler;
 
     private CrudDatabaseHandler<?, ?> tableHandler;
+
+    private CrudDatabaseHandler<?, ?> tableHandler2;
 
     @BeforeEach
     public void setup() {
         maxHistory = Period.ofDays(1);
-        transactionHandler = Mockito.mock(TransactionHandler.class);
-        tableHandler = Mockito.mock(CrudDatabaseHandler.class);
-        uut = new HistoryCleanupJob(maxHistory, transactionHandler, Collections.singletonList(tableHandler));
+        principalsHandler = mock(PrincipalsHandler.class);
+        tableHandler = mock(CrudDatabaseHandler.class);
+        tableHandler2 = mock(CrudDatabaseHandler.class);
+        uut = new HistoryCleanupJob(maxHistory, principalsHandler, List.of(tableHandler, tableHandler2));
     }
 
     @AfterEach
     public void tearDown() {
-        Mockito.verifyNoMoreInteractions(transactionHandler);
-        Mockito.verifyNoMoreInteractions(tableHandler);
+        verify(tableHandler).setPrincipals(TEST_USER);
+        verify(tableHandler2).setPrincipals(TEST_USER);
+        verify(principalsHandler).getJobRunnerPrincipal();
+        verifyNoMoreInteractions(principalsHandler);
+        verifyNoMoreInteractions(tableHandler);
+        verifyNoMoreInteractions(tableHandler2);
     }
 
     @Test
     public void testSuccessfulCleanup() {
-        Mockito.when(tableHandler.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(transactionHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        when(principalsHandler.getJobRunnerPrincipal()).thenReturn(Validation.success(TEST_USER));
+        when(tableHandler.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.SUCCESS);
+        when(tableHandler2.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.SUCCESS);
+        when(principalsHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        uut.run();
+        uut.runJob();
 
-        Mockito.verify(tableHandler).cleanDataOlderThan(maxHistory);
-        Mockito.verify(transactionHandler).commit();
-        Mockito.verify(transactionHandler).commit();
+        verify(tableHandler).cleanDataOlderThan(maxHistory);
+        verify(tableHandler2).cleanDataOlderThan(maxHistory);
+        verify(principalsHandler).commit();
+        verify(principalsHandler).commit();
     }
 
     @Test
     public void testFailingCleanup() {
-        Mockito.when(tableHandler.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
-        Mockito.when(transactionHandler.rollback()).thenReturn(StatusCode.SUCCESS);
+        when(principalsHandler.getJobRunnerPrincipal()).thenReturn(Validation.success(TEST_USER));
+        when(tableHandler.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+        when(principalsHandler.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        uut.run();
+        uut.runJob();
 
-        Mockito.verify(tableHandler).cleanDataOlderThan(maxHistory);
-        Mockito.verify(transactionHandler).rollback();
+        verify(tableHandler).cleanDataOlderThan(maxHistory);
+        verify(principalsHandler).rollback();
     }
 
     @Test
-    public void testFailingCleanupWithFailingRollback() {
-        Mockito.when(tableHandler.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
-        Mockito.when(transactionHandler.rollback()).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+    public void testFailingCleanupInSecondHandler() {
+        when(principalsHandler.getJobRunnerPrincipal()).thenReturn(Validation.success(TEST_USER));
+        when(tableHandler.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.SUCCESS);
+        when(tableHandler2.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+        when(principalsHandler.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        uut.run();
+        uut.runJob();
 
-        Mockito.verify(tableHandler).cleanDataOlderThan(maxHistory);
-        Mockito.verify(transactionHandler).rollback();
-    }
-
-    @Test
-    public void testFailingCommit() {
-        Mockito.when(tableHandler.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(transactionHandler.commit()).thenReturn(StatusCode.DATABASE_UNREACHABLE);
-
-        uut.run();
-
-        Mockito.verify(tableHandler).cleanDataOlderThan(maxHistory);
-        Mockito.verify(transactionHandler).commit();
+        verify(tableHandler).cleanDataOlderThan(maxHistory);
+        verify(tableHandler2).cleanDataOlderThan(maxHistory);
+        verify(principalsHandler).rollback();
     }
 }

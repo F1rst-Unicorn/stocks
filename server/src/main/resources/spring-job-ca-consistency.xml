@@ -36,6 +36,20 @@
         <constructor-arg index="2" ref="circuitBreakerTimeout"/>
     </bean>
 
+    <bean name="caConsistencyCheckUserBackend" class="de.njsm.stocks.server.v2.db.UserHandler">
+        <constructor-arg index="0" ref="caConsistencyCheckConnectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+    </bean>
+
+    <bean name="caConsistencyCheckFoodItemBackend" class="de.njsm.stocks.server.v2.db.FoodItemHandler">
+        <constructor-arg index="0" ref="caConsistencyCheckConnectionFactory"/>
+        <constructor-arg index="1" ref="circuitBreakerDatabase" />
+        <constructor-arg index="2" ref="circuitBreakerTimeout"/>
+        <constructor-arg index="3" ref="caConsistencyCheckDeviceBackend" />
+        <constructor-arg index="4" ref="caConsistencyCheckUserBackend" />
+    </bean>
+
     <bean name="caConsistencyCheckPrincipalsDbHandler" class="de.njsm.stocks.server.v2.db.PrincipalsHandler">
         <constructor-arg index="0" ref="caConsistencyCheckConnectionFactory"/>
         <constructor-arg index="1" ref="circuitBreakerDatabase" />
@@ -46,5 +60,6 @@
         <constructor-arg index="0" ref="authAdmin" />
         <constructor-arg index="1" ref="caConsistencyCheckPrincipalsDbHandler" />
         <constructor-arg index="2" ref="caConsistencyCheckDeviceBackend" />
+        <constructor-arg index="3" ref="caConsistencyCheckFoodItemBackend" />
     </bean>
 </beans>

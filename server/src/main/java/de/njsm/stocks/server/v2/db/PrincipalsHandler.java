@@ -47,6 +47,7 @@ public class PrincipalsHandler extends FailSafeDatabaseHandler {
                             .on(USER.ID.eq(USER_DEVICE.BELONGS_TO)))
                     .where(USER_DEVICE.ID.notIn(context.select(TICKET.BELONGS_DEVICE)
                                                 .from(TICKET))
+                            .and(USER_DEVICE.TECHNICAL_USE_CASE.isNull())
                             .and(USER.VALID_TIME_START.lessOrEqual(now))
                             .and(now.lessThan(USER.VALID_TIME_END))
                             .and(USER.TRANSACTION_TIME_END.eq(CrudDatabaseHandler.INFINITY))

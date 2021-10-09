@@ -33,7 +33,7 @@ import org.jooq.impl.DSL;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLException>, TransactionHandler {
+public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLException> {
 
     private final String resourceIdentifier;
 
@@ -60,17 +60,14 @@ public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLEx
         this.principals = principals;
     }
 
-    @Override
     public StatusCode commit() {
         return new ConnectionHandler(resourceIdentifier + "-cleanup", connectionFactory, timeout).commit();
     }
 
-    @Override
     public StatusCode rollback() {
         return new ConnectionHandler(resourceIdentifier + "-cleanup", connectionFactory, timeout).rollback();
     }
 
-    @Override
     public StatusCode setReadOnly() {
         return new ConnectionHandler(resourceIdentifier, connectionFactory, timeout).setReadOnly();
     }

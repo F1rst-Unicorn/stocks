@@ -123,6 +123,15 @@ public enum StatusCode {
             throw new IllegalStateException("Validation and StatusCode contradict: " +  v);
     }
 
+    public static <T> StatusCode asCode(Validation<StatusCode, T> v) {
+        if (v.isSuccess())
+            return SUCCESS;
+        else if (v.isFail() && v.fail() != SUCCESS)
+            return v.fail();
+        else
+            throw new IllegalStateException("Validation and StatusCode contradict: " +  v);
+    }
+
     public StatusCode bind(Supplier<StatusCode> next) {
         if (isFail())
             return this;
