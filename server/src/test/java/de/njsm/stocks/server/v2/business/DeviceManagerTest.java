@@ -157,6 +157,7 @@ public class DeviceManagerTest {
                 .version(2)
                 .build();
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDeviceForDeletion.class), any(UserDeviceForPrincipals.class))).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(dbHandler.isTechnicalUser(device)).thenReturn(Validation.success(false));
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(authAdmin.revokeCertificate(device.id())).thenReturn(StatusCode.SUCCESS);
@@ -166,6 +167,7 @@ public class DeviceManagerTest {
 
         assertEquals(StatusCode.SUCCESS, result);
         ArgumentCaptor<UserDeviceForPrincipals> captor = ArgumentCaptor.forClass(UserDeviceForPrincipals.class);
+        Mockito.verify(dbHandler).isTechnicalUser(device);
         Mockito.verify(dbHandler).delete(device);
         Mockito.verify(dbHandler).commit();
         Mockito.verify(ticketDbHandler).removeTicketOfDevice(eq(device));
@@ -216,11 +218,13 @@ public class DeviceManagerTest {
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDeviceForDeletion.class), any(UserDeviceForPrincipals.class))).thenReturn(StatusCode.SUCCESS);
         Mockito.when(ticketDbHandler.removeTicketOfDevice(device)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.delete(device)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+        Mockito.when(dbHandler.isTechnicalUser(device)).thenReturn(Validation.success(false));
 
         StatusCode result = uut.delete(device);
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         ArgumentCaptor<UserDeviceForPrincipals> captor = ArgumentCaptor.forClass(UserDeviceForPrincipals.class);
+        Mockito.verify(dbHandler).isTechnicalUser(device);
         Mockito.verify(dbHandler).delete(device);
         Mockito.verify(dbHandler).rollback();
         Mockito.verify(foodDbHandler).transferFoodItems(eq(device), captor.capture());
@@ -234,6 +238,7 @@ public class DeviceManagerTest {
                 .id(1)
                 .version(2)
                 .build();
+        Mockito.when(dbHandler.isTechnicalUser(device)).thenReturn(Validation.success(false));
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDeviceForDeletion.class), any(UserDeviceForPrincipals.class))).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
         StatusCode result = uut.delete(device);
@@ -241,6 +246,7 @@ public class DeviceManagerTest {
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
         ArgumentCaptor<UserDeviceForPrincipals> captor = ArgumentCaptor.forClass(UserDeviceForPrincipals.class);
         Mockito.verify(foodDbHandler).transferFoodItems(eq(device), captor.capture());
+        Mockito.verify(dbHandler).isTechnicalUser(device);
         Mockito.verify(dbHandler).rollback();
         assertEquals(TEST_USER.toDevice().id(), captor.getValue().id());
     }

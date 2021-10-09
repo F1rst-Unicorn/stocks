@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Added
+
+* Every installation now has a default system user "Stocks" with a device "Job
+  Runner" ([#9](https://gitlab.com/veenj/stocks/-/issues/9))
+
+### Fixed
+
+* Background jobs cleaning up the database actually work now
+  ([#9](https://gitlab.com/veenj/stocks/-/issues/9))
+
 ## [5.5.0.1]
 
 ### Fixed

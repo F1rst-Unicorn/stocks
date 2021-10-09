@@ -22,6 +22,7 @@ package de.njsm.stocks.server.v2.business;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.PrincipalsHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import fj.data.Validation;
@@ -47,6 +48,8 @@ public class CaConsistencyCheckJobTest {
 
     private UserDeviceHandler deviceHandler;
 
+    private FoodItemHandler foodItemHandler;
+
     public static final Principals TEST_USER = new Principals("Stocks", "Job Runner", 2, 2);
 
     @BeforeEach
@@ -56,6 +59,8 @@ public class CaConsistencyCheckJobTest {
         dbHandler = Mockito.mock(PrincipalsHandler.class);
 
         deviceHandler = Mockito.mock(UserDeviceHandler.class);
+
+        foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
         uut = new CaConsistencyCheckJob(authAdmin, dbHandler, deviceHandler, foodItemHandler);
     }
@@ -72,6 +77,7 @@ public class CaConsistencyCheckJobTest {
     @Test
     public void failingJobRunnerPrincipalGettingDoesNothing() {
         when(dbHandler.getJobRunnerPrincipal()).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+        when(dbHandler.rollback()).thenReturn(StatusCode.SUCCESS);
 
         uut.runJob();
 
@@ -83,6 +89,7 @@ public class CaConsistencyCheckJobTest {
         when(dbHandler.getJobRunnerPrincipal()).thenReturn(Validation.success(TEST_USER));
         when(dbHandler.getPrincipals()).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
         when(authAdmin.getValidPrincipals()).thenReturn(Validation.success(Collections.emptySet()));
+        when(dbHandler.rollback()).thenReturn(StatusCode.SUCCESS);
 
         uut.runJob();
 
@@ -91,6 +98,7 @@ public class CaConsistencyCheckJobTest {
         verify(authAdmin).getValidPrincipals();
         verify(dbHandler).setPrincipals(TEST_USER);
         verify(deviceHandler).setPrincipals(TEST_USER);
+        verify(foodItemHandler).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -98,6 +106,7 @@ public class CaConsistencyCheckJobTest {
         when(dbHandler.getJobRunnerPrincipal()).thenReturn(Validation.success(TEST_USER));
         when(dbHandler.getPrincipals()).thenReturn(Validation.success(Collections.emptySet()));
         when(authAdmin.getValidPrincipals()).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
+        when(dbHandler.rollback()).thenReturn(StatusCode.SUCCESS);
 
         uut.runJob();
 
@@ -106,6 +115,7 @@ public class CaConsistencyCheckJobTest {
         verify(authAdmin).getValidPrincipals();
         verify(dbHandler).setPrincipals(TEST_USER);
         verify(deviceHandler).setPrincipals(TEST_USER);
+        verify(foodItemHandler).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -135,8 +145,11 @@ public class CaConsistencyCheckJobTest {
         when(authAdmin.getValidPrincipals()).thenReturn(Validation.success(caPrincipals));
         when(authAdmin.revokeCertificate(caOnlySuccessful.getDid())).thenReturn(StatusCode.SUCCESS);
         when(authAdmin.revokeCertificate(caOnlyFailing.getDid())).thenReturn(StatusCode.CA_UNREACHABLE);
+        when(foodItemHandler.transferFoodItems(dbOnlyFailing.toDevice(), TEST_USER.toDevice())).thenReturn(StatusCode.SUCCESS);
+        when(foodItemHandler.transferFoodItems(dbOnlySuccessful.toDevice(), TEST_USER.toDevice())).thenReturn(StatusCode.SUCCESS);
         when(deviceHandler.delete(dbOnlyFailing.toDevice())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         when(deviceHandler.delete(dbOnlySuccessful.toDevice())).thenReturn(StatusCode.SUCCESS);
+        when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
         uut.runJob();
 
@@ -149,5 +162,6 @@ public class CaConsistencyCheckJobTest {
         verify(dbHandler).commit();
         verify(dbHandler).setPrincipals(TEST_USER);
         verify(deviceHandler).setPrincipals(TEST_USER);
+        verify(foodItemHandler).setPrincipals(TEST_USER);
     }
 }
