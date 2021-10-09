@@ -67,4 +67,30 @@ public class PrincipalsHandler extends FailSafeDatabaseHandler {
             return Validation.success(result);
         });
     }
+
+    public Validation<StatusCode, Principals> getJobRunnerPrincipal() {
+        return runFunction(context -> {
+            Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+
+            Principals result = context
+                    .selectFrom(USER.join(USER_DEVICE)
+                            .on(USER.ID.eq(USER_DEVICE.BELONGS_TO)))
+                    .where(USER_DEVICE.TECHNICAL_USE_CASE.eq(TechnicalUseCase.JOB_RUNNER.getDbIdentifier())
+                            .and(USER.VALID_TIME_START.lessOrEqual(now))
+                            .and(now.lessThan(USER.VALID_TIME_END))
+                            .and(USER.TRANSACTION_TIME_END.eq(CrudDatabaseHandler.INFINITY))
+                            .and(USER_DEVICE.VALID_TIME_START.lessOrEqual(now))
+                            .and(now.lessThan(USER_DEVICE.VALID_TIME_END))
+                            .and(USER_DEVICE.TRANSACTION_TIME_END.eq(CrudDatabaseHandler.INFINITY))
+                    )
+                    .fetchAny(record -> new Principals(
+                            record.get(USER.NAME),
+                            record.get(USER_DEVICE.NAME),
+                            record.get(USER.ID),
+                            record.get(USER_DEVICE.ID)
+                    ));
+
+            return Validation.success(result);
+        });
+    }
 }

@@ -65,7 +65,7 @@
     </changeSet>
     <changeSet id="2" author="admin">
         <sql>
-            alter table user_device add column technical_use_case text not null default '';
+            alter table user_device add column technical_use_case text;
 
             create constraint trigger user_device_technical_use_case_bitemporal_sequenced_uniqueness
             after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end, technical_use_case or delete
@@ -102,28 +102,28 @@
                 insert into user_device (id, name, version, belongs_to, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end, initiates, technical_use_case)
                 select id, name, version, belongs_to, valid_time_start, current_timestamp + '1 microsecond', current_timestamp, 'infinity', id, technical_use_case
                 from user_device
-                where technical_use_case != ''
+                where technical_use_case is not null
                 and valid_time_start &lt;= current_timestamp
                 and current_timestamp &lt;= valid_time_end
                 and transaction_time_end = 'infinity';
 
                 update user_device
                 set transaction_time_end = current_timestamp
-                where technical_use_case != ''
+                where technical_use_case is not null
                 and current_timestamp + '1 microsecond' &lt; valid_time_end
                 and transaction_time_end = 'infinity';
 
                 insert into "user" (id, name, version, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end, initiates)
                 select id, name, version, valid_time_start, current_timestamp + '1 microsecond', current_timestamp, 'infinity', id
                 from "user"
-                where id in (select belongs_to from user_device where technical_use_case != '')
+                where id in (select belongs_to from user_device where technical_use_case is not null)
                 and valid_time_start &lt;= current_timestamp
                 and current_timestamp &lt;= valid_time_end
                 and transaction_time_end = 'infinity';
 
                 update "user"
                 set transaction_time_end = current_timestamp
-                where id in (select belongs_to from user_device where technical_use_case != '')
+                where id in (select belongs_to from user_device where technical_use_case is not null)
                 and current_timestamp + '1 microsecond' &lt; valid_time_end
                 and transaction_time_end = 'infinity';
             </sql>

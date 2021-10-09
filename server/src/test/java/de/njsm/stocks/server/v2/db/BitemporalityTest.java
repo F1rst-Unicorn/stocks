@@ -139,7 +139,7 @@ public class BitemporalityTest extends DbTestCase {
         OffsetDateTime now = OffsetDateTime.now();
         Instant nowAsInstant = now.toInstant();
         BitemporalUserDevice youngDevice = BitemporalUserDevice.builder()
-                .id(6)
+                .id(7)
                 .version(0)
                 .validTimeStart(nowAsInstant)
                 .validTimeEnd(INFINITY.toInstant())
@@ -180,7 +180,7 @@ public class BitemporalityTest extends DbTestCase {
         OffsetDateTime now = OffsetDateTime.now();
         Instant nowAsInstant = now.toInstant();
         BitemporalUserDevice youngDevice = BitemporalUserDevice.builder()
-                .id(6)
+                .id(7)
                 .version(0)
                 .validTimeStart(nowAsInstant)
                 .validTimeEnd(INFINITY.toInstant())

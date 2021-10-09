@@ -28,6 +28,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -44,15 +46,26 @@ public class PrincipalsHandlerTest extends DbTestCase {
     }
 
     @Test
+    void fetchingJobRunnerPrincipalWorks() {
+        Principals expected = new Principals("Stocks", "Job Runner", 2, 2);
+
+        Validation<StatusCode, Principals> actual = uut.getJobRunnerPrincipal();
+
+        assertTrue(actual.isSuccess());
+        assertEquals(expected, actual.success());
+    }
+
+    @Test
     public void fetchPrincipals() {
+        int numberOfDevices = new UserDeviceHandlerTest().getNumberOfEntities() - 1; // don't return pending device
 
         Validation<StatusCode, Set<Principals>> output = uut.getPrincipals();
 
         assertTrue(output.isSuccess());
-        assertEquals(4, output.success().size());
-        assertTrue(output.success().contains(new Principals("Default", "Default", 1, 1)));
-        assertTrue(output.success().contains(new Principals("Bob", "mobile", 2, 2)));
-        assertTrue(output.success().contains(new Principals("Bob", "mobile2", 2, 3)));
-        assertTrue(output.success().contains(new Principals("Alice", "laptop", 3, 4)));
+        assertEquals(numberOfDevices, output.success().size());
+        assertThat(output.success(), hasItem(new Principals("Default", "Default", 1, 1)));
+        assertThat(output.success(), hasItem(new Principals("Bob", "mobile", 3, 3)));
+        assertThat(output.success(), hasItem(new Principals("Bob", "mobile2", 3, 4)));
+        assertThat(output.success(), hasItem(new Principals("Alice", "laptop", 4, 5)));
     }
 }

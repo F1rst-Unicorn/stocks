@@ -54,7 +54,7 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
 
         assertTrue(result.isSuccess());
         List<User> list = result.success().collect(Collectors.toList());
-        assertEquals(4, list.size());
+        assertEquals(getNumberOfEntities(), list.size());
         assertThat(list, hasItem(UserForGetting.builder()
                 .id(1)
                 .version(0)
@@ -63,15 +63,20 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
         assertThat(list, hasItem(UserForGetting.builder()
                 .id(2)
                 .version(0)
-                .name("Bob")
+                .name("Stocks")
                 .build()));
         assertThat(list, hasItem(UserForGetting.builder()
                 .id(3)
                 .version(0)
-                .name("Alice")
+                .name("Bob")
                 .build()));
         assertThat(list, hasItem(UserForGetting.builder()
                 .id(4)
+                .version(0)
+                .name("Alice")
+                .build()));
+        assertThat(list, hasItem(UserForGetting.builder()
+                .id(5)
                 .version(0)
                 .name("Jack")
                 .build()));
@@ -103,7 +108,7 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
 
     @Override
     public int getNumberOfEntities() {
-        return 4;
+        return 5;
     }
 
     @Override

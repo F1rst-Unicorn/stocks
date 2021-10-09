@@ -26,10 +26,10 @@ class SampleData {
     private static final String[] sampleDbData = {
             "delete from food_item",
             "delete from ticket",
-            "delete from user_device where id != 1",
+            "delete from user_device where id > 2",
             "delete from ean_number",
             "delete from food",
-            "delete from \"user\" where id != 1",
+            "delete from \"user\" where id > 2",
             "delete from location",
             "delete from unit where id != 1",
             "delete from scaled_unit where id != 1",
@@ -39,8 +39,8 @@ class SampleData {
 
             "alter sequence \"Food_item_ID_seq\" restart",
             "alter sequence \"Food_ID_seq\" restart",
-            "alter sequence \"User_device_ID_seq\" restart with 2",
-            "alter sequence \"User_ID_seq\" restart with 2",
+            "alter sequence \"User_device_ID_seq\" restart with 3",
+            "alter sequence \"User_ID_seq\" restart with 3",
             "alter sequence \"Location_ID_seq\" restart",
             "alter sequence \"Ticket_ID_seq\" restart",
             "alter sequence \"EAN_number_ID_seq\" restart",
@@ -62,16 +62,16 @@ class SampleData {
                     "('Alice', 1), " +
                     "('Jack', 1)",
             "insert into user_device (name, belongs_to, initiates) values " +
-                    "('mobile', 2, 1), " +
-                    "('mobile2', 2, 1), " +
-                    "('laptop', 3, 1), " +
-                    "('pending_device', 3, 1)",
+                    "('mobile', 3, 1), " +
+                    "('mobile2', 3, 1), " +
+                    "('laptop', 4, 1), " +
+                    "('pending_device', 4, 1)",
             "insert into food_item (eat_by, registers, buys, stored_in, of_type, initiates, unit) values" +
                     "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)," +
                     "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)," +
                     "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)",
             "insert into ticket (ticket, belongs_device) values " +
-                    "('AAAA', 5)",
+                    "('AAAA', 6)",
             "insert into ean_number (number, identifies, initiates) values " +
                     "('EAN BEER', 2, 1)",
             "insert into unit (name, abbreviation, initiates) values" +

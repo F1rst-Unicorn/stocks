@@ -56,7 +56,7 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
 
         assertTrue(devices.isSuccess());
         List<UserDevice> list = devices.success().collect(Collectors.toList());
-        assertEquals(5, list.size());
+        assertEquals(6, list.size());
         assertThat(list, hasItem(UserDeviceForGetting.builder()
                 .id(1)
                 .version(0)
@@ -66,26 +66,32 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
         assertThat(list, hasItem(UserDeviceForGetting.builder()
                 .id(2)
                 .version(0)
-                .name("mobile")
+                .name("Job Runner")
                 .belongsTo(2)
                 .build()));
         assertThat(list, hasItem(UserDeviceForGetting.builder()
                 .id(3)
                 .version(0)
-                .name("mobile2")
-                .belongsTo(2)
+                .name("mobile")
+                .belongsTo(3)
                 .build()));
         assertThat(list, hasItem(UserDeviceForGetting.builder()
                 .id(4)
                 .version(0)
-                .name("laptop")
+                .name("mobile2")
                 .belongsTo(3)
                 .build()));
         assertThat(list, hasItem(UserDeviceForGetting.builder()
                 .id(5)
                 .version(0)
+                .name("laptop")
+                .belongsTo(4)
+                .build()));
+        assertThat(list, hasItem(UserDeviceForGetting.builder()
+                .id(6)
+                .version(0)
                 .name("pending_device")
-                .belongsTo(3)
+                .belongsTo(4)
                 .build()));
     }
 
@@ -113,14 +119,14 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
     public void gettingDevicesOfUserWorks() {
 
         Validation<StatusCode, List<Identifiable<UserDevice>>> result = uut.getDevicesOfUser(UserForDeletion.builder()
-                .id(2)
+                .id(3)
                 .version(2)
                 .build());
 
         assertTrue(result.isSuccess());
         assertEquals(2, result.success().size());
-        assertThat(result.success(), hasItem(UserDeviceForPrincipals.builder().id(2).build()));
         assertThat(result.success(), hasItem(UserDeviceForPrincipals.builder().id(3).build()));
+        assertThat(result.success(), hasItem(UserDeviceForPrincipals.builder().id(4).build()));
     }
 
     @Override
@@ -130,7 +136,7 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Override
     public int getNumberOfEntities() {
-        return 5;
+        return 6;
     }
 
     @Override
