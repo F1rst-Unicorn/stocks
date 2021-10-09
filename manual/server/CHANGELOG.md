@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.5.0.2]
+
 ### Added
 
 * Every installation now has a default system user "Stocks" with a device "Job
