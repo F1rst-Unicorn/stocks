@@ -1,3 +1,3 @@
 Title: List users after refresh
 Input: user list
-Output: ^Current users: \n\t1: Jack\n$
+Output: ^Current users: \n\t1: Jack\n\t2: Stocks\n$

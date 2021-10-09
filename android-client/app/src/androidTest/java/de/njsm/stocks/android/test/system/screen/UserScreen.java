@@ -75,6 +75,6 @@ public class UserScreen extends AbstractListPresentingScreen {
     }
 
     public void assertEmpty() {
-        assertEquals(1, getListCount());
+        assertEquals(2, getListCount());
     }
 }

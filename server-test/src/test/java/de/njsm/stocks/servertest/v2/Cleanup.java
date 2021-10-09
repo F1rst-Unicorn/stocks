@@ -48,8 +48,10 @@ public class Cleanup {
     public void clean01Devices() {
         List<VersionedData> ids = getIds("/v2/device");
 
+        List<Integer> ignoredDevices = List.of(1, 2);
+
         for (VersionedData d : ids) {
-            if (d.id() == 1) continue;
+            if (ignoredDevices.contains(d.id())) continue;
             given()
                     .log().ifValidationFails()
                     .queryParam("id", d.id())
@@ -200,8 +202,10 @@ public class Cleanup {
     public void clean09Users() {
         List<VersionedData> ids = getIds("/v2/user");
 
+        List<Integer> ignoredUsers = List.of(1, 2);
+
         for (VersionedData d : ids) {
-            if (d.id() == 1) continue;
+            if (ignoredUsers.contains(d.id())) continue;
             given()
                     .log().ifValidationFails()
                     .queryParam("id", d.id())

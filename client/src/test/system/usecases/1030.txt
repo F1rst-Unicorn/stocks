@@ -1,3 +1,3 @@
 Title: List users
 Input: user list
-Output: ^Current users: \n\t1: Jack\n\t[0-9]+: Juliette\n$
+Output: ^Current users: \n\t1: Jack\n\t[0-9]+: Juliette\n\t2: Stocks\n$
