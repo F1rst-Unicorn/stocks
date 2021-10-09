@@ -36,6 +36,7 @@ class user_device {
     transaction_time_start: OffsetDateTime
     transaction_time_end: OffsetDateTime
     name: String
+    technical_use_case: String?
 }
 
 package Food <<Frame>> {
