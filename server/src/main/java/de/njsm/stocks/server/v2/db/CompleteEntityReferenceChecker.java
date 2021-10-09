@@ -31,6 +31,11 @@ import java.util.Set;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 
+/**
+ * Given a set of foreign Versionables f referring to a primary Identifiable p
+ * determine, whether f contains exactly all Versionables referring to p with
+ * the correct version.
+ */
 public class CompleteEntityReferenceChecker<T extends Entity<T>, U extends Entity<U>, R extends Record> {
 
     private final Field<Integer> id;

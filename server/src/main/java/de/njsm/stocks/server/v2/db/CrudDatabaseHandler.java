@@ -20,7 +20,6 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.visitor.JooqInsertionVisitor;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
@@ -52,11 +51,6 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
                                String resourceIdentifier,
                                int timeout) {
         super(connectionFactory, resourceIdentifier, timeout);
-    }
-
-    @Override
-    public void setPrincipals(Principals principals) {
-        super.setPrincipals(principals);
     }
 
     public StatusCode add(Insertable<N> item) {

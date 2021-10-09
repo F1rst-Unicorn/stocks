@@ -33,4 +33,5 @@
     <include file="0005-freetext-description.xml" relativeToChangelogFile="true"/>
     <include file="0006-cleanup.xml" relativeToChangelogFile="true"/>
     <include file="0007-recipes.xml" relativeToChangelogFile="true"/>
+    <include file="0008-technical-users.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
