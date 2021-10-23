@@ -30,7 +30,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
-        versionName "3.11.0.1"
+        versionName "3.12.0.0"
         multiDexEnabled true
 
         testInstrumentationRunner "de.njsm.stocks.android.test.system.util.TestRunner"

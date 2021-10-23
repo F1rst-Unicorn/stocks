@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [3.12.0.0]
+
+### Added
+
+* Show current food stock in recipe detail view
+  ([#20](https://gitlab.com/veenj/stocks/-/issues/20))
+
 ## [3.11.0.1]
 
 ### Fixed
