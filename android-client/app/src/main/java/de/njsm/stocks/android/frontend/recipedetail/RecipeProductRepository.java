@@ -21,9 +21,10 @@
 package de.njsm.stocks.android.frontend.recipedetail;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 import de.njsm.stocks.android.db.dao.RecipeProductDao;
 import de.njsm.stocks.android.db.entities.RecipeProduct;
-import de.njsm.stocks.android.db.views.ScaledFood;
+import de.njsm.stocks.android.db.views.RecipeItemWithCurrentStock;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -38,8 +39,9 @@ public class RecipeProductRepository {
     }
 
 
-    public LiveData<List<ScaledFood>> getProductViewsOf(int recipeId) {
-        return recipeProductDao.getProductViewsOf(recipeId);
+    public LiveData<List<RecipeItemWithCurrentStock>> getProductViewsOf(int recipeId) {
+        return Transformations.map(recipeProductDao.getProductViewsOf(recipeId),
+                new RecipeItemWithCurrentStock.Mapper());
     }
 
     public LiveData<List<RecipeProduct>> getProductsOf(int recipeId) {

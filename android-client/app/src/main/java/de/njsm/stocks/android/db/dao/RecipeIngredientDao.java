@@ -23,12 +23,14 @@ import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.RecipeIngredient;
 import de.njsm.stocks.android.db.entities.Sql;
-import de.njsm.stocks.android.db.views.ScaledFood;
+import de.njsm.stocks.android.db.views.RecipeItemWithCurrentStock;
 
 import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.db.dbview.ScaledAmount.SCALED_AMOUNT_FIELDS_QUALIFIED;
+import static de.njsm.stocks.android.db.dbview.ScaledAmount.SCALED_AMOUNT_TABLE;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
@@ -58,7 +60,7 @@ public abstract class RecipeIngredientDao implements Inserter<RecipeIngredient> 
         return getLiveIngredientsOf(recipeId, DATABASE_INFINITY);
     }
 
-    public LiveData<List<ScaledFood>> getIngredientViewsOf(int recipeId) {
+    public LiveData<List<RecipeItemWithCurrentStock.SingleRecipeItemWithCurrentStock>> getIngredientViewsOf(int recipeId) {
         return getIngredientViewsOf(recipeId, DATABASE_INFINITY);
     }
 
@@ -90,14 +92,16 @@ public abstract class RecipeIngredientDao implements Inserter<RecipeIngredient> 
             Sql.SCALED_UNIT_FIELDS_QUALIFIED +
             Sql.UNIT_FIELDS_QUALIFIED +
             Sql.RECIPE_INGREDIENT_FIELDS +
+            SCALED_AMOUNT_FIELDS_QUALIFIED +
             "1 from recipe_ingredient recipe_ingredient " +
             Sql.FOOD_JOIN_RECIPE_INGREDIENT +
             Sql.SCALED_UNIT_JOIN_RECIPE_INGREDIENT +
             Sql.UNIT_JOIN_SCALED_UNIT +
+            "join " + SCALED_AMOUNT_TABLE + " " + SCALED_AMOUNT_TABLE + " on recipe_ingredient.ingredient = current_scaled_amount.of_type " +
             "where recipe_ingredient.recipe = :recipeId " +
             "and recipe_ingredient.valid_time_start <= " + NOW +
             "and " + NOW + " < recipe_ingredient.valid_time_end " +
             "and recipe_ingredient.transaction_time_end = :infinity " +
             "order by food_name")
-    abstract LiveData<List<ScaledFood>> getIngredientViewsOf(int recipeId, Instant infinity);
+    abstract LiveData<List<RecipeItemWithCurrentStock.SingleRecipeItemWithCurrentStock>> getIngredientViewsOf(int recipeId, Instant infinity);
 }

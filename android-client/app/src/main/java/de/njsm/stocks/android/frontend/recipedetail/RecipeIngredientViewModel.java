@@ -23,7 +23,7 @@ package de.njsm.stocks.android.frontend.recipedetail;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.entities.RecipeIngredient;
-import de.njsm.stocks.android.db.views.ScaledFood;
+import de.njsm.stocks.android.db.views.RecipeItemWithCurrentStock;
 import de.njsm.stocks.android.repo.RecipeIngredientRepository;
 
 import javax.inject.Inject;
@@ -33,7 +33,7 @@ public class RecipeIngredientViewModel extends ViewModel {
 
     private final RecipeIngredientRepository repository;
 
-    private LiveData<List<ScaledFood>> currentIngredientViews;
+    private LiveData<List<RecipeItemWithCurrentStock>> currentIngredientViews;
 
     private LiveData<List<RecipeIngredient>> currentIngredients;
 
@@ -54,7 +54,7 @@ public class RecipeIngredientViewModel extends ViewModel {
         return currentIngredients;
     }
 
-    public LiveData<List<ScaledFood>> getIngredientViews() {
+    public LiveData<List<RecipeItemWithCurrentStock>> getIngredientViews() {
         return currentIngredientViews;
     }
 }

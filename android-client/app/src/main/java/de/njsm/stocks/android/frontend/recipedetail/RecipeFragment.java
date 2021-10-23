@@ -31,7 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Recipe;
-import de.njsm.stocks.android.db.views.ScaledFood;
+import de.njsm.stocks.android.db.views.RecipeItemWithCurrentStock;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 import de.njsm.stocks.android.frontend.recipe.RecipeViewModel;
 
@@ -101,7 +101,7 @@ public class RecipeFragment extends InjectedFragment {
         return true;
     }
 
-    private void showIngredients(List<ScaledFood> scaledFoods) {
+    private void showIngredients(List<RecipeItemWithCurrentStock> scaledFoods) {
         if (scaledFoods.isEmpty()) {
             requireView().findViewById(R.id.fragment_recipe_ingredient_list).setVisibility(View.GONE);
             requireView().findViewById(R.id.fragment_recipe_title_ingredients).setVisibility(View.GONE);
@@ -112,7 +112,7 @@ public class RecipeFragment extends InjectedFragment {
         }
     }
 
-    private void showProducts(List<ScaledFood> scaledFoods) {
+    private void showProducts(List<RecipeItemWithCurrentStock> scaledFoods) {
         if (scaledFoods.isEmpty()) {
             requireView().findViewById(R.id.fragment_recipe_product_list).setVisibility(View.GONE);
             requireView().findViewById(R.id.fragment_recipe_title_products).setVisibility(View.GONE);
@@ -123,11 +123,12 @@ public class RecipeFragment extends InjectedFragment {
         }
     }
 
-    private void setScaledFoodList(List<ScaledFood> scaledFoods, int viewId) {
+    private void setScaledFoodList(List<RecipeItemWithCurrentStock> scaledFoods, int viewId) {
         TextView text = requireView().findViewById(viewId);
         StringJoiner joiner = new StringJoiner("\n");
+        String recipeItemFormat = getString(R.string.dialog_recipe_item);
         scaledFoods.stream()
-                .map(ScaledFood::getPrettyString)
+                .map(v -> v.format(recipeItemFormat))
                 .forEach(joiner::add);
         text.setText(joiner.toString());
     }

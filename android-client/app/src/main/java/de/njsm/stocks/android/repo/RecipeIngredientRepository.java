@@ -21,9 +21,10 @@
 package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 import de.njsm.stocks.android.db.dao.RecipeIngredientDao;
 import de.njsm.stocks.android.db.entities.RecipeIngredient;
-import de.njsm.stocks.android.db.views.ScaledFood;
+import de.njsm.stocks.android.db.views.RecipeItemWithCurrentStock;
 import de.njsm.stocks.android.util.Logger;
 
 import javax.inject.Inject;
@@ -40,8 +41,9 @@ public class RecipeIngredientRepository {
         this.recipeIngredientDao = recipeIngredientDao;
     }
 
-    public LiveData<List<ScaledFood>> getIngredientViewsOf(int recipeId) {
-        return recipeIngredientDao.getIngredientViewsOf(recipeId);
+    public LiveData<List<RecipeItemWithCurrentStock>> getIngredientViewsOf(int recipeId) {
+        return Transformations.map(recipeIngredientDao.getIngredientViewsOf(recipeId),
+                new RecipeItemWithCurrentStock.Mapper());
     }
 
     public LiveData<List<RecipeIngredient>> getIngredientsOf(int recipeId) {

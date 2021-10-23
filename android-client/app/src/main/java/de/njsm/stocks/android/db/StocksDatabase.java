@@ -23,23 +23,29 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import de.njsm.stocks.android.db.dao.*;
+import de.njsm.stocks.android.db.dbview.ScaledAmount;
 import de.njsm.stocks.android.db.entities.*;
 
-@Database(entities = {
-        User.class,
-        UserDevice.class,
-        Update.class,
-        Location.class,
-        Food.class,
-        FoodItem.class,
-        EanNumber.class,
-        SearchSuggestion.class,
-        Unit.class,
-        ScaledUnit.class,
-        Recipe.class,
-        RecipeIngredient.class,
-        RecipeProduct.class,
-}, version = 38)
+@Database(
+        entities = {
+                User.class,
+                UserDevice.class,
+                Update.class,
+                Location.class,
+                Food.class,
+                FoodItem.class,
+                EanNumber.class,
+                SearchSuggestion.class,
+                Unit.class,
+                ScaledUnit.class,
+                Recipe.class,
+                RecipeIngredient.class,
+                RecipeProduct.class,
+        },
+        views = {
+                ScaledAmount.class,
+        },
+        version = 39)
 @TypeConverters(de.njsm.stocks.android.db.TypeConverters.class)
 public abstract class StocksDatabase extends RoomDatabase {
 
