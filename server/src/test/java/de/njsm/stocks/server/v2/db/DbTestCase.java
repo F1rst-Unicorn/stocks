@@ -64,9 +64,13 @@ public abstract class DbTestCase {
     public void resetDatabase() throws SQLException {
         factory = new ConnectionFactory(ds);
         connection = factory.getConnection();
-        SampleData.insertSampleData(connection);
+        getSampleData(connection).apply();
 
         resourceCounter++;
+    }
+
+    SampleData getSampleData(Connection connection) {
+        return new SampleData(connection);
     }
 
     @AfterEach

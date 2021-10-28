@@ -19,37 +19,42 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 
 class SampleData {
 
-    private static final String[] sampleDbData = {
+    private static final List<String> dataReset = List.of(
             "delete from food_item",
             "delete from ticket",
-            "delete from user_device where id > 2",
+            "delete from user_device",
             "delete from ean_number",
             "delete from food",
-            "delete from \"user\" where id > 2",
+            "delete from \"user\"",
             "delete from location",
-            "delete from unit where id != 1",
-            "delete from scaled_unit where id != 1",
+            "delete from unit",
+            "delete from scaled_unit",
             "delete from recipe",
             "delete from recipe_ingredient",
             "delete from recipe_product",
 
             "alter sequence \"Food_item_ID_seq\" restart",
             "alter sequence \"Food_ID_seq\" restart",
-            "alter sequence \"User_device_ID_seq\" restart with 3",
-            "alter sequence \"User_ID_seq\" restart with 3",
+            "alter sequence \"User_device_ID_seq\" restart",
+            "alter sequence \"User_ID_seq\" restart",
             "alter sequence \"Location_ID_seq\" restart",
             "alter sequence \"Ticket_ID_seq\" restart",
             "alter sequence \"EAN_number_ID_seq\" restart",
-            "alter sequence unit_id_seq restart with 2",
-            "alter sequence scaled_unit_id_seq restart with 2",
+            "alter sequence unit_id_seq restart",
+            "alter sequence scaled_unit_id_seq restart",
             "alter sequence recipe_id_seq restart",
             "alter sequence recipe_ingredient_id_seq restart",
-            "alter sequence recipe_product_id_seq restart",
+            "alter sequence recipe_product_id_seq restart"
+    );
 
+    private static final List<String> sampleDbData = List.of(
             "insert into location (name, description, initiates) values " +
                     "('Fridge', 'fridge description', 1), " +
                     "('Cupboard', 'cupboard description', 1)",
@@ -58,14 +63,18 @@ class SampleData {
                     "('Beer', true, null, 'beer description', 1, '0 days', 1), " +
                     "('Cheese', false, 1, '', 1, '3 days', 1)",
             "insert into \"user\" (name, initiates) values " +
+                    "('Default', 1), " +
+                    "('Stocks', 1), " +
                     "('Bob', 1), " +
                     "('Alice', 1), " +
                     "('Jack', 1)",
-            "insert into user_device (name, belongs_to, initiates) values " +
-                    "('mobile', 3, 1), " +
-                    "('mobile2', 3, 1), " +
-                    "('laptop', 4, 1), " +
-                    "('pending_device', 4, 1)",
+            "insert into user_device (name, belongs_to, initiates, technical_use_case) values " +
+                    "('Default', 1, 1, NULL), " +
+                    "('Job Runner', 2, 1, 'job-runner'), " +
+                    "('mobile', 3, 1, NULL), " +
+                    "('mobile2', 3, 1, NULL), " +
+                    "('laptop', 4, 1, NULL), " +
+                    "('pending_device', 4, 1, NULL)",
             "insert into food_item (eat_by, registers, buys, stored_in, of_type, initiates, unit) values" +
                     "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)," +
                     "('1970-01-01 00:00:00+00', 3, 2, 1, 2, 1, 1)," +
@@ -75,9 +84,11 @@ class SampleData {
             "insert into ean_number (number, identifies, initiates) values " +
                     "('EAN BEER', 2, 1)",
             "insert into unit (name, abbreviation, initiates) values" +
+                    "('Default', 'default', 1)," +
                     "('Liter', 'l', 1)," +
                     "('Unit', 'u', 1)",
             "insert into scaled_unit (scale, unit, initiates) values" +
+                    "(1, 1, 1)," +
                     "(3, 2, 1)," +
                     "(3, 1, 1)",
             "insert into recipe (name, instructions, duration, initiates) values " +
@@ -87,19 +98,42 @@ class SampleData {
                     "(2, 3, 1, 2, 1)",
             "insert into recipe_product (amount, product, recipe, unit, initiates) values " +
                     "(2, 3, 1, 2, 1)"
+    );
 
-    };
+    private final Connection connection;
 
-    static void insertSampleData(Connection c) throws SQLException {
-        c.setAutoCommit(false);
-        c.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-        Statement stmt = c.createStatement();
+    SampleData(Connection connection) {
+        this.connection = connection;
+    }
 
-        for (String cmd : sampleDbData) {
-            stmt.execute(cmd);
+    void apply() throws SQLException {
+        connection.setAutoCommit(false);
+        connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+
+        clearData();
+        insertSampleData();
+
+        connection.commit();
+    }
+
+    private void clearData() throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
+            for (String cmd : dataReset) {
+                stmt.execute(cmd);
+            }
         }
+    }
 
-        c.commit();
+    private void insertSampleData() throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
+            for (String cmd : getSampleDbData()) {
+                stmt.execute(cmd);
+            }
+        }
+    }
+
+    List<String> getSampleDbData() {
+        return sampleDbData;
     }
 
 }

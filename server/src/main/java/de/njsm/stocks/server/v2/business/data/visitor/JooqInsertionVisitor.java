@@ -48,8 +48,8 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
     public InsertOnDuplicateStep<R> foodForInsertion(FoodForInsertion foodForInsertion, Input<R> input) {
         if (foodForInsertion.storeUnit().isEmpty())
             return input.getInsertSetStep().columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
-                    .select(DSL.select(DSL.inline(foodForInsertion.name()), DSL.inline(input.getPrincipals().getDid()), DSL.min(SCALED_UNIT.ID))
-                            .from(SCALED_UNIT));
+                    .select(DSL.select(DSL.inline(foodForInsertion.name()), DSL.inline(input.getPrincipals().getDid()), DSL.min(CURRENT_SCALED_UNIT.ID))
+                            .from(CURRENT_SCALED_UNIT));
 
         else
             return input.getInsertSetStep().columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
@@ -73,8 +73,8 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
                                     DSL.inline(foodItemForInsertion.registers()),
                                     DSL.inline(foodItemForInsertion.buys()),
                                     DSL.inline(input.getPrincipals().getDid()),
-                                    DSL.min(SCALED_UNIT.ID))
-                            .from(SCALED_UNIT));
+                                    DSL.min(CURRENT_SCALED_UNIT.ID))
+                            .from(CURRENT_SCALED_UNIT));
         else
             return input.getInsertSetStep().columns(FOOD_ITEM.EAT_BY,
                             FOOD_ITEM.STORED_IN,

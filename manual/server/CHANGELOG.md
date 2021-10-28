@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixed
+
+* When removing the first created scaled unit "1 Default" from the system no
+  more food could be created.
+  ([#24](https://gitlab.com/veenj/stocks/-/issues/24))
+
 ## [5.5.0.2]
 
 ### Added
