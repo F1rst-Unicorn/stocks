@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.5.0.3]
+
 ### Fixed
 
 * When removing the first created scaled unit "1 Default" from the system no
