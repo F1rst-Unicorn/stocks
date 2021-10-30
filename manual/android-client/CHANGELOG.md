@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [3.13.0.0]
+
+### Added
+
 * Allow sorting recipes by availability of ingredients. Every recipe gets two
   ratings, ranging from 0 to 7. One for "necessary for cooking" which increases
   if _any_ amount of an ingredient is present. If it is smaller than 7 at least
