@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.13.0.1]
+
 ### Fixed
 
 * Crash during startup due to wrong DB migration
