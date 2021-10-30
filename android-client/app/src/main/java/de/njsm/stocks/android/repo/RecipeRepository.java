@@ -26,6 +26,7 @@ import de.njsm.stocks.android.db.dao.RecipeDao;
 import de.njsm.stocks.android.db.dao.RecipeIngredientDao;
 import de.njsm.stocks.android.db.dao.RecipeProductDao;
 import de.njsm.stocks.android.db.entities.Recipe;
+import de.njsm.stocks.android.db.views.RecipeWithRating;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
@@ -71,9 +72,12 @@ public class RecipeRepository {
         this.idlingResource = idlingResource;
     }
 
+    public LiveData<List<RecipeWithRating>> getRecipes() {
+        return recipeDao.getAllWithRating();
+    }
 
-    public LiveData<List<Recipe>> getRecipes() {
-        return recipeDao.getAll();
+    public LiveData<List<RecipeWithRating>> getRecipesByCookability() {
+        return recipeDao.getByCookability();
     }
 
     public LiveData<StatusCode> addRecipe(FullRecipeForInsertion recipe) {

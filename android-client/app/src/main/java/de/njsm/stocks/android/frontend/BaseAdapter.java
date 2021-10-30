@@ -29,7 +29,7 @@ import java.util.List;
 
 public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    private final LiveData<List<T>> data;
+    private LiveData<List<T>> data;
 
     private final Consumer<View> onClickListener;
 
@@ -45,6 +45,11 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
         this.data = data;
         this.onClickListener = onClickListener;
         this.onLongClickListener = onLongClickListener;
+    }
+
+    public void setData(LiveData<List<T>> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     protected void onClick(View v) {

@@ -22,23 +22,29 @@ package de.njsm.stocks.android.db.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.Recipe;
-
-import java.time.Instant;
+import de.njsm.stocks.android.db.views.RecipeWithRating;
 
 import java.util.List;
-
-import static de.njsm.stocks.android.db.StocksDatabase.NOW;
-import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
 
 @Dao
 public abstract class RecipeDao implements Inserter<Recipe> {
 
+    private static final String GET_ALL_WITH_RATING =
+            "select recipe.*, " +
+            "coalesce(nb.necessary_to_cook, 0) as necessity_rating, " +
+            "coalesce(sb.sufficient_to_cook, 0) as sufficiency_rating " +
+            "from current_recipe recipe " +
+            "left outer join (select recipe_id, " +
+                    "cast(7 * avg(present_for_sufficient) as int) as sufficient_to_cook " +
+                    "from recipe_stock_rating_base " +
+                    "group by recipe_id) sb on recipe._id = sb.recipe_id " +
+            "left outer join (select recipe_id, " +
+                    "cast(7 * avg(present_for_necessary) as int) as necessary_to_cook " +
+                    "from recipe_stock_rating_base " +
+                    "group by recipe_id) nb on nb.recipe_id = recipe._id ";
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(List<Recipe> recipes);
-
-    public LiveData<List<Recipe>> getAll() {
-        return getAll(DATABASE_INFINITY);
-    }
 
     @Transaction
     public void synchronise(List<Recipe> data) {
@@ -46,26 +52,25 @@ public abstract class RecipeDao implements Inserter<Recipe> {
         insert(data);
     }
 
-    public LiveData<Recipe> getRecipe(int recipeId) {
-        return getRecipe(recipeId, DATABASE_INFINITY);
-    }
+    @Query(GET_ALL_WITH_RATING +
+            "order by recipe.name")
+    public abstract LiveData<List<RecipeWithRating>> getAllWithRating();
+
+    @Query("select * " +
+            "from current_recipe " +
+            "order by name")
+    @Override
+    public abstract LiveData<List<Recipe>> getAll();
 
     @Query("delete from recipe")
     abstract void delete();
 
-    @Query("select * " +
-            "from recipe " +
-            "where valid_time_start <= " + NOW +
-            "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity " +
-            "order by name")
-    abstract LiveData<List<Recipe>> getAll(Instant infinity);
+    @Query(GET_ALL_WITH_RATING +
+            "order by necessary_to_cook desc, sb.sufficient_to_cook desc, recipe.name")
+    public abstract LiveData<List<RecipeWithRating>> getByCookability();
 
     @Query("select * " +
-            "from recipe " +
-            "where _id = :recipeId " +
-            "and valid_time_start <= " + NOW +
-            "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = :infinity")
-    abstract LiveData<Recipe> getRecipe(int recipeId, Instant infinity);
+            "from current_recipe " +
+            "where _id = :recipeId ")
+    public abstract LiveData<Recipe> getRecipe(int recipeId);
 }

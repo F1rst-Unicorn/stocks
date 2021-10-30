@@ -22,43 +22,55 @@ package de.njsm.stocks.android.frontend.recipe;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.entities.Recipe;
+import de.njsm.stocks.android.db.views.RecipeWithRating;
 import de.njsm.stocks.android.frontend.BaseAdapter;
 
 import java.util.List;
 
-public class RecipeAdapter extends BaseAdapter<Recipe, RecipeAdapter.ViewHolder> {
+public class RecipeAdapter extends BaseAdapter<RecipeWithRating, RecipeAdapter.ViewHolder> {
+
+    private final String ratingFormatString;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView view;
+        private final TextView name;
 
-        ViewHolder(@NonNull TextView itemView) {
+        private final TextView rating;
+
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
-            view = itemView;
+            name = itemView.findViewById(R.id.item_recipe_name);
+            rating = itemView.findViewById(R.id.item_recipe_rating);
         }
 
-        public void setText(CharSequence c) {
-            view.setText(c);
+        public void setName(CharSequence c) {
+            name.setText(c);
+        }
+
+        public void setRating(CharSequence c) {
+            rating.setText(c);
         }
     }
 
-    RecipeAdapter(LiveData<List<Recipe>> data,
+    RecipeAdapter(LiveData<List<RecipeWithRating>> data,
                   Consumer<View> onClickListener,
-                  Consumer<View> onLongClickListener) {
+                  Consumer<View> onLongClickListener,
+                  String ratingFormatString) {
         super(data, onClickListener, onLongClickListener);
+        this.ratingFormatString = ratingFormatString;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        TextView v = (TextView) LayoutInflater.from(viewGroup.getContext())
+        RelativeLayout v = (RelativeLayout) LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_recipe, viewGroup, false);
         ViewHolder result =  new RecipeAdapter.ViewHolder(v);
         v.setTag(result);
@@ -68,12 +80,14 @@ public class RecipeAdapter extends BaseAdapter<Recipe, RecipeAdapter.ViewHolder>
     }
 
     @Override
-    protected void bindConcrete(ViewHolder holder, Recipe data) {
-        holder.setText(data.name);
+    protected void bindConcrete(ViewHolder holder, RecipeWithRating data) {
+        holder.setName(data.getRecipe().getName());
+        holder.setRating(data.getRating().format(ratingFormatString));
     }
 
     @Override
     protected void bindVoid(ViewHolder holder) {
-        holder.setText("");
+        holder.setName("");
+        holder.setRating("");
     }
 }

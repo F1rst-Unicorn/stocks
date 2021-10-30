@@ -23,6 +23,7 @@ package de.njsm.stocks.android.frontend.recipe;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.entities.Recipe;
+import de.njsm.stocks.android.db.views.RecipeWithRating;
 import de.njsm.stocks.android.repo.RecipeRepository;
 import de.njsm.stocks.common.api.FullRecipeForEditing;
 import de.njsm.stocks.common.api.FullRecipeForInsertion;
@@ -35,7 +36,9 @@ public class RecipeViewModel extends ViewModel {
 
     private final RecipeRepository repository;
 
-    private LiveData<List<Recipe>> currentRecipes;
+    private LiveData<List<RecipeWithRating>> activeRecipes;
+
+    private LiveData<List<RecipeWithRating>> passiveRecipes;
 
     private LiveData<Recipe> currentRecipe;
 
@@ -45,8 +48,9 @@ public class RecipeViewModel extends ViewModel {
     }
 
     public void init() {
-        if (currentRecipes == null) {
-            currentRecipes = repository.getRecipes();
+        if (activeRecipes == null) {
+            activeRecipes = repository.getRecipes();
+            passiveRecipes = repository.getRecipesByCookability();
         }
     }
 
@@ -56,8 +60,8 @@ public class RecipeViewModel extends ViewModel {
         }
     }
 
-    public LiveData<List<Recipe>> getRecipes() {
-        return currentRecipes;
+    public LiveData<List<RecipeWithRating>> getRecipes() {
+        return activeRecipes;
     }
 
     public LiveData<StatusCode> addRecipe(FullRecipeForInsertion recipe) {
@@ -74,5 +78,11 @@ public class RecipeViewModel extends ViewModel {
 
     public LiveData<Recipe> getRecipe() {
         return currentRecipe;
+    }
+
+    public void switchSortOrder() {
+        LiveData<List<RecipeWithRating>> switchHelper = activeRecipes;
+        activeRecipes = passiveRecipes;
+        passiveRecipes = switchHelper;
     }
 }

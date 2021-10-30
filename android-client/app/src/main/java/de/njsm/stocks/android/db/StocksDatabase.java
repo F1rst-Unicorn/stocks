@@ -23,7 +23,7 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import de.njsm.stocks.android.db.dao.*;
-import de.njsm.stocks.android.db.dbview.ScaledAmount;
+import de.njsm.stocks.android.db.dbview.*;
 import de.njsm.stocks.android.db.entities.*;
 
 @Database(
@@ -43,9 +43,23 @@ import de.njsm.stocks.android.db.entities.*;
                 RecipeProduct.class,
         },
         views = {
+                CurrentUser.class,
+                CurrentUserDevice.class,
+                CurrentLocation.class,
+                CurrentFood.class,
+                CurrentFoodItem.class,
+                CurrentEanNumber.class,
+                CurrentUnit.class,
+                CurrentScaledUnit.class,
+                CurrentRecipeIngredient.class,
+                CurrentRecipeProduct.class,
+                CurrentRecipe.class,
                 ScaledAmount.class,
+                ScaledUnitConversion.class,
+                RecipeIngredientAmountAndStock.class,
+                RecipeStockRatingBase.class,
         },
-        version = 39)
+        version = 40)
 @TypeConverters(de.njsm.stocks.android.db.TypeConverters.class)
 public abstract class StocksDatabase extends RoomDatabase {
 

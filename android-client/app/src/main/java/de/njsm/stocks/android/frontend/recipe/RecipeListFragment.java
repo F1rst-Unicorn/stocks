@@ -21,29 +21,30 @@
 package de.njsm.stocks.android.frontend.recipe;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Transformations;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.R;
-import de.njsm.stocks.android.db.entities.Recipe;
+import de.njsm.stocks.android.db.views.RecipeWithRating;
 import de.njsm.stocks.android.frontend.InjectedFragment;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RecipeListFragment extends InjectedFragment {
 
-    private RecyclerView.Adapter<RecipeAdapter.ViewHolder> adapter;
+    private RecipeAdapter adapter;
 
     private RecipeViewModel recipeViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
 
         result.findViewById(R.id.template_swipe_list_fab).setOnClickListener(this::goToRecipeForm);
@@ -54,7 +55,8 @@ public class RecipeListFragment extends InjectedFragment {
 
         adapter = new RecipeAdapter(recipeViewModel.getRecipes(),
                 this::goToRecipe,
-                this::doNothing);
+                this::doNothing,
+                "%d %d");
         recipeViewModel.getRecipes().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
         list.setAdapter(adapter);
 
@@ -62,17 +64,36 @@ public class RecipeListFragment extends InjectedFragment {
                 recipeViewModel::deleteRecipe,
                 r -> adapter.notifyDataSetChanged(),
                 result);
-        addSwipeToDelete(list, recipeViewModel.getRecipes(), R.drawable.ic_delete_white_24dp, interactor::initiateDeletion);
+        addSwipeToDelete(list,
+                Transformations.map(recipeViewModel.getRecipes(), l -> l.stream().map(RecipeWithRating::getRecipe).collect(Collectors.toList())),
+                R.drawable.ic_delete_white_24dp,
+                interactor::initiateDeletion);
         initialiseSwipeRefresh(result, viewModelFactory);
         return result;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_recipe_list_options, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.fragment_recipe_list_options_sort) {
+            recipeViewModel.getRecipes().removeObservers(getViewLifecycleOwner());
+            recipeViewModel.switchSortOrder();
+            recipeViewModel.getRecipes().observe(getViewLifecycleOwner(), u -> adapter.notifyDataSetChanged());
+            adapter.setData(recipeViewModel.getRecipes());
+        }
+        return true;
     }
 
     private void goToRecipe(View view) {
         RecipeAdapter.ViewHolder holder = (RecipeAdapter.ViewHolder) view.getTag();
         int position = holder.getAbsoluteAdapterPosition();
-        List<Recipe> data = recipeViewModel.getRecipes().getValue();
+        List<RecipeWithRating> data = recipeViewModel.getRecipes().getValue();
         if (data != null) {
-            int id = data.get(position).getId();
+            int id = data.get(position).getRecipe().getId();
             RecipeListFragmentDirections.ActionNavFragmentRecipesToNavFragmentRecipe args =
                     RecipeListFragmentDirections.actionNavFragmentRecipesToNavFragmentRecipe(id);
             Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)

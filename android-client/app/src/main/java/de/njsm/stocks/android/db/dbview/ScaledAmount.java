@@ -27,49 +27,41 @@ import de.njsm.stocks.android.db.entities.ScaledUnit;
 import de.njsm.stocks.android.db.entities.Sql;
 import de.njsm.stocks.android.db.entities.Unit;
 
-import static de.njsm.stocks.android.db.StocksDatabase.NOW;
+import static de.njsm.stocks.android.db.dbview.ScaledAmount.QUERY;
 import static de.njsm.stocks.android.db.entities.Sql.SCALED_UNIT_PREFIX;
 import static de.njsm.stocks.android.db.entities.Sql.UNIT_PREFIX;
-import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY_STRING;
 
-@DatabaseView(viewName = "current_scaled_amount", value =
-        "select " +
-                Sql.UNIT_FIELDS_QUALIFIED +
-                Sql.SCALED_UNIT_FIELDS_QUALIFIED +
-                "fooditem.of_type as of_type, " +
-                "fooditem.stored_in as stored_in, " +
-                "count(*) as amount " +
-                "from fooditem fooditem " +
-                Sql.SCALED_UNIT_JOIN_FOODITEM +
-                Sql.UNIT_JOIN_SCALED_UNIT +
-                "where fooditem.valid_time_start <= " + NOW +
-                "and " + NOW + " < fooditem.valid_time_end " +
-                "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
-                "group by fooditem.of_type, fooditem.unit " +
-        "union all " +
-                "select " +
-                Sql.UNIT_FIELDS_QUALIFIED +
-                Sql.SCALED_UNIT_FIELDS_QUALIFIED +
-                "food._id as of_type, " +
-                "food.location as stored_in, " +
-                "0 as amount " +
-                "from food food " +
-                Sql.SCALED_UNIT_JOIN_FOOD +
-                Sql.UNIT_JOIN_SCALED_UNIT +
-                "where food.valid_time_start <= " + NOW +
-                "and " + NOW + " < food.valid_time_end " +
-                "and food.transaction_time_end = '" + DATABASE_INFINITY_STRING + "'" +
-                "and food._id not in (" +
-                        "select distinct of_type " +
-                        "from fooditem fooditem " +
-                        "where fooditem.valid_time_start <= " + NOW +
-                        "and " + NOW + " < fooditem.valid_time_end " +
-                        "and fooditem.transaction_time_end = '" + DATABASE_INFINITY_STRING + "')")
+@DatabaseView(viewName = ScaledAmount.SCALED_AMOUNT_TABLE, value = QUERY)
 public class ScaledAmount {
 
     public static final String SCALED_AMOUNT_TABLE = "current_scaled_amount";
 
-    public static final String SCALED_AMOUNT_PREFIX = "current_scaled_amount_";
+    public static final String SCALED_AMOUNT_PREFIX = SCALED_AMOUNT_TABLE + "_";
+
+    public static final String QUERY =
+            "select " +
+                    Sql.UNIT_FIELDS_QUALIFIED +
+                    Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+                    "fooditem.of_type as of_type, " +
+                    "fooditem.stored_in as stored_in, " +
+                    "count(*) as amount " +
+                    "from current_fooditem fooditem " +
+                    Sql.SCALED_UNIT_JOIN_FOODITEM +
+                    Sql.UNIT_JOIN_SCALED_UNIT +
+                    "group by fooditem.of_type, fooditem.unit " +
+            "union all " +
+                    "select " +
+                    Sql.UNIT_FIELDS_QUALIFIED +
+                    Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+                    "food._id as of_type, " +
+                    "food.location as stored_in, " +
+                    "0 as amount " +
+                    "from current_food food " +
+                    Sql.SCALED_UNIT_JOIN_FOOD +
+                    Sql.UNIT_JOIN_SCALED_UNIT +
+                    "where food._id not in (" +
+                            "select distinct of_type " +
+                            "from current_fooditem fooditem)";
 
     public static final String SCALED_AMOUNT_FIELDS_QUALIFIED =
             SCALED_AMOUNT_TABLE + ".amount as " + SCALED_AMOUNT_PREFIX + "amount, " +
@@ -93,6 +85,7 @@ public class ScaledAmount {
             SCALED_AMOUNT_TABLE + "." + SCALED_UNIT_PREFIX + "initiates as " + SCALED_AMOUNT_PREFIX + SCALED_UNIT_PREFIX + "initiates, " +
             SCALED_AMOUNT_TABLE + "." + SCALED_UNIT_PREFIX + "scale as " + SCALED_AMOUNT_PREFIX + SCALED_UNIT_PREFIX + "scale, " +
             SCALED_AMOUNT_TABLE + "." + SCALED_UNIT_PREFIX + "unit as " + SCALED_AMOUNT_PREFIX + SCALED_UNIT_PREFIX + "unit, ";
+
     private final int amount;
 
     @ColumnInfo(name = "of_type")

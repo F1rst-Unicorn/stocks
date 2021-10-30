@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+* Allow sorting recipes by availability of ingredients. Every recipe gets two
+  ratings, ranging from 0 to 7. One for "necessary for cooking" which increases
+  if _any_ amount of an ingredient is present. If it is smaller than 7 at least
+  one ingredient is definitely missing. The smaller the number, the more
+  ingredients are definitely missing.
+  Te second rating is "sufficient for cooking" which increases if an ingredient
+  is present in the required unit of measure in sufficient amount. So a rating
+  of 7 here guarantees that the recipe can be cooked.
+  ([#15](https://gitlab.com/veenj/stocks/-/issues/15))
+
 ## [3.12.0.0]
 
 ### Added

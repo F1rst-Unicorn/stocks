@@ -89,6 +89,7 @@
     <string name="action_today">TODAY</string>
     <string name="action_predict">PREDICT</string>
     <string name="action_recipes">Recipes</string>
+    <string name="action_sort">Sort</string>
 
     <string name="hint_servername">Server host name</string>
     <string name="hint_expert">Expert options</string>
