@@ -50,13 +50,13 @@ public class Migration_39_to_40 extends Migration {
         );
 
         for (String table : tables) {
-            database.execSQL("create view current_" + table + " as " +
-                    "select * from " + table +
+            database.execSQL("CREATE VIEW `current_" + table + "` AS " +
+                    "select * from " + table + " " +
                     CurrentTable.NOW_AS_BEST_KNOWN
             );
         }
 
-        database.execSQL("drop view " + ScaledAmount.SCALED_AMOUNT_TABLE);
+        database.execSQL("DROP VIEW " + ScaledAmount.SCALED_AMOUNT_TABLE);
         createView(database, ScaledAmount.SCALED_AMOUNT_TABLE, ScaledAmount.QUERY);
         createView(database, ScaledUnitConversion.SCALED_UNIT_CONVERSION_TABLE, ScaledUnitConversion.QUERY);
         createView(database, RecipeStockRatingBase.RECIPE_STOCK_RATING_BASE_TABLE, RecipeStockRatingBase.QUERY);
@@ -64,6 +64,6 @@ public class Migration_39_to_40 extends Migration {
     }
 
     private void createView(SupportSQLiteDatabase database, String name, String query) {
-        database.execSQL("create view " + name + " as " + query);
+        database.execSQL("CREATE VIEW `" + name + "` AS " + query);
     }
 }

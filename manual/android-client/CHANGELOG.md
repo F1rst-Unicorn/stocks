@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+* Crash during startup due to wrong DB migration
+
 ## [3.13.0.0]
 
 ### Added
