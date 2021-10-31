@@ -49,12 +49,12 @@
 
     <bean id="trigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="job1"/>
-        <property name="cronExpression" value="0,30 * * * * ? *"/>
+        <property name="cronExpression" value="0 30 * * * ? *"/>
     </bean>
 
     <bean id="trigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="job2"/>
-        <property name="cronExpression" value="15,45 * * * * ? *"/>
+        <property name="cronExpression" value="0 0 * * * ? *"/>
     </bean>
 
     <bean name="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

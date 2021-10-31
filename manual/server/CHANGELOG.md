@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+* Run timed jobs every hour instead of every half minute.
+
 ## [5.5.0.3]
 
 ### Fixed
