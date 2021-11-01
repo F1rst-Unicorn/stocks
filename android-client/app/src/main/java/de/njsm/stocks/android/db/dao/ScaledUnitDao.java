@@ -67,7 +67,7 @@ public abstract class ScaledUnitDao implements Inserter<ScaledUnit> {
             "and scaled_unit.valid_time_start <= " + NOW +
             "and " + NOW + " < scaled_unit.valid_time_end " +
             "and scaled_unit.transaction_time_end = :infinity " +
-            "order by unit.name")
+            "order by unit.name, cast(scaled_unit.scale as numeric)")
     protected abstract LiveData<ScaledUnitView> getScaledUnitView(int id, Instant infinity);
 
     @Query("select * " +
@@ -85,6 +85,6 @@ public abstract class ScaledUnitDao implements Inserter<ScaledUnit> {
             "where scaled_unit.valid_time_start <= " + NOW +
             "and " + NOW + " < scaled_unit.valid_time_end " +
             "and scaled_unit.transaction_time_end = :infinity " +
-            "order by unit.name")
+            "order by unit.name, cast(scaled_unit.scale as numeric)")
     abstract LiveData<List<ScaledUnitView>> getAllView(Instant infinity);
 }
