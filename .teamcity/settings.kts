@@ -153,6 +153,7 @@ object Build : BuildType({
                 """.trimIndent()
             }
         }
+/* Android instrumented tests disabled for the CI has no emulator ATM
         gradle {
             name = "Android Client Instrumented Test"
             tasks = "connectedDebugAndroidTest"
@@ -165,6 +166,7 @@ object Build : BuildType({
                 -Pandroid.testInstrumentationRunnerArguments.notPackage=de.njsm.stocks.android.test.system
             """.trimIndent()
         }
+*/
         exec {
             name = "Package server"
             workingDir = "deploy-server"
@@ -218,10 +220,12 @@ object Build : BuildType({
             name = "Client Deployment test"
             path = "client/src/test/system/bin/vm-deployment-test.sh"
         }
+/* Android instrumented tests disabled for the CI has no emulator ATM
         exec {
             name = "Android Deployment test"
             path = "android-client/app/src/test/system/bin/vm-deployment-test.sh"
         }
+*/
     }
 
     triggers {
