@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.13.0.2]
+
 ### Fixed
 
 * Sort unit dropdown in food and recipes by the scale as well.
