@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.14.0.0]
+
 ### Added
 
 * Simplify device registration by adding all information to the QR code
