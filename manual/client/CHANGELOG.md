@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+
+* Simplify android device registration by adding all information to the QR code
+  ([#26](https://gitlab.com/veenj/stocks/-/issues/26))
+
 ### Fixed
 
 * STOCKS-105: Allow proper local DB reset by replacing with proto.db

@@ -126,55 +126,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_fragment_server"
-        android:name="de.njsm.stocks.android.frontend.setup.ServerFragment"
-        android:label="@string/title_server"
-        tools:layout="@layout/fragment_server">
-        <action
-            android:id="@+id/action_nav_fragment_server_to_nav_fragment_qr"
-            app:destination="@id/nav_fragment_qr" />
-        <argument
-            android:name="serverUrl"
-            android:defaultValue=""
-            app:argType="string" />
-        <argument
-            android:name="caPort"
-            android:defaultValue="0"
-            app:argType="integer" />
-        <argument
-            android:name="sentryPort"
-            android:defaultValue="0"
-            app:argType="integer" />
-        <argument
-            android:name="serverPort"
-            android:defaultValue="0"
-            app:argType="integer" />
-        <argument
-            android:name="username"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="userId"
-            android:defaultValue="0"
-            app:argType="integer" />
-        <argument
-            android:name="deviceName"
-            android:defaultValue=""
-            app:argType="string" />
-        <argument
-            android:name="deviceId"
-            android:defaultValue="0"
-            app:argType="integer" />
-        <argument
-            android:name="fingerprint"
-            android:defaultValue=""
-            app:argType="string" />
-        <argument
-            android:name="ticket"
-            android:defaultValue=""
-            app:argType="string" />
-    </fragment>
-    <fragment
         android:id="@+id/nav_fragment_qr"
         android:name="de.njsm.stocks.android.frontend.setup.QrFragment"
         android:label="@string/title_qr_code_scan"
@@ -184,15 +135,19 @@
             app:destination="@id/nav_fragment_principals" />
         <argument
             android:name="serverUrl"
+            android:defaultValue=""
             app:argType="string" />
         <argument
             android:name="caPort"
+            android:defaultValue="10910"
             app:argType="integer" />
         <argument
             android:name="sentryPort"
+            android:defaultValue="10911"
             app:argType="integer" />
         <argument
             android:name="serverPort"
+            android:defaultValue="10912"
             app:argType="integer" />
         <argument
             android:name="username"
@@ -236,15 +191,19 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="serverUrl"
+            android:defaultValue=""
             app:argType="string" />
         <argument
             android:name="caPort"
+            android:defaultValue="10910"
             app:argType="integer" />
         <argument
             android:name="sentryPort"
+            android:defaultValue="10911"
             app:argType="integer" />
         <argument
             android:name="serverPort"
+            android:defaultValue="10912"
             app:argType="integer" />
         <argument
             android:name="username"
@@ -282,8 +241,10 @@
             app:popUpTo="@id/nav_fragment_outline"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_nav_fragment_startup_to_nav_fragment_server"
-            app:destination="@id/nav_fragment_server" />
+            android:id="@+id/action_nav_fragment_startup_to_nav_fragment_qr"
+            app:destination="@id/nav_fragment_qr"
+            app:popUpTo="@id/nav_fragment_qr"
+            app:popUpToInclusive="true" />
         <argument
             android:name="serverUrl"
             android:defaultValue=""

@@ -82,6 +82,10 @@ public class DeviceAddCommandHandlerTest {
 
     @Test
     public void handlingWorks() throws Exception {
+        String serverName = "serverName";
+        int caPort = 10910;
+        int ticketPort = 10911;
+        int serverPort = 10912;
         String fingerPrint = "00:11:22:33";
         String qrFake = "this might be a qr code";
         User user = new User(2, 7, "Jack");
@@ -91,6 +95,10 @@ public class DeviceAddCommandHandlerTest {
         when(collector.determineUser(input)).thenReturn(user);
         when(collector.createDevice(input, user)).thenReturn(item);
         when(collector.confirm()).thenReturn(true);
+        when(configuration.getServerName()).thenReturn(serverName);
+        when(configuration.getCaPort()).thenReturn(caPort);
+        when(configuration.getTicketPort()).thenReturn(ticketPort);
+        when(configuration.getServerPort()).thenReturn(serverPort);
         when(configuration.getFingerprint()).thenReturn(fingerPrint);
         when(server.addDevice(item)).thenReturn(ticket);
         when(qrGenerator.generateQrCode(any())).thenReturn(qrFake);
@@ -106,9 +114,17 @@ public class DeviceAddCommandHandlerTest {
         verify(refresher).refresh();
         verify(dbManager).getDevices(item.name);
         verify(configuration, times(2)).getFingerprint();
+        verify(configuration, times(2)).getServerName();
+        verify(configuration, times(2)).getCaPort();
+        verify(configuration, times(2)).getTicketPort();
+        verify(configuration, times(2)).getServerPort();
         verify(qrGenerator).generateQrCode(any());
         verify(writer).println("Creation successful. Enter parameters or scan QR code:");
         verify(writer).println(qrFake);
+        verify(writer).println("\tHostname: " + serverName);
+        verify(writer).println("\tCA port: " + caPort);
+        verify(writer).println("\tTicket port: " + ticketPort);
+        verify(writer).println("\tServer port: " + serverPort);
         verify(writer).println("\tUser name: " + user.name);
         verify(writer).println("\tDevice name: " + item.name);
         verify(writer).println("\tUser ID: " + user.id);

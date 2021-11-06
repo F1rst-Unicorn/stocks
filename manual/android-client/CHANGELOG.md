@@ -2,11 +2,17 @@
 
 ## Unreleased
 
+### Added
+
+* Simplify device registration by adding all information to the QR code
+  ([#26](https://gitlab.com/veenj/stocks/-/issues/26))
+
 ## [3.13.0.2]
 
 ### Fixed
 
 * Sort unit dropdown in food and recipes by the scale as well.
+  ([#10](https://gitlab.com/veenj/stocks/-/issues/10))
 
 ## [3.13.0.1]
 

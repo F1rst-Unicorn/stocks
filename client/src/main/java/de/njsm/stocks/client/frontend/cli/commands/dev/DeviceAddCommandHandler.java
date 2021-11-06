@@ -94,6 +94,10 @@ public class DeviceAddCommandHandler extends FaultyCommandHandler {
     private void printNewDevice(UserDeviceView device, ServerTicket ticket) {
         writer.println("Creation successful. Enter parameters or scan QR code:");
         writer.println(generateQrCode(device, configuration, ticket));
+        writer.println("\tHostname: " + configuration.getServerName());
+        writer.println("\tCA port: " + configuration.getCaPort());
+        writer.println("\tTicket port: " + configuration.getTicketPort());
+        writer.println("\tServer port: " + configuration.getServerPort());
         writer.println("\tUser name: " + device.user);
         writer.println("\tDevice name: " + device.name);
         writer.println("\tUser ID: " + device.userId);
@@ -108,6 +112,10 @@ public class DeviceAddCommandHandler extends FaultyCommandHandler {
                 device.userId + "\n" +
                 device.id + "\n" +
                 configuration.getFingerprint() + "\n" +
-                ticket.ticket);
+                ticket.ticket + "\n" +
+                configuration.getServerName() + "\n" +
+                configuration.getCaPort() + "\n" +
+                configuration.getTicketPort() + "\n" +
+                configuration.getServerPort());
     }
 }

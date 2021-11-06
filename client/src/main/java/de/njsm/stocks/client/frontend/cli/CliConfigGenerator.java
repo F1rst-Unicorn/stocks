@@ -21,7 +21,6 @@ package de.njsm.stocks.client.frontend.cli;
 
 import de.njsm.stocks.client.frontend.ConfigGenerator;
 import de.njsm.stocks.client.frontend.cli.service.InputReader;
-import de.njsm.stocks.client.service.TimeProviderImpl;
 
 public class CliConfigGenerator implements ConfigGenerator {
 
@@ -33,7 +32,7 @@ public class CliConfigGenerator implements ConfigGenerator {
 
     @Override
     public String getServerName() {
-        String serverName = reader.next("Please give the URL of the server (localhost): ");
+        String serverName = reader.next("Please give the hostname of the server (localhost): ");
         return serverName.equals("") ? "localhost" : serverName;
     }
 

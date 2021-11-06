@@ -35,9 +35,8 @@
     <string name="title_delete_barcode">Barcode entfernen</string>
     <string name="title_qr_code_content_desc">QR Code</string>
     <string name="title_error">Fehler</string>
-    <string name="title_server">1 / 3: Server</string>
-    <string name="title_principals">3 / 3: Benutzerangaben</string>
-    <string name="title_qr_code_scan">2 / 3: QR Code lesen</string>
+    <string name="title_principals">Benutzerangaben</string>
+    <string name="title_qr_code_scan">Stocks Registrierung</string>
     <string name="title_camera_permission">Erlaubnis für Kamera</string>
     <string name="title_new_barcode">Neuer Barcode für&#8230;</string>
     <string name="title_shopping_list">Einkaufsliste</string>
@@ -90,6 +89,8 @@
     <string name="action_predict">RATEN</string>
     <string name="action_recipes">Rezepte</string>
     <string name="action_sort">Sortieren</string>
+    <string name="action_scan_qr">QR CODE SCANNEN</string>
+    <string name="action_manual">MANUELL</string>
 
     <string name="hint_servername">Server Hostname</string>
     <string name="hint_expert">Expertenoptionen</string>
@@ -198,6 +199,7 @@
     <string name="text_no_crash_logs">Die App läuft stabil.</string>
     <string name="text_no_search_result">Kein Essen gefunden</string>
     <string name="text_camera_explanation">Stocks braucht die Erlaubnis für die Benutzung der Kamera um Barcodes von Lebensmitteln einzulesen. Während der Installation kann man so außerdem das Ticket leichter übertragen. Beides ist komfortabel, aber nicht zwingend für das Funktionieren der App nötig.</string>
+    <string name="text_qr_explanation">Willkommen bei Stocks! Scanne jetzt den erhaltenen QR Code ein. Solltest du keinen erhalten haben, kannst du dich manuell registrieren.</string>
 
     <string name="desc_profile_picture">Profilbild des Benutzers</string>
     <string name="desc_app_icon">Applikationslogo</string>

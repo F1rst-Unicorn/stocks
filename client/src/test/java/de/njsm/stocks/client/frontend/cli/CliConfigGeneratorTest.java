@@ -46,7 +46,7 @@ public class CliConfigGeneratorTest {
         String serverName = uut.getServerName();
 
         assertEquals("localhost", serverName);
-        verify(reader).next("Please give the URL of the server (localhost): ");
+        verify(reader).next("Please give the hostname of the server (localhost): ");
         verifyNoMoreInteractions(reader);
     }
 
@@ -58,7 +58,7 @@ public class CliConfigGeneratorTest {
         String serverName = uut.getServerName();
 
         assertEquals(input, serverName);
-        verify(reader).next("Please give the URL of the server (localhost): ");
+        verify(reader).next("Please give the hostname of the server (localhost): ");
         verifyNoMoreInteractions(reader);
     }
 

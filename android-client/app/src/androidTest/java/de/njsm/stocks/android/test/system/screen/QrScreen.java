@@ -20,12 +20,17 @@
 package de.njsm.stocks.android.test.system.screen;
 
 
-import static androidx.test.espresso.Espresso.pressBack;
+import de.njsm.stocks.R;
+
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 public class QrScreen {
 
-    public PrincipalsScreen next() {
-        pressBack();
+    public PrincipalsScreen scanQrCode() {
+        onView(withId(R.id.fragment_qr_setup_scan)).perform(closeSoftKeyboard(), click());
         return new PrincipalsScreen();
     }
 }

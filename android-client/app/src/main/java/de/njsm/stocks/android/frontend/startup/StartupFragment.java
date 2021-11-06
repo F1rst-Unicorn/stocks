@@ -34,10 +34,12 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.Navigation;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.frontend.BaseFragment;
+import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.service.SetupHandler;
 import de.njsm.stocks.android.service.SetupService;
 import de.njsm.stocks.android.util.Config;
@@ -111,6 +113,7 @@ public class StartupFragment extends BaseFragment {
 
         AlertDialog messageDialog = builder.create();
         dialog.dismiss();
+        ((MainActivity) requireActivity()).getResource().decrement();
         messageDialog.show();
         LocalBroadcastManager.getInstance(a).unregisterReceiver(receiver);
     }
@@ -155,11 +158,12 @@ public class StartupFragment extends BaseFragment {
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
         dialog.show();
+        ((MainActivity) requireActivity()).getResource().increment();
     }
 
     private void startSetupByUser() {
-        StartupFragmentDirections.ActionNavFragmentStartupToNavFragmentServer args =
-                StartupFragmentDirections.actionNavFragmentStartupToNavFragmentServer(null)
+        StartupFragmentDirections.ActionNavFragmentStartupToNavFragmentQr args =
+                StartupFragmentDirections.actionNavFragmentStartupToNavFragmentQr(null)
                 .setServerUrl(input.getServerUrl())
                 .setCaPort(input.getCaPort())
                 .setSentryPort(input.getSentryPort())
@@ -174,6 +178,7 @@ public class StartupFragment extends BaseFragment {
     }
 
     private void goToMainActivity() {
+        ((DrawerLayout) requireActivity().findViewById(R.id.main_drawer_layout)).setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
                 .navigate(R.id.action_nav_fragment_startup_to_nav_fragment_outline);
     }

@@ -24,20 +24,17 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.GrantPermissionRule;
-
+import de.njsm.stocks.android.test.system.screen.QrScreen;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import de.njsm.stocks.android.test.system.screen.ServerInputScreen;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -61,22 +58,26 @@ public class SetupTest extends SystemTest {
                 + uid + "\n"
                 + did + "\n"
                 + fingerprint + "\n"
-                + ticket);
+                + ticket + "\n"
+                + Properties.server + "\n"
+                + "10910\n10911\n10912\n");
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, data);
         Intents.intending(IntentMatchers.hasAction("com.google.zxing.client.android.SCAN")).respondWith(result);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         Intents.release();
     }
 
     @Test
     public void testRegistration() {
-        ServerInputScreen.test()
-                .enterServerName(Properties.server)
-                .next()
-                .next()
+        new QrScreen()
+                .scanQrCode()
+                .assertServer(Properties.server)
+                .assertCaPort(10910)
+                .assertSentryPort(10911)
+                .assertServerPort(10912)
                 .assertUser("Jack")
                 .assertDevice("android-client")
                 .assertUserId(1)

@@ -33,11 +33,22 @@ import de.njsm.stocks.android.frontend.BaseFragment;
 import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
 import de.njsm.stocks.android.util.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PrincipalsFragment extends BaseFragment {
 
     private static final Logger LOG = new Logger(PrincipalsFragment.class);
 
     private PrincipalsFragmentArgs input;
+
+    private EditText serverUrl;
+
+    private EditText caPort;
+
+    private EditText sentryPort;
+
+    private EditText serverPort;
 
     private EditText userName;
 
@@ -51,7 +62,15 @@ public class PrincipalsFragment extends BaseFragment {
 
     private EditText ticket;
 
+    private Map<EditText, Boolean> isTextFieldEmpty;
+
     private Button next;
+
+    private Button back;
+
+    public PrincipalsFragment() {
+        isTextFieldEmpty = new HashMap<>();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -61,6 +80,10 @@ public class PrincipalsFragment extends BaseFragment {
         assert getArguments() != null;
         input = PrincipalsFragmentArgs.fromBundle(getArguments());
 
+        serverUrl = root.findViewById(R.id.fragment_principals_server_url);
+        caPort = root.findViewById(R.id.fragment_principals_ca_port);
+        sentryPort = root.findViewById(R.id.fragment_principals_sentry_port);
+        serverPort = root.findViewById(R.id.fragment_principals_server_port);
         userName = root.findViewById(R.id.fragment_principals_user_name);
         userId = root.findViewById(R.id.fragment_principals_user_id);
         deviceName = root.findViewById(R.id.fragment_principals_device_name);
@@ -68,9 +91,14 @@ public class PrincipalsFragment extends BaseFragment {
         fingerprint = root.findViewById(R.id.fragment_principals_fingerprint);
         ticket = root.findViewById(R.id.fragment_principals_ticket);
         next = root.findViewById(R.id.fragment_principals_button);
+        back = root.findViewById(R.id.fragment_principals_button_back);
 
         if (input.getUsername() != null) {
             LOG.d("Got input from qr fragment");
+            serverUrl.setText(input.getServerUrl());
+            caPort.setText(String.valueOf(input.getCaPort()));
+            sentryPort.setText(String.valueOf(input.getSentryPort()));
+            serverPort.setText(String.valueOf(input.getServerPort()));
             userName.setText(input.getUsername());
             deviceName.setText(input.getDeviceName());
             fingerprint.setText(input.getFingerprint());
@@ -79,9 +107,17 @@ public class PrincipalsFragment extends BaseFragment {
             deviceId.setText(String.valueOf(input.getDeviceId()));
         } else {
             LOG.d("Requiring user input");
-            next.setEnabled(false);
+            caPort.setText("10910");
+            sentryPort.setText("10911");
+            serverPort.setText("10912");
         }
 
+        initTextFieldEmptyMap();
+
+        serverUrl.addTextChangedListener(new NonEmptyValidator(serverUrl, this::invalidateButton));
+        caPort.addTextChangedListener(new NonEmptyValidator(caPort, this::invalidateButton));
+        sentryPort.addTextChangedListener(new NonEmptyValidator(sentryPort, this::invalidateButton));
+        serverPort.addTextChangedListener(new NonEmptyValidator(serverPort, this::invalidateButton));
         userName.addTextChangedListener(new NonEmptyValidator(userName, this::invalidateButton));
         userId.addTextChangedListener(new NonEmptyValidator(userId, this::invalidateButton));
         deviceName.addTextChangedListener(new NonEmptyValidator(deviceName, this::invalidateButton));
@@ -90,28 +126,65 @@ public class PrincipalsFragment extends BaseFragment {
         ticket.addTextChangedListener(new NonEmptyValidator(ticket, this::invalidateButton));
 
         next.setOnClickListener(this::next);
+        back.setOnClickListener(this::back);
+
         requireActivity().setTitle(R.string.title_principals);
 
         return root;
     }
 
+    private void initTextFieldEmptyMap() {
+        checkTextFieldContent(serverUrl);
+        checkTextFieldContent(caPort);
+        checkTextFieldContent(sentryPort);
+        checkTextFieldContent(serverPort);
+        checkTextFieldContent(userName);
+        checkTextFieldContent(deviceName);
+        checkTextFieldContent(userId);
+        checkTextFieldContent(deviceId);
+        checkTextFieldContent(fingerprint);
+        checkTextFieldContent(ticket);
+        updateNextButton();
+    }
+
+    private void checkTextFieldContent(EditText textField) {
+        String content = textField.getText().toString();
+        boolean value = content == null || content.isEmpty();
+        isTextFieldEmpty.put(textField, value);
+    }
+
     private void invalidateButton(EditText view, Boolean isEmpty) {
-        next.setEnabled(!isEmpty);
+        isTextFieldEmpty.put(view, isEmpty);
         if (isEmpty) {
             String error = requireActivity().getResources().getString(R.string.error_may_not_be_empty);
             view.setError(error);
         } else {
             view.setError(null);
         }
+
+        updateNextButton();
+    }
+
+    private void updateNextButton() {
+        boolean largeEnough = isTextFieldEmpty.size() == 10;
+        boolean noneEmpty = isTextFieldEmpty.values().stream().noneMatch(v -> v);
+        boolean enabled = largeEnough && noneEmpty;
+        next.setEnabled(enabled);
+    }
+
+    private void back(View view) {
+        PrincipalsFragmentDirections.ActionNavFragmentPrincipalsToNavFragmentQr args =
+                PrincipalsFragmentDirections.actionNavFragmentPrincipalsToNavFragmentQr(null);
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment).navigate(args);
     }
 
     private void next(View view) {
         PrincipalsFragmentDirections.ActionNavFragmentPrincipalsToNavFragmentStartup args =
                 PrincipalsFragmentDirections.actionNavFragmentPrincipalsToNavFragmentStartup()
-                .setServerUrl(input.getServerUrl())
-                .setCaPort(input.getCaPort())
-                .setSentryPort(input.getSentryPort())
-                .setServerPort(input.getServerPort())
+                .setServerUrl(serverUrl.getText().toString())
+                .setCaPort(Integer.parseInt(caPort.getText().toString()))
+                .setSentryPort(Integer.parseInt(sentryPort.getText().toString()))
+                .setServerPort(Integer.parseInt(serverPort.getText().toString()))
                 .setUsername(userName.getText().toString())
                 .setUserId(Integer.parseInt(userId.getText().toString()))
                 .setDeviceName(deviceName.getText().toString())

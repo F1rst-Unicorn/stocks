@@ -19,69 +19,113 @@
     along with this program.  If not, see https://www.gnu.org/licenses/.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            style="@style/StocksTheme.Activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    style="@style/StocksTheme.Activity"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/fragment_principals_user_name"
-        style="@style/StocksTheme.EditText"
-        android:layout_alignParentTop="true"
-        android:hint="@string/hint_username"
-        android:inputType="textPersonName" />
+        <EditText
+                android:id="@+id/fragment_principals_server_url"
+                style="@style/StocksTheme.EditText"
+                android:layout_alignParentTop="true"
+                android:hint="@string/hint_servername"/>
 
-    <EditText
-        android:id="@+id/fragment_principals_device_name"
-        style="@style/StocksTheme.EditText"
-        android:layout_below="@id/fragment_principals_user_name"
-        android:layout_alignParentStart="true"
-        android:hint="@string/hint_device_name"
-        android:inputType="textPersonName" />
+        <EditText
+                android:id="@+id/fragment_principals_ca_port"
+                style="@style/StocksTheme.EditText"
+                android:ems="10"
+                android:hint="@string/hint_caport"
+                android:inputType="numberDecimal"
+                android:layout_below="@id/fragment_principals_server_url"/>
 
-    <EditText
-        android:id="@+id/fragment_principals_user_id"
-        style="@style/StocksTheme.EditText"
-        android:layout_below="@id/fragment_principals_device_name"
-        android:layout_alignParentStart="true"
-        android:ems="10"
-        android:hint="@string/hint_user_id"
-        android:inputType="numberDecimal" />
+        <EditText
+                android:id="@+id/fragment_principals_sentry_port"
+                style="@style/StocksTheme.EditText"
+                android:ems="10"
+                android:hint="@string/hint_ticket_port"
+                android:inputType="numberDecimal"
+                android:layout_below="@id/fragment_principals_ca_port"/>
 
-    <EditText
-        android:id="@+id/fragment_principals_device_id"
-        style="@style/StocksTheme.EditText"
-        android:layout_below="@id/fragment_principals_user_id"
-        android:layout_alignParentStart="true"
-        android:ems="10"
-        android:hint="@string/hint_device_id"
-        android:inputType="numberDecimal" />
+        <EditText
+                android:id="@+id/fragment_principals_server_port"
+                style="@style/StocksTheme.EditText"
+                android:ems="10"
+                android:hint="@string/hint_server_port"
+                android:inputType="numberDecimal"
+                android:layout_below="@id/fragment_principals_sentry_port"/>
 
-    <EditText
-        android:id="@+id/fragment_principals_fingerprint"
-        style="@style/StocksTheme.EditText"
-        android:layout_below="@id/fragment_principals_device_id"
-        android:layout_alignParentStart="true"
-        android:hint="@string/hint_fingerprint"
-        android:inputType="text" />
+        <EditText
+                android:id="@+id/fragment_principals_user_name"
+                style="@style/StocksTheme.EditText"
+                android:hint="@string/hint_username"
+                android:inputType="textPersonName"
+                android:layout_below="@id/fragment_principals_server_port"/>
 
-    <EditText
-        android:id="@+id/fragment_principals_ticket"
-        style="@style/StocksTheme.EditText"
-        android:layout_below="@id/fragment_principals_fingerprint"
-        android:layout_alignParentStart="true"
-        android:hint="@string/hint_ticket"
-        android:inputType="text" />
+        <EditText
+                android:id="@+id/fragment_principals_device_name"
+                style="@style/StocksTheme.EditText"
+                android:layout_below="@id/fragment_principals_user_name"
+                android:hint="@string/hint_device_name"
+                android:inputType="textPersonName"/>
 
-    <Button
-        android:id="@+id/fragment_principals_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_principals_ticket"
-        android:layout_alignEnd="@id/fragment_principals_ticket"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="4dp"
-        android:background="@color/colorAccent"
-        android:text="@android:string/ok" />
-</RelativeLayout>
+        <EditText
+                android:id="@+id/fragment_principals_user_id"
+                style="@style/StocksTheme.EditText"
+                android:layout_below="@id/fragment_principals_device_name"
+                android:layout_alignParentStart="true"
+                android:ems="10"
+                android:hint="@string/hint_user_id"
+                android:inputType="numberDecimal"/>
+
+        <EditText
+                android:id="@+id/fragment_principals_device_id"
+                style="@style/StocksTheme.EditText"
+                android:layout_below="@id/fragment_principals_user_id"
+                android:layout_alignParentStart="true"
+                android:ems="10"
+                android:hint="@string/hint_device_id"
+                android:inputType="numberDecimal"/>
+
+        <EditText
+                android:id="@+id/fragment_principals_fingerprint"
+                style="@style/StocksTheme.EditText"
+                android:layout_below="@id/fragment_principals_device_id"
+                android:layout_alignParentStart="true"
+                android:hint="@string/hint_fingerprint"
+                android:inputType="text"/>
+
+        <EditText
+                android:id="@+id/fragment_principals_ticket"
+                style="@style/StocksTheme.EditText"
+                android:layout_below="@id/fragment_principals_fingerprint"
+                android:layout_alignParentStart="true"
+                android:hint="@string/hint_ticket"
+                android:inputType="text"/>
+
+        <Button
+                android:id="@+id/fragment_principals_button_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_principals_ticket"
+                android:layout_alignStart="@id/fragment_principals_ticket"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:background="@color/colorAccent"
+                android:text="@string/action_back"/>
+
+        <Button
+                android:id="@+id/fragment_principals_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_principals_ticket"
+                android:layout_alignEnd="@id/fragment_principals_ticket"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:background="@color/colorAccent"
+                android:text="@android:string/ok"/>
+    </RelativeLayout>
+</ScrollView>

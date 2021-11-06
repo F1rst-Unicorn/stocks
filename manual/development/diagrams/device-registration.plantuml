@@ -59,6 +59,10 @@ note right of "new client program"
 - new device id
 - CA fingerprint
 - ticket
+- hostname
+- ca port
+- registration port
+- server port
 end note
 
 alt ticket and principals valid

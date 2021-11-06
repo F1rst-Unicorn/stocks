@@ -21,6 +21,7 @@ package de.njsm.stocks.android.frontend.device;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.zxing.BarcodeFormat;
@@ -63,19 +65,30 @@ public class QrCodeDisplayFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        computeQrCode();
+        computeQrCode(view);
     }
 
-    private void computeQrCode() {
+    private void computeQrCode(View view) {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        String serverName = sharedPreferences.getString(Config.SERVER_NAME_CONFIG, "");
+        int caPort = sharedPreferences.getInt(Config.CA_PORT_CONFIG, 10910);
+        int sentryPort = sharedPreferences.getInt(Config.SENTRY_PORT_CONFIG, 10911);
+        int serverPort = sharedPreferences.getInt(Config.SERVER_PORT_CONFIG, 10912);
+        String fingerprint = sharedPreferences.getString(Config.FPR_CONFIG, "");
+
         String qrContent = String.format(
                 Locale.US,
-                "%s\n%s\n%d\n%d\n%s\n%s\n",
+                "%s\n%s\n%d\n%d\n%s\n%s\n%s\n%d\n%d\n%d\n",
                 input.getUsername(),
                 input.getDeviceName(),
                 input.getUserId(),
                 input.getDeviceId(),
-                requireActivity().getSharedPreferences(Config.PREFERENCES_FILE, Context.MODE_PRIVATE).getString(Config.FPR_CONFIG, ""),
-                input.getTicket());
+                fingerprint,
+                input.getTicket(),
+                serverName,
+                caPort,
+                sentryPort,
+                serverPort);
 
         Bitmap image = null;
         try {
@@ -84,7 +97,20 @@ public class QrCodeDisplayFragment extends BaseFragment {
             LOG.e("Image computation failed", e);
         }
 
-        ((ImageView) requireActivity().findViewById(R.id.fragment_qr_code_display_image)).setImageBitmap(image);
+        ((ImageView) view.findViewById(R.id.fragment_qr_code_display_image)).setImageBitmap(image);
+
+        ((TextView) view.findViewById(R.id.fragment_qr_code_display_text)).setText(
+                getString(R.string.hint_servername) + ": " + serverName + "\n"
+                + getString(R.string.title_caport) + ": " + caPort + "\n"
+                + getString(R.string.title_registration_port) + ": " + sentryPort + "\n"
+                + getString(R.string.title_server_port) + ": " + serverPort + "\n"
+                + getString(R.string.hint_username) + ": " + input.getUsername() + "\n"
+                + getString(R.string.hint_device_name) + ": " + input.getDeviceName() + "\n"
+                + getString(R.string.hint_user_id) + ": " + input.getUserId() + "\n"
+                + getString(R.string.hint_device_id) + ": " + input.getDeviceId() + "\n"
+                + getString(R.string.hint_fingerprint) + ": " + fingerprint + "\n"
+                + getString(R.string.hint_ticket) + ": " + input.getTicket()
+        );
     }
 
     private Bitmap generateQrCode(String myCodeText) throws WriterException {

@@ -52,6 +52,4 @@ public class SystemTest {
         IdlingRegistry.getInstance().unregister(executor);
         mActivityRule.finishActivity();
     }
-
-
 }
