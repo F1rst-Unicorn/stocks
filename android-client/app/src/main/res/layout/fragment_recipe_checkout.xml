@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/button_padding">
+
+        <TextView
+                android:id="@+id/fragment_recipe_checkout_label_ingredients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Subheader"
+                android:text="@string/title_ingredients"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fragment_recipe_checkout_ingredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:layout_below="@id/fragment_recipe_checkout_label_ingredients"
+                tools:listitem="@layout/item_recipe_item"
+                tools:itemCount="2"
+        />
+
+        <TextView
+                android:id="@+id/fragment_recipe_checkout_label_products"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Subheader"
+                android:text="@string/title_products"
+                android:layout_below="@id/fragment_recipe_checkout_ingredients"
+                android:paddingTop="16dp"
+        />
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fragment_recipe_checkout_products"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:layout_below="@id/fragment_recipe_checkout_label_products"
+                tools:listitem="@layout/item_recipe_item_product"
+                tools:itemCount="2"
+        />
+    </RelativeLayout>
+</ScrollView>

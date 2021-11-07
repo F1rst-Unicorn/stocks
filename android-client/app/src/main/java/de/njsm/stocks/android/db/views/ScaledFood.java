@@ -65,8 +65,12 @@ public class ScaledFood {
     }
 
     public String getPrettyString() {
+        return getPrettyUnitName() + " " + food.getName();
+    }
+
+    public String getPrettyUnitName() {
         ScaledUnit copy = getScaledUnit().copy();
         copy.setScale(copy.getScale().multiply(new BigDecimal(getAmount())));
-        return ScaledUnitView.getPrettyName(copy, getUnit()) + " " + food.getName();
+        return ScaledUnitView.getPrettyName(copy, getUnit());
     }
 }

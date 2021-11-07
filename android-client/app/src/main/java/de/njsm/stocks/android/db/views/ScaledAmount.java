@@ -28,6 +28,7 @@ import de.njsm.stocks.android.db.entities.Unit;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.stream.StreamSupport;
 
@@ -57,6 +58,10 @@ public class ScaledAmount {
 
     public Unit getUnit() {
         return unit;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return scaledUnit.getScale().multiply(BigDecimal.valueOf(amount));
     }
 
     public String getPrettyString() {
@@ -92,5 +97,18 @@ public class ScaledAmount {
             newScaledUnit.setScale(total);
             return new ScaledAmount(1, newScaledUnit, current.getUnit());
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ScaledAmount)) return false;
+        ScaledAmount that = (ScaledAmount) o;
+        return getAmount() == that.getAmount() && getScaledUnit().equals(that.getScaledUnit()) && getUnit().equals(that.getUnit());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAmount(), getScaledUnit(), getUnit());
     }
 }

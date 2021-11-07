@@ -247,6 +247,13 @@ public class ViewModelModule {
 
     @Provides
     @IntoMap
+    @ViewModelKey(de.njsm.stocks.android.frontend.recipecheckout.ViewModel.class)
+    ViewModel provideRecipeCheckoutViewModel(RecipeIngredientRepository repo) {
+        return new de.njsm.stocks.android.frontend.recipecheckout.ViewModel(repo);
+    }
+
+    @Provides
+    @IntoMap
     @ViewModelKey(de.njsm.stocks.android.frontend.unithistory.EventViewModel.class)
     ViewModel provideUnitEventViewModel(EventRepository repo) {
         de.njsm.stocks.android.frontend.unithistory.EventViewModel result = new de.njsm.stocks.android.frontend.unithistory.EventViewModel(repo);

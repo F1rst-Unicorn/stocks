@@ -28,6 +28,7 @@ import android.view.*;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Recipe;
@@ -88,16 +89,21 @@ public class RecipeFragment extends InjectedFragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.fragment_recipe_options_edit) {
-            Recipe recipe = recipeViewModel.getRecipe().getValue();
-            if (recipe == null)
-                return true;
+        Recipe recipe = recipeViewModel.getRecipe().getValue();
+        if (recipe == null)
+            return true;
 
-            RecipeFragmentDirections.ActionNavFragmentRecipeToNavFragmentEditRecipe args =
-                    RecipeFragmentDirections.actionNavFragmentRecipeToNavFragmentEditRecipe(recipe.getId());
-            Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
-                    .navigate(args);
+        NavDirections args;
+        if (item.getItemId() == R.id.fragment_recipe_options_edit) {
+            args = RecipeFragmentDirections.actionNavFragmentRecipeToNavFragmentEditRecipe(recipe.getId());
+        } else if (item.getItemId() == R.id.fragment_recipe_options_checkout) {
+            args = RecipeFragmentDirections.actionNavFragmentRecipeToNavFragmentRecipeCheckout(recipe.getId());
+        } else {
+            return true;
         }
+
+        Navigation.findNavController(requireActivity(), R.id.main_nav_host_fragment)
+                .navigate(args);
         return true;
     }
 

@@ -24,16 +24,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/fragment_recipe_options_edit"
-        android:icon="@drawable/ic_create_white_24"
-        android:orderInCategory="100"
-        android:title="@string/dialog_edit"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/fragment_recipe_options_checkout"
-        android:icon="@drawable/ic_local_dining_white_24dp"
+        android:id="@+id/fragment_recipe_checkout_options_checkout"
+        android:icon="@drawable/ic_check_white_24dp"
         android:orderInCategory="100"
         android:title="@string/action_checkout"
         app:showAsAction="ifRoom" />
+
 </menu>

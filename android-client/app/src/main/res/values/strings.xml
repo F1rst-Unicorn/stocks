@@ -68,6 +68,7 @@
     <string name="title_edit_recipe">Edit Recipe</string>
     <string name="title_products">Products</string>
     <string name="title_duration">Time</string>
+    <string name="title_checkout">Prepare Recipe</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>
@@ -91,6 +92,7 @@
     <string name="action_sort">Sort</string>
     <string name="action_scan_qr">SCAN QR CODE</string>
     <string name="action_manual">MANUAL</string>
+    <string name="action_checkout">Prepare</string>
 
     <string name="hint_servername">Server host name</string>
     <string name="hint_expert">Expert options</string>

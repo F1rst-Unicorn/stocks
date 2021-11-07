@@ -619,6 +619,19 @@
                 android:id="@+id/action_nav_fragment_recipe_to_nav_fragment_edit_recipe"
                 app:destination="@id/nav_fragment_edit_recipe"
                 app:popUpTo="@id/nav_fragment_recipe"/>
+        <action
+                android:id="@+id/action_nav_fragment_recipe_to_nav_fragment_recipe_checkout"
+                app:destination="@id/nav_fragment_recipe_checkout"
+                app:popUpTo="@id/nav_fragment_recipe"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_recipe_checkout"
+        android:name="de.njsm.stocks.android.frontend.recipecheckout.RecipeCheckoutFragment"
+        android:label="@string/title_checkout"
+        tools:layout="@layout/fragment_recipe_checkout">
+        <argument
+                android:name="recipeId"
+                app:argType="integer"/>
     </fragment>
     <action
         android:id="@+id/action_global_nav_fragment_settings"

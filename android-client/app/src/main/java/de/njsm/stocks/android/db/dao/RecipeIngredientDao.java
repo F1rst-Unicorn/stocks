@@ -23,6 +23,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.RecipeIngredient;
 import de.njsm.stocks.android.db.entities.Sql;
+import de.njsm.stocks.android.db.views.RecipeFoodCheckout;
 import de.njsm.stocks.android.db.views.RecipeItemWithCurrentStock;
 
 import java.time.Instant;
@@ -104,4 +105,19 @@ public abstract class RecipeIngredientDao implements Inserter<RecipeIngredient> 
             "and recipe_ingredient.transaction_time_end = :infinity " +
             "order by food_name, unit_name")
     abstract LiveData<List<RecipeItemWithCurrentStock.SingleRecipeItemWithCurrentStock>> getIngredientViewsOf(int recipeId, Instant infinity);
+
+    @Query("select " +
+            Sql.FOOD_FIELDS_QUALIFIED +
+            Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+            Sql.UNIT_FIELDS_QUALIFIED +
+            Sql.RECIPE_INGREDIENT_FIELDS +
+            SCALED_AMOUNT_FIELDS_QUALIFIED +
+            "food.to_buy as toBuy, " +
+            "1 from current_recipe_ingredient recipe_ingredient " +
+            Sql.FOOD_JOIN_RECIPE_INGREDIENT +
+            Sql.SCALED_UNIT_JOIN_RECIPE_INGREDIENT +
+            Sql.UNIT_JOIN_SCALED_UNIT +
+            "join " + SCALED_AMOUNT_TABLE + " " + SCALED_AMOUNT_TABLE + " on recipe_ingredient.ingredient = current_scaled_amount.of_type " +
+            "where recipe_Ingredient.recipe = :recipeId")
+    public abstract LiveData<List<RecipeFoodCheckout.SingleRecipeFoodCheckout>> getIngredientsForCheckout(int recipeId);
 }

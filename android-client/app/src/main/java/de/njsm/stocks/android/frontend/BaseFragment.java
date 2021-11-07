@@ -40,10 +40,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.entities.Positionable;
 import de.njsm.stocks.android.frontend.emptyfood.FoodViewModel;
-import de.njsm.stocks.android.frontend.util.NonEmptyValidator;
-import de.njsm.stocks.android.frontend.util.RefreshViewModel;
-import de.njsm.stocks.android.frontend.util.SwipeCallback;
-import de.njsm.stocks.android.frontend.util.SwipeSyncCallback;
+import de.njsm.stocks.android.frontend.util.*;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.common.api.StatusCode;
 
@@ -235,6 +232,10 @@ public class BaseFragment extends Fragment {
     protected String getTextFieldContent(View view, int viewId) {
         TextInputLayout field = view.findViewById(viewId);
         return field.getEditText().getText().toString().trim();
+    }
+
+    protected ResourceProvider getResourceProvider() {
+        return ResourceProvider.build(getResources(), requireActivity().getTheme());
     }
 
     protected void doNothing(DialogInterface dialogInterface, int i) {}

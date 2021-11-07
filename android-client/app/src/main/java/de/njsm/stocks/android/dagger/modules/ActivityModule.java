@@ -45,6 +45,7 @@ import de.njsm.stocks.android.frontend.locations.LocationFragment;
 import de.njsm.stocks.android.frontend.main.MainActivity;
 import de.njsm.stocks.android.frontend.main.OutlineFragment;
 import de.njsm.stocks.android.frontend.recipe.RecipeListFragment;
+import de.njsm.stocks.android.frontend.recipecheckout.RecipeCheckoutFragment;
 import de.njsm.stocks.android.frontend.recipedetail.RecipeFragment;
 import de.njsm.stocks.android.frontend.search.SearchFragment;
 import de.njsm.stocks.android.frontend.settings.SettingsFragment;
@@ -154,6 +155,9 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract RecipeEditFragment contributeRecipeEditFragment();
+
+    @ContributesAndroidInjector
+    abstract RecipeCheckoutFragment contributeRecipeCheckoutFragment();
 
     @ContributesAndroidInjector
     abstract MainActivity contributeMainActivity();
