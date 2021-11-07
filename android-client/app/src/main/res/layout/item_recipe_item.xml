@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:tools="http://schemas.android.com/tools"
+        card_view:cardCornerRadius="8dp"
+        card_view:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@color/cardBackground"
+        android:foreground="?android:attr/selectableItemBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/item_recipe_item"
+            android:layout_margin="16dp">
+
+        <LinearLayout
+                android:id="@+id/item_recipe_item_scaled_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/item_recipe_item_shopping_cart"
+                app:layout_constraintWidth_default="wrap"
+                app:layout_constrainedHeight_default="wrap"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintVertical_chainStyle="packed"
+                android:orientation="vertical"
+        >
+            <TextView
+                    android:id="@+id/item_recipe_item_food_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="8pt"
+                    android:text="Olivenöl"
+            />
+
+            <TextView
+                    android:id="@+id/item_recipe_item_scaled_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="8pt"
+                    android:text="150ml"
+            />
+        </LinearLayout>
+
+        <ImageButton
+                android:id="@+id/item_recipe_item_shopping_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add_shopping_cart_white_24"
+                android:background="@color/colorAccent"
+                app:cornerRadius="12dp"
+                android:padding="8dp"
+                app:layout_constraintWidth_default="wrap"
+                app:layout_constraintStart_toEndOf="@id/item_recipe_item_scaled_amount"
+                app:layout_constraintEnd_toStartOf="@id/item_recipe_item_amounts"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/item_recipe_item_amounts"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                app:layout_constraintWidth_default="wrap"
+
+                app:layout_constraintStart_toEndOf="@id/item_recipe_item_shopping_cart"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:listitem="@layout/item_amount_incrementor"
+                tools:itemCount="3"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

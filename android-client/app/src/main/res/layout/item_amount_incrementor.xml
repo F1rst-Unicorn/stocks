@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+    <ImageButton
+            android:id="@+id/item_recipe_item_minus"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_add_white_24dp"
+            android:background="@color/colorAccent"
+            app:cornerRadius="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/item_recipe_item_stock_counter"
+            app:layout_constraintTop_toTopOf="parent"
+    />
+
+    <TextView
+            android:id="@+id/item_recipe_item_stock_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/item_recipe_item_minus"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/item_recipe_item_plus"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="5 / 7 g"/>
+
+    <ImageButton
+            android:id="@+id/item_recipe_item_plus"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_add_white_24dp"
+            android:background="@color/colorAccent"
+            app:cornerRadius="12dp"
+            app:layout_constraintStart_toEndOf="@id/item_recipe_item_stock_counter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
