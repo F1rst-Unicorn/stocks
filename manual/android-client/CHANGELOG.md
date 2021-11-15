@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.15.0.0]
+
 ### Added
 
 * Allow all ingredients and products of a recipe to be checked out and
