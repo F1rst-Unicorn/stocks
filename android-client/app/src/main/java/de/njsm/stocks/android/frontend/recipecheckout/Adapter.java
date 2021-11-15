@@ -16,6 +16,7 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.android.db.views.RecipeFoodCheckout;
 import de.njsm.stocks.android.frontend.BaseAdapter;
 import de.njsm.stocks.android.frontend.util.ResourceProvider;
+import de.njsm.stocks.common.api.FoodForSetToBuy;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,9 +25,12 @@ public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder>
 
     private final ResourceProvider resourceProvider;
 
-    public Adapter(ResourceProvider resourceProvider, LiveData<List<RecipeFoodCheckout>> data, Consumer<View> onClickListener) {
+    private final Consumer<FoodForSetToBuy> shoppingCartCallback;
+
+    public Adapter(ResourceProvider resourceProvider, LiveData<List<RecipeFoodCheckout>> data, Consumer<View> onClickListener, Consumer<FoodForSetToBuy> shoppingCartCallback) {
         super(data, onClickListener);
         this.resourceProvider = resourceProvider;
+        this.shoppingCartCallback = shoppingCartCallback;
     }
 
     @Override
@@ -57,7 +61,25 @@ public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder>
         amounts.setAdapter(new AmountsAdapter());
 
         v.setTag(result);
+        v.findViewById(R.id.item_recipe_item_shopping_cart).setOnClickListener(this::onShoppingCartClicked);
         return result;
+    }
+
+    private void onShoppingCartClicked(View view) {
+        ViewHolder holder = (ViewHolder) ((CardView) view.getParent().getParent()).getTag();
+        List<RecipeFoodCheckout> list = getData().getValue();
+        if (list == null)
+            return;
+
+        RecipeFoodCheckout dataItem = list.get(holder.getBindingAdapterPosition());
+
+        FoodForSetToBuy apiData = FoodForSetToBuy.builder()
+                .id(dataItem.getScaledFood().getFood().getId())
+                .version(dataItem.getScaledFood().getFood().getVersion())
+                .toBuy(!dataItem.isToBuy())
+                .build();
+
+        shoppingCartCallback.accept(apiData);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

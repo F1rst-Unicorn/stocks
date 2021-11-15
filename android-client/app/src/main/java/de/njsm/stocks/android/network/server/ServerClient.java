@@ -121,8 +121,8 @@ public class ServerClient {
         return api.editFood(id, version, newName, expirationOffset, location, description, storeUnit);
     }
 
-    public Call<Response> setToBuyStatus(int id, int version, int toBuy) {
-        return api.setToBuyStatus(id, version, toBuy);
+    public Call<Response> setToBuyStatus(int id, int version, boolean toBuy) {
+        return api.setToBuyStatus(id, version, toBuy ? 1 : 0);
     }
 
     public Call<Response> deleteFood(int id, int version) {

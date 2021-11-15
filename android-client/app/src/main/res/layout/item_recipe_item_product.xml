@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_add_shopping_cart_white_24"
                 android:scaleType="center"
-                android:background="@drawable/rounded_button"
+                android:background="?android:selectableItemBackground"
                 android:padding="8dp"
                 app:layout_constraintWidth_default="wrap"
                 app:layout_constraintStart_toEndOf="@id/item_recipe_item_scaled_amount"

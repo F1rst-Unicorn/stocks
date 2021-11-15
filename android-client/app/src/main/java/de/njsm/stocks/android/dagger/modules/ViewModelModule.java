@@ -248,8 +248,8 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(de.njsm.stocks.android.frontend.recipecheckout.ViewModel.class)
-    ViewModel provideRecipeCheckoutViewModel(RecipeIngredientRepository repo) {
-        return new de.njsm.stocks.android.frontend.recipecheckout.ViewModel(repo);
+    ViewModel provideRecipeCheckoutViewModel(RecipeIngredientRepository repo, FoodRepository foodRepository) {
+        return new de.njsm.stocks.android.frontend.recipecheckout.ViewModel(repo, foodRepository);
     }
 
     @Provides

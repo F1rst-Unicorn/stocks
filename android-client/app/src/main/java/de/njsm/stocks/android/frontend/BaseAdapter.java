@@ -52,6 +52,10 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
         notifyDataSetChanged();
     }
 
+    protected LiveData<List<T>> getData() {
+        return data;
+    }
+
     protected void onClick(View v) {
         onClickListener.accept(v);
     }

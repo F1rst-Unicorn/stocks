@@ -34,7 +34,7 @@ public class RecipeCheckoutFragment extends InjectedFragment {
 
     private void initialiseItemList(LiveData<List<RecipeFoodCheckout>> dataToBind, RecyclerView viewById) {
         viewById.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        Adapter productAdapter = new Adapter(getResourceProvider(), dataToBind, this::doNothing);
+        Adapter productAdapter = new Adapter(getResourceProvider(), dataToBind, this::doNothing, viewModel::setFoodToBuyStatus);
         dataToBind.observe(getViewLifecycleOwner(), l -> productAdapter.notifyDataSetChanged());
         viewById.setAdapter(productAdapter);
     }

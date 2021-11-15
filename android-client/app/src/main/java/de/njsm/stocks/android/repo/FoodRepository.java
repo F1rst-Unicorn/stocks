@@ -30,6 +30,7 @@ import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Logger;
 import de.njsm.stocks.android.util.idling.IdlingResource;
+import de.njsm.stocks.common.api.FoodForSetToBuy;
 import de.njsm.stocks.common.api.StatusCode;
 
 import javax.inject.Inject;
@@ -98,7 +99,7 @@ public class FoodRepository {
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         if (item.toBuy != toBuy) {
             LOG.d("setting " + item.name + "'s buy status to " + toBuy);
-            webClient.setToBuyStatus(item.id, item.version, toBuy ? 1 : 0)
+            webClient.setToBuyStatus(item.id, item.version, toBuy)
                     .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
         } else {
             data.setValue(StatusCode.SUCCESS);
@@ -133,5 +134,10 @@ public class FoodRepository {
 
     public LiveData<Food> getFoodNowAsKnownBy(int id, Instant transactionTimeStart) {
         return foodDao.getFoodNowAsKnownBy(id, transactionTimeStart);
+    }
+
+    public void editToBuyStatus(FoodForSetToBuy foodForSetToBuy) {
+        webClient.setToBuyStatus(foodForSetToBuy.id(), foodForSetToBuy.version(), foodForSetToBuy.toBuy())
+                .enqueue(new StatusCodeCallback(new MediatorLiveData<>(), synchroniser, idlingResource));
     }
 }
