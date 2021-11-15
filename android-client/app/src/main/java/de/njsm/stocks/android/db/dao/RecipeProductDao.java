@@ -23,6 +23,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import de.njsm.stocks.android.db.entities.RecipeProduct;
 import de.njsm.stocks.android.db.entities.Sql;
+import de.njsm.stocks.android.db.views.RecipeFoodCheckout;
 import de.njsm.stocks.android.db.views.RecipeItemWithCurrentStock;
 
 import java.time.Instant;
@@ -105,4 +106,18 @@ public abstract class RecipeProductDao implements Inserter<RecipeProduct> {
             "order by food_name, unit_name")
     abstract LiveData<List<RecipeItemWithCurrentStock.SingleRecipeItemWithCurrentStock>> getProductViewsOf(int recipeId, Instant infinity);
 
+    @Query("select " +
+            Sql.FOOD_FIELDS_QUALIFIED +
+            Sql.SCALED_UNIT_FIELDS_QUALIFIED +
+            Sql.UNIT_FIELDS_QUALIFIED +
+            Sql.RECIPE_PRODUCT_FIELDS +
+            SCALED_AMOUNT_FIELDS_QUALIFIED +
+            "food.to_buy as toBuy, " +
+            "1 from current_recipe_product recipe_product " +
+            Sql.FOOD_JOIN_RECIPE_PRODUCT +
+            Sql.SCALED_UNIT_JOIN_RECIPE_PRODUCT +
+            Sql.UNIT_JOIN_SCALED_UNIT +
+            "join " + SCALED_AMOUNT_TABLE + " " + SCALED_AMOUNT_TABLE + " on recipe_product.product = current_scaled_amount.of_type " +
+            "where recipe_product.recipe = :recipeId")
+    public abstract LiveData<List<RecipeFoodCheckout.SingleRecipeFoodCheckout>> getProductsForCheckout(int recipeId);
 }

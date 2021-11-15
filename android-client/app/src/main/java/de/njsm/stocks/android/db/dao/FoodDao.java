@@ -55,6 +55,14 @@ public abstract class FoodDao implements Inserter<Food> {
 
     @Query("select * " +
             "from Food " +
+            "where _id = :id " +
+            "and valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "'")
+    public abstract Food loadFood(int id);
+
+    @Query("select * " +
+            "from Food " +
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +

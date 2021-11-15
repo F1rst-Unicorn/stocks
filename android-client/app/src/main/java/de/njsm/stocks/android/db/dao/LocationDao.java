@@ -29,6 +29,7 @@ import java.util.List;
 
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY_STRING;
 
 @Dao
 public abstract class LocationDao implements Inserter<Location> {
@@ -38,10 +39,6 @@ public abstract class LocationDao implements Inserter<Location> {
 
     public LiveData<List<Location>> getAll() {
         return getAll(DATABASE_INFINITY);
-    }
-
-    public LiveData<Location> getLocationWithMostItemsOfType(int food) {
-        return getLocationWithMostItemsOfType(food, DATABASE_INFINITY);
     }
 
     public LiveData<Location> getLocation(int locationId) {
@@ -62,7 +59,7 @@ public abstract class LocationDao implements Inserter<Location> {
             "and transaction_time_end = :infinity")
     abstract LiveData<Location> getLocation(int locationId, Instant infinity);
 
-    @Query("select " +
+    private static final String LOCATION_WITH_MOST_ITEMS_OF_TYPE = "select " +
             Sql.LOCATION_FIELDS +
             "count(*) as amount " +
             "from location location " +
@@ -70,12 +67,15 @@ public abstract class LocationDao implements Inserter<Location> {
             "where fooditem.of_type = :food " +
             "and location.valid_time_start <= " + NOW +
             "and " + NOW + "< location.valid_time_end " +
-            "and location.transaction_time_end = :infinity " +
+            "and location.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "group by location._id " +
             "order by amount desc " +
-            "limit 1")
-    abstract LiveData<Location> getLocationWithMostItemsOfType(int food, Instant infinity);
+            "limit 1";
+    @Query(LOCATION_WITH_MOST_ITEMS_OF_TYPE)
+    public abstract LiveData<Location> getLocationWithMostItemsOfType(int food);
 
+    @Query(LOCATION_WITH_MOST_ITEMS_OF_TYPE)
+    public abstract Location loadLocationWithMostItemsOfType(int food);
 
     @Query("select * " +
             "from location " +

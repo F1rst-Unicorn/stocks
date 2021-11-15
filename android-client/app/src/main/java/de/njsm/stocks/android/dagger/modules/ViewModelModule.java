@@ -39,7 +39,7 @@ import de.njsm.stocks.android.frontend.locations.LocationViewModel;
 import de.njsm.stocks.android.frontend.main.EventViewModel;
 import de.njsm.stocks.android.frontend.recipe.RecipeViewModel;
 import de.njsm.stocks.android.frontend.recipedetail.RecipeIngredientViewModel;
-import de.njsm.stocks.android.frontend.recipedetail.RecipeProductRepository;
+import de.njsm.stocks.android.repo.RecipeProductRepository;
 import de.njsm.stocks.android.frontend.recipedetail.RecipeProductViewModel;
 import de.njsm.stocks.android.frontend.search.SearchViewModel;
 import de.njsm.stocks.android.frontend.settings.SettingsUpdaterViewModel;
@@ -248,8 +248,8 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(de.njsm.stocks.android.frontend.recipecheckout.ViewModel.class)
-    ViewModel provideRecipeCheckoutViewModel(RecipeIngredientRepository repo, FoodRepository foodRepository, FoodItemRepository foodItemRepository) {
-        return new de.njsm.stocks.android.frontend.recipecheckout.ViewModel(repo, foodRepository, foodItemRepository);
+    ViewModel provideRecipeCheckoutViewModel(RecipeIngredientRepository recipeIngredientRepository, RecipeProductRepository productRepository, FoodRepository foodRepository, FoodItemRepository foodItemRepository) {
+        return new de.njsm.stocks.android.frontend.recipecheckout.ViewModel(recipeIngredientRepository, productRepository, foodRepository, foodItemRepository);
     }
 
     @Provides

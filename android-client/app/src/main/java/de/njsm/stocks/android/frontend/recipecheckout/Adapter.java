@@ -20,19 +20,19 @@ import de.njsm.stocks.common.api.FoodForSetToBuy;
 
 import java.util.*;
 
-public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder> {
+public abstract class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder> {
 
     private final ResourceProvider resourceProvider;
 
     private final Consumer<FoodForSetToBuy> shoppingCartCallback;
 
-    private final Map<ViewHolder, AmountsAdapter> amountsAdapters;
+    private final Map<ViewHolder, AmountsAdapter> amountsWithStockAdapters;
 
     public Adapter(ResourceProvider resourceProvider, LiveData<List<RecipeFoodCheckout>> data, Consumer<View> onClickListener, Consumer<FoodForSetToBuy> shoppingCartCallback) {
         super(data, onClickListener);
         this.resourceProvider = resourceProvider;
         this.shoppingCartCallback = shoppingCartCallback;
-        amountsAdapters = new HashMap<>();
+        amountsWithStockAdapters = new HashMap<>();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder>
         holder.setRequiredAmount(data.getScaledFood().getPrettyUnitName());
         holder.setShoppingIcon(data.isToBuy());
         holder.setAmounts(data);
-        amountsAdapters.put(holder, holder.getAdapter());
+        amountsWithStockAdapters.put(holder, holder.getAdapter());
     }
 
     @Override
@@ -50,13 +50,13 @@ public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder>
         holder.setRequiredAmount("");
         holder.setShoppingIcon(false);
         holder.clearAmounts();
-        amountsAdapters.remove(holder);
+        amountsWithStockAdapters.remove(holder);
     }
 
     public List<FormDataItem> collectData() {
         List<FormDataItem> result = new ArrayList<>();
 
-        for (AmountsAdapter adapter : amountsAdapters.values()) {
+        for (AmountsAdapter adapter : amountsWithStockAdapters.values()) {
             result.addAll(adapter.getCurrentDistribution());
         }
 
@@ -72,12 +72,14 @@ public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder>
 
         RecyclerView amounts = v.findViewById(R.id.item_recipe_item_amounts);
         amounts.setLayoutManager(new LinearLayoutManager(viewGroup.getContext()));
-        amounts.setAdapter(new AmountsAdapter());
+        amounts.setAdapter(buildAdapter());
 
         v.setTag(result);
         v.findViewById(R.id.item_recipe_item_shopping_cart).setOnClickListener(this::onShoppingCartClicked);
         return result;
     }
+
+    abstract AmountsAdapter buildAdapter();
 
     private void onShoppingCartClicked(View view) {
         ViewHolder holder = (ViewHolder) ((CardView) view.getParent().getParent()).getTag();

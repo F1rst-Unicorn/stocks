@@ -32,6 +32,7 @@ import java.util.List;
 import static de.njsm.stocks.android.db.StocksDatabase.NOW;
 import static de.njsm.stocks.android.db.entities.Sql.*;
 import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY;
+import static de.njsm.stocks.android.util.Config.DATABASE_INFINITY_STRING;
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
@@ -44,10 +45,6 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
     public void synchronise(List<FoodItem> food) {
         delete();
         insert(food);
-    }
-
-    public LiveData<Instant> getLatestExpirationOf(int foodType) {
-        return getLatestExpirationOf(foodType, DATABASE_INFINITY);
     }
 
     public LiveData<List<FoodItemView>> getItemsOfType(int foodId) {
@@ -112,22 +109,26 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
             "and fooditem.transaction_time_end = :infinity")
     abstract LiveData<FoodItemView> getItem(int id, Instant infinity);
 
-    @Query("select max(i.eat_by) " +
+    private static final String GET_LATEST_EXPIRATION_OF = "select max(i.eat_by) " +
             "from fooditem i " +
             "where i.of_type = :foodType " +
             "and i.valid_time_start <= " + NOW +
             "and " + NOW + " < i.valid_time_end " +
-            "and i.transaction_time_end = :infinity " +
+            "and i.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "group by null " +
             "union all " +
             "select max(i.eat_by) " +
             "from fooditem i " +
             "where i.of_type = :foodType " +
-            "and i.transaction_time_end = :infinity " +
+            "and i.transaction_time_end = '" + DATABASE_INFINITY_STRING + "' " +
             "and i.version = (select max(i2.version) from fooditem i2 where i2._id = i._id) " +
             "group by null " +
-            "limit 1")
-    abstract LiveData<Instant> getLatestExpirationOf(int foodType, Instant infinity);
+            "limit 1";
+    @Query(GET_LATEST_EXPIRATION_OF)
+    public abstract LiveData<Instant> getLatestExpirationOf(int foodType);
+
+    @Query(GET_LATEST_EXPIRATION_OF)
+    public abstract Instant loadLatestExpirationOf(int foodType);
 
     @Query("select " +
             SCALED_UNIT_FIELDS_QUALIFIED +

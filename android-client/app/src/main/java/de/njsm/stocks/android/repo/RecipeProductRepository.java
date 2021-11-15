@@ -18,12 +18,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.frontend.recipedetail;
+package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 import de.njsm.stocks.android.db.dao.RecipeProductDao;
 import de.njsm.stocks.android.db.entities.RecipeProduct;
+import de.njsm.stocks.android.db.views.RecipeFoodCheckout;
 import de.njsm.stocks.android.db.views.RecipeItemWithCurrentStock;
 
 import javax.inject.Inject;
@@ -46,5 +47,10 @@ public class RecipeProductRepository {
 
     public LiveData<List<RecipeProduct>> getProductsOf(int recipeId) {
         return recipeProductDao.getLiveProductsOf(recipeId);
+    }
+
+    public LiveData<List<RecipeFoodCheckout>> getProductsForCheckout(int recipeId) {
+        return Transformations.map(recipeProductDao.getProductsForCheckout(recipeId),
+                new RecipeFoodCheckout.Mapper());
     }
 }

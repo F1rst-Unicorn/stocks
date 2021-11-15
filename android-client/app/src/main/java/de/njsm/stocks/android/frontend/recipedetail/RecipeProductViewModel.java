@@ -24,6 +24,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.android.db.entities.RecipeProduct;
 import de.njsm.stocks.android.db.views.RecipeItemWithCurrentStock;
+import de.njsm.stocks.android.repo.RecipeProductRepository;
 
 import javax.inject.Inject;
 import java.util.List;

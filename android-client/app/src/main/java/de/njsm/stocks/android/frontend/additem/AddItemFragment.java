@@ -133,7 +133,7 @@ public class AddItemFragment extends InjectedFragment {
         if (f.expirationOffset != 0) {
             setDateField(now.plus(Period.ofDays(f.expirationOffset)));
         } else {
-            initialiseDatePickerFromExistingFood(input.getFoodId());
+            initialiseDatePickerFromExistingFood(f.getId());
         }
     }
 

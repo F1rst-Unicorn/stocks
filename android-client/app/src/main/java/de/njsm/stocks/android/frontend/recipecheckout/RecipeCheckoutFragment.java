@@ -20,6 +20,8 @@ public class RecipeCheckoutFragment extends InjectedFragment {
 
     private Adapter ingredientAdapter;
 
+    private Adapter productAdapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -29,16 +31,26 @@ public class RecipeCheckoutFragment extends InjectedFragment {
         RecipeCheckoutFragmentArgs input = RecipeCheckoutFragmentArgs.fromBundle(getArguments());
 
         viewModel = getViewModelProvider().get(ViewModel.class);
-        initialiseItemList(viewModel.getIngredients(input.getRecipeId()), result.findViewById(R.id.fragment_recipe_checkout_ingredients));
+        ingredientAdapter = initialiseItemList(viewModel.getIngredients(input.getRecipeId()), result.findViewById(R.id.fragment_recipe_checkout_ingredients));
+        productAdapter = initialiseProductItemList(viewModel.getProducts(input.getRecipeId()), result.findViewById(R.id.fragment_recipe_checkout_products));
 
         return result;
     }
 
-    private void initialiseItemList(LiveData<List<RecipeFoodCheckout>> dataToBind, RecyclerView viewById) {
+    private Adapter initialiseItemList(LiveData<List<RecipeFoodCheckout>> dataToBind, RecyclerView viewById) {
         viewById.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        ingredientAdapter = new Adapter(getResourceProvider(), dataToBind, this::doNothing, viewModel::setFoodToBuyStatus);
-        dataToBind.observe(getViewLifecycleOwner(), l -> ingredientAdapter.notifyDataSetChanged());
-        viewById.setAdapter(ingredientAdapter);
+        Adapter adapter = new IngredientAdapter(getResourceProvider(), dataToBind, this::doNothing, viewModel::setFoodToBuyStatus);
+        dataToBind.observe(getViewLifecycleOwner(), l -> adapter.notifyDataSetChanged());
+        viewById.setAdapter(adapter);
+        return adapter;
+    }
+
+    private Adapter initialiseProductItemList(LiveData<List<RecipeFoodCheckout>> dataToBind, RecyclerView viewById) {
+        viewById.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        Adapter adapter = new ProductAdapter(getResourceProvider(), dataToBind, this::doNothing, viewModel::setFoodToBuyStatus);
+        dataToBind.observe(getViewLifecycleOwner(), l -> adapter.notifyDataSetChanged());
+        viewById.setAdapter(adapter);
+        return adapter;
     }
 
     @Override
@@ -58,6 +70,7 @@ public class RecipeCheckoutFragment extends InjectedFragment {
 
     private void doCheckout() {
         List<Adapter.FormDataItem> foodToCheckOut = ingredientAdapter.collectData();
-        viewModel.checkoutFood(foodToCheckOut);
+        List<Adapter.FormDataItem> foodToAdd = productAdapter.collectData();
+        viewModel.checkoutFood(foodToCheckOut, foodToAdd);
     }
 }

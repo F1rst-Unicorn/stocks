@@ -22,8 +22,12 @@ package de.njsm.stocks.android.repo;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import de.njsm.stocks.android.db.dao.FoodDao;
 import de.njsm.stocks.android.db.dao.FoodItemDao;
+import de.njsm.stocks.android.db.dao.LocationDao;
+import de.njsm.stocks.android.db.entities.Food;
 import de.njsm.stocks.android.db.entities.FoodItem;
+import de.njsm.stocks.android.db.entities.Location;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.db.views.ScaledAmount;
 import de.njsm.stocks.android.frontend.recipecheckout.Adapter;
@@ -36,6 +40,7 @@ import de.njsm.stocks.common.api.StatusCode;
 
 import javax.inject.Inject;
 import java.time.Instant;
+import java.time.Period;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -44,6 +49,10 @@ public class FoodItemRepository {
     private static final Logger LOG = new Logger(FoodItemRepository.class);
 
     private final FoodItemDao foodItemDao;
+
+    private final FoodDao foodDao;
+
+    private final LocationDao locationDao;
 
     private final ServerClient webClient;
 
@@ -55,11 +64,15 @@ public class FoodItemRepository {
 
     @Inject
     public FoodItemRepository(FoodItemDao foodItemDao,
+                              FoodDao foodDao,
+                              LocationDao locationDao,
                               ServerClient webClient,
                               Synchroniser synchroniser,
                               IdlingResource idlingResource,
                               Executor executor) {
         this.foodItemDao = foodItemDao;
+        this.foodDao = foodDao;
+        this.locationDao = locationDao;
         this.webClient = webClient;
         this.synchroniser = synchroniser;
         this.idlingResource = idlingResource;
@@ -120,7 +133,7 @@ public class FoodItemRepository {
     }
 
 
-    public void checkoutFood(List<Adapter.FormDataItem> foodToCheckOut) {
+    public void checkoutFood(List<Adapter.FormDataItem> foodToCheckOut, List<Adapter.FormDataItem> foodToAdd) {
         executor.execute(() -> {
             synchroniser.synchroniseInThread(false, new MutableLiveData<>());
 
@@ -133,6 +146,45 @@ public class FoodItemRepository {
                             .enqueue(StatusCodeCallback.synchronise(new MediatorLiveData<>(), idlingResource, synchroniser));
                 }
             }
+
+            for (Adapter.FormDataItem food : foodToAdd) {
+                Food foodEntity = foodDao.loadFood(food.getFoodId());
+                Instant eatBy = computeEatBy(foodEntity);
+                int storedIn = computeStoredIn(foodEntity);
+
+                if (storedIn == 0)
+                    return;
+
+                for (int i = 0; i < food.getAmount(); i++) {
+                    webClient.addFoodItem(Config.API_DATE_FORMAT.format(eatBy), storedIn, food.getFoodId(), food.getScaledUnitId())
+                            .enqueue(StatusCodeCallback.synchronise(new MediatorLiveData<>(), idlingResource, synchroniser));
+                }
+            }
         });
+    }
+
+    private int computeStoredIn(Food foodEntity) {
+        if (foodEntity.location != 0) {
+            return foodEntity.location;
+        } else {
+            Location location = locationDao.loadLocationWithMostItemsOfType(foodEntity.getId());
+            if (location != null) {
+                return location.getId();
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    private Instant computeEatBy(Food foodEntity) {
+        if (foodEntity.expirationOffset > 0) {
+            return Instant.now().plus(Period.ofDays(foodEntity.expirationOffset));
+        } else {
+            Instant instant = foodItemDao.loadLatestExpirationOf(foodEntity.getId());
+            if (instant != null)
+                return instant;
+            else
+                return Instant.now();
+        }
     }
 }

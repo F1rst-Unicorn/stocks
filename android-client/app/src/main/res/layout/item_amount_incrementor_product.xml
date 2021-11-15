@@ -7,7 +7,7 @@
         android:padding="0dp">
 
     <ImageButton
-            android:id="@+id/item_amount_incrementor_minus"
+            android:id="@id/item_amount_incrementor_minus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/outline_remove_black_24"
@@ -21,7 +21,7 @@
     />
 
     <TextView
-            android:id="@+id/item_amount_incrementor_stock_counter"
+            android:id="@id/item_amount_incrementor_stock_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/item_amount_incrementor_minus"
@@ -33,7 +33,7 @@
             android:text="5"/>
 
     <TextView
-            android:id="@+id/item_amount_incrementor_unit"
+            android:id="@id/item_amount_incrementor_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/item_amount_incrementor_stock_counter"
@@ -45,7 +45,7 @@
             android:text="g"/>
 
     <ImageButton
-            android:id="@+id/item_amount_incrementor_plus"
+            android:id="@id/item_amount_incrementor_plus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/baseline_add_black_24"
