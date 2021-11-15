@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+
+* Allow all ingredients and products of a recipe to be checked out and
+  registered in one form.
+  ([#12](https://gitlab.com/veenj/stocks/-/issues/12))
+
 ## [3.14.0.0]
 
 ### Added
