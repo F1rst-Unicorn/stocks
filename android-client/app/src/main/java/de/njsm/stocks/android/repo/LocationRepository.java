@@ -70,7 +70,7 @@ public class LocationRepository {
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
 
         webClient.addLocation(name)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 
@@ -78,7 +78,7 @@ public class LocationRepository {
         LOG.d("renaming location " + entity + " to " + newName);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.renameLocation(entity.id, entity.version, newName)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 
@@ -86,7 +86,7 @@ public class LocationRepository {
         LOG.d("editing description of location " + id);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.setLocationDescription(id, version, description)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 
@@ -94,7 +94,7 @@ public class LocationRepository {
         LOG.d("deleting location " + entity);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.deleteLocation(entity.id, entity.version, cascade ? 1 : 0)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 

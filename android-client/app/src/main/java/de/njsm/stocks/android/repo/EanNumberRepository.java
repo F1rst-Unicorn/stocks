@@ -65,7 +65,7 @@ public class EanNumberRepository {
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
 
         webClient.addEanNumber(code, identifies)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 
@@ -73,7 +73,7 @@ public class EanNumberRepository {
         LOG.d("deleting number " + number);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.deleteEanNumber(number.id, number.version)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 }

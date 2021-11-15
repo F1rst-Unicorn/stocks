@@ -21,6 +21,7 @@ package de.njsm.stocks.android.db.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
+import com.google.common.base.Objects;
 
 import java.time.Instant;
 
@@ -84,5 +85,19 @@ public class VersionedData extends Data {
 
     public int getInitiates() {
         return initiates;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        VersionedData that = (VersionedData) o;
+        return getVersion() == that.getVersion() && getInitiates() == that.getInitiates() && Objects.equal(getValidTimeStart(), that.getValidTimeStart()) && Objects.equal(getValidTimeEnd(), that.getValidTimeEnd()) && Objects.equal(getTransactionTimeStart(), that.getTransactionTimeStart()) && Objects.equal(getTransactionTimeEnd(), that.getTransactionTimeEnd());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), getValidTimeStart(), getValidTimeEnd(), getTransactionTimeStart(), getTransactionTimeEnd(), getVersion(), getInitiates());
     }
 }

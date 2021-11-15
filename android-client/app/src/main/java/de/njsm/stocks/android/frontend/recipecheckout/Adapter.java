@@ -18,8 +18,7 @@ import de.njsm.stocks.android.frontend.BaseAdapter;
 import de.njsm.stocks.android.frontend.util.ResourceProvider;
 import de.njsm.stocks.common.api.FoodForSetToBuy;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder> {
 
@@ -27,10 +26,13 @@ public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder>
 
     private final Consumer<FoodForSetToBuy> shoppingCartCallback;
 
+    private final Map<ViewHolder, AmountsAdapter> amountsAdapters;
+
     public Adapter(ResourceProvider resourceProvider, LiveData<List<RecipeFoodCheckout>> data, Consumer<View> onClickListener, Consumer<FoodForSetToBuy> shoppingCartCallback) {
         super(data, onClickListener);
         this.resourceProvider = resourceProvider;
         this.shoppingCartCallback = shoppingCartCallback;
+        amountsAdapters = new HashMap<>();
     }
 
     @Override
@@ -39,6 +41,7 @@ public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder>
         holder.setRequiredAmount(data.getScaledFood().getPrettyUnitName());
         holder.setShoppingIcon(data.isToBuy());
         holder.setAmounts(data);
+        amountsAdapters.put(holder, holder.getAdapter());
     }
 
     @Override
@@ -47,6 +50,17 @@ public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder>
         holder.setRequiredAmount("");
         holder.setShoppingIcon(false);
         holder.clearAmounts();
+        amountsAdapters.remove(holder);
+    }
+
+    public List<FormDataItem> collectData() {
+        List<FormDataItem> result = new ArrayList<>();
+
+        for (AmountsAdapter adapter : amountsAdapters.values()) {
+            result.addAll(adapter.getCurrentDistribution());
+        }
+
+        return result;
     }
 
     @NonNull
@@ -120,13 +134,43 @@ public class Adapter extends BaseAdapter<RecipeFoodCheckout, Adapter.ViewHolder>
             shoppingIcon.setImageDrawable(icon);
         }
 
+        public AmountsAdapter getAdapter() {
+            return (AmountsAdapter) amounts.getAdapter();
+        }
+
         public void setAmounts(RecipeFoodCheckout data) {
             ((AmountsAdapter) Objects.requireNonNull(amounts.getAdapter())).setData(data);
-            amounts.getAdapter().notifyDataSetChanged();
         }
 
         public void clearAmounts() {
             ((AmountsAdapter) Objects.requireNonNull(amounts.getAdapter())).clear();
+        }
+    }
+
+    public static class FormDataItem {
+
+        private final int foodId;
+
+        private final int scaledUnitId;
+
+        private final int amount;
+
+        public FormDataItem(int foodId, int scaledUnitId, int amount) {
+            this.foodId = foodId;
+            this.scaledUnitId = scaledUnitId;
+            this.amount = amount;
+        }
+
+        public int getFoodId() {
+            return foodId;
+        }
+
+        public int getScaledUnitId() {
+            return scaledUnitId;
+        }
+
+        public int getAmount() {
+            return amount;
         }
     }
 }

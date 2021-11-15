@@ -82,7 +82,7 @@ public class UserDeviceRepository {
         LOG.d("deleting user device" + entity);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.deleteDevice(entity.id, entity.version)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 }

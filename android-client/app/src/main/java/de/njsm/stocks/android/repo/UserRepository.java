@@ -76,7 +76,7 @@ public class UserRepository {
         }
 
         webClient.addUser(name)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 
@@ -84,7 +84,7 @@ public class UserRepository {
         LOG.d("deleting user " + entity);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.deleteUser(entity.id, entity.version)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 }

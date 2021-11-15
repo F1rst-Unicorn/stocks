@@ -67,7 +67,7 @@ public class ScaledUnitRepository {
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
 
         webClient.deleteScaledUnit(unit.id, unit.version)
-                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(result, idlingResource, synchroniser));
 
         return result;
     }
@@ -81,7 +81,7 @@ public class ScaledUnitRepository {
 
         } else {
             webClient.editScaledUnit(item.id, item.version, scale, unit)
-                    .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
+                    .enqueue(StatusCodeCallback.synchronise(result, idlingResource, synchroniser));
         }
 
         return result;
@@ -92,7 +92,7 @@ public class ScaledUnitRepository {
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
 
         webClient.addScaledUnit(scale, unit)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 }

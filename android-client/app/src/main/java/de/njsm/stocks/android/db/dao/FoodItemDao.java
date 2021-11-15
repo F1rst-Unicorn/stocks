@@ -166,4 +166,13 @@ public abstract class FoodItemDao implements Inserter<FoodItem> {
             "and fooditem.transaction_time_start <= :transactionTime " +
             "and :transactionTime < fooditem.transaction_time_end")
     public abstract LiveData<FoodItemView> getNowAsKnownBy(int id, Instant transactionTime);
+
+    @Query("select " +
+            FOODITEM_FIELDS +
+            "1 from current_fooditem fooditem " +
+            "where fooditem.of_type = :foodId " +
+            "and fooditem.unit = :scaledUnitId " +
+            "order by fooditem.eat_by " +
+            "limit :amount")
+    public abstract List<FoodItem> findItems(int foodId, int scaledUnitId, int amount);
 }

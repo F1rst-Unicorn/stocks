@@ -85,7 +85,7 @@ public class RecipeRepository {
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
 
         webClient.addRecipe(recipe)
-                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(result, idlingResource, synchroniser));
         return result;
     }
 
@@ -118,7 +118,7 @@ public class RecipeRepository {
                     .build();
 
             webClient.deleteRecipe(fullRecipeForDeletion)
-                    .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
+                    .enqueue(StatusCodeCallback.synchronise(result, idlingResource, synchroniser));
         });
 
         return result;
@@ -129,7 +129,7 @@ public class RecipeRepository {
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
 
         webClient.editRecipe(recipe)
-                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(result, idlingResource, synchroniser));
         return result;
     }
 

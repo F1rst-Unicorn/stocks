@@ -75,7 +75,7 @@ public class FoodRepository {
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
 
         webClient.addFood(name)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 
@@ -83,7 +83,7 @@ public class FoodRepository {
         LOG.d("deleting food " + item);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.deleteFood(item.id, item.version)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 
@@ -91,7 +91,7 @@ public class FoodRepository {
         LOG.d("editing food " + item);
         MediatorLiveData<StatusCode> data = new MediatorLiveData<>();
         webClient.editFood(item.id, item.version, item.name, item.expirationOffset, item.location, item.description, item.storeUnit)
-                .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         return data;
     }
 
@@ -100,7 +100,7 @@ public class FoodRepository {
         if (item.toBuy != toBuy) {
             LOG.d("setting " + item.name + "'s buy status to " + toBuy);
             webClient.setToBuyStatus(item.id, item.version, toBuy)
-                    .enqueue(new StatusCodeCallback(data, synchroniser, idlingResource));
+                    .enqueue(StatusCodeCallback.synchronise(data, idlingResource, synchroniser));
         } else {
             data.setValue(StatusCode.SUCCESS);
         }
@@ -138,6 +138,6 @@ public class FoodRepository {
 
     public void editToBuyStatus(FoodForSetToBuy foodForSetToBuy) {
         webClient.setToBuyStatus(foodForSetToBuy.id(), foodForSetToBuy.version(), foodForSetToBuy.toBuy())
-                .enqueue(new StatusCodeCallback(new MediatorLiveData<>(), synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(new MediatorLiveData<>(), idlingResource, synchroniser));
     }
 }

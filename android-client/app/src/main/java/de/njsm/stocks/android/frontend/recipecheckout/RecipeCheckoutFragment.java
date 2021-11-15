@@ -18,6 +18,8 @@ public class RecipeCheckoutFragment extends InjectedFragment {
 
     private ViewModel viewModel;
 
+    private Adapter ingredientAdapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -34,9 +36,9 @@ public class RecipeCheckoutFragment extends InjectedFragment {
 
     private void initialiseItemList(LiveData<List<RecipeFoodCheckout>> dataToBind, RecyclerView viewById) {
         viewById.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        Adapter productAdapter = new Adapter(getResourceProvider(), dataToBind, this::doNothing, viewModel::setFoodToBuyStatus);
-        dataToBind.observe(getViewLifecycleOwner(), l -> productAdapter.notifyDataSetChanged());
-        viewById.setAdapter(productAdapter);
+        ingredientAdapter = new Adapter(getResourceProvider(), dataToBind, this::doNothing, viewModel::setFoodToBuyStatus);
+        dataToBind.observe(getViewLifecycleOwner(), l -> ingredientAdapter.notifyDataSetChanged());
+        viewById.setAdapter(ingredientAdapter);
     }
 
     @Override
@@ -55,6 +57,7 @@ public class RecipeCheckoutFragment extends InjectedFragment {
     }
 
     private void doCheckout() {
-
+        List<Adapter.FormDataItem> foodToCheckOut = ingredientAdapter.collectData();
+        viewModel.checkoutFood(foodToCheckOut);
     }
 }

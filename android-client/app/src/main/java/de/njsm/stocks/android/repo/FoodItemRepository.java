@@ -21,9 +21,12 @@ package de.njsm.stocks.android.repo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import de.njsm.stocks.android.db.dao.FoodItemDao;
+import de.njsm.stocks.android.db.entities.FoodItem;
 import de.njsm.stocks.android.db.views.FoodItemView;
 import de.njsm.stocks.android.db.views.ScaledAmount;
+import de.njsm.stocks.android.frontend.recipecheckout.Adapter;
 import de.njsm.stocks.android.network.server.ServerClient;
 import de.njsm.stocks.android.network.server.StatusCodeCallback;
 import de.njsm.stocks.android.util.Config;
@@ -34,6 +37,7 @@ import de.njsm.stocks.common.api.StatusCode;
 import javax.inject.Inject;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 public class FoodItemRepository {
 
@@ -47,15 +51,19 @@ public class FoodItemRepository {
 
     private final IdlingResource idlingResource;
 
+    private final Executor executor;
+
     @Inject
     public FoodItemRepository(FoodItemDao foodItemDao,
                               ServerClient webClient,
                               Synchroniser synchroniser,
-                              IdlingResource idlingResource) {
+                              IdlingResource idlingResource,
+                              Executor executor) {
         this.foodItemDao = foodItemDao;
         this.webClient = webClient;
         this.synchroniser = synchroniser;
         this.idlingResource = idlingResource;
+        this.executor = executor;
     }
 
     public LiveData<List<FoodItemView>> getItemsOfType(int foodId) {
@@ -67,7 +75,7 @@ public class FoodItemRepository {
         LOG.d("deleting item " + t);
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
         webClient.deleteFoodItem(t.id, t.version)
-                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(result, idlingResource, synchroniser));
         return result;
     }
 
@@ -80,7 +88,7 @@ public class FoodItemRepository {
         LOG.d("adding item of type " + foodId + ", location " + locationId + ", eat by " + eatBy);
         MediatorLiveData<StatusCode> result = new MediatorLiveData<>();
         webClient.addFoodItem(Config.API_DATE_FORMAT.format(eatBy), locationId, foodId, unit)
-                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(result, idlingResource, synchroniser));
         return result;
     }
 
@@ -98,7 +106,7 @@ public class FoodItemRepository {
                 Config.API_DATE_FORMAT.format(item.getEatByDate()),
                 item.getStoredIn(),
                 item.getUnit())
-                .enqueue(new StatusCodeCallback(result, synchroniser, idlingResource));
+                .enqueue(StatusCodeCallback.synchronise(result, idlingResource, synchroniser));
         return result;
     }
 
@@ -109,5 +117,22 @@ public class FoodItemRepository {
 
     public LiveData<FoodItemView> getNowAsKnownBy(int id, Instant transactionTime) {
         return foodItemDao.getNowAsKnownBy(id, transactionTime);
+    }
+
+
+    public void checkoutFood(List<Adapter.FormDataItem> foodToCheckOut) {
+        executor.execute(() -> {
+            synchroniser.synchroniseInThread(false, new MutableLiveData<>());
+
+            for (Adapter.FormDataItem food : foodToCheckOut) {
+                List<FoodItem> itemsToCheckout = foodItemDao.findItems(food.getFoodId(), food.getScaledUnitId(), food.getAmount());
+
+                for (FoodItem item : itemsToCheckout) {
+                    LOG.d("deleting item " + item);
+                    webClient.deleteFoodItem(item.getId(), item.getVersion())
+                            .enqueue(StatusCodeCallback.synchronise(new MediatorLiveData<>(), idlingResource, synchroniser));
+                }
+            }
+        });
     }
 }

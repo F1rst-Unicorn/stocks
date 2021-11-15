@@ -25,6 +25,7 @@ import de.njsm.stocks.android.db.entities.Data;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class Utility {
 
@@ -39,6 +40,19 @@ public class Utility {
             }
             position++;
         }
+        return Optional.empty();
+    }
+
+    public static <T> Optional<Integer> find(@Nullable List<T> list, Predicate<T> predicate) {
+        if (list == null)
+            return Optional.empty();
+
+        for (int i = 0; i < list.size(); i++) {
+            if (predicate.test(list.get(i))) {
+                return Optional.of(i);
+            }
+        }
+
         return Optional.empty();
     }
 }

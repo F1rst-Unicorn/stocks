@@ -24,9 +24,9 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
+import com.google.common.base.Objects;
 
 import java.time.Instant;
-import java.util.Objects;
 
 @Entity(tableName = "unit", primaryKeys = {"_id", "version", "transaction_time_start"},
         indices = {
@@ -70,13 +70,14 @@ public class Unit extends VersionedData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Unit)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Unit unit = (Unit) o;
-        return getName().equals(unit.getName()) && getAbbreviation().equals(unit.getAbbreviation());
+        return Objects.equal(getName(), unit.getName()) && Objects.equal(getAbbreviation(), unit.getAbbreviation());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getAbbreviation());
+        return Objects.hashCode(super.hashCode(), getName(), getAbbreviation());
     }
 }

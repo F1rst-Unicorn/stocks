@@ -22,6 +22,7 @@ package de.njsm.stocks.android.network.server;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import de.njsm.stocks.android.error.StatusCodeException;
 import de.njsm.stocks.android.repo.Synchroniser;
 import de.njsm.stocks.android.util.Logger;
@@ -43,16 +44,27 @@ public class StatusCodeCallback implements Callback<Response> {
 
     private final MediatorLiveData<StatusCode> data;
 
-    private final Synchroniser synchroniser;
-
     private final IdlingResource idlingResource;
 
-    public StatusCodeCallback(MediatorLiveData<StatusCode> data,
-                              Synchroniser synchroniser,
-                              IdlingResource idlingResource) {
+    private final SuccessCallback successCallback;
+
+    public static StatusCodeCallback build(MediatorLiveData<StatusCode> data,
+                                           IdlingResource idlingResource) {
+        return new StatusCodeCallback(data, idlingResource, MutableLiveData::new);
+    }
+
+    public static StatusCodeCallback synchronise(MediatorLiveData<StatusCode> data,
+                                                 IdlingResource idlingResource,
+                                                 Synchroniser synchroniser) {
+        return new StatusCodeCallback(data, idlingResource, synchroniser::synchronise);
+    }
+
+    private StatusCodeCallback(MediatorLiveData<StatusCode> data,
+                              IdlingResource idlingResource,
+                              SuccessCallback successCallback) {
         this.data = data;
-        this.synchroniser = synchroniser;
         this.idlingResource = idlingResource;
+        this.successCallback = successCallback;
 
         idlingResource.increment();
     }
@@ -70,7 +82,7 @@ public class StatusCodeCallback implements Callback<Response> {
                 result == StatusCode.INVALID_DATA_VERSION ||
                 result == StatusCode.NOT_FOUND ||
                 result == StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION) {
-            LiveData<StatusCode> syncResult = synchroniser.synchronise();
+            LiveData<StatusCode> syncResult = successCallback.call();
             data.addSource(syncResult, data::setValue);
         }
         idlingResource.decrement();
@@ -178,4 +190,7 @@ public class StatusCodeCallback implements Callback<Response> {
             LOG.e("Response was an " + r.code() + " error without error body");
     }
 
+    public interface SuccessCallback {
+        LiveData<StatusCode> call();
+    }
 }

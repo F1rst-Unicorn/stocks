@@ -23,13 +23,13 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
+import com.google.common.base.Objects;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.time.Instant;
-import java.util.Objects;
 
 import static java.math.BigDecimal.*;
 
@@ -163,14 +163,15 @@ public class ScaledUnit extends VersionedData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ScaledUnit)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         ScaledUnit that = (ScaledUnit) o;
-        return getUnit() == that.getUnit() && getScale().compareTo(that.getScale()) == 0;
+        return getUnit() == that.getUnit() && Objects.equal(getScale(), that.getScale());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getScale(), getUnit());
+        return Objects.hashCode(super.hashCode(), getScale(), getUnit());
     }
 
     public ScaledUnit copy() {
