@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+
+* Hide recipe ingredients and products with amount 0 so they can be used to mark
+  "optional" ingredients / products.
+  ([#18](https://gitlab.com/veenj/stocks/-/issues/18))
+
 ## [3.15.0.0]
 
 ### Added

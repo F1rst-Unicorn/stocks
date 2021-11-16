@@ -103,6 +103,7 @@ public abstract class RecipeProductDao implements Inserter<RecipeProduct> {
             "and recipe_product.valid_time_start <= " + NOW +
             "and " + NOW + " < recipe_product.valid_time_end " +
             "and recipe_product.transaction_time_end = :infinity " +
+            "and recipe_product.amount > 0 " +
             "order by food_name, unit_name")
     abstract LiveData<List<RecipeItemWithCurrentStock.SingleRecipeItemWithCurrentStock>> getProductViewsOf(int recipeId, Instant infinity);
 
