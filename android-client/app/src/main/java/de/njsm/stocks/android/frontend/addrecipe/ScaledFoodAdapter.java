@@ -30,7 +30,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.textfield.TextInputLayout;
@@ -149,7 +148,7 @@ public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends Self
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        ConstraintLayout v = (ConstraintLayout) LayoutInflater.from(parent.getContext())
+        View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_scaled_food, parent, false);
         ViewHolder result = newViewHolder(v);
         v.setTag(result);
@@ -198,8 +197,8 @@ public abstract class ScaledFoodAdapter<D extends SelfValidating, B extends Self
                 units,
                 ScaledUnitView::getPrettyName,
                 R.id.item_scaled_food_unit,
-                R.layout.item_unit_spinner,
-                R.id.item_unit_spinner_name);
+                android.R.layout.simple_list_item_1,
+                android.R.id.text1);
     }
 
     private void initialiseFoodSpinner(Context context, View scaledFoodView) {

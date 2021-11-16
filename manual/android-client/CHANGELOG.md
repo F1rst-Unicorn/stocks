@@ -8,6 +8,9 @@
   "optional" ingredients / products.
   ([#18](https://gitlab.com/veenj/stocks/-/issues/18))
 
+* Change layout of recipe registration form
+  ([#37](https://gitlab.com/veenj/stocks/-/issues/37))
+
 ## [3.15.0.0]
 
 ### Added
