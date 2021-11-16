@@ -26,8 +26,9 @@ set belongs_to = (
         and transaction_time_end = 'infinity')
 where id = lastval();
 
-insert into ticket (ticket, belongs_device, created_on) values
-('0000', currval('public."User_device_ID_seq"'), 'infinity');
+insert into ticket (ticket, belongs_device, created_on)
+select id :: text, id, 'infinity'
+from current_user_device;
 
 commit;
 EOF
