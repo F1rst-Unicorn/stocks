@@ -55,6 +55,15 @@ info:
 
 components:
   schemas:
+    Response:
+      type: object
+      properties:
+        status:
+          type: integer
+          minimum: 0
+          maximum: 9
+          description: See general description, section "Status Codes"
+
     Data:
       type: object
       properties:
@@ -82,11 +91,31 @@ components:
               description: |
                 The start of the time (inclusively) during which this entity is
                 valid. Timestamp in the usual format.
-            ValidTimeEnd:
+            validTimeEnd:
               type: string
               description: |
                 The end of the time (exclusively) during which this entity is
                 valid. Timestamp in the usual format.
+            transactionTimeStart:
+              type: string
+              description: |
+                The start of the time (inclusively) during which this entity is
+                part of the most recent truth on the data.
+            transactionTimeEnd:
+              type: string
+              description: |
+                The end of the time (exclusively) during which this entity is
+                part of the most recent truth on the data.
+    User:
+      allOf:
+        - $ref: '#/components/schemas/Data'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: |
+                The name of the user. Invalid if it contains '$' or '='.
+
   parameters:
     id:
       name: id
@@ -104,5 +133,43 @@ components:
         type: integer
         minimum: 0
       description: the version of the entity on which the request operates
+    bitemporal:
+      name: bitemporal
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 1
+      description: |
+        Whether the response to a GET shall contain the bitemporal kind of the
+        requested entity
+    startingFrom:
+      name: startingFrom
+      in: query
+      schema:
+        type: string
+      description: |
+        A timestamp stating that a GET response shall only include entities
+        younger or equal to this value in transaction time. This is used to only
+        get the latest changes to a table relative to an earlier query.
 
-paths: {}
+paths:
+  /v2/user:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all users of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
