@@ -1,0 +1,108 @@
+---
+openapi: 3.0.3
+info:
+  title: Stocks
+  version: 1.0.0
+  license:
+    name: GNU GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  description: |
+    # Manage your household's stocks
+
+    #### Versions
+
+    Each entity in the system has a version which is incremented each time the
+    entity is edited. This means all modifying operations have to pass the correct
+    version of the entity to edit. If the version does not match an error is
+    returned using status codes, see "Status Codes" for a list of status codes
+    to support.
+
+    #### Valid Time
+
+    Each entity in the database is tagged with information about when it was present
+    in the given state. This interval of validity is encoded using two timestamps,
+    `validTimeStart` and `validTimeEnd`. The interval contains the starting
+    timestamp while the ending timestamp is the first moment which is no longer
+    included (closed-open notation, `[start, end)` using mathematical notation). See
+    also the `bitemporal` flag.
+
+    #### Transaction Time
+
+    Each entity in the database is tagged with information about when the
+    information of the entity was entered into the database. This allows for
+    reconstruction of past states of the database. This interval of validity is
+    encoded using two timestamps, `transactionTimeStart` and `transactionTimeEnd`.
+    The interval contains the starting timestamp while the ending timestamp is the
+    first moment which is no longer included (closed-open notation, `[start, end)`
+    using mathematical notation). See also the `bitemporal` flag.
+
+    #### Change Initiators
+
+    Each entity record in the database stores, which user device initiated
+    that change. This is indicated by the `initiates` field, which is only
+    present if `bitemporal` data is requested, just as the timestamps
+    described before.
+
+    #### Timestamps
+
+    The timestamp format used is `yyyy.MM.dd-HH:mm:ss.SSSSSS-Z`. Refer to
+    [the Java API Reference](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html)
+    for semantics. The timestamps are passed as strings.
+
+    The special date `+292278994.08.16-23:00:00.000000-+0000` is used in valid time
+    to denote _infinity_ and in transaction time to denote _now_. It corresponds
+    to 9223372036825200000 milliseconds since epoch.
+
+components:
+  schemas:
+    Data:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          description: the primary identifier of the entity
+        version:
+          type: integer
+          minimum: 0
+          description: the current version of the entity
+    BitemporalData:
+      allOf:
+        - $ref: '#/components/schemas/Data'
+        - type: object
+          properties:
+            initiates:
+              type: integer
+              minimum: 1
+              description: |
+                A reference to the UserDevice at the point in time when this
+                entity was considered current.
+            validTimeStart:
+              type: string
+              description: |
+                The start of the time (inclusively) during which this entity is
+                valid. Timestamp in the usual format.
+            ValidTimeEnd:
+              type: string
+              description: |
+                The end of the time (exclusively) during which this entity is
+                valid. Timestamp in the usual format.
+  parameters:
+    id:
+      name: id
+      in: query
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: the primary identifier of the entity
+    version:
+      name: version
+      in: query
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+      description: the version of the entity on which the request operates
+
+paths: {}
