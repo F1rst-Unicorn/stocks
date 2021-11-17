@@ -91,10 +91,19 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
 
     StatusCode removeDeviceInternally(UserDeviceForDeletion device) {
         return checkTechnicalDeviceStatus(device)
+                .bind(() -> checkIfInitiatingDevice(device))
                 .bind(() -> foodItemHandler.transferFoodItems(device, principals.toDevice()))
                 .bind(() -> ticketHandler.removeTicketOfDevice(device))
                 .bind(() -> userDeviceHandler.delete(device))
                 .bind(() -> authAdmin.revokeCertificate(device.id()));
+    }
+
+    private StatusCode checkIfInitiatingDevice(UserDeviceForDeletion device) {
+        if (device.id() == getPrincipals().getDid()) {
+            return StatusCode.ACCESS_DENIED;
+        } else {
+            return StatusCode.SUCCESS;
+        }
     }
 
     private StatusCode checkTechnicalDeviceStatus(Identifiable<UserDevice> userDevice) {

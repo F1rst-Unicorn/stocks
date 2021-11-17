@@ -153,7 +153,7 @@ public class DeviceManagerTest {
     @Test
     public void removeDeviceWorks() {
         UserDeviceForDeletion device = UserDeviceForDeletion.builder()
-                .id(1)
+                .id(2)
                 .version(2)
                 .build();
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDeviceForDeletion.class), any(UserDeviceForPrincipals.class))).thenReturn(StatusCode.SUCCESS);
@@ -193,6 +193,22 @@ public class DeviceManagerTest {
     }
 
     @Test
+    public void removeInitiatingDeviceIsRejected() {
+        UserDeviceForDeletion device = UserDeviceForDeletion.builder()
+                .id(TEST_USER.getDid())
+                .version(0)
+                .build();
+        Mockito.when(dbHandler.isTechnicalUser(device)).thenReturn(Validation.success(false));
+        Mockito.when(dbHandler.rollback()).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.delete(device);
+
+        assertEquals(StatusCode.ACCESS_DENIED, result);
+        Mockito.verify(dbHandler).isTechnicalUser(device);
+        Mockito.verify(dbHandler).rollback();
+    }
+
+    @Test
     public void revokingDeviceWorks() {
         UserDeviceForDeletion device = UserDeviceForDeletion.builder()
                 .id(1)
@@ -212,7 +228,7 @@ public class DeviceManagerTest {
     @Test
     public void deletingErrorIsPropagated() {
         UserDeviceForDeletion device = UserDeviceForDeletion.builder()
-                .id(1)
+                .id(2)
                 .version(2)
                 .build();
         Mockito.when(foodDbHandler.transferFoodItems(any(UserDeviceForDeletion.class), any(UserDeviceForPrincipals.class))).thenReturn(StatusCode.SUCCESS);
@@ -235,7 +251,7 @@ public class DeviceManagerTest {
     @Test
     public void foodItemTransferFailIsPropagated() {
         UserDeviceForDeletion device = UserDeviceForDeletion.builder()
-                .id(1)
+                .id(2)
                 .version(2)
                 .build();
         Mockito.when(dbHandler.isTechnicalUser(device)).thenReturn(Validation.success(false));

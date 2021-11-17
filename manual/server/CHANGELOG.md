@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* Prohibit devices from deleting themselves.
+  ([#29](https://gitlab.com/veenj/stocks/-/issues/29))
+
 ## [5.5.0.4]
 
 ### Fixed
