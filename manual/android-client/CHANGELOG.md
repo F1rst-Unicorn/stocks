@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.16.0.0]
+
 ### Added
 
 * Allow searching for [subsequences](https://en.wikipedia.org/wiki/Subsequence)

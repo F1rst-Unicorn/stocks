@@ -51,5 +51,5 @@ git commit -m "Increment server version to $VERSION"
 zsh
 git tag -a "server-$VERSION" -m \
         "Tagging server version $VERSION"
-git push --all
-git push --tags
+git push build
+git push build --tags

@@ -37,19 +37,6 @@ if git tag | grep "android-client-$VERSION" >/dev/null ; then
         exit 3
 fi
 
-STORE_FILE="$STOCKS_ROOT"/../keystore
-echo -n "Password for keystore $STORE_FILE : "
-read -s STORE_PASSWORD
-KEY_ALIAS=stocks
-KEY_PASSWORD="$STORE_PASSWORD"
-
-echo $STORE_PASSWORD | keytool -list -keystore $STORE_FILE
-PASSWORDVERIFICATION=$?
-if [ $PASSWORDVERIFICATION -ne 0 ]; then
-    echo Password is wrong
-    exit 4
-fi
-
 echo Patching version number
 sed -i "s/versionName .*/versionName \"$VERSION\"/g" \
         "$STOCKS_ROOT"/android-client/app/build.gradle
@@ -57,28 +44,11 @@ sed -i "s/versionName .*/versionName \"$VERSION\"/g" \
 sed -i -e "/## Unreleased/a ## [$VERSION]" -e "/## Unreleased/G" \
         "$STOCKS_ROOT/manual/android-client/CHANGELOG.md"
 
-echo Building release
-set -e
-
-"$STOCKS_ROOT"/android-client/gradlew assembleRelease \
-        -p $STOCKS_ROOT/android-client \
-        -Pandroid.injected.signing.store.file="${STORE_FILE}" \
-        -Pandroid.injected.signing.store.password="${STORE_PASSWORD}" \
-        -Pandroid.injected.signing.key.alias="${KEY_ALIAS}" \
-        -Pandroid.injected.signing.key.password="${KEY_PASSWORD}"
-
 echo Tagging release
 git add -A
 git commit -m "Increment android client version to $VERSION"
 zsh
 git tag -a "android-client-$VERSION" -m \
         "Tagging android client version $VERSION"
-git push --all
-git push --tags
-
-echo Publish release
-scp "$STOCKS_ROOT"/android-client/app/build/outputs/apk/release/app-release.apk \
-        web-1.j.njsm.de:/tmp/
-ssh -t web-1.j.njsm.de "sudo rm /srv/http/www/stocks/android/* ;
-        sudo mv /tmp/app-release.apk /srv/http/www/stocks/android/stocks-android-$VERSION.apk"
-
+git push build
+git push build --tags
