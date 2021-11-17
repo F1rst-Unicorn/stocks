@@ -1,8 +1,8 @@
 # Stocks
 
 Stocks is a service which keeps track of stored food and its freshness. It
-is responsible for keeping track of what food is it stock at what place,
-in which amount, and when it should be consumed.
+is responsible for knowing what food is it stock at what place, in which amount,
+and when it should be consumed.
 
 ## Server
 
@@ -20,5 +20,5 @@ See `manual/android/` for the changelog.
 ## Contributing
 
 Get in touch with me, if you are interested in contributing. Issues can be
-reported to stocks æt njsm.de.
+reported on gitlab.
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.5.0.5]
+
 ### Fixed
 
 * Prohibit devices from deleting themselves.
