@@ -44,8 +44,8 @@ public abstract class SearchSuggestionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(SearchSuggestion suggestion);
 
-    public Cursor getFoodBySubStringJoiningStoredSuggestions(String searchTerm) {
-        return getFoodBySubStringJoiningStoredSuggestions(searchTerm, DATABASE_INFINITY);
+    public Cursor getFoodBySubStringJoiningStoredSuggestions(String contiguousQuery, String subsequenceQuery) {
+        return getFoodBySubStringJoiningStoredSuggestions(contiguousQuery, subsequenceQuery, DATABASE_INFINITY);
     }
 
     @Query("select * from (" +
@@ -57,10 +57,10 @@ public abstract class SearchSuggestionDao {
                     "f._id as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + ", " +
                     "'" + ContentResolver.SCHEME_ANDROID_RESOURCE + "://de.njsm.stocks/drawable/ic_local_dining_black_24dp' as " + SearchManager.SUGGEST_COLUMN_ICON_1 + ", " +
                     "null as " + SearchManager.SUGGEST_COLUMN_ICON_2 + ", " +
-                    "2 as type, " +
+                    "3 as type, " +
                     "null as time " +
                     "from Food f " +
-                    "where f.name like :searchTerm " +
+                    "where f.name like :contiguousQuery " +
                     "and f.valid_time_start <= " + NOW +
                     "and " + NOW + " < f.valid_time_end " +
                     "and f.transaction_time_end = :infinity " +
@@ -77,11 +77,44 @@ public abstract class SearchSuggestionDao {
                     "1 as type ," +
                     "s.last_queried as time " +
                     "from Search_suggestion s " +
-                    "where s.term like :searchTerm " +
+                    "where s.term like :contiguousQuery " +
+                    "order by s.last_queried desc " +
+                    "limit 10" +
+                ") union all select * from (" +
+                    "select 0 as " + BaseColumns._ID + ", " +
+                    "f.name as " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", " +
+                    "f.name as " + SearchManager.SUGGEST_COLUMN_QUERY + ", " +
+                    "'" + Intent.ACTION_VIEW + "' as " + SearchManager.SUGGEST_COLUMN_INTENT_ACTION + ", " +
+                    "f._id as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + ", " +
+                    "'" + ContentResolver.SCHEME_ANDROID_RESOURCE + "://de.njsm.stocks/drawable/ic_local_dining_black_24dp' as " + SearchManager.SUGGEST_COLUMN_ICON_1 + ", " +
+                    "null as " + SearchManager.SUGGEST_COLUMN_ICON_2 + ", " +
+                    "4 as type, " +
+                    "null as time " +
+                    "from Food f " +
+                    "where f.name like :subsequenceQuery " +
+                    "and f.name not like :contiguousQuery " +
+                    "and f.valid_time_start <= " + NOW +
+                    "and " + NOW + " < f.valid_time_end " +
+                    "and f.transaction_time_end = :infinity " +
+                    "order by length(" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") desc " +
+                    "limit 6" +
+                ") union all select * from (" +
+                    "select 0 as " + BaseColumns._ID + ", " +
+                    "s.term as " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", " +
+                    "s.term as " + SearchManager.SUGGEST_COLUMN_QUERY + ", " +
+                    "'" + Intent.ACTION_SEARCH + "' as " + SearchManager.SUGGEST_COLUMN_INTENT_ACTION + ", " +
+                    "null as " + SearchManager.SUGGEST_COLUMN_ICON_1 + ", " +
+                    "'" + ContentResolver.SCHEME_ANDROID_RESOURCE + "://de.njsm.stocks/drawable/ic_menu_recent_history_24dp' as " + SearchManager.SUGGEST_COLUMN_ICON_2 + ", " +
+                    "null as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + ", " +
+                    "2 as type ," +
+                    "s.last_queried as time " +
+                    "from Search_suggestion s " +
+                    "where s.term like :subsequenceQuery " +
+                    "and s.term not like :contiguousQuery " +
                     "order by s.last_queried desc " +
                     "limit 10" +
                 ")" +
             ") " +
             "order by type, time desc, length(" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") desc")
-    abstract Cursor getFoodBySubStringJoiningStoredSuggestions(String searchTerm, Instant infinity);
+    abstract Cursor getFoodBySubStringJoiningStoredSuggestions(String contiguousQuery, String subsequenceQuery, Instant infinity);
 }

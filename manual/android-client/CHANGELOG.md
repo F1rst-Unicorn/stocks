@@ -4,6 +4,11 @@
 
 ### Added
 
+* Allow searching for [subsequences](https://en.wikipedia.org/wiki/Subsequence)
+  of food names. So searching for 'crt' can find the food 'Carrot' as all
+  searched characters appear in the result in the same order.
+  ([#36](https://gitlab.com/veenj/stocks/-/issues/36))
+
 * Hide recipe ingredients and products with amount 0 so they can be used to mark
   "optional" ingredients / products.
   ([#18](https://gitlab.com/veenj/stocks/-/issues/18))

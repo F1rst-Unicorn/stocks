@@ -26,16 +26,14 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import javax.inject.Inject;
-
 import dagger.android.AndroidInjection;
 import de.njsm.stocks.android.db.dao.SearchSuggestionDao;
 import de.njsm.stocks.android.db.entities.SearchSuggestion;
 import de.njsm.stocks.android.util.Logger;
+
+import javax.inject.Inject;
 
 public class RecentSearchSuggestionsProvider extends ContentProvider {
 
@@ -93,17 +91,32 @@ public class RecentSearchSuggestionsProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         initialise();
         if (matcher.match(uri) == 0) {
-            String query = uri.getLastPathSegment();
-            if (query == null || query.equals(SearchManager.SUGGEST_URI_PATH_QUERY))
-                query = "";
+            String queryInput = uri.getLastPathSegment();
+            if (queryInput == null || queryInput.equals(SearchManager.SUGGEST_URI_PATH_QUERY))
+                queryInput = "";
 
-            query = "%" + query + "%";
+            String contiguousQuery = buildContiguousQueryString(queryInput);
+            String subsequenceQuery = buildSubsequenceQueryString(queryInput);
 
-            LOG.d("Searching for " + query);
-            return searchSuggestionDao.getFoodBySubStringJoiningStoredSuggestions(query);
+            LOG.d("Searching for " + queryInput);
+            return searchSuggestionDao.getFoodBySubStringJoiningStoredSuggestions(contiguousQuery, subsequenceQuery);
         } else {
             throw new IllegalArgumentException("Uri: " + uri.toString());
         }
+    }
+
+    private String buildContiguousQueryString(String query) {
+        return '%' + query + '%';
+    }
+
+    private String buildSubsequenceQueryString(String query) {
+        StringBuilder queryBuilder = new StringBuilder(query.length() * 2 + 1);
+        queryBuilder.append('%');
+        for (char c : query.toCharArray()) {
+            queryBuilder.append(c);
+            queryBuilder.append('%');
+        }
+        return queryBuilder.toString();
     }
 
     @Nullable
