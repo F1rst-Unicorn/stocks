@@ -53,6 +53,37 @@ info:
     to denote _infinity_ and in transaction time to denote _now_. It corresponds
     to 9223372036825200000 milliseconds since epoch.
 
+    #### Status Codes
+
+    Numbers reporting the result status of a request. The API refers to this
+    via the `StatusCode` type.
+
+    * `0`: Success
+
+    * `1`: General error
+
+    * `2`: Not found
+
+    * `3`: Invalid data version
+
+    * `4`: Foreign key constraint violation
+
+    * `5`: Database unreachable
+
+    * `6`: Access denied
+
+    * `7`: Invalid argument
+
+    * `8`: Certificate authority unreachable
+
+    * `9`: Serialisation conflict. Will not be sent via API
+
+    #### Principal names
+
+    User and device names are part of the so called principals. They must not
+    contain `=` or `$`.
+
+
 components:
   schemas:
     Response:
@@ -107,14 +138,12 @@ components:
                 The end of the time (exclusively) during which this entity is
                 part of the most recent truth on the data.
     User:
-      allOf:
-        - $ref: '#/components/schemas/Data'
-        - type: object
-          properties:
-            name:
-              type: string
-              description: |
-                The name of the user. Invalid if it contains '$' or '='.
+      type: object
+      properties:
+        name:
+          type: string
+          description: |
+            The principal name of the user.
 
   parameters:
     id:
@@ -151,10 +180,56 @@ components:
       description: |
         A timestamp stating that a GET response shall only include entities
         younger or equal to this value in transaction time. This is used to only
-        get the latest changes to a table relative to an earlier query.
+        get the latest changes to a table relative to an earlier query. Must be
+        present if `bitemporal` is 1.
+
+  responses:
+    "GET-400":
+      description: No `startingFrom` given.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+    "500":
+      description: |
+        * CA unreachable (User device operations only)
+        * Database unreachable
+        * General error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+
+    "PUT-400-Principal-name":
+      description: |
+        This principal name is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+
 
 paths:
   /v2/user:
+    put:
+      parameters:
+        - name: name
+          in: query
+          description: The principal name of the new user.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        "400":
+          $ref: '#/components/responses/PUT-400-Principal-name'
+        "500":
+          $ref: '#/components/responses/500'
+
     get:
       parameters:
         - $ref: '#/components/parameters/bitemporal'
@@ -172,4 +247,14 @@ paths:
                       data:
                         type: array
                         items:
-                          $ref: '#/components/schemas/User'
+                          anyOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/User'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/User'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
