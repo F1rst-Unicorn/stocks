@@ -199,10 +199,28 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
-
     "PUT-400-Principal-name":
       description: |
         This principal name is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+
+    "DELETE-400":
+      description: |
+        * This entity cannot be deleted because some other entity refers to it,
+          e.g. a user still having devices or a location still containing food.
+        * The entity was requested for deletion in the wrong version
+        * Invalid input (see parameter limits)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+
+    "404":
+      description: |
+        * No entity with this id found
       content:
         application/json:
           schema:
@@ -247,7 +265,7 @@ paths:
                       data:
                         type: array
                         items:
-                          anyOf:
+                          oneOf:
                             - allOf:
                                 - $ref: '#/components/schemas/User'
                                 - $ref: '#/components/schemas/BitemporalData'
@@ -256,5 +274,22 @@ paths:
                                 - $ref: '#/components/schemas/Data'
         "400":
           $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        "200":
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        "400":
+          $ref: '#/components/responses/DELETE-400'
+        "404":
+          $ref: '#/components/responses/404'
         "500":
           $ref: '#/components/responses/500'
