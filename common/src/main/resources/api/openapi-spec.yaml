@@ -83,6 +83,11 @@ info:
     User and device names are part of the so called principals. They must not
     contain `=` or `$`.
 
+security:
+  - type: mutualTls
+
+externalDocs:
+  url: https://gitlab.com/veenj/stocks
 
 components:
   schemas:
@@ -94,7 +99,6 @@ components:
           minimum: 0
           maximum: 9
           description: See general description, section "Status Codes"
-
     Data:
       type: object
       properties:
