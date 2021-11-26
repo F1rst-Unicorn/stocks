@@ -22,6 +22,8 @@ plugins {
     id 'checkstyle'
 }
 
+String customGeneratedSources = "generated/source/custom/"
+
 android {
     compileSdkVersion 30
 
@@ -32,19 +34,75 @@ android {
         versionName "0.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDir "${buildDir}/${customGeneratedSources}"
+        }
     }
 
     buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+            jniDebuggable true
+        }
         release {
+            debuggable false
             minifyEnabled false
         }
     }
+
+    lintOptions {
+        checkAllWarnings true
+        abortOnError false
+        lintConfig file(projectDir.getAbsolutePath() + "/config/android-lint/lint.xml")
+    }
+
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
+    implementation 'javax.inject:javax.inject:1'
+    implementation "androidx.room:room-runtime:2.3.0"
+    implementation 'androidx.room:room-rxjava3:2.3.0'
+    implementation 'com.github.requery:sqlite-android:3.35.5'
+    implementation 'de.njsm.stocks:client-core:0.1'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.3'
 
+    annotationProcessor "androidx.room:room-compiler:2.3.0"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation 'org.mockito:mockito-core:2.27.0'
+    testImplementation 'org.apache.logging.log4j:log4j-api:2.13.3'
+    testImplementation 'org.apache.logging.log4j:log4j-core:2.13.3'
+    testImplementation 'org.apache.logging.log4j:log4j-web:2.13.3'
+    testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.3'
+    testImplementation "androidx.room:room-testing:2.3.0"
+
+    androidTestImplementation 'junit:junit:4.12'
+}
+
+task generateSqlSnippets(type: Exec) {
+    outputs.dir("${buildDir}/${customGeneratedSources}")
+    inputs.file('bin/generate_sql.sh')
+    mkdir "${buildDir}/${customGeneratedSources}"
+    commandLine('bin/generate_sql.sh', "${buildDir}/${customGeneratedSources}/de/njsm/stocks/client/db/Sql.java")
+}
+
+tasks.withType(JavaCompile) {
+    compileTask -> compileTask.dependsOn generateSqlSnippets
 }

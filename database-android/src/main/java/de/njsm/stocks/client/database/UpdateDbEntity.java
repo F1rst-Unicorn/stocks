@@ -17,22 +17,47 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-buildscript {
-    repositories {
-        mavenCentral()
-        google()
+package de.njsm.stocks.client.database;
+
+
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+
+import java.time.Instant;
+
+
+@Entity(tableName = "updates", primaryKeys = {"_id"})
+class UpdateDbEntity {
+
+    @ColumnInfo(name = "_id")
+    private int id;
+
+    @ColumnInfo(name = "name")
+    @NonNull
+    private String table;
+
+    @ColumnInfo(name = "last_update")
+    @NonNull
+    private Instant lastUpdate;
+
+    UpdateDbEntity(int id, String table, Instant lastUpdate) {
+        this.id = id;
+        this.table = table;
+        this.lastUpdate = lastUpdate;
     }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
+    int getId() {
+        return id;
     }
-}
 
-allprojects {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        google()
-        maven { url 'https://jitpack.io' }
+    @NonNull
+    String getTable() {
+        return table;
+    }
+
+    @NonNull
+    Instant getLastUpdate() {
+        return lastUpdate;
     }
 }
