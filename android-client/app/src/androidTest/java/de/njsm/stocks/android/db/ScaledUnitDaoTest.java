@@ -49,7 +49,7 @@ public class ScaledUnitDaoTest extends InsertionTest<ScaledUnit> {
 
     @Override
     ScaledUnit getDto() {
-        return new ScaledUnit(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, ONE, 1);
+        return new ScaledUnit(1, Instant.EPOCH, Config.API_INFINITY, Instant.EPOCH, Config.API_INFINITY, 0, 1, ONE, 1);
     }
 
     @Override

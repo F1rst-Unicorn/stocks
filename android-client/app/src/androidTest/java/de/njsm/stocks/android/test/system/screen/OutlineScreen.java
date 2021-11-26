@@ -121,7 +121,8 @@ public class OutlineScreen extends AbstractScreen {
     }
 
     public OutlineScreen assertRegistrationSuccess() {
-        onView(withId(android.R.id.message))
+        sleep(20000);
+        onView(allOf(withId(android.R.id.message), withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
                 .check(matches(withText(R.string.dialog_finished)));
 
         ViewInteraction appCompatButton = onView(

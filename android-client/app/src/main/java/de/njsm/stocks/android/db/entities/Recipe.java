@@ -87,13 +87,14 @@ public class Recipe extends VersionedData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Recipe)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Recipe recipe = (Recipe) o;
         return getName().equals(recipe.getName()) && getInstructions().equals(recipe.getInstructions()) && getDuration().equals(recipe.getDuration());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getInstructions(), getDuration());
+        return Objects.hash(super.hashCode(), getName(), getInstructions(), getDuration());
     }
 }

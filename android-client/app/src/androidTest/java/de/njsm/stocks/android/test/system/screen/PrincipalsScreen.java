@@ -91,10 +91,9 @@ public class PrincipalsScreen {
     }
 
     public OutlineScreen submit() {
-        onView(withId(R.id.fragment_principals_ticket)).perform(scrollTo());
+        onView(withId(R.id.fragment_principals_fingerprint)).perform(swipeUp());
         onView(withId(R.id.fragment_principals_ticket)).perform(swipeUp());
-        onView(withId(R.id.fragment_principals_button_back)).perform(scrollTo());
-        onView(withId(R.id.fragment_principals_button)).perform(scrollTo(), click());
+        onView(withId(R.id.fragment_principals_button)).perform(click());
         return new OutlineScreen();
     }
 }

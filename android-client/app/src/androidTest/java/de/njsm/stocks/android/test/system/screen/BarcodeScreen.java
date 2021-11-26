@@ -46,7 +46,7 @@ public class BarcodeScreen extends AbstractListPresentingScreen {
         onView(withText(R.string.action_undo))
                 .perform(swipeRight());
 
-        sleep(700);
+        sleep(1000);
         return this;
     }
 

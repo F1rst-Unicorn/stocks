@@ -46,7 +46,7 @@ public class RecipeDaoTest extends InsertionTest<Recipe> {
 
     @Override
     public Recipe getDto() {
-        return new Recipe(1, Instant.EPOCH, Config.DATABASE_INFINITY, Instant.EPOCH, Config.DATABASE_INFINITY, 0, 1, "name", "instructions", Duration.ofHours(1));
+        return new Recipe(1, Instant.EPOCH, Config.API_INFINITY, Instant.EPOCH, Config.API_INFINITY, 0, 1, "name", "instructions", Duration.ofHours(1));
     }
 
     @Override

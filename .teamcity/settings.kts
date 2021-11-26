@@ -56,14 +56,6 @@ project {
     buildType(Build)
 
     features {
-        youtrack {
-            id = "PROJECT_EXT_1"
-            displayName = "YouTrack"
-            host = "https://j.njsm.de/youtrack"
-            userName = "Jan_Veen"
-            password = "credentialsJSON:41891c3f-2007-42a0-ac33-c6281d54301b"
-            projectExtIds = "STOCKS"
-        }
         feature {
             id = "PROJECT_EXT_2"
             type = "OAuthProvider"
@@ -153,7 +145,6 @@ object Build : BuildType({
                 """.trimIndent()
             }
         }
-/* Android instrumented tests disabled for the CI has no emulator ATM
         gradle {
             name = "Android Client Instrumented Test"
             tasks = "connectedDebugAndroidTest"
@@ -166,7 +157,6 @@ object Build : BuildType({
                 -Pandroid.testInstrumentationRunnerArguments.notPackage=de.njsm.stocks.android.test.system
             """.trimIndent()
         }
-*/
         exec {
             name = "Package server"
             workingDir = "deploy-server"
@@ -220,12 +210,10 @@ object Build : BuildType({
             name = "Client Deployment test"
             path = "client/src/test/system/bin/vm-deployment-test.sh"
         }
-/* Android instrumented tests disabled for the CI has no emulator ATM
         exec {
             name = "Android Deployment test"
             path = "android-client/app/src/test/system/bin/vm-deployment-test.sh"
         }
-*/
     }
 
     triggers {
