@@ -270,6 +270,75 @@ components:
           type: string
           description: |
             The EAN Code
+    Unit:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the unit
+        abbreviation:
+          type: string
+          description: The abbreviation of the unit
+    ScaledUnit:
+      type: object
+      properties:
+        scale:
+          type: number
+          description: The scale of the unit
+        unit:
+          type: integer
+          description: An id referencing the unit of this scaled unit
+    Recipe:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the recipe
+        instructions:
+          type: string
+          description: The cooking instructions for the recipe.
+        duration:
+          type: integer
+          minimum: 1
+          description: The number of minutes the recipe takes to prepare.
+    RecipeIngredient:
+      type: object
+      properties:
+        amount:
+          type: integer
+          description: The number of food this ingredient takes
+          minimum: 0
+        ingredient:
+          type: integer
+          minimum: 1
+          description: An id referencing the food to use as ingredient
+        recipe:
+          type: integer
+          minimum: 1
+          description: An id referencing the recipe this ingredient belongs to
+        unit:
+          type: integer
+          minimum: 1
+          description: An id referencing the scaled unit this ingredient takes.
+    RecipeProduct:
+      type: object
+      properties:
+        amount:
+          type: integer
+          description: The number of food this product takes
+          minimum: 0
+        product:
+          type: integer
+          minimum: 1
+          description: An id referencing the food this recipe produces
+        recipe:
+          type: integer
+          minimum: 1
+          description: An id referencing the recipe this product belongs to
+        unit:
+          type: integer
+          minimum: 1
+          description: An id referencing the scaled unit this product takes.
 
   parameters:
     id:
@@ -955,5 +1024,150 @@ paths:
           $ref: '#/components/responses/DELETE-400'
         "404":
           $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/unit:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all units of measure of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          oneOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/Unit'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/Unit'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/scaled-unit:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all scaled units of measure of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          oneOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/ScaledUnit'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/ScaledUnit'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/recipe:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all recipes of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          oneOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/Recipe'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/Recipe'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/recipe-ingredient:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all recipe ingredients of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          oneOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/RecipeIngredient'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/RecipeIngredient'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/recipe-product:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all recipe products of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          oneOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/RecipeProduct'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/RecipeProduct'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
         "500":
           $ref: '#/components/responses/500'
