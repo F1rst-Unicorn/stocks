@@ -159,6 +159,7 @@ components:
           description: The principal name of the user device.
         userId:
           type: integer
+          minimum: 1
           description: The id referencing the owning user.
     Update:
       type: object
@@ -207,6 +208,7 @@ components:
           minimum: 0
         location:
           type: integer
+          minimum: 1
           description: |
             An id referencing the location where this food type is usually
             stored in.
@@ -215,13 +217,46 @@ components:
           description: Is this food type marked to buy.
         storeUnit:
           type: integer
+          minimum: 1
           description: |
             An id referencing the scaled unit which items of this type usually
             have.
         description:
           type: string
           description: Some description for users to set
-
+    FoodItem:
+      type: object
+      properties:
+        registers:
+          type: integer
+          minimum: 1
+          description: |
+            An id referencing the user device initially registering the food
+            item.
+        eatByDate:
+          type: string
+          description: A timestamp telling when the food item should be consumed
+        ofType:
+          type: integer
+          minimum: 1
+          description: |
+            An id referencing the food type that describes this item.
+        storedIn:
+          type: integer
+          minimum: 1
+          description: |
+            An id referencing the location where the item is stored.
+        buys:
+          type: integer
+          minimum: 1
+          description: |
+            An id referencing the user who initially bought this item.
+        unit:
+          type: integer
+          minimum: 1
+          description: |
+            An id referencing the scaled unit that describes the amount of this
+            item.
 
   parameters:
     id:
@@ -723,5 +758,117 @@ paths:
           $ref: '#/components/responses/DELETE-400'
         "404":
           $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/fooditem:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all food types of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          oneOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/FoodItem'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/FoodItem'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+    put:
+      parameters:
+        - name: eatByDate
+          in: query
+          required: true
+          description: The timestamp by when the item should be consumed
+          schema:
+            type: string
+        - name: storedIn
+          in: query
+          required: true
+          description: An id referencing the location where this item is stored.
+          schema:
+            type: integer
+            minimum: 1
+        - name: ofType
+          in: query
+          required: true
+          description: An id referencing the food this item is type of.
+          schema:
+            type: integer
+            minimum: 1
+        - name: unit
+          in: query
+          required: true
+          description: An id referencing the scaled unit of this item.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      description: |
+        Delete the food item.
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/DELETE-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/fooditem/edit:
+    put:
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+        - name: eatByDate
+          in: query
+          required: true
+          description: The timestamp by when the item should be consumed
+          schema:
+            type: string
+        - name: storedIn
+          in: query
+          required: true
+          description: An id referencing the location where this item is stored.
+          schema:
+            type: integer
+            minimum: 1
+        - name: unit
+          in: query
+          required: true
+          description: An id referencing the scaled unit of this item.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
         "500":
           $ref: '#/components/responses/500'
