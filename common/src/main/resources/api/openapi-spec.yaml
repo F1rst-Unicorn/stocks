@@ -312,14 +312,19 @@ components:
           type: integer
           minimum: 1
           description: An id referencing the food to use as ingredient
-        recipe:
-          type: integer
-          minimum: 1
-          description: An id referencing the recipe this ingredient belongs to
         unit:
           type: integer
           minimum: 1
           description: An id referencing the scaled unit this ingredient takes.
+    RecipeIngredientWithRecipeId:
+      allOf:
+        - $ref: '#/components/schemas/RecipeIngredient'
+        - type: object
+          properties:
+            recipe:
+              type: integer
+              minimum: 1
+              description: An id referencing the recipe this ingredient belongs to
     RecipeProduct:
       type: object
       properties:
@@ -331,14 +336,19 @@ components:
           type: integer
           minimum: 1
           description: An id referencing the food this recipe produces
-        recipe:
-          type: integer
-          minimum: 1
-          description: An id referencing the recipe this product belongs to
         unit:
           type: integer
           minimum: 1
           description: An id referencing the scaled unit this product takes.
+    RecipeProductWithRecipeId:
+      allOf:
+        - $ref: '#/components/schemas/RecipeProduct'
+        - type: object
+          properties:
+            recipe:
+              type: integer
+              minimum: 1
+              description: An id referencing the recipe this product belongs to
 
   parameters:
     id:
@@ -1107,6 +1117,8 @@ paths:
           $ref: '#/components/responses/200-write'
         "400":
           $ref: '#/components/responses/PUT-400'
+        "404":
+          $ref: '#/components/responses/404'
         "500":
           $ref: '#/components/responses/500'
   /v2/scaled-unit:
@@ -1188,6 +1200,8 @@ paths:
           $ref: '#/components/responses/200-write'
         "400":
           $ref: '#/components/responses/PUT-400'
+        "404":
+          $ref: '#/components/responses/404'
         "500":
           $ref: '#/components/responses/500'
   /v2/recipe:
@@ -1217,6 +1231,105 @@ paths:
                                 - $ref: '#/components/schemas/Data'
         "400":
           $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+    put:
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                recipe:
+                  $ref: '#/components/schemas/Recipe'
+                ingredients:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RecipeIngredient'
+                products:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RecipeProduct'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                recipe:
+                  $ref: '#/components/schemas/Data'
+                ingredients:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Data'
+                products:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Data'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/DELETE-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/recipe/edit:
+    put:
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                recipe:
+                  allOf:
+                    - $ref: '#/components/schemas/Data'
+                    - $ref: '#/components/schemas/Recipe'
+                ingredients:
+                  type: array
+                  items:
+                    allOf:
+                      - $ref: '#/components/schemas/Data'
+                      - $ref: '#/components/schemas/RecipeIngredientWithRecipeId'
+                ingredientsToInsert:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RecipeIngredient'
+                ingredientsToDelete:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Data'
+                products:
+                  type: array
+                  items:
+                    allOf:
+                      - $ref: '#/components/schemas/Data'
+                      - $ref: '#/components/schemas/RecipeProductWithRecipeId'
+                productsToInsert:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RecipeProduct'
+                productsToDelete:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Data'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "404":
+          $ref: '#/components/responses/404'
         "500":
           $ref: '#/components/responses/500'
   /v2/recipe-ingredient:
