@@ -262,6 +262,7 @@ components:
       name: name
       in: query
       description: The principal name of the user or user device.
+      required: true
       schema:
         type: string
         minLength: 1
@@ -270,6 +271,7 @@ components:
       name: name
       in: query
       description: The name of the entity.
+      required: true
       schema:
         type: string
 
@@ -624,5 +626,102 @@ paths:
                                 - $ref: '#/components/schemas/Data'
         "400":
           $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+    put:
+      parameters:
+        - $ref: '#/components/parameters/name'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/food/edit:
+    put:
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+        - name: new
+          in: query
+          description: The new name of the entity.
+          schema:
+            type: string
+            minLength: 1
+        - name: expirationOffset
+          in: query
+          description: The new expiration offset to set in days.
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: location
+          in: query
+          description: |
+            The id referencing the default location for this food to set.
+          required: false
+        - name: storeunit
+          in: query
+          description: |
+            The id referencing the default scaled unit this food is registered
+            with.
+          required: false
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/food/buy:
+    put:
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+        - name: buy
+          in: query
+          required: true
+          description: Whether the food is to be set to buy
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      description: |
+        Delete the food type. This will delete all items and EAN codesof this
+        type as well.
+
+        This is only possible if no recipe ingredient or recipe product
+        references this food type.
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/DELETE-400'
+        "404":
+          $ref: '#/components/responses/404'
         "500":
           $ref: '#/components/responses/500'
