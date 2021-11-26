@@ -21,8 +21,24 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.Dao;
+import androidx.room.*;
+
+import java.util.List;
 
 @Dao
-public abstract class SynchronisationDao {
+abstract class SynchronisationDao {
+
+    @Query("select * from updates")
+    abstract List<UpdateDbEntity> getAll();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract void set(List<UpdateDbEntity> updates);
+
+    @Transaction
+    void reset() {
+        delete();
+    }
+
+    @Query("delete from updates")
+    abstract void delete();
 }

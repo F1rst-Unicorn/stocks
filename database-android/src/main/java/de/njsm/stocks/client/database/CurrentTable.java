@@ -1,6 +1,6 @@
 /*
  * stocks is client-server program to manage a household's food stock
- * Copyright (C) 2019  The stocks developers
+ * Copyright (C) 2021  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -16,32 +16,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.*;
+import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY_STRING;
+import static de.njsm.stocks.client.database.StocksDatabase.NOW;
 
-import java.util.List;
-
-@Dao
-public abstract class LocationDao implements Inserter<LocationDbEntity> {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(List<LocationDbEntity> locations);
-
-
-    @Query("select *" +
-            "from current_location")
-    public abstract List<LocationDbEntity> getAll();
-
-    @Transaction
-    public void synchronise(List<LocationDbEntity> locations) {
-        delete();
-        insert(locations);
-    }
-
-    @Query("delete from location")
-    abstract void delete();
+public abstract class CurrentTable {
+    public static final String NOW_AS_BEST_KNOWN =
+            "where valid_time_start <= " + NOW +
+            "and " + NOW + " < valid_time_end " +
+            "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "'";
 }

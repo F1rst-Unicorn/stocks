@@ -32,6 +32,7 @@ import java.time.format.DateTimeFormatter;
                 LocationDbEntity.class,
         },
         views = {
+                CurrentLocationDbView.class,
         },
         version = 40)
 @androidx.room.TypeConverters(TypeConverters.class)
@@ -46,15 +47,17 @@ public abstract class StocksDatabase extends RoomDatabase {
      * This solution prevents entities to be presented to the user which will be
      * absent on the server in the same second as the one reported by <code>datetime('now')</code>.
      */
-    public static final String NOW = "(select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) ";
+    static final String NOW = "(select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) ";
 
-    public static final DateTimeFormatter DATABASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS").withZone(ZoneId.of("UTC"));
+    static final DateTimeFormatter DATABASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS").withZone(ZoneId.of("UTC"));
 
-    public static final String DATABASE_INFINITY_STRING = "9999-12-31 23:59:59.999999";
+    static final String DATABASE_INFINITY_STRING = "9999-12-31 23:59:59.999999";
 
-    public static final Instant DATABASE_INFINITY = DATABASE_DATE_FORMAT.parse(DATABASE_INFINITY_STRING, Instant::from);
+    static final Instant DATABASE_INFINITY = DATABASE_DATE_FORMAT.parse(DATABASE_INFINITY_STRING, Instant::from);
 
-    public abstract LocationDao locationDao();
+    abstract LocationDao locationDao();
 
-    public abstract SynchronisationDao updateDao();
+    abstract SynchronisationDao synchronisationDao();
+
+    abstract MetadataDao metadataDao();
 }

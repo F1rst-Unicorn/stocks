@@ -25,6 +25,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @Entity(tableName = "location", primaryKeys = {"_id", "version", "transaction_time_start"},
         indices = {
@@ -37,11 +38,11 @@ class LocationDbEntity extends DbEntity {
 
     @ColumnInfo(name = "name")
     @NonNull
-    private final String name;
+    private String name;
 
     @ColumnInfo(name = "description")
     @NonNull
-    private final String description;
+    private String description;
 
     LocationDbEntity(int id, int version, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int initiates, String name, @NonNull String description) {
         super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
@@ -57,5 +58,27 @@ class LocationDbEntity extends DbEntity {
     @NonNull
     String getDescription() {
         return description;
+    }
+
+    public void setName(@NonNull String name) {
+        this.name = name;
+    }
+
+    public void setDescription(@NonNull String description) {
+        this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        LocationDbEntity that = (LocationDbEntity) o;
+        return getName().equals(that.getName()) && getDescription().equals(that.getDescription());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getName(), getDescription());
     }
 }

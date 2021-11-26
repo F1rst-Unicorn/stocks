@@ -1,5 +1,4 @@
-/*
- * stocks is client-server program to manage a household's food stock
+/* stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -16,32 +15,17 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.*;
-
 import java.util.List;
 
-@Dao
-public abstract class LocationDao implements Inserter<LocationDbEntity> {
+interface Inserter<T> {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(List<LocationDbEntity> locations);
+    void insert(List<T> data);
 
+    void synchronise(List<T> data);
 
-    @Query("select *" +
-            "from current_location")
-    public abstract List<LocationDbEntity> getAll();
-
-    @Transaction
-    public void synchronise(List<LocationDbEntity> locations) {
-        delete();
-        insert(locations);
-    }
-
-    @Query("delete from location")
-    abstract void delete();
+    List<T> getAll();
 }
