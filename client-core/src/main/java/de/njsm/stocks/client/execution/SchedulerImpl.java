@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,15 +16,17 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.android.execution;
+package de.njsm.stocks.client.execution;
 
-import de.njsm.stocks.android.business.Job;
-import de.njsm.stocks.android.business.Scheduler;
-import de.njsm.stocks.android.business.SchedulerStatusReporter;
+import de.njsm.stocks.client.business.Scheduler;
+import de.njsm.stocks.client.business.SchedulerStatusReporter;
+import de.njsm.stocks.client.business.entities.Job;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import io.reactivex.rxjava3.subjects.Subject;
 
 import javax.inject.Inject;
 import java.util.concurrent.Executor;
@@ -35,13 +38,13 @@ public class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
 
     private final AtomicInteger counter;
 
-    private final BehaviorSubject<Integer> numberOfRunningJobs;
+    private final Subject<Integer> numberOfRunningJobs;
 
     @Inject
     public SchedulerImpl(Executor executor) {
         this.executor = executor;
         counter = new AtomicInteger(0);
-        numberOfRunningJobs = BehaviorSubject.createDefault(counter.get());
+        numberOfRunningJobs = BehaviorSubject.createDefault(counter.get()).toSerialized();
     }
 
     @Override
