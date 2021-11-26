@@ -91,6 +91,14 @@ externalDocs:
 
 components:
   schemas:
+    id:
+      type: integer
+      minimum: 1
+      description: the primary identifier of the entity
+    version:
+      type: integer
+      minimum: 0
+      description: the current version of the entity
     Response:
       type: object
       properties:
@@ -103,13 +111,9 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          minimum: 1
-          description: the primary identifier of the entity
+          $ref: '#/components/schemas/id'
         version:
-          type: integer
-          minimum: 0
-          description: the current version of the entity
+          $ref: '#/components/schemas/version'
     BitemporalData:
       allOf:
         - $ref: '#/components/schemas/Data'
@@ -146,8 +150,78 @@ components:
       properties:
         name:
           type: string
+          description: The principal name of the user.
+    UserDevice:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The principal name of the user device.
+        userId:
+          type: integer
+          description: The id referencing the owning user.
+    Update:
+      type: object
+      properties:
+        table:
+          type: string
           description: |
-            The principal name of the user.
+            One of
+              * `User_device`
+              * `User`
+              * `Food`
+              * `Location`
+              * `Food_item`
+              * `EAN_number`
+              * `unit`
+              * `scaled_unit`
+              * `recipe`
+              * `recipe_ingredient`
+              * `recipe_product`
+            The developers present their apologies for the inconsistent casing.
+        lastUpdate:
+          type: string
+          description: |
+            The timestamp when the last insertion or update on the table
+            happened.
+    Location:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the location
+          minLength: 1
+        description:
+          type: string
+          description: Some description for users to set
+    Food:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the food type
+          minLength: 1
+        expirationOffset:
+          type: integer
+          description: The number of days after which this food usually expires
+          minimum: 0
+        location:
+          type: integer
+          description: |
+            An id referencing the location where this food type is usually
+            stored in.
+        toBuy:
+          type: boolean
+          description: Is this food type marked to buy.
+        storeUnit:
+          type: integer
+          description: |
+            An id referencing the scaled unit which items of this type usually
+            have.
+        description:
+          type: string
+          description: Some description for users to set
+
 
   parameters:
     id:
@@ -155,16 +229,14 @@ components:
       in: query
       required: true
       schema:
-        type: integer
-        minimum: 1
+        $ref: '#/components/schemas/id'
       description: the primary identifier of the entity
     version:
       name: version
       in: query
       required: true
       schema:
-        type: integer
-        minimum: 0
+        $ref: '#/components/schemas/version'
       description: the version of the entity on which the request operates
     bitemporal:
       name: bitemporal
@@ -186,8 +258,28 @@ components:
         younger or equal to this value in transaction time. This is used to only
         get the latest changes to a table relative to an earlier query. Must be
         present if `bitemporal` is 1.
+    principalName:
+      name: name
+      in: query
+      description: The principal name of the user or user device.
+      schema:
+        type: string
+        minLength: 1
+        pattern: "[^$=]+"
+    name:
+      name: name
+      in: query
+      description: The name of the entity.
+      schema:
+        type: string
 
   responses:
+    "200-write":
+      description: Data modification successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
     "GET-400":
       description: No `startingFrom` given.
       content:
@@ -206,6 +298,14 @@ components:
     "PUT-400-Principal-name":
       description: |
         This principal name is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+
+    "PUT-400":
+      description: |
+        * Invalid name given (absent or empty)
       content:
         application/json:
           schema:
@@ -232,26 +332,36 @@ components:
 
 
 paths:
-  /v2/user:
-    put:
-      parameters:
-        - name: name
-          in: query
-          description: The principal name of the new user.
-          schema:
-            type: string
+  /v2/update:
+    get:
       responses:
         "200":
-          description: User created successfully
+          description: Return for each table when the last write to it occured
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response'
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Update'
+        "500":
+          $ref: '#/components/responses/500'
+
+  /v2/user:
+    put:
+      parameters:
+        - $ref: '#/components/parameters/principalName'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
         "400":
           $ref: '#/components/responses/PUT-400-Principal-name'
         "500":
           $ref: '#/components/responses/500'
-
     get:
       parameters:
         - $ref: '#/components/parameters/bitemporal'
@@ -281,19 +391,238 @@ paths:
         "500":
           $ref: '#/components/responses/500'
     delete:
+      description: |
+        Delete the user. Only possible if all his devices have been deleted
+        already.
+
+        Any food item bought by this user will be set to be bought by the user
+        issuing this request.
       parameters:
         - $ref: '#/components/parameters/id'
         - $ref: '#/components/parameters/version'
       responses:
         "200":
-          description: User deleted successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
+          $ref: '#/components/responses/200-write'
         "400":
           $ref: '#/components/responses/DELETE-400'
         "404":
           $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/device:
+    put:
+      parameters:
+        - $ref: '#/components/parameters/principalName'
+        - name: belongsTo
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/id'
+      responses:
+        "200":
+          description: Return the ticket for the new device
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          deviceId:
+                            $ref: '#/components/schemas/id'
+                          ticket:
+                            type: string
+        "400":
+          description: |
+            * Invalid principal name
+            * Invalid input (see parameter limits)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all user devices of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          oneOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/UserDevice'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/UserDevice'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      description: |
+        Delete the device and revoke access to the API via TLS certificate
+        revokation.
+
+        A device cannot delete itself or any device belonging user "Stocks".
+
+        Any food item registered by this device will be set to be registered by
+        the user device issuing this request.
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/DELETE-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/location:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all locations of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          oneOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/Location'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/Location'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+    put:
+      parameters:
+        - $ref: '#/components/parameters/name'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      description: |
+        Delete the location. Only possible if no food items are inside.
+
+        Any food type referencing this location will end up without default
+        location.
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/DELETE-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/location/rename:
+    put:
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+        - name: new
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/location/description:
+    post:
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - description
+              properties:
+                description:
+                  type: string
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/food:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all food types of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          oneOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/Food'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/Food'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
         "500":
           $ref: '#/components/responses/500'
