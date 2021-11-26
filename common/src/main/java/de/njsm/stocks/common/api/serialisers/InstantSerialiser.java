@@ -43,6 +43,10 @@ public class InstantSerialiser extends StdSerializer<Instant> {
 
     @Override
     public void serialize(Instant value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        gen.writeString(FORMAT.format(value));
+        gen.writeString(serialize(value));
+    }
+
+    public static String serialize(Instant value) {
+        return FORMAT.format(value);
     }
 }

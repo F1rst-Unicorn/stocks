@@ -17,14 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.android.business;
+rootProject.name = 'stocks'
 
-import io.reactivex.rxjava3.core.Observable;
-
-import java.util.List;
-
-public interface LocationListInteractor {
-
-    Observable<List<LocationForListing>> getLocations();
-
-}
+include ':client-core'
+include ':database-android'
+include ':client-network'

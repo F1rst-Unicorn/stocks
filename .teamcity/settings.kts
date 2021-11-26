@@ -128,6 +128,28 @@ object Build : BuildType({
             }
         }
         gradle {
+            name = "Assemble new module system"
+            tasks = "test assemble publishToMavenLocal"
+            buildFile = "build.gradle"
+            gradleHome = "/usr/bin/gradle"
+            gradleWrapperPath = "."
+            enableStacktrace = true
+            coverageEngine = idea {
+                includeClasses = "de.njsm.*"
+                excludeClasses = """
+                    *Test
+                    de.njsm.stocks.BuildConfig
+                    de.njsm.stocks.NavigationGraphDirections
+                    de.njsm.stocks.android.Application_MembersInjector
+                    de.njsm.stocks.android.dagger.DaggerRootComponent
+                    de.njsm.stocks.android.*.*_*Factory
+                    de.njsm.stocks.android.*.*_MembersInjector
+                    de.njsm.stocks.android.*.*_Impl
+                    de.njsm.stocks.android.*.*_Contribute*
+                """.trimIndent()
+            }
+        }
+        gradle {
             name = "Compile & Unit Test Android Client"
             tasks = "test"
             buildFile = "android-client/build.gradle"

@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,15 +16,23 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.android.business;
+package de.njsm.stocks.client.business.entities;
 
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+import java.time.Instant;
 
-public interface LocationRepository {
+@AutoValue
+public abstract class Update {
 
-    Observable<List<LocationForListing>> getLocations();
+    public static Update create(EntityType table, Instant lastUpdate) {
+        return new AutoValue_Update(table, lastUpdate);
+    }
+
+    public abstract EntityType table();
+
+    public abstract Instant lastUpdate();
 }
