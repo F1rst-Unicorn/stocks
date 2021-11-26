@@ -84,7 +84,8 @@ info:
     contain `=` or `$`.
 
 security:
-  - type: mutualTls
+  - type:
+      - mutualTLS
 
 externalDocs:
   url: https://gitlab.com/veenj/stocks
@@ -257,6 +258,18 @@ components:
           description: |
             An id referencing the scaled unit that describes the amount of this
             item.
+    EanNumber:
+      type: object
+      properties:
+        identifiesFood:
+          type: integer
+          minimum: 1
+          description: |
+            An id referencing the food type this ean number encodes.
+        eanCode:
+          type: string
+          description: |
+            The EAN Code
 
   parameters:
     id:
@@ -696,12 +709,18 @@ paths:
           description: |
             The id referencing the default location for this food to set.
           required: false
+          schema:
+            type: integer
+            minimum: 0
         - name: storeunit
           in: query
           description: |
             The id referencing the default scaled unit this food is registered
             with.
           required: false
+          schema:
+            type: integer
+            minimum: 0
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -870,5 +889,71 @@ paths:
           $ref: '#/components/responses/200-write'
         "400":
           $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/ean:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/bitemporal'
+        - $ref: '#/components/parameters/startingFrom'
+      responses:
+        "200":
+          description: Return all EAN numbers of the system
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          oneOf:
+                            - allOf:
+                                - $ref: '#/components/schemas/EanNumber'
+                                - $ref: '#/components/schemas/BitemporalData'
+                            - allOf:
+                                - $ref: '#/components/schemas/EanNumber'
+                                - $ref: '#/components/schemas/Data'
+        "400":
+          $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+    put:
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: The code to add
+          schema:
+            type: string
+        - name: identifies
+          in: query
+          required: true
+          description: An id referencing the food type this code describes.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      description: |
+        Delete the EAN number.
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/DELETE-400'
+        "404":
+          $ref: '#/components/responses/404'
         "500":
           $ref: '#/components/responses/500'
