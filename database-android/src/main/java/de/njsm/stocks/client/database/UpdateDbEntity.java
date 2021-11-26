@@ -25,6 +25,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
 import java.time.Instant;
+import java.util.Objects;
 
 
 @Entity(tableName = "updates", primaryKeys = {"_id"})
@@ -59,5 +60,30 @@ class UpdateDbEntity {
     @NonNull
     Instant getLastUpdate() {
         return lastUpdate;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTable(@NonNull String table) {
+        this.table = table;
+    }
+
+    public void setLastUpdate(@NonNull Instant lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UpdateDbEntity that = (UpdateDbEntity) o;
+        return getId() == that.getId() && getTable().equals(that.getTable()) && getLastUpdate().equals(that.getLastUpdate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTable(), getLastUpdate());
     }
 }

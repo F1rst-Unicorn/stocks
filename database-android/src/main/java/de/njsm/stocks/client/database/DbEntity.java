@@ -24,33 +24,34 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 
 import java.time.Instant;
+import java.util.Objects;
 
 abstract class DbEntity {
 
     @ColumnInfo(name = "_id")
-    private final int id;
+    private int id;
 
     @ColumnInfo(name = "version")
-    private final int version;
+    private int version;
 
     @ColumnInfo(name = "valid_time_start")
     @NonNull
-    private final Instant validTimeStart;
+    private Instant validTimeStart;
 
     @ColumnInfo(name = "valid_time_end")
     @NonNull
-    private final Instant validTimeEnd;
+    private Instant validTimeEnd;
 
     @ColumnInfo(name = "transaction_time_start")
     @NonNull
-    private final Instant transactionTimeStart;
+    private Instant transactionTimeStart;
 
     @ColumnInfo(name = "transaction_time_end")
     @NonNull
-    private final Instant transactionTimeEnd;
+    private Instant transactionTimeEnd;
 
     @ColumnInfo(name = "initiates")
-    private final int initiates;
+    private int initiates;
 
     DbEntity(int id, int version, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int initiates) {
         this.id = id;
@@ -92,5 +93,46 @@ abstract class DbEntity {
 
     int getInitiates() {
         return initiates;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public void setValidTimeStart(@NonNull Instant validTimeStart) {
+        this.validTimeStart = validTimeStart;
+    }
+
+    public void setValidTimeEnd(@NonNull Instant validTimeEnd) {
+        this.validTimeEnd = validTimeEnd;
+    }
+
+    public void setTransactionTimeStart(@NonNull Instant transactionTimeStart) {
+        this.transactionTimeStart = transactionTimeStart;
+    }
+
+    public void setTransactionTimeEnd(@NonNull Instant transactionTimeEnd) {
+        this.transactionTimeEnd = transactionTimeEnd;
+    }
+
+    public void setInitiates(int initiates) {
+        this.initiates = initiates;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DbEntity dbEntity = (DbEntity) o;
+        return getId() == dbEntity.getId() && getVersion() == dbEntity.getVersion() && getInitiates() == dbEntity.getInitiates() && getValidTimeStart().equals(dbEntity.getValidTimeStart()) && getValidTimeEnd().equals(dbEntity.getValidTimeEnd()) && getTransactionTimeStart().equals(dbEntity.getTransactionTimeStart()) && getTransactionTimeEnd().equals(dbEntity.getTransactionTimeEnd());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getVersion(), getValidTimeStart(), getValidTimeEnd(), getTransactionTimeStart(), getTransactionTimeEnd(), getInitiates());
     }
 }

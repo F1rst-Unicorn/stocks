@@ -21,27 +21,17 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.*;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-@Dao
-public abstract class LocationDao implements Inserter<LocationDbEntity> {
+@RunWith(AndroidJUnit4.class)
+public class SqliteVersionTest extends DbTestCase {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(List<LocationDbEntity> locations);
-
-
-    @Query("select *" +
-            "from current_location")
-    public abstract List<LocationDbEntity> getAll();
-
-    @Transaction
-    public void synchronise(List<LocationDbEntity> locations) {
-        delete();
-        insert(locations);
+    @Test
+    public void verifyRecentSqliteVersion() {
+        assertEquals("3.35.5", stocksDatabase.metadataDao().getSqliteVersion());
     }
-
-    @Query("delete from location")
-    abstract void delete();
 }
