@@ -1027,6 +1027,25 @@ paths:
         "500":
           $ref: '#/components/responses/500'
   /v2/unit:
+    put:
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+            minLength: 1
+        - name: abbreviation
+          in: query
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
     get:
       parameters:
         - $ref: '#/components/parameters/bitemporal'
@@ -1055,7 +1074,60 @@ paths:
           $ref: '#/components/responses/GET-400'
         "500":
           $ref: '#/components/responses/500'
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/DELETE-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/unit/rename:
+    put:
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+        - name: name
+          in: query
+          schema:
+            type: string
+            minLength: 1
+        - name: abbreviation
+          in: query
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
   /v2/scaled-unit:
+    put:
+      parameters:
+        - name: scale
+          in: query
+          schema:
+            type: number
+        - name: unit
+          in: query
+          schema:
+            type: integer
+            minLength: 1
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
     get:
       parameters:
         - $ref: '#/components/parameters/bitemporal'
@@ -1082,6 +1154,40 @@ paths:
                                 - $ref: '#/components/schemas/Data'
         "400":
           $ref: '#/components/responses/GET-400'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/DELETE-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /v2/scaled-unit/edit:
+    put:
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+        - name: scale
+          in: query
+          schema:
+            type: number
+        - name: unit
+          in: query
+          schema:
+            type: integer
+            minLength: 1
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/PUT-400'
         "500":
           $ref: '#/components/responses/500'
   /v2/recipe:
