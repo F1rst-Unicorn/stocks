@@ -138,7 +138,11 @@ object Build : BuildType({
                 includeClasses = "de.njsm.*"
                 excludeClasses = """
                     *Test
+
                     AutoValue_*
+                    de.njsm.stocks.client.business.entities.AutoValue_*
+
+                    de.njsm.stocks.client.database.*_Impl
                 """.trimIndent()
             }
         }
