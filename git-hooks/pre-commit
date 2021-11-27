@@ -34,7 +34,7 @@ then
 fi
 
 if ! grep "public static final Version CURRENT = V_${CLIENTVERSIONJAVA}" \
-        client/src/main/java/de/njsm/stocks/client/init/upgrade/Version.java >/dev/null 2>&1 ;
+        client/src/main/java/de/njsm/stocks/clientold/init/upgrade/Version.java >/dev/null 2>&1 ;
 then
         echo "client Version.java version differs"
         exit 1

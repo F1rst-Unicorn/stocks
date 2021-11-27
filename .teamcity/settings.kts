@@ -109,7 +109,7 @@ object Build : BuildType({
             coverageEngine = idea {
                 includeClasses = "de.njsm.stocks.*"
                 excludeClasses = """
-                    de.njsm.stocks.client.storage.jooq.tables.*
+                    de.njsm.stocks.clientold.storage.jooq.tables.*
                     de.njsm.stocks.server.v2.db.jooq.tables.*
                     de.njsm.stocks.server.v2.db.jooq.Sequences
                     de.njsm.stocks.server.v2.db.jooq.Keys
