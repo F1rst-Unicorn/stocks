@@ -138,7 +138,7 @@ object Build : BuildType({
         }
         gradle {
             name = "Assemble new module system"
-            tasks = "test assemble publishToMavenLocal"
+            tasks = "test assemble"
             buildFile = "build.gradle"
             gradleHome = "/usr/bin/gradle"
             gradleWrapperPath = "."
@@ -147,14 +147,7 @@ object Build : BuildType({
                 includeClasses = "de.njsm.*"
                 excludeClasses = """
                     *Test
-                    de.njsm.stocks.BuildConfig
-                    de.njsm.stocks.NavigationGraphDirections
-                    de.njsm.stocks.android.Application_MembersInjector
-                    de.njsm.stocks.android.dagger.DaggerRootComponent
-                    de.njsm.stocks.android.*.*_*Factory
-                    de.njsm.stocks.android.*.*_MembersInjector
-                    de.njsm.stocks.android.*.*_Impl
-                    de.njsm.stocks.android.*.*_Contribute*
+                    AutoValue_*
                 """.trimIndent()
             }
         }
