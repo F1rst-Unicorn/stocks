@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "468354e184faa9d84be3ba3b33df2fc9",
+    "identityHash": "d098a783f1161408f1a90c75c24d904a",
     "entities": [
       {
         "tableName": "updates",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `last_update` TEXT NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `last_update` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -31,7 +31,7 @@
           "columnNames": [
             "_id"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [],
         "foreignKeys": []
@@ -142,10 +142,15 @@
         "foreignKeys": []
       }
     ],
-    "views": [],
+    "views": [
+      {
+        "viewName": "current_location",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from location where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
+      }
+    ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '468354e184faa9d84be3ba3b33df2fc9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd098a783f1161408f1a90c75c24d904a')"
     ]
   }
 }

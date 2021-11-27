@@ -27,6 +27,7 @@ import de.njsm.stocks.client.business.entities.Update;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SynchronisationRepositoryImpl implements SynchronisationRepository {
 
@@ -39,16 +40,16 @@ public class SynchronisationRepositoryImpl implements SynchronisationRepository 
 
     @Override
     public List<Update> getUpdates() {
-        return null;
+        return synchronisationDao.getAll().stream().map(DataMapper::map).collect(Collectors.toList());
     }
 
     @Override
     public void writeUpdates(List<Update> updates) {
-        throw new IllegalStateException("not implemented");
+        synchronisationDao.writeUpdates(updates.stream().map(DataMapper::map).collect(Collectors.toList()));
     }
 
     @Override
     public void writeLocations(List<LocationForSynchronisation> locations) {
-        throw new IllegalStateException("not implemented");
+        synchronisationDao.writeLocations(locations.stream().map(DataMapper::map).collect(Collectors.toList()));
     }
 }

@@ -22,8 +22,8 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.EntityType;
+import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -31,25 +31,56 @@ import java.time.Instant;
 import static de.njsm.stocks.client.database.DataMapper.map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 public class DataMapperTest {
 
-    private DataMapper uut;
-
-    @Before
-    public void setUp() {
-        uut = new DataMapper();
-    }
-
     @Test
     public void mappingUpdateWorks() {
-        UpdateDbEntity input = new UpdateDbEntity(1, "location", Instant.MAX);
+        UpdateDbEntity input = new UpdateDbEntity("location", Instant.MAX);
 
-        Update actual = uut.map(input);
+        Update actual = map(input);
 
         assertThat(actual.table(), is(map(input.getTable())));
         assertThat(actual.lastUpdate(), is(input.getLastUpdate()));
+    }
+
+    @Test
+    public void mappingToUpdateDbEntityWorks() {
+        Update input = Update.create(EntityType.LOCATION, Instant.MAX);
+
+        UpdateDbEntity actual = DataMapper.map(input);
+
+        assertThat(actual.getLastUpdate(), is(input.lastUpdate()));
+        assertThat(actual.getTable(), is(map(input.table())));
+    }
+
+    @Test
+    public void mappingToLocationDbEntityWorks() {
+        LocationForSynchronisation input = LocationForSynchronisation.builder()
+                .id(1)
+                .version(2)
+                .validTimeStart(Instant.ofEpochMilli(3))
+                .validTimeEnd(Instant.ofEpochMilli(4))
+                .transactionTimeStart(Instant.ofEpochMilli(5))
+                .transactionTimeEnd(Instant.ofEpochMilli(6))
+                .initiates(7)
+                .name("name")
+                .description("description")
+                .build();
+
+        LocationDbEntity actual = DataMapper.map(input);
+
+        assertEquals(input.id(), actual.getId());
+        assertEquals(input.version(), actual.getVersion());
+        assertEquals(input.validTimeStart(), actual.getValidTimeStart());
+        assertEquals(input.validTimeEnd(), actual.getValidTimeEnd());
+        assertEquals(input.transactionTimeStart(), actual.getTransactionTimeStart());
+        assertEquals(input.transactionTimeEnd(), actual.getTransactionTimeEnd());
+        assertEquals(input.initiates(), actual.getInitiates());
+        assertEquals(input.name(), actual.getName());
+        assertEquals(input.description(), actual.getDescription());
     }
 
     @Test

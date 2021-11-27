@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.database;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,19 +38,28 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public abstract class InsertionTest<T extends DbEntity> extends DbTestCase {
 
-    abstract Inserter<T> getDao();
+    private SynchronisationDao uut;
 
     abstract T getDto();
 
-    abstract void alterDto(T data);
+    abstract List<T> getAll();
+
+    abstract void insert(List<T> data, SynchronisationDao synchronisationDao);
+
+    abstract void synchronise(List<T> data, SynchronisationDao synchronisationDao);
+
+    @Before
+    public void setUp() {
+        uut = stocksDatabase.synchronisationDao();
+    }
 
     @Test
     public void insertionWorks() {
         T data = getDto();
 
-        getDao().insert(singletonList(data));
+        insert(singletonList(data), uut);
 
-        List<T> actual = getDao().getAll();
+        List<T> actual = getAll();
         assertThat(actual, is(equalTo(singletonList(data))));
     }
 
@@ -57,7 +67,7 @@ public abstract class InsertionTest<T extends DbEntity> extends DbTestCase {
     public void insertionWithConflictReplaces() {
         Instant now = Instant.now();
         T dataToBeTerminated = getDto();
-        getDao().insert(singletonList(dataToBeTerminated));
+        insert(singletonList(dataToBeTerminated), uut);
         dataToBeTerminated.setTransactionTimeEnd(now);
         T terminatedData = getDto();
         terminatedData.setValidTimeEnd(now);
@@ -65,22 +75,22 @@ public abstract class InsertionTest<T extends DbEntity> extends DbTestCase {
         input.add(dataToBeTerminated);
         input.add(terminatedData);
 
-        getDao().insert(input);
+        insert(input, uut);
 
         setArtificialDbNow(now);
-        List<T> actual = getDao().getAll();
+        List<T> actual = getAll();
         assertThat(actual, is(equalTo(emptyList())));
     }
 
     @Test
     public void synchronisingWorks() {
         T data = getDto();
-        getDao().insert(singletonList(data));
-        alterDto(data);
+        insert(singletonList(data), uut);
+        data.setVersion(data.getVersion() + 1);
 
-        getDao().synchronise(singletonList(data));
+        synchronise(singletonList(data), uut);
 
-        List<T> actual = getDao().getAll();
+        List<T> actual = getAll();
         assertThat(actual, is(equalTo(singletonList(data))));
     }
 }

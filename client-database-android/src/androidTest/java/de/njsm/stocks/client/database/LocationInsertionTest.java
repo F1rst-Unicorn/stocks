@@ -24,6 +24,8 @@ package de.njsm.stocks.client.database;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import static de.njsm.stocks.client.business.Constants.INFINITY;
 import static java.time.Instant.EPOCH;
 
@@ -31,17 +33,22 @@ import static java.time.Instant.EPOCH;
 public class LocationInsertionTest extends InsertionTest<LocationDbEntity> {
 
     @Override
-    Inserter<LocationDbEntity> getDao() {
-        return stocksDatabase.locationDao();
-    }
-
-    @Override
     LocationDbEntity getDto() {
         return new LocationDbEntity(1, 2, EPOCH, INFINITY, EPOCH, INFINITY, 3, "name", "description");
     }
 
     @Override
-    void alterDto(LocationDbEntity data) {
-        data.setName("altered name");
+    List<LocationDbEntity> getAll() {
+        return stocksDatabase.locationDao().getAll();
+    }
+
+    @Override
+    void insert(List<LocationDbEntity> data, SynchronisationDao synchronisationDao) {
+        synchronisationDao.writeLocations(data);
+    }
+
+    @Override
+    void synchronise(List<LocationDbEntity> data, SynchronisationDao synchronisationDao) {
+        synchronisationDao.synchroniseLocations(data);
     }
 }

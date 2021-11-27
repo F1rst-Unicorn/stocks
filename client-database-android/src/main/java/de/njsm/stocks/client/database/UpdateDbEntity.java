@@ -23,15 +23,17 @@ package de.njsm.stocks.client.database;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.time.Instant;
 import java.util.Objects;
 
 
-@Entity(tableName = "updates", primaryKeys = {"_id"})
+@Entity(tableName = "updates")
 class UpdateDbEntity {
 
     @ColumnInfo(name = "_id")
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     @ColumnInfo(name = "name")
@@ -42,8 +44,7 @@ class UpdateDbEntity {
     @NonNull
     private Instant lastUpdate;
 
-    UpdateDbEntity(int id, String table, Instant lastUpdate) {
-        this.id = id;
+    UpdateDbEntity(String table, Instant lastUpdate) {
         this.table = table;
         this.lastUpdate = lastUpdate;
     }
@@ -79,7 +80,7 @@ class UpdateDbEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UpdateDbEntity that = (UpdateDbEntity) o;
-        return getId() == that.getId() && getTable().equals(that.getTable()) && getLastUpdate().equals(that.getLastUpdate());
+        return getTable().equals(that.getTable()) && getLastUpdate().equals(that.getLastUpdate());
     }
 
     @Override
