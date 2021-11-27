@@ -83,6 +83,12 @@ info:
     User and device names are part of the so called principals. They must not
     contain `=` or `$`.
 
+    ### Prometheus
+
+    Stocks exposes Prometheus metrics on the path `/stocks/metrics`. It gives
+    information about request durations, circuit breaker events and command
+    retries due to serialisation conflicts.
+
 security:
   - type:
       - mutualTLS
@@ -349,6 +355,16 @@ components:
               type: integer
               minimum: 1
               description: An id referencing the recipe this product belongs to
+    Health:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            database:
+              type: boolean
+            ca:
+              type: boolean
 
   parameters:
     id:
@@ -415,15 +431,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
-    "500":
-      description: |
-        * CA unreachable (User device operations only)
-        * Database unreachable
-        * General error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Response'
     "PUT-400-Principal-name":
       description: |
         This principal name is invalid.
@@ -431,15 +438,15 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
-
     "PUT-400":
       description: |
         * Invalid name given (absent or empty)
+        * The entity was requested for update in the wrong version
+        * Invalid input (see parameter limits)
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
-
     "DELETE-400":
       description: |
         * This entity cannot be deleted because some other entity refers to it,
@@ -450,7 +457,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
-
+    "401":
+      description: |
+        * An unauthorised user device wants access to the system
+        * The user device tried to execute a forbidden action
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
     "404":
       description: |
         * No entity with this id found
@@ -458,7 +472,15 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
-
+    "500":
+      description: |
+        * CA unreachable (User device operations only)
+        * Database unreachable
+        * General error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
 
 paths:
   /v2/update:
@@ -1390,3 +1412,95 @@ paths:
           $ref: '#/components/responses/GET-400'
         "500":
           $ref: '#/components/responses/500'
+  /health:
+    get:
+      description: |
+        Inform about server health. It performs a test for DB connectivity and
+        whether the CA can be found.
+      responses:
+        "200":
+          description: Server health is ok
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - $ref: '#/components/schemas/Health'
+        "500":
+          description: Server health is not ok
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - $ref: '#/components/schemas/Health'
+  /ca:
+    get:
+      description: |
+        The CA certificate used by the registration endpoint and the rest of
+        the system API. The client SHOULD verify the authenticity by getting the
+        CA's fingerprint off-band from an existing device as this endpoint uses
+        plain HTTP.
+
+        This endpoint is hosted outside the system's main API path. So if all
+        other endpoints are hosted at `https://domain.example:10912/stocks/...`
+        this endpoint might well be hosted on `http://domain.example:10910/ca`.
+      responses:
+        "200":
+          description: The PEM encoded X.509 stocks CA certificate.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /v2/auth/newuser:
+    post:
+      description: |
+        Register a new user device on this server. This endpoint is hosted on
+        a different port as it requires no mandatory TLS client authentication.
+
+        Make sure to import the server's CA certificate hosted on `/ca` before
+        connecting to ensure secure communication.
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - device
+                - token
+                - csr
+              properties:
+                device:
+                  type: integer
+                  minimum: 1
+                  description: |
+                    An id referencing the already created user device which
+                    desires access to the system. Returned by `PUT /v2/device`.
+                token:
+                  type: string
+                  minLength: 1
+                  description: |
+                    A token aka ticket granting access to the system. Returned
+                    by `PUT /v2/device`.
+                csr:
+                  type: string
+                  description: |
+                    A PEM encoded X.509 certificate signing request belonging to
+                    the key the device created to get access to the system.
+      responses:
+        "200":
+          description: The device was successfully registered.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      data:
+                        type: string
+                        description: |
+                          A PEM encoded X.509 client certificate giving the
+                          client access to the system.
+        "401":
+          $ref: '#/components/responses/401'
