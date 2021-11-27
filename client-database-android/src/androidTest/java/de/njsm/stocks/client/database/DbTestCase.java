@@ -22,13 +22,11 @@
 package de.njsm.stocks.client.database;
 
 import android.content.Context;
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 
 import java.time.Instant;
 
@@ -53,12 +51,6 @@ public class DbTestCase {
 
 
     /**
-     * Make LiveData observeForever()-able
-     */
-    @Rule
-    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
-
-    /**
      * Sets the expression used as "NOW" in all DB queries to a specified value
      *
      * @see de.njsm.stocks.client.database.StocksDatabase.NOW
@@ -66,7 +58,6 @@ public class DbTestCase {
     public void setArtificialDbNow(Instant now) {
         UpdateDbEntity update = new UpdateDbEntity(99999, "artificial_db_now", now);
 
-        stocksDatabase.synchronisationDao().reset();
-        stocksDatabase.synchronisationDao().set(singletonList(update));
+        stocksDatabase.synchronisationDao().synchronise(singletonList(update));
     }
 }

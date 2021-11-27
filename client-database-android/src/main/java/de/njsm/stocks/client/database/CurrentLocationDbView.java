@@ -29,8 +29,8 @@ import static de.njsm.stocks.client.database.CurrentTable.NOW_AS_BEST_KNOWN;
 
 @DatabaseView(viewName = CurrentLocationDbView.CURRENT_LOCATION_TABLE, value =
         "select * " +
-                "from location " +
-                NOW_AS_BEST_KNOWN)
+        "from location " +
+        NOW_AS_BEST_KNOWN)
 class CurrentLocationDbView extends LocationDbEntity {
 
     static final String CURRENT_LOCATION_TABLE = "current_location";

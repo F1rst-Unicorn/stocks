@@ -21,25 +21,37 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
-@Dao
-abstract class SynchronisationDao implements Inserter<UpdateDbEntity> {
+import static de.njsm.stocks.client.business.Constants.INFINITY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    @Query("select * from updates")
-    public abstract List<UpdateDbEntity> getAll();
+public class TypeConvertersInstantTest {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(List<UpdateDbEntity> updates);
-
-    @Transaction
-    public void synchronise(List<UpdateDbEntity> locations) {
-        delete();
-        insert(locations);
+    public static List<Instant> input() {
+        return Arrays.asList(
+                Instant.now(),
+                Instant.EPOCH,
+                INFINITY
+        );
     }
 
-    @Query("delete from updates")
-    abstract void delete();
+    private TypeConverters uut;
+
+    @BeforeEach
+    public void setup() {
+        this.uut = new TypeConverters();
+    }
+
+    @ParameterizedTest
+    @MethodSource("input")
+    public void converterPreservesIdentity(Instant input) {
+        assertEquals(input, uut.dbToInstant(uut.instantToDb(input)));
+    }
 }
