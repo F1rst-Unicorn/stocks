@@ -1,5 +1,4 @@
-/*
- * stocks is client-server program to manage a household's food stock
+/* stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -16,41 +15,43 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
 package de.njsm.stocks.client.database;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import java.time.Duration;
+
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class TypeConvertersDurationTest {
 
-    public static List<Duration> input() {
-        return Arrays.asList(
-                Duration.ZERO,
-                Duration.ofDays(1),
-                Duration.ofSeconds(1)
-        );
+    @Parameterized.Parameters
+    public static Collection<Object[]> input() {
+        return Arrays.asList(new Object[][] {
+                { Duration.ZERO },
+                { Duration.ofDays(1) },
+                { Duration.ofSeconds(1) },
+        });
     }
 
-    private TypeConverters uut;
+    private final Duration input;
 
-    @BeforeEach
-    public void setup() {
+    private final TypeConverters uut;
+
+    public TypeConvertersDurationTest(Duration input) {
+        this.input = input;
         this.uut = new TypeConverters();
     }
 
-    @ParameterizedTest
-    @MethodSource("input")
-    public void converterPreservesIdentity(Duration input) {
+    @Test
+    public void converterPreservesIdentity() {
         assertEquals(input, uut.dbToDuration(uut.durationToDb(input)));
     }
 }
