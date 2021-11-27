@@ -138,7 +138,7 @@ object Build : BuildType({
         }
         gradle {
             name = "Assemble new module system"
-            tasks = "test assemble"
+            tasks = "check connectedCheck assemble"
             buildFile = "build.gradle"
             gradleHome = "/usr/bin/gradle"
             gradleWrapperPath = "."
