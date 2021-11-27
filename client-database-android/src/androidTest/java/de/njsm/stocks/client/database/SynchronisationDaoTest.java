@@ -42,7 +42,7 @@ public class SynchronisationDaoTest extends DbTestCase {
 
     @Test
     public void insertingWorks() {
-        UpdateDbEntity expected = new UpdateDbEntity(1, "table", Instant.EPOCH);
+        UpdateDbEntity expected = new UpdateDbEntity("table", Instant.EPOCH);
 
         uut.insert(singletonList(expected));
 
@@ -52,11 +52,11 @@ public class SynchronisationDaoTest extends DbTestCase {
 
     @Test
     public void synchronisingDeletesOldContent() {
-        UpdateDbEntity oldContent = new UpdateDbEntity(1, "table", Instant.EPOCH);
+        UpdateDbEntity oldContent = new UpdateDbEntity("table", Instant.EPOCH);
         uut.insert(singletonList(oldContent));
-        UpdateDbEntity expected = new UpdateDbEntity(2, "other table", Instant.EPOCH);
+        UpdateDbEntity expected = new UpdateDbEntity("other table", Instant.EPOCH);
 
-        uut.synchronise(singletonList(expected));
+        uut.writeUpdates(singletonList(expected));
 
         List<UpdateDbEntity> actual = uut.getAll();
         assertThat(actual, is(singletonList(expected)));

@@ -56,8 +56,8 @@ public class DbTestCase {
      * @see de.njsm.stocks.client.database.StocksDatabase.NOW
      */
     public void setArtificialDbNow(Instant now) {
-        UpdateDbEntity update = new UpdateDbEntity(99999, "artificial_db_now", now);
+        UpdateDbEntity update = new UpdateDbEntity("artificial_db_now", now);
 
-        stocksDatabase.synchronisationDao().synchronise(singletonList(update));
+        stocksDatabase.synchronisationDao().writeUpdates(singletonList(update));
     }
 }

@@ -26,20 +26,32 @@ import androidx.room.*;
 import java.util.List;
 
 @Dao
-abstract class SynchronisationDao implements Inserter<UpdateDbEntity> {
+abstract class SynchronisationDao {
 
     @Query("select * from updates")
-    public abstract List<UpdateDbEntity> getAll();
+    abstract List<UpdateDbEntity> getAll();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(List<UpdateDbEntity> updates);
+    abstract void insert(List<UpdateDbEntity> updates);
 
     @Transaction
-    public void synchronise(List<UpdateDbEntity> locations) {
+    void writeUpdates(List<UpdateDbEntity> locations) {
         delete();
         insert(locations);
     }
 
     @Query("delete from updates")
     abstract void delete();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract void writeLocations(List<LocationDbEntity> locations);
+
+    @Transaction
+    void synchroniseLocations(List<LocationDbEntity> locations) {
+        deleteLocations();
+        writeLocations(locations);
+    }
+
+    @Query("delete from location")
+    abstract void deleteLocations();
 }

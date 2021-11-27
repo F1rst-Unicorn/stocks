@@ -22,12 +22,31 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.EntityType;
+import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
 
 public class DataMapper {
 
-    public Update map(UpdateDbEntity input) {
+    static Update map(UpdateDbEntity input) {
         return Update.create(map(input.getTable()), input.getLastUpdate());
+    }
+
+    static UpdateDbEntity map(Update input) {
+        return new UpdateDbEntity(map(input.table()), input.lastUpdate());
+    }
+
+    static LocationDbEntity map(LocationForSynchronisation location) {
+        return new LocationDbEntity(
+                location.id(),
+                location.version(),
+                location.validTimeStart(),
+                location.validTimeEnd(),
+                location.transactionTimeStart(),
+                location.transactionTimeEnd(),
+                location.initiates(),
+                location.name(),
+                location.description()
+        );
     }
 
     static EntityType map(String entityType) {
@@ -36,5 +55,9 @@ public class DataMapper {
         }
 
         throw new IllegalArgumentException("invalid entity type '" + entityType + "'");
+    }
+
+    static String map(EntityType entityType) {
+        return entityType.name().toLowerCase();
     }
 }

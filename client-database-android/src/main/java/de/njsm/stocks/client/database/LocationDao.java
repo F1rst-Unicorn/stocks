@@ -26,22 +26,9 @@ import androidx.room.*;
 import java.util.List;
 
 @Dao
-public abstract class LocationDao implements Inserter<LocationDbEntity> {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insert(List<LocationDbEntity> locations);
-
+public abstract class LocationDao {
 
     @Query("select *" +
             "from current_location")
     public abstract List<LocationDbEntity> getAll();
-
-    @Transaction
-    public void synchronise(List<LocationDbEntity> locations) {
-        delete();
-        insert(locations);
-    }
-
-    @Query("delete from location")
-    abstract void delete();
 }
