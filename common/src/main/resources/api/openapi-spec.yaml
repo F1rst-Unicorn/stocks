@@ -1443,7 +1443,7 @@ paths:
         plain HTTP.
 
         This endpoint is hosted outside the system's main API path. So if all
-        other endpoints are hosted at `https://domain.example:10912/stocks/...`
+        other endpoints are hosted at `https://domain.example:10912/v2/...`
         this endpoint might well be hosted on `http://domain.example:10910/ca`.
       responses:
         "200":
