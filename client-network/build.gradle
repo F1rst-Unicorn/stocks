@@ -26,7 +26,7 @@ dependencies {
     implementation 'javax.inject:javax.inject:1'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
-    implementation 'de.njsm.stocks:client-core:0.1'
+    implementation project(':client-core')
     implementation 'de.njsm.stocks:common:1.1.0'
     implementation 'org.slf4j:slf4j-api:1.7.32'
     implementation 'io.reactivex.rxjava3:rxjava:3.1.3'
