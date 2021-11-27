@@ -59,7 +59,7 @@ class CallHandler {
             response = call.execute();
         } catch (IOException e) {
             LOG.error("Calling " + call.request().method() + " to " + call.request().url().encodedPath() + " failed", e);
-            throw new StatusCodeException(e, map(StatusCode.GENERAL_ERROR));
+            throw new StatusCodeException(map(StatusCode.GENERAL_ERROR), e);
         }
 
         if (!response.isSuccessful()

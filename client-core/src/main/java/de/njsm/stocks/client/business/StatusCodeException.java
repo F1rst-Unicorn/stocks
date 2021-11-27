@@ -31,23 +31,8 @@ public class StatusCodeException extends RuntimeException {
         this.statusCode = statusCode;
     }
 
-    public StatusCodeException(String message, StatusCode statusCode) {
-        super(message);
-        this.statusCode = statusCode;
-    }
-
-    public StatusCodeException(String message, Throwable cause, StatusCode statusCode) {
-        super(message, cause);
-        this.statusCode = statusCode;
-    }
-
-    public StatusCodeException(Throwable cause, StatusCode statusCode) {
-        super(cause);
-        this.statusCode = statusCode;
-    }
-
-    public StatusCodeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, StatusCode statusCode) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public StatusCodeException(StatusCode statusCode, Throwable e) {
+        super(e);
         this.statusCode = statusCode;
     }
 }

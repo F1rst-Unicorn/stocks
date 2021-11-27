@@ -23,7 +23,7 @@ package de.njsm.stocks.client.business;
 
 import java.time.Instant;
 
-public class Constants {
+public abstract class Constants {
 
     public static final Instant INFINITY = Instant.ofEpochMilli(9223372036825200000L);
 }
