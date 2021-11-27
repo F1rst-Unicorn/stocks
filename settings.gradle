@@ -20,5 +20,5 @@
 rootProject.name = 'stocks'
 
 include ':client-core'
-include ':database-android'
+include ':client-database-android'
 include ':client-network'
