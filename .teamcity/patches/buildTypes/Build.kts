@@ -1,6 +1,7 @@
 package patches.buildTypes
 
 import jetbrains.buildServer.configs.kotlin.v2018_2.*
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.v2018_2.ui.*
 
 /*
@@ -12,5 +13,17 @@ changeBuildType(RelativeId("Build")) {
     vcs {
         remove(DslContext.settingsRoot.id!!)
         add(RelativeId("HttpsGitlabComVeenjStocksGit"))
+    }
+
+    features {
+        add {
+            commitStatusPublisher {
+                vcsRootExtId = "Stocks_HttpsGitlabComVeenjStocksGit"
+                publisher = gitlab {
+                    gitlabApiUrl = "https://gitlab.com/api/v4"
+                    accessToken = "credentialsJSON:271c5ea5-69f0-4bc8-854f-413abaaa29ed"
+                }
+            }
+        }
     }
 }
