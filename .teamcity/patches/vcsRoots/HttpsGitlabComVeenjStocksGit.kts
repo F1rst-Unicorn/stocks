@@ -13,7 +13,9 @@ create(DslContext.projectId, GitVcsRoot({
     id("HttpsGitlabComVeenjStocksGit")
     name = "https://gitlab.com/veenj/stocks.git"
     url = "https://gitlab.com/veenj/stocks.git"
-    branch = "master"
+    branch = "refs/heads/master"
+    branchSpec = "refs/heads/*"
+    checkoutPolicy = GitVcsRoot.AgentCheckoutPolicy.USE_MIRRORS
     param("oauthProviderId", "PROJECT_EXT_3")
     param("tokenType", "undefined")
 }))
