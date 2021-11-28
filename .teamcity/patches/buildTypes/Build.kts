@@ -10,6 +10,7 @@ accordingly, and delete the patch script.
 */
 changeBuildType(RelativeId("Build")) {
     vcs {
+        remove(DslContext.settingsRoot.id!!)
         add(RelativeId("HttpsGitlabComVeenjStocksGit"))
     }
 }
