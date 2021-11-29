@@ -17,15 +17,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import jetbrains.buildServer.configs.kotlin.v2018_2.*
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.MavenBuildStep
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.exec
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.maven
-import jetbrains.buildServer.configs.kotlin.v2018_2.projectFeatures.youtrack
-import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.schedule
-import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.vcs
-import jetbrains.buildServer.configs.kotlin.v2018_2.ui.add
+import jetbrains.buildServer.configs.kotlin.v2019_2.*
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.commitStatusPublisher
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.MavenBuildStep
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.exec
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.gradle
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.maven
+import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.schedule
+import jetbrains.buildServer.configs.kotlin.v2019_2.vcs.GitVcsRoot
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -49,24 +48,28 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 'Debug' option is available in the context menu for the task.
 */
 
-version = "2018.2"
+version = "2021.2"
 
 project {
-
     buildType(Build)
-
-    features {
-        feature {
-            id = "PROJECT_EXT_2"
-            type = "OAuthProvider"
-            param("clientId", "133b8d6e9faa4d280817")
-            param("secure:clientSecret", "credentialsJSON:90a997d8-4176-441e-8112-3ddee1038ca8")
-            param("displayName", "GitHub.com")
-            param("gitHubUrl", "https://github.com/")
-            param("providerType", "GitHub")
-        }
-    }
+    vcsRoot(HttpsGitlabComVeenjStocksGit)
 }
+
+object HttpsGitlabComVeenjStocksGit : GitVcsRoot({
+    id("HttpsGitlabComVeenjStocksGit")
+    name = "git@gitlab.com:veenj/stocks.git"
+    url = "git@gitlab.com:veenj/stocks.git"
+    branch = "refs/heads/master"
+    branchSpec = "refs/heads/*"
+    checkoutPolicy = GitVcsRoot.AgentCheckoutPolicy.USE_MIRRORS
+    authMethod = uploadedKey {
+        userName = "git"
+        uploadedKey = "id_rsa"
+    }
+    param("oauthProviderId", "PROJECT_EXT_3")
+    param("secure:password", "")
+    param("tokenType", "undefined")
+})
 
 object Build : BuildType({
     name = "Full Build"
@@ -92,7 +95,17 @@ object Build : BuildType({
     }
 
     vcs {
-        root(DslContext.settingsRoot)
+        root(HttpsGitlabComVeenjStocksGit)
+    }
+
+    features {
+        commitStatusPublisher {
+            vcsRootExtId = "Stocks_HttpsGitlabComVeenjStocksGit"
+            publisher = gitlab {
+                gitlabApiUrl = "https://gitlab.com/api/v4"
+                accessToken = "credentialsJSON:271c5ea5-69f0-4bc8-854f-413abaaa29ed"
+            }
+        }
     }
 
     steps {
@@ -217,8 +230,6 @@ object Build : BuildType({
     }
 
     triggers {
-        vcs {
-        }
         schedule {
             schedulingPolicy = cron {
                 minutes = "4,14,24,34,44,54"
@@ -234,15 +245,9 @@ object Build : BuildType({
     }
 
     requirements {
-        add {
-            exists("env.POSTGRESQL_DB")
-        }
-        add {
-            exists("env.DEPLOYMENT_VM")
-        }
-        add {
-            exists("env.ANDROID_DEVICE")
-        }
+        exists("env.POSTGRESQL_DB")
+        exists("env.DEPLOYMENT_VM")
+        exists("env.ANDROID_DEVICE")
     }
 
     failureConditions {
