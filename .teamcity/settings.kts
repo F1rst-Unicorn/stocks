@@ -81,12 +81,17 @@ object Build : BuildType({
         android-client/app/build/outputs/apk/app-release-unsigned.apk
         android-client/app/build/outputs/apk/debug/app-debug.apk
         android-client/app/build/outputs/apk/release/app-release-unsigned.apk
+
         server/target/server.log
         client/target/client-client.log
         client/target/client-server.log
         android-client/app/build/android-app.log
         android-client/app/build/android-server.log
-        android-client/app/build/reports/androidTests/connected/flavors/debugAndroidTest/**/* => android-test-report
+
+        client-core/build/reports/**/* => client-core
+        client-database-android/build/reports/**/* => client-database-android
+        client-network/build/reports/**/* => client-network
+        android-client/app/build/reports/**/* => android-test-report
     """.trimIndent()
     maxRunningBuilds = 2
 
