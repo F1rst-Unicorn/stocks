@@ -1,0 +1,123 @@
+/* stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2019  The stocks developers
+ *
+ * This file is part of the stocks program suite.
+ *
+ * stocks is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * stocks is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+plugins {
+    id 'java'
+    id 'checkstyle'
+}
+
+dependencies {
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'commons-lang:commons-lang:2.6'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
+    implementation 'org.xerial:sqlite-jdbc:3.25.2'
+    implementation 'org.jline:jline:3.9.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.11.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.11.1'
+    implementation 'org.apache.logging.log4j:log4j-jcl:2.11.1'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.60'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.60'
+    implementation 'org.springframework:spring-core:5.1.4.RELEASE'
+    implementation 'org.springframework:spring-context:5.1.4.RELEASE'
+    implementation 'com.google.zxing:core:3.4.0'
+    implementation 'org.jooq:jooq:3.15.4'
+    implementation 'org.jooq:jooq-meta:3.15.4'
+    implementation 'org.jooq:jooq-codegen:3.15.4'
+
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.mockito:mockito-all:2.0.2-beta'
+    testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
+}
+
+group = 'de.njsm.stocks'
+version = '3.0.1.1'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    sourceSets {
+        main {
+            java {
+                srcDirs "$buildDir/generated-src/jooq/main"
+            }
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+ext {
+    stocksUserDir = "$projectDir/src/test/system/resources/"
+    systemStocksDir = "$projectDir/src/test/system/resources/"
+    sqlSchemaPath = "$projectDir/../deploy-client/config/schema.sql"
+    sqlDbPath = ext.stocksUserDir + "/db-jooq.sqlite"
+}
+
+task buildSchemaDbForJooq(type: Exec) {
+    commandLine("$projectDir/bin/setup-jooq-db.sh", project.ext.sqlSchemaPath, project.ext.sqlDbPath)
+}
+
+tasks.withType(Test) {
+    dependsOn buildSchemaDbForJooq
+}
+
+
+import org.jooq.codegen.GenerationTool
+import org.jooq.meta.jaxb.Configuration
+import org.jooq.meta.jaxb.Database
+import org.jooq.meta.jaxb.Generator
+import org.jooq.meta.jaxb.Jdbc
+import org.jooq.meta.jaxb.Target
+
+GenerationTool.generate(new Configuration()
+        .withJdbc(new Jdbc()
+                .withDriver('org.sqlite.JDBC')
+                .withUrl("jdbc:sqlite://${project.ext.sqlDbPath}")
+        )
+        .withGenerator(new Generator()
+                .withName('org.jooq.codegen.JavaGenerator')
+                .withDatabase(new Database()
+                        .withName('org.jooq.meta.sqlite.SQLiteDatabase')
+                        .withIncludes('.*')
+                )
+                .withTarget(new Target()
+                        .withPackageName('de.njsm.stocks.clientold.storage.jooq')
+                        .withDirectory("$buildDir/generated-src/jooq/main")
+                )
+        )
+)
+
+test {
+    systemProperty "user.stocks.dir", project.ext.stocksUserDir
+    systemProperty "system.stocks.dir", project.ext.systemStocksDir
+    systemProperty "sql.schema.path", project.ext.sqlSchemaPath
+    systemProperty "sql.db.path", project.ext.sqlDbPath
+    systemProperty "org.jooq.no-logo", "true"
+}
+
+tasks.withType(Checkstyle) {
+    exclude "$buildDir/generated-src/jooq/main/**/*.java"
+}

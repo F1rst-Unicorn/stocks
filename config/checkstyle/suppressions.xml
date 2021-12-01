@@ -19,19 +19,10 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   ~
   -->
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
-<!DOCTYPE module PUBLIC
-        "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-        "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
-<module name="Checker">
-    <module name="Header">
-        <property name="headerFile" value="${config_loc}/header.java"/>
-    </module>
-    <module name="BeforeExecutionExclusionFileFilter">
-        <property name="fileNamePattern" value="module\-info\.java$"/>
-    </module>
-    <module name="SuppressionFilter">
-        <property name="file" value="${config_loc}/suppressions.xml"/>
-        <property name="optional" value="false"/>
-    </module>
-</module>
+<suppressions>
+    <suppress files="[/\\]build[/\\]" checks=".*"/>
+</suppressions>

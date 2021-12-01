@@ -62,7 +62,8 @@ public class BaseDatabaseManager {
     }
 
     void runCommand(Consumer<DSLContext> command) throws DatabaseException {
-        try (DSLContext c = getContext()) {
+        try (Connection connection = getConnection()) {
+            DSLContext c = DSL.using(connection);
             command.accept(c);
         } catch (DataAccessException | SQLException e) {
             throw new DatabaseException(e);
@@ -70,7 +71,8 @@ public class BaseDatabaseManager {
     }
 
     <T> T runFunction(Function<DSLContext, T> function) throws DatabaseException {
-        try (DSLContext c = getContext()) {
+        try (Connection connection = getConnection()) {
+            DSLContext c = DSL.using(connection);
             return function.apply(c);
         } catch (DataAccessException | SQLException e) {
             throw new DatabaseException(e);
