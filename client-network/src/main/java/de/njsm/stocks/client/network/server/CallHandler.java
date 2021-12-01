@@ -26,7 +26,6 @@ import de.njsm.stocks.common.api.DataResponse;
 import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
 import okhttp3.ResponseBody;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Call;
@@ -40,7 +39,7 @@ class CallHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(CallHandler.class);
 
-    StatusCode executeCommand(@NonNull Call<Response> call) {
+    StatusCode executeCommand(Call<Response> call) {
         try {
             retrofit2.Response<Response> response = call.execute();
             StatusCode result = handleResponse(response);

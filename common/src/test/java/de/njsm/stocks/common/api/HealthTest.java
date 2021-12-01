@@ -1,4 +1,5 @@
-package de.njsm.stocks.common.api;/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,8 +16,10 @@ package de.njsm.stocks.common.api;/* stocks is client-server program to manage a
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
+package de.njsm.stocks.common.api;
 
 import org.junit.jupiter.api.Test;
 
