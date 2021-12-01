@@ -125,5 +125,5 @@ task generateSqlSnippets(type: Exec) {
 }
 
 tasks.withType(JavaCompile) {
-    compileTask -> compileTask.dependsOn generateSqlSnippets
+    dependsOn generateSqlSnippets
 }
