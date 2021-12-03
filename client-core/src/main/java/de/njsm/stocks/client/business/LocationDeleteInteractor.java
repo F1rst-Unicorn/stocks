@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.business.entities.Location;
 
-public interface LocationDeleteInteractor {
+interface LocationDeleteInteractor {
 
     void deleteLocation(Identifiable<Location> location);
 }
