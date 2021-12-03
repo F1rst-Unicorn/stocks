@@ -65,7 +65,7 @@ android {
     lintOptions {
         checkAllWarnings true
         abortOnError false
-        lintConfig file(projectDir.getAbsolutePath() + "/config/android-lint/lint.xml")
+        lintConfig file("$projectDir/../config/android-lint/lint.xml")
     }
 
     compileOptions {
