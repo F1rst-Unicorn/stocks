@@ -20,13 +20,13 @@
 
 STOCKS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../../.."
 RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
-SERVER="${SERVER:-dp-server-ci.j.njsm.de}"
+DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
 DEVICE="${ANDROID_DEVICE:-emulator-5554}"
 PROPERTIES=$STOCKS_ROOT/android-client/app/src/androidTest/java/de/njsm/stocks/android/test/system/Properties.java
 
 DEVICE_ID=$(cat $STOCKS_ROOT/server-test/target/02_id)
 TICKET_VALUE=$(cat $STOCKS_ROOT/server-test/target/02_ticket)
-FINGERPRINT=$(curl -s http://dp-server:10910/ca | \
+FINGERPRINT=$(curl -s http://$DEPLOYMENT_VM:10910/ca | \
         openssl x509 -noout -sha256 -fingerprint | \
         head -n 1 | sed 's/.*=//')
 
@@ -55,7 +55,7 @@ LOGCAT_PID=$!
 
 sed -i "s/deviceId = 0/deviceId = $DEVICE_ID/g; \
     s/ticket = \"\"/ticket = \"$TICKET_VALUE\"/g; \
-    s/server = \"\"/server = \"$SERVER\"/g; \
+    s/server = \"\"/server = \"$DEPLOYMENT_VM\"/g; \
     s/fingerprint = \"\"/fingerprint = \"$FINGERPRINT\"/g" \
     $PROPERTIES
 
@@ -70,7 +70,7 @@ git checkout $PROPERTIES
 kill $LOGCAT_PID
 killall adb
 
-scp dp-server:/var/log/tomcat8/stocks-stocks.log \
+scp $DEPLOYMENT_VM:/var/log/tomcat8/stocks-stocks.log \
     $STOCKS_ROOT/android-client/app/build/android-server.log
 
 exit $RC
