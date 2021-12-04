@@ -91,7 +91,6 @@ object Build : BuildType({
 
     params {
         param("env.CI_SERVER", "1")
-        param("env.NO_SIGNATURE", "1")
     }
 
     vcs {
