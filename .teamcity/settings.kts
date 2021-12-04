@@ -91,6 +91,8 @@ object Build : BuildType({
         client-core/build/reports/**/* => client-core
         client-database-android/build/reports/**/* => client-database-android
         client-network/build/reports/**/* => client-network
+        client-ui-android/build/reports/**/* => client-ui-android
+        client-navigation-android/build/reports/**/* => client-navigation-android
         android-client/app/build/reports/**/* => android-test-report
     """.trimIndent()
     maxRunningBuilds = 2

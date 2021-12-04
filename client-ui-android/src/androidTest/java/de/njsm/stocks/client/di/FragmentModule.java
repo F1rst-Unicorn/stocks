@@ -23,11 +23,11 @@ package de.njsm.stocks.client.di;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
-import de.njsm.stocks.client.view.LocationFragment;
+import de.njsm.stocks.client.view.LocationListFragment;
 
 @Module
 abstract class FragmentModule {
 
     @ContributesAndroidInjector
-    abstract LocationFragment locationFragment();
+    abstract LocationListFragment locationFragment();
 }

@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,34 +16,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.view;
 
-import dagger.Module;
-import dagger.Provides;
-import de.njsm.stocks.client.navigation.LocationListNavigator;
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import dagger.android.AndroidInjection;
+import de.njsm.stocks.client.navigation.R;
 
-@Module
-class MockNavigationModule {
+class DummyActivity extends AppCompatActivity {
 
-    @Provides
-    LocationListNavigator locationListNavigator() {
-        return new LocationListNavigator() {
-            @Override
-            public void addLocation() {
-
-            }
-
-            @Override
-            public void showLocation(int id) {
-
-            }
-
-            @Override
-            public void editLocation(int id) {
-
-            }
-        };
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dummy);
     }
 }
