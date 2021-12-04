@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
 import sys
 import re
 import subprocess
@@ -73,8 +74,9 @@ def main(arguments):
 
 
 def setupSshConnection():
+    deploymentVm = os.environ["DEPLOYMENT_VM"]
     process = subprocess.Popen(
-                    ["ssh dp-server \"LANG=de_DE.UTF-8 stocks\""],
+                    ["ssh " + deploymentVm + " \"LANG=de_DE.UTF-8 stocks\""],
                    stdin=subprocess.PIPE,
                    stdout=subprocess.PIPE,
                    shell=True,

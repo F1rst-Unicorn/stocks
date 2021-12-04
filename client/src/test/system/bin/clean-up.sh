@@ -18,7 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-ssh dp-server sudo pacman -Rsn stocks --noconfirm
-ssh dp-server rm -rf \~/.stocks
+DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
+
+ssh $DEPLOYMENT_VM sudo pacman -Rsn stocks --noconfirm
+ssh $DEPLOYMENT_VM rm -rf \~/.stocks
 
 exit 0

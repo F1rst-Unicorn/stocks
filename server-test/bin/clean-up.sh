@@ -18,7 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-ssh dp-server "sudo rm -rf /var/lib/tomcat8/webapp/stocks.war;
+DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
+
+ssh $DEPLOYMENT_VM "sudo rm -rf /var/lib/tomcat8/webapp/stocks.war;
         while [ -d /usr/share/tomcat8/webapp/stocks ] ; do sleep 1 ; done;
         sudo systemctl restart tomcat8;
         sudo pacman -Rsn stocks-server --noconfirm;

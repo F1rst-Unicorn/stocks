@@ -1,8 +1,9 @@
 #!/bin/bash
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
 
-(cat | ssh dp-server sudo -u postgres psql stocks) <<EOF
+(cat | ssh $DEPLOYMENT_VM sudo -u postgres psql stocks) <<EOF
 begin transaction isolation level serializable;
 
 insert into user_device (name, belongs_to, initiates) values

@@ -20,6 +20,7 @@
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../.."
 RESOURCES=$STOCKS_ROOT/server/src/test/system/tmp/
+DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
 
 DEVICE_ID=$(cat $STOCKS_ROOT/server-test/target/01_id)
 TICKET_VALUE=$(cat $STOCKS_ROOT/server-test/target/01_ticket)
@@ -30,30 +31,35 @@ rm -rf $STOCKS_ROOT/client/target/client-server.log
 rm -rf $STOCKS_ROOT/client/target/client-client.log
 
 cd "$STOCKS_ROOT/deploy-client"
+sed -i "s/dp-server/$DEPLOYMENT_VM/g" $STOCKS_ROOT/deploy-client/inventory
 ansible-playbook $STOCKS_ROOT/deploy-client/install.yml
+git checkout -- $STOCKS_ROOT/deploy-client/inventory
 cd -
 
 echo "##teamcity[testSuiteStarted name='Client System Test']"
 
 echo "##teamcity[testStarted name='Initialisation']"
-FINGERPRINT=$(curl -s http://dp-server:10910/ca | \
+FINGERPRINT=$(curl -s http://$DEPLOYMENT_VM:10910/ca | \
         openssl x509 -noout -sha256 -fingerprint | \
         head -n 1 | sed 's/.*=//')
 
 set +e
 
-echo -e "dp-server\n\n\n\nJack\ncli-client\n1\n$DEVICE_ID\n\
+echo -e "$DEPLOYMENT_VM\n\n\n\nJack\ncli-client\n1\n$DEVICE_ID\n\
 $FINGERPRINT\n\
 $TICKET_VALUE\nquit\n" | \
-        ssh dp-server stocks
+        ssh $DEPLOYMENT_VM stocks
 echo "##teamcity[testFinished name='Initialisation']"
 
+sed -i "s/dp-server/$DEPLOYMENT_VM/g" $STOCKS_ROOT/client/src/test/system/usecases/*
+export DEPLOYMENT_VM
 python $STOCKS_ROOT/client/src/test/system/bin/testcase-driver.py \
         `find $STOCKS_ROOT/client/src/test/system/usecases -type f | sort`
+git checkout -- $STOCKS_ROOT/client/src/test/system/usecases
 
-scp dp-server:/var/log/tomcat8/stocks-stocks.log \
+scp $DEPLOYMENT_VM:/var/log/tomcat8/stocks-stocks.log \
         $STOCKS_ROOT/client/target/client-server.log
-scp dp-server:\~/.stocks/stocks.log $STOCKS_ROOT/client/target/client-client.log
+scp $DEPLOYMENT_VM:\~/.stocks/stocks.log $STOCKS_ROOT/client/target/client-client.log
 
 echo "##teamcity[testSuiteFinished name='Client System Test']"
 echo

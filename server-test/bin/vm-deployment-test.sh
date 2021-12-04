@@ -19,6 +19,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
 
 set -e
 
@@ -26,7 +27,9 @@ rm -rf $STOCKS_ROOT/server/target/server.log
 
 cd "$STOCKS_ROOT/deploy-server"
 
+sed -i "s/dp-server/$DEPLOYMENT_VM/g" $STOCKS_ROOT/deploy-server/inventory
 ansible-playbook --extra-vars "ansible_become_pass=,ansible_sudo_pass= "     \
         $STOCKS_ROOT/deploy-server/play_install.yml
+git checkout -- $STOCKS_ROOT/deploy-server/inventory
 
 cd "$STOCKS_ROOT"

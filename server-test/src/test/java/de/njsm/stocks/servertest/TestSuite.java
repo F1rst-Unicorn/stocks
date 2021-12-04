@@ -43,12 +43,12 @@ import org.junit.runners.Suite;
 })
 public class TestSuite {
 
-    public static final String HOSTNAME = "dp-server";
+    public static final String HOSTNAME = System.getenv().getOrDefault("DEPLOYMENT_VM", "dp-server");
 
     public static final String CA_PORT = "10910";
 
     public static final String INIT_PORT = "10911";
 
-    public static final String DOMAIN = "https://dp-server:10912";
+    public static final String DOMAIN = "https://" + HOSTNAME + ":10912";
 
 }

@@ -19,6 +19,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
 
-scp dp-server:/var/log/tomcat8/stocks-stocks.log \
+scp $DEPLOYMENT_VM:/var/log/tomcat8/stocks-stocks.log \
         $STOCKS_ROOT/server/target/server.log
