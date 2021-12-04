@@ -26,6 +26,8 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.entities.LocationForListing;
+import de.njsm.stocks.client.testdata.LocationsForListing;
 import de.njsm.stocks.client.ui.R;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -59,11 +61,12 @@ public class LocationListTest {
     }
 
     @Test
-    @Ignore("not yet implemented")
     public void locationsAreListed() {
-        FragmentScenario<LocationListFragment> scenario = FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
+        FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
 
-        onView(withId(R.id.template_swipe_list_list)).check(matches(withChild(withText("Fridge"))));
-        onView(withId(R.id.template_swipe_list_list)).check(matches(withChild(withText("Cupboard"))));
+        for (LocationForListing item : LocationsForListing.getData()) {
+            onView(withId(R.id.template_swipe_list_list))
+                    .check(matches(withChild(withText(item.name()))));
+        }
     }
 }

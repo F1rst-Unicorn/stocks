@@ -31,6 +31,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.client.navigation.LocationListNavigator;
 import de.njsm.stocks.client.presenter.LocationViewModel;
@@ -44,6 +46,8 @@ public class LocationListFragment extends Fragment {
 
     private LocationListNavigator locationListNavigator;
 
+    private LocationAdapter locationListAdapter;
+
     @Override
     public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
@@ -54,6 +58,12 @@ public class LocationListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
+
+        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
+        list.setLayoutManager(new LinearLayoutManager(requireContext()));
+        locationListAdapter = new LocationAdapter();
+        locationViewModel.getLocations().observe(getViewLifecycleOwner(), u -> locationListAdapter.setData(u));
+        list.setAdapter(locationListAdapter);
 
         return result;
     }
