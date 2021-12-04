@@ -38,7 +38,7 @@ import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class LocationFragment extends Fragment {
+public class LocationListFragment extends Fragment {
 
     private LocationViewModel locationViewModel;
 

@@ -21,10 +21,26 @@
 
 package de.njsm.stocks.client.navigation;
 
-public interface LocationListNavigator {
-    void addLocation();
+import androidx.navigation.NavDirections;
 
-    void showLocation(int id);
+import static org.junit.Assert.fail;
 
-    void editLocation(int id);
+public class FakeNavigationArgConsumer implements NavigationArgConsumer {
+
+    private NavDirections lastArgument;
+
+    @Override
+    public void navigate(NavDirections direction) {
+        lastArgument = direction;
+    }
+
+    <T extends NavDirections> T getLastArgument(Class<T> clazz) {
+        if (clazz.isInstance(lastArgument))
+            return (T) lastArgument;
+        else {
+            String actualType = lastArgument != null ? lastArgument.getClass().getSimpleName() : "<null>";
+            fail("expected navigation argument " + clazz.getSimpleName() + ", got " + actualType);
+            return null;
+        }
+    }
 }

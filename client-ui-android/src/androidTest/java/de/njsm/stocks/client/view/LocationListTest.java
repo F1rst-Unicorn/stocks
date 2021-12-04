@@ -42,13 +42,13 @@ public class LocationListTest {
 
     @Test
     public void proofOfConcept() {
-        FragmentScenario.launchInContainer(LocationFragment.class, new Bundle(), R.style.StocksTheme);
+        FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
     }
 
     @Test
     @Ignore("not yet implemented")
     public void swipingDownCausesARefresh() {
-        FragmentScenario<LocationFragment> scenario = FragmentScenario.launchInContainer(LocationFragment.class, new Bundle(), R.style.StocksTheme);
+        FragmentScenario<LocationListFragment> scenario = FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
 
         onView(withId(R.id.template_swipe_list_list)).perform(swipeDown());
 
@@ -61,7 +61,7 @@ public class LocationListTest {
     @Test
     @Ignore("not yet implemented")
     public void locationsAreListed() {
-        FragmentScenario<LocationFragment> scenario = FragmentScenario.launchInContainer(LocationFragment.class, new Bundle(), R.style.StocksTheme);
+        FragmentScenario<LocationListFragment> scenario = FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
 
         onView(withId(R.id.template_swipe_list_list)).check(matches(withChild(withText("Fridge"))));
         onView(withId(R.id.template_swipe_list_list)).check(matches(withChild(withText("Cupboard"))));

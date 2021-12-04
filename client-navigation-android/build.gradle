@@ -1,0 +1,90 @@
+/* stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2019  The stocks developers
+ *
+ * This file is part of the stocks program suite.
+ *
+ * stocks is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * stocks is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+plugins {
+    id 'com.android.library'
+    id 'checkstyle'
+    id 'androidx.navigation.safeargs'
+}
+
+android {
+    compileSdkVersion 31
+
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 31
+        versionCode 1
+        versionName "0.1"
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+            jniDebuggable true
+        }
+        release {
+            debuggable false
+            minifyEnabled false
+        }
+    }
+
+    lintOptions {
+        checkAllWarnings true
+        abortOnError false
+        lintConfig file("$projectDir/../config/android-lint/lint.xml")
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/LICENSE-notice.md'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+}
+
+dependencies {
+    implementation project(':client-ui-android')
+    implementation 'androidx.navigation:navigation-fragment:2.3.5'
+    implementation 'androidx.navigation:navigation-ui:2.3.5'
+    implementation 'javax.inject:javax.inject:1'
+    implementation "com.google.dagger:dagger-android:2.22.1"
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+
+    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'org.mockito:mockito-core:4.1.0'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+}
