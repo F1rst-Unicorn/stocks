@@ -87,12 +87,13 @@ object Build : BuildType({
         android-client/app/build/android-app.log
         android-client/app/build/android-server.log
 
+        android-client/app/build/reports/**/* => android-test-report
+        client-app-android/build/reports/**/* => client-app-android
         client-core/build/reports/**/* => client-core
         client-database-android/build/reports/**/* => client-database-android
-        client-network/build/reports/**/* => client-network
         client-ui-android/build/reports/**/* => client-ui-android
         client-navigation-android/build/reports/**/* => client-navigation-android
-        android-client/app/build/reports/**/* => android-test-report
+        client-network/build/reports/**/* => client-network
     """.trimIndent()
     maxRunningBuilds = 2
 
