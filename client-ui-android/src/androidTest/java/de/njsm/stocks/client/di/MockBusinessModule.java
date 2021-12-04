@@ -24,19 +24,19 @@ import dagger.Provides;
 import de.njsm.stocks.client.business.LocationDeleter;
 import de.njsm.stocks.client.business.LocationListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
 import org.mockito.Mockito;
 
 import javax.inject.Singleton;
-import java.util.Arrays;
+
+import static de.njsm.stocks.client.testdata.LocationsForListing.getData;
 
 @Module
 class MockBusinessModule {
 
     @Provides
     LocationListInteractor locationListInteractor() {
-        return () -> Observable.just(Arrays.asList(LocationForListing.create(1, "Fridge"), LocationForListing.create(2, "Cupboard")));
+        return () -> Observable.just(getData());
     }
 
     @Provides
@@ -49,4 +49,5 @@ class MockBusinessModule {
     Synchroniser synchroniser() {
         return Mockito.mock(Synchroniser.class);
     }
+
 }

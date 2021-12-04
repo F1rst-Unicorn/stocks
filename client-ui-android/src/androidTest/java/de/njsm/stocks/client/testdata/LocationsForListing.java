@@ -19,26 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.view;
+package de.njsm.stocks.client.testdata;
 
-import android.view.View;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.ui.R;
+import de.njsm.stocks.client.business.entities.LocationForListing;
 
-class ViewHolder extends RecyclerView.ViewHolder {
+import java.util.Arrays;
+import java.util.List;
 
-    private final TextView text;
+public class LocationsForListing {
 
-    ViewHolder(@NonNull View itemView) {
-        super(itemView);
-        text = itemView.findViewById(R.id.item_text_with_prefix_icon_name);
-
-        text.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_account_balance_wallet_black_24dp, 0, 0, 0);
-    }
-
-    void setText(CharSequence text) {
-        this.text.setText(text);
+    public static List<LocationForListing> getData() {
+        return Arrays.asList(
+                LocationForListing.create(1, "Fridge"),
+                LocationForListing.create(2, "Cupboard")
+        );
     }
 }

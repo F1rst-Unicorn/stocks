@@ -30,5 +30,5 @@ public abstract class LocationForListing implements Identifiable<Location> {
         return new AutoValue_LocationForListing(id, name);
     }
 
-    abstract String name();
+    public abstract String name();
 }
