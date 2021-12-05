@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,37 +16,17 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.di;
 
 import dagger.Module;
-import dagger.Provides;
-import de.njsm.stocks.client.business.LocationDeleter;
-import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.view.FakeLocationListInteractor;
-import org.mockito.Mockito;
-
-import javax.inject.Singleton;
+import dagger.android.ContributesAndroidInjector;
 
 @Module
-public class MockBusinessModule {
+public interface TestActivityModule {
 
-    @Provides
-    @Singleton
-    public FakeLocationListInteractor fakeLocationListInteractor() {
-        return new FakeLocationListInteractor();
-    }
-
-    @Provides
-    LocationDeleter locationDeleter() {
-        return location -> {};
-    }
-
-    @Provides
-    @Singleton
-    Synchroniser synchroniser() {
-        return Mockito.mock(Synchroniser.class);
-    }
-
+    @ContributesAndroidInjector
+    androidx.fragment.app.testing.FragmentScenario.EmptyFragmentActivity emptyFragmentActivity();
 }
