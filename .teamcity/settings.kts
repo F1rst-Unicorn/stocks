@@ -91,6 +91,7 @@ object Build : BuildType({
 
     params {
         param("env.CI_SERVER", "1")
+        param("env.ANDROID_SERIAL", "%env.ANDROID_DEVICE%")
     }
 
     vcs {
