@@ -29,9 +29,12 @@ import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.testdata.LocationsForListing;
 import de.njsm.stocks.client.ui.R;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.swipeDown;
@@ -42,31 +45,44 @@ import static org.mockito.Mockito.verify;
 @RunWith(AndroidJUnit4.class)
 public class LocationListTest {
 
-    @Test
-    public void proofOfConcept() {
-        FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
+    private FragmentScenario<LocationListFragment> scenario;
+
+    private FakeLocationListInteractor locationListInteractor;
+
+    private Synchroniser synchroniser;
+
+    @Before
+    public void setUp() {
+        scenario = FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
+        scenario.onFragment(fragment -> ((Application) fragment.requireActivity().getApplication()).getDaggerRoot().inject(this));
     }
 
     @Test
     @Ignore("not yet implemented")
     public void swipingDownCausesARefresh() {
-        FragmentScenario<LocationListFragment> scenario = FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
 
         onView(withId(R.id.template_swipe_list_list)).perform(swipeDown());
 
-        scenario.onFragment(fragment -> {
-            Synchroniser synchroniser = ((Application) fragment.requireActivity().getApplication()).getDaggerRoot().synchroniser();
-            verify(synchroniser).synchronise();
-        });
+        verify(synchroniser).synchronise();
     }
 
     @Test
     public void locationsAreListed() {
-        FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
+        locationListInteractor.setData(LocationsForListing.getData());
 
         for (LocationForListing item : LocationsForListing.getData()) {
             onView(withId(R.id.template_swipe_list_list))
                     .check(matches(withChild(withText(item.name()))));
         }
+    }
+
+    @Inject
+    public void setLocationListInteractor(FakeLocationListInteractor locationListInteractor) {
+        this.locationListInteractor = locationListInteractor;
+    }
+
+    @Inject
+    public void setSynchroniser(Synchroniser synchroniser) {
+        this.synchroniser = synchroniser;
     }
 }

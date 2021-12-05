@@ -19,23 +19,20 @@
 
 package de.njsm.stocks.client;
 
-import android.app.Activity;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasActivityInjector;
-import dagger.android.support.HasSupportFragmentInjector;
+import dagger.android.HasAndroidInjector;
 import de.njsm.stocks.client.di.DaggerTestComponent;
 import de.njsm.stocks.client.di.TestComponent;
 
 import javax.inject.Inject;
 
-public class Application extends android.app.Application implements HasActivityInjector, HasSupportFragmentInjector {
+public class Application extends android.app.Application implements HasAndroidInjector {
 
-    private DispatchingAndroidInjector<Activity> injector;
+    private DispatchingAndroidInjector<Object> injector;
 
-    private DispatchingAndroidInjector<Fragment> fragmentInjector;
+    private TestComponent dagger;
 
     @Override
     public void onCreate() {
@@ -45,31 +42,22 @@ public class Application extends android.app.Application implements HasActivityI
     }
 
     public TestComponent getDaggerRoot() {
-        return DaggerTestComponent
+        if (dagger == null)
+            dagger = DaggerTestComponent
                 .builder()
                 .application(this)
                 .build();
+
+        return dagger;
     }
 
     @Inject
-    public void setInjector(@NonNull DispatchingAndroidInjector<Activity> injector) {
+    public void setInjector(@NonNull DispatchingAndroidInjector<Object> injector) {
         this.injector = injector;
     }
 
-    @Inject
-    public void setFragmentInjector(@NonNull DispatchingAndroidInjector<Fragment> fragmentInjector) {
-        this.fragmentInjector = fragmentInjector;
-    }
-
-    @NonNull
     @Override
-    public AndroidInjector<Activity> activityInjector() {
+    public AndroidInjector<Object> androidInjector() {
         return injector;
-    }
-
-    @NonNull
-    @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return fragmentInjector;
     }
 }

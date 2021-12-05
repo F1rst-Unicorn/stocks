@@ -19,38 +19,14 @@
 
 package de.njsm.stocks.client.di;
 
-import dagger.BindsInstance;
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import de.njsm.stocks.client.Application;
-import de.njsm.stocks.client.view.LocationListTest;
+import dagger.Binds;
+import dagger.Module;
+import de.njsm.stocks.client.business.LocationListInteractor;
+import de.njsm.stocks.client.view.FakeLocationListInteractor;
 
-import javax.inject.Singleton;
+@Module
+public abstract class BusinessBindModule {
 
-@Singleton
-@Component(modules = {
-        AndroidInjectionModule.class,
-        FragmentModule.class,
-        ViewModelModule.class,
-        MockBusinessModule.class,
-        MockNavigationModule.class,
-        TestActivityModule.class,
-        BusinessBindModule.class,
-})
-public interface TestComponent {
-
-    void inject(Application application);
-
-    void inject(LocationListTest test);
-
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        Builder application(Application a);
-
-        TestComponent build();
-    }
+    @Binds
+    abstract LocationListInteractor locationListInteractor(FakeLocationListInteractor locationListInteractor);
 }
-
-
