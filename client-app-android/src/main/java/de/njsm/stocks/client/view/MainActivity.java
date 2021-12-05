@@ -21,5 +21,79 @@
 
 package de.njsm.stocks.client.view;
 
-public class MainActivity {
+import android.os.Bundle;
+import android.view.MenuItem;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
+import com.google.android.material.navigation.NavigationView;
+import dagger.android.AndroidInjection;
+import de.njsm.stocks.R;
+import de.njsm.stocks.client.NavigationArgConsumerImpl;
+
+import javax.inject.Inject;
+
+public class MainActivity extends AppCompatActivity {
+
+    private NavController navController;
+
+    private DrawerLayout drawerLayout;
+
+    private NavigationArgConsumerImpl navigationArgConsumer;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        NavigationView navigationView = findViewById(R.id.main_nav);
+        navigationView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
+
+        drawerLayout = findViewById(R.id.activity_main_drawer_layout);
+
+        Toolbar toolbar = findViewById(R.id.activity_main_toolbar);
+        setSupportActionBar(toolbar);
+
+        navController = Navigation.findNavController(this, R.id.activity_main_nav_host_fragment);
+        navigationArgConsumer.setNavController(navController);
+        NavigationUI.setupWithNavController(toolbar, navController, drawerLayout);
+    }
+
+    private boolean onNavigationItemSelected(MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        switch (id) {
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return false;
+    }
+
+    @Override
+    public boolean onNavigateUp() {
+        return navController.navigateUp()
+                || super.onNavigateUp()
+                || openDrawer();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return navController.navigateUp()
+                || super.onSupportNavigateUp()
+                || openDrawer();
+    }
+
+    private boolean openDrawer() {
+        drawerLayout.openDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Inject
+    public void setNavigationArgConsumer(NavigationArgConsumerImpl navigationArgConsumer) {
+        this.navigationArgConsumer = navigationArgConsumer;
+    }
 }

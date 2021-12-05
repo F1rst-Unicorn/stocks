@@ -19,39 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.testdata;
 
-import android.app.Activity;
-import dagger.BindsInstance;
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import de.njsm.stocks.client.Application;
 
-import javax.inject.Singleton;
+import de.njsm.stocks.client.business.entities.LocationForListing;
 
-@Singleton
-@Component(
-        modules = {
-                AndroidInjectionModule.class,
-                BusinessModule.class,
-                ViewModelModule.class,
-                NavigationModule.class,
-                ActivityModule.class,
-                FragmentModule.class,
-        }
-)
-public interface RootComponent {
+import java.util.Arrays;
+import java.util.List;
 
-    void inject(Application application);
+public class LocationsForListing {
 
-    void inject(Activity activity);
-
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        Builder application(Application a);
-
-        RootComponent build();
+    public static List<LocationForListing> getData() {
+        return Arrays.asList(
+                LocationForListing.create(1, "Fridge"),
+                LocationForListing.create(2, "Cupboard")
+        );
     }
 }

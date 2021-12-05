@@ -19,39 +19,18 @@
  *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.business;
 
-import android.app.Activity;
-import dagger.BindsInstance;
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import de.njsm.stocks.client.Application;
+import javax.inject.Inject;
 
-import javax.inject.Singleton;
+public class SynchroniserImpl implements Synchroniser {
 
-@Singleton
-@Component(
-        modules = {
-                AndroidInjectionModule.class,
-                BusinessModule.class,
-                ViewModelModule.class,
-                NavigationModule.class,
-                ActivityModule.class,
-                FragmentModule.class,
-        }
-)
-public interface RootComponent {
+    @Inject
+    public SynchroniserImpl() {
+    }
 
-    void inject(Application application);
+    @Override
+    public void synchronise() {
 
-    void inject(Activity activity);
-
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        Builder application(Application a);
-
-        RootComponent build();
     }
 }

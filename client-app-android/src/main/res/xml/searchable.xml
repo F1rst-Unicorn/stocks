@@ -20,18 +20,8 @@
 -->
 
 
-<TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-
-        android:id="@+id/item_text_with_prefix_icon_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:drawableStart="@drawable/baseline_kitchen_black_24"
-        android:drawablePadding="@dimen/text_margin"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:padding="@dimen/list_item_padding_large"
-        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-        android:text="Fridge"/>
+<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+    android:hint="@string/search_hint"
+    android:label="@string/app_name"
+    android:searchSuggestAuthority="de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider"
+    android:searchSuggestIntentData="content://de.njsm.stocks.android.contentprovider.RecentSearchSuggestionsProvider/food" />

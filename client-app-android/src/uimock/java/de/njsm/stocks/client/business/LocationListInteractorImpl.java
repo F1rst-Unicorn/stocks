@@ -19,39 +19,27 @@
  *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.business;
 
-import android.app.Activity;
-import dagger.BindsInstance;
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.entities.LocationForListing;
+import de.njsm.stocks.client.testdata.LocationsForListing;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-import javax.inject.Singleton;
+import javax.inject.Inject;
+import java.util.List;
 
-@Singleton
-@Component(
-        modules = {
-                AndroidInjectionModule.class,
-                BusinessModule.class,
-                ViewModelModule.class,
-                NavigationModule.class,
-                ActivityModule.class,
-                FragmentModule.class,
-        }
-)
-public interface RootComponent {
+public class LocationListInteractorImpl implements LocationListInteractor {
 
-    void inject(Application application);
+    private final BehaviorSubject<List<LocationForListing>> data;
 
-    void inject(Activity activity);
+    @Inject
+    public LocationListInteractorImpl() {
+        this.data = BehaviorSubject.createDefault(LocationsForListing.getData());
+    }
 
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        Builder application(Application a);
-
-        RootComponent build();
+    @Override
+    public Observable<List<LocationForListing>> getLocations() {
+        return data;
     }
 }

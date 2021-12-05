@@ -21,37 +21,22 @@
 
 package de.njsm.stocks.client.di;
 
-import android.app.Activity;
-import dagger.BindsInstance;
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import de.njsm.stocks.client.Application;
+import dagger.Binds;
+import dagger.Module;
+import de.njsm.stocks.client.NavigationArgConsumerImpl;
+import de.njsm.stocks.client.navigation.LocationListNavigator;
+import de.njsm.stocks.client.navigation.LocationListNavigatorImpl;
+import de.njsm.stocks.client.navigation.NavigationArgConsumer;
 
 import javax.inject.Singleton;
 
-@Singleton
-@Component(
-        modules = {
-                AndroidInjectionModule.class,
-                BusinessModule.class,
-                ViewModelModule.class,
-                NavigationModule.class,
-                ActivityModule.class,
-                FragmentModule.class,
-        }
-)
-public interface RootComponent {
+@Module
+interface NavigationModule {
 
-    void inject(Application application);
+    @Binds
+    LocationListNavigator locationListNavigator(LocationListNavigatorImpl implementation);
 
-    void inject(Activity activity);
-
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        Builder application(Application a);
-
-        RootComponent build();
-    }
+    @Binds
+    @Singleton
+    NavigationArgConsumer navigationArgsConsumer(NavigationArgConsumerImpl implementation);
 }

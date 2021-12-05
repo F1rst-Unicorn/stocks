@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     stocks is client-server program to manage a household's food stock
     Copyright (C) 2019  The stocks developers
@@ -19,19 +19,13 @@
     along with this program.  If not, see https://www.gnu.org/licenses/.
 -->
 
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
 
-<TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-
-        android:id="@+id/item_text_with_prefix_icon_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:drawableStart="@drawable/baseline_kitchen_black_24"
-        android:drawablePadding="@dimen/text_margin"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:padding="@dimen/list_item_padding_large"
-        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-        android:text="Fridge"/>
+    android:shape="rectangle">
+    <gradient
+        android:angle="135"
+        android:centerColor="#4CAF50"
+        android:endColor="#2E7D32"
+        android:startColor="#81C784"
+        android:type="linear" />
+</shape>
