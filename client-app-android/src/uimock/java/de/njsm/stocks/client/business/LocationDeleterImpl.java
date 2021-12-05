@@ -19,39 +19,21 @@
  *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.business;
 
-import android.app.Activity;
-import dagger.BindsInstance;
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Location;
 
-import javax.inject.Singleton;
+import javax.inject.Inject;
 
-@Singleton
-@Component(
-        modules = {
-                AndroidInjectionModule.class,
-                BusinessModule.class,
-                ViewModelModule.class,
-                NavigationModule.class,
-                ActivityModule.class,
-                FragmentModule.class,
-        }
-)
-public interface RootComponent {
+public class LocationDeleterImpl implements LocationDeleter {
 
-    void inject(Application application);
+    @Inject
+    public LocationDeleterImpl() {
+    }
 
-    void inject(Activity activity);
+    @Override
+    public void deleteLocation(Identifiable<Location> location) {
 
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        Builder application(Application a);
-
-        RootComponent build();
     }
 }

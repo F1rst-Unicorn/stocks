@@ -21,37 +21,19 @@
 
 package de.njsm.stocks.client.di;
 
-import android.app.Activity;
-import dagger.BindsInstance;
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import de.njsm.stocks.client.Application;
+import dagger.Binds;
+import dagger.Module;
+import de.njsm.stocks.client.business.*;
 
-import javax.inject.Singleton;
+@Module
+public interface BusinessModule {
 
-@Singleton
-@Component(
-        modules = {
-                AndroidInjectionModule.class,
-                BusinessModule.class,
-                ViewModelModule.class,
-                NavigationModule.class,
-                ActivityModule.class,
-                FragmentModule.class,
-        }
-)
-public interface RootComponent {
+    @Binds
+    LocationListInteractor locationListInteractor(LocationListInteractorImpl implementation);
 
-    void inject(Application application);
+    @Binds
+    LocationDeleter locationDeleter(LocationDeleterImpl implementation);
 
-    void inject(Activity activity);
-
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        Builder application(Application a);
-
-        RootComponent build();
-    }
+    @Binds
+    Synchroniser synchroniser(SynchroniserImpl implementation);
 }

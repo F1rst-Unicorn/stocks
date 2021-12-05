@@ -19,10 +19,15 @@
     along with this program.  If not, see https://www.gnu.org/licenses/.
 -->
 
-
+    <style name="StocksTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 
     <!-- Base application theme. -->
-    <style name="StocksTheme" parent="Theme.AppCompat">
+    <style name="StocksThemeOld" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
@@ -34,7 +39,16 @@
         <item name="autoCompleteTextViewStyle">@style/StocksTheme.SearchDropdownBackground</item>
     </style>
 
-    <style name="StocksTheme.NoActionBar">
+    <style name="StocksThemeOld.NoActionBar" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="textAppearanceSearchResultTitle">@style/StocksTheme.AutoCompleteTextView</item>
+        <item name="autoCompleteTextViewStyle">@style/StocksTheme.SearchDropdownBackground</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -43,14 +57,14 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="StocksTheme.Activity">
+    <style name="StocksThemeOld.Activity">
         <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
         <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
     </style>
 
-    <style name="StocksTheme.EditText">
+    <style name="StocksThemeOld.EditText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">left|top</item>
@@ -62,7 +76,7 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
-    <style name="StocksTheme.TextView">
+    <style name="StocksThemeOld.TextView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">left|top</item>
@@ -74,11 +88,11 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
-    <style name="StocksTheme.TextSmall">
+    <style name="StocksThemeOld.TextSmall">
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
     </style>
 
-    <style name="StocksTheme.TextLarge">
+    <style name="StocksThemeOld.TextLarge">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 
@@ -94,14 +108,14 @@
         <item name="android:popupBackground">#ffffff</item>
     </style>
 
-    <style name="Divider" parent="StocksTheme">
+    <style name="Divider" parent="StocksThemeOld">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">2dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:background">@android:color/darker_gray</item>
     </style>
-    <style name="Subheader" parent="StocksTheme">
+    <style name="Subheader" parent="StocksThemeOld">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 </resources>

@@ -21,37 +21,13 @@
 
 package de.njsm.stocks.client.di;
 
-import android.app.Activity;
-import dagger.BindsInstance;
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import de.njsm.stocks.client.Application;
+import dagger.Module;
+import dagger.android.ContributesAndroidInjector;
+import de.njsm.stocks.client.view.MainActivity;
 
-import javax.inject.Singleton;
+@Module
+public interface ActivityModule {
 
-@Singleton
-@Component(
-        modules = {
-                AndroidInjectionModule.class,
-                BusinessModule.class,
-                ViewModelModule.class,
-                NavigationModule.class,
-                ActivityModule.class,
-                FragmentModule.class,
-        }
-)
-public interface RootComponent {
-
-    void inject(Application application);
-
-    void inject(Activity activity);
-
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        Builder application(Application a);
-
-        RootComponent build();
-    }
+    @ContributesAndroidInjector
+    MainActivity mainActivity();
 }

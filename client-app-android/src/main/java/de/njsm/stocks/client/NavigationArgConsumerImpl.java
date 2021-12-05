@@ -19,39 +19,30 @@
  *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client;
 
-import android.app.Activity;
-import dagger.BindsInstance;
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import de.njsm.stocks.client.Application;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import de.njsm.stocks.client.navigation.NavigationArgConsumer;
 
-import javax.inject.Singleton;
+import javax.inject.Inject;
+import java.util.Optional;
 
-@Singleton
-@Component(
-        modules = {
-                AndroidInjectionModule.class,
-                BusinessModule.class,
-                ViewModelModule.class,
-                NavigationModule.class,
-                ActivityModule.class,
-                FragmentModule.class,
-        }
-)
-public interface RootComponent {
+public class NavigationArgConsumerImpl implements NavigationArgConsumer {
 
-    void inject(Application application);
+    private Optional<NavController> navController;
 
-    void inject(Activity activity);
+    @Inject
+    public NavigationArgConsumerImpl() {
+        navController = Optional.empty();
+    }
 
-    @Component.Builder
-    interface Builder {
+    public void setNavController(NavController navController) {
+        this.navController = Optional.of(navController);
+    }
 
-        @BindsInstance
-        Builder application(Application a);
-
-        RootComponent build();
+    @Override
+    public void navigate(NavDirections direction) {
+        this.navController.ifPresent(v -> v.navigate(direction));
     }
 }
