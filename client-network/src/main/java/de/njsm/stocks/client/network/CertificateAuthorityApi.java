@@ -19,31 +19,17 @@
  *
  */
 
-package de.njsm.stocks.client.network.server;
+package de.njsm.stocks.client.network;
 
 
-import de.njsm.stocks.client.business.LocationDeleteService;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.StatusCode;
-import de.njsm.stocks.common.api.Response;
 import retrofit2.Call;
+import retrofit2.http.GET;
 
-import javax.inject.Inject;
+public interface CertificateAuthorityApi {
 
-import static de.njsm.stocks.client.network.server.DataMapper.map;
+    @GET("ca")
+    Call<String> getCaCertificate();
 
-public class LocationDeleteServiceImpl implements LocationDeleteService {
-
-    private final Api api;
-
-    @Inject
-    public LocationDeleteServiceImpl(Api api) {
-        this.api = api;
-    }
-
-    @Override
-    public StatusCode deleteLocation(LocationForDeletion locationForDeletion) {
-        Call<Response> call = api.deleteLocation(locationForDeletion.id(), locationForDeletion.version(), 0);
-        return map(new CallHandler().executeCommand(call));
-    }
+    @GET("chain")
+    Call<String> getChainCertificate();
 }

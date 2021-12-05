@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.network.server;
+package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;

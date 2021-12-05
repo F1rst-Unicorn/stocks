@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.network.server;
+package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.common.api.DataResponse;
@@ -33,7 +33,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
 
-import static de.njsm.stocks.client.network.server.DataMapper.map;
+import static de.njsm.stocks.client.network.DataMapper.map;
 
 class CallHandler {
 
@@ -52,14 +52,20 @@ class CallHandler {
         }
     }
 
+    <D> D executeRawForResult(Call<D> call) throws StatusCodeException {
+        retrofit2.Response<D> response = executeCall(call);
+
+        if (!response.isSuccessful()
+                || response.body() == null) {
+            logResponse(response);
+            throw new StatusCodeException(map(StatusCode.GENERAL_ERROR));
+        } else
+            return response.body();
+
+    }
+
     <D> D executeForResult(retrofit2.Call<? extends DataResponse<D>> call) throws StatusCodeException {
-        retrofit2.Response<? extends DataResponse<D>> response;
-        try {
-            response = call.execute();
-        } catch (IOException e) {
-            LOG.error("Calling " + call.request().method() + " to " + call.request().url().encodedPath() + " failed", e);
-            throw new StatusCodeException(map(StatusCode.GENERAL_ERROR), e);
-        }
+        retrofit2.Response<? extends DataResponse<D>> response = executeCall(call);
 
         if (!response.isSuccessful()
                 || response.body() == null
@@ -67,6 +73,17 @@ class CallHandler {
             throw new StatusCodeException(map(error(response)));
         else
             return response.body().getData();
+    }
+
+    private <D> retrofit2.Response<D> executeCall(Call<D> call) {
+        retrofit2.Response<D> response;
+        try {
+            response = call.execute();
+        } catch (IOException e) {
+            LOG.error("Calling " + call.request().method() + " to " + call.request().url().encodedPath() + " failed", e);
+            throw new StatusCodeException(map(StatusCode.GENERAL_ERROR), e);
+        }
+        return response;
     }
 
     private static <T extends Response> StatusCode handleResponse(retrofit2.Response<T> response) {

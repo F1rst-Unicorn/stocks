@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.network.server;
+package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.UpdateService;
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
@@ -36,11 +36,11 @@ import java.util.stream.Collectors;
 
 public class UpdateServiceImpl implements UpdateService {
 
-    private final Api api;
+    private final ServerApi api;
 
     private final CallHandler callHandler;
 
-    public UpdateServiceImpl(Api api, CallHandler callHandler) {
+    public UpdateServiceImpl(ServerApi api, CallHandler callHandler) {
         this.api = api;
         this.callHandler = callHandler;
     }

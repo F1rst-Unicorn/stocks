@@ -19,40 +19,37 @@
  *
  */
 
-package de.njsm.stocks.client.network.server;
+package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.client.business.StatusCodeException;
+import de.njsm.stocks.client.business.entities.StatusCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import retrofit2.Call;
 
-import java.io.IOException;
-
-import static de.njsm.stocks.common.api.StatusCode.GENERAL_ERROR;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class CallHandlerTest {
+class UpdateServiceImplTest {
 
-    private CallHandler uut;
+    private UpdateServiceImpl uut;
 
-    private Call<Response> call;
+    private ServerApi api;
+
+    private CallHandler callHandler;
 
     @BeforeEach
     void setUp() {
-        uut = new CallHandler();
-        call = mock(Call.class);
+        api = mock(ServerApi.class);
+        callHandler = mock(CallHandler.class);
+        uut = new UpdateServiceImpl(api, callHandler);
     }
 
     @Test
-    void ioExceptionGivesGeneralError() throws IOException {
-        when(call.execute()).thenThrow(IOException.class);
+    void exceptionIsForwardedAsStatusCodeException() {
+        StatusCodeException expected = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        when(api.getUpdates()).thenReturn(null);
+        when(callHandler.executeForResult(null)).thenThrow(expected);
 
-        StatusCode actual = uut.executeCommand(call);
-
-        assertThat(actual, is(GENERAL_ERROR));
+        uut.getUpdates().test().assertError(expected);
     }
 }

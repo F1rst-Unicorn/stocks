@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.network.server;
+package de.njsm.stocks.client.network;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;

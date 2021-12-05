@@ -19,23 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.network.server;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.common.api.*;
-import retrofit2.Call;
-import retrofit2.http.*;
+import com.google.auto.value.AutoValue;
 
-public interface Api {
+@AutoValue
+public abstract class RegistrationCsr {
 
-    @GET("/v2/update")
-    Call<ListResponse<Update>> getUpdates();
+    public static RegistrationCsr create(int deviceId, String ticket, String csr) {
+        return new AutoValue_RegistrationCsr(deviceId, ticket, csr);
+    }
 
-    @GET("/v2/location")
-    Call<ListResponse<BitemporalLocation>> getLocations(@Query("bitemporal") int bitemporal,
-                                                        @Query("startingFrom") String startingFrom);
+    public abstract int deviceId();
 
-    @DELETE("/v2/location")
-    Call<Response> deleteLocation(@Query("id") int id,
-                                  @Query("version") int version,
-                                  @Query("cascade") int cascade);
+    public abstract String ticket();
+
+    public abstract String csr();
 }
