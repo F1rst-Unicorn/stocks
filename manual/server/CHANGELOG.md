@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [5.5.0.6]
+
+### Fixed
+
+* Update log4j to protect from
+  [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)
+
 ## [5.5.0.5]
 
 ### Fixed
