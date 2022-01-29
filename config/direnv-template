@@ -1,0 +1,3 @@
+DEPLOYMENT_VM=some.vm.example
+ANDROID_DEVICE=emulator-5554
+ANDROID_SDK_ROOT=/path-to/android-sdk/

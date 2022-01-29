@@ -35,3 +35,6 @@ server-test/keystore_test
 # Ansible
 *.retry
 cache
+
+# Local files
+.envrc
