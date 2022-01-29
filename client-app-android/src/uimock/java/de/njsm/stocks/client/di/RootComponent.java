@@ -26,6 +26,8 @@ import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.BusinessModule;
+import de.njsm.stocks.client.business.DataModule;
 
 import javax.inject.Singleton;
 
@@ -33,6 +35,7 @@ import javax.inject.Singleton;
 @Component(
         modules = {
                 AndroidInjectionModule.class,
+                DataModule.class,
                 BusinessModule.class,
                 ViewModelModule.class,
                 NavigationModule.class,

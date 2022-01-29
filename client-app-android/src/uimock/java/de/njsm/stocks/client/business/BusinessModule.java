@@ -16,24 +16,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.business;
 
 import dagger.Binds;
 import dagger.Module;
-import de.njsm.stocks.client.business.*;
 
 @Module
-public interface BusinessModule {
+public abstract class BusinessModule {
 
     @Binds
-    LocationListInteractor locationListInteractor(LocationListInteractorImpl implementation);
+    public abstract LocationListInteractor locationListInteractor(LocationListInteractorImpl implementation);
 
     @Binds
-    LocationDeleter locationDeleter(LocationDeleterImpl implementation);
+    public abstract LocationDeleter locationDeleter(LocationDeleterImpl implementation);
 
     @Binds
-    Synchroniser synchroniser(SynchroniserImpl implementation);
+    public abstract Synchroniser synchroniser(SynchroniserImpl implementation);
 }

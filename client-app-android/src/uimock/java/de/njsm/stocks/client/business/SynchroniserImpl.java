@@ -23,10 +23,10 @@ package de.njsm.stocks.client.business;
 
 import javax.inject.Inject;
 
-public class SynchroniserImpl implements Synchroniser {
+class SynchroniserImpl implements Synchroniser {
 
     @Inject
-    public SynchroniserImpl() {
+    SynchroniserImpl() {
     }
 
     @Override

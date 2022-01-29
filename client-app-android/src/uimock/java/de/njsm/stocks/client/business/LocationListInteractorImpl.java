@@ -29,13 +29,13 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import javax.inject.Inject;
 import java.util.List;
 
-public class LocationListInteractorImpl implements LocationListInteractor {
+class LocationListInteractorImpl implements LocationListInteractor {
 
     private final BehaviorSubject<List<LocationForListing>> data;
 
     @Inject
-    public LocationListInteractorImpl() {
-        this.data = BehaviorSubject.createDefault(LocationsForListing.getData());
+    LocationListInteractorImpl(LocationsForListing locationsForListing) {
+        this.data = locationsForListing.getData();
     }
 
     @Override

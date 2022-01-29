@@ -23,20 +23,25 @@ package de.njsm.stocks.client.view;
 
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.client.navigation.LocationListNavigator;
 import de.njsm.stocks.client.presenter.LocationViewModel;
 import de.njsm.stocks.client.ui.R;
+import de.njsm.stocks.client.view.listswipe.SwipeCallback;
 
 import javax.inject.Inject;
 
@@ -65,11 +70,20 @@ public class LocationListFragment extends Fragment {
         locationViewModel.getLocations().observe(getViewLifecycleOwner(), u -> locationListAdapter.setData(u));
         list.setAdapter(locationListAdapter);
 
+        FloatingActionButton addButton = result.findViewById(R.id.template_swipe_list_fab);
+        addButton.setOnClickListener(this::onAddItem);
+
+        SwipeCallback callback = new SwipeCallback(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
+                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
+                this::onItemSwipedRight
+        );
+        new ItemTouchHelper(callback).attachToRecyclerView(list);
+
         return result;
     }
 
-    private void onItemSwipedRight(View listItem) {
-        int listItemPosition = ((ViewHolder) listItem.getTag()).getBindingAdapterPosition();
+    private void onItemSwipedRight(int listItemPosition) {
         locationViewModel.deleteLocation(listItemPosition);
     }
 

@@ -27,7 +27,6 @@ import de.njsm.stocks.client.business.LocationListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -39,8 +38,6 @@ public class LocationViewModel extends ViewModel {
     private final LocationDeleter locationDeleter;
 
     private final Synchroniser synchroniser;
-
-    private BehaviorSubject<List<LocationForListing>> locations;
 
     @Inject
     public LocationViewModel(LocationListInteractor locationListInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser) {
@@ -56,6 +53,9 @@ public class LocationViewModel extends ViewModel {
     }
 
     public void deleteLocation(int listItemIndex) {
+        locationListInteractor.getLocations().firstElement().subscribe(list -> {
+            locationDeleter.deleteLocation(list.get(listItemIndex));
+        });
     }
 
     public void synchronise() {

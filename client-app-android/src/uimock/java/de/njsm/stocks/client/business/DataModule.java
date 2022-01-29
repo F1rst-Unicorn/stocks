@@ -16,35 +16,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
-package de.njsm.stocks.client.testdata;
+package de.njsm.stocks.client.business;
 
+import dagger.Module;
+import dagger.Provides;
+import de.njsm.stocks.client.testdata.LocationsForListing;
 
-import de.njsm.stocks.client.business.entities.LocationForListing;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import javax.inject.Singleton;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+@Module
+public class DataModule {
 
-public class LocationsForListing {
-
-    private final BehaviorSubject<List<LocationForListing>> data;
-
-    public LocationsForListing(List<LocationForListing> data) {
-        this.data = BehaviorSubject.createDefault(data);
-    }
-
-    public static List<LocationForListing> generate() {
-        return new ArrayList<>(Arrays.asList(
-                LocationForListing.create(1, "Fridge"),
-                LocationForListing.create(2, "Cupboard")
-        ));
-    }
-
-    public BehaviorSubject<List<LocationForListing>> getData() {
-        return data;
+    @Provides
+    @Singleton
+    public LocationsForListing locationsForListing() {
+        return new LocationsForListing(LocationsForListing.generate());
     }
 }

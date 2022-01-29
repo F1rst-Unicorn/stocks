@@ -23,17 +23,27 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.LocationForListing;
+import de.njsm.stocks.client.testdata.LocationsForListing;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
+import java.util.List;
 
-public class LocationDeleterImpl implements LocationDeleter {
+class LocationDeleterImpl implements LocationDeleter {
+
+    private final BehaviorSubject<List<LocationForListing>> data;
 
     @Inject
-    public LocationDeleterImpl() {
+    LocationDeleterImpl(LocationsForListing locationsForListing) {
+        this.data = locationsForListing.getData();
     }
 
     @Override
     public void deleteLocation(Identifiable<Location> location) {
-
+        data.firstElement().subscribe(list -> {
+            list.removeIf(v -> v.id() == location.id());
+            data.onNext(list);
+        });
     }
 }
