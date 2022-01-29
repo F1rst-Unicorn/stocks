@@ -22,7 +22,21 @@
 
 <resources>
     <color name="colorPrimary">#4CAF50</color>
-    <color name="colorPrimaryDark">#2E7D32</color>
+    <color name="colorOnPrimary">#ffffff</color>
+    <color name="colorPrimaryVariant">#2E7D32</color>
+
+    <color name="colorSecondary">#FFA000</color>
+    <color name="colorOnSecondary">#ffffff</color>
+    <color name="colorSecondaryVariant">#FF9800</color>
+
+    <color name="colorSurface">#ffffff</color>
+    <color name="colorOnSurface">#000000</color>
+    <color name="colorError">#F44336</color>
+
+    <color name="colorFadedIcon">#6C6C6C</color>
+
+
     <color name="colorAccent">#FFA000</color>
     <color name="cardBackground">#dddddd</color>
+    <color name="colorPrimaryDark">#2E7D32</color>
 </resources>

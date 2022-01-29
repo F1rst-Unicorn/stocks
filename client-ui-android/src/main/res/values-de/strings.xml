@@ -19,8 +19,8 @@
     along with this program. If not, see https://www.gnu.org/licenses/.
 -->
 
-
     <string name="app_name">Stocks</string>
+    <string name="app_name_ui">Stocks UI</string>
 
     <string name="title_delete_location">Ort entfernen</string>
     <string name="title_add_item">%s hinzufügen</string>
