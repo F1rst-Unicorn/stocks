@@ -120,6 +120,7 @@
     <string name="hint_description">Beschreibung</string>
     <string name="hint_duration">Dauer (min)</string>
     <string name="hint_amount">Menge</string>
+    <string name="hint_no_locations">Keine Orte.\nErstelle einen mit dem + Knopf.</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>
@@ -254,5 +255,6 @@
     <string name="event_scaled_unit_scale_changed">hat die Skalierung%s von %s auf %s gesetzt</string>
     <string name="event_scaled_unit_unit_changed">hat die Einheit%s von %s auf %s gesetzt</string>
 
+    <string name="content_description_plus">Plus-Symbol</string>
 
 </resources>

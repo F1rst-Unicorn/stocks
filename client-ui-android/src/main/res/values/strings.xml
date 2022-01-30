@@ -121,6 +121,7 @@
     <string name="hint_description">Description</string>
     <string name="hint_duration">Duration (min)</string>
     <string name="hint_amount">Amount</string>
+    <string name="hint_no_locations">No locations.\nCreate one using the + button.</string>
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>
@@ -254,5 +255,7 @@
     <string name="event_scaled_unit_deleted">%s has deleted %s.</string>
     <string name="event_scaled_unit_scale_changed">has set the scale%s from %s to %s</string>
     <string name="event_scaled_unit_unit_changed">has set the unit%s from %s to %s</string>
+
+    <string name="content_description_plus">Plus symbol</string>
 
 </resources>

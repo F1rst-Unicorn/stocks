@@ -33,17 +33,15 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import dagger.android.support.AndroidSupportInjection;
+import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.navigation.LocationListNavigator;
 import de.njsm.stocks.client.presenter.LocationViewModel;
 import de.njsm.stocks.client.ui.R;
 import de.njsm.stocks.client.view.listswipe.SwipeCallback;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class LocationListFragment extends Fragment {
 
@@ -52,6 +50,8 @@ public class LocationListFragment extends Fragment {
     private LocationListNavigator locationListNavigator;
 
     private LocationAdapter locationListAdapter;
+
+    private TemplateSwipeList templateSwipeList;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -63,24 +63,31 @@ public class LocationListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.template_swipe_list, container, false);
+        templateSwipeList = new TemplateSwipeList(result);
+        templateSwipeList.setLoading();
 
-        RecyclerView list = result.findViewById(R.id.template_swipe_list_list);
-        list.setLayoutManager(new LinearLayoutManager(requireContext()));
         locationListAdapter = new LocationAdapter();
-        locationViewModel.getLocations().observe(getViewLifecycleOwner(), u -> locationListAdapter.setData(u));
-        list.setAdapter(locationListAdapter);
-
-        FloatingActionButton addButton = result.findViewById(R.id.template_swipe_list_fab);
-        addButton.setOnClickListener(this::onAddItem);
+        locationViewModel.getLocations().observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
                 new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
                 this::onItemSwipedRight
         );
-        new ItemTouchHelper(callback).attachToRecyclerView(list);
+
+        templateSwipeList.initialiseListWithSwiper(requireContext(), locationListAdapter, callback);
+        templateSwipeList.bindFloatingActionButton(this::onAddItem);
 
         return result;
+    }
+
+    private void onListDataReceived(List<LocationForListing> data) {
+        if (data.isEmpty()) {
+            templateSwipeList.setEmpty(R.string.hint_no_locations);
+        } else {
+            templateSwipeList.setList();
+        }
+        locationListAdapter.setData(data);
     }
 
     private void onItemSwipedRight(int listItemPosition) {
