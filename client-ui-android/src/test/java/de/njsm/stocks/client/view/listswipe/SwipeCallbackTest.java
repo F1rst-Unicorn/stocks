@@ -18,12 +18,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.stocks.client.view.listswipe;
+package de.njsm.stocks.client.view.listswipe;
 
 import androidx.core.util.Consumer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.view.listswipe.SwipeCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

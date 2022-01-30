@@ -25,12 +25,12 @@ import de.njsm.stocks.client.view.LocationListFragmentDirections;
 
 import javax.inject.Inject;
 
-public class LocationListNavigatorImpl implements LocationListNavigator {
+class LocationListNavigatorImpl implements LocationListNavigator {
 
     private final NavigationArgConsumer navigationArgConsumer;
 
     @Inject
-    public LocationListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+    LocationListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
         this.navigationArgConsumer = navigationArgConsumer;
     }
 

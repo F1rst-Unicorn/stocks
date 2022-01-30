@@ -33,7 +33,7 @@ public class NavigationArgConsumerImpl implements NavigationArgConsumer {
     private Optional<NavController> navController;
 
     @Inject
-    public NavigationArgConsumerImpl() {
+    NavigationArgConsumerImpl() {
         navController = Optional.empty();
     }
 

@@ -40,7 +40,8 @@ public class LocationsForListing {
     public static List<LocationForListing> generate() {
         return new ArrayList<>(Arrays.asList(
                 LocationForListing.create(1, "Fridge"),
-                LocationForListing.create(2, "Cupboard")
+                LocationForListing.create(2, "Cupboard"),
+                LocationForListing.create(4, "Basement")
         ));
     }
 

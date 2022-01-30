@@ -25,19 +25,23 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
 
+import static de.njsm.stocks.client.view.ListDiffer.byId;
+
 public class LocationAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private List<LocationForListing> locations;
 
-    public void setData(List<LocationForListing> u) {
-        locations = u;
-        notifyDataSetChanged();
+    public void setData(List<LocationForListing> newList) {
+        List<LocationForListing> oldList = locations;
+        locations = newList;
+        DiffUtil.calculateDiff(byId(oldList, newList), true).dispatchUpdatesTo(this);
     }
 
     @NonNull

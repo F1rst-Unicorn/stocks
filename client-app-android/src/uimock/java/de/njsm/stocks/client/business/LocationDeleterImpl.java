@@ -28,6 +28,7 @@ import de.njsm.stocks.client.testdata.LocationsForListing;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 class LocationDeleterImpl implements LocationDeleter {
@@ -42,8 +43,9 @@ class LocationDeleterImpl implements LocationDeleter {
     @Override
     public void deleteLocation(Identifiable<Location> location) {
         data.firstElement().subscribe(list -> {
-            list.removeIf(v -> v.id() == location.id());
-            data.onNext(list);
+            List<LocationForListing> newList = new ArrayList<>(list);
+            newList.removeIf(v -> v.id() == location.id());
+            data.onNext(newList);
         });
     }
 }

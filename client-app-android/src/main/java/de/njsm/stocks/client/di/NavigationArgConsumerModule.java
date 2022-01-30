@@ -24,17 +24,12 @@ package de.njsm.stocks.client.di;
 import dagger.Binds;
 import dagger.Module;
 import de.njsm.stocks.client.NavigationArgConsumerImpl;
-import de.njsm.stocks.client.navigation.LocationListNavigator;
-import de.njsm.stocks.client.navigation.LocationListNavigatorImpl;
 import de.njsm.stocks.client.navigation.NavigationArgConsumer;
 
 import javax.inject.Singleton;
 
 @Module
-interface NavigationModule {
-
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl implementation);
+public interface NavigationArgConsumerModule {
 
     @Binds
     @Singleton

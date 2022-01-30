@@ -53,9 +53,8 @@ public class LocationViewModel extends ViewModel {
     }
 
     public void deleteLocation(int listItemIndex) {
-        locationListInteractor.getLocations().firstElement().subscribe(list -> {
-            locationDeleter.deleteLocation(list.get(listItemIndex));
-        });
+        locationListInteractor.getLocations().firstElement().subscribe(list ->
+                locationDeleter.deleteLocation(list.get(listItemIndex)));
     }
 
     public void synchronise() {

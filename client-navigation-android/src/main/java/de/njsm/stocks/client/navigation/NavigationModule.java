@@ -16,26 +16,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
-package de.njsm.stocks.client.view;
+package de.njsm.stocks.client.navigation;
 
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import dagger.android.AndroidInjection;
-import de.njsm.stocks.client.navigation.R;
+import dagger.Binds;
+import dagger.Module;
 
-/**
- * This activity only exists to convince android into generating the navigation
- * code.
- */
-class DummyActivity extends AppCompatActivity {
+@Module
+public interface NavigationModule {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        AndroidInjection.inject(this);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dummy);
-    }
+    @Binds
+    LocationListNavigator locationListNavigator(LocationListNavigatorImpl implementation);
 }
