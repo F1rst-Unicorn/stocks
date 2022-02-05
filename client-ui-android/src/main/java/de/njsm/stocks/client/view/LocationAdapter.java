@@ -41,8 +41,11 @@ public class LocationAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private final View.OnClickListener onClickListener;
 
-    public LocationAdapter(View.OnClickListener onClickListener) {
+    private final View.OnLongClickListener onLongClickListener;
+
+    public LocationAdapter(View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener) {
         this.onClickListener = onClickListener;
+        this.onLongClickListener = onLongClickListener;
     }
 
     public void setData(List<LocationForListing> newList) {
@@ -57,6 +60,7 @@ public class LocationAdapter extends RecyclerView.Adapter<ViewHolder> {
         TextView v = (TextView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_text_with_prefix_icon, parent, false);
         v.setOnClickListener(onClickListener);
+        v.setOnLongClickListener(onLongClickListener);
         return new ViewHolder(v);
     }
 

@@ -100,6 +100,21 @@ public class LocationListFragmentTest {
     }
 
     @Test
+    public void longClickingALocationNavigates() {
+        int itemIndex = 1;
+        List<LocationForListing> data = LocationsForListing.getData();
+        assertTrue("The test wants to access element " + itemIndex, data.size() >= itemIndex + 1);
+        LocationForListing location = data.get(itemIndex);
+        assertTrue("Make sure the list position is mapped to an ID by having different values", location.id() != itemIndex);
+        locationListInteractor.setData(data);
+
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(actionOnItemAtPosition(itemIndex, longClick()));
+
+        verify(mockLocationListNavigator).editLocation(location.id());
+    }
+
+    @Test
     public void locationDeletionWorks() {
         List<LocationForListing> data = LocationsForListing.getData();
         assertFalse(data.isEmpty());
