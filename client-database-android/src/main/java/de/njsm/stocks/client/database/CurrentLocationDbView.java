@@ -31,11 +31,11 @@ import static de.njsm.stocks.client.database.CurrentTable.NOW_AS_BEST_KNOWN;
         "select * " +
         "from location " +
         NOW_AS_BEST_KNOWN)
-public class CurrentLocationDbView extends LocationDbEntity {
+class CurrentLocationDbView extends LocationDbEntity {
 
     static final String CURRENT_LOCATION_TABLE = "current_location";
 
-    public CurrentLocationDbView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, @NonNull String description) {
+    CurrentLocationDbView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, @NonNull String description) {
         super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates, name, description);
     }
 }

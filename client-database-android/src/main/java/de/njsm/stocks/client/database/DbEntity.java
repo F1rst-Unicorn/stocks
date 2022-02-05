@@ -95,31 +95,31 @@ abstract class DbEntity {
         return initiates;
     }
 
-    public void setId(int id) {
+    void setId(int id) {
         this.id = id;
     }
 
-    public void setVersion(int version) {
+    void setVersion(int version) {
         this.version = version;
     }
 
-    public void setValidTimeStart(@NonNull Instant validTimeStart) {
+    void setValidTimeStart(@NonNull Instant validTimeStart) {
         this.validTimeStart = validTimeStart;
     }
 
-    public void setValidTimeEnd(@NonNull Instant validTimeEnd) {
+    void setValidTimeEnd(@NonNull Instant validTimeEnd) {
         this.validTimeEnd = validTimeEnd;
     }
 
-    public void setTransactionTimeStart(@NonNull Instant transactionTimeStart) {
+    void setTransactionTimeStart(@NonNull Instant transactionTimeStart) {
         this.transactionTimeStart = transactionTimeStart;
     }
 
-    public void setTransactionTimeEnd(@NonNull Instant transactionTimeEnd) {
+    void setTransactionTimeEnd(@NonNull Instant transactionTimeEnd) {
         this.transactionTimeEnd = transactionTimeEnd;
     }
 
-    public void setInitiates(int initiates) {
+    void setInitiates(int initiates) {
         this.initiates = initiates;
     }
 

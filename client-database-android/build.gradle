@@ -95,9 +95,11 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.1.3'
     implementation "com.google.auto.value:auto-value-annotations:1.8.2"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation "com.google.dagger:dagger:2.40.4"
 
     annotationProcessor "com.google.auto.value:auto-value:1.8.2"
     annotationProcessor "androidx.room:room-compiler:2.3.0"
+    annotationProcessor "com.google.dagger:dagger-compiler:2.40.4"
 
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.hamcrest:hamcrest:2.2'
@@ -109,6 +111,8 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test:runner:1.4.0'
+
+    androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:2.40.4"
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 }

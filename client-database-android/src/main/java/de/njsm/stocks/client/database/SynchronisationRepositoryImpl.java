@@ -29,12 +29,12 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SynchronisationRepositoryImpl implements SynchronisationRepository {
+class SynchronisationRepositoryImpl implements SynchronisationRepository {
 
     private final SynchronisationDao synchronisationDao;
 
     @Inject
-    public SynchronisationRepositoryImpl(SynchronisationDao synchronisationDao) {
+    SynchronisationRepositoryImpl(SynchronisationDao synchronisationDao) {
         this.synchronisationDao = synchronisationDao;
     }
 

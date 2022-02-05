@@ -36,7 +36,7 @@ import java.time.format.DateTimeFormatter;
         },
         version = 40)
 @androidx.room.TypeConverters(TypeConverters.class)
-public abstract class StocksDatabase extends RoomDatabase {
+abstract class StocksDatabase extends RoomDatabase {
 
     /**
      * <code>datetime('now')</code> is precise up to second. Server time is

@@ -25,7 +25,7 @@ import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
 
-public class DataMapper {
+class DataMapper {
 
     static Update map(UpdateDbEntity input) {
         return Update.create(map(input.getTable()), input.getLastUpdate());

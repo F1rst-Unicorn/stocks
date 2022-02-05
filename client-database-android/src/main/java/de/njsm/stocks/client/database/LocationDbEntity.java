@@ -60,11 +60,11 @@ class LocationDbEntity extends DbEntity {
         return description;
     }
 
-    public void setName(@NonNull String name) {
+    void setName(@NonNull String name) {
         this.name = name;
     }
 
-    public void setDescription(@NonNull String description) {
+    void setDescription(@NonNull String description) {
         this.description = description;
     }
 

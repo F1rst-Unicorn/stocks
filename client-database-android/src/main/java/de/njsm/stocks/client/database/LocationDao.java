@@ -26,9 +26,9 @@ import androidx.room.*;
 import java.util.List;
 
 @Dao
-public abstract class LocationDao {
+abstract class LocationDao {
 
     @Query("select *" +
             "from current_location")
-    public abstract List<LocationDbEntity> getAll();
+    abstract List<LocationDbEntity> getAll();
 }

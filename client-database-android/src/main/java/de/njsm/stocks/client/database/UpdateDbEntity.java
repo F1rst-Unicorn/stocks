@@ -63,15 +63,15 @@ class UpdateDbEntity {
         return lastUpdate;
     }
 
-    public void setId(int id) {
+    void setId(int id) {
         this.id = id;
     }
 
-    public void setTable(@NonNull String table) {
+    void setTable(@NonNull String table) {
         this.table = table;
     }
 
-    public void setLastUpdate(@NonNull Instant lastUpdate) {
+    void setLastUpdate(@NonNull Instant lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

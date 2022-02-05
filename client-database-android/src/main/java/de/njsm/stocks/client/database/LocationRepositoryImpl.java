@@ -29,12 +29,12 @@ import io.reactivex.rxjava3.core.Observable;
 import javax.inject.Inject;
 import java.util.List;
 
-public class LocationRepositoryImpl implements LocationRepository {
+class LocationRepositoryImpl implements LocationRepository {
 
     private final LocationDao locationDao;
 
     @Inject
-    public LocationRepositoryImpl(LocationDao locationDao) {
+    LocationRepositoryImpl(LocationDao locationDao) {
         this.locationDao = locationDao;
     }
 

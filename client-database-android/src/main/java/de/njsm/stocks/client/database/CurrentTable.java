@@ -23,8 +23,8 @@ package de.njsm.stocks.client.database;
 import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY_STRING;
 import static de.njsm.stocks.client.database.StocksDatabase.NOW;
 
-public abstract class CurrentTable {
-    public static final String NOW_AS_BEST_KNOWN =
+abstract class CurrentTable {
+    static final String NOW_AS_BEST_KNOWN =
             "where valid_time_start <= " + NOW +
             "and " + NOW + " < valid_time_end " +
             "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "'";
