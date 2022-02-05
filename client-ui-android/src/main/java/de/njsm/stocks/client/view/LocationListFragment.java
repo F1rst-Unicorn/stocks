@@ -57,7 +57,7 @@ public class LocationListFragment extends InjectableFragment {
         templateSwipeList = new TemplateSwipeList(result);
         templateSwipeList.setLoading();
 
-        locationListAdapter = new LocationAdapter();
+        locationListAdapter = new LocationAdapter(this::onItemClicked);
         locationViewModel.getLocations().observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
@@ -87,7 +87,8 @@ public class LocationListFragment extends InjectableFragment {
     }
 
     private void onItemClicked(View listItem) {
-        int listItemPosition = ((ViewHolder) listItem.getTag()).getBindingAdapterPosition();
+        int listItemIndex = ((ViewHolder) listItem.getTag()).getBindingAdapterPosition();
+        locationViewModel.resolveLocationId(listItemIndex, v -> locationListNavigator.showLocation(v));
     }
 
     private void onAddItem(View button) {

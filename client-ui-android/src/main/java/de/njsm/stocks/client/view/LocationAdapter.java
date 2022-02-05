@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.view;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -38,6 +39,12 @@ public class LocationAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private List<LocationForListing> locations;
 
+    private final View.OnClickListener onClickListener;
+
+    public LocationAdapter(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+
     public void setData(List<LocationForListing> newList) {
         List<LocationForListing> oldList = locations;
         locations = newList;
@@ -49,6 +56,7 @@ public class LocationAdapter extends RecyclerView.Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         TextView v = (TextView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_text_with_prefix_icon, parent, false);
+        v.setOnClickListener(onClickListener);
         return new ViewHolder(v);
     }
 

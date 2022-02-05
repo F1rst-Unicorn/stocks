@@ -31,6 +31,7 @@ public class LocationsForListing {
     public static List<LocationForListing> getData() {
         return Arrays.asList(
                 LocationForListing.create(1, "Fridge"),
+                LocationForListing.create(3, "Basement"),
                 LocationForListing.create(2, "Cupboard")
         );
     }

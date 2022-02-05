@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.navigation;
 
 public interface LocationListNavigator {
+
     void addLocation();
 
     void showLocation(int id);

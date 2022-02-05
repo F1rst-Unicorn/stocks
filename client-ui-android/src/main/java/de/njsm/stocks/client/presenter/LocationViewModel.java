@@ -30,6 +30,7 @@ import io.reactivex.rxjava3.core.BackpressureStrategy;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class LocationViewModel extends ViewModel {
 
@@ -53,8 +54,15 @@ public class LocationViewModel extends ViewModel {
     }
 
     public void deleteLocation(int listItemIndex) {
-        locationListInteractor.getLocations().firstElement().subscribe(list ->
-                locationDeleter.deleteLocation(list.get(listItemIndex)));
+        performOnCurrentLocations(list -> locationDeleter.deleteLocation(list.get(listItemIndex)));
+    }
+
+    public void resolveLocationId(int listItemIndex, Consumer<Integer> callback) {
+        performOnCurrentLocations(list -> callback.accept(list.get(listItemIndex).id()));
+    }
+
+    private void performOnCurrentLocations(Consumer<List<LocationForListing>> runnable) {
+        locationListInteractor.getLocations().firstElement().subscribe(runnable::accept);
     }
 
     public void synchronise() {

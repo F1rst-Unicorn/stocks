@@ -34,6 +34,7 @@ class ViewHolder extends RecyclerView.ViewHolder {
     ViewHolder(@NonNull View itemView) {
         super(itemView);
         text = itemView.findViewById(R.id.item_text_with_prefix_icon_name);
+        text.setTag(this);
 
         text.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_account_balance_wallet_black_24dp, 0, 0, 0);
     }

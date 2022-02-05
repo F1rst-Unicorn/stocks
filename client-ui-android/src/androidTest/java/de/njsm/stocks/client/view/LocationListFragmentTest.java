@@ -44,6 +44,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
@@ -81,6 +82,21 @@ public class LocationListFragmentTest {
             onView(withId(R.id.template_swipe_list_list))
                     .check(matches(withChild(withText(item.name()))));
         }
+    }
+
+    @Test
+    public void clickingALocationNavigates() {
+        int itemIndex = 1;
+        List<LocationForListing> data = LocationsForListing.getData();
+        assertTrue("The test wants to access element " + itemIndex, data.size() >= itemIndex + 1);
+        LocationForListing location = data.get(itemIndex);
+        assertTrue("Make sure the list position is mapped to an ID by having different values", location.id() != itemIndex);
+        locationListInteractor.setData(data);
+
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(actionOnItemAtPosition(itemIndex, click()));
+
+        verify(mockLocationListNavigator).showLocation(location.id());
     }
 
     @Test

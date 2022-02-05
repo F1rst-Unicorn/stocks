@@ -22,10 +22,14 @@
 package de.njsm.stocks.client.navigation;
 
 import de.njsm.stocks.client.view.LocationListFragmentDirections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 class LocationListNavigatorImpl implements LocationListNavigator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LocationListNavigatorImpl.class);
 
     private final NavigationArgConsumer navigationArgConsumer;
 
@@ -36,6 +40,7 @@ class LocationListNavigatorImpl implements LocationListNavigator {
 
     @Override
     public void addLocation() {
+        LOG.warn("adding a location");
         navigationArgConsumer.navigate(
                 LocationListFragmentDirections.actionNavFragmentLocationListToNavFragmentLocationAdd()
         );
@@ -43,6 +48,7 @@ class LocationListNavigatorImpl implements LocationListNavigator {
 
     @Override
     public void showLocation(int id) {
+        LOG.debug("showing location " + id);
         navigationArgConsumer.navigate(
                 LocationListFragmentDirections.actionNavFragmentLocationListToNavFragmentLocationContent(id)
         );
@@ -50,6 +56,7 @@ class LocationListNavigatorImpl implements LocationListNavigator {
 
     @Override
     public void editLocation(int id) {
+        LOG.debug("editing location " + id);
         navigationArgConsumer.navigate(
                 LocationListFragmentDirections.actionNavFragmentLocationListToNavFragmentLocationEdit(id)
         );
