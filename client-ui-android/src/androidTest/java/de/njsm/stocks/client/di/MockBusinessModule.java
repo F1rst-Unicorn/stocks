@@ -38,8 +38,9 @@ public class MockBusinessModule {
     }
 
     @Provides
+    @Singleton
     LocationDeleter locationDeleter() {
-        return location -> {};
+        return Mockito.mock(LocationDeleter.class);
     }
 
     @Provides

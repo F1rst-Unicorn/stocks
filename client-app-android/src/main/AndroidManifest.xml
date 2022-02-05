@@ -46,6 +46,7 @@
         <activity
                 android:name=".client.view.MainActivity"
                 android:launchMode="singleTop"
+                android:exported="true"
                 android:theme="@style/StocksTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

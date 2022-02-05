@@ -16,18 +16,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.view;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
-import de.njsm.stocks.client.view.LocationListFragment;
 
 @Module
-abstract class FragmentModule {
+public abstract class FragmentModule {
 
     @ContributesAndroidInjector
-    abstract LocationListFragment locationFragment();
+    public abstract LocationListFragment locationListFragment();
+
+    @ContributesAndroidInjector
+    public abstract LocationAddFragment locationAddFragment();
 }

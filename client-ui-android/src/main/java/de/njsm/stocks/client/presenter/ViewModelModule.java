@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -17,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,7 +28,8 @@ import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.LocationDeleter;
 import de.njsm.stocks.client.business.LocationListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.presenter.LocationViewModel;
+import de.njsm.stocks.client.di.ViewModelFactory;
+import de.njsm.stocks.client.di.ViewModelKey;
 
 import javax.inject.Provider;
 import java.util.Map;

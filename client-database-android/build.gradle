@@ -30,8 +30,6 @@ android {
     defaultConfig {
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 1
-        versionName "0.1"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -52,12 +50,10 @@ android {
 
     buildTypes {
         debug {
-            debuggable true
             minifyEnabled false
             jniDebuggable true
         }
         release {
-            debuggable false
             minifyEnabled false
         }
     }

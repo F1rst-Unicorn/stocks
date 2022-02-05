@@ -23,7 +23,9 @@ import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.Application;
-import de.njsm.stocks.client.view.LocationListTest;
+import de.njsm.stocks.client.presenter.ViewModelModule;
+import de.njsm.stocks.client.view.FragmentModule;
+import de.njsm.stocks.client.view.LocationListFragmentTest;
 
 import javax.inject.Singleton;
 
@@ -41,7 +43,7 @@ public interface TestComponent {
 
     void inject(Application application);
 
-    void inject(LocationListTest test);
+    void inject(LocationListFragmentTest test);
 
     @Component.Builder
     interface Builder {

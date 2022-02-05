@@ -25,8 +25,10 @@ import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.LocationDeleter;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.LocationForListing;
+import de.njsm.stocks.client.navigation.LocationListNavigator;
 import de.njsm.stocks.client.testdata.LocationsForListing;
 import de.njsm.stocks.client.ui.R;
 import org.junit.Before;
@@ -35,21 +37,28 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.swipeDown;
+import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
-public class LocationListTest {
+public class LocationListFragmentTest {
 
     private FragmentScenario<LocationListFragment> scenario;
 
     private FakeLocationListInteractor locationListInteractor;
 
+    private LocationListNavigator mockLocationListNavigator;
+
     private Synchroniser synchroniser;
+
+    private LocationDeleter locationDeleter;
 
     @Before
     public void setUp() {
@@ -76,6 +85,27 @@ public class LocationListTest {
         }
     }
 
+    @Test
+    public void locationDeletionWorks() {
+        List<LocationForListing> data = LocationsForListing.getData();
+        assertFalse(data.isEmpty());
+        locationListInteractor.setData(data);
+        int itemIndex = 0;
+
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(actionOnItemAtPosition(itemIndex, swipeRight()));
+
+        verify(locationDeleter).deleteLocation(data.get(itemIndex));
+    }
+
+    @Test
+    public void locationAddingNavigates() {
+        onView(withId(R.id.template_swipe_list_fab))
+                .perform(click());
+
+        verify(mockLocationListNavigator).addLocation();
+    }
+
     @Inject
     public void setLocationListInteractor(FakeLocationListInteractor locationListInteractor) {
         this.locationListInteractor = locationListInteractor;
@@ -84,5 +114,15 @@ public class LocationListTest {
     @Inject
     public void setSynchroniser(Synchroniser synchroniser) {
         this.synchroniser = synchroniser;
+    }
+
+    @Inject
+    public void setMockLocationListNavigator(LocationListNavigator mockLocationListNavigator) {
+        this.mockLocationListNavigator = mockLocationListNavigator;
+    }
+
+    @Inject
+    public void setLocationDeleter(LocationDeleter locationDeleter) {
+        this.locationDeleter = locationDeleter;
     }
 }

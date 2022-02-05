@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.view;
 
 
-import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,9 +30,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import dagger.android.support.AndroidSupportInjection;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.navigation.LocationListNavigator;
 import de.njsm.stocks.client.presenter.LocationViewModel;
@@ -43,7 +40,7 @@ import de.njsm.stocks.client.view.listswipe.SwipeCallback;
 import javax.inject.Inject;
 import java.util.List;
 
-public class LocationListFragment extends Fragment {
+public class LocationListFragment extends InjectableFragment {
 
     private LocationViewModel locationViewModel;
 
@@ -52,12 +49,6 @@ public class LocationListFragment extends Fragment {
     private LocationAdapter locationListAdapter;
 
     private TemplateSwipeList templateSwipeList;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -96,7 +87,6 @@ public class LocationListFragment extends Fragment {
 
     private void onItemClicked(View listItem) {
         int listItemPosition = ((ViewHolder) listItem.getTag()).getBindingAdapterPosition();
-
     }
 
     private void onAddItem(View button) {

@@ -53,7 +53,9 @@
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_location_add"
-        android:name="androidx.fragment.app.Fragment">
+        android:name="de.njsm.stocks.client.view.LocationAddFragment"
+        android:label="@string/title_add_location"
+        tools:layout="@layout/template_swipe_list">
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_location_content"

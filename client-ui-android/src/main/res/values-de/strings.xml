@@ -69,6 +69,7 @@
     <string name="title_products">Produkte</string>
     <string name="title_duration">Zubereitungsdauer</string>
     <string name="title_checkout">Rezept zubereiten</string>
+    <string name="title_add_location">Ort hinzufügen</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>

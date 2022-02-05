@@ -70,6 +70,7 @@
     <string name="title_products">Products</string>
     <string name="title_duration">Time</string>
     <string name="title_checkout">Prepare Recipe</string>
+    <string name="title_add_location">Add Location</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>

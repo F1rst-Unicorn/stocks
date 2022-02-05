@@ -29,6 +29,8 @@ import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.BusinessModule;
 import de.njsm.stocks.client.business.DataModule;
 import de.njsm.stocks.client.navigation.NavigationModule;
+import de.njsm.stocks.client.presenter.ViewModelModule;
+import de.njsm.stocks.client.view.FragmentModule;
 
 import javax.inject.Singleton;
 

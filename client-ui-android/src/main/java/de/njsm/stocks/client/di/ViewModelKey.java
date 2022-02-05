@@ -28,6 +28,6 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @MapKey
-@interface ViewModelKey {
+public @interface ViewModelKey {
     Class<? extends ViewModel> value();
 }
