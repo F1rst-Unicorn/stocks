@@ -32,7 +32,6 @@ import de.njsm.stocks.client.navigation.LocationListNavigator;
 import de.njsm.stocks.client.testdata.LocationsForListing;
 import de.njsm.stocks.client.ui.R;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -67,7 +66,6 @@ public class LocationListFragmentTest {
     }
 
     @Test
-    @Ignore("not yet implemented")
     public void swipingDownCausesARefresh() {
 
         onView(withId(R.id.template_swipe_list_list)).perform(swipeDown());

@@ -68,6 +68,7 @@ public class LocationListFragment extends InjectableFragment {
 
         templateSwipeList.initialiseListWithSwiper(requireContext(), locationListAdapter, callback);
         templateSwipeList.bindFloatingActionButton(this::onAddItem);
+        templateSwipeList.bindSwipeDown(this::onSwipeDown);
 
         return result;
     }

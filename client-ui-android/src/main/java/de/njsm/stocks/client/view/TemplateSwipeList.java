@@ -27,6 +27,7 @@ import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import de.njsm.stocks.client.ui.R;
 
@@ -79,5 +80,13 @@ class TemplateSwipeList {
     void bindFloatingActionButton(View.OnClickListener onClickListener) {
         FloatingActionButton addButton = root.findViewById(R.id.template_swipe_list_fab);
         addButton.setOnClickListener(onClickListener);
+    }
+
+    void bindSwipeDown(Runnable listener) {
+        SwipeRefreshLayout refreshLayout = root.findViewById(R.id.template_swipe_list_swipe);
+        refreshLayout.setOnRefreshListener(() -> {
+            listener.run();
+            refreshLayout.setRefreshing(false);
+        });
     }
 }
