@@ -19,21 +19,10 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.RegistrationCsr;
 
-@AutoValue
-public abstract class LocationForDeletion implements Versionable<Location> {
-
-    public static LocationForDeletion.Builder builder() {
-        return new AutoValue_LocationForDeletion.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder
-            extends SelfValidating.Builder<LocationForDeletion>
-            implements Versionable.Builder<Builder> {
-    }
-
+public interface Registrator {
+    String getOwnCertificate(RegistrationCsr request);
 }

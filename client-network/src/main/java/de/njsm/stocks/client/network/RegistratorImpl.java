@@ -19,21 +19,27 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.network;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.Registrator;
+import de.njsm.stocks.client.business.entities.RegistrationCsr;
+import de.njsm.stocks.common.api.DataResponse;
+import retrofit2.Call;
 
-@AutoValue
-public abstract class LocationForDeletion implements Versionable<Location> {
+import javax.inject.Inject;
 
-    public static LocationForDeletion.Builder builder() {
-        return new AutoValue_LocationForDeletion.Builder();
+class RegistratorImpl implements Registrator {
+
+    private final SentryApi sentryApi;
+
+    @Inject
+    RegistratorImpl(SentryApi sentryApi) {
+        this.sentryApi = sentryApi;
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder
-            extends SelfValidating.Builder<LocationForDeletion>
-            implements Versionable.Builder<Builder> {
+    @Override
+    public String getOwnCertificate(RegistrationCsr request) {
+        Call<DataResponse<String>> call = sentryApi.requestCertificate(request.deviceId(), request.ticket(), request.csr());
+        return new CallHandler().executeForResult(call);
     }
-
 }

@@ -27,4 +27,8 @@ class CryptoException extends SubsystemException {
     CryptoException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public CryptoException(Throwable cause) {
+        super(cause);
+    }
 }

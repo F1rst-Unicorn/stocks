@@ -21,13 +21,9 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.RegistrationCsr;
-
 public interface CertificateFetcher {
 
     String getCaCertificate();
 
     String getIntermediateCertificate();
-
-    String getOwnCertificate(RegistrationCsr request);
 }

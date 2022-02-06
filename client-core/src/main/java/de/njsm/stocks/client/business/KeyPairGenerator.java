@@ -19,21 +19,15 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import java.security.KeyPair;
 
-@AutoValue
-public abstract class LocationForDeletion implements Versionable<Location> {
+public interface KeyPairGenerator {
 
-    public static LocationForDeletion.Builder builder() {
-        return new AutoValue_LocationForDeletion.Builder();
-    }
+    void generate();
 
-    @AutoValue.Builder
-    public abstract static class Builder
-            extends SelfValidating.Builder<LocationForDeletion>
-            implements Versionable.Builder<Builder> {
-    }
+    String getCsr();
 
+    KeyPair getKeyPair();
 }

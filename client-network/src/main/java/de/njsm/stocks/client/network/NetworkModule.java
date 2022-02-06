@@ -19,21 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.network;
 
-import com.google.auto.value.AutoValue;
+import dagger.Binds;
+import dagger.Module;
+import de.njsm.stocks.client.business.CertificateFetcherBuilder;
+import de.njsm.stocks.client.business.RegistratorBuilder;
 
-@AutoValue
-public abstract class LocationForDeletion implements Versionable<Location> {
+@Module
+public abstract class NetworkModule {
 
-    public static LocationForDeletion.Builder builder() {
-        return new AutoValue_LocationForDeletion.Builder();
-    }
+    @Binds
+    public abstract CertificateFetcherBuilder certificateFetcherBuilder(CertificateFetcherBuilderImpl impl);
 
-    @AutoValue.Builder
-    public abstract static class Builder
-            extends SelfValidating.Builder<LocationForDeletion>
-            implements Versionable.Builder<Builder> {
-    }
-
+    @Binds
+    public abstract RegistratorBuilder registratorBuilder(RegistratorBuilderImpl impl);
 }

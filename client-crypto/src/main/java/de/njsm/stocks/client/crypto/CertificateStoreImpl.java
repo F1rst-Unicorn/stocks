@@ -28,15 +28,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.util.ArrayList;
 import java.util.List;
 
 class CertificateStoreImpl implements CertificateStore {
@@ -58,7 +58,7 @@ class CertificateStoreImpl implements CertificateStore {
     }
 
     @Override
-    public void storeCertificate(List<PemFile> certificates) throws SubsystemException {
+    public void storeCertificates(List<PemFile> certificates) throws SubsystemException {
         try {
             storeCertificatesInternally(certificates);
         } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException e) {
@@ -81,6 +81,54 @@ class CertificateStoreImpl implements CertificateStore {
             return getKeystoreInternally();
         } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException e) {
             throw new CryptoException("getting keystore", e);
+        }
+    }
+
+    @Override
+    public KeyManagerFactory getKeyManager() throws SubsystemException {
+        try {
+            KeyStore keyStore = getKeystoreInternally();
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(keyStore, PASSWORD.toCharArray());
+            return kmf;
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | CertificateException | IOException e) {
+            throw new CryptoException(e);
+        }
+    }
+
+    @Override
+    public TrustManagerFactory getTrustManager() throws SubsystemException {
+        try {
+            KeyStore keyStore = getKeystoreInternally();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(keyStore);
+            return tmf;
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
+            throw new CryptoException(e);
+        }
+    }
+
+    @Override
+    public String getCaCertificateFingerprint() throws SubsystemException {
+        try {
+            KeyStore keyStore = getKeystoreInternally();
+            Certificate certificate = keyStore.getCertificate("ca");
+
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(certificate.getEncoded());
+            byte[] digest = md.digest();
+
+            char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+            List<String> bytes = new ArrayList<>();
+            for (byte aDigest : digest) {
+                String word = String.valueOf(hexDigits[(aDigest & 0xf0) >> 4]);
+                word += hexDigits[aDigest & 0x0f];
+                bytes.add(word);
+            }
+
+            return String.join(":", bytes);
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
+            throw new CryptoException(e);
         }
     }
 

@@ -19,21 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 
-@AutoValue
-public abstract class LocationForDeletion implements Versionable<Location> {
-
-    public static LocationForDeletion.Builder builder() {
-        return new AutoValue_LocationForDeletion.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder
-            extends SelfValidating.Builder<LocationForDeletion>
-            implements Versionable.Builder<Builder> {
-    }
-
+public interface RegistratorBuilder {
+    Registrator build(String domain, int port, TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory);
 }

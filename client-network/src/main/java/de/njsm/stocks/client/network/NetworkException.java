@@ -19,21 +19,13 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.network;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.SubsystemException;
 
-@AutoValue
-public abstract class LocationForDeletion implements Versionable<Location> {
+class NetworkException extends SubsystemException {
 
-    public static LocationForDeletion.Builder builder() {
-        return new AutoValue_LocationForDeletion.Builder();
+    NetworkException(String message, Throwable cause) {
+        super(message, cause);
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder
-            extends SelfValidating.Builder<LocationForDeletion>
-            implements Versionable.Builder<Builder> {
-    }
-
 }

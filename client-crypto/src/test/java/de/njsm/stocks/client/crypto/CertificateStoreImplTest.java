@@ -76,7 +76,7 @@ class CertificateStoreImplTest {
 
     @Test
     void storingCertificateWorks() throws KeyStoreException {
-        uut.storeCertificate(Collections.singletonList(certificate));
+        uut.storeCertificates(Collections.singletonList(certificate));
 
         assertTrue(uut.getKeystore().isCertificateEntry(certificate.name()));
     }

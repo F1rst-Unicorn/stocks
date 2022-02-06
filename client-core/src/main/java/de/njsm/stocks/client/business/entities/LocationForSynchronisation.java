@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.business.SelfValidating;
 
 @AutoValue
 public abstract class LocationForSynchronisation implements Bitemporal<Location>, Location {

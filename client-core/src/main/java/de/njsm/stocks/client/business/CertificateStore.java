@@ -23,15 +23,26 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.PemFile;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.util.List;
 
 public interface CertificateStore {
 
-    void storeCertificate(List<PemFile> certificates) throws SubsystemException;
+    void storeCertificates(List<PemFile> certificates) throws SubsystemException;
 
+    /**
+     * @param certificates Put the CA certificate first
+     */
     void storeKey(KeyPair keyPair, List<PemFile> certificates) throws SubsystemException;
 
     KeyStore getKeystore() throws SubsystemException;
+
+    KeyManagerFactory getKeyManager() throws SubsystemException;
+
+    TrustManagerFactory getTrustManager() throws SubsystemException;
+
+    String getCaCertificateFingerprint() throws SubsystemException;
 }

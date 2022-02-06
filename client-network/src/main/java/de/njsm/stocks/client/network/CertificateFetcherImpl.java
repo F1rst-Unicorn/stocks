@@ -22,23 +22,17 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.CertificateFetcher;
-import de.njsm.stocks.client.business.entities.RegistrationCsr;
-import de.njsm.stocks.common.api.DataResponse;
 import retrofit2.Call;
 
 import javax.inject.Inject;
-import java.util.function.Supplier;
 
-public class CertificateFetcherImpl implements CertificateFetcher {
+class CertificateFetcherImpl implements CertificateFetcher {
 
     private final CertificateAuthorityApi certificateAuthorityApi;
 
-    private final Supplier<SentryApi> sentryApi;
-
     @Inject
-    public CertificateFetcherImpl(CertificateAuthorityApi certificateAuthorityApi, Supplier<SentryApi> sentryApi) {
+    CertificateFetcherImpl(CertificateAuthorityApi certificateAuthorityApi) {
         this.certificateAuthorityApi = certificateAuthorityApi;
-        this.sentryApi = sentryApi;
     }
 
     @Override
@@ -51,11 +45,5 @@ public class CertificateFetcherImpl implements CertificateFetcher {
     public String getIntermediateCertificate() {
         Call<String> call = certificateAuthorityApi.getChainCertificate();
         return new CallHandler().executeRawForResult(call);
-    }
-
-    @Override
-    public String getOwnCertificate(RegistrationCsr request) {
-        Call<DataResponse<String>> call = sentryApi.get().requestCertificate(request.deviceId(), request.ticket(), request.csr());
-        return new CallHandler().executeForResult(call);
     }
 }

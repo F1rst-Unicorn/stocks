@@ -19,21 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.network;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.CertificateFetcher;
+import de.njsm.stocks.client.business.CertificateFetcherBuilder;
 
-@AutoValue
-public abstract class LocationForDeletion implements Versionable<Location> {
+class CertificateFetcherBuilderImpl implements CertificateFetcherBuilder {
 
-    public static LocationForDeletion.Builder builder() {
-        return new AutoValue_LocationForDeletion.Builder();
+    @Override
+    public CertificateFetcher build(String domain, int port) {
+        CertificateAuthorityApi backend = Utility.getBuilder(domain, port)
+                .build()
+                .create(CertificateAuthorityApi.class);
+
+        return new CertificateFetcherImpl(backend);
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder
-            extends SelfValidating.Builder<LocationForDeletion>
-            implements Versionable.Builder<Builder> {
-    }
-
 }

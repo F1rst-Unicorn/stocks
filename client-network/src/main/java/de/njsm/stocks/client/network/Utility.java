@@ -19,21 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.network;
 
-import com.google.auto.value.AutoValue;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
-@AutoValue
-public abstract class LocationForDeletion implements Versionable<Location> {
+import java.util.Locale;
 
-    public static LocationForDeletion.Builder builder() {
-        return new AutoValue_LocationForDeletion.Builder();
+public final class Utility {
+
+    static Retrofit.Builder getBuilder(String domain, int port) {
+        String url = String.format(Locale.US, "https://%s:%d/", domain, port);
+        return new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(JacksonConverterFactory.create());
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder
-            extends SelfValidating.Builder<LocationForDeletion>
-            implements Versionable.Builder<Builder> {
-    }
-
 }

@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.common.base.Preconditions;
-import de.njsm.stocks.client.business.SelfValidating;
 
 public interface Versionable<T extends Entity<T>> extends Identifiable<T>, SelfValidating {
 
