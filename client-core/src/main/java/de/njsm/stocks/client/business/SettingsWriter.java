@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,15 +16,30 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-rootProject.name = 'stocks'
+package de.njsm.stocks.client.business;
 
-include ':client-app-android'
-include ':client-core'
-include ':client-database-android'
-include ':client-navigation-android'
-include ':client-network'
-include ':client-settings-android'
-include ':client-ui-android'
-include ':common'
+public interface SettingsWriter {
+
+    void setServerName(String serverName);
+
+    void setCaPort(int caPort);
+
+    void setRegistrationPort(int registrationPort);
+
+    void setServerPort(int serverPort);
+
+    void setUserId(int userId);
+
+    void setUserName(String userName);
+
+    void setUserDeviceId(int userDeviceId);
+
+    void setUserDeviceName(String userDeviceName);
+
+    void setFingerprint(String fingerprint);
+
+    void setTicket(String ticket);
+}
