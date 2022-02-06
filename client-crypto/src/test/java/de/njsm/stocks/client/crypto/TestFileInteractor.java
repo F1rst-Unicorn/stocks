@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,16 +16,27 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-rootProject.name = 'stocks'
+package de.njsm.stocks.client.crypto;
 
-include ':client-app-android'
-include ':client-core'
-include ':client-crypto'
-include ':client-database-android'
-include ':client-navigation-android'
-include ':client-network'
-include ':client-settings-android'
-include ':client-ui-android'
-include ':common'
+import java.io.*;
+
+public class TestFileInteractor implements FileInteractor {
+
+    @Override
+    public boolean doesFileExist(File file) {
+        return file.exists();
+    }
+
+    @Override
+    public OutputStream getFileOutputStream(File file) throws FileNotFoundException {
+        return new BufferedOutputStream(new FileOutputStream(file));
+    }
+
+    @Override
+    public InputStream getFileInputStream(File file) throws FileNotFoundException {
+        return new BufferedInputStream(new FileInputStream(file));
+    }
+}
