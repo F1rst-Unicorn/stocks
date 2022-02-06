@@ -21,25 +21,9 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.RegistrationForm;
+
 public interface SettingsWriter {
 
-    void setServerName(String serverName);
-
-    void setCaPort(int caPort);
-
-    void setRegistrationPort(int registrationPort);
-
-    void setServerPort(int serverPort);
-
-    void setUserId(int userId);
-
-    void setUserName(String userName);
-
-    void setUserDeviceId(int userDeviceId);
-
-    void setUserDeviceName(String userDeviceName);
-
-    void setFingerprint(String fingerprint);
-
-    void setTicket(String ticket);
+    void store(RegistrationForm form);
 }

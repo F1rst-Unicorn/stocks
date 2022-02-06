@@ -24,8 +24,10 @@ package de.njsm.stocks.client.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.test.core.app.ApplicationProvider;
+import de.njsm.stocks.client.business.entities.RegistrationForm;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -56,92 +58,31 @@ public class SettingsImplTest {
     }
 
     @Test
-    public void storingServerNameWorks() {
-        String value = "test.example";
+    public void storingWorks() {
+        RegistrationForm form = RegistrationForm.builder()
+                        .serverName("test.example")
+                        .caPort(1409)
+                        .registrationPort(1410)
+                        .serverPort(1411)
+                        .userId(1412)
+                        .userName("username")
+                        .userDeviceId(1412)
+                        .userDeviceName("userdevicename")
+                        .fingerprint("fingerprint")
+                        .ticket("ticket")
+                        .build();
 
-        uut.setServerName(value);
+        uut.store(form);
 
-        assertThat(uut.getServerName(), is(value));
-    }
-
-    @Test
-    public void storingCaPortWorks() {
-        int value = 1409;
-
-        uut.setCaPort(value);
-
-        assertThat(uut.getCaPort(), is(value));
-    }
-
-    @Test
-    public void storingRegistrationPortWorks() {
-        int value = 1409;
-
-        uut.setRegistrationPort(value);
-
-        assertThat(uut.getRegistrationPort(), is(value));
-    }
-
-    @Test
-    public void storingServerPortWorks() {
-        int value = 1409;
-
-        uut.setServerPort(value);
-
-        assertThat(uut.getServerPort(), is(value));
-    }
-
-    @Test
-    public void storingUserIdWorks() {
-        int value = 1409;
-
-        uut.setUserId(value);
-
-        assertThat(uut.getUserId(), is(value));
-    }
-
-    @Test
-    public void storingUserNameWorks() {
-        String value = "username";
-
-        uut.setUserName(value);
-
-        assertThat(uut.getUserName(), is(value));
-    }
-
-    @Test
-    public void storingUserDeviceIdWorks() {
-        int value = 1409;
-
-        uut.setUserDeviceId(value);
-
-        assertThat(uut.getUserDeviceId(), is(value));
-    }
-
-    @Test
-    public void storingUserDeviceNameWorks() {
-        String value = "devicename";
-
-        uut.setUserDeviceName(value);
-
-        assertThat(uut.getUserDeviceName(), is(value));
-    }
-
-    @Test
-    public void storingFingerprintWorks() {
-        String value = "fingerprint";
-
-        uut.setFingerprint(value);
-
-        assertThat(uut.getFingerprint(), is(value));
-    }
-
-    @Test
-    public void storingTicketWorks() {
-        String value = "ticket";
-
-        uut.setTicket(value);
-
-        assertThat(uut.getTicket(), is(value));
+        assertThat(uut.getServerName(), is(form.serverName()));
+        assertThat(uut.getCaPort(), is(form.caPort()));
+        assertThat(uut.getRegistrationPort(), is(form.registrationPort()));
+        assertThat(uut.getServerPort(), is(form.serverPort()));
+        assertThat(uut.getUserId(), is(form.userId()));
+        assertThat(uut.getUserName(), is(form.userName()));
+        assertThat(uut.getUserDeviceId(), is(form.userDeviceId()));
+        assertThat(uut.getUserDeviceName(), is(form.userDeviceName()));
+        assertThat(uut.getFingerprint(), is(form.fingerprint()));
+        assertThat(uut.getTicket(), is(form.ticket()));
     }
 }

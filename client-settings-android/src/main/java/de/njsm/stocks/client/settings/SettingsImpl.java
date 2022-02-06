@@ -24,6 +24,7 @@ package de.njsm.stocks.client.settings;
 import android.content.SharedPreferences;
 import de.njsm.stocks.client.business.Settings;
 import de.njsm.stocks.client.business.SettingsWriter;
+import de.njsm.stocks.client.business.entities.RegistrationForm;
 
 import javax.inject.Inject;
 
@@ -48,72 +49,18 @@ class SettingsImpl implements Settings, SettingsWriter {
     }
 
     @Override
-    public void setServerName(String serverName) {
+    public void store(RegistrationForm form) {
         sharedPreferences.edit()
-                .putString(SERVER_NAME_KEY, serverName)
-                .apply();
-    }
-
-    @Override
-    public void setCaPort(int caPort) {
-        sharedPreferences.edit()
-                .putInt(CA_PORT_KEY, caPort)
-                .apply();
-    }
-
-    @Override
-    public void setRegistrationPort(int registrationPort) {
-        sharedPreferences.edit()
-                .putInt(REGISTRATION_PORT_KEY, registrationPort)
-                .apply();
-    }
-
-    @Override
-    public void setServerPort(int serverPort) {
-        sharedPreferences.edit()
-                .putInt(SERVER_PORT_KEY, serverPort)
-                .apply();
-    }
-
-    @Override
-    public void setUserId(int userId) {
-        sharedPreferences.edit()
-                .putInt(USER_ID_KEY, userId)
-                .apply();
-    }
-
-    @Override
-    public void setUserName(String userName) {
-        sharedPreferences.edit()
-                .putString(USER_NAME_KEY, userName)
-                .apply();
-    }
-
-    @Override
-    public void setUserDeviceId(int userDeviceId) {
-        sharedPreferences.edit()
-                .putInt(USER_DEVICE_ID_KEY, userDeviceId)
-                .apply();
-    }
-
-    @Override
-    public void setUserDeviceName(String userDeviceName) {
-        sharedPreferences.edit()
-                .putString(USER_DEVICE_NAME_KEY, userDeviceName)
-                .apply();
-    }
-
-    @Override
-    public void setFingerprint(String fingerprint) {
-        sharedPreferences.edit()
-                .putString(FINGERPRINT_KEY, fingerprint)
-                .apply();
-    }
-
-    @Override
-    public void setTicket(String ticket) {
-        sharedPreferences.edit()
-                .putString(TICKET_KEY, ticket)
+                .putString(SERVER_NAME_KEY, form.serverName())
+                .putInt(CA_PORT_KEY, form.caPort())
+                .putInt(REGISTRATION_PORT_KEY, form.registrationPort())
+                .putInt(SERVER_PORT_KEY, form.serverPort())
+                .putInt(USER_ID_KEY, form.userId())
+                .putString(USER_NAME_KEY, form.userName())
+                .putInt(USER_DEVICE_ID_KEY, form.userDeviceId())
+                .putString(USER_DEVICE_NAME_KEY, form.userDeviceName())
+                .putString(FINGERPRINT_KEY, form.fingerprint())
+                .putString(TICKET_KEY, form.ticket())
                 .apply();
     }
 
