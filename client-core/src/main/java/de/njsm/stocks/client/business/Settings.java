@@ -1,13 +1,13 @@
 /*
  * stocks is client-server program to manage a household's food stock
- * Copyright () 2019  The stocks developers
+ * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
  * stocks is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * () any later version.
+ * (at your option) any later version.
  *
  * stocks is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
