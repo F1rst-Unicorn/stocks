@@ -16,13 +16,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.execution;
 
 
 import de.njsm.stocks.client.business.entities.Job;
-import de.njsm.stocks.client.execution.SchedulerImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
