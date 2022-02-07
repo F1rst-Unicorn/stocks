@@ -27,6 +27,8 @@ dependencies {
     implementation project(':client-core')
     implementation 'org.slf4j:slf4j-api:1.7.35'
     implementation 'com.google.dagger:dagger:2.40.5'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.69'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.69'
 
     annotationProcessor "com.google.dagger:dagger-compiler:2.40.5"
 
@@ -37,9 +39,6 @@ dependencies {
     testImplementation 'org.apache.logging.log4j:log4j-core:2.17.0'
     testImplementation 'org.apache.logging.log4j:log4j-web:2.17.0'
     testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.0'
-    testImplementation 'org.bouncycastle:bcprov-jdk15on:1.69'
-    testImplementation 'org.bouncycastle:bcpkix-jdk15on:1.69'
-
 }
 
 group = 'de.njsm.stocks'

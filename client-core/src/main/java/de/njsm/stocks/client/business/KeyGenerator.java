@@ -16,22 +16,17 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
-package de.njsm.stocks.client.crypto;
+package de.njsm.stocks.client.business;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.business.CertificateStore;
-import de.njsm.stocks.client.business.KeyGenerator;
+import de.njsm.stocks.client.business.entities.KeyGenerationParameters;
+import de.njsm.stocks.client.business.entities.Principals;
 
-@Module
-public abstract class CryptoModule {
+import java.security.KeyPair;
 
-    @Binds
-    public abstract CertificateStore certificateStore(CertificateStoreImpl impl);
+public interface KeyGenerator {
+    KeyPair generateKeyPair(KeyGenerationParameters parameters) throws SubsystemException;
 
-    @Binds
-    public abstract KeyGenerator keyGenerator(KeyGeneratorImpl impl);
+    String generateCertificateSigningRequest(KeyPair keyPair, Principals principals, KeyGenerationParameters parameters);
 }

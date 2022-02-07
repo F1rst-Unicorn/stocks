@@ -16,22 +16,28 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
-package de.njsm.stocks.client.crypto;
+package de.njsm.stocks.client.business;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.business.CertificateStore;
-import de.njsm.stocks.client.business.KeyGenerator;
+import de.njsm.stocks.client.business.entities.Principals;
+import org.junit.jupiter.api.Test;
 
-@Module
-public abstract class CryptoModule {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    @Binds
-    public abstract CertificateStore certificateStore(CertificateStoreImpl impl);
+public class PrincipalsTest {
 
-    @Binds
-    public abstract KeyGenerator keyGenerator(KeyGeneratorImpl impl);
+    private Principals uut;
+
+    @Test
+    void printingCommonNameWorks() {
+        uut = Principals.builder()
+                .userName("Jack")
+                .userId(1)
+                .userDeviceName("Mobile")
+                .userDeviceId(2)
+                .build();
+
+        assertEquals("Jack$1$Mobile$2", uut.asCommonName());
+    }
 }

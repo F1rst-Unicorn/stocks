@@ -50,6 +50,15 @@ public abstract class RegistrationForm {
 
     public abstract String ticket();
 
+    public Principals toPrincipals() {
+        return Principals.builder()
+                .userName(userName())
+                .userId(userId())
+                .userDeviceName(userDeviceName())
+                .userDeviceId(userDeviceId())
+                .build();
+    }
+
     @AutoValue.Builder
     public static abstract class Builder {
         public abstract Builder serverName(String v);
