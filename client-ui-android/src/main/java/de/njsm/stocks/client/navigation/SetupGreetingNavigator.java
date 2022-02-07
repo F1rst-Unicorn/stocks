@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -17,29 +18,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.navigation;
 
-import dagger.Module;
-import dagger.Provides;
-import de.njsm.stocks.client.navigation.LocationListNavigator;
-import de.njsm.stocks.client.navigation.SetupGreetingNavigator;
+public interface SetupGreetingNavigator {
 
-import javax.inject.Singleton;
+    void navigateToRegistrationForm();
 
-import static org.mockito.Mockito.mock;
 
-@Module
-class MockNavigationModule {
-
-    @Provides
-    @Singleton
-    LocationListNavigator locationListNavigator() {
-        return mock(LocationListNavigator.class);
-    }
-
-    @Provides
-    @Singleton
-    SetupGreetingNavigator setupGreetingNavigator() {
-        return mock(SetupGreetingNavigator.class);
-    }
 }

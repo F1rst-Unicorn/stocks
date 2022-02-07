@@ -23,7 +23,7 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.StatusCode;
 
-public class StatusCodeException extends RuntimeException {
+public class StatusCodeException extends SubsystemException {
 
     private final StatusCode statusCode;
 

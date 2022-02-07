@@ -29,6 +29,12 @@
         app:startDestination="@id/nav_fragment_location_list">
 
     <fragment
+            android:id="@+id/nav_fragment_setup_greeting"
+            android:name="de.njsm.stocks.client.view.SetupGreetingFragment"
+            android:label="@string/app_name"
+            tools:layout="@layout/fragment_setup_greeting">
+    </fragment>
+    <fragment
         android:id="@+id/nav_fragment_location_list"
         android:name="de.njsm.stocks.client.view.LocationListFragment"
         android:label="@string/action_locations"

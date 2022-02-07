@@ -31,4 +31,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract LocationAddFragment locationAddFragment();
+
+    @ContributesAndroidInjector
+    public abstract SetupGreetingFragment setupGreetingFragment();
 }
