@@ -16,19 +16,32 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.navigation;
 
-import dagger.Binds;
-import dagger.Module;
+import de.njsm.stocks.client.view.SetupGreetingFragmentDirections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Module
-public interface NavigationModule {
+import javax.inject.Inject;
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+class SetupGreetingNavigatorImpl implements SetupGreetingNavigator {
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
+    private static final Logger LOG = LoggerFactory.getLogger(SetupGreetingNavigatorImpl.class);
+
+    private final NavigationArgConsumer navigationArgConsumer;
+
+    @Inject
+    SetupGreetingNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        this.navigationArgConsumer = navigationArgConsumer;
+    }
+
+    @Override
+    public void registerManually() {
+        LOG.debug("going to manual setup");
+        navigationArgConsumer.navigate(
+                SetupGreetingFragmentDirections.actionNavFragmentSetupGreetingToNavFragmentSetupForm());
+    }
 }

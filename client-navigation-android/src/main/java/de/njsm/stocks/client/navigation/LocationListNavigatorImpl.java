@@ -40,7 +40,7 @@ class LocationListNavigatorImpl implements LocationListNavigator {
 
     @Override
     public void addLocation() {
-        LOG.warn("adding a location");
+        LOG.debug("adding a location");
         navigationArgConsumer.navigate(
                 LocationListFragmentDirections.actionNavFragmentLocationListToNavFragmentLocationAdd()
         );

@@ -26,8 +26,10 @@ import androidx.navigation.NavDirections;
 import de.njsm.stocks.client.navigation.NavigationArgConsumer;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Optional;
 
+@Singleton
 public class NavigationArgConsumerImpl implements NavigationArgConsumer {
 
     private Optional<NavController> navController;

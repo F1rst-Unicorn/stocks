@@ -22,50 +22,29 @@
 package de.njsm.stocks.client.navigation;
 
 import androidx.navigation.ActionOnlyNavDirections;
-import de.njsm.stocks.client.view.LocationListFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
-import static org.hamcrest.Matchers.is;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-public class LocationListNavigationTest {
+public class SetupGreetingNavigatorTest {
 
-    private LocationListNavigator uut;
+    private SetupGreetingNavigator uut;
 
     private FakeNavigationArgConsumer navigationArgConsumer;
 
     @Before
     public void setUp() {
         navigationArgConsumer = new FakeNavigationArgConsumer();
-        uut = new LocationListNavigatorImpl(navigationArgConsumer);
+        uut = new SetupGreetingNavigatorImpl(navigationArgConsumer);
     }
 
     @Test
-    public void showingLocationContentBindsCorrectly() {
-        int expectedId = 42;
-
-        uut.showLocation(expectedId);
-
-        LocationListFragmentDirections.ActionNavFragmentLocationListToNavFragmentLocationContent actual = navigationArgConsumer.getLastArgument(LocationListFragmentDirections.ActionNavFragmentLocationListToNavFragmentLocationContent.class);
-        assertThat(actual.getId(), is(expectedId));
-    }
-
-    @Test
-    public void editingLocationContentBindsCorrectly() {
-        int expectedId = 42;
-
-        uut.editLocation(expectedId);
-
-        LocationListFragmentDirections.ActionNavFragmentLocationListToNavFragmentLocationEdit actual = navigationArgConsumer.getLastArgument(LocationListFragmentDirections.ActionNavFragmentLocationListToNavFragmentLocationEdit.class);
-        assertThat(actual.getId(), is(expectedId));
-    }
-
-    @Test
-    public void addingLocationBindsCorrectly() {
-        uut.addLocation();
+    public void registeringManuallyBindsCorrectly() {
+        uut.registerManually();
 
         ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
-        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_location_list_to_nav_fragment_location_add));
+        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_setup_greeting_to_nav_fragment_setup_form));
     }
 }

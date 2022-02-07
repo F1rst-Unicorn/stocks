@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.LocationDeleter;
 import de.njsm.stocks.client.business.LocationListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.LocationForListing;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 
 import javax.inject.Inject;
@@ -62,7 +63,10 @@ public class LocationViewModel extends ViewModel {
     }
 
     private void performOnCurrentLocations(Consumer<List<LocationForListing>> runnable) {
-        locationListInteractor.getLocations().firstElement().subscribe(runnable::accept);
+        locationListInteractor.getLocations()
+                .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(runnable::accept);
     }
 
     public void synchronise() {

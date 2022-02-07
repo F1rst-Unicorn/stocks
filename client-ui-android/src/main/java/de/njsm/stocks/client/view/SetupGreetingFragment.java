@@ -44,7 +44,7 @@ public class SetupGreetingFragment extends InjectableFragment {
     }
 
     private void onManualSetupClicked(View view) {
-        navigator.navigateToRegistrationForm();
+        navigator.registerManually();
     }
 
     @Inject

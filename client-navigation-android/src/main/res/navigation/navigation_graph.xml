@@ -33,6 +33,14 @@
             android:name="de.njsm.stocks.client.view.SetupGreetingFragment"
             android:label="@string/app_name"
             tools:layout="@layout/fragment_setup_greeting">
+        <action
+                android:id="@+id/action_nav_fragment_setup_greeting_to_nav_fragment_setup_form"
+                app:destination="@id/nav_fragment_setup_form" />
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_setup_form"
+            android:name="androidx.fragment.app.Fragment"
+            tools:layout="@layout/template_swipe_list">
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_location_list"

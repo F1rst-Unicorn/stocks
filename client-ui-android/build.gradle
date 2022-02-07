@@ -84,14 +84,15 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation "com.google.android.material:material:1.5.0"
-    implementation "com.google.dagger:dagger:2.40.4"
-    implementation "com.google.dagger:dagger-android:2.40.4"
-    implementation "com.google.dagger:dagger-android-support:2.40.4"
+    implementation "com.google.dagger:dagger:2.40.5"
+    implementation 'com.google.dagger:dagger-android:2.40.5'
+    implementation 'com.google.dagger:dagger-android-support:2.40.5'
     implementation 'org.slf4j:slf4j-api:1.7.35'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 
     annotationProcessor "com.google.auto.value:auto-value:1.8.2"
-    annotationProcessor "com.google.dagger:dagger-compiler:2.40.4"
-    annotationProcessor "com.google.dagger:dagger-android-processor:2.40.4"
+    annotationProcessor "com.google.dagger:dagger-compiler:2.40.5"
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.40.5'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:4.3.1'
@@ -109,7 +110,7 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.4.0'
     androidTestImplementation 'androidx.fragment:fragment-testing:1.4.1'
     androidTestAnnotationProcessor "com.google.dagger:dagger-android-processor:2.40.4"
-    androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:2.40.4"
+    androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:2.40.5"
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 }

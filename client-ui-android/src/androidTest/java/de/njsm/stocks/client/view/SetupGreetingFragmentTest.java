@@ -65,7 +65,7 @@ public class SetupGreetingFragmentTest {
     public void choosingManualSetupNavigates() {
         onView(withId(R.id.fragment_setup_greeting_manual)).perform(click());
 
-        verify(setupGreetingNavigator).navigateToRegistrationForm();
+        verify(setupGreetingNavigator).registerManually();
     }
 
     @Inject

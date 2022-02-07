@@ -22,7 +22,7 @@ package de.njsm.stocks.client.navigation;
 
 public interface SetupGreetingNavigator {
 
-    void navigateToRegistrationForm();
+    void registerManually();
 
 
 }
