@@ -20,6 +20,7 @@
 plugins {
     id 'com.android.application'
     id 'checkstyle'
+    id 'jacoco'
 }
 
 android {
@@ -49,7 +50,7 @@ android {
             debuggable true
             minifyEnabled false
             jniDebuggable true
-            applicationIdSuffix ".debug"
+            testCoverageEnabled true
         }
         release {
             debuggable false
@@ -87,6 +88,13 @@ android {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        animationsDisabled true
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 
     packagingOptions {
@@ -132,4 +140,35 @@ dependencies {
     androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:2.40.4"
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+}
+
+jacoco {
+    toolVersion = '0.8.7'
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports for Debug build"
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/javac/debug/classes")
+    def mainSrc = "$projectDir/src/main/java"
+
+    additionalSourceDirs.from = files(mainSrc)
+    sourceDirectories.from = files([mainSrc])
+    classDirectories.from = files([debugTree])
+
+    executionData.from = files([
+            "$buildDir/jacoco/testDebugUnitTest.exec",
+            fileTree(dir: "$buildDir/outputs/code_coverage/debugAndroidTest/connected/", includes: ["**/*.ec"])
+    ])
 }
