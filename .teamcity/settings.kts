@@ -137,22 +137,11 @@ object Build : BuildType({
         }
         gradle {
             name = "Assemble new module system"
-            tasks = "check connectedCheck assemble"
+            tasks = "createDebugCoverageReport testCoverageUnitTestCoverage assemble"
             buildFile = "build.gradle"
             gradleHome = "/usr/bin/gradle"
             gradleWrapperPath = "."
             enableStacktrace = true
-            coverageEngine = idea {
-                includeClasses = "de.njsm.*"
-                excludeClasses = """
-                    *Test
-
-                    AutoValue_*
-                    de.njsm.stocks.client.business.entities.AutoValue_*
-
-                    de.njsm.stocks.client.database.*_Impl
-                """.trimIndent()
-            }
         }
         gradle {
             name = "Compile & Unit Test Android Client"
@@ -244,6 +233,11 @@ object Build : BuildType({
         exec {
             name = "Android Deployment test"
             path = "android-client/app/src/test/system/bin/vm-deployment-test.sh"
+        }
+        exec {
+            name = "Service messages"
+            path = "gradle/issue-service-messages.sh"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
         }
     }
 
