@@ -1,0 +1,25 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = '0.8.7'
+}
+
+jacocoTestReport {
+    reports {
+        csv.enabled = false
+        xml.enabled = false
+        html.enabled = true
+    }
+    afterEvaluate {
+        classDirectories.from = files(classDirectories.files.collect {
+            fileTree(
+                    dir: it,
+                    exclude: [
+                            '**/AutoValue_*'
+                    ]
+            )
+        })
+    }
+}
+
+build.dependsOn jacocoTestReport

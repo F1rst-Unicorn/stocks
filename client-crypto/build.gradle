@@ -20,8 +20,9 @@
 plugins {
     id 'java-library'
     id 'checkstyle'
-    id 'jacoco'
 }
+
+apply from: "$project.rootDir/gradle/jacoco-java.gradle"
 
 dependencies {
     implementation 'javax.inject:javax.inject:1'
@@ -57,26 +58,3 @@ tasks.withType(JavaCompile) {
 test {
     useJUnitPlatform()
 }
-
-jacoco {
-    toolVersion = '0.8.7'
-}
-
-jacocoTestReport {
-    reports {
-        csv.enabled = false
-        xml.enabled = false
-        html.enabled = true
-    }
-    afterEvaluate {
-        classDirectories.from = files(classDirectories.files.collect {
-            fileTree(
-                    dir: it,
-                    exclude: [
-                    ]
-            )
-        })
-    }
-}
-
-build.dependsOn jacocoTestReport
