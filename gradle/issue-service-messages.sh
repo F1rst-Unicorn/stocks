@@ -38,13 +38,14 @@ for module in "${modules[@]}" ; do
 done
 
 echo -n "' includes='\
-    de.njsm.stocks.client.* \
+    de.njsm.stocks.client\\..* \
     de.njsm.stocks.common.* \
 ' "
 
 echo -n "excludes='  \
     *.AutoValue_*    \
     *.*Test          \
+    .*\\.R\\..*      \
 '"
 
 echo ']'
