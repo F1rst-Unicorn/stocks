@@ -137,7 +137,7 @@ object Build : BuildType({
         }
         gradle {
             name = "Assemble new module system"
-            tasks = "createDebugCoverageReport testCoverageUnitTestCoverage assemble"
+            tasks = "createDebugCoverageReport testCoverageUnitTestCoverage build assemble"
             buildFile = "build.gradle"
             gradleHome = "/usr/bin/gradle"
             gradleWrapperPath = "."

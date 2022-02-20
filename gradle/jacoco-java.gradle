@@ -15,7 +15,8 @@ jacocoTestReport {
             fileTree(
                     dir: it,
                     exclude: [
-                            '**/AutoValue_*'
+                            '**/AutoValue_*',
+                            '**/src/test/java/**',
                     ]
             )
         })
