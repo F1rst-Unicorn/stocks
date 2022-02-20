@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.entities.Principals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class KeyGeneratorImplTest {
@@ -63,5 +64,33 @@ class KeyGeneratorImplTest {
 
         assertTrue(actual.startsWith("-----BEGIN CERTIFICATE REQUEST-----\n"));
         assertTrue(actual.endsWith("-----END CERTIFICATE REQUEST-----\n"));
+    }
+
+    @Test
+    void invalidKeyAlgorithmIsReported() {
+        KeyGenerationParameters parameters = KeyGenerationParameters.builder()
+                .keySize(512)
+                .keyAlgorithm("invalid")
+                .signingAlgorithm("SHA256WithRSA")
+                .build();
+
+        assertThrows(CryptoException.class, () -> uut.generateKeyPair(parameters));
+    }
+
+    @Test
+    void invalidSigningAlgorithmIsReported() {
+        KeyGenerationParameters parameters = KeyGenerationParameters.builder()
+                .keySize(512)
+                .keyAlgorithm("RSA")
+                .signingAlgorithm("invalid")
+                .build();
+        Principals principals = Principals.builder()
+                .userName("Jack")
+                .userId(1)
+                .userDeviceName("Mobile")
+                .userDeviceId(2)
+                .build();
+
+        assertThrows(CryptoException.class, () -> uut.generateCertificateSigningRequest(uut.generateKeyPair(parameters), principals, parameters));
     }
 }

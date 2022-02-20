@@ -66,7 +66,7 @@ class KeyGeneratorImpl implements KeyGenerator {
             writer.writeObject(request);
             writer.close();
             return buf.toString();
-        } catch (IOException | OperatorCreationException e) {
+        } catch (IOException | OperatorCreationException | IllegalArgumentException e) {
             throw new CryptoException("generating csr", e);
         }
     }
