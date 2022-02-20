@@ -22,6 +22,8 @@
 package de.njsm.stocks.client.navigation;
 
 import androidx.navigation.ActionOnlyNavDirections;
+import de.njsm.stocks.client.business.entities.RegistrationForm;
+import de.njsm.stocks.client.view.SetupGreetingFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,5 +48,37 @@ public class SetupGreetingNavigatorTest {
 
         ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
         assertThat(actual.getActionId(), is(R.id.action_nav_fragment_setup_greeting_to_nav_fragment_setup_form));
+    }
+
+    @Test
+    public void registeringWithDataBindsCorrectly() {
+        RegistrationForm registrationForm = RegistrationForm.builder()
+                .serverName("test.example")
+                .caPort(1409)
+                .registrationPort(1410)
+                .serverPort(1411)
+                .userId(1412)
+                .userName("username")
+                .userDeviceId(1412)
+                .userDeviceName("userdevicename")
+                .fingerprint("fingerprint")
+                .ticket("ticket")
+                .build();
+
+        uut.registerWithPrefilledData(registrationForm);
+
+        SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupFormPrefilled actual =
+                navigationArgConsumer.getLastArgument(SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupFormPrefilled.class);
+        assertThat(actual.getServerName(), is(registrationForm.serverName()));
+        assertThat(actual.getCaPort(), is(registrationForm.caPort()));
+        assertThat(actual.getRegistrationPort(), is(registrationForm.registrationPort()));
+        assertThat(actual.getServerPort(), is(registrationForm.serverPort()));
+        assertThat(actual.getUsername(), is(registrationForm.userName()));
+        assertThat(actual.getUserId(), is(registrationForm.userId()));
+        assertThat(actual.getDeviceName(), is(registrationForm.userDeviceName()));
+        assertThat(actual.getDeviceId(), is(registrationForm.userDeviceId()));
+        assertThat(actual.getFingerprint(), is(registrationForm.fingerprint()));
+        assertThat(actual.getTicket(), is(registrationForm.ticket()));
+
     }
 }

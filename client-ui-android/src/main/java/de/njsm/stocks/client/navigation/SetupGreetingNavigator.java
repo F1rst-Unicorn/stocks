@@ -20,9 +20,11 @@
 
 package de.njsm.stocks.client.navigation;
 
+import de.njsm.stocks.client.business.entities.RegistrationForm;
+
 public interface SetupGreetingNavigator {
 
     void registerManually();
 
-
+    void registerWithPrefilledData(RegistrationForm registrationForm);
 }

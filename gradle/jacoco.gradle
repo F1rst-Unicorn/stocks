@@ -95,6 +95,8 @@ def setupAndroidReporting() {
                         '**/BuildConfig.*',
                         '**/*_Impl.*',
                         '**/*Directions.*',
+                        '**/*Directions$*.*',
+                        '**/DummyActivity.*',
                         '**/src/test/java/**',
                 ]
 
@@ -111,7 +113,6 @@ def setupAndroidReporting() {
 
                 sourceDirectories.setFrom(files(coverageSourceDirs))
                 additionalSourceDirs.setFrom(files(coverageSourceDirs))
-                System.out.println(executionData)
 
                 reports {
                     csv.enabled false

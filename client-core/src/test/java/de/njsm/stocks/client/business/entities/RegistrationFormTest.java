@@ -30,6 +30,30 @@ class RegistrationFormTest {
     private RegistrationForm uut;
 
     @Test
+    void parsingFromQrCodeStringWorks() {
+        RegistrationForm expected = RegistrationForm.builder()
+                .serverName("serverName")
+                .caPort(10910)
+                .registrationPort(10911)
+                .serverPort(10912)
+                .userName("userName")
+                .userId(1)
+                .userDeviceName("userDeviceName")
+                .userDeviceId(2)
+                .fingerprint("fingerprint")
+                .ticket("ticket")
+                .build();
+        String input = expected.toQrString();
+
+        assertEquals(expected, RegistrationForm.parseRawString(input));
+    }
+
+    @Test
+    void parsingInvalidRegistrationFormReturnsEmptyOne() {
+        assertEquals(RegistrationForm.empty(), RegistrationForm.parseRawString("invalid"));
+    }
+
+    @Test
     void transformingToPrincipalsWorks() {
         uut = RegistrationForm.builder()
                 .serverName("serverName")

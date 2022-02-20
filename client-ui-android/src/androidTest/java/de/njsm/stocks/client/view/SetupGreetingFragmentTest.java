@@ -20,13 +20,22 @@
 
 package de.njsm.stocks.client.view;
 
+import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.navigation.SetupGreetingNavigator;
 import de.njsm.stocks.client.ui.R;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,14 +50,23 @@ import static org.mockito.Mockito.verify;
 @RunWith(AndroidJUnit4.class)
 public class SetupGreetingFragmentTest {
 
+    @Rule
+    public GrantPermissionRule cameraPermission = GrantPermissionRule.grant(Manifest.permission.CAMERA);
+
     private FragmentScenario<SetupGreetingFragment> scenario;
 
     private SetupGreetingNavigator setupGreetingNavigator;
 
     @Before
     public void setup() {
+        Intents.init();
         scenario = FragmentScenario.launchInContainer(SetupGreetingFragment.class, new Bundle(), R.style.StocksTheme);
         scenario.onFragment(fragment -> ((Application) fragment.requireActivity().getApplication()).getDaggerRoot().inject(this));
+    }
+
+    @After
+    public void tearDown() {
+        Intents.release();
     }
 
     @Test
@@ -66,6 +84,41 @@ public class SetupGreetingFragmentTest {
         onView(withId(R.id.fragment_setup_greeting_manual)).perform(click());
 
         verify(setupGreetingNavigator).registerManually();
+    }
+
+    @Test
+    public void obtainingQrCodeDataNavigates() {
+        RegistrationForm registrationForm = RegistrationForm.builder()
+                .serverName("test.example")
+                .caPort(1409)
+                .registrationPort(1410)
+                .serverPort(1411)
+                .userId(1412)
+                .userName("username")
+                .userDeviceId(1412)
+                .userDeviceName("userdevicename")
+                .fingerprint("fingerprint")
+                .ticket("ticket")
+                .build();
+        Intent intent = returnDataUponScanning(registrationForm);
+
+        scenario.onFragment(v -> LocalBroadcastManager.getInstance(v.requireContext()).sendBroadcast(intent));
+
+        verify(setupGreetingNavigator).registerWithPrefilledData(registrationForm);
+    }
+
+    @Test
+    public void choosingQrScanRequestsQrData() {
+        onView(withId(R.id.fragment_setup_greeting_scan)).perform(click());
+
+        Intents.intended(IntentMatchers.hasAction("com.google.zxing.client.android.SCAN"));
+    }
+
+    private Intent returnDataUponScanning(RegistrationForm registrationForm) {
+        Intent intent = new Intent();
+        intent.setAction(QrCodeDataBroadcastReceiver.ACTION_QR_CODE_SCANNED);
+        intent.putExtra(QrCodeDataBroadcastReceiver.PARAM_QR_CONTENT, registrationForm.toQrString());
+        return intent;
     }
 
     @Inject

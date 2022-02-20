@@ -22,12 +22,50 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @AutoValue
 public abstract class RegistrationForm {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RegistrationForm.class);
+
     public static RegistrationForm.Builder builder() {
         return new AutoValue_RegistrationForm.Builder();
+    }
+
+    public static RegistrationForm empty() {
+        return RegistrationForm.builder()
+                .serverName("")
+                .caPort(0)
+                .registrationPort(0)
+                .serverPort(0)
+                .userName("")
+                .userId(0)
+                .userDeviceName("")
+                .userDeviceId(0)
+                .fingerprint("")
+                .ticket("")
+                .build();
+    }
+
+    public static RegistrationForm parseRawString(String input) {
+        String[] arguments = input.split("\n");
+        if (arguments.length != 10)
+            return empty();
+
+        return RegistrationForm.builder()
+                .serverName(arguments[6])
+                .caPort(parseIntSafely(arguments[7]))
+                .registrationPort(parseIntSafely(arguments[8]))
+                .serverPort(parseIntSafely(arguments[9]))
+                .userName(arguments[0])
+                .userId(parseIntSafely(arguments[2]))
+                .userDeviceName(arguments[1])
+                .userDeviceId(parseIntSafely(arguments[3]))
+                .fingerprint(arguments[4])
+                .ticket(arguments[5])
+                .build();
     }
 
     public abstract String serverName();
@@ -82,5 +120,29 @@ public abstract class RegistrationForm {
         public abstract Builder ticket(String v);
 
         public abstract RegistrationForm build();
+    }
+
+    private static int parseIntSafely(String rawInt) {
+        try {
+            return Integer.parseInt(rawInt);
+        } catch (NumberFormatException e) {
+            LOG.warn("invalid number '" + rawInt + "'");
+            return 0;
+        }
+    }
+
+    public String toQrString() {
+        return String.format("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
+                userName(),
+                userDeviceName(),
+                userId(),
+                userDeviceId(),
+                fingerprint(),
+                ticket(),
+                serverName(),
+                caPort(),
+                registrationPort(),
+                serverPort()
+        );
     }
 }

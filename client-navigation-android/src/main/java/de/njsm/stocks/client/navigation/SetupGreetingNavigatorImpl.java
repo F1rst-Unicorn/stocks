@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.navigation;
 
+import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.view.SetupGreetingFragmentDirections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,5 +44,25 @@ class SetupGreetingNavigatorImpl implements SetupGreetingNavigator {
         LOG.debug("going to manual setup");
         navigationArgConsumer.navigate(
                 SetupGreetingFragmentDirections.actionNavFragmentSetupGreetingToNavFragmentSetupForm());
+    }
+
+    @Override
+    public void registerWithPrefilledData(RegistrationForm registrationForm) {
+        LOG.debug("going to prefilled setup with " + registrationForm);
+        SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupFormPrefilled direction =
+                SetupGreetingFragmentDirections.actionNavFragmentSetupGreetingToNavFragmentSetupFormPrefilled(
+                        registrationForm.serverName(),
+                        registrationForm.caPort(),
+                        registrationForm.registrationPort(),
+                        registrationForm.serverPort(),
+                        registrationForm.userName(),
+                        registrationForm.userId(),
+                        registrationForm.userDeviceName(),
+                        registrationForm.userDeviceId(),
+                        registrationForm.fingerprint(),
+                        registrationForm.ticket()
+                );
+
+        navigationArgConsumer.navigate(direction);
     }
 }

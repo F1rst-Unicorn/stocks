@@ -20,4 +20,14 @@
 -->
 
 
-<manifest package="de.njsm.stocks.client.ui"/>
+<manifest
+        package="de.njsm.stocks.client.ui"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature
+            android:name="android.hardware.camera"
+            android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+</manifest>

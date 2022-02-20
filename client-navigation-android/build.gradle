@@ -80,6 +80,7 @@ android {
 }
 
 dependencies {
+    implementation project(':client-core')
     implementation project(':client-ui-android')
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
