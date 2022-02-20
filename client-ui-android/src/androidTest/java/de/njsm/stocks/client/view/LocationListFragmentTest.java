@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -43,6 +44,7 @@ import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -82,6 +84,14 @@ public class LocationListFragmentTest {
             onView(withId(R.id.template_swipe_list_list))
                     .check(matches(withChild(withText(item.name()))));
         }
+    }
+
+    @Test
+    public void emptyListShowsText() {
+        locationListInteractor.setData(Collections.emptyList());
+
+        onView(withId(R.id.template_swipe_list_empty_text))
+                .check(matches(allOf(withEffectiveVisibility(Visibility.VISIBLE), withText(R.string.hint_no_locations))));
     }
 
     @Test
