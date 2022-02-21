@@ -45,7 +45,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(AndroidJUnit4.class)
 public class SetupGreetingFragmentTest {
@@ -66,6 +66,7 @@ public class SetupGreetingFragmentTest {
 
     @After
     public void tearDown() {
+        reset(setupGreetingNavigator);
         Intents.release();
     }
 
@@ -104,7 +105,7 @@ public class SetupGreetingFragmentTest {
 
         scenario.onFragment(v -> LocalBroadcastManager.getInstance(v.requireContext()).sendBroadcast(intent));
 
-        verify(setupGreetingNavigator).registerWithPrefilledData(registrationForm);
+        verify(setupGreetingNavigator, timeout(10000)).registerWithPrefilledData(registrationForm);
     }
 
     @Test
