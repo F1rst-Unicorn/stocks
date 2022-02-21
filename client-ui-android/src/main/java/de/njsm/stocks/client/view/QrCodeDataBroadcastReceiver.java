@@ -29,9 +29,9 @@ public class QrCodeDataBroadcastReceiver extends BroadcastReceiver {
 
     private static final Logger LOG = LoggerFactory.getLogger(QrCodeDataBroadcastReceiver.class);
 
-    public static final String ACTION_QR_CODE_SCANNED = "de.njsm.stocks.android.frontend.main.MainActivity.ACTION_QR_CODE_SCANNED";
+    public static final String ACTION_QR_CODE_SCANNED = QrCodeDataBroadcastReceiver.class.getName() + ".ACTION_QR_CODE_SCANNED";
 
-    public static final String PARAM_QR_CONTENT = "de.njsm.stocks.android.frontend.main.MainActivity.PARAM_QR_CONTENT";
+    public static final String PARAM_QR_CONTENT = QrCodeDataBroadcastReceiver.class.getName() + ".PARAM_QR_CONTENT";
 
     private final SetupGreetingFragment fragment;
 

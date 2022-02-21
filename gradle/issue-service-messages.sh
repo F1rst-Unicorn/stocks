@@ -34,7 +34,7 @@ for module in "${android_modules[@]}" ; do
 done
 
 for module in "${modules[@]}" ; do
-  echo -n "$module/build/jacoco/testCoverageUnitTest.exec "
+  echo -n "$module/build/jacoco/test.exec "
 done
 
 echo -n "' includes='       \
@@ -46,7 +46,12 @@ echo -n "excludes='            \
     de.njsm.stocks.clientold.* \
     *.AutoValue_*              \
     *.*Test                    \
-    .*\\.R\\..*                \
+    *.R                        \
+    *.R.styleable              \
+    *.*_Impl                   \
+    *.*_Impl\$*                \
+    *.*Directions              \
+    *.BuildConfig              \
 '"
 
 echo ']'
