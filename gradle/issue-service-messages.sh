@@ -37,15 +37,16 @@ for module in "${modules[@]}" ; do
   echo -n "$module/build/jacoco/testCoverageUnitTest.exec "
 done
 
-echo -n "' includes='\
-    de.njsm.stocks.client\\..* \
+echo -n "' includes='       \
+    de.njsm.stocks.client.* \
     de.njsm.stocks.common.* \
 ' "
 
-echo -n "excludes='  \
-    *.AutoValue_*    \
-    *.*Test          \
-    .*\\.R\\..*      \
+echo -n "excludes='            \
+    de.njsm.stocks.clientold.* \
+    *.AutoValue_*              \
+    *.*Test                    \
+    .*\\.R\\..*                \
 '"
 
 echo ']'
