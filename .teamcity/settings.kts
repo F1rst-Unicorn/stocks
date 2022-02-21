@@ -150,20 +150,6 @@ object Build : BuildType({
             gradleHome = "/usr/bin/gradle"
             gradleWrapperPath = "android-client"
             enableStacktrace = true
-            coverageEngine = idea {
-                includeClasses = "de.njsm.*"
-                excludeClasses = """
-                    *Test
-                    de.njsm.stocks.BuildConfig
-                    de.njsm.stocks.NavigationGraphDirections
-                    de.njsm.stocks.android.Application_MembersInjector
-                    de.njsm.stocks.android.dagger.DaggerRootComponent
-                    de.njsm.stocks.android.*.*_*Factory
-                    de.njsm.stocks.android.*.*_MembersInjector
-                    de.njsm.stocks.android.*.*_Impl
-                    de.njsm.stocks.android.*.*_Contribute*
-                """.trimIndent()
-            }
         }
         gradle {
             name = "Android Client Instrumented Test"
@@ -194,10 +180,6 @@ object Build : BuildType({
             tasks = "assemble"
             buildFile = "android-client/build.gradle"
             gradleWrapperPath = "android-client"
-            coverageEngine = idea {
-                includeClasses = "de.njsm.*"
-                excludeClasses = "*Test"
-            }
         }
         exec {
             name = "Clean server"
@@ -233,6 +215,7 @@ object Build : BuildType({
         exec {
             name = "Android Deployment test"
             path = "android-client/app/src/test/system/bin/vm-deployment-test.sh"
+            enabled = false
         }
         exec {
             name = "Service messages"
