@@ -21,10 +21,11 @@
 package de.njsm.stocks.client.view;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -45,7 +46,8 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
 public class SetupGreetingFragmentTest {
@@ -101,25 +103,18 @@ public class SetupGreetingFragmentTest {
                 .fingerprint("fingerprint")
                 .ticket("ticket")
                 .build();
-        Intent intent = returnDataUponScanning(registrationForm);
+        Instrumentation.ActivityResult activityResult = returnDataUponScanning(registrationForm);
+        Intents.intending(IntentMatchers.hasAction("com.google.zxing.client.android.SCAN")).respondWith(activityResult);
 
-        scenario.onFragment(v -> LocalBroadcastManager.getInstance(v.requireContext()).sendBroadcast(intent));
-
-        verify(setupGreetingNavigator, timeout(10000)).registerWithPrefilledData(registrationForm);
-    }
-
-    @Test
-    public void choosingQrScanRequestsQrData() {
         onView(withId(R.id.fragment_setup_greeting_scan)).perform(click());
 
-        Intents.intended(IntentMatchers.hasAction("com.google.zxing.client.android.SCAN"));
+        verify(setupGreetingNavigator).registerWithPrefilledData(registrationForm);
     }
 
-    private Intent returnDataUponScanning(RegistrationForm registrationForm) {
+    private Instrumentation.ActivityResult returnDataUponScanning(RegistrationForm registrationForm) {
         Intent intent = new Intent();
-        intent.setAction(QrCodeDataBroadcastReceiver.ACTION_QR_CODE_SCANNED);
-        intent.putExtra(QrCodeDataBroadcastReceiver.PARAM_QR_CONTENT, registrationForm.toQrString());
-        return intent;
+        intent.putExtra("SCAN_RESULT", registrationForm.toQrString());
+        return new Instrumentation.ActivityResult(Activity.RESULT_OK, intent);
     }
 
     @Inject
