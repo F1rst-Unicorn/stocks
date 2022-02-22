@@ -22,7 +22,7 @@ plugins {
     id 'checkstyle'
 }
 
-apply from: "$project.rootDir/gradle/jacoco-java.gradle"
+apply from: "$project.rootDir/gradle/jacoco/java.gradle"
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'

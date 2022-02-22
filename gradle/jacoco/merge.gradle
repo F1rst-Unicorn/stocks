@@ -1,0 +1,35 @@
+apply from: "${project.rootDir}/gradle/jacoco/common.gradle"
+
+task mergeCoverageReports(type: JacocoReport) {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports on the whole build"
+    onlyIf = { true }
+
+    def sourceDirs = []
+
+    subprojects.forEach {
+        sourceDirs += [
+            "${it.name}/src/main/java",
+            "${it.name}/src/prod/java",
+            "${it.name}/src/uimock/java",
+        ]
+    }
+
+    classDirectories.setFrom(fileTree(dir: "${project.rootDir}", includes: [
+        "**/intermediates/javac/coverage/**/classes/**/*.class",
+        "**/build/classes/**/*.class",
+        "**/tmp/kotlin-classes/**/*.class",
+    ], excludes: coverageExclusionFiles))
+    sourceDirectories.setFrom(files(sourceDirs))
+    additionalSourceDirs.setFrom(files(sourceDirs))
+
+    executionData.setFrom(fileTree(dir: "${project.rootDir}", includes: [
+        "**/*.exec",
+        "**/*.ec"
+    ]))
+
+    reports {
+        html.enabled true
+        html.destination file("${buildDir}/coverage-report")
+    }
+}

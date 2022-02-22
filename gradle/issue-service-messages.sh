@@ -50,8 +50,17 @@ echo -n "excludes='            \
     *.R.styleable              \
     *.*_Impl                   \
     *.*_Impl\$*                \
+    *.*_Impl\$.*               \
+    *.*_Factory                \
+    *.*_Factory\$*             \
+    *.*_Factory.*              \
     *.*Directions              \
+    *.*Directions\$*           \
+    *.*Directions.*            \
     *.BuildConfig              \
+    *.TestRunner               \
+    *.Dagger*Component         \
+    *.Dagger*Component.*       \
 '"
 
 echo ']'

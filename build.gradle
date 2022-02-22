@@ -37,3 +37,5 @@ allprojects {
         maven { url "https://jitpack.io" }
     }
 }
+
+apply from: "${project.rootDir}/gradle/jacoco/merge.gradle"

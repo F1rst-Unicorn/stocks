@@ -1,8 +1,4 @@
-apply plugin: 'jacoco'
-
-jacoco {
-    toolVersion = '0.8.7'
-}
+apply from: "${project.rootDir}/gradle/jacoco/common.gradle"
 
 jacocoTestReport {
     reports {
@@ -14,10 +10,7 @@ jacocoTestReport {
         classDirectories.from = files(classDirectories.files.collect {
             fileTree(
                     dir: it,
-                    exclude: [
-                            '**/AutoValue_*',
-                            '**/src/test/java/**',
-                    ]
+                    exclude: coverageExclusionFiles
             )
         })
     }

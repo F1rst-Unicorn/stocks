@@ -23,7 +23,7 @@ plugins {
     id 'androidx.navigation.safeargs'
 }
 
-apply from: "$project.rootDir/gradle/jacoco.gradle"
+apply from: "$project.rootDir/gradle/jacoco/android.gradle"
 
 android {
     compileSdkVersion 31
