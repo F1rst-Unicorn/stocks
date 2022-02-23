@@ -51,17 +51,7 @@ class SetupGreetingNavigatorImpl implements SetupGreetingNavigator {
         LOG.debug("going to prefilled setup with " + registrationForm);
         SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupForm direction =
                 SetupGreetingFragmentDirections.actionNavFragmentSetupGreetingToNavFragmentSetupForm()
-                        .setServerName(registrationForm.serverName())
-                        .setCaPort(registrationForm.caPort())
-                        .setRegistrationPort(registrationForm.registrationPort())
-                        .setServerPort(registrationForm.serverPort())
-                        .setUsername(registrationForm.userName())
-                        .setUserId(registrationForm.userId())
-                        .setDeviceName(registrationForm.userDeviceName())
-                        .setDeviceId(registrationForm.userDeviceId())
-                        .setFingerprint(registrationForm.fingerprint())
-                        .setTicket(registrationForm.ticket());
-
+                        .setRegistrationForm(registrationForm);
         navigationArgConsumer.navigate(direction);
     }
 }

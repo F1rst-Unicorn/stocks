@@ -25,8 +25,12 @@ import com.google.auto.value.AutoValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+
 @AutoValue
-public abstract class RegistrationForm {
+public abstract class RegistrationForm implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     private static final Logger LOG = LoggerFactory.getLogger(RegistrationForm.class);
 

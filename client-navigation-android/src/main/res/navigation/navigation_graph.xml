@@ -42,46 +42,10 @@
             android:name="de.njsm.stocks.client.view.SetupFormFragment"
             tools:layout="@layout/fragment_setup_form">
         <argument
-                android:name="serverName"
-                android:defaultValue=""
-                app:argType="string" />
-        <argument
-                android:name="caPort"
-                android:defaultValue="0"
-                app:argType="integer" />
-        <argument
-                android:name="registrationPort"
-                android:defaultValue="0"
-                app:argType="integer" />
-        <argument
-                android:name="serverPort"
-                android:defaultValue="0"
-                app:argType="integer" />
-        <argument
-                android:name="username"
+                android:name="registrationForm"
                 android:defaultValue="@null"
-                app:argType="string"
+                app:argType="de.njsm.stocks.client.business.entities.RegistrationForm"
                 app:nullable="true" />
-        <argument
-                android:name="userId"
-                android:defaultValue="0"
-                app:argType="integer" />
-        <argument
-                android:name="deviceName"
-                android:defaultValue=""
-                app:argType="string" />
-        <argument
-                android:name="deviceId"
-                android:defaultValue="0"
-                app:argType="integer" />
-        <argument
-                android:name="fingerprint"
-                android:defaultValue=""
-                app:argType="string" />
-        <argument
-                android:name="ticket"
-                android:defaultValue=""
-                app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_location_list"

@@ -21,7 +21,6 @@
 
 package de.njsm.stocks.client.navigation;
 
-import androidx.navigation.ActionOnlyNavDirections;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.view.SetupGreetingFragmentDirections;
 import org.junit.Before;
@@ -29,6 +28,7 @@ import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNull;
 
 public class SetupGreetingNavigatorTest {
 
@@ -46,8 +46,9 @@ public class SetupGreetingNavigatorTest {
     public void registeringManuallyBindsCorrectly() {
         uut.registerManually();
 
-        ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
+        SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupForm actual = navigationArgConsumer.getLastArgument(SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupForm.class);
         assertThat(actual.getActionId(), is(R.id.action_nav_fragment_setup_greeting_to_nav_fragment_setup_form));
+        assertNull(actual.getRegistrationForm());
     }
 
     @Test
@@ -69,16 +70,6 @@ public class SetupGreetingNavigatorTest {
 
         SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupForm actual =
                 navigationArgConsumer.getLastArgument(SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupForm.class);
-        assertThat(actual.getServerName(), is(registrationForm.serverName()));
-        assertThat(actual.getCaPort(), is(registrationForm.caPort()));
-        assertThat(actual.getRegistrationPort(), is(registrationForm.registrationPort()));
-        assertThat(actual.getServerPort(), is(registrationForm.serverPort()));
-        assertThat(actual.getUsername(), is(registrationForm.userName()));
-        assertThat(actual.getUserId(), is(registrationForm.userId()));
-        assertThat(actual.getDeviceName(), is(registrationForm.userDeviceName()));
-        assertThat(actual.getDeviceId(), is(registrationForm.userDeviceId()));
-        assertThat(actual.getFingerprint(), is(registrationForm.fingerprint()));
-        assertThat(actual.getTicket(), is(registrationForm.ticket()));
-
+        assertThat(actual.getRegistrationForm(), is(registrationForm));
     }
 }

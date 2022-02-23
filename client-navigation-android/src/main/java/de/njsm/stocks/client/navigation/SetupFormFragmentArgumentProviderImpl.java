@@ -22,12 +22,13 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.view.SetupFormFragment;
 import de.njsm.stocks.client.view.SetupFormFragmentArgs;
 import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 class SetupFormFragmentArgumentProviderImpl implements SetupFormFragmentArgumentProvider {
 
@@ -39,23 +40,6 @@ class SetupFormFragmentArgumentProviderImpl implements SetupFormFragmentArgument
             return;
 
         SetupFormFragmentArgs arguments = SetupFormFragmentArgs.fromBundle(bundle);
-        if (!arguments.getServerName().isEmpty())
-            initialiseForm(fragment, arguments);
-    }
-
-    private void initialiseForm(SetupFormFragment fragment, SetupFormFragmentArgs arguments) {
-        RegistrationForm registrationForm = RegistrationForm.builder()
-                .serverName(arguments.getServerName())
-                .caPort(arguments.getCaPort())
-                .registrationPort(arguments.getRegistrationPort())
-                .serverPort(arguments.getServerPort())
-                .userName(arguments.getUsername())
-                .userId(arguments.getUserId())
-                .userDeviceName(arguments.getDeviceName())
-                .userDeviceId(arguments.getDeviceId())
-                .ticket(arguments.getTicket())
-                .fingerprint(arguments.getFingerprint())
-                .build();
-        fragment.initialiseForm(registrationForm);
+        Optional.ofNullable(arguments.getRegistrationForm()).ifPresent(fragment::initialiseForm);
     }
 }

@@ -22,14 +22,12 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import androidx.test.runner.AndroidJUnit4;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.view.SetupFormFragment;
 import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
 import de.njsm.stocks.client.view.SetupGreetingFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 public class SetupFormFragmentArgumentProviderImplTest {
@@ -77,16 +75,7 @@ public class SetupFormFragmentArgumentProviderImplTest {
                 .build();
         SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupForm direction =
                 SetupGreetingFragmentDirections.actionNavFragmentSetupGreetingToNavFragmentSetupForm()
-                        .setServerName(registrationForm.serverName())
-                        .setCaPort(registrationForm.caPort())
-                        .setRegistrationPort(registrationForm.registrationPort())
-                        .setServerPort(registrationForm.serverPort())
-                        .setUsername(registrationForm.userName())
-                        .setUserId(registrationForm.userId())
-                        .setDeviceName(registrationForm.userDeviceName())
-                        .setDeviceId(registrationForm.userDeviceId())
-                        .setFingerprint(registrationForm.fingerprint())
-                        .setTicket(registrationForm.ticket());
+                        .setRegistrationForm(registrationForm);
 
         uut.visit(fragment, direction.getArguments());
 
