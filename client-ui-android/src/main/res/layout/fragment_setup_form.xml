@@ -28,7 +28,7 @@
             android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fragment_setup_form_server_url"
+                android:id="@+id/fragment_setup_form_server_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/list_item_padding"
-                android:layout_below="@id/fragment_setup_form_server_url"
+                android:layout_below="@id/fragment_setup_form_server_name"
                 android:hint="@string/hint_caport"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
@@ -57,7 +57,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fragment_setup_form_sentry_port"
+                android:id="@+id/fragment_setup_form_registration_port"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/list_item_padding"
@@ -76,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/list_item_padding"
-                android:layout_below="@id/fragment_setup_form_sentry_port"
+                android:layout_below="@id/fragment_setup_form_registration_port"
                 android:hint="@string/hint_server_port"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText

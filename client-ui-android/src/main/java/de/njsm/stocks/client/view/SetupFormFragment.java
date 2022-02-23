@@ -26,10 +26,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.ui.R;
 
@@ -39,10 +37,17 @@ public class SetupFormFragment extends InjectableFragment {
 
     private SetupFormFragmentArgumentProvider argumentProvider;
 
+    private RegistrationBackend registrationBackend;
+
+    private SetupFormView view;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_setup_form, container, false);
+        View result = inflater.inflate(R.layout.fragment_setup_form, container, false);
+        result.findViewById(R.id.fragment_setup_form_button).setOnClickListener(this::onSubmitForm);
+        view = new SetupFormView(result);
+        return result;
     }
 
     @Override
@@ -52,31 +57,20 @@ public class SetupFormFragment extends InjectableFragment {
     }
 
     public void initialiseForm(RegistrationForm registrationForm) {
-        setText(requireView().findViewById(R.id.fragment_setup_form_server_url), registrationForm.serverName());
-        setText(requireView().findViewById(R.id.fragment_setup_form_ca_port), registrationForm.caPort());
-        setText(requireView().findViewById(R.id.fragment_setup_form_sentry_port), registrationForm.registrationPort());
-        setText(requireView().findViewById(R.id.fragment_setup_form_server_port), registrationForm.serverPort());
-        setText(requireView().findViewById(R.id.fragment_setup_form_user_name), registrationForm.userName());
-        setText(requireView().findViewById(R.id.fragment_setup_form_user_id), registrationForm.userId());
-        setText(requireView().findViewById(R.id.fragment_setup_form_device_name), registrationForm.userDeviceName());
-        setText(requireView().findViewById(R.id.fragment_setup_form_device_id), registrationForm.userDeviceId());
-        setText(requireView().findViewById(R.id.fragment_setup_form_fingerprint), registrationForm.fingerprint());
-        setText(requireView().findViewById(R.id.fragment_setup_form_ticket), registrationForm.ticket());
+        view.initialiseForm(registrationForm);
     }
 
-    private void setText(TextInputLayout view, int text) {
-        setText(view, String.valueOf(text));
-    }
-
-    private void setText(TextInputLayout inputField, String text) {
-        EditText editor = inputField.getEditText();
-        if (editor != null) {
-            editor.setText(text);
-        }
+    private void onSubmitForm(View v) {
+        registrationBackend.register(view.getFormData());
     }
 
     @Inject
     public void setArgumentProvider(SetupFormFragmentArgumentProvider argumentProvider) {
         this.argumentProvider = argumentProvider;
+    }
+
+    @Inject
+    public void setRegistrationBackend(RegistrationBackend registrationBackend) {
+        this.registrationBackend = registrationBackend;
     }
 }
