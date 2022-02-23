@@ -23,6 +23,7 @@ import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.navigation.LocationListNavigator;
 import de.njsm.stocks.client.navigation.SetupGreetingNavigator;
+import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
 
 import javax.inject.Singleton;
 
@@ -41,5 +42,11 @@ class MockNavigationModule {
     @Singleton
     SetupGreetingNavigator setupGreetingNavigator() {
         return mock(SetupGreetingNavigator.class);
+    }
+
+    @Provides
+    @Singleton
+    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider() {
+        return mock(SetupFormFragmentArgumentProvider.class);
     }
 }

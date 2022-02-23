@@ -30,14 +30,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.njsm.stocks.client.navigation.SetupGreetingNavigator;
 import de.njsm.stocks.client.ui.R;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class SetupGreetingFragment extends InjectableFragment implements CameraPermissionProber {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SetupGreetingFragment.class);
 
     private SetupGreetingNavigator navigator;
 
@@ -54,7 +50,6 @@ public class SetupGreetingFragment extends InjectableFragment implements CameraP
         View result = inflater.inflate(R.layout.fragment_setup_greeting, container, false);
         result.findViewById(R.id.fragment_setup_greeting_manual).setOnClickListener(this::onManualSetupClicked);
         result.findViewById(R.id.fragment_setup_greeting_scan).setOnClickListener(this::onScanButtonClicked);
-
         return result;
     }
 
@@ -69,7 +64,7 @@ public class SetupGreetingFragment extends InjectableFragment implements CameraP
     }
 
     @Inject
-    public void setNavigator(SetupGreetingNavigator navigator) {
+    void setNavigator(SetupGreetingNavigator navigator) {
         this.navigator = navigator;
     }
 }

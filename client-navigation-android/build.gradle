@@ -32,6 +32,8 @@ android {
         minSdkVersion 24
         targetSdkVersion 31
         multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -91,6 +93,11 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
     testImplementation 'org.mockito:mockito-core:4.1.0'
     testImplementation 'org.hamcrest:hamcrest:2.2'
+
+    androidTestImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'org.mockito:mockito-core:4.1.0'
+    androidTestImplementation 'org.mockito:mockito-android:4.1.0'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 }

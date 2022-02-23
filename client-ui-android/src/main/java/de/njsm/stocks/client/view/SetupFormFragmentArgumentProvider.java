@@ -16,23 +16,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.view;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import android.os.Bundle;
 
-@Module
-public interface NavigationModule {
+public interface SetupFormFragmentArgumentProvider {
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
-
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
-
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
+    void visit(SetupFormFragment fragment, Bundle bundle);
 }

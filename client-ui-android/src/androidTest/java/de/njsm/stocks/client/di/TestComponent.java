@@ -26,6 +26,7 @@ import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.view.FragmentModule;
 import de.njsm.stocks.client.view.LocationListFragmentTest;
+import de.njsm.stocks.client.view.SetupFormFragmentTest;
 import de.njsm.stocks.client.view.SetupGreetingFragmentTest;
 
 import javax.inject.Singleton;
@@ -47,6 +48,8 @@ public interface TestComponent {
     void inject(LocationListFragmentTest test);
 
     void inject(SetupGreetingFragmentTest test);
+
+    void inject(SetupFormFragmentTest test);
 
     @Component.Builder
     interface Builder {

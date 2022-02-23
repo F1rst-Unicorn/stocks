@@ -34,4 +34,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract SetupGreetingFragment setupGreetingFragment();
+
+    @ContributesAndroidInjector
+    public abstract SetupFormFragment setupFormFragment();
 }

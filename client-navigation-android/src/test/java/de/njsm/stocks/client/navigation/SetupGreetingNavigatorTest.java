@@ -67,8 +67,8 @@ public class SetupGreetingNavigatorTest {
 
         uut.registerWithPrefilledData(registrationForm);
 
-        SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupFormPrefilled actual =
-                navigationArgConsumer.getLastArgument(SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupFormPrefilled.class);
+        SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupForm actual =
+                navigationArgConsumer.getLastArgument(SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupForm.class);
         assertThat(actual.getServerName(), is(registrationForm.serverName()));
         assertThat(actual.getCaPort(), is(registrationForm.caPort()));
         assertThat(actual.getRegistrationPort(), is(registrationForm.registrationPort()));

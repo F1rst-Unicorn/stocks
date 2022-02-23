@@ -31,6 +31,7 @@ import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.navigation.LocationListNavigator;
 import de.njsm.stocks.client.testdata.LocationsForListing;
 import de.njsm.stocks.client.ui.R;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +48,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
@@ -66,6 +68,13 @@ public class LocationListFragmentTest {
     public void setUp() {
         scenario = FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
         scenario.onFragment(fragment -> ((Application) fragment.requireActivity().getApplication()).getDaggerRoot().inject(this));
+    }
+
+    @After
+    public void tearDown() {
+        reset(locationDeleter);
+        reset(synchroniser);
+        reset(mockLocationListNavigator);
     }
 
     @Test

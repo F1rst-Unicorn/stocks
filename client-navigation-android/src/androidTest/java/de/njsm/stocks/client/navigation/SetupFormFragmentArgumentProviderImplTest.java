@@ -21,34 +21,60 @@
 
 package de.njsm.stocks.client.navigation;
 
+import android.os.Bundle;
+import androidx.test.runner.AndroidJUnit4;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
+import de.njsm.stocks.client.view.SetupFormFragment;
+import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
 import de.njsm.stocks.client.view.SetupGreetingFragmentDirections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 
-import javax.inject.Inject;
+public class SetupFormFragmentArgumentProviderImplTest {
 
-class SetupGreetingNavigatorImpl implements SetupGreetingNavigator {
+    SetupFormFragmentArgumentProvider uut;
 
-    private static final Logger LOG = LoggerFactory.getLogger(SetupGreetingNavigatorImpl.class);
-
-    private final NavigationArgConsumer navigationArgConsumer;
-
-    @Inject
-    SetupGreetingNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
-        this.navigationArgConsumer = navigationArgConsumer;
+    @Before
+    public void setUp() {
+        uut = new SetupFormFragmentArgumentProviderImpl();
     }
 
-    @Override
-    public void registerManually() {
-        LOG.debug("going to manual setup");
-        navigationArgConsumer.navigate(
-                SetupGreetingFragmentDirections.actionNavFragmentSetupGreetingToNavFragmentSetupForm());
+    @Test
+    public void visitingWithoutArgumentsDoesNothing() {
+        SetupFormFragment fragment = Mockito.mock(SetupFormFragment.class);
+
+        uut.visit(fragment, null);
+
+        Mockito.verifyNoInteractions(fragment);
     }
 
-    @Override
-    public void registerWithPrefilledData(RegistrationForm registrationForm) {
-        LOG.debug("going to prefilled setup with " + registrationForm);
+
+    @Test
+    public void visitingWithEmptyArgumentsDoesNothing() {
+        SetupFormFragment fragment = Mockito.mock(SetupFormFragment.class);
+
+        uut.visit(fragment, new Bundle());
+
+        Mockito.verifyNoInteractions(fragment);
+    }
+
+    @Test
+    public void visitingWithArgumentsPassesToFragment() {
+        SetupFormFragment fragment = Mockito.mock(SetupFormFragment.class);
+        RegistrationForm registrationForm = RegistrationForm.builder()
+                .serverName("test.example")
+                .caPort(1409)
+                .registrationPort(1410)
+                .serverPort(1411)
+                .userId(1412)
+                .userName("username")
+                .userDeviceId(1412)
+                .userDeviceName("userdevicename")
+                .fingerprint("fingerprint")
+                .ticket("ticket")
+                .build();
         SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupForm direction =
                 SetupGreetingFragmentDirections.actionNavFragmentSetupGreetingToNavFragmentSetupForm()
                         .setServerName(registrationForm.serverName())
@@ -62,6 +88,9 @@ class SetupGreetingNavigatorImpl implements SetupGreetingNavigator {
                         .setFingerprint(registrationForm.fingerprint())
                         .setTicket(registrationForm.ticket());
 
-        navigationArgConsumer.navigate(direction);
+        uut.visit(fragment, direction.getArguments());
+
+        Mockito.verify(fragment).initialiseForm(registrationForm);
+        Mockito.verifyNoMoreInteractions(fragment);
     }
 }

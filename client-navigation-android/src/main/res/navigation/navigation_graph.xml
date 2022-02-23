@@ -36,45 +36,52 @@
         <action
                 android:id="@+id/action_nav_fragment_setup_greeting_to_nav_fragment_setup_form"
                 app:destination="@id/nav_fragment_setup_form" />
-        <action
-                android:id="@+id/action_nav_fragment_setup_greeting_to_nav_fragment_setup_form_prefilled"
-                app:destination="@id/nav_fragment_setup_form">
-            <argument
-                    android:name="serverName"
-                    app:argType="string" />
-            <argument
-                    android:name="caPort"
-                    app:argType="integer" />
-            <argument
-                    android:name="registrationPort"
-                    app:argType="integer" />
-            <argument
-                    android:name="serverPort"
-                    app:argType="integer" />
-            <argument
-                    android:name="username"
-                    app:argType="string"/>
-            <argument
-                    android:name="userId"
-                    app:argType="integer" />
-            <argument
-                    android:name="deviceName"
-                    app:argType="string" />
-            <argument
-                    android:name="deviceId"
-                    app:argType="integer" />
-            <argument
-                    android:name="fingerprint"
-                    app:argType="string" />
-            <argument
-                    android:name="ticket"
-                    app:argType="string" />
-        </action>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_setup_form"
-            android:name="androidx.fragment.app.Fragment"
-            tools:layout="@layout/template_swipe_list">
+            android:name="de.njsm.stocks.client.view.SetupFormFragment"
+            tools:layout="@layout/fragment_setup_form">
+        <argument
+                android:name="serverName"
+                android:defaultValue=""
+                app:argType="string" />
+        <argument
+                android:name="caPort"
+                android:defaultValue="0"
+                app:argType="integer" />
+        <argument
+                android:name="registrationPort"
+                android:defaultValue="0"
+                app:argType="integer" />
+        <argument
+                android:name="serverPort"
+                android:defaultValue="0"
+                app:argType="integer" />
+        <argument
+                android:name="username"
+                android:defaultValue="@null"
+                app:argType="string"
+                app:nullable="true" />
+        <argument
+                android:name="userId"
+                android:defaultValue="0"
+                app:argType="integer" />
+        <argument
+                android:name="deviceName"
+                android:defaultValue=""
+                app:argType="string" />
+        <argument
+                android:name="deviceId"
+                android:defaultValue="0"
+                app:argType="integer" />
+        <argument
+                android:name="fingerprint"
+                android:defaultValue=""
+                app:argType="string" />
+        <argument
+                android:name="ticket"
+                android:defaultValue=""
+                app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_location_list"
