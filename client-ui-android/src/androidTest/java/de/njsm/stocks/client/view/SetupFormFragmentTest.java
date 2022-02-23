@@ -24,6 +24,7 @@ package de.njsm.stocks.client.view;
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import com.google.android.material.textfield.TextInputEditText;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.ui.R;
@@ -33,16 +34,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(AndroidJUnit4.class)
 public class SetupFormFragmentTest {
@@ -116,6 +119,39 @@ public class SetupFormFragmentTest {
         onView(withId(R.id.fragment_setup_form_button)).perform(scrollTo(), click());
 
         verify(registrationBackend).register(registrationForm);
+    }
+
+    @Test
+    public void anyMissingFieldBlocksSubmission() {
+        RegistrationForm registrationForm = getRegistrationForm();
+        List<Integer> views = Arrays.asList(
+                R.id.fragment_setup_form_server_name,
+                R.id.fragment_setup_form_ca_port,
+                R.id.fragment_setup_form_registration_port,
+                R.id.fragment_setup_form_server_port,
+                R.id.fragment_setup_form_user_name,
+                R.id.fragment_setup_form_user_id,
+                R.id.fragment_setup_form_device_name,
+                R.id.fragment_setup_form_device_id,
+                R.id.fragment_setup_form_fingerprint,
+                R.id.fragment_setup_form_ticket
+        );
+
+        for (int view : views) {
+            clearFieldAndCheckIfButtonIsDisabled(registrationForm, view);
+        }
+    }
+
+    private void clearFieldAndCheckIfButtonIsDisabled(RegistrationForm registrationForm, int viewId) {
+        scenario.onFragment(v -> v.initialiseForm(registrationForm));
+        onView(allOf(
+                isDescendantOfA(withId(viewId)),
+                withClassName(is(TextInputEditText.class.getName()))
+        )).perform(scrollTo(), clearText());
+
+        onView(withId(R.id.fragment_setup_form_button)).perform(scrollTo(), click());
+
+        verifyNoInteractions(registrationBackend);
     }
 
     private RegistrationForm getRegistrationForm() {

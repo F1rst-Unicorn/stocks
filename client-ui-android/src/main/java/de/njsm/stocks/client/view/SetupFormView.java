@@ -22,10 +22,16 @@
 package de.njsm.stocks.client.view;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.ui.R;
+import de.njsm.stocks.client.util.NonEmptyValidator;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 class SetupFormView {
 
@@ -49,7 +55,13 @@ class SetupFormView {
 
     private final TextInputLayout ticket;
 
-    SetupFormView(View root) {
+    private final Button submitButton;
+
+    private final Map<TextInputLayout, Boolean> isTextFieldEmpty;
+
+    private final Function<Integer, String> stringResourceLookup;
+
+    SetupFormView(View root, Function<Integer, String> stringResourceLookup) {
         serverName = root.findViewById(R.id.fragment_setup_form_server_name);
         caPort = root.findViewById(R.id.fragment_setup_form_ca_port);
         registrationPort = root.findViewById(R.id.fragment_setup_form_registration_port);
@@ -60,6 +72,31 @@ class SetupFormView {
         userDeviceId = root.findViewById(R.id.fragment_setup_form_device_id);
         fingerprint = root.findViewById(R.id.fragment_setup_form_fingerprint);
         ticket = root.findViewById(R.id.fragment_setup_form_ticket);
+        submitButton = root.findViewById(R.id.fragment_setup_form_button);
+        this.stringResourceLookup = stringResourceLookup;
+        isTextFieldEmpty = new HashMap<>();
+
+        initialiseEmptyFieldsMap();
+        addTextChangeListeners();
+    }
+
+    private void addTextChangeListeners() {
+        addTextChangeListener(serverName);
+        addTextChangeListener(caPort);
+        addTextChangeListener(registrationPort);
+        addTextChangeListener(serverPort);
+        addTextChangeListener(userName);
+        addTextChangeListener(userId);
+        addTextChangeListener(userDeviceName);
+        addTextChangeListener(userDeviceId);
+        addTextChangeListener(fingerprint);
+        addTextChangeListener(ticket);
+    }
+
+    private void addTextChangeListener(TextInputLayout textInputLayout) {
+        EditText editText = textInputLayout.getEditText();
+        if (editText != null)
+            editText.addTextChangedListener(new NonEmptyValidator(textInputLayout, this::onFormFieldInput));
     }
 
     void initialiseForm(RegistrationForm data) {
@@ -90,6 +127,44 @@ class SetupFormView {
                 .build();
     }
 
+    private void initialiseEmptyFieldsMap() {
+        checkTextFieldContent(serverName);
+        checkTextFieldContent(caPort);
+        checkTextFieldContent(registrationPort);
+        checkTextFieldContent(serverPort);
+        checkTextFieldContent(userName);
+        checkTextFieldContent(userDeviceName);
+        checkTextFieldContent(userId);
+        checkTextFieldContent(userDeviceId);
+        checkTextFieldContent(fingerprint);
+        checkTextFieldContent(ticket);
+        enableSubmitButtonIfEligible();
+    }
+
+    private void checkTextFieldContent(TextInputLayout textInputLayout) {
+        EditText editText = textInputLayout.getEditText();
+        if (editText != null)
+            isTextFieldEmpty.put(textInputLayout, editText.getText().length() == 0);
+    }
+
+    private void onFormFieldInput(TextInputLayout view, Boolean isEmpty) {
+        isTextFieldEmpty.put(view, isEmpty);
+        if (isEmpty) {
+            String error = stringResourceLookup.apply(R.string.error_may_not_be_empty);
+            view.setError(error);
+        } else {
+            view.setError(null);
+        }
+
+        enableSubmitButtonIfEligible();
+    }
+
+    private void enableSubmitButtonIfEligible() {
+        boolean largeEnough = isTextFieldEmpty.size() == 10;
+        boolean noneEmpty = isTextFieldEmpty.values().stream().noneMatch(v -> v);
+        submitButton.setEnabled(largeEnough && noneEmpty);
+    }
+
     private void setText(TextInputLayout view, int text) {
         setText(view, String.valueOf(text));
     }
@@ -117,5 +192,9 @@ class SetupFormView {
         } else {
             return "";
         }
+    }
+
+    public void bindSubmitButton(View.OnClickListener onSubmitForm) {
+        submitButton.setOnClickListener(onSubmitForm);
     }
 }

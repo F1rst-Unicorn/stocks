@@ -45,8 +45,8 @@ public class SetupFormFragment extends InjectableFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_setup_form, container, false);
-        result.findViewById(R.id.fragment_setup_form_button).setOnClickListener(this::onSubmitForm);
-        view = new SetupFormView(result);
+        view = new SetupFormView(result, this::getString);
+        view.bindSubmitButton(this::onSubmitForm);
         return result;
     }
 
