@@ -28,18 +28,22 @@ import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.Optional;
 
 class SetupFormFragmentArgumentProviderImpl implements SetupFormFragmentArgumentProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(SetupFormFragmentArgumentProviderImpl.class);
 
+    @Inject
+    public SetupFormFragmentArgumentProviderImpl() {
+    }
+
     @Override
     public void visit(SetupFormFragment fragment, Bundle bundle) {
-        if (bundle == null)
-            return;
-
-        SetupFormFragmentArgs arguments = SetupFormFragmentArgs.fromBundle(bundle);
-        Optional.ofNullable(arguments.getRegistrationForm()).ifPresent(fragment::initialiseForm);
+        Optional.ofNullable(bundle)
+                .map(SetupFormFragmentArgs::fromBundle)
+                .map(SetupFormFragmentArgs::getRegistrationForm)
+                .ifPresent(fragment::initialiseForm);
     }
 }

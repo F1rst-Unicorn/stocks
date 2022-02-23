@@ -97,7 +97,7 @@
             <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
+                    android:inputType="textPersonName"
             />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -183,8 +183,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/fragment_setup_form_ticket"
                 android:layout_alignEnd="@id/fragment_setup_form_ticket"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="4dp"
+                android:layout_margin="8dp"
                 android:background="@color/colorPrimary"
                 android:text="@android:string/ok"/>
     </RelativeLayout>
