@@ -16,22 +16,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.di;
 
 import dagger.Module;
 import dagger.Provides;
-import de.njsm.stocks.client.testdata.LocationsForListing;
-
-import javax.inject.Singleton;
+import de.njsm.stocks.client.view.RegistrationBackend;
 
 @Module
-public class DataModule {
+class SetupModule {
 
     @Provides
-    @Singleton
-    LocationsForListing locationsForListing() {
-        return new LocationsForListing(LocationsForListing.generate());
+    static RegistrationBackend registrationBackend() {
+        return v -> {};
     }
 }

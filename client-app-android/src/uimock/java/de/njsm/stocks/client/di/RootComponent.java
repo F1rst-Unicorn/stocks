@@ -43,6 +43,7 @@ import javax.inject.Singleton;
                 ViewModelModule.class,
                 NavigationModule.class,
                 NavigationArgConsumerModule.class,
+                SetupModule.class,
                 ActivityModule.class,
                 FragmentModule.class,
         }

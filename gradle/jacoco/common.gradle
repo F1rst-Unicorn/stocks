@@ -43,6 +43,7 @@ def fileFilter = [
 
 ext.coverageExclusionFiles = [
         "**/AutoValue_*",
+
         // android
         '**/R.class',
         '**/BuildConfig.*',
@@ -50,7 +51,14 @@ ext.coverageExclusionFiles = [
         '**/*_Impl$*',
         '**/*Directions.*',
         '**/*Directions$*.*',
+        '**/*Args.*',
+        '**/*Args$*.*',
         '**/DummyActivity.*',
+
+        // Tests
         '**/src/test/java/**',
         '**/*Test.*',
+
+        // CLI client
+        '**/clientold/**/*',
 ]
