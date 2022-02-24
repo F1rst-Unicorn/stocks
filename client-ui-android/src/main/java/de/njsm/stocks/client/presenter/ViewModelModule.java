@@ -30,6 +30,7 @@ import de.njsm.stocks.client.business.LocationListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.di.ViewModelFactory;
 import de.njsm.stocks.client.di.ViewModelKey;
+import de.njsm.stocks.client.view.RegistrationBackend;
 
 import javax.inject.Provider;
 import java.util.Map;
@@ -45,7 +46,14 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(LocationViewModel.class)
-    ViewModel provideUsersViewModel(LocationListInteractor locationListInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser) {
+    ViewModel locationViewModel(LocationListInteractor locationListInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser) {
         return new LocationViewModel(locationListInteractor, locationDeleter, synchroniser);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(SetupViewModel.class)
+    ViewModel setupViewModel(RegistrationBackend registrationBackend) {
+        return new SetupViewModel(registrationBackend);
     }
 }

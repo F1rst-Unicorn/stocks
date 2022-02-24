@@ -16,26 +16,24 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business.entities.visitor;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import de.njsm.stocks.client.business.entities.SetupState;
 
-@Module
-public interface NavigationModule {
+public interface SetupStateVisitor<I, O> {
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
-
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
-
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
-
-    @Binds
-    SetupFormNavigator setupFormNavigator(SetupFormNavigatorImpl impl);
+    O generatingKeys(SetupState setupState, I input);
+    O fetchingCertificate(SetupState setupState, I input);
+    O verifyingCertificate(SetupState setupState, I input);
+    O registeringKey(SetupState setupState, I input);
+    O storingSettings(SetupState setupState, I input);
+    O generatingKeysFailed(SetupState setupState, I input);
+    O fetchingCertificateFailed(SetupState setupState, I input);
+    O verifyingCertificateFailed(SetupState setupState, I input);
+    O registeringKeyFailed(SetupState setupState, I input);
+    O storingSettingsFailed(SetupState setupState, I input);
+    O success(SetupState setupState, I input);
 }

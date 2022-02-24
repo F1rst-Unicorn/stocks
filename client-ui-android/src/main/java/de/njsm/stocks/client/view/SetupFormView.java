@@ -24,6 +24,9 @@ package de.njsm.stocks.client.view;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import androidx.annotation.StringRes;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.ui.R;
@@ -57,6 +60,10 @@ class SetupFormView {
 
     private final Button submitButton;
 
+    private final TextView status;
+
+    private final CircularProgressIndicator progressIndicator;
+
     private final Map<TextInputLayout, Boolean> isTextFieldEmpty;
 
     private final Function<Integer, String> stringResourceLookup;
@@ -73,6 +80,9 @@ class SetupFormView {
         fingerprint = root.findViewById(R.id.fragment_setup_form_fingerprint);
         ticket = root.findViewById(R.id.fragment_setup_form_ticket);
         submitButton = root.findViewById(R.id.fragment_setup_form_button);
+        status = root.findViewById(R.id.fragment_setup_form_status);
+        progressIndicator = root.findViewById(R.id.fragment_setup_form_progress);
+
         this.stringResourceLookup = stringResourceLookup;
         isTextFieldEmpty = new HashMap<>();
 
@@ -194,7 +204,22 @@ class SetupFormView {
         }
     }
 
-    public void bindSubmitButton(View.OnClickListener onSubmitForm) {
+    void bindSubmitButton(View.OnClickListener onSubmitForm) {
         submitButton.setOnClickListener(onSubmitForm);
+    }
+
+    void setProgressing(@StringRes int message) {
+        status.setText(message);
+        status.setVisibility(View.VISIBLE);
+        progressIndicator.setVisibility(View.VISIBLE);
+        submitButton.setVisibility(View.GONE);
+    }
+
+    void setError(@StringRes int message) {
+        status.setText(message);
+        status.setVisibility(View.VISIBLE);
+        progressIndicator.setVisibility(View.GONE);
+        submitButton.setVisibility(View.VISIBLE);
+        submitButton.setText(R.string.dialog_retry);
     }
 }

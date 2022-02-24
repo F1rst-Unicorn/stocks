@@ -20,6 +20,7 @@
 -->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -176,12 +177,34 @@
             />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+                android:id="@+id/fragment_setup_form_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_setup_form_ticket"
+                android:layout_alignStart="@id/fragment_setup_form_ticket"
+                android:padding="16dp"
+                android:textSize="@dimen/dialog_text_size"
+                android:visibility="gone"/>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/fragment_setup_form_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_setup_form_ticket"
+                android:layout_alignEnd="@id/fragment_setup_form_ticket"
+                android:indeterminate="true"
+                app:indicatorSize="36dp"
+                app:trackThickness="3dp"
+                android:padding="16dp"
+                app:indicatorColor="@color/colorPrimary"
+                android:visibility="gone" />
 
         <Button
                 android:id="@+id/fragment_setup_form_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/fragment_setup_form_ticket"
+                android:layout_below="@id/fragment_setup_form_status"
                 android:layout_alignEnd="@id/fragment_setup_form_ticket"
                 android:layout_margin="8dp"
                 android:background="@color/colorPrimary"

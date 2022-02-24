@@ -16,26 +16,33 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.navigation;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import de.njsm.stocks.client.view.SetupFormFragmentDirections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Module
-public interface NavigationModule {
+import javax.inject.Inject;
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+class SetupFormNavigatorImpl implements SetupFormNavigator {
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
+    private static final Logger LOG = LoggerFactory.getLogger(SetupFormNavigatorImpl.class);
 
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
+    private final NavigationArgConsumer navigationArgConsumer;
 
-    @Binds
-    SetupFormNavigator setupFormNavigator(SetupFormNavigatorImpl impl);
+    @Inject
+    SetupFormNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        this.navigationArgConsumer = navigationArgConsumer;
+    }
+
+    @Override
+    public void finishSetup() {
+        LOG.info("finishing setup");
+        navigationArgConsumer.navigate(
+                SetupFormFragmentDirections.actionNavFragmentSetupFormToNavFragmentLocationList()
+        );
+    }
 }

@@ -16,26 +16,35 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.navigation;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import androidx.navigation.ActionOnlyNavDirections;
+import org.junit.Before;
+import org.junit.Test;
 
-@Module
-public interface NavigationModule {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+public class SetupFormNavigatorTest {
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
+    private SetupFormNavigator uut;
 
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
+    private FakeNavigationArgConsumer navigationArgConsumer;
 
-    @Binds
-    SetupFormNavigator setupFormNavigator(SetupFormNavigatorImpl impl);
+    @Before
+    public void setUp() {
+        navigationArgConsumer = new FakeNavigationArgConsumer();
+        uut = new SetupFormNavigatorImpl(navigationArgConsumer);
+    }
+
+    @Test
+    public void finishSetupBindsCorrectly() {
+        uut.finishSetup();
+
+        ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
+        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_setup_form_to_nav_fragment_location_list));
+    }
 }

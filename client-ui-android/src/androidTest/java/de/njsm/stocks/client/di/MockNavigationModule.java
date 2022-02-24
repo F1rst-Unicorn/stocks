@@ -22,6 +22,7 @@ package de.njsm.stocks.client.di;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.navigation.LocationListNavigator;
+import de.njsm.stocks.client.navigation.SetupFormNavigator;
 import de.njsm.stocks.client.navigation.SetupGreetingNavigator;
 import de.njsm.stocks.client.view.RegistrationBackend;
 import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
@@ -55,5 +56,11 @@ class MockNavigationModule {
     @Singleton
     RegistrationBackend registrationBackend() {
         return mock(RegistrationBackend.class);
+    }
+
+    @Provides
+    @Singleton
+    SetupFormNavigator setupFragmentNavigator() {
+        return mock(SetupFormNavigator.class);
     }
 }

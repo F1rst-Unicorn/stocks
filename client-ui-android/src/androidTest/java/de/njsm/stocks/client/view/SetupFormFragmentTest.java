@@ -27,7 +27,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.google.android.material.textfield.TextInputEditText;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
+import de.njsm.stocks.client.business.entities.SetupState;
+import de.njsm.stocks.client.navigation.SetupFormNavigator;
 import de.njsm.stocks.client.ui.R;
+import io.reactivex.rxjava3.core.Observable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +59,8 @@ public class SetupFormFragmentTest {
 
     private RegistrationBackend registrationBackend;
 
+    private SetupFormNavigator setupFormNavigator;
+
     @Before
     public void setUp() {
         scenario = FragmentScenario.launchInContainer(SetupFormFragment.class, new Bundle(), R.style.StocksTheme);
@@ -66,6 +71,7 @@ public class SetupFormFragmentTest {
     public void tearDown() {
         reset(fragmentArgumentProvider);
         reset(registrationBackend);
+        reset(setupFormNavigator);
     }
 
     @Test
@@ -112,13 +118,43 @@ public class SetupFormFragmentTest {
     }
 
     @Test
-    public void registeringWithAllFieldsSetWorks() {
+    public void registeringWithAllFieldsSetStartsProgressBar() {
         RegistrationForm registrationForm = getRegistrationForm();
         scenario.onFragment(v -> v.initialiseForm(registrationForm));
+        when(registrationBackend.register(registrationForm)).thenReturn(Observable.just(SetupState.GENERATING_KEYS));
 
         onView(withId(R.id.fragment_setup_form_button)).perform(scrollTo(), click());
 
         verify(registrationBackend).register(registrationForm);
+        onView(withId(R.id.fragment_setup_form_status)).check(matches(withText(R.string.dialog_generating_key)));
+        onView(withId(R.id.fragment_setup_form_progress)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)));
+        onView(withId(R.id.fragment_setup_form_button)).check(matches(withEffectiveVisibility(Visibility.GONE)));
+    }
+
+    @Test
+    public void showingRegistrationFailureOffersRetry() {
+        RegistrationForm registrationForm = getRegistrationForm();
+        scenario.onFragment(v -> v.initialiseForm(registrationForm));
+        when(registrationBackend.register(registrationForm)).thenReturn(Observable.just(SetupState.GENERATING_KEYS_FAILED));
+
+        onView(withId(R.id.fragment_setup_form_button)).perform(scrollTo(), click());
+
+        verify(registrationBackend).register(registrationForm);
+        onView(withId(R.id.fragment_setup_form_status)).check(matches(withText(R.string.dialog_generating_key_failed)));
+        onView(withId(R.id.fragment_setup_form_progress)).check(matches(withEffectiveVisibility(Visibility.GONE)));
+        onView(withId(R.id.fragment_setup_form_button)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)));
+        onView(withId(R.id.fragment_setup_form_button)).check(matches(withText(R.string.dialog_retry)));
+    }
+
+    @Test
+    public void successfulRegistrationNavigates() {
+        RegistrationForm registrationForm = getRegistrationForm();
+        scenario.onFragment(v -> v.initialiseForm(registrationForm));
+        when(registrationBackend.register(registrationForm)).thenReturn(Observable.just(SetupState.SUCCESS));
+
+        onView(withId(R.id.fragment_setup_form_button)).perform(scrollTo(), click());
+
+        verify(setupFormNavigator).finishSetup();
     }
 
     @Test
@@ -177,5 +213,10 @@ public class SetupFormFragmentTest {
     @Inject
     public void setRegistrationBackend(RegistrationBackend registrationBackend) {
         this.registrationBackend = registrationBackend;
+    }
+
+    @Inject
+    public void setSetupFragmentNavigator(SetupFormNavigator setupFormNavigator) {
+        this.setupFormNavigator = setupFormNavigator;
     }
 }

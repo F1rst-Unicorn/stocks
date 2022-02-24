@@ -19,17 +19,9 @@
  *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.navigation;
 
-import dagger.Module;
-import dagger.Provides;
-import de.njsm.stocks.client.view.RegistrationBackend;
+public interface SetupFormNavigator {
 
-@Module
-class SetupModule {
-
-    @Provides
-    static RegistrationBackend registrationBackend() {
-        return v -> {};
-    }
+    void finishSetup();
 }

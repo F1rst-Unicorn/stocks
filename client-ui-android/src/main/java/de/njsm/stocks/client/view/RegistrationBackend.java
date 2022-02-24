@@ -22,8 +22,10 @@
 package de.njsm.stocks.client.view;
 
 import de.njsm.stocks.client.business.entities.RegistrationForm;
+import de.njsm.stocks.client.business.entities.SetupState;
+import io.reactivex.rxjava3.core.Observable;
 
 public interface RegistrationBackend {
 
-    void register(RegistrationForm registrationForm);
+    Observable<SetupState> register(RegistrationForm registrationForm);
 }
