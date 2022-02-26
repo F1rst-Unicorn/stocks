@@ -19,10 +19,12 @@
     along with this program.  If not, see https://www.gnu.org/licenses/.
 -->
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fragment_setup_form_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <RelativeLayout
             android:layout_width="match_parent"
@@ -177,37 +179,42 @@
             />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-                android:id="@+id/fragment_setup_form_status"
-                android:layout_width="wrap_content"
+        <RelativeLayout
+                android:id="@+id/fragment_setup_form_loading_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/fragment_setup_form_ticket"
-                android:layout_alignStart="@id/fragment_setup_form_ticket"
-                android:padding="16dp"
-                android:textSize="@dimen/dialog_text_size"
-                android:visibility="gone"/>
+                android:layout_below="@id/fragment_setup_form_ticket">
+            <TextView
+                    android:id="@+id/fragment_setup_form_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    android:textSize="@dimen/dialog_text_size"/>
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/fragment_setup_form_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/fragment_setup_form_ticket"
-                android:layout_alignEnd="@id/fragment_setup_form_ticket"
-                android:indeterminate="true"
-                app:indicatorSize="36dp"
-                app:trackThickness="3dp"
-                android:padding="16dp"
-                app:indicatorColor="@color/colorPrimary"
-                android:visibility="gone" />
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/fragment_setup_form_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:indeterminate="true"
+                    app:indicatorSize="24dp"
+                    app:trackThickness="2dp"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    app:indicatorColor="@color/colorPrimary" />
 
-        <Button
-                android:id="@+id/fragment_setup_form_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/fragment_setup_form_status"
-                android:layout_alignEnd="@id/fragment_setup_form_ticket"
-                android:layout_margin="8dp"
-                android:background="@color/colorPrimary"
-                android:text="@android:string/ok"/>
+            <Button
+                    android:id="@+id/fragment_setup_form_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/fragment_setup_form_status"
+                    android:layout_margin="8dp"
+                    android:background="@color/colorPrimary"
+                    android:text="@android:string/ok"/>
+        </RelativeLayout>
     </RelativeLayout>
 </ScrollView>

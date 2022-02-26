@@ -24,6 +24,7 @@ package de.njsm.stocks.client.view;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.StringRes;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -37,6 +38,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 class SetupFormView {
+
+    private final ScrollView scrollView;
 
     private final TextInputLayout serverName;
 
@@ -69,6 +72,7 @@ class SetupFormView {
     private final Function<Integer, String> stringResourceLookup;
 
     SetupFormView(View root, Function<Integer, String> stringResourceLookup) {
+        scrollView = root.findViewById(R.id.fragment_setup_form_scroll_view);
         serverName = root.findViewById(R.id.fragment_setup_form_server_name);
         caPort = root.findViewById(R.id.fragment_setup_form_ca_port);
         registrationPort = root.findViewById(R.id.fragment_setup_form_registration_port);
@@ -221,5 +225,8 @@ class SetupFormView {
         progressIndicator.setVisibility(View.GONE);
         submitButton.setVisibility(View.VISIBLE);
         submitButton.setText(R.string.dialog_retry);
+        scrollView.post(() -> {
+            scrollView.smoothScrollTo(scrollView.getScrollX(), scrollView.getBottom());
+        });
     }
 }
