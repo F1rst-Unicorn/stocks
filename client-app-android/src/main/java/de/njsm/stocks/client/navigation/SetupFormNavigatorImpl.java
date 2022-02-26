@@ -16,23 +16,29 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.navigation;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import android.content.Context;
+import android.content.Intent;
+import de.njsm.stocks.client.view.MainActivity;
 
-@Module
-public interface NavigationModule {
+import javax.inject.Inject;
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+public class SetupFormNavigatorImpl implements SetupFormNavigator{
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
+    private final Context context;
 
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
+    @Inject
+    public SetupFormNavigatorImpl(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    public void finishSetup() {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
 }

@@ -19,30 +19,17 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client;
 
-import de.njsm.stocks.client.view.SetupFormFragmentDirections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import android.content.Context;
+import androidx.test.runner.AndroidJUnitRunner;
 
-import javax.inject.Inject;
-
-class SetupFormNavigatorImpl implements SetupFormNavigator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SetupFormNavigatorImpl.class);
-
-    private final NavigationArgConsumer navigationArgConsumer;
-
-    @Inject
-    SetupFormNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
-        this.navigationArgConsumer = navigationArgConsumer;
-    }
+public class TestRunner extends AndroidJUnitRunner {
 
     @Override
-    public void finishSetup() {
-        LOG.info("finishing setup");
-        navigationArgConsumer.navigate(
-                SetupFormFragmentDirections.actionNavFragmentSetupFormToNavFragmentLocationList()
-        );
+    public android.app.Application newApplication(ClassLoader cl, String className, Context context) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return super.newApplication(cl, TestApplication.class.getCanonicalName(), context);
     }
+
+
 }

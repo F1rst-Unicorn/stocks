@@ -24,10 +24,18 @@ package de.njsm.stocks.client.di;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 import de.njsm.stocks.client.view.MainActivity;
+import de.njsm.stocks.client.view.SetupActivity;
+import de.njsm.stocks.client.view.StartupActivity;
 
 @Module
 public interface ActivityModule {
 
     @ContributesAndroidInjector
     MainActivity mainActivity();
+
+    @ContributesAndroidInjector
+    SetupActivity setupActivity();
+
+    @ContributesAndroidInjector
+    StartupActivity startupActivity();
 }

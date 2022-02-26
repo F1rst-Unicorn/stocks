@@ -16,23 +16,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.di;
 
 import dagger.Binds;
 import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import de.njsm.stocks.client.business.FakeLocationListInteractor;
+import de.njsm.stocks.client.business.LocationListInteractor;
 
 @Module
-public interface NavigationModule {
+public abstract class BusinessBindModule {
 
     @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
-
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
-
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
+    abstract LocationListInteractor locationListInteractor(FakeLocationListInteractor locationListInteractor);
 }

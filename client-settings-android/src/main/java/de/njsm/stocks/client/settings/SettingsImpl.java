@@ -24,11 +24,12 @@ package de.njsm.stocks.client.settings;
 import android.content.SharedPreferences;
 import de.njsm.stocks.client.business.Settings;
 import de.njsm.stocks.client.business.SettingsWriter;
+import de.njsm.stocks.client.business.SetupStatusChecker;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 
 import javax.inject.Inject;
 
-class SettingsImpl implements Settings, SettingsWriter {
+class SettingsImpl implements Settings, SettingsWriter, SetupStatusChecker {
 
     private static final String SERVER_NAME_KEY = "de.njsm.stocks.client.settings.SettingsImpl.serverName";
     private static final String CA_PORT_KEY = "de.njsm.stocks.client.settings.SettingsImpl.caPort";
@@ -112,5 +113,10 @@ class SettingsImpl implements Settings, SettingsWriter {
     @Override
     public String getTicket() {
         return sharedPreferences.getString(TICKET_KEY, "");
+    }
+
+    @Override
+    public boolean isSetup() {
+        return !getServerName().isEmpty();
     }
 }

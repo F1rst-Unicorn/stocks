@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,18 +16,31 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.business;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.business.LocationListInteractor;
-import de.njsm.stocks.client.view.FakeLocationListInteractor;
+import de.njsm.stocks.client.business.entities.LocationForListing;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-@Module
-public abstract class BusinessBindModule {
+import java.util.List;
 
-    @Binds
-    abstract LocationListInteractor locationListInteractor(FakeLocationListInteractor locationListInteractor);
+public class FakeLocationListInteractor implements LocationListInteractor {
+
+    private final BehaviorSubject<List<LocationForListing>> data;
+
+    public FakeLocationListInteractor() {
+        this.data = BehaviorSubject.create();
+    }
+
+    public void setData(List<LocationForListing> data) {
+        this.data.onNext(data);
+    }
+
+    @Override
+    public Observable<List<LocationForListing>> getLocations() {
+        return data;
+    }
 }

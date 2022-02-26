@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.di;
 
 import android.app.Activity;
+import android.content.Context;
 import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
@@ -46,6 +47,9 @@ public interface RootComponent {
 
         @BindsInstance
         Builder application(Application a);
+
+        @BindsInstance
+        Builder context(Context a);
 
         RootComponent build();
     }

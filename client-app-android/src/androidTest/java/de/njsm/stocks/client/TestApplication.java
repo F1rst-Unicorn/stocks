@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,6 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client;
@@ -23,16 +25,16 @@ import androidx.annotation.NonNull;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
-import de.njsm.stocks.client.di.DaggerRootComponent;
-import de.njsm.stocks.client.di.RootComponent;
+import de.njsm.stocks.client.di.DaggerTestComponent;
+import de.njsm.stocks.client.di.TestComponent;
 
 import javax.inject.Inject;
 
-public class Application extends android.app.Application implements HasAndroidInjector {
+public class TestApplication extends android.app.Application implements HasAndroidInjector {
 
     private DispatchingAndroidInjector<Object> injector;
 
-    private RootComponent dagger;
+    private TestComponent dagger;
 
     @Override
     public void onCreate() {
@@ -41,12 +43,11 @@ public class Application extends android.app.Application implements HasAndroidIn
                 .inject(this);
     }
 
-    public RootComponent getDaggerRoot() {
+    public TestComponent getDaggerRoot() {
         if (dagger == null)
-            dagger = DaggerRootComponent
+            dagger = DaggerTestComponent
                 .builder()
                 .application(this)
-                .context(this)
                 .build();
 
         return dagger;

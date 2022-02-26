@@ -44,19 +44,36 @@
             android:theme="@style/StocksTheme">
 
         <activity
-                android:name=".client.view.MainActivity"
+                android:name=".client.view.StartupActivity"
                 android:launchMode="singleTop"
                 android:exported="true"
                 android:theme="@style/StocksTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.SEARCH" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <meta-data
                     android:name="android.app.searchable"
                     android:resource="@xml/searchable" />
+        </activity>
+        <activity
+                android:name=".client.view.MainActivity"
+                android:launchMode="singleTop"
+                android:exported="true"
+                android:theme="@style/StocksTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                    android:name="android.app.searchable"
+                    android:resource="@xml/searchable" />
+        </activity>
+        <activity
+                android:name=".client.view.SetupActivity"
+                android:launchMode="singleTop"
+                android:exported="false"
+                android:theme="@style/StocksTheme">
         </activity>
     </application>
 

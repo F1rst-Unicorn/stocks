@@ -19,34 +19,37 @@
  *
  */
 
-package de.njsm.stocks.client.settings;
+package de.njsm.stocks.client.di;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import de.njsm.stocks.client.business.Settings;
-import de.njsm.stocks.client.business.SettingsWriter;
-import de.njsm.stocks.client.business.SetupStatusChecker;
+import de.njsm.stocks.client.business.FakeLocationListInteractor;
+import de.njsm.stocks.client.business.LocationDeleter;
+import de.njsm.stocks.client.business.Synchroniser;
+
+import javax.inject.Singleton;
+
+import static org.mockito.Mockito.mock;
 
 @Module
-public abstract class SettingsModule {
-
-    private static final String PREFERENCES_FILE_NAME = "stocks_prefs";
+public class MockBusinessModule {
 
     @Provides
-    public static SettingsImpl settingsImpl(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        return new SettingsImpl(sharedPreferences);
+    @Singleton
+    public FakeLocationListInteractor fakeLocationListInteractor() {
+        return new FakeLocationListInteractor();
     }
 
-    @Binds
-    public abstract Settings settings(SettingsImpl impl);
+    @Provides
+    @Singleton
+    LocationDeleter locationDeleter() {
+        return mock(LocationDeleter.class);
+    }
 
-    @Binds
-    public abstract SettingsWriter settingsWriter(SettingsImpl impl);
+    @Provides
+    @Singleton
+    Synchroniser synchroniser() {
+        return mock(Synchroniser.class);
+    }
 
-    @Binds
-    public abstract SetupStatusChecker setupStatusChecker(SettingsImpl impl);
 }

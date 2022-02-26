@@ -19,29 +19,9 @@
  *
  */
 
-package de.njsm.stocks.client.view;
+package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.LocationListInteractor;
-import de.njsm.stocks.client.business.entities.LocationForListing;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+public interface SetupStatusChecker {
 
-import java.util.List;
-
-public class FakeLocationListInteractor implements LocationListInteractor {
-
-    private final BehaviorSubject<List<LocationForListing>> data;
-
-    public FakeLocationListInteractor() {
-        this.data = BehaviorSubject.create();
-    }
-
-    public void setData(List<LocationForListing> data) {
-        this.data.onNext(data);
-    }
-
-    @Override
-    public Observable<List<LocationForListing>> getLocations() {
-        return data;
-    }
+    boolean isSetup();
 }

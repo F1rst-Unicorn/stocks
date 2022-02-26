@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -19,34 +20,14 @@
 
 package de.njsm.stocks.client.di;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
-import de.njsm.stocks.client.business.LocationDeleter;
-import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.view.FakeLocationListInteractor;
-import org.mockito.Mockito;
-
-import javax.inject.Singleton;
+import de.njsm.stocks.client.navigation.SetupFormNavigator;
+import de.njsm.stocks.client.navigation.SetupFormNavigatorImpl;
 
 @Module
-public class MockBusinessModule {
+public interface AppNavigationModule {
 
-    @Provides
-    @Singleton
-    public FakeLocationListInteractor fakeLocationListInteractor() {
-        return new FakeLocationListInteractor();
-    }
-
-    @Provides
-    @Singleton
-    LocationDeleter locationDeleter() {
-        return Mockito.mock(LocationDeleter.class);
-    }
-
-    @Provides
-    @Singleton
-    Synchroniser synchroniser() {
-        return Mockito.mock(Synchroniser.class);
-    }
-
+    @Binds
+    SetupFormNavigator setupFormNavigator(SetupFormNavigatorImpl impl);
 }

@@ -21,30 +21,37 @@
 
 package de.njsm.stocks.client.navigation;
 
-import androidx.navigation.ActionOnlyNavDirections;
+import android.content.Context;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.platform.app.InstrumentationRegistry;
+import de.njsm.stocks.client.view.MainActivity;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 
-public class SetupFormNavigatorTest {
-
-    private SetupFormNavigator uut;
-
-    private FakeNavigationArgConsumer navigationArgConsumer;
+public class SetupFormNavigatorImplTest {
 
     @Before
     public void setUp() {
-        navigationArgConsumer = new FakeNavigationArgConsumer();
-        uut = new SetupFormNavigatorImpl(navigationArgConsumer);
+        Intents.init();
+    }
+
+    @After
+    public void tearDown() {
+        Intents.release();
     }
 
     @Test
-    public void finishSetupBindsCorrectly() {
+    public void navigationWorks() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext();
+        SetupFormNavigatorImpl uut = new SetupFormNavigatorImpl(context);
+
         uut.finishSetup();
 
-        ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
-        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_setup_form_to_nav_fragment_location_list));
+        intended(hasComponent(hasClassName(MainActivity.class.getName())));
     }
 }

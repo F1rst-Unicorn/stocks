@@ -25,6 +25,7 @@ import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.FakeLocationListInteractor;
 import de.njsm.stocks.client.business.LocationDeleter;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.LocationForListing;

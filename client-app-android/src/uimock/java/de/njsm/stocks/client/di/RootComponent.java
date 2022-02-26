@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.di;
 
 import android.app.Activity;
+import android.content.Context;
 import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
@@ -30,6 +31,7 @@ import de.njsm.stocks.client.business.BusinessModule;
 import de.njsm.stocks.client.business.DataModule;
 import de.njsm.stocks.client.navigation.NavigationModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
+import de.njsm.stocks.client.settings.SettingsModule;
 import de.njsm.stocks.client.view.FragmentModule;
 
 import javax.inject.Singleton;
@@ -43,6 +45,8 @@ import javax.inject.Singleton;
                 ViewModelModule.class,
                 NavigationModule.class,
                 NavigationArgConsumerModule.class,
+                AppNavigationModule.class,
+                SettingsModule.class,
                 SetupModule.class,
                 ActivityModule.class,
                 FragmentModule.class,
@@ -59,6 +63,9 @@ public interface RootComponent {
 
         @BindsInstance
         Builder application(Application a);
+
+        @BindsInstance
+        Builder context(Context a);
 
         RootComponent build();
     }

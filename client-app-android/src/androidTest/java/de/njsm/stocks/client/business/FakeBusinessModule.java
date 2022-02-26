@@ -18,21 +18,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-import dagger.Binds;
 import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import dagger.Provides;
+
+import javax.inject.Singleton;
+
+import static org.mockito.Mockito.mock;
 
 @Module
-public interface NavigationModule {
+public class FakeBusinessModule {
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
-
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
-
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
+    @Provides
+    @Singleton
+    SetupStatusChecker setupFormNavigator() {
+        return mock(SetupStatusChecker.class);
+    }
 }

@@ -123,6 +123,8 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.4.0'
     androidTestImplementation 'androidx.fragment:fragment-testing:1.4.1'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
+    androidTestImplementation project(':client-fakes')
+    androidTestImplementation project(':client-fakes-android')
 
     androidTestAnnotationProcessor "com.google.dagger:dagger-android-processor:2.40.5"
     androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:2.40.5"

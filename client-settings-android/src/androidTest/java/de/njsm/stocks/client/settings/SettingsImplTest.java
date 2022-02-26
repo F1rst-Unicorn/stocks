@@ -30,6 +30,8 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class SettingsImplTest {
 
@@ -59,18 +61,7 @@ public class SettingsImplTest {
 
     @Test
     public void storingWorks() {
-        RegistrationForm form = RegistrationForm.builder()
-                        .serverName("test.example")
-                        .caPort(1409)
-                        .registrationPort(1410)
-                        .serverPort(1411)
-                        .userId(1412)
-                        .userName("username")
-                        .userDeviceId(1412)
-                        .userDeviceName("userdevicename")
-                        .fingerprint("fingerprint")
-                        .ticket("ticket")
-                        .build();
+        RegistrationForm form = getRegistrationForm();
 
         uut.store(form);
 
@@ -84,5 +75,32 @@ public class SettingsImplTest {
         assertThat(uut.getUserDeviceName(), is(form.userDeviceName()));
         assertThat(uut.getFingerprint(), is(form.fingerprint()));
         assertThat(uut.getTicket(), is(form.ticket()));
+    }
+
+    @Test
+    public void emptySettingsAreNotSetup() {
+        assertFalse(uut.isSetup());
+    }
+
+    @Test
+    public void presentSettingsAreSetup() {
+        uut.store(getRegistrationForm());
+
+        assertTrue(uut.isSetup());
+    }
+
+    private RegistrationForm getRegistrationForm() {
+        return RegistrationForm.builder()
+                .serverName("test.example")
+                .caPort(1409)
+                .registrationPort(1410)
+                .serverPort(1411)
+                .userId(1412)
+                .userName("username")
+                .userDeviceId(1412)
+                .userDeviceName("userdevicename")
+                .fingerprint("fingerprint")
+                .ticket("ticket")
+                .build();
     }
 }
