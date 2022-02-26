@@ -55,9 +55,19 @@ ext.coverageExclusionFiles = [
         '**/*Args$*.*',
         '**/DummyActivity.*',
 
+        // dagger
+        '**/Dagger*Component.*',
+        '**/Dagger*Component$*.*',
+        '**/*_Factory.*',
+        '**/*_Factory$*.*',
+        '**/*Factory*InstanceHolder.*',
+
         // Tests
-        '**/src/test/java/**',
+        //'**/src/test/java/**',
+        //'**/src/androidTest/java/**',
         '**/*Test.*',
+        '**/*Test$*.*',
+        '**/testdata/**',
 
         // CLI client
         '**/clientold/**/*',

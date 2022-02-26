@@ -45,7 +45,7 @@ def setupAndroidReporting() {
             // Create coverage task of form 'testFlavorTypeCoverage' depending on 'testFlavorTypeUnitTest'
             task "${testTaskName}Coverage"(type: JacocoReport, dependsOn: "$testTaskName") {
                 group = "Reporting"
-                description = "fdsa Generate Jacoco coverage reports on the ${sourceName.capitalize()} build."
+                description = "Generate Jacoco coverage reports on the ${sourceName.capitalize()} build."
                 onlyIf = { true }
 
                 def javaTree = fileTree(dir: "${project.buildDir}/intermediates/javac/$sourceName/classes", excludes: coverageExclusionFiles)

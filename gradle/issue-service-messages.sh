@@ -43,24 +43,39 @@ echo -n "' includes='       \
 ' "
 
 echo -n "excludes='            \
-    de.njsm.stocks.clientold.* \
     *.AutoValue_*              \
-    *.*Test                    \
+                               \
     *.R                        \
     *.R.styleable              \
+    *.BuildConfig              \
     *.*_Impl                   \
+    *.*_Impl.*                 \
     *.*_Impl\$*                \
     *.*_Impl\$.*               \
-    *.*_Factory                \
-    *.*_Factory\$*             \
-    *.*_Factory.*              \
     *.*Directions              \
-    *.*Directions\$*           \
     *.*Directions.*            \
-    *.BuildConfig              \
-    *.TestRunner               \
+    *.*Directions\$*           \
+    *.*Directions\$.*          \
+    *.*Args                    \
+    *.*Args.*                  \
+                               \
+    *.*_Factory                \
+    *.*_Factory.*              \
+    *.*_Factory\$*             \
+    *.*_Factory\$.*            \
+    *.*Factory.InstanceHolder  \
     *.Dagger*Component         \
     *.Dagger*Component.*       \
+    *.Test*Module              \
+                               \
+    *.*Test                    \
+    *.*Test.*                  \
+    *.Fake*                    \
+    *.TestRunner               \
+    *.testdata.*               \
+    *.DummyActivity            \
+                               \
+    de.njsm.stocks.clientold.* \
 '"
 
 echo ']'

@@ -17,6 +17,8 @@ task mergeCoverageReports(type: JacocoReport) {
 
     classDirectories.setFrom(fileTree(dir: "${project.rootDir}", includes: [
         "**/intermediates/javac/coverage/**/classes/**/*.class",
+        //"**/intermediates/javac/prodDebug/**/classes/**/*.class",
+        "**/intermediates/javac/uimockDebug/**/classes/**/*.class",
         "**/build/classes/**/*.class",
         "**/tmp/kotlin-classes/**/*.class",
     ], excludes: coverageExclusionFiles))
