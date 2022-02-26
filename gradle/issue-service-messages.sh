@@ -42,6 +42,11 @@ echo -n "' includes='       \
     de.njsm.stocks.common.* \
 ' "
 
+echo -n "classpath='           \
+    de.njsm.stocks.client.*    \
+    de.njsm.stocks.common.*    \
+' "
+
 echo -n "excludes='            \
     *.AutoValue_*              \
                                \
