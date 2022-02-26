@@ -42,6 +42,14 @@ public class ListDifferTest {
     }
 
     @Test
+    public void passingNullIsAllowed() {
+        uut = byId(null, null);
+
+        assertThat(uut.getOldListSize(), is(0));
+        assertThat(uut.getNewListSize(), is(0));
+    }
+
+    @Test
     public void gettingOldSizeWorks() {
 
         assertThat(uut.getOldListSize(), is(getOldList().size()));

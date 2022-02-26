@@ -72,7 +72,7 @@ public class SetupFormFragment extends InjectableFragment {
     }
 
     private void onStateUpdate(SetupState setupState) {
-        int message = setupState.visit(new SetupStateTranslator(), null);
+        int message = setupState.accept(new SetupStateTranslator(), null);
         if (!setupState.isFinal()) {
             view.setProgressing(message);
         } else if (setupState.isSuccessful()) {
@@ -98,7 +98,7 @@ public class SetupFormFragment extends InjectableFragment {
         this.setupFormNavigator = setupFormNavigator;
     }
 
-    private static class SetupStateTranslator implements SetupStateVisitor<Void, Integer> {
+    static class SetupStateTranslator implements SetupStateVisitor<Void, Integer> {
 
         @Override
         public Integer generatingKeys(SetupState setupState, Void input) {
@@ -137,7 +137,7 @@ public class SetupFormFragment extends InjectableFragment {
 
         @Override
         public Integer verifyingCertificateFailed(SetupState setupState, Void input) {
-            return null;
+            return R.string.dialog_verifying_certificate_failed;
         }
 
         @Override

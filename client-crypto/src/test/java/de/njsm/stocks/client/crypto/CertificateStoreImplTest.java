@@ -38,6 +38,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -52,6 +54,8 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -97,6 +101,21 @@ class CertificateStoreImplTest {
         String actual = uut.getCaCertificateFingerprint();
 
         assertEquals("B7:F7:94:CD:46:8E:4A:E6:50:74:C3:70:5D:4D:98:55:4A:11:88:46:3B:63:63:B7:F7:8A:D3:13:12:8B:F9:10", actual);
+    }
+
+    @Test
+    void gettingKeyManagerWorks() {
+        KeyManagerFactory keyManager = uut.getKeyManager();
+
+        assertThat(keyManager.getKeyManagers().length, greaterThan(0));
+    }
+
+
+    @Test
+    void gettingTrustManagerWorks() {
+        TrustManagerFactory trustManager = uut.getTrustManager();
+
+        assertThat(trustManager.getTrustManagers().length, greaterThan(0));
     }
 
     private KeyPair generateKey() throws NoSuchAlgorithmException {

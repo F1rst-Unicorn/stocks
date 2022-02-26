@@ -32,7 +32,7 @@ public enum SetupState {
         }
 
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.generatingKeys(this, input);
         }
     },
@@ -44,7 +44,7 @@ public enum SetupState {
         }
 
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.fetchingCertificate(this, input);
         }
     },
@@ -56,7 +56,7 @@ public enum SetupState {
         }
 
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.verifyingCertificate(this, input);
         }
     },
@@ -68,7 +68,7 @@ public enum SetupState {
         }
 
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.registeringKey(this, input);
         }
     },
@@ -80,42 +80,42 @@ public enum SetupState {
         }
 
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.storingSettings(this, input);
         }
     },
 
     GENERATING_KEYS_FAILED {
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.generatingKeysFailed(this, input);
         }
     },
 
     FETCHING_CERTIFICATE_FAILED {
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.fetchingCertificateFailed(this, input);
         }
     },
 
     VERIFYING_CERTIFICATE_FAILED {
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.verifyingCertificateFailed(this, input);
         }
     },
 
     REGISTERING_KEY_FAILED {
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.registeringKeyFailed(this, input);
         }
     },
 
     STORING_SETTINGS_FAILED {
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.storingSettingsFailed(this, input);
         }
     },
@@ -127,7 +127,7 @@ public enum SetupState {
         }
 
         @Override
-        public <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input) {
+        public <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input) {
             return setupStateVisitor.success(this, input);
         }
     };
@@ -140,5 +140,5 @@ public enum SetupState {
         return false;
     }
 
-    public abstract <I, O> O visit(SetupStateVisitor<I, O> setupStateVisitor, I input);
+    public abstract <I, O> O accept(SetupStateVisitor<I, O> setupStateVisitor, I input);
 }
