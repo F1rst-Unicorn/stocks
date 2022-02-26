@@ -29,9 +29,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static android.content.Intent.*;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasFlag;
+import static org.hamcrest.Matchers.allOf;
 
 public class SetupFormNavigatorImplTest {
 
@@ -52,6 +55,10 @@ public class SetupFormNavigatorImplTest {
 
         uut.finishSetup();
 
-        intended(hasComponent(hasClassName(MainActivity.class.getName())));
+        intended(allOf(
+                hasComponent(hasClassName(MainActivity.class.getName())),
+                hasFlag(FLAG_ACTIVITY_CLEAR_TASK),
+                hasFlag(FLAG_ACTIVITY_NEW_TASK)
+        ));
     }
 }

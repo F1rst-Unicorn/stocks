@@ -59,6 +59,8 @@ public class StartupActivity extends AppCompatActivity {
 
     private <T extends Activity> void goToActivity(Class<T> activity) {
         Intent intent = new Intent(this, activity);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 

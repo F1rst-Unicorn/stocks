@@ -32,9 +32,13 @@ import org.junit.Test;
 
 import javax.inject.Inject;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasFlag;
+import static org.hamcrest.Matchers.allOf;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +66,11 @@ public class StartupActivityTest {
 
         scenario = ActivityScenario.launch(StartupActivity.class);
 
-        intended(hasComponent(hasClassName(SetupActivity.class.getName())));
+        intended(allOf(
+                hasComponent(hasClassName(SetupActivity.class.getName())),
+                hasFlag(FLAG_ACTIVITY_CLEAR_TASK),
+                hasFlag(FLAG_ACTIVITY_NEW_TASK)
+        ));
     }
 
     @Test
@@ -71,7 +79,11 @@ public class StartupActivityTest {
 
         scenario = ActivityScenario.launch(StartupActivity.class);
 
-        intended(hasComponent(hasClassName(MainActivity.class.getName())));
+        intended(allOf(
+                hasComponent(hasClassName(MainActivity.class.getName())),
+                hasFlag(FLAG_ACTIVITY_CLEAR_TASK),
+                hasFlag(FLAG_ACTIVITY_NEW_TASK)
+        ));
     }
 
     @Inject

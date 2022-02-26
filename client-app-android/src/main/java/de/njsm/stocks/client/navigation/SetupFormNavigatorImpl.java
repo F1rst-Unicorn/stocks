@@ -39,6 +39,8 @@ public class SetupFormNavigatorImpl implements SetupFormNavigator{
     @Override
     public void finishSetup() {
         Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
 }
