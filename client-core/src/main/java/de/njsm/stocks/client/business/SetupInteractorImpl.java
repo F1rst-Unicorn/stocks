@@ -21,15 +21,17 @@
 
 package de.njsm.stocks.client.business;
 
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
-import de.njsm.stocks.client.business.entities.PemFile;
-import de.njsm.stocks.client.business.entities.RegistrationCsr;
-import de.njsm.stocks.client.business.entities.RegistrationForm;
+import de.njsm.stocks.client.business.entities.*;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 class SetupInteractorImpl implements SetupInteractor {
 
@@ -43,12 +45,22 @@ class SetupInteractorImpl implements SetupInteractor {
 
     private final CertificateStore certificateStore;
 
-    private final KeyPairGenerator keyPairGenerator;
+    private final KeyGenerator keyPairGenerator;
 
     private final List<PemFile> certificates;
 
+    private final BehaviorSubject<SetupState> currentState;
+
+    private KeyPair keyPair;
+
+    private final ArrayBlockingQueue<RegistrationForm> queue;
+
     @Inject
-    public SetupInteractorImpl(SettingsWriter settingsWriter, CertificateFetcherBuilder certificateFetcherBuilder, RegistratorBuilder registratorBuilder, CertificateStore certificateStore, KeyPairGenerator keyPairGenerator) {
+    public SetupInteractorImpl(SettingsWriter settingsWriter,
+                               CertificateFetcherBuilder certificateFetcherBuilder,
+                               RegistratorBuilder registratorBuilder,
+                               CertificateStore certificateStore,
+                               KeyGenerator keyPairGenerator) {
         this.settingsWriter = settingsWriter;
         this.certificateFetcherBuilder = certificateFetcherBuilder;
         this.registratorBuilder = registratorBuilder;
@@ -56,50 +68,115 @@ class SetupInteractorImpl implements SetupInteractor {
         this.keyPairGenerator = keyPairGenerator;
 
         certificates = new ArrayList<>();
+        currentState = BehaviorSubject.create();
+        queue = new ArrayBlockingQueue<>(2);
     }
 
-    public void generateKeys() {
-        keyPairGenerator.generate();
+    @Override
+    public Observable<SetupState> setupWithForm(RegistrationForm registrationForm) {
+        queue.add(registrationForm);
+        return currentState;
     }
 
-    public void setup(RegistrationForm form) {
-        downloadCa(form);
-        verifyCa(form);
-        register(form);
-        storeSettings(form);
+    public void setup() {
+        generateKeys();
+
+        while (true) {
+            try {
+                RegistrationForm form = queue.take();
+                cleanState();
+                downloadCa(form);
+                verifyCa(form);
+                register(form);
+                storeSettings(form);
+                publishNewState(SetupState.SUCCESS);
+                break;
+            } catch (SetupStateException e) {
+                // continue
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted while waiting for registration form", e);
+                LOG.error("Giving up setup");
+                break;
+            }
+        }
+    }
+
+    private void generateKeys() {
+        doFailingSetupStep(SetupState.GENERATING_KEYS, SetupState.GENERATING_KEYS_FAILED, "key generation failed", () ->
+            keyPair = keyPairGenerator.generateKeyPair(KeyGenerationParameters.secureDefault())
+        );
+    }
+
+    private void cleanState() {
+        certificateStore.clear();
+        settingsWriter.store(RegistrationForm.empty());
     }
 
     private void downloadCa(RegistrationForm form) {
-        CertificateFetcher fetcher = certificateFetcherBuilder.build(form.serverName(), form.caPort());
+        doFailingSetupStep(SetupState.FETCHING_CERTIFICATE, SetupState.FETCHING_CERTIFICATE_FAILED, "fetching ceritifcate failed", () -> {
+            CertificateFetcher fetcher = certificateFetcherBuilder.build(form.serverName(), form.caPort());
 
-        certificates.add(PemFile.create("ca", fetcher.getCaCertificate()));
-        certificates.add(PemFile.create("intermediate", fetcher.getIntermediateCertificate()));
+            certificates.add(PemFile.create("ca", fetcher.getCaCertificate()));
+            certificates.add(PemFile.create("intermediate", fetcher.getIntermediateCertificate()));
 
-        certificateStore.storeCertificates(certificates);
+            certificateStore.storeCertificates(certificates);
+        });
     }
 
     private void verifyCa(RegistrationForm form) {
-        String actualFpr = certificateStore.getCaCertificateFingerprint();
-        String expectedFpr = form.fingerprint();
+        doFailingSetupStep(SetupState.VERIFYING_CERTIFICATE, SetupState.VERIFYING_CERTIFICATE_FAILED, "Verifying CA failed", () -> {
+            String actualFpr = certificateStore.getCaCertificateFingerprint();
+            String expectedFpr = form.fingerprint();
 
-        if (!expectedFpr.equals(actualFpr)) {
-            LOG.error("'" + expectedFpr + "'");
-            LOG.error("'" + actualFpr + "'");
-            throw new RuntimeException("fingerprints dont match");
-        }
-        throw new RuntimeException("clean up in error case!");
+            if (!expectedFpr.equals(actualFpr)) {
+                LOG.error("'" + expectedFpr + "'");
+                LOG.error("'" + actualFpr + "'");
+                throw new SubsystemException();
+            }
+        });
     }
 
     private void register(RegistrationForm form) {
-        Registrator registrator = registratorBuilder.build(form.serverName(), form.registrationPort(), certificateStore.getTrustManager(), certificateStore.getKeyManager());
-        RegistrationCsr csr = RegistrationCsr.create(form.userDeviceId(), form.ticket(), keyPairGenerator.getCsr());
-        PemFile clientCertificate = PemFile.create("client", registrator.getOwnCertificate(csr));
-        certificates.add(clientCertificate);
-        certificateStore.storeKey(keyPairGenerator.getKeyPair(), certificates);
+        doFailingSetupStep(SetupState.REGISTERING_KEY, SetupState.REGISTERING_KEY_FAILED, "Registration failed", () -> {
+            Registrator registrator = registratorBuilder.build(form.serverName(), form.registrationPort(), certificateStore.getTrustManager(), certificateStore.getKeyManager());
+            String csrPemContent = keyPairGenerator.generateCertificateSigningRequest(keyPair, form.toPrincipals(), KeyGenerationParameters.secureDefault());
+            RegistrationCsr csr = RegistrationCsr.create(form.userDeviceId(), form.ticket(), csrPemContent);
+            PemFile clientCertificate = PemFile.create("client", registrator.getOwnCertificate(csr));
+            certificates.add(clientCertificate);
+            certificateStore.storeKey(keyPair, certificates);
+        });
     }
 
     private void storeSettings(RegistrationForm form) {
+        publishNewState(SetupState.STORING_SETTINGS);
         settingsWriter.store(form);
     }
 
+    private void doFailingSetupStep(SetupState progressingState, SetupState failureState, String failureLogMessage, Runnable step) {
+        publishNewState(progressingState);
+        try {
+            step.run();
+        } catch (SubsystemException e) {
+            LOG.warn(failureLogMessage, e);
+            publishNewState(failureState);
+            throw new SetupStateException(failureState);
+        }
+    }
+
+
+    private void publishNewState(SetupState newState) {
+        currentState.onNext(newState);
+    }
+
+    private static final class SetupStateException extends RuntimeException {
+        private final SetupState state;
+
+        public SetupStateException(SetupState state) {
+            this.state = state;
+        }
+
+        public SetupState getState() {
+            return state;
+        }
+    }
 }

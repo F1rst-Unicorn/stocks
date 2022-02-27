@@ -27,10 +27,10 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.LocationDeleter;
 import de.njsm.stocks.client.business.LocationListInteractor;
+import de.njsm.stocks.client.business.SetupInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.di.ViewModelFactory;
 import de.njsm.stocks.client.di.ViewModelKey;
-import de.njsm.stocks.client.view.RegistrationBackend;
 
 import javax.inject.Provider;
 import java.util.Map;
@@ -53,7 +53,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(SetupViewModel.class)
-    ViewModel setupViewModel(RegistrationBackend registrationBackend) {
-        return new SetupViewModel(registrationBackend);
+    ViewModel setupViewModel(SetupInteractor setupInteractor) {
+        return new SetupViewModel(setupInteractor);
     }
 }

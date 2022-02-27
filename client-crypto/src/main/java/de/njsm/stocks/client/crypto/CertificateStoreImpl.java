@@ -132,6 +132,11 @@ class CertificateStoreImpl implements CertificateStore {
         }
     }
 
+    @Override
+    public void clear() {
+        keystoreFile.delete();
+    }
+
     private void storeKeyInternally(KeyPair keyPair, List<PemFile> certificates) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
         KeyStore keyStore = getKeystoreInternally();
         Certificate[] trustChain = buildTrustChain(certificates);

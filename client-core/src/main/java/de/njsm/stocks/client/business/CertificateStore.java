@@ -45,4 +45,6 @@ public interface CertificateStore {
     TrustManagerFactory getTrustManager() throws SubsystemException;
 
     String getCaCertificateFingerprint() throws SubsystemException;
+
+    void clear();
 }

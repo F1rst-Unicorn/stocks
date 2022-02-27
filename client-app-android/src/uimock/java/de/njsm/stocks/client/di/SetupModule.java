@@ -23,8 +23,8 @@ package de.njsm.stocks.client.di;
 
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.client.business.SetupInteractor;
 import de.njsm.stocks.client.business.entities.SetupState;
-import de.njsm.stocks.client.view.RegistrationBackend;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.concurrent.TimeUnit;
@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 class SetupModule {
 
     @Provides
-    static RegistrationBackend registrationBackend() {
+    static SetupInteractor registrationBackend() {
         return v ->
                 Observable.just(SetupState.GENERATING_KEYS)
                                 .mergeWith(

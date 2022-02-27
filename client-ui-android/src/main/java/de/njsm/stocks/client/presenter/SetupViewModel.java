@@ -22,25 +22,25 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.SetupInteractor;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.business.entities.SetupState;
-import de.njsm.stocks.client.view.RegistrationBackend;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 
 import javax.inject.Inject;
 
 public class SetupViewModel extends ViewModel {
 
-    private final RegistrationBackend registrationBackend;
+    private final SetupInteractor setupInteractor;
 
     @Inject
-    public SetupViewModel(RegistrationBackend registrationBackend) {
-        this.registrationBackend = registrationBackend;
+    public SetupViewModel(SetupInteractor setupInteractor) {
+        this.setupInteractor = setupInteractor;
     }
 
     public LiveData<SetupState> register(RegistrationForm registrationForm) {
         return LiveDataReactiveStreams.fromPublisher(
-                registrationBackend.register(registrationForm).toFlowable(BackpressureStrategy.LATEST)
+                setupInteractor.setupWithForm(registrationForm).toFlowable(BackpressureStrategy.LATEST)
         );
     }
 

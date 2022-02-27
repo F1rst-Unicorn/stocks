@@ -56,8 +56,7 @@ import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CertificateStoreImplTest {
 
@@ -67,16 +66,19 @@ class CertificateStoreImplTest {
 
     private PemFile certificate;
 
+    private File keystore;
+
     @BeforeEach
     void setup() throws NoSuchAlgorithmException, CertificateException, IOException, OperatorCreationException {
         keyPair = generateKey();
         certificate = selfSignKey(keyPair);
         uut = new CertificateStoreImpl(new TestFileInteractor());
+        keystore = new File("keystore");
     }
 
     @AfterEach
     void tearDown() {
-        new File("keystore").delete();
+        keystore.delete();
     }
 
     @Test
@@ -84,6 +86,23 @@ class CertificateStoreImplTest {
         uut.storeCertificates(Collections.singletonList(certificate));
 
         assertTrue(uut.getKeystore().isCertificateEntry(certificate.name()));
+    }
+
+    @Test
+    void clearingStoreWorks() {
+        uut.storeCertificates(Collections.singletonList(certificate));
+
+        uut.clear();
+
+        assertFalse(keystore.delete());
+    }
+
+    @Test
+    void clearingIsIdempotent() {
+        uut.storeCertificates(Collections.singletonList(certificate));
+
+        uut.clear();
+        uut.clear();
     }
 
     @Test

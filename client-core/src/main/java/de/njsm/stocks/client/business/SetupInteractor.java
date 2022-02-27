@@ -21,6 +21,11 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.RegistrationForm;
+import de.njsm.stocks.client.business.entities.SetupState;
+import io.reactivex.rxjava3.core.Observable;
+
 public interface SetupInteractor {
 
+    Observable<SetupState> setupWithForm(RegistrationForm registrationForm);
 }
