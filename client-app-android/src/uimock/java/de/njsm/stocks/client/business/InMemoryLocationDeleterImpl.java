@@ -31,12 +31,12 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-class LocationDeleterImpl implements LocationDeleter {
+class InMemoryLocationDeleterImpl implements LocationDeleter {
 
     private final BehaviorSubject<List<LocationForListing>> data;
 
     @Inject
-    LocationDeleterImpl(LocationsForListing locationsForListing) {
+    InMemoryLocationDeleterImpl(LocationsForListing locationsForListing) {
         this.data = locationsForListing.getData();
     }
 

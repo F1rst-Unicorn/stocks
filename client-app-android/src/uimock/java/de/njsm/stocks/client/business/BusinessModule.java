@@ -27,11 +27,11 @@ import dagger.Module;
 public abstract class BusinessModule {
 
     @Binds
-    public abstract LocationListInteractor locationListInteractor(LocationListInteractorImpl implementation);
+    public abstract LocationListInteractor locationListInteractor(InMemoryLocationListInteractorImpl implementation);
 
     @Binds
-    public abstract LocationDeleter locationDeleter(LocationDeleterImpl implementation);
+    public abstract LocationDeleter locationDeleter(InMemoryLocationDeleterImpl implementation);
 
     @Binds
-    public abstract Synchroniser synchroniser(SynchroniserImpl implementation);
+    public abstract Synchroniser synchroniser(InMemorySynchroniserImpl implementation);
 }

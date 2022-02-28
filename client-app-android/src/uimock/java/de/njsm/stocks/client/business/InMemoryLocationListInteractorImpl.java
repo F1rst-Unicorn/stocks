@@ -21,16 +21,26 @@
 
 package de.njsm.stocks.client.business;
 
-import javax.inject.Inject;
+import de.njsm.stocks.client.business.entities.LocationForListing;
+import de.njsm.stocks.client.testdata.LocationsForListing;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-class SynchroniserImpl implements Synchroniser {
+import javax.inject.Inject;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+class InMemoryLocationListInteractorImpl implements LocationListInteractor {
+
+    private final BehaviorSubject<List<LocationForListing>> data;
 
     @Inject
-    SynchroniserImpl() {
+    InMemoryLocationListInteractorImpl(LocationsForListing locationsForListing) {
+        this.data = locationsForListing.getData();
     }
 
     @Override
-    public void synchronise() {
-
+    public Observable<List<LocationForListing>> getLocations() {
+        return data.delay(1, TimeUnit.SECONDS);
     }
 }

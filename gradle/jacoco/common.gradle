@@ -68,6 +68,7 @@ ext.coverageExclusionFiles = [
         '**/*Test.*',
         '**/*Test$*.*',
         '**/testdata/**',
+        '**/src/uimock/java/**',
 
         // CLI client
         '**/clientold/**/*',
