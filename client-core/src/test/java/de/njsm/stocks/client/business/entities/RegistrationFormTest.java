@@ -23,7 +23,11 @@ package de.njsm.stocks.client.business.entities;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 class RegistrationFormTest {
 
@@ -31,18 +35,7 @@ class RegistrationFormTest {
 
     @Test
     void parsingFromQrCodeStringWorks() {
-        RegistrationForm expected = RegistrationForm.builder()
-                .serverName("serverName")
-                .caPort(10910)
-                .registrationPort(10911)
-                .serverPort(10912)
-                .userName("userName")
-                .userId(1)
-                .userDeviceName("userDeviceName")
-                .userDeviceId(2)
-                .fingerprint("fingerprint")
-                .ticket("ticket")
-                .build();
+        RegistrationForm expected = getRegistrationForm();
         String input = expected.toQrString();
 
         assertEquals(expected, RegistrationForm.parseRawString(input));
@@ -55,7 +48,42 @@ class RegistrationFormTest {
 
     @Test
     void transformingToPrincipalsWorks() {
-        uut = RegistrationForm.builder()
+        uut = getRegistrationForm();
+
+        Principals actual = uut.toPrincipals();
+
+        assertEquals(uut.userName(), actual.userName());
+        assertEquals(uut.userId(), actual.userId());
+        assertEquals(uut.userDeviceName(), actual.userDeviceName());
+        assertEquals(uut.userDeviceId(), actual.userDeviceId());
+    }
+
+    @Test
+    void gettingCertificateEndpointWorks() {
+        uut = getRegistrationForm();
+
+        CertificateEndpoint actual = uut.certificateEndpoint();
+
+        assertEquals(uut.serverName(), actual.hostname());
+        assertEquals(uut.caPort(), actual.port());
+    }
+
+    @Test
+    void gettingRegistrationEndpointWorks() {
+        uut = getRegistrationForm();
+        TrustManagerFactory trustManagerFactory = mock(TrustManagerFactory.class);
+        KeyManagerFactory keyManagerFactory = mock(KeyManagerFactory.class);
+
+        RegistrationEndpoint actual = uut.registrationEndpoint(trustManagerFactory, keyManagerFactory);
+
+        assertEquals(uut.serverName(), actual.hostname());
+        assertEquals(uut.registrationPort(), actual.port());
+        assertEquals(trustManagerFactory, actual.trustManagerFactory());
+        assertEquals(keyManagerFactory, actual.keyManagerFactory());
+    }
+
+    private RegistrationForm getRegistrationForm() {
+        return RegistrationForm.builder()
                 .serverName("serverName")
                 .caPort(10910)
                 .registrationPort(10911)
@@ -67,12 +95,5 @@ class RegistrationFormTest {
                 .fingerprint("fingerprint")
                 .ticket("ticket")
                 .build();
-
-        Principals actual = uut.toPrincipals();
-
-        assertEquals(uut.userName(), actual.userName());
-        assertEquals(uut.userId(), actual.userId());
-        assertEquals(uut.userDeviceName(), actual.userDeviceName());
-        assertEquals(uut.userDeviceId(), actual.userDeviceId());
     }
 }

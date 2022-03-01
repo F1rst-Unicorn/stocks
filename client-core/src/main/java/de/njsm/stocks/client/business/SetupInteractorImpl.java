@@ -39,9 +39,9 @@ class SetupInteractorImpl implements SetupInteractor {
 
     private final SettingsWriter settingsWriter;
 
-    private final CertificateFetcherBuilder certificateFetcherBuilder;
+    private final CertificateFetcher certificateFetcher;
 
-    private final RegistratorBuilder registratorBuilder;
+    private final Registrator registrator;
 
     private final CertificateStore certificateStore;
 
@@ -57,13 +57,13 @@ class SetupInteractorImpl implements SetupInteractor {
 
     @Inject
     public SetupInteractorImpl(SettingsWriter settingsWriter,
-                               CertificateFetcherBuilder certificateFetcherBuilder,
-                               RegistratorBuilder registratorBuilder,
+                               CertificateFetcher certificateFetcher,
+                               Registrator registrator,
                                CertificateStore certificateStore,
                                KeyGenerator keyPairGenerator) {
         this.settingsWriter = settingsWriter;
-        this.certificateFetcherBuilder = certificateFetcherBuilder;
-        this.registratorBuilder = registratorBuilder;
+        this.certificateFetcher = certificateFetcher;
+        this.registrator = registrator;
         this.certificateStore = certificateStore;
         this.keyPairGenerator = keyPairGenerator;
 
@@ -114,10 +114,9 @@ class SetupInteractorImpl implements SetupInteractor {
 
     private void downloadCa(RegistrationForm form) {
         doFailingSetupStep(SetupState.FETCHING_CERTIFICATE, SetupState.FETCHING_CERTIFICATE_FAILED, "fetching ceritifcate failed", () -> {
-            CertificateFetcher fetcher = certificateFetcherBuilder.build(form.serverName(), form.caPort());
 
-            certificates.add(PemFile.create("ca", fetcher.getCaCertificate()));
-            certificates.add(PemFile.create("intermediate", fetcher.getIntermediateCertificate()));
+            certificates.add(PemFile.create("ca", certificateFetcher.getCaCertificate(form.certificateEndpoint())));
+            certificates.add(PemFile.create("intermediate", certificateFetcher.getIntermediateCertificate(form.certificateEndpoint())));
 
             certificateStore.storeCertificates(certificates);
         });
@@ -138,10 +137,10 @@ class SetupInteractorImpl implements SetupInteractor {
 
     private void register(RegistrationForm form) {
         doFailingSetupStep(SetupState.REGISTERING_KEY, SetupState.REGISTERING_KEY_FAILED, "Registration failed", () -> {
-            Registrator registrator = registratorBuilder.build(form.serverName(), form.registrationPort(), certificateStore.getTrustManager(), certificateStore.getKeyManager());
             String csrPemContent = keyPairGenerator.generateCertificateSigningRequest(keyPair, form.toPrincipals(), KeyGenerationParameters.secureDefault());
             RegistrationCsr csr = RegistrationCsr.create(form.userDeviceId(), form.ticket(), csrPemContent);
-            PemFile clientCertificate = PemFile.create("client", registrator.getOwnCertificate(csr));
+            RegistrationEndpoint registrationEndpoint = form.registrationEndpoint(certificateStore.getTrustManager(), certificateStore.getKeyManager());
+            PemFile clientCertificate = PemFile.create("client", registrator.getOwnCertificate(registrationEndpoint, csr));
             certificates.add(clientCertificate);
             certificateStore.storeKey(keyPair, certificates);
         });

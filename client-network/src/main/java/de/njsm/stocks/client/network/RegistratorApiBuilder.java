@@ -21,8 +21,7 @@
 
 package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.Registrator;
-import de.njsm.stocks.client.business.RegistratorBuilder;
+import de.njsm.stocks.client.business.entities.RegistrationEndpoint;
 import okhttp3.OkHttpClient;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -33,16 +32,13 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-class RegistratorBuilderImpl implements RegistratorBuilder {
+class RegistratorApiBuilder {
 
-    @Override
-    public Registrator build(String domain, int port, TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory) {
-        SentryApi backend = Utility.getBuilder(domain, port)
-                .client(getClient(trustManagerFactory, keyManagerFactory))
+    SentryApi build(RegistrationEndpoint registrationEndpoint) {
+        return Utility.getBuilder(registrationEndpoint.hostname(), registrationEndpoint.port())
+                .client(getClient(registrationEndpoint.trustManagerFactory(), registrationEndpoint.keyManagerFactory()))
                 .build()
                 .create(SentryApi.class);
-
-        return new RegistratorImpl(backend);
     }
 
     private OkHttpClient getClient(TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory) {

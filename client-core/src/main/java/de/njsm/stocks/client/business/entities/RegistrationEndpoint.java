@@ -19,8 +19,21 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-public interface CertificateFetcherBuilder {
-    CertificateFetcher build(String domain, int port);
+import com.google.auto.value.AutoValue;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
+
+@AutoValue
+public abstract class RegistrationEndpoint extends Endpoint {
+
+    public abstract TrustManagerFactory trustManagerFactory();
+
+    public abstract KeyManagerFactory keyManagerFactory();
+
+    static RegistrationEndpoint create(String hostname, int port, TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory) {
+        return new AutoValue_RegistrationEndpoint(hostname, port, trustManagerFactory, keyManagerFactory);
+    }
 }

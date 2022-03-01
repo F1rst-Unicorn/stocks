@@ -43,10 +43,10 @@ class SetupInteractorImplTest {
     private SettingsWriter settingsWriter;
 
     @Mock
-    private CertificateFetcherBuilder certificateFetcherBuilder;
+    private CertificateFetcher certificateFetcher;
 
     @Mock
-    private RegistratorBuilder registratorBuilder;
+    private Registrator registrator;
 
     @Mock
     private CertificateStore certificateStore;
@@ -58,8 +58,8 @@ class SetupInteractorImplTest {
     void setUp() {
         uut = new SetupInteractorImpl(
                 settingsWriter,
-                certificateFetcherBuilder,
-                registratorBuilder,
+                certificateFetcher,
+                registrator,
                 certificateStore,
                 keyGenerator
         );
@@ -69,8 +69,8 @@ class SetupInteractorImplTest {
     void tearDown() {
         verifyNoMoreInteractions(
                 settingsWriter,
-                certificateFetcherBuilder,
-                registratorBuilder,
+                certificateFetcher,
+                registrator,
                 certificateStore,
                 keyGenerator
         );

@@ -19,11 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManagerFactory;
+import com.google.auto.value.AutoValue;
 
-public interface RegistratorBuilder {
-    Registrator build(String domain, int port, TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory);
+@AutoValue
+public abstract class CertificateEndpoint extends Endpoint {
+
+    static CertificateEndpoint create(String hostname, int port) {
+        return new AutoValue_CertificateEndpoint(hostname, port);
+    }
 }

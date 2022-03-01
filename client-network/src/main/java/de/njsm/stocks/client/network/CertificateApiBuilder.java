@@ -21,17 +21,13 @@
 
 package de.njsm.stocks.client.network;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.business.CertificateFetcher;
-import de.njsm.stocks.client.business.Registrator;
+import de.njsm.stocks.client.business.entities.CertificateEndpoint;
 
-@Module
-public abstract class NetworkModule {
+class CertificateApiBuilder {
 
-    @Binds
-    public abstract CertificateFetcher certificateFetcherBuilder(CertificateFetcherImpl impl);
-
-    @Binds
-    public abstract Registrator registratorBuilder(RegistratorImpl impl);
+    CertificateAuthorityApi build(CertificateEndpoint certificateEndpoint) {
+        return Utility.getBuilder(certificateEndpoint.hostname(), certificateEndpoint.port())
+                .build()
+                .create(CertificateAuthorityApi.class);
+    }
 }

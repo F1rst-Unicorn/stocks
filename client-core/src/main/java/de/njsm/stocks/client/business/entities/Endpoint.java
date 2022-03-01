@@ -19,19 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.network;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.CertificateFetcher;
-import de.njsm.stocks.client.business.CertificateFetcherBuilder;
+abstract class Endpoint {
 
-class CertificateFetcherBuilderImpl implements CertificateFetcherBuilder {
+    public abstract String hostname();
 
-    @Override
-    public CertificateFetcher build(String domain, int port) {
-        CertificateAuthorityApi backend = Utility.getBuilder(domain, port)
-                .build()
-                .create(CertificateAuthorityApi.class);
-
-        return new CertificateFetcherImpl(backend);
-    }
+    public abstract int port();
 }

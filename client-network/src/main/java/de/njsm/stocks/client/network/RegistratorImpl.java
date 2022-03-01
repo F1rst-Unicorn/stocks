@@ -23,23 +23,35 @@ package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.Registrator;
 import de.njsm.stocks.client.business.entities.RegistrationCsr;
+import de.njsm.stocks.client.business.entities.RegistrationEndpoint;
 import de.njsm.stocks.common.api.DataResponse;
+import io.reactivex.rxjava3.annotations.Nullable;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
 class RegistratorImpl implements Registrator {
 
-    private final SentryApi sentryApi;
+    private final RegistratorApiBuilder registratorApiBuilder;
+
+    @Nullable
+    private SentryApi sentryApi;
 
     @Inject
-    RegistratorImpl(SentryApi sentryApi) {
-        this.sentryApi = sentryApi;
+    RegistratorImpl(RegistratorApiBuilder registratorApiBuilder) {
+        this.registratorApiBuilder = registratorApiBuilder;
     }
 
     @Override
-    public String getOwnCertificate(RegistrationCsr request) {
-        Call<DataResponse<String>> call = sentryApi.requestCertificate(request.deviceId(), request.ticket(), request.csr());
+    public String getOwnCertificate(RegistrationEndpoint registrationEndpoint, RegistrationCsr request) {
+        Call<DataResponse<String>> call = getApi(registrationEndpoint).requestCertificate(request.deviceId(), request.ticket(), request.csr());
         return new CallHandler().executeForResult(call);
+    }
+
+    private SentryApi getApi(RegistrationEndpoint registrationEndpoint) {
+        if (sentryApi == null) {
+            sentryApi = registratorApiBuilder.build(registrationEndpoint);
+        }
+        return sentryApi;
     }
 }

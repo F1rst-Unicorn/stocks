@@ -22,28 +22,40 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.CertificateFetcher;
+import de.njsm.stocks.client.business.entities.CertificateEndpoint;
+import io.reactivex.rxjava3.annotations.Nullable;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
 class CertificateFetcherImpl implements CertificateFetcher {
 
-    private final CertificateAuthorityApi certificateAuthorityApi;
+    private final CertificateApiBuilder certificateApiBuilder;
+
+    @Nullable
+    private CertificateAuthorityApi api;
 
     @Inject
-    CertificateFetcherImpl(CertificateAuthorityApi certificateAuthorityApi) {
-        this.certificateAuthorityApi = certificateAuthorityApi;
+    CertificateFetcherImpl(CertificateApiBuilder certificateApiBuilder) {
+        this.certificateApiBuilder = certificateApiBuilder;
     }
 
     @Override
-    public String getCaCertificate() {
-        Call<String> call = certificateAuthorityApi.getCaCertificate();
+    public String getCaCertificate(CertificateEndpoint endpoint) {
+        Call<String> call = getApi(endpoint).getCaCertificate();
         return new CallHandler().executeRawForResult(call);
     }
 
     @Override
-    public String getIntermediateCertificate() {
-        Call<String> call = certificateAuthorityApi.getChainCertificate();
+    public String getIntermediateCertificate(CertificateEndpoint endpoint) {
+        Call<String> call = getApi(endpoint).getChainCertificate();
         return new CallHandler().executeRawForResult(call);
+    }
+
+    private CertificateAuthorityApi getApi(CertificateEndpoint endpoint) {
+        if (api == null) {
+            api = certificateApiBuilder.build(endpoint);
+        }
+        return api;
     }
 }

@@ -25,6 +25,8 @@ import com.google.auto.value.AutoValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.Serializable;
 
 @AutoValue
@@ -99,6 +101,14 @@ public abstract class RegistrationForm implements Serializable {
                 .userDeviceName(userDeviceName())
                 .userDeviceId(userDeviceId())
                 .build();
+    }
+
+    public CertificateEndpoint certificateEndpoint() {
+        return CertificateEndpoint.create(serverName(), caPort());
+    }
+
+    public RegistrationEndpoint registrationEndpoint(TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory) {
+        return RegistrationEndpoint.create(serverName(), registrationPort(), trustManagerFactory, keyManagerFactory);
     }
 
     @AutoValue.Builder

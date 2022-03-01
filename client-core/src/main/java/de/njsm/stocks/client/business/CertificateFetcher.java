@@ -21,9 +21,11 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.CertificateEndpoint;
+
 public interface CertificateFetcher {
 
-    String getCaCertificate();
+    String getCaCertificate(CertificateEndpoint certificateEndpoint);
 
-    String getIntermediateCertificate();
+    String getIntermediateCertificate(CertificateEndpoint certificateEndpoint);
 }

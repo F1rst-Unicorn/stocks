@@ -22,7 +22,8 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.RegistrationCsr;
+import de.njsm.stocks.client.business.entities.RegistrationEndpoint;
 
 public interface Registrator {
-    String getOwnCertificate(RegistrationCsr request);
+    String getOwnCertificate(RegistrationEndpoint registrationEndpoint, RegistrationCsr request);
 }
