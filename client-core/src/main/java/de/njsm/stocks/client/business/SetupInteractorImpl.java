@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
+import com.google.common.annotations.VisibleForTesting;
 import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -55,6 +56,8 @@ class SetupInteractorImpl implements SetupInteractor {
 
     private final ArrayBlockingQueue<RegistrationForm> queue;
 
+    private boolean keepRetrying;
+
     @Inject
     public SetupInteractorImpl(SettingsWriter settingsWriter,
                                CertificateFetcher certificateFetcher,
@@ -70,6 +73,7 @@ class SetupInteractorImpl implements SetupInteractor {
         certificates = new ArrayList<>();
         currentState = BehaviorSubject.create();
         queue = new ArrayBlockingQueue<>(2);
+        keepRetrying = true;
     }
 
     @Override
@@ -78,10 +82,15 @@ class SetupInteractorImpl implements SetupInteractor {
         return currentState;
     }
 
+    @VisibleForTesting
+    void giveUpRetrying() {
+        keepRetrying = false;
+    }
+
     public void setup() {
         generateKeys();
 
-        while (true) {
+        do {
             try {
                 RegistrationForm form = queue.take();
                 cleanState();
@@ -90,15 +99,16 @@ class SetupInteractorImpl implements SetupInteractor {
                 register(form);
                 storeSettings(form);
                 publishNewState(SetupState.SUCCESS);
-                break;
+                keepRetrying = false;
             } catch (SetupStateException e) {
                 // continue
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while waiting for registration form", e);
                 LOG.error("Giving up setup");
-                break;
+                publishNewState(SetupState.FETCHING_CERTIFICATE_FAILED);
+                keepRetrying = false;
             }
-        }
+        } while (keepRetrying);
     }
 
     private void generateKeys() {
@@ -110,6 +120,7 @@ class SetupInteractorImpl implements SetupInteractor {
     private void cleanState() {
         certificateStore.clear();
         settingsWriter.store(RegistrationForm.empty());
+        certificates.clear();
     }
 
     private void downloadCa(RegistrationForm form) {
@@ -118,7 +129,7 @@ class SetupInteractorImpl implements SetupInteractor {
             certificates.add(PemFile.create("ca", certificateFetcher.getCaCertificate(form.certificateEndpoint())));
             certificates.add(PemFile.create("intermediate", certificateFetcher.getIntermediateCertificate(form.certificateEndpoint())));
 
-            certificateStore.storeCertificates(certificates);
+            certificateStore.storeCertificates(new ArrayList<>(certificates));
         });
     }
 
@@ -158,7 +169,7 @@ class SetupInteractorImpl implements SetupInteractor {
         } catch (SubsystemException e) {
             LOG.warn(failureLogMessage, e);
             publishNewState(failureState);
-            throw new SetupStateException(failureState);
+            throw new SetupStateException();
         }
     }
 
@@ -167,15 +178,5 @@ class SetupInteractorImpl implements SetupInteractor {
         currentState.onNext(newState);
     }
 
-    private static final class SetupStateException extends RuntimeException {
-        private final SetupState state;
-
-        public SetupStateException(SetupState state) {
-            this.state = state;
-        }
-
-        public SetupState getState() {
-            return state;
-        }
-    }
+    private static final class SetupStateException extends RuntimeException {}
 }

@@ -21,9 +21,8 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.KeyGenerationParameters;
-import de.njsm.stocks.client.business.entities.RegistrationForm;
-import de.njsm.stocks.client.business.entities.SetupState;
+import de.njsm.stocks.client.business.entities.*;
+import io.reactivex.rxjava3.core.Observable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +30,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
+import java.security.KeyPair;
+
+import static de.njsm.stocks.client.business.entities.Entities.registrationForm;
+import static de.njsm.stocks.client.business.entities.KeyGenerationParameters.secureDefault;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -67,22 +73,181 @@ class SetupInteractorImplTest {
 
     @AfterEach
     void tearDown() {
-        verifyNoMoreInteractions(
-                settingsWriter,
-                certificateFetcher,
-                registrator,
-                certificateStore,
-                keyGenerator
-        );
+        verifyNoMoreInteractions(settingsWriter);
+        verifyNoMoreInteractions(certificateFetcher);
+        verifyNoMoreInteractions(registrator);
+        verifyNoMoreInteractions(certificateStore);
+        verifyNoMoreInteractions(keyGenerator);
     }
 
     @Test
     void failingKeyGenerationIsReported() {
-        when(keyGenerator.generateKeyPair(KeyGenerationParameters.secureDefault())).thenThrow(new SubsystemException("test"));
+        when(keyGenerator.generateKeyPair(secureDefault())).thenThrow(new SubsystemException("test"));
 
         assertThrows(RuntimeException.class, () -> uut.setup());
 
-        verify(keyGenerator).generateKeyPair(KeyGenerationParameters.secureDefault());
-        uut.setupWithForm(RegistrationForm.empty()).test().assertValue(SetupState.GENERATING_KEYS_FAILED);
+        verify(keyGenerator).generateKeyPair(secureDefault());
+        uut.setupWithForm(registrationForm()).test().assertValue(SetupState.GENERATING_KEYS_FAILED);
+    }
+
+    @Test
+    void interruptedQueueWaitingGivesUpSetup() {
+        RegistrationForm form = registrationForm();
+        when(keyGenerator.generateKeyPair(secureDefault())).thenReturn(new KeyPair(null, null));
+        Observable<SetupState> result = uut.setupWithForm(form);
+        Thread.currentThread().interrupt();
+
+        uut.setup();
+
+        verify(keyGenerator).generateKeyPair(secureDefault());
+        result.test().assertValue(SetupState.FETCHING_CERTIFICATE_FAILED);
+    }
+
+    @Test
+    void failingCaCertificateFetchingIsReported() {
+        RegistrationForm form = registrationForm();
+        when(keyGenerator.generateKeyPair(secureDefault())).thenReturn(new KeyPair(null, null));
+        when(certificateFetcher.getCaCertificate(form.certificateEndpoint())).thenThrow(new SubsystemException("test"));
+        Observable<SetupState> result = uut.setupWithForm(form);
+        uut.giveUpRetrying();
+
+        uut.setup();
+
+        verify(keyGenerator).generateKeyPair(secureDefault());
+        verify(certificateFetcher).getCaCertificate(form.certificateEndpoint());
+        verify(settingsWriter).store(RegistrationForm.empty());
+        verify(certificateStore).clear();
+        result.test().assertValue(SetupState.FETCHING_CERTIFICATE_FAILED);
+    }
+
+    @Test
+    void failingChainCertificateFetchingIsReported() {
+        RegistrationForm form = registrationForm();
+        when(keyGenerator.generateKeyPair(secureDefault())).thenReturn(new KeyPair(null, null));
+        when(certificateFetcher.getCaCertificate(form.certificateEndpoint())).thenReturn("ca");
+        when(certificateFetcher.getIntermediateCertificate(form.certificateEndpoint())).thenThrow(new SubsystemException("test"));
+        Observable<SetupState> result = uut.setupWithForm(form);
+        uut.giveUpRetrying();
+
+        uut.setup();
+
+        verify(keyGenerator).generateKeyPair(secureDefault());
+        verify(settingsWriter).store(RegistrationForm.empty());
+        verify(certificateStore).clear();
+        verify(certificateFetcher).getCaCertificate(form.certificateEndpoint());
+        verify(certificateFetcher).getIntermediateCertificate(form.certificateEndpoint());
+        result.test().assertValue(SetupState.FETCHING_CERTIFICATE_FAILED);
+    }
+
+    @Test
+    void failingFingerprintValidationIsReported() {
+        RegistrationForm form = registrationForm();
+        PemFile ca = PemFile.create("ca", "ca");
+        PemFile intermediate = PemFile.create("intermediate", "intermediate");
+        when(keyGenerator.generateKeyPair(secureDefault())).thenReturn(new KeyPair(null, null));
+        when(certificateFetcher.getCaCertificate(form.certificateEndpoint())).thenReturn(ca.pemCertificate());
+        when(certificateFetcher.getIntermediateCertificate(form.certificateEndpoint())).thenReturn(intermediate.pemCertificate());
+        when(certificateStore.getCaCertificateFingerprint()).thenReturn(form.fingerprint() + " different");
+        Observable<SetupState> result = uut.setupWithForm(form);
+        uut.giveUpRetrying();
+
+        uut.setup();
+
+        verify(keyGenerator).generateKeyPair(secureDefault());
+        verify(settingsWriter).store(RegistrationForm.empty());
+        verify(certificateStore).clear();
+        verify(certificateFetcher).getCaCertificate(form.certificateEndpoint());
+        verify(certificateFetcher).getIntermediateCertificate(form.certificateEndpoint());
+        verify(certificateStore).storeCertificates(asList(ca, intermediate));
+        result.test().assertValue(SetupState.VERIFYING_CERTIFICATE_FAILED);
+    }
+
+    @Test
+    void failingRegistrationIsReported() {
+        RegistrationForm form = registrationForm();
+        KeyPair keyPair = new KeyPair(null, null);
+        PemFile ca = PemFile.create("ca", "ca");
+        PemFile intermediate = PemFile.create("intermediate", "intermediate");
+        when(keyGenerator.generateKeyPair(secureDefault())).thenReturn(keyPair);
+        when(certificateFetcher.getCaCertificate(form.certificateEndpoint())).thenReturn(ca.pemCertificate());
+        when(certificateFetcher.getIntermediateCertificate(form.certificateEndpoint())).thenReturn(intermediate.pemCertificate());
+        when(certificateStore.getCaCertificateFingerprint()).thenReturn(form.fingerprint());
+        when(keyGenerator.generateCertificateSigningRequest(keyPair, form.toPrincipals(), secureDefault())).thenReturn("csr");
+        when(certificateStore.getTrustManager()).thenReturn(mock(TrustManagerFactory.class));
+        when(certificateStore.getKeyManager()).thenReturn(mock(KeyManagerFactory.class));
+        when(registrator.getOwnCertificate(any(RegistrationEndpoint.class), any(RegistrationCsr.class))).thenThrow(new SubsystemException("test"));
+        Observable<SetupState> result = uut.setupWithForm(form);
+        uut.giveUpRetrying();
+
+        uut.setup();
+
+        verify(keyGenerator).generateKeyPair(secureDefault());
+        verify(settingsWriter).store(RegistrationForm.empty());
+        verify(certificateStore).clear();
+        verify(certificateFetcher).getCaCertificate(form.certificateEndpoint());
+        verify(certificateFetcher).getIntermediateCertificate(form.certificateEndpoint());
+        verify(certificateStore).storeCertificates(asList(ca, intermediate));
+        verify(certificateStore).getTrustManager();
+        verify(certificateStore).getKeyManager();
+        verify(registrator).getOwnCertificate(any(RegistrationEndpoint.class), any(RegistrationCsr.class));
+        result.test().assertValue(SetupState.REGISTERING_KEY_FAILED);
+    }
+
+    @Test
+    void successfulRegistrationWorks() {
+        RegistrationForm form = registrationForm();
+        KeyPair keyPair = new KeyPair(null, null);
+        PemFile ca = PemFile.create("ca", "ca");
+        PemFile intermediate = PemFile.create("intermediate", "intermediate");
+        PemFile clientCertificate = PemFile.create("client", "certificate");
+        when(keyGenerator.generateKeyPair(secureDefault())).thenReturn(keyPair);
+        when(certificateFetcher.getCaCertificate(form.certificateEndpoint())).thenReturn(ca.pemCertificate());
+        when(certificateFetcher.getIntermediateCertificate(form.certificateEndpoint())).thenReturn(intermediate.pemCertificate());
+        when(certificateStore.getCaCertificateFingerprint()).thenReturn(form.fingerprint());
+        when(keyGenerator.generateCertificateSigningRequest(keyPair, form.toPrincipals(), secureDefault())).thenReturn("csr");
+        when(certificateStore.getTrustManager()).thenReturn(mock(TrustManagerFactory.class));
+        when(certificateStore.getKeyManager()).thenReturn(mock(KeyManagerFactory.class));
+        when(registrator.getOwnCertificate(any(RegistrationEndpoint.class), any(RegistrationCsr.class))).thenReturn(clientCertificate.pemCertificate());
+        Observable<SetupState> result = uut.setupWithForm(form);
+
+        uut.setup();
+
+        verify(keyGenerator).generateKeyPair(secureDefault());
+        verify(settingsWriter).store(RegistrationForm.empty());
+        verify(certificateStore).clear();
+        verify(certificateFetcher).getCaCertificate(form.certificateEndpoint());
+        verify(certificateFetcher).getIntermediateCertificate(form.certificateEndpoint());
+        verify(certificateStore).storeCertificates(asList(ca, intermediate));
+        verify(certificateStore).getTrustManager();
+        verify(certificateStore).getKeyManager();
+        verify(registrator).getOwnCertificate(any(RegistrationEndpoint.class), any(RegistrationCsr.class));
+        verify(certificateStore).storeKey(keyPair, asList(ca, intermediate, clientCertificate));
+        verify(settingsWriter).store(form);
+        result.test().assertValue(SetupState.SUCCESS);
+    }
+
+    @Test
+    void failingRegistrationIsRetried() {
+        RegistrationForm form = registrationForm();
+        KeyPair keyPair = new KeyPair(null, null);
+        PemFile ca = PemFile.create("ca", "ca");
+        when(keyGenerator.generateKeyPair(secureDefault())).thenReturn(keyPair);
+        when(certificateFetcher.getCaCertificate(form.certificateEndpoint())).thenThrow(new SubsystemException("test"))
+                .thenReturn(ca.pemCertificate());
+        when(certificateFetcher.getIntermediateCertificate(form.certificateEndpoint())).then(v -> {
+            uut.giveUpRetrying();
+            throw new SubsystemException("test");
+        });
+        Observable<SetupState> result = uut.setupWithForm(form);
+        uut.setupWithForm(form);
+
+        uut.setup();
+
+        verify(keyGenerator).generateKeyPair(secureDefault());
+        verify(settingsWriter, times(2)).store(RegistrationForm.empty());
+        verify(certificateStore, times(2)).clear();
+        verify(certificateFetcher, times(2)).getCaCertificate(form.certificateEndpoint());
+        verify(certificateFetcher).getIntermediateCertificate(form.certificateEndpoint());
+        result.test().assertValue(SetupState.FETCHING_CERTIFICATE_FAILED);
     }
 }

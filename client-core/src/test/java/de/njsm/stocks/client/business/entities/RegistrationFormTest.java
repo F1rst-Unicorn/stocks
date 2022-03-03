@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 
+import static de.njsm.stocks.client.business.entities.Entities.registrationForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -35,7 +36,7 @@ class RegistrationFormTest {
 
     @Test
     void parsingFromQrCodeStringWorks() {
-        RegistrationForm expected = getRegistrationForm();
+        RegistrationForm expected = registrationForm();
         String input = expected.toQrString();
 
         assertEquals(expected, RegistrationForm.parseRawString(input));
@@ -48,7 +49,7 @@ class RegistrationFormTest {
 
     @Test
     void transformingToPrincipalsWorks() {
-        uut = getRegistrationForm();
+        uut = registrationForm();
 
         Principals actual = uut.toPrincipals();
 
@@ -60,7 +61,7 @@ class RegistrationFormTest {
 
     @Test
     void gettingCertificateEndpointWorks() {
-        uut = getRegistrationForm();
+        uut = registrationForm();
 
         CertificateEndpoint actual = uut.certificateEndpoint();
 
@@ -70,7 +71,7 @@ class RegistrationFormTest {
 
     @Test
     void gettingRegistrationEndpointWorks() {
-        uut = getRegistrationForm();
+        uut = registrationForm();
         TrustManagerFactory trustManagerFactory = mock(TrustManagerFactory.class);
         KeyManagerFactory keyManagerFactory = mock(KeyManagerFactory.class);
 
@@ -80,20 +81,5 @@ class RegistrationFormTest {
         assertEquals(uut.registrationPort(), actual.port());
         assertEquals(trustManagerFactory, actual.trustManagerFactory());
         assertEquals(keyManagerFactory, actual.keyManagerFactory());
-    }
-
-    private RegistrationForm getRegistrationForm() {
-        return RegistrationForm.builder()
-                .serverName("serverName")
-                .caPort(10910)
-                .registrationPort(10911)
-                .serverPort(10912)
-                .userName("userName")
-                .userId(1)
-                .userDeviceName("userDeviceName")
-                .userDeviceId(2)
-                .fingerprint("fingerprint")
-                .ticket("ticket")
-                .build();
     }
 }
