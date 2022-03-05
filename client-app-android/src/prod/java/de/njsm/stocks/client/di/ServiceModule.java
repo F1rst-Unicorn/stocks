@@ -19,24 +19,15 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.di;
 
-import com.google.auto.value.AutoValue;
+import dagger.Module;
+import dagger.android.ContributesAndroidInjector;
+import de.njsm.stocks.client.background.setup.SetupService;
 
-@AutoValue
-public abstract class Job {
+@Module
+public interface ServiceModule {
 
-    public static Job create(Type name, Runnable runnable) {
-        return new AutoValue_Job(name, runnable);
-    }
-
-    public abstract Type name();
-
-    public abstract Runnable runnable();
-
-    public enum Type {
-        SETUP,
-
-        UNKNOWN;
-    }
+    @ContributesAndroidInjector
+    SetupService setupService();
 }

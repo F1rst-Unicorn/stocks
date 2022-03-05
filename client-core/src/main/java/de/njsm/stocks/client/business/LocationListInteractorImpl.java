@@ -21,9 +21,20 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
 
-public interface SchedulerStatusReporter {
+import javax.inject.Inject;
+import java.util.List;
 
-    Observable<Integer> getNumberOfRunningJobs();
+class LocationListInteractorImpl implements LocationListInteractor {
+
+    @Inject
+    LocationListInteractorImpl() {
+    }
+
+    @Override
+    public Observable<List<LocationForListing>> getLocations() {
+        return null;
+    }
 }

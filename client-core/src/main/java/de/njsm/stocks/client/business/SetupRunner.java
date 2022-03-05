@@ -16,22 +16,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.business;
 
-import dagger.Binds;
-import dagger.Module;
+public interface SetupRunner {
 
-@Module
-public abstract class BusinessModule {
+    void giveUpRetrying();
 
-    @Binds
-    public abstract LocationListInteractor locationListInteractor(InMemoryLocationListInteractorImpl implementation);
-
-    @Binds
-    public abstract LocationDeleter locationDeleter(InMemoryLocationDeleterImpl implementation);
-
-    @Binds
-    public abstract Synchroniser synchroniser(InMemorySynchroniserImpl implementation);
+    void setup();
 }

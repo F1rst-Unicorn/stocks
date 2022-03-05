@@ -33,7 +33,7 @@ import de.njsm.stocks.client.NavigationArgConsumerImpl;
 
 import javax.inject.Inject;
 
-public class SetupActivity extends AppCompatActivity {
+public class SetupBaseActivity extends AppCompatActivity {
 
     private NavController navController;
 

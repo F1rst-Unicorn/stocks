@@ -120,6 +120,7 @@ dependencies {
     implementation project(':client-settings-android')
     prodImplementation project(':client-database-android')
     prodImplementation project(':client-network')
+    prodImplementation project(':client-crypto')
     implementation "com.google.dagger:dagger:2.40.5"
     implementation "com.google.dagger:dagger-android:2.40.5"
     implementation "com.google.dagger:dagger-android-support:2.40.5"

@@ -31,6 +31,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
+import javax.inject.Inject;
 import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -39,6 +40,10 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
 class KeyGeneratorImpl implements KeyGenerator {
+
+    @Inject
+    KeyGeneratorImpl() {
+    }
 
     @Override
     public KeyPair generateKeyPair(KeyGenerationParameters parameters) throws SubsystemException {

@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.SetupInteractor;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.business.entities.SetupState;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
+import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
@@ -33,15 +34,20 @@ public class SetupViewModel extends ViewModel {
 
     private final SetupInteractor setupInteractor;
 
+    private LiveData<SetupState> currentSetupState;
+
     @Inject
     public SetupViewModel(SetupInteractor setupInteractor) {
         this.setupInteractor = setupInteractor;
     }
 
     public LiveData<SetupState> register(RegistrationForm registrationForm) {
-        return LiveDataReactiveStreams.fromPublisher(
-                setupInteractor.setupWithForm(registrationForm).toFlowable(BackpressureStrategy.LATEST)
-        );
-    }
+        Observable<SetupState> publisher = setupInteractor.setupWithForm(registrationForm);
 
+        if (currentSetupState == null) {
+            currentSetupState = LiveDataReactiveStreams.fromPublisher(publisher.toFlowable(BackpressureStrategy.LATEST));
+        }
+
+        return currentSetupState;
+    }
 }

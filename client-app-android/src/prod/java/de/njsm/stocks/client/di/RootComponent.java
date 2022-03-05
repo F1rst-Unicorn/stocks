@@ -27,6 +27,13 @@ import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.BusinessModule;
+import de.njsm.stocks.client.crypto.CryptoModule;
+import de.njsm.stocks.client.navigation.NavigationModule;
+import de.njsm.stocks.client.network.NetworkModule;
+import de.njsm.stocks.client.presenter.ViewModelModule;
+import de.njsm.stocks.client.settings.SettingsModule;
+import de.njsm.stocks.client.view.FragmentModule;
 
 import javax.inject.Singleton;
 
@@ -34,6 +41,18 @@ import javax.inject.Singleton;
 @Component(
         modules = {
                 AndroidInjectionModule.class,
+                BusinessModule.class,
+                ViewModelModule.class,
+                NavigationModule.class,
+                NavigationArgConsumerModule.class,
+                AppNavigationModule.class,
+                SettingsModule.class,
+                NetworkModule.class,
+                CryptoModule.class,
+                PrimitiveModule.class,
+                ActivityModule.class,
+                ServiceModule.class,
+                FragmentModule.class,
         }
 )
 public interface RootComponent {

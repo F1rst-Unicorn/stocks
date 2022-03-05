@@ -25,7 +25,6 @@ import de.njsm.stocks.client.business.Registrator;
 import de.njsm.stocks.client.business.entities.RegistrationCsr;
 import de.njsm.stocks.client.business.entities.RegistrationEndpoint;
 import de.njsm.stocks.common.api.DataResponse;
-import io.reactivex.rxjava3.annotations.Nullable;
 import retrofit2.Call;
 
 import javax.inject.Inject;
@@ -33,9 +32,6 @@ import javax.inject.Inject;
 class RegistratorImpl implements Registrator {
 
     private final RegistratorApiBuilder registratorApiBuilder;
-
-    @Nullable
-    private SentryApi sentryApi;
 
     @Inject
     RegistratorImpl(RegistratorApiBuilder registratorApiBuilder) {
@@ -49,9 +45,6 @@ class RegistratorImpl implements Registrator {
     }
 
     private SentryApi getApi(RegistrationEndpoint registrationEndpoint) {
-        if (sentryApi == null) {
-            sentryApi = registratorApiBuilder.build(registrationEndpoint);
-        }
-        return sentryApi;
+        return registratorApiBuilder.build(registrationEndpoint);
     }
 }

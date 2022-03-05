@@ -16,33 +16,41 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.business;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import de.njsm.stocks.client.business.SetupInteractor;
 import de.njsm.stocks.client.business.entities.SetupState;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.concurrent.TimeUnit;
 
 @Module
-class SetupModule {
+public interface UimockBusinessModule {
+
+    @Binds
+    LocationListInteractor locationListInteractor(InMemoryLocationListInteractorImpl implementation);
+
+    @Binds
+    LocationDeleter locationDeleter(InMemoryLocationDeleterImpl implementation);
+
+    @Binds
+    Synchroniser synchroniser(InMemorySynchroniserImpl implementation);
 
     @Provides
     static SetupInteractor registrationBackend() {
         return v ->
                 Observable.just(SetupState.GENERATING_KEYS)
-                                .mergeWith(
-                                        Observable.just(
-                                                SetupState.FETCHING_CERTIFICATE,
-                                                SetupState.VERIFYING_CERTIFICATE,
-                                                SetupState.REGISTERING_KEY,
-                                                SetupState.STORING_SETTINGS,
-                                                SetupState.SUCCESS
-                                        ).zipWith(Observable.interval(1, TimeUnit.SECONDS), (state, i) -> state));
+                        .mergeWith(
+                                Observable.just(
+                                        SetupState.FETCHING_CERTIFICATE,
+                                        SetupState.VERIFYING_CERTIFICATE,
+                                        SetupState.REGISTERING_KEY,
+                                        SetupState.STORING_SETTINGS,
+                                        SetupState.SUCCESS
+                                ).zipWith(Observable.interval(1, TimeUnit.SECONDS), (state, i) -> state));
     }
 }

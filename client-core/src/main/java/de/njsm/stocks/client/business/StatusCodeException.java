@@ -35,4 +35,9 @@ public class StatusCodeException extends SubsystemException {
         super(e);
         this.statusCode = statusCode;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() + " " + statusCode.name();
+    }
 }

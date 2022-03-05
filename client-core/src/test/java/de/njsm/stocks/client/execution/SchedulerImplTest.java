@@ -26,11 +26,11 @@ import de.njsm.stocks.client.business.entities.Job;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.util.concurrent.Executor;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class SchedulerImplTest {
@@ -41,7 +41,7 @@ public class SchedulerImplTest {
 
     @BeforeEach
     public void setUp() {
-        executor = Mockito.mock(Executor.class);
+        executor = mock(Executor.class);
 
         uut = new SchedulerImpl(executor);
     }
@@ -53,21 +53,21 @@ public class SchedulerImplTest {
 
     @Test
     public void schedulingJobWorks() {
-        Job input = Job.create(0, () -> {});
+        Job input = Job.create(Job.Type.UNKNOWN, () -> {});
         uut.schedule(input);
         verify(executor).execute(any(Runnable.class));
     }
 
     @Test
     public void schedulingAJobIncreasesTheCounter() {
-        Job input = Job.create(0, () -> {});
+        Job input = Job.create(Job.Type.UNKNOWN, () -> {});
         uut.schedule(input);
         uut.getNumberOfRunningJobs().test().assertValue(1);
     }
 
     @Test
     void completingAJobDecreasesTheCounter() {
-        Job input = Job.create(0, () -> {});
+        Job input = Job.create(Job.Type.UNKNOWN, mock(Runnable.class));
 
         uut.schedule(input);
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
@@ -75,5 +75,6 @@ public class SchedulerImplTest {
         captor.getValue().run();
 
         uut.getNumberOfRunningJobs().test().assertValue(0);
+        verify(input.runnable()).run();
     }
 }

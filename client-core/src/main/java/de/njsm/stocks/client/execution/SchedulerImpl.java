@@ -21,8 +21,6 @@
 
 package de.njsm.stocks.client.execution;
 
-import de.njsm.stocks.client.business.Scheduler;
-import de.njsm.stocks.client.business.SchedulerStatusReporter;
 import de.njsm.stocks.client.business.entities.Job;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -32,7 +30,7 @@ import javax.inject.Inject;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
+class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
 
     private final Executor executor;
 
@@ -41,7 +39,7 @@ public class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
     private final Subject<Integer> numberOfRunningJobs;
 
     @Inject
-    public SchedulerImpl(Executor executor) {
+    SchedulerImpl(Executor executor) {
         this.executor = executor;
         counter = new AtomicInteger(0);
         numberOfRunningJobs = BehaviorSubject.createDefault(counter.get()).toSerialized();
@@ -51,7 +49,7 @@ public class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
     public void schedule(Job job) {
         numberOfRunningJobs.onNext(counter.incrementAndGet());
         executor.execute(() -> {
-            job.runnable();
+            job.runnable().run();
             numberOfRunningJobs.onNext(counter.decrementAndGet());
         });
     }

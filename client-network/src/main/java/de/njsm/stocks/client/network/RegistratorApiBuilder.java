@@ -23,7 +23,10 @@ package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.entities.RegistrationEndpoint;
 import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.inject.Inject;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -31,12 +34,20 @@ import javax.net.ssl.X509TrustManager;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Locale;
 
 class RegistratorApiBuilder {
 
+    @Inject
+    RegistratorApiBuilder() {
+    }
+
     SentryApi build(RegistrationEndpoint registrationEndpoint) {
-        return Utility.getBuilder(registrationEndpoint.hostname(), registrationEndpoint.port())
+        String url = String.format(Locale.US, "https://%s:%d/", registrationEndpoint.hostname(), registrationEndpoint.port());
+        return new Retrofit.Builder()
+                .baseUrl(url)
                 .client(getClient(registrationEndpoint.trustManagerFactory(), registrationEndpoint.keyManagerFactory()))
+                .addConverterFactory(JacksonConverterFactory.create())
                 .build()
                 .create(SentryApi.class);
     }

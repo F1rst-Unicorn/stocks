@@ -19,24 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.view;
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Job {
-
-    public static Job create(Type name, Runnable runnable) {
-        return new AutoValue_Job(name, runnable);
-    }
-
-    public abstract Type name();
-
-    public abstract Runnable runnable();
-
-    public enum Type {
-        SETUP,
-
-        UNKNOWN;
-    }
+public class SetupActivity extends SetupBaseActivity {
 }

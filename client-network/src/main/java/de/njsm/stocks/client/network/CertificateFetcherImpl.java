@@ -23,7 +23,6 @@ package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.CertificateFetcher;
 import de.njsm.stocks.client.business.entities.CertificateEndpoint;
-import io.reactivex.rxjava3.annotations.Nullable;
 import retrofit2.Call;
 
 import javax.inject.Inject;
@@ -31,9 +30,6 @@ import javax.inject.Inject;
 class CertificateFetcherImpl implements CertificateFetcher {
 
     private final CertificateApiBuilder certificateApiBuilder;
-
-    @Nullable
-    private CertificateAuthorityApi api;
 
     @Inject
     CertificateFetcherImpl(CertificateApiBuilder certificateApiBuilder) {
@@ -53,9 +49,6 @@ class CertificateFetcherImpl implements CertificateFetcher {
     }
 
     private CertificateAuthorityApi getApi(CertificateEndpoint endpoint) {
-        if (api == null) {
-            api = certificateApiBuilder.build(endpoint);
-        }
-        return api;
+        return certificateApiBuilder.build(endpoint);
     }
 }

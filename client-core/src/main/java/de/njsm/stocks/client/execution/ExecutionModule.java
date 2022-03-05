@@ -19,11 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.execution;
 
-import de.njsm.stocks.client.business.entities.Job;
+import dagger.Binds;
+import dagger.Module;
+import dagger.Provides;
 
-public interface Scheduler {
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
-    void schedule(Job job);
+@Module
+public interface ExecutionModule {
+
+    @Binds
+    Scheduler scheduler(SchedulerImpl impl);
+
+    @Provides
+    static Executor executor() {
+        return Executors.newWorkStealingPool(4);
+    }
 }

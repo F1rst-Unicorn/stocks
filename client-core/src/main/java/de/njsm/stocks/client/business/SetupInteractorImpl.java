@@ -21,7 +21,6 @@
 
 package de.njsm.stocks.client.business;
 
-import com.google.common.annotations.VisibleForTesting;
 import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -33,8 +32,9 @@ import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-class SetupInteractorImpl implements SetupInteractor {
+class SetupInteractorImpl implements SetupInteractor, SetupRunner {
 
     private static final Logger LOG = LoggerFactory.getLogger(SetupInteractorImpl.class);
 
@@ -56,7 +56,7 @@ class SetupInteractorImpl implements SetupInteractor {
 
     private final ArrayBlockingQueue<RegistrationForm> queue;
 
-    private boolean keepRetrying;
+    private final AtomicBoolean keepRetrying;
 
     @Inject
     public SetupInteractorImpl(SettingsWriter settingsWriter,
@@ -73,7 +73,7 @@ class SetupInteractorImpl implements SetupInteractor {
         certificates = new ArrayList<>();
         currentState = BehaviorSubject.create();
         queue = new ArrayBlockingQueue<>(2);
-        keepRetrying = true;
+        keepRetrying = new AtomicBoolean(true);
     }
 
     @Override
@@ -82,33 +82,35 @@ class SetupInteractorImpl implements SetupInteractor {
         return currentState;
     }
 
-    @VisibleForTesting
-    void giveUpRetrying() {
-        keepRetrying = false;
+    @Override
+    public void giveUpRetrying() {
+        keepRetrying.set(false);
     }
 
+    @Override
     public void setup() {
         generateKeys();
 
         do {
             try {
-                RegistrationForm form = queue.take();
                 cleanState();
+                LOG.info("Waiting for registration form");
+                RegistrationForm form = queue.take();
                 downloadCa(form);
                 verifyCa(form);
                 register(form);
                 storeSettings(form);
                 publishNewState(SetupState.SUCCESS);
-                keepRetrying = false;
+                keepRetrying.set(false);
             } catch (SetupStateException e) {
                 // continue
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while waiting for registration form", e);
                 LOG.error("Giving up setup");
                 publishNewState(SetupState.FETCHING_CERTIFICATE_FAILED);
-                keepRetrying = false;
+                keepRetrying.set(false);
             }
-        } while (keepRetrying);
+        } while (keepRetrying.get());
     }
 
     private void generateKeys() {
@@ -124,7 +126,7 @@ class SetupInteractorImpl implements SetupInteractor {
     }
 
     private void downloadCa(RegistrationForm form) {
-        doFailingSetupStep(SetupState.FETCHING_CERTIFICATE, SetupState.FETCHING_CERTIFICATE_FAILED, "fetching ceritifcate failed", () -> {
+        doFailingSetupStep(SetupState.FETCHING_CERTIFICATE, SetupState.FETCHING_CERTIFICATE_FAILED, "fetching certificate failed", () -> {
 
             certificates.add(PemFile.create("ca", certificateFetcher.getCaCertificate(form.certificateEndpoint())));
             certificates.add(PemFile.create("intermediate", certificateFetcher.getIntermediateCertificate(form.certificateEndpoint())));
@@ -164,6 +166,7 @@ class SetupInteractorImpl implements SetupInteractor {
 
     private void doFailingSetupStep(SetupState progressingState, SetupState failureState, String failureLogMessage, Runnable step) {
         publishNewState(progressingState);
+        LOG.info(progressingState.name());
         try {
             step.run();
         } catch (SubsystemException e) {

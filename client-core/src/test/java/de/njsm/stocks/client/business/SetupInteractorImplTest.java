@@ -100,6 +100,8 @@ class SetupInteractorImplTest {
         uut.setup();
 
         verify(keyGenerator).generateKeyPair(secureDefault());
+        verify(settingsWriter).store(RegistrationForm.empty());
+        verify(certificateStore).clear();
         result.test().assertValue(SetupState.FETCHING_CERTIFICATE_FAILED);
     }
 

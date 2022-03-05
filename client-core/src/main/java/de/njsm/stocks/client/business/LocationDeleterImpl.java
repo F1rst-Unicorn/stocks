@@ -19,24 +19,21 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Location;
 
-@AutoValue
-public abstract class Job {
+import javax.inject.Inject;
 
-    public static Job create(Type name, Runnable runnable) {
-        return new AutoValue_Job(name, runnable);
+class LocationDeleterImpl implements LocationDeleter {
+
+    @Inject
+    LocationDeleterImpl() {
     }
 
-    public abstract Type name();
+    @Override
+    public void deleteLocation(Identifiable<Location> location) {
 
-    public abstract Runnable runnable();
-
-    public enum Type {
-        SETUP,
-
-        UNKNOWN;
     }
 }

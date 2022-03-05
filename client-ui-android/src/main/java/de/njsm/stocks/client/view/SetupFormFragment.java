@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.business.entities.SetupState;
@@ -68,11 +70,13 @@ public class SetupFormFragment extends InjectableFragment {
     }
 
     private void onSubmitForm(View v) {
-        setupViewModel.register(view.getFormData()).observe(getViewLifecycleOwner(), this::onStateUpdate);
+        LiveData<SetupState> registrationState = setupViewModel.register(view.getFormData());
+        registrationState.removeObservers(getViewLifecycleOwner());
+        registrationState.observe(getViewLifecycleOwner(), this::onStateUpdate);
     }
 
     private void onStateUpdate(SetupState setupState) {
-        int message = setupState.accept(new SetupStateTranslator(), null);
+        @StringRes int message = setupState.accept(new SetupStateTranslator(), null);
         if (!setupState.isFinal()) {
             view.setProgressing(message);
         } else if (setupState.isSuccessful()) {

@@ -19,24 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.execution;
 
-import com.google.auto.value.AutoValue;
+import io.reactivex.rxjava3.core.Observable;
 
-@AutoValue
-public abstract class Job {
+public interface SchedulerStatusReporter {
 
-    public static Job create(Type name, Runnable runnable) {
-        return new AutoValue_Job(name, runnable);
-    }
-
-    public abstract Type name();
-
-    public abstract Runnable runnable();
-
-    public enum Type {
-        SETUP,
-
-        UNKNOWN;
-    }
+    Observable<Integer> getNumberOfRunningJobs();
 }

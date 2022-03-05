@@ -80,7 +80,8 @@ class CallHandler {
         try {
             response = call.execute();
         } catch (IOException e) {
-            LOG.error("Calling " + call.request().method() + " to " + call.request().url().encodedPath() + " failed", e);
+            // Append exception message because android suppresses UnknownHostException stack traces
+            LOG.error("Calling " + call.request().method() + " to " + call.request().url().encodedPath() + " failed: " + e.getMessage(), e);
             throw new StatusCodeException(map(StatusCode.GENERAL_ERROR), e);
         }
         return response;

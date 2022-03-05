@@ -19,24 +19,18 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import javax.inject.Inject;
 
-@AutoValue
-public abstract class Job {
+class SynchroniserImpl implements Synchroniser {
 
-    public static Job create(Type name, Runnable runnable) {
-        return new AutoValue_Job(name, runnable);
+    @Inject
+    SynchroniserImpl() {
     }
 
-    public abstract Type name();
+    @Override
+    public void synchronise() {
 
-    public abstract Runnable runnable();
-
-    public enum Type {
-        SETUP,
-
-        UNKNOWN;
     }
 }

@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.execution;
 
 import io.reactivex.rxjava3.core.Observable;
 

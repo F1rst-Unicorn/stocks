@@ -19,19 +19,17 @@
  *
  */
 
-package de.njsm.stocks.client.network;
+package de.njsm.stocks.client.view;
 
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+import android.content.Intent;
+import android.os.Bundle;
+import de.njsm.stocks.client.background.setup.SetupService;
 
-import java.util.Locale;
+public class SetupActivity extends SetupBaseActivity {
 
-public final class Utility {
-
-    static Retrofit.Builder getBuilder(String domain, int port) {
-        String url = String.format(Locale.US, "https://%s:%d/", domain, port);
-        return new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(JacksonConverterFactory.create());
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        startService(new Intent(this, SetupService.class));
     }
 }

@@ -22,11 +22,23 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.entities.CertificateEndpoint;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
+
+import javax.inject.Inject;
+import java.util.Locale;
 
 class CertificateApiBuilder {
 
+    @Inject
+    CertificateApiBuilder() {
+    }
+
     CertificateAuthorityApi build(CertificateEndpoint certificateEndpoint) {
-        return Utility.getBuilder(certificateEndpoint.hostname(), certificateEndpoint.port())
+        String url = String.format(Locale.US, "http://%s:%d/", certificateEndpoint.hostname(), certificateEndpoint.port());
+        return new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .build()
                 .create(CertificateAuthorityApi.class);
     }

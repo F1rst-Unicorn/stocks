@@ -19,24 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.execution;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.Job;
 
-@AutoValue
-public abstract class Job {
+public interface Scheduler {
 
-    public static Job create(Type name, Runnable runnable) {
-        return new AutoValue_Job(name, runnable);
-    }
-
-    public abstract Type name();
-
-    public abstract Runnable runnable();
-
-    public enum Type {
-        SETUP,
-
-        UNKNOWN;
-    }
+    void schedule(Job job);
 }

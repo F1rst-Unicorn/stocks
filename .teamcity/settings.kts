@@ -140,6 +140,7 @@ object Build : BuildType({
             tasks = "createDebugCoverageReport createUimockDebugCoverageReport testCoverageUnitTestCoverage build assemble"
             buildFile = "build.gradle"
             gradleHome = "/usr/bin/gradle"
+            gradleParams = "--no-build-cache"
             gradleWrapperPath = "."
             enableStacktrace = true
         }

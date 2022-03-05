@@ -32,5 +32,5 @@ public interface FileInteractor {
 
     OutputStream getFileOutputStream(File file) throws FileNotFoundException;
 
-    InputStream getFileInputStream(File keystoreFile) throws FileNotFoundException;
+    InputStream getFileInputStream(File file) throws FileNotFoundException;
 }
