@@ -16,13 +16,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.testdata;
 
 import dagger.Module;
 import dagger.Provides;
-import de.njsm.stocks.client.testdata.LocationsForListing;
 
 import javax.inject.Singleton;
 
@@ -31,7 +31,7 @@ public class DataModule {
 
     @Provides
     @Singleton
-    LocationsForListing locationsForListing() {
+    public LocationsForListing locationsForListing() {
         return new LocationsForListing(LocationsForListing.generate());
     }
 }
