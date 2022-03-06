@@ -137,7 +137,7 @@ object Build : BuildType({
         }
         gradle {
             name = "Assemble new module system"
-            tasks = "createDebugCoverageReport createUimockDebugCoverageReport testCoverageUnitTestCoverage build assemble"
+            tasks = "createDebugCoverageReport createUimockDebugCoverageReport createProdDebugCoverageReport testCoverageUnitTestCoverage build assemble"
             buildFile = "build.gradle"
             gradleHome = "/usr/bin/gradle"
             gradleParams = "--no-build-cache"

@@ -117,6 +117,7 @@ dependencies {
     implementation project(':client-core')
     implementation project(':client-ui-android')
     implementation project(':client-navigation-android')
+    uimockImplementation project(':client-fakes')
     prodImplementation project(':client-settings-android')
     prodImplementation project(':client-database-android')
     prodImplementation project(':client-network')

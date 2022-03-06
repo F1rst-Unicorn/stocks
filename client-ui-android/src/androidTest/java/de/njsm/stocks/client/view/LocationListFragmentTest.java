@@ -88,9 +88,9 @@ public class LocationListFragmentTest {
 
     @Test
     public void locationsAreListed() {
-        locationListInteractor.setData(LocationsForListing.getData());
+        locationListInteractor.setData(LocationsForListing.generate());
 
-        for (LocationForListing item : LocationsForListing.getData()) {
+        for (LocationForListing item : LocationsForListing.generate()) {
             onView(withId(R.id.template_swipe_list_list))
                     .check(matches(withChild(withText(item.name()))));
         }
@@ -107,7 +107,7 @@ public class LocationListFragmentTest {
     @Test
     public void clickingALocationNavigates() {
         int itemIndex = 1;
-        List<LocationForListing> data = LocationsForListing.getData();
+        List<LocationForListing> data = LocationsForListing.generate();
         assertTrue("The test wants to access element " + itemIndex, data.size() >= itemIndex + 1);
         LocationForListing location = data.get(itemIndex);
         assertTrue("Make sure the list position is mapped to an ID by having different values", location.id() != itemIndex);
@@ -122,7 +122,7 @@ public class LocationListFragmentTest {
     @Test
     public void longClickingALocationNavigates() {
         int itemIndex = 1;
-        List<LocationForListing> data = LocationsForListing.getData();
+        List<LocationForListing> data = LocationsForListing.generate();
         assertTrue("The test wants to access element " + itemIndex, data.size() >= itemIndex + 1);
         LocationForListing location = data.get(itemIndex);
         assertTrue("Make sure the list position is mapped to an ID by having different values", location.id() != itemIndex);
@@ -136,7 +136,7 @@ public class LocationListFragmentTest {
 
     @Test
     public void locationDeletionWorks() {
-        List<LocationForListing> data = LocationsForListing.getData();
+        List<LocationForListing> data = LocationsForListing.generate();
         assertFalse(data.isEmpty());
         locationListInteractor.setData(data);
         int itemIndex = 0;

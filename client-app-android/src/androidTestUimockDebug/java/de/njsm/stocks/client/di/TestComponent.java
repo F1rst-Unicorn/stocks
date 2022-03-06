@@ -22,39 +22,34 @@ package de.njsm.stocks.client.di;
 import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
-import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.TestApplication;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.view.FragmentModule;
-import de.njsm.stocks.client.view.LocationListFragmentTest;
-import de.njsm.stocks.client.view.SetupFormFragmentTest;
-import de.njsm.stocks.client.view.SetupGreetingFragmentTest;
+import de.njsm.stocks.client.view.StartupActivityTest;
 
 import javax.inject.Singleton;
 
 @Singleton
 @Component(modules = {
         AndroidInjectionModule.class,
+        de.njsm.stocks.client.business.FakeBusinessModule.class,
+        FakeNavigationModule.class,
+        FakeBusinessModule.class,
         ViewModelModule.class,
         FragmentModule.class,
-        FakeNavigationModule.class,
-        TestActivityModule.class,
-        FakeBusinessModule.class,
+        ActivityModule.class,
 })
 public interface TestComponent {
 
-    void inject(Application application);
+    void inject(TestApplication application);
 
-    void inject(LocationListFragmentTest test);
-
-    void inject(SetupGreetingFragmentTest test);
-
-    void inject(SetupFormFragmentTest test);
+    void inject(StartupActivityTest test);
 
     @Component.Builder
     interface Builder {
 
         @BindsInstance
-        Builder application(Application a);
+        Builder application(TestApplication a);
 
         TestComponent build();
     }

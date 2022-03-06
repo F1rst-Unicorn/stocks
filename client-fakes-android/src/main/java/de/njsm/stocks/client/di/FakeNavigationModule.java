@@ -32,7 +32,7 @@ import javax.inject.Singleton;
 import static org.mockito.Mockito.mock;
 
 @Module
-class MockNavigationModule {
+class FakeNavigationModule {
 
     @Provides
     @Singleton

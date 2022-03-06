@@ -32,7 +32,7 @@ public class FakeBusinessModule {
 
     @Provides
     @Singleton
-    SetupStatusChecker setupFormNavigator() {
+    SetupStatusChecker setupStatusChecker() {
         return mock(SetupStatusChecker.class);
     }
 }

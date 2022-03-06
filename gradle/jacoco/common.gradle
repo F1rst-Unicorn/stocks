@@ -67,9 +67,11 @@ ext.coverageExclusionFiles = [
         //'**/src/androidTest/java/**',
         '**/*Test.*',
         '**/*Test$*.*',
-        '**/testdata/**',
-        '**/src/uimock/java/**',
 
         // CLI client
         '**/clientold/**/*',
+
+        // duplicates in uimock and prod
+        '**/RootComponent.class',
+        '**/SetupActivity.class',
 ]

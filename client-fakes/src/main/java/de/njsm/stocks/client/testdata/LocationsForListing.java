@@ -21,18 +21,31 @@
 
 package de.njsm.stocks.client.testdata;
 
-import de.njsm.stocks.client.business.entities.LocationForListing;
 
+import de.njsm.stocks.client.business.entities.LocationForListing;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class LocationsForListing {
 
-    public static List<LocationForListing> getData() {
-        return Arrays.asList(
+    private final BehaviorSubject<List<LocationForListing>> data;
+
+    public LocationsForListing(List<LocationForListing> data) {
+        this.data = BehaviorSubject.createDefault(data);
+    }
+
+    public static List<LocationForListing> generate() {
+        return new ArrayList<>(Arrays.asList(
                 LocationForListing.create(1, "Fridge"),
-                LocationForListing.create(3, "Basement"),
-                LocationForListing.create(2, "Cupboard")
-        );
+                LocationForListing.create(2, "Cupboard"),
+                LocationForListing.create(4, "Basement")
+        ));
+    }
+
+    public BehaviorSubject<List<LocationForListing>> getData() {
+        return data;
     }
 }

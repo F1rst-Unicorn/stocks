@@ -23,7 +23,6 @@ import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.TestApplication;
-import de.njsm.stocks.client.business.FakeBusinessModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.view.FragmentModule;
 import de.njsm.stocks.client.view.StartupActivityTest;
@@ -33,13 +32,13 @@ import javax.inject.Singleton;
 @Singleton
 @Component(modules = {
         AndroidInjectionModule.class,
-        MockBusinessModule.class,
+        de.njsm.stocks.client.business.FakeBusinessModule.class,
+        FakeNavigationModule.class,
         FakeBusinessModule.class,
-        MockNavigationModule.class,
-        BusinessBindModule.class,
         ViewModelModule.class,
         FragmentModule.class,
         ActivityModule.class,
+        ServiceModule.class,
 })
 public interface TestComponent {
 

@@ -21,35 +21,49 @@
 
 package de.njsm.stocks.client.di;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import de.njsm.stocks.client.business.FakeLocationListInteractor;
-import de.njsm.stocks.client.business.LocationDeleter;
-import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.*;
+import de.njsm.stocks.client.execution.Scheduler;
 
 import javax.inject.Singleton;
 
 import static org.mockito.Mockito.mock;
 
 @Module
-public class MockBusinessModule {
+public interface FakeBusinessModule {
+
+    @Binds
+    LocationListInteractor locationListInteractor(FakeLocationListInteractor locationListInteractor);
 
     @Provides
     @Singleton
-    public FakeLocationListInteractor fakeLocationListInteractor() {
+    static FakeLocationListInteractor fakeLocationListInteractor() {
         return new FakeLocationListInteractor();
     }
 
     @Provides
     @Singleton
-    LocationDeleter locationDeleter() {
+    static LocationDeleter locationDeleter() {
         return mock(LocationDeleter.class);
     }
 
     @Provides
     @Singleton
-    Synchroniser synchroniser() {
+    static Synchroniser synchroniser() {
         return mock(Synchroniser.class);
     }
 
+    @Provides
+    @Singleton
+    static SetupRunner setupRunner() {
+        return mock(SetupRunner.class);
+    }
+
+    @Provides
+    @Singleton
+    static Scheduler scheduler() {
+        return mock(Scheduler.class);
+    }
 }
