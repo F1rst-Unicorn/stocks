@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.view;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -33,7 +32,7 @@ import de.njsm.stocks.client.NavigationArgConsumerImpl;
 
 import javax.inject.Inject;
 
-public class SetupBaseActivity extends AppCompatActivity {
+public class SetupBaseActivity extends BaseActivity {
 
     private NavController navController;
 

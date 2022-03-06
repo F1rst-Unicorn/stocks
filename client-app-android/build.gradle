@@ -117,7 +117,7 @@ dependencies {
     implementation project(':client-core')
     implementation project(':client-ui-android')
     implementation project(':client-navigation-android')
-    implementation project(':client-settings-android')
+    prodImplementation project(':client-settings-android')
     prodImplementation project(':client-database-android')
     prodImplementation project(':client-network')
     prodImplementation project(':client-crypto')
@@ -131,6 +131,10 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.1.3'
     implementation 'org.slf4j:slf4j-api:1.7.36'
     implementation 'uk.uuid.slf4j:slf4j-android:1.7.33-0'
+    implementation 'com.google.zxing:core:3.4.0'
+    implementation 'com.journeyapps:zxing-android-embedded:2.0.1@aar'
+    implementation 'com.journeyapps:zxing-android-legacy:2.0.1@aar'
+    implementation 'com.journeyapps:zxing-android-integration:2.0.1@aar'
 
     annotationProcessor "com.google.dagger:dagger-compiler:2.40.5"
     annotationProcessor "com.google.dagger:dagger-android-processor:2.40.5"

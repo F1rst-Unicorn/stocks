@@ -41,6 +41,11 @@ public interface UimockBusinessModule {
     Synchroniser synchroniser(InMemorySynchroniserImpl implementation);
 
     @Provides
+    static SetupStatusChecker setupStatusChecker() {
+        return () -> false;
+    }
+
+    @Provides
     static SetupInteractor registrationBackend() {
         return v ->
                 Observable.just(SetupState.GENERATING_KEYS)

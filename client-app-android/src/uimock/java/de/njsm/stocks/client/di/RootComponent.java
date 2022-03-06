@@ -30,7 +30,6 @@ import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.UimockBusinessModule;
 import de.njsm.stocks.client.navigation.NavigationModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
-import de.njsm.stocks.client.settings.SettingsModule;
 import de.njsm.stocks.client.testdata.DataModule;
 import de.njsm.stocks.client.view.FragmentModule;
 
@@ -46,7 +45,6 @@ import javax.inject.Singleton;
                 NavigationModule.class,
                 NavigationArgConsumerModule.class,
                 AppNavigationModule.class,
-                SettingsModule.class,
                 ActivityModule.class,
                 FragmentModule.class,
         }
