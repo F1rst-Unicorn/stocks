@@ -23,23 +23,25 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Job;
 import de.njsm.stocks.client.execution.Scheduler;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
-import javax.inject.Inject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-class SynchroniserImpl implements Synchroniser {
+class SynchroniserImplTest {
 
-    private final SynchroniseInteractor synchroniseInteractor;
+    @Test
+    void synchronisingSchedulesATask() {
+        Scheduler scheduler = mock(Scheduler.class);
+        SynchroniseInteractor synchroniseInteractor = mock(SynchroniseInteractor.class);
+        Synchroniser uut = new SynchroniserImpl(synchroniseInteractor, scheduler);
 
-    private final Scheduler scheduler;
+        uut.synchronise();
 
-    @Inject
-    SynchroniserImpl(SynchroniseInteractor synchroniseInteractor, Scheduler scheduler) {
-        this.synchroniseInteractor = synchroniseInteractor;
-        this.scheduler = scheduler;
-    }
-
-    @Override
-    public void synchronise() {
-        scheduler.schedule(Job.create(Job.Type.SYNCHRONISATION, synchroniseInteractor::synchronise));
+        ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
+        verify(scheduler).schedule(captor.capture());
+        captor.getValue().runnable().run();
+        verify(synchroniseInteractor).synchronise();
     }
 }

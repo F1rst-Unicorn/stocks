@@ -39,6 +39,8 @@ public abstract class Job {
 
         DATABASE,
 
+        SYNCHRONISATION,
+
         UNKNOWN
     }
 }
