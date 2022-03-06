@@ -22,19 +22,13 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.entities.RegistrationEndpoint;
-import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.inject.Inject;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Locale;
+
+import static de.njsm.stocks.client.network.NetworkModule.getClient;
 
 class RegistratorApiBuilder {
 
@@ -50,22 +44,5 @@ class RegistratorApiBuilder {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build()
                 .create(SentryApi.class);
-    }
-
-    private OkHttpClient getClient(TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory) {
-
-        try {
-            SSLContext context = SSLContext.getInstance("TLSv1.2");
-            context.init(keyManagerFactory.getKeyManagers(),
-                    trustManagerFactory.getTrustManagers(),
-                    new SecureRandom());
-
-            return new OkHttpClient.Builder()
-                    .sslSocketFactory(context.getSocketFactory(), (X509TrustManager) trustManagerFactory.getTrustManagers()[0])
-                    .hostnameVerifier((s, sslSession) -> true)
-                    .build();
-        } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            throw new NetworkException("setting up http client", e);
-        }
     }
 }

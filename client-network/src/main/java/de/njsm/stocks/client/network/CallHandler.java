@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 import static de.njsm.stocks.client.network.DataMapper.map;
@@ -38,6 +39,10 @@ import static de.njsm.stocks.client.network.DataMapper.map;
 class CallHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(CallHandler.class);
+
+    @Inject
+    public CallHandler() {
+    }
 
     StatusCode executeCommand(Call<Response> call) {
         try {

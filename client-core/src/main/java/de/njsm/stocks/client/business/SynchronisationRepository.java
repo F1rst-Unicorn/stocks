@@ -33,4 +33,6 @@ public interface SynchronisationRepository {
     void writeUpdates(List<Update> updates);
 
     void writeLocations(List<LocationForSynchronisation> locations);
+
+    void initialiseLocations(List<LocationForSynchronisation> locations);
 }

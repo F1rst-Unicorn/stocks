@@ -55,6 +55,9 @@ public interface BusinessModule {
     Synchroniser synchroniser(SynchroniserImpl impl);
 
     @Binds
+    SynchroniseInteractor synchroniseInteractor(SynchroniseInteractorImpl impl);
+
+    @Binds
     LocationDeleter locationDeleter(LocationDeleterImpl impl);
 
     @Binds

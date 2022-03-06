@@ -26,11 +26,18 @@ import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.business.entities.Update;
 import de.njsm.stocks.common.api.BitemporalLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 public class DataMapper {
 
-    static Update map(de.njsm.stocks.common.api.Update update) {
-        return Update.create(map(update.table()), update.lastUpdate());
+    private static final Logger LOG = LoggerFactory.getLogger(DataMapper.class);
+
+    static Optional<Update> map(de.njsm.stocks.common.api.Update update) {
+        return map(update.table())
+                .map(v -> Update.create(v, update.lastUpdate()));
     }
 
     public static LocationForSynchronisation map(BitemporalLocation source) {
@@ -47,12 +54,13 @@ public class DataMapper {
                 .build();
     }
 
-    static EntityType map(String entityType) {
+    static Optional<EntityType> map(String entityType) {
         if (entityType.equalsIgnoreCase("location")) {
-            return EntityType.LOCATION;
+            return Optional.of(EntityType.LOCATION);
         }
 
-        throw new IllegalArgumentException("invalid entity type '" + entityType + "'");
+        LOG.info("unknown entity type '" + entityType + "'");
+        return Optional.empty();
     }
 
     static StatusCode map(de.njsm.stocks.common.api.StatusCode input) {

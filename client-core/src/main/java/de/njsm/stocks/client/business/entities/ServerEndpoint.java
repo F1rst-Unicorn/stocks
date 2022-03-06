@@ -19,17 +19,17 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
+import com.google.auto.value.AutoValue;
 
-import java.time.Instant;
-import java.util.List;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 
-public interface UpdateService {
+@AutoValue
+public abstract class ServerEndpoint extends TlsEndpoint {
 
-    List<Update> getUpdates();
-
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
+    public static ServerEndpoint create(String hostname, int port, TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory) {
+        return new AutoValue_ServerEndpoint(hostname, port, trustManagerFactory, keyManagerFactory);
+    }
 }

@@ -49,6 +49,9 @@ public class InstantSerialiser extends StdSerializer<Instant> {
     }
 
     public static String serialize(Instant value) {
-        return FORMAT.format(value);
+        if (Instant.MIN.equals(value))
+            return null;
+        else
+            return FORMAT.format(value);
     }
 }

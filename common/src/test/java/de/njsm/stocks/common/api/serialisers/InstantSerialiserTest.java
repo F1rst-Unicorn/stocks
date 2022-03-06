@@ -51,4 +51,14 @@ public class InstantSerialiserTest {
 
         verify(generatorMock).writeString(expected);
     }
+
+    @Test
+    void minimalInstantIsMappedToNull() throws Exception {
+        String expected = null;
+        Instant input = Instant.MIN;
+
+        uut.serialize(input, generatorMock, null);
+
+        verify(generatorMock).writeString(expected);
+    }
 }

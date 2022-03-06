@@ -27,36 +27,48 @@ import de.njsm.stocks.client.business.entities.Update;
 import de.njsm.stocks.common.api.BitemporalLocation;
 import de.njsm.stocks.common.api.ListResponse;
 import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
-import io.reactivex.rxjava3.core.Single;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 
+import javax.inject.Inject;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class UpdateServiceImpl implements UpdateService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateServiceImpl.class);
 
     private final ServerApi api;
 
     private final CallHandler callHandler;
 
+    @Inject
     public UpdateServiceImpl(ServerApi api, CallHandler callHandler) {
         this.api = api;
         this.callHandler = callHandler;
     }
 
     @Override
-    public Single<List<Update>> getUpdates() {
+    public List<Update> getUpdates() {
+        LOG.debug("getting updates");
         Call<ListResponse<de.njsm.stocks.common.api.Update>> call = api.getUpdates();
-        return Single.fromCallable(() -> callHandler.executeForResult(call))
-                .map(l -> l.stream().map(DataMapper::map).collect(Collectors.toList()));
+        return callHandler.executeForResult(call)
+                .stream()
+                .map(DataMapper::map)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Single<List<LocationForSynchronisation>> getLocations(Instant startingFrom) {
+    public List<LocationForSynchronisation> getLocations(Instant startingFrom) {
+        LOG.debug("getting locations from " + startingFrom);
         Call<ListResponse<BitemporalLocation>> call = api.getLocations(1, InstantSerialiser.serialize(startingFrom));
-        return Single.fromCallable(() -> callHandler.executeForResult(call))
-                .map(l -> l.stream().map(DataMapper::map).collect(Collectors.toList()));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(Collectors.toList());
     }
 
 }

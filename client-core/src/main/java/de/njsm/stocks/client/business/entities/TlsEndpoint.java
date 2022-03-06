@@ -19,17 +19,13 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 
-import java.time.Instant;
-import java.util.List;
+abstract class TlsEndpoint extends Endpoint {
+    public abstract TrustManagerFactory trustManagerFactory();
 
-public interface UpdateService {
-
-    List<Update> getUpdates();
-
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
+    public abstract KeyManagerFactory keyManagerFactory();
 }

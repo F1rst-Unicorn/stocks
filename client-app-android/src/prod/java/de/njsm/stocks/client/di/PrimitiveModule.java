@@ -25,6 +25,9 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.CertificateStore;
+import de.njsm.stocks.client.business.Settings;
+import de.njsm.stocks.client.business.entities.ServerEndpoint;
 import de.njsm.stocks.client.crypto.FileInteractor;
 
 import java.io.*;
@@ -54,5 +57,10 @@ public interface PrimitiveModule {
                 return a.openFileInput(file.getName());
             }
         };
+    }
+
+    @Provides
+    static ServerEndpoint serverEndpoint(Settings settings, CertificateStore certificateStore) {
+        return ServerEndpoint.create(settings.getServerName(), settings.getServerPort(), certificateStore.getTrustManager(), certificateStore.getKeyManager());
     }
 }

@@ -52,4 +52,9 @@ class SynchronisationRepositoryImpl implements SynchronisationRepository {
     public void writeLocations(List<LocationForSynchronisation> locations) {
         synchronisationDao.writeLocations(locations.stream().map(DataMapper::map).collect(Collectors.toList()));
     }
+
+    @Override
+    public void initialiseLocations(List<LocationForSynchronisation> locations) {
+        synchronisationDao.synchroniseLocations(locations.stream().map(DataMapper::map).collect(Collectors.toList()));
+    }
 }

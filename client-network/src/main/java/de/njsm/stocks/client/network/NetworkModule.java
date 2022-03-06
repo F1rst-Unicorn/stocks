@@ -23,15 +23,64 @@ package de.njsm.stocks.client.network;
 
 import dagger.Binds;
 import dagger.Module;
+import dagger.Provides;
 import de.njsm.stocks.client.business.CertificateFetcher;
 import de.njsm.stocks.client.business.Registrator;
+import de.njsm.stocks.client.business.UpdateService;
+import de.njsm.stocks.client.business.entities.ServerEndpoint;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import javax.inject.Singleton;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Locale;
 
 @Module
-public abstract class NetworkModule {
+public interface NetworkModule {
 
     @Binds
-    public abstract CertificateFetcher certificateFetcherBuilder(CertificateFetcherImpl impl);
+    CertificateFetcher certificateFetcherBuilder(CertificateFetcherImpl impl);
 
     @Binds
-    public abstract Registrator registratorBuilder(RegistratorImpl impl);
+    Registrator registratorBuilder(RegistratorImpl impl);
+
+    @Binds
+    UpdateService updateService(UpdateServiceImpl impl);
+
+    @Provides
+    @Singleton
+    static ServerApi serverApi(ServerEndpoint serverEndpoint) {
+        String url = String.format(Locale.US, "https://%s:%d/", serverEndpoint.hostname(), serverEndpoint.port());
+        return new Retrofit.Builder()
+                .baseUrl(url)
+                .client(getClient(serverEndpoint.trustManagerFactory(), serverEndpoint.keyManagerFactory()))
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build()
+                .create(ServerApi.class);
+    }
+
+    static OkHttpClient getClient(TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory) {
+        try {
+            SSLContext context = SSLContext.getInstance("TLSv1.2");
+            context.init(keyManagerFactory.getKeyManagers(),
+                    trustManagerFactory.getTrustManagers(),
+                    new SecureRandom());
+
+            return new OkHttpClient.Builder()
+                    .sslSocketFactory(context.getSocketFactory(), (X509TrustManager) trustManagerFactory.getTrustManagers()[0])
+                    .hostnameVerifier((s, sslSession) -> true)
+                    .build();
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            throw new NetworkException("setting up http client", e);
+        }
+    }
+
+
 }

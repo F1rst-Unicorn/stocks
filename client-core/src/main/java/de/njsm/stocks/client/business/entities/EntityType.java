@@ -23,5 +23,23 @@ package de.njsm.stocks.client.business.entities;
 
 public enum EntityType {
 
-    LOCATION;
+    LOCATION {
+        @Override
+        <I, O> O accept(Visitor<I, O> visitor, I input) {
+            return visitor.location(input);
+        }
+    };
+
+    abstract <I, O> O accept(Visitor<I, O> visitor, I input);
+
+    public static class Visitor<I, O> {
+
+        public O visit(EntityType item, I input) {
+            return item.accept(this, input);
+        }
+
+        public O location(I input) {
+            return null;
+        }
+    }
 }
