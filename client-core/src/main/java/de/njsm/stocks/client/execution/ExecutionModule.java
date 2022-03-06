@@ -25,6 +25,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
+import javax.inject.Singleton;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;
@@ -36,6 +37,7 @@ public interface ExecutionModule {
     Scheduler scheduler(SchedulerImpl impl);
 
     @Provides
+    @Singleton
     static Executor executor() {
         return new ForkJoinPool(4, new ForkJoinPool.ForkJoinWorkerThreadFactory() {
 
