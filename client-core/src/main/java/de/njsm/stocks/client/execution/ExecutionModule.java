@@ -26,7 +26,8 @@ import dagger.Module;
 import dagger.Provides;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinWorkerThread;
 
 @Module
 public interface ExecutionModule {
@@ -36,6 +37,16 @@ public interface ExecutionModule {
 
     @Provides
     static Executor executor() {
-        return Executors.newWorkStealingPool(4);
+        return new ForkJoinPool(4, new ForkJoinPool.ForkJoinWorkerThreadFactory() {
+
+            int numberOfThreads = 0;
+
+            @Override
+            public ForkJoinWorkerThread newThread(ForkJoinPool forkJoinPool) {
+                ForkJoinWorkerThread result = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(forkJoinPool);
+                result.setName("stocks-background-" + numberOfThreads++);
+                return result;
+            }
+        }, null, true);
     }
 }

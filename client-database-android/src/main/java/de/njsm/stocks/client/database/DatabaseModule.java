@@ -27,6 +27,8 @@ import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.LocationRepository;
 import de.njsm.stocks.client.business.SynchronisationRepository;
+import de.njsm.stocks.client.business.entities.Job;
+import de.njsm.stocks.client.execution.Scheduler;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 
 import javax.inject.Singleton;
@@ -37,10 +39,10 @@ public interface DatabaseModule {
 
     @Provides
     @Singleton
-    static StocksDatabase provideDatabase(Application context, Executor executor) {
+    static StocksDatabase provideDatabase(Application context, Scheduler scheduler) {
         return Room.databaseBuilder(context, StocksDatabase.class, "stocks.db")
-                .setQueryExecutor(executor)
-                .setTransactionExecutor(executor)
+                .setQueryExecutor(toExecutor(scheduler))
+                .setTransactionExecutor(toExecutor(scheduler))
                 .fallbackToDestructiveMigration()
                 .openHelperFactory(new RequerySQLiteOpenHelperFactory())
                 .build();
@@ -65,5 +67,9 @@ public interface DatabaseModule {
     @Provides
     static MetadataDao metadataDao(StocksDatabase database) {
         return database.metadataDao();
+    }
+
+    static Executor toExecutor(Scheduler scheduler) {
+        return command -> scheduler.schedule(Job.create(Job.Type.DATABASE, command));
     }
 }

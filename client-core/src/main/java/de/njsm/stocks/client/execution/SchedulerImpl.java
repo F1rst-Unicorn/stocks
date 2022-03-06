@@ -25,12 +25,16 @@ import de.njsm.stocks.client.business.entities.Job;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulerImpl.class);
 
     private final Executor executor;
 
@@ -47,10 +51,14 @@ class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
 
     @Override
     public void schedule(Job job) {
+        LOG.trace("Job " + job.name() + " scheduled");
         numberOfRunningJobs.onNext(counter.incrementAndGet());
+
         executor.execute(() -> {
+            LOG.trace("Job " + job.name() + " started");
             job.runnable().run();
             numberOfRunningJobs.onNext(counter.decrementAndGet());
+            LOG.trace("Job " + job.name() + " stopped");
         });
     }
 

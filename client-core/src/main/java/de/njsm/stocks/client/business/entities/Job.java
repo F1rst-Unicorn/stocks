@@ -37,6 +37,8 @@ public abstract class Job {
     public enum Type {
         SETUP,
 
-        UNKNOWN;
+        DATABASE,
+
+        UNKNOWN
     }
 }
