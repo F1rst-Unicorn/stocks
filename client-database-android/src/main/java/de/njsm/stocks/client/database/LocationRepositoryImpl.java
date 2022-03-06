@@ -25,11 +25,16 @@ import de.njsm.stocks.client.business.LocationRepository;
 import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class LocationRepositoryImpl implements LocationRepository {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LocationRepositoryImpl.class);
 
     private final LocationDao locationDao;
 
@@ -40,7 +45,10 @@ class LocationRepositoryImpl implements LocationRepository {
 
     @Override
     public Observable<List<LocationForListing>> getLocations() {
-        return null;
+        LOG.debug("loading all locations");
+        return locationDao.getCurrentLocations()
+                .distinctUntilChanged()
+                .map(v -> v.stream().map(DataMapper::map).collect(Collectors.toList()));
     }
 
     @Override

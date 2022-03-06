@@ -20,39 +20,13 @@
 package de.njsm.stocks.client.database;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collection;
+import static org.junit.Assert.assertNull;
 
-import static de.njsm.stocks.client.business.Constants.INFINITY;
-import static org.junit.Assert.assertEquals;
-
-@RunWith(Parameterized.class)
 public class TypeConvertersInstantTest {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> input() {
-        return Arrays.asList(new Object[][] {
-                { Instant.now() },
-                { Instant.EPOCH },
-                { INFINITY },
-        });
-    }
-
-    private final Instant input;
-
-    private final TypeConverters uut;
-
-    public TypeConvertersInstantTest(Instant input) {
-        this.input = input;
-        this.uut = new TypeConverters();
-    }
-
     @Test
-    public void converterPreservesIdentity() {
-        assertEquals(input, uut.dbToInstant(uut.instantToDb(input)));
+    public void nullIsReturnedDirectly() {
+        assertNull(new TypeConverters().dbToInstant(null));
     }
 }

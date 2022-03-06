@@ -59,6 +59,9 @@ public interface RootComponent {
     interface Builder {
 
         @BindsInstance
+        Builder application(android.app.Application a);
+
+        @BindsInstance
         Builder application(Application a);
 
         @BindsInstance

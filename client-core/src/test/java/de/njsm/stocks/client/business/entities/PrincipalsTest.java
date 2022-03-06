@@ -19,22 +19,25 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import io.reactivex.rxjava3.core.Observable;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Dao
-abstract class LocationDao {
+public class PrincipalsTest {
 
-    @Query("select * " +
-            "from current_location")
-    abstract List<LocationDbEntity> getAll();
+    private Principals uut;
 
-    @Query("select * " +
-            "from current_location")
-    abstract Observable<List<LocationDbEntity>> getCurrentLocations();
+    @Test
+    void printingCommonNameWorks() {
+        uut = Principals.builder()
+                .userName("Jack")
+                .userId(1)
+                .userDeviceName("Mobile")
+                .userDeviceId(2)
+                .build();
+
+        assertEquals("Jack$1$Mobile$2", uut.asCommonName());
+    }
 }

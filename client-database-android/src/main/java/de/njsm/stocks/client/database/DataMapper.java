@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.EntityType;
+import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
 
@@ -47,6 +48,10 @@ class DataMapper {
                 location.name(),
                 location.description()
         );
+    }
+
+    static LocationForListing map(LocationDbEntity input) {
+        return LocationForListing.create(input.getId(), input.getName());
     }
 
     static EntityType map(String entityType) {

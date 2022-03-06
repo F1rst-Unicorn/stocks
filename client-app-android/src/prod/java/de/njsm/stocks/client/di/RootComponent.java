@@ -29,6 +29,7 @@ import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.BusinessModule;
 import de.njsm.stocks.client.crypto.CryptoModule;
+import de.njsm.stocks.client.database.DatabaseModule;
 import de.njsm.stocks.client.navigation.NavigationModule;
 import de.njsm.stocks.client.network.NetworkModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
@@ -49,6 +50,7 @@ import javax.inject.Singleton;
                 SettingsModule.class,
                 NetworkModule.class,
                 CryptoModule.class,
+                DatabaseModule.class,
                 PrimitiveModule.class,
                 ActivityModule.class,
                 ServiceModule.class,
@@ -63,6 +65,9 @@ public interface RootComponent {
 
     @Component.Builder
     interface Builder {
+
+        @BindsInstance
+        Builder application(android.app.Application a);
 
         @BindsInstance
         Builder application(Application a);

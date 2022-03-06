@@ -21,24 +21,27 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Principals;
+import de.njsm.stocks.client.business.entities.LocationForListing;
+import io.reactivex.rxjava3.core.Observable;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.List;
 
-public class PrincipalsTest {
+import static java.util.Collections.singletonList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-    private Principals uut;
+class LocationListInteractorImplTest {
 
     @Test
-    void printingCommonNameWorks() {
-        uut = Principals.builder()
-                .userName("Jack")
-                .userId(1)
-                .userDeviceName("Mobile")
-                .userDeviceId(2)
-                .build();
+    void gettingLocationsFetchesFromRepository() {
+        List<LocationForListing> expected = singletonList(LocationForListing.create(1, "Cheese"));
+        LocationRepository repository = mock(LocationRepository.class);
+        when(repository.getLocations()).thenReturn(Observable.just(expected));
+        LocationListInteractorImpl uut = new LocationListInteractorImpl(repository);
 
-        assertEquals("Jack$1$Mobile$2", uut.asCommonName());
+        Observable<List<LocationForListing>> actual = uut.getLocations();
+
+        actual.test().assertValue(expected);
     }
 }

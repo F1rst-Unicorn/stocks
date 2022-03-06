@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.EntityType;
+import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
 import org.junit.Test;
@@ -29,6 +30,8 @@ import org.junit.Test;
 import java.time.Instant;
 
 import static de.njsm.stocks.client.database.DataMapper.map;
+import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY;
+import static java.time.Instant.now;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -81,6 +84,16 @@ public class DataMapperTest {
         assertEquals(input.initiates(), actual.getInitiates());
         assertEquals(input.name(), actual.getName());
         assertEquals(input.description(), actual.getDescription());
+    }
+
+    @Test
+    public void mappingToLocationForListingWorks() {
+        LocationDbEntity input = new LocationDbEntity(1, 2, now(), DATABASE_INFINITY, now(), DATABASE_INFINITY, 3, "name", "description");
+
+        LocationForListing actual = DataMapper.map(input);
+
+        assertEquals(input.getId(), actual.id());
+        assertEquals(input.getName(), actual.name());
     }
 
     @Test

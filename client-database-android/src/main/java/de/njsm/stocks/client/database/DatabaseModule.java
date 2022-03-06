@@ -33,7 +33,7 @@ import javax.inject.Singleton;
 import java.util.concurrent.Executor;
 
 @Module
-public abstract class DatabaseModule {
+public interface DatabaseModule {
 
     @Provides
     @Singleton
@@ -47,10 +47,10 @@ public abstract class DatabaseModule {
     }
 
     @Binds
-    public abstract LocationRepository locationRepository(LocationRepositoryImpl impl);
+    LocationRepository locationRepository(LocationRepositoryImpl impl);
 
     @Binds
-    public abstract SynchronisationRepository synchronisationRepository(SynchronisationRepositoryImpl impl);
+    SynchronisationRepository synchronisationRepository(SynchronisationRepositoryImpl impl);
 
     @Provides
     static LocationDao provideUserDao(StocksDatabase database) {

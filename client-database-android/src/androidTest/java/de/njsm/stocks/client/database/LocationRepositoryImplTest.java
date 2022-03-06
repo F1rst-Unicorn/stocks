@@ -19,25 +19,30 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
+import org.junit.Test;
 
-import javax.inject.Inject;
+import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-class LocationListInteractorImpl implements LocationListInteractor {
+import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY;
 
-    private final LocationRepository repository;
+public class LocationRepositoryImplTest extends DbTestCase {
 
-    @Inject
-    public LocationListInteractorImpl(LocationRepository repository) {
-        this.repository = repository;
-    }
+    @Test
+    public void gettingLocationsWorks() {
+        List<LocationDbEntity> entities = Collections.singletonList(new LocationDbEntity(1, 2, Instant.EPOCH, DATABASE_INFINITY, Instant.EPOCH, DATABASE_INFINITY, 3, "name", "description"));
+        LocationRepositoryImpl uut = new LocationRepositoryImpl(stocksDatabase.locationDao());
+        stocksDatabase.synchronisationDao().synchroniseLocations(entities);
+        List<LocationForListing> expected = entities.stream().map(DataMapper::map).collect(Collectors.toList());
 
-    @Override
-    public Observable<List<LocationForListing>> getLocations() {
-        return repository.getLocations();
+        Observable<List<LocationForListing>> actual = uut.getLocations();
+
+        actual.test().awaitCount(1).assertValue(expected);
     }
 }
