@@ -19,12 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.di;
+package de.njsm.stocks.client.business;
 
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.execution.Scheduler;
 
 import javax.inject.Singleton;
@@ -53,6 +52,13 @@ public interface FakeBusinessModule {
     @Singleton
     static Synchroniser synchroniser() {
         return mock(Synchroniser.class);
+    }
+
+
+    @Provides
+    @Singleton
+    static SetupStatusChecker setupStatusChecker() {
+        return mock(SetupStatusChecker.class);
     }
 
     @Provides

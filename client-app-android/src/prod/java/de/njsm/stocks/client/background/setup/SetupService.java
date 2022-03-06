@@ -22,11 +22,12 @@ package de.njsm.stocks.client.background.setup;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import dagger.android.AndroidInjection;
-import de.njsm.stocks.client.execution.Scheduler;
 import de.njsm.stocks.client.business.SetupRunner;
 import de.njsm.stocks.client.business.entities.Job;
+import de.njsm.stocks.client.execution.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +52,8 @@ public class SetupService extends Service {
         }));
     }
 
+
+
     @Override
     public void onDestroy() {
         LOG.debug("Setup service destroyed");
@@ -59,7 +62,7 @@ public class SetupService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new Binder();
     }
 
     @Inject

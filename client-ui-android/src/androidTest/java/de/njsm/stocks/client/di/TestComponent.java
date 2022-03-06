@@ -23,6 +23,7 @@ import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.FakeBusinessModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.view.FragmentModule;
 import de.njsm.stocks.client.view.LocationListFragmentTest;
