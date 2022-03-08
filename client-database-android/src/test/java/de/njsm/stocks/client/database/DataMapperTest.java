@@ -41,12 +41,12 @@ public class DataMapperTest {
 
     @Test
     public void mappingUpdateWorks() {
-        UpdateDbEntity input = new UpdateDbEntity("location", Instant.MAX);
+        UpdateDbEntity input = UpdateDbEntity.create("location", Instant.MAX);
 
         Update actual = map(input);
 
-        assertThat(actual.table(), is(map(input.getTable())));
-        assertThat(actual.lastUpdate(), is(input.getLastUpdate()));
+        assertThat(actual.table(), is(map(input.table())));
+        assertThat(actual.lastUpdate(), is(input.lastUpdate()));
     }
 
     @Test
@@ -55,8 +55,8 @@ public class DataMapperTest {
 
         UpdateDbEntity actual = DataMapper.map(input);
 
-        assertThat(actual.getLastUpdate(), is(input.lastUpdate()));
-        assertThat(actual.getTable(), is(map(input.table())));
+        assertThat(actual.lastUpdate(), is(input.lastUpdate()));
+        assertThat(actual.table(), is(map(input.table())));
     }
 
     @Test

@@ -66,4 +66,11 @@ public class SynchronisationRepositoryImplTest {
 
         verify(synchronisationDao).writeLocations(emptyList());
     }
+
+    @Test
+    public void locationsToInitialiseAreForwarded() {
+        uut.initialiseLocations(emptyList());
+
+        verify(synchronisationDao).synchroniseLocations(emptyList());
+    }
 }

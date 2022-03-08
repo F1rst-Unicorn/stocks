@@ -23,68 +23,38 @@ package de.njsm.stocks.client.database;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import com.google.auto.value.AutoValue;
 
 import java.time.Instant;
-import java.util.Objects;
 
 
 @Entity(tableName = "updates")
-class UpdateDbEntity {
+@AutoValue
+abstract class UpdateDbEntity {
 
     @ColumnInfo(name = "_id")
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    @AutoValue.CopyAnnotations
+    abstract int id();
 
     @ColumnInfo(name = "name")
     @NonNull
-    private String table;
+    @AutoValue.CopyAnnotations
+    abstract String table();
 
     @ColumnInfo(name = "last_update")
     @NonNull
-    private Instant lastUpdate;
+    @AutoValue.CopyAnnotations
+    abstract Instant lastUpdate();
 
-    UpdateDbEntity(String table, Instant lastUpdate) {
-        this.table = table;
-        this.lastUpdate = lastUpdate;
+    public static UpdateDbEntity create(int id, String table, Instant lastUpdate) {
+        return new AutoValue_UpdateDbEntity(id, table, lastUpdate);
     }
 
-    int getId() {
-        return id;
-    }
-
-    @NonNull
-    String getTable() {
-        return table;
-    }
-
-    @NonNull
-    Instant getLastUpdate() {
-        return lastUpdate;
-    }
-
-    void setId(int id) {
-        this.id = id;
-    }
-
-    void setTable(@NonNull String table) {
-        this.table = table;
-    }
-
-    void setLastUpdate(@NonNull Instant lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UpdateDbEntity that = (UpdateDbEntity) o;
-        return getTable().equals(that.getTable()) && getLastUpdate().equals(that.getLastUpdate());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getTable(), getLastUpdate());
+    @Ignore
+    public static UpdateDbEntity create(String table, Instant lastUpdate) {
+        return create(0, table, lastUpdate);
     }
 }

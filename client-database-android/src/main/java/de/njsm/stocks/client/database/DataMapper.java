@@ -29,11 +29,11 @@ import de.njsm.stocks.client.business.entities.Update;
 class DataMapper {
 
     static Update map(UpdateDbEntity input) {
-        return Update.create(map(input.getTable()), input.getLastUpdate());
+        return Update.create(map(input.table()), input.lastUpdate());
     }
 
     static UpdateDbEntity map(Update input) {
-        return new UpdateDbEntity(map(input.table()), input.lastUpdate());
+        return UpdateDbEntity.create(map(input.table()), input.lastUpdate());
     }
 
     static LocationDbEntity map(LocationForSynchronisation location) {
