@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.entities.StatusCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,6 +51,6 @@ class UpdateServiceImplTest {
         when(api.getUpdates()).thenReturn(null);
         when(callHandler.executeForResult(null)).thenThrow(expected);
 
-        uut.getUpdates().test().assertError(expected);
+        assertThrows(StatusCodeException.class, () -> uut.getUpdates());
     }
 }

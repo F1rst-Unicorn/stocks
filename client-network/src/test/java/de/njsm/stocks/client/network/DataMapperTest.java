@@ -28,10 +28,11 @@ import de.njsm.stocks.common.api.StatusCode;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class DataMapperTest {
 
@@ -47,12 +48,12 @@ class DataMapperTest {
 
     @Test
     void entityTypesMapCorrectly() {
-        assertThat(DataMapper.map("Location"), is(EntityType.LOCATION));
+        assertThat(DataMapper.map("Location"), is(Optional.of(EntityType.LOCATION)));
     }
 
     @Test
-    void invalidEntityTypeThrows() {
-        assertThrows(IllegalArgumentException.class, () -> DataMapper.map("unknown entity type"));
+    void invalidEntityTypeIsMappedToEmpty() {
+        assertFalse(DataMapper.map("unknown entity type").isPresent());
     }
 
     @Test
