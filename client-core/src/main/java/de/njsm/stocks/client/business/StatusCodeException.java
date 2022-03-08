@@ -23,6 +23,8 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.StatusCode;
 
+import java.util.Objects;
+
 public class StatusCodeException extends SubsystemException {
 
     private final StatusCode statusCode;
@@ -36,8 +38,30 @@ public class StatusCodeException extends SubsystemException {
         this.statusCode = statusCode;
     }
 
+    public StatusCode getStatusCode() {
+        return statusCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StatusCodeException that = (StatusCodeException) o;
+        return statusCode == that.statusCode;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(statusCode);
+    }
+
     @Override
     public String toString() {
         return getClass().getName() + " " + statusCode.name();
+    }
+
+    @Override
+    <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.statusCodeException(this, input);
     }
 }

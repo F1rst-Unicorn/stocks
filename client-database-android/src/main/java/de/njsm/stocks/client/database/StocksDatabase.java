@@ -30,6 +30,8 @@ import java.time.format.DateTimeFormatter;
         entities = {
                 UpdateDbEntity.class,
                 LocationDbEntity.class,
+                StatusCodeExceptionEntity.class,
+                SubsystemExceptionEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,
@@ -60,4 +62,6 @@ abstract class StocksDatabase extends RoomDatabase {
     abstract SynchronisationDao synchronisationDao();
 
     abstract MetadataDao metadataDao();
+
+    abstract ErrorDao errorDao();
 }

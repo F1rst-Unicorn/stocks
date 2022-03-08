@@ -25,6 +25,7 @@ import androidx.room.Room;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.LocationRepository;
 import de.njsm.stocks.client.business.SynchronisationRepository;
 import de.njsm.stocks.client.business.entities.Job;
@@ -54,6 +55,9 @@ public interface DatabaseModule {
     @Binds
     SynchronisationRepository synchronisationRepository(SynchronisationRepositoryImpl impl);
 
+    @Binds
+    ErrorRecorder errorRecorder(ErrorRecorderImpl impl);
+
     @Provides
     static LocationDao provideUserDao(StocksDatabase database) {
         return database.locationDao();
@@ -67,6 +71,11 @@ public interface DatabaseModule {
     @Provides
     static MetadataDao metadataDao(StocksDatabase database) {
         return database.metadataDao();
+    }
+
+    @Provides
+    static ErrorDao errorDao(StocksDatabase database) {
+        return database.errorDao();
     }
 
     static Executor toExecutor(Scheduler scheduler) {

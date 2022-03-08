@@ -21,7 +21,13 @@
 
 package de.njsm.stocks.client.business;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SubsystemException extends RuntimeException {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SubsystemException.class);
+
     public SubsystemException() {
     }
 
@@ -39,5 +45,20 @@ public class SubsystemException extends RuntimeException {
 
     public SubsystemException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
+    }
+
+    public interface Visitor<I, O> {
+
+        default O visit(SubsystemException exception, I input) {
+            return exception.accept(this, input);
+        }
+
+        O subsystemException(SubsystemException exception, I input);
+
+        O statusCodeException(StatusCodeException exception, I input);
+    }
+
+    <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.subsystemException(this, input);
     }
 }

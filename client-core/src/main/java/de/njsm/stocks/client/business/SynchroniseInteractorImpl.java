@@ -44,14 +44,26 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
 
     private final SynchronisationRepository synchronisationRepository;
 
+    private final ErrorRecorder errorRecorder;
+
     @Inject
-    SynchroniseInteractorImpl(UpdateService updateService, SynchronisationRepository synchronisationRepository) {
+    SynchroniseInteractorImpl(UpdateService updateService, SynchronisationRepository synchronisationRepository, ErrorRecorder errorRecorder) {
         this.updateService = updateService;
         this.synchronisationRepository = synchronisationRepository;
+        this.errorRecorder = errorRecorder;
     }
 
     @Override
     public void synchronise() {
+        try {
+            trySynchronisationFallibly();
+        } catch (SubsystemException e) {
+            LOG.warn("failed to synchronise", e);
+            errorRecorder.recordError(ErrorRecorder.Action.SYNCHRONISATION, e);
+        }
+    }
+
+    private void trySynchronisationFallibly() {
         EntitySynchroniser entitySynchroniser = new EntitySynchroniser();
         EntityInitialiser entityInitialiser = new EntityInitialiser();
 

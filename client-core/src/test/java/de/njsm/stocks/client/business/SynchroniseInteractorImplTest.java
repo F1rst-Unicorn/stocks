@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
+import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.business.entities.Update;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,17 +48,21 @@ class SynchroniseInteractorImplTest {
     @Mock
     SynchronisationRepository synchronisationRepository;
 
+    @Mock
+    ErrorRecorder errorRecorder;
+
     private SynchroniseInteractor uut;
 
     @BeforeEach
     void setUp() {
-        uut = new SynchroniseInteractorImpl(updateService, synchronisationRepository);
+        uut = new SynchroniseInteractorImpl(updateService, synchronisationRepository, errorRecorder);
     }
 
     @AfterEach
     void tearDown() {
         verifyNoMoreInteractions(synchronisationRepository);
         verifyNoMoreInteractions(updateService);
+        verifyNoMoreInteractions(errorRecorder);
     }
 
     @Test
@@ -102,7 +107,7 @@ class SynchroniseInteractorImplTest {
     }
 
     @Test
-    void wipesExistingDataIfNoLocalUpdatePresent() {
+    void initialisesDataIfNoLocalUpdatePresent() {
         Update serverUpdate = Update.create(EntityType.LOCATION, Instant.EPOCH);
         when(updateService.getUpdates()).thenReturn(singletonList(serverUpdate));
         when(synchronisationRepository.getUpdates()).thenReturn(emptyList());
@@ -126,5 +131,16 @@ class SynchroniseInteractorImplTest {
         verify(updateService).getLocations(Instant.MIN);
         verify(synchronisationRepository).initialiseLocations(locations);
         verify(synchronisationRepository).writeUpdates(singletonList(serverUpdate));
+    }
+
+    @Test
+    void exceptionDuringGettingUpdatesIsRecorded() {
+        StatusCodeException expected = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        when(updateService.getUpdates()).thenThrow(expected);
+
+        uut.synchronise();
+
+        verify(errorRecorder).recordError(ErrorRecorder.Action.SYNCHRONISATION, expected);
+        verify(updateService).getUpdates();
     }
 }
