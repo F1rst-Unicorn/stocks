@@ -88,12 +88,12 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
         synchronisationRepository.writeUpdates(serverUpdateList);
     }
 
-    private final class EntitySynchroniser extends EntityType.Visitor<Instant, Void> {
+    private final class EntitySynchroniser implements EntityType.Visitor<Instant, Void> {
 
         @Override
         public Void visit(EntityType item, Instant input) {
             LOG.info("synchronising " + item);
-            return super.visit(item, input);
+            return EntityType.Visitor.super.visit(item, input);
         }
 
         @Override
@@ -104,12 +104,12 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
         }
     }
 
-    private final class EntityInitialiser extends EntityType.Visitor<Instant, Void> {
+    private final class EntityInitialiser implements EntityType.Visitor<Instant, Void> {
 
         @Override
         public Void visit(EntityType item, Instant input) {
             LOG.info("initialising " + item);
-            return super.visit(item, input);
+            return EntityType.Visitor.super.visit(item, input);
         }
 
         @Override

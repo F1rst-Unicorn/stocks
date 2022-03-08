@@ -32,13 +32,13 @@ public enum EntityType {
 
     abstract <I, O> O accept(Visitor<I, O> visitor, I input);
 
-    public static class Visitor<I, O> {
+    public interface Visitor<I, O> {
 
-        public O visit(EntityType item, I input) {
+        default O visit(EntityType item, I input) {
             return item.accept(this, input);
         }
 
-        public O location(I input) {
+        default O location(I input) {
             return null;
         }
     }
