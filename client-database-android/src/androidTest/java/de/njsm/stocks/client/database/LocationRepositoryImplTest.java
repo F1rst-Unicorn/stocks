@@ -25,18 +25,17 @@ import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Test;
 
-import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY;
+import static de.njsm.stocks.client.database.StandardEntities.locationDbEntity;
 
 public class LocationRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingLocationsWorks() {
-        List<LocationDbEntity> entities = Collections.singletonList(new LocationDbEntity(1, 2, Instant.EPOCH, DATABASE_INFINITY, Instant.EPOCH, DATABASE_INFINITY, 3, "name", "description"));
+        List<LocationDbEntity> entities = Collections.singletonList(locationDbEntity());
         LocationRepositoryImpl uut = new LocationRepositoryImpl(stocksDatabase.locationDao());
         stocksDatabase.synchronisationDao().synchroniseLocations(entities);
         List<LocationForListing> expected = entities.stream().map(DataMapper::map).collect(Collectors.toList());

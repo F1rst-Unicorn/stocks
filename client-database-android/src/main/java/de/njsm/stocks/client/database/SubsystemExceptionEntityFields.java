@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,40 +16,30 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.database;
 
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.ErrorRecorder;
 
-import java.time.Instant;
+interface SubsystemExceptionEntityFields {
 
-
-@Entity(tableName = "updates")
-@AutoValue
-abstract class UpdateDbEntity implements IdFields {
-
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "action")
     @NonNull
     @AutoValue.CopyAnnotations
-    abstract String table();
+    ErrorRecorder.Action action();
 
-    @ColumnInfo(name = "last_update")
+    @ColumnInfo(name = "stacktrace")
     @NonNull
     @AutoValue.CopyAnnotations
-    abstract Instant lastUpdate();
+    String stacktrace();
 
-    static UpdateDbEntity create(int id, String table, Instant lastUpdate) {
-        return new AutoValue_UpdateDbEntity(id, table, lastUpdate);
-    }
-
-    @Ignore
-    static UpdateDbEntity create(String table, Instant lastUpdate) {
-        return create(0, table, lastUpdate);
-    }
+    @ColumnInfo(name = "message")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    String message();
 }

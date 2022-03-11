@@ -24,43 +24,33 @@ package de.njsm.stocks.client.database;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
+import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.entities.StatusCode;
 
-import java.util.Objects;
-
 @Entity(tableName = "status_code_error")
-class StatusCodeExceptionEntity extends SubsystemExceptionEntity {
+@AutoValue
+abstract class StatusCodeExceptionEntity implements IdFields, SubsystemExceptionEntityFields {
 
     @ColumnInfo(name = "status_code")
     @NonNull
-    private StatusCode statusCode;
+    @AutoValue.CopyAnnotations
+    abstract StatusCode statusCode();
 
-    StatusCodeExceptionEntity(int id, @NonNull ErrorRecorder.Action action, @NonNull String stacktrace, @NonNull String message, @NonNull StatusCode statusCode) {
-        super(id, action, stacktrace, message);
-        this.statusCode = statusCode;
+    static StatusCodeExceptionEntity create(int id,
+                                           ErrorRecorder.Action action,
+                                           String stacktrace,
+                                           String message,
+                                           StatusCode statusCode) {
+        return new AutoValue_StatusCodeExceptionEntity(id, action, stacktrace, message, statusCode);
     }
 
-    @NonNull
-    StatusCode getStatusCode() {
-        return statusCode;
-    }
-
-    void setStatusCode(@NonNull StatusCode statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        StatusCodeExceptionEntity that = (StatusCodeExceptionEntity) o;
-        return getStatusCode() == that.getStatusCode();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getStatusCode());
+    @Ignore
+    static StatusCodeExceptionEntity create(ErrorRecorder.Action action,
+                                           String stacktrace,
+                                           String message,
+                                           StatusCode statusCode) {
+        return new AutoValue_StatusCodeExceptionEntity(0, action, stacktrace, message, statusCode);
     }
 }

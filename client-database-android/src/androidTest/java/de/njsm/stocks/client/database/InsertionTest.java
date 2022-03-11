@@ -36,11 +36,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public abstract class InsertionTest<T extends DbEntity> extends DbTestCase {
+public abstract class InsertionTest<T extends ServerDbEntity<T>, B extends ServerDbEntity.Builder<T, B>> extends DbTestCase {
 
     private SynchronisationDao uut;
 
-    abstract T getDto();
+    abstract B getFreshDto();
 
     abstract List<T> getAll();
 
@@ -55,7 +55,7 @@ public abstract class InsertionTest<T extends DbEntity> extends DbTestCase {
 
     @Test
     public void insertionWorks() {
-        T data = getDto();
+        T data = getFreshDto().build();
 
         insert(singletonList(data), uut);
 
@@ -66,11 +66,15 @@ public abstract class InsertionTest<T extends DbEntity> extends DbTestCase {
     @Test
     public void insertionWithConflictReplaces() {
         Instant now = Instant.now();
-        T dataToBeTerminated = getDto();
+        T dataToBeTerminated = getFreshDto().build();
         insert(singletonList(dataToBeTerminated), uut);
-        dataToBeTerminated.setTransactionTimeEnd(now);
-        T terminatedData = getDto();
-        terminatedData.setValidTimeEnd(now);
+        dataToBeTerminated = dataToBeTerminated
+                .toBuilder()
+                .transactionTimeEnd(now)
+                .build();
+        T terminatedData = getFreshDto()
+                .validTimeEnd(now)
+                .build();
         List<T> input = new ArrayList<>();
         input.add(dataToBeTerminated);
         input.add(terminatedData);
@@ -84,9 +88,9 @@ public abstract class InsertionTest<T extends DbEntity> extends DbTestCase {
 
     @Test
     public void synchronisingWorks() {
-        T data = getDto();
+        T data = getFreshDto().build();
         insert(singletonList(data), uut);
-        data.setVersion(data.getVersion() + 1);
+        data = data.toBuilder().version(data.version() + 1).build();
 
         synchronise(singletonList(data), uut);
 

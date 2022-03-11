@@ -20,8 +20,8 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.annotation.NonNull;
 import androidx.room.DatabaseView;
+import com.google.auto.value.AutoValue;
 
 import java.time.Instant;
 
@@ -31,11 +31,30 @@ import static de.njsm.stocks.client.database.CurrentTable.NOW_AS_BEST_KNOWN;
         "select * " +
         "from location " +
         NOW_AS_BEST_KNOWN)
-class CurrentLocationDbView extends LocationDbEntity {
+@AutoValue
+abstract class CurrentLocationDbView implements IdFields, BitemporalFields, LocationFields {
 
     static final String CURRENT_LOCATION_TABLE = "current_location";
 
-    CurrentLocationDbView(int id, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int version, int initiates, String name, @NonNull String description) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates, name, description);
+    static CurrentLocationDbView create(int id,
+                                   int version,
+                                   Instant validTimeStart,
+                                   Instant validTimeEnd,
+                                   Instant transactionTimeStart,
+                                   Instant transactionTimeEnd,
+                                   int initiates,
+                                   String name,
+                                   String description) {
+        return new AutoValue_CurrentLocationDbView(
+                id,
+                version,
+                validTimeStart,
+                validTimeEnd,
+                transactionTimeStart,
+                transactionTimeEnd,
+                initiates,
+                name,
+                description
+        );
     }
 }

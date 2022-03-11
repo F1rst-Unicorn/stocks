@@ -37,7 +37,7 @@ class DataMapper {
     }
 
     static LocationDbEntity map(LocationForSynchronisation location) {
-        return new LocationDbEntity(
+        return LocationDbEntity.create(
                 location.id(),
                 location.version(),
                 location.validTimeStart(),
@@ -51,7 +51,7 @@ class DataMapper {
     }
 
     static LocationForListing map(LocationDbEntity input) {
-        return LocationForListing.create(input.getId(), input.getName());
+        return LocationForListing.create(input.id(), input.name());
     }
 
     static EntityType map(String entityType) {

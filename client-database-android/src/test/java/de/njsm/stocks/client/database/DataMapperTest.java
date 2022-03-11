@@ -30,8 +30,7 @@ import org.junit.Test;
 import java.time.Instant;
 
 import static de.njsm.stocks.client.database.DataMapper.map;
-import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY;
-import static java.time.Instant.now;
+import static de.njsm.stocks.client.database.StandardEntities.locationDbEntity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -75,25 +74,25 @@ public class DataMapperTest {
 
         LocationDbEntity actual = DataMapper.map(input);
 
-        assertEquals(input.id(), actual.getId());
-        assertEquals(input.version(), actual.getVersion());
-        assertEquals(input.validTimeStart(), actual.getValidTimeStart());
-        assertEquals(input.validTimeEnd(), actual.getValidTimeEnd());
-        assertEquals(input.transactionTimeStart(), actual.getTransactionTimeStart());
-        assertEquals(input.transactionTimeEnd(), actual.getTransactionTimeEnd());
-        assertEquals(input.initiates(), actual.getInitiates());
-        assertEquals(input.name(), actual.getName());
-        assertEquals(input.description(), actual.getDescription());
+        assertEquals(input.id(), actual.id());
+        assertEquals(input.version(), actual.version());
+        assertEquals(input.validTimeStart(), actual.validTimeStart());
+        assertEquals(input.validTimeEnd(), actual.validTimeEnd());
+        assertEquals(input.transactionTimeStart(), actual.transactionTimeStart());
+        assertEquals(input.transactionTimeEnd(), actual.transactionTimeEnd());
+        assertEquals(input.initiates(), actual.initiates());
+        assertEquals(input.name(), actual.name());
+        assertEquals(input.description(), actual.description());
     }
 
     @Test
     public void mappingToLocationForListingWorks() {
-        LocationDbEntity input = new LocationDbEntity(1, 2, now(), DATABASE_INFINITY, now(), DATABASE_INFINITY, 3, "name", "description");
+        LocationDbEntity input = locationDbEntity();
 
         LocationForListing actual = DataMapper.map(input);
 
-        assertEquals(input.getId(), actual.id());
-        assertEquals(input.getName(), actual.name());
+        assertEquals(input.id(), actual.id());
+        assertEquals(input.name(), actual.name());
     }
 
     @Test

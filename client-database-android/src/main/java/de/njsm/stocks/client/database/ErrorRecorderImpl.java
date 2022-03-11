@@ -51,7 +51,7 @@ class ErrorRecorderImpl implements ErrorRecorder {
         public Void subsystemException(SubsystemException exception, Action input) {
             String stacktrace = getStackTrace(exception);
             String message = getMessage(exception);
-            SubsystemExceptionEntity error = new SubsystemExceptionEntity(0, input, stacktrace, message);
+            SubsystemExceptionEntity error = SubsystemExceptionEntity.create(0, input, stacktrace, message);
             errorDao.insert(error);
             return null;
         }
@@ -60,7 +60,7 @@ class ErrorRecorderImpl implements ErrorRecorder {
         public Void statusCodeException(StatusCodeException exception, Action input) {
             String stacktrace = getStackTrace(exception);
             String message = getMessage(exception);
-            StatusCodeExceptionEntity error = new StatusCodeExceptionEntity(0, input, stacktrace, message, exception.getStatusCode());
+            StatusCodeExceptionEntity error = StatusCodeExceptionEntity.create(0, input, stacktrace, message, exception.getStatusCode());
             errorDao.insert(error);
             return null;
         }

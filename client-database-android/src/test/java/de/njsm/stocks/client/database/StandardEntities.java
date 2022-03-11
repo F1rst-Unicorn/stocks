@@ -21,33 +21,25 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import org.junit.runner.RunWith;
+import static de.njsm.stocks.client.business.Constants.INFINITY;
+import static java.time.Instant.EPOCH;
 
-import java.util.List;
+public class StandardEntities {
 
-import static de.njsm.stocks.client.database.StandardEntities.locationDbEntityBuilder;
-
-@RunWith(AndroidJUnit4.class)
-public class LocationInsertionTest extends InsertionTest<LocationDbEntity, LocationDbEntity.Builder> {
-
-    @Override
-    LocationDbEntity.Builder getFreshDto() {
-        return locationDbEntityBuilder();
+    static LocationDbEntity locationDbEntity() {
+        return locationDbEntityBuilder().build();
     }
 
-    @Override
-    List<LocationDbEntity> getAll() {
-        return stocksDatabase.locationDao().getAll();
-    }
-
-    @Override
-    void insert(List<LocationDbEntity> data, SynchronisationDao synchronisationDao) {
-        synchronisationDao.writeLocations(data);
-    }
-
-    @Override
-    void synchronise(List<LocationDbEntity> data, SynchronisationDao synchronisationDao) {
-        synchronisationDao.synchroniseLocations(data);
+    static LocationDbEntity.Builder locationDbEntityBuilder() {
+        return LocationDbEntity.builder()
+                .id(1)
+                .version(2)
+                .validTimeStart(EPOCH)
+                .validTimeEnd(INFINITY)
+                .transactionTimeStart(EPOCH)
+                .transactionTimeEnd(INFINITY)
+                .initiates(3)
+                .name("name")
+                .description("description");
     }
 }

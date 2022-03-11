@@ -43,9 +43,9 @@ public class ErrorRecorderImplTest extends DbTestCase {
 
         assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
         StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
-        assertEquals(input.getStatusCode(), actual.getStatusCode());
-        assertEquals(expectedAction, actual.getAction());
-        assertNotEquals(0, actual.getId());
+        assertEquals(input.getStatusCode(), actual.statusCode());
+        assertEquals(expectedAction, actual.action());
+        assertNotEquals(0, actual.id());
     }
 
     @Test
@@ -59,8 +59,8 @@ public class ErrorRecorderImplTest extends DbTestCase {
         List<SubsystemExceptionEntity> recordedErrors = stocksDatabase.errorDao().getSubsystemErrors();
         assertEquals(1, recordedErrors.size());
         SubsystemExceptionEntity actual = recordedErrors.get(0);
-        assertEquals(input.getMessage(), actual.getMessage());
-        assertEquals(expectedAction, actual.getAction());
-        assertNotEquals(0, actual.getId());
+        assertEquals(input.getMessage(), actual.message());
+        assertEquals(expectedAction, actual.action());
+        assertNotEquals(0, actual.id());
     }
 }

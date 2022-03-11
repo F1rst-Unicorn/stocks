@@ -21,33 +21,25 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import org.junit.runner.RunWith;
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+interface LocationFields {
 
-import static de.njsm.stocks.client.database.StandardEntities.locationDbEntityBuilder;
+    @ColumnInfo(name = "name")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    String name();
 
-@RunWith(AndroidJUnit4.class)
-public class LocationInsertionTest extends InsertionTest<LocationDbEntity, LocationDbEntity.Builder> {
+    @ColumnInfo(name = "description")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    String description();
 
-    @Override
-    LocationDbEntity.Builder getFreshDto() {
-        return locationDbEntityBuilder();
-    }
+    interface Builder<T extends ServerDbEntity<T>, B extends ServerDbEntity.Builder<T, B>> {
+        B name(String v);
 
-    @Override
-    List<LocationDbEntity> getAll() {
-        return stocksDatabase.locationDao().getAll();
-    }
-
-    @Override
-    void insert(List<LocationDbEntity> data, SynchronisationDao synchronisationDao) {
-        synchronisationDao.writeLocations(data);
-    }
-
-    @Override
-    void synchronise(List<LocationDbEntity> data, SynchronisationDao synchronisationDao) {
-        synchronisationDao.synchroniseLocations(data);
+        B description(String v);
     }
 }

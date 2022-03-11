@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,40 +16,59 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.database;
 
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
 
 import java.time.Instant;
 
+interface BitemporalFields {
 
-@Entity(tableName = "updates")
-@AutoValue
-abstract class UpdateDbEntity implements IdFields {
+    @ColumnInfo(name = "version")
+    @AutoValue.CopyAnnotations
+    int version();
 
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "valid_time_start")
     @NonNull
     @AutoValue.CopyAnnotations
-    abstract String table();
+    Instant validTimeStart();
 
-    @ColumnInfo(name = "last_update")
+    @ColumnInfo(name = "valid_time_end")
     @NonNull
     @AutoValue.CopyAnnotations
-    abstract Instant lastUpdate();
+    Instant validTimeEnd();
 
-    static UpdateDbEntity create(int id, String table, Instant lastUpdate) {
-        return new AutoValue_UpdateDbEntity(id, table, lastUpdate);
-    }
+    @ColumnInfo(name = "transaction_time_start")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    Instant transactionTimeStart();
 
-    @Ignore
-    static UpdateDbEntity create(String table, Instant lastUpdate) {
-        return create(0, table, lastUpdate);
+    @ColumnInfo(name = "transaction_time_end")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    Instant transactionTimeEnd();
+
+    @ColumnInfo(name = "initiates")
+    @AutoValue.CopyAnnotations
+    int initiates();
+
+    interface Builder<T extends ServerDbEntity<T>, B extends ServerDbEntity.Builder<T, B>> {
+
+        B version(int v);
+
+        B validTimeStart(Instant v);
+
+        B validTimeEnd(Instant v);
+
+        B transactionTimeStart(Instant v);
+
+        B transactionTimeEnd(Instant v);
+
+        B initiates(int v);
     }
 }

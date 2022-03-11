@@ -143,14 +143,8 @@
       },
       {
         "tableName": "status_code_error",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`status_code` TEXT NOT NULL, `_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `action` TEXT NOT NULL, `stacktrace` TEXT NOT NULL, `message` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `action` TEXT NOT NULL, `stacktrace` TEXT NOT NULL, `message` TEXT NOT NULL, `status_code` TEXT NOT NULL)",
         "fields": [
-          {
-            "fieldPath": "statusCode",
-            "columnName": "status_code",
-            "affinity": "TEXT",
-            "notNull": true
-          },
           {
             "fieldPath": "id",
             "columnName": "_id",
@@ -172,6 +166,12 @@
           {
             "fieldPath": "message",
             "columnName": "message",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "statusCode",
+            "columnName": "status_code",
             "affinity": "TEXT",
             "notNull": true
           }

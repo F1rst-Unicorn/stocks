@@ -19,13 +19,11 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
+import com.google.auto.value.AutoValue;
 
 import java.time.Instant;
-import java.util.Objects;
 
 @Entity(tableName = "location", primaryKeys = {"_id", "version", "transaction_time_start"},
         indices = {
@@ -34,51 +32,42 @@ import java.util.Objects;
                 @Index(value = {"transaction_time_start"}, name = "location_transaction_time_start"),
                 @Index(value = {"transaction_time_end"}, name = "location_transaction_time_end"),
         })
-class LocationDbEntity extends DbEntity {
+@AutoValue
+abstract class LocationDbEntity extends ServerDbEntity<LocationDbEntity> implements LocationFields {
 
-    @ColumnInfo(name = "name")
-    @NonNull
-    private String name;
-
-    @ColumnInfo(name = "description")
-    @NonNull
-    private String description;
-
-    LocationDbEntity(int id, int version, @NonNull Instant validTimeStart, @NonNull Instant validTimeEnd, @NonNull Instant transactionTimeStart, @NonNull Instant transactionTimeEnd, int initiates, String name, @NonNull String description) {
-        super(id, version, validTimeStart, validTimeEnd, transactionTimeStart, transactionTimeEnd, initiates);
-        this.name = name;
-        this.description = description;
+    static Builder builder() {
+        return new AutoValue_LocationDbEntity.Builder();
     }
 
-    @NonNull
-    String getName() {
-        return name;
-    }
-
-    @NonNull
-    String getDescription() {
-        return description;
-    }
-
-    void setName(@NonNull String name) {
-        this.name = name;
-    }
-
-    void setDescription(@NonNull String description) {
-        this.description = description;
+    static LocationDbEntity create(int id,
+                                   int version,
+                                   Instant validTimeStart,
+                                   Instant validTimeEnd,
+                                   Instant transactionTimeStart,
+                                   Instant transactionTimeEnd,
+                                   int initiates,
+                                   String name,
+                                   String description) {
+        return new AutoValue_LocationDbEntity.Builder()
+                .id(id)
+                .version(version)
+                .validTimeStart(validTimeStart)
+                .validTimeEnd(validTimeEnd)
+                .transactionTimeStart(transactionTimeStart)
+                .transactionTimeEnd(transactionTimeEnd)
+                .initiates(initiates)
+                .name(name)
+                .description(description)
+                .build();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        LocationDbEntity that = (LocationDbEntity) o;
-        return getName().equals(that.getName()) && getDescription().equals(that.getDescription());
-    }
+    @SuppressWarnings("unchecked") // Builder always complies to parent class
+    abstract Builder toBuilder();
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getName(), getDescription());
+    @AutoValue.Builder
+    abstract static class Builder extends ServerDbEntity.Builder<LocationDbEntity, Builder> implements LocationFields.Builder<LocationDbEntity, Builder> {
+
+        abstract LocationDbEntity build();
     }
 }
