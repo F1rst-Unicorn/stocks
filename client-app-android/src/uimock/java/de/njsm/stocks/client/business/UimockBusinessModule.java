@@ -37,8 +37,10 @@ public interface UimockBusinessModule {
     @Binds
     LocationDeleter locationDeleter(InMemoryLocationDeleterImpl implementation);
 
-    @Binds
-    Synchroniser synchroniser(InMemorySynchroniserImpl implementation);
+    @Provides
+    static Synchroniser synchroniser() {
+        return () -> {};
+    }
 
     @Provides
     static SetupStatusChecker setupStatusChecker() {
