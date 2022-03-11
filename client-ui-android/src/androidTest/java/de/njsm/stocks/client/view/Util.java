@@ -16,26 +16,21 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.view;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import android.content.Context;
+import android.view.MenuItem;
+import androidx.annotation.IdRes;
+import androidx.appcompat.view.menu.ActionMenuItem;
 
-@Module
-public interface NavigationModule {
+public class Util {
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+    public static MenuItem menuItem(Context context, @IdRes int action) {
+        return new ActionMenuItem(context, 0, action, 0, 0, "");
+    }
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
 
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
-
-    @Binds
-    Navigator navigator(NavigatorImpl impl);
 }

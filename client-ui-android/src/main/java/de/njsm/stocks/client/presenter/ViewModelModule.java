@@ -25,10 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
-import de.njsm.stocks.client.business.LocationDeleter;
-import de.njsm.stocks.client.business.LocationListInteractor;
-import de.njsm.stocks.client.business.SetupInteractor;
-import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.di.ViewModelFactory;
 import de.njsm.stocks.client.di.ViewModelKey;
 
@@ -55,5 +52,12 @@ public class ViewModelModule {
     @ViewModelKey(SetupViewModel.class)
     ViewModel setupViewModel(SetupInteractor setupInteractor) {
         return new SetupViewModel(setupInteractor);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(LocationAddViewModel.class)
+    ViewModel locationAddViewModel(LocationAddInteractor locationAddInteractor) {
+        return new LocationAddViewModel(locationAddInteractor);
     }
 }

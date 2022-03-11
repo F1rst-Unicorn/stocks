@@ -72,4 +72,10 @@ public interface FakeBusinessModule {
     static Scheduler scheduler() {
         return mock(Scheduler.class);
     }
+
+    @Provides
+    @Singleton
+    static LocationAddInteractor locationAddInteractor() {
+        return mock(LocationAddInteractor.class);
+    }
 }

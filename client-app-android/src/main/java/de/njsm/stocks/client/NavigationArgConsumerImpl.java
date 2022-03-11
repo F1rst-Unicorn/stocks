@@ -45,6 +45,11 @@ public class NavigationArgConsumerImpl implements NavigationArgConsumer {
 
     @Override
     public void navigate(NavDirections direction) {
-        this.navController.ifPresent(v -> v.navigate(direction));
+        navController.ifPresent(v -> v.navigate(direction));
+    }
+
+    @Override
+    public void back() {
+        navController.ifPresent(NavController::popBackStack);
     }
 }

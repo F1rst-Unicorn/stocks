@@ -37,6 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static de.njsm.stocks.client.view.ViewUtility.stringFromForm;
+
 class SetupFormView {
 
     private final ScrollView scrollView;
@@ -196,15 +198,6 @@ class SetupFormView {
             return Integer.parseInt(rawNumber);
         } catch (NumberFormatException e) {
             return 0;
-        }
-    }
-
-    private String stringFromForm(TextInputLayout view) {
-        EditText editText = view.getEditText();
-        if (editText != null) {
-            return editText.getText().toString();
-        } else {
-            return "";
         }
     }
 

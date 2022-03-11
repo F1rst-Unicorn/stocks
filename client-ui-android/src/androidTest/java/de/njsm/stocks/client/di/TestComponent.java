@@ -25,10 +25,7 @@ import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.FakeBusinessModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
-import de.njsm.stocks.client.view.FragmentModule;
-import de.njsm.stocks.client.view.LocationListFragmentTest;
-import de.njsm.stocks.client.view.SetupFormFragmentTest;
-import de.njsm.stocks.client.view.SetupGreetingFragmentTest;
+import de.njsm.stocks.client.view.*;
 
 import javax.inject.Singleton;
 
@@ -50,6 +47,8 @@ public interface TestComponent {
     void inject(SetupGreetingFragmentTest test);
 
     void inject(SetupFormFragmentTest test);
+
+    void inject(LocationAddFragmentTest test);
 
     @Component.Builder
     interface Builder {

@@ -16,26 +16,15 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
 
-@Module
-public interface NavigationModule {
+public interface LocationAddInteractor {
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+    void addLocation(LocationAddForm locationAddForm);
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
-
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
-
-    @Binds
-    Navigator navigator(NavigatorImpl impl);
 }

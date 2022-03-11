@@ -24,6 +24,7 @@ package de.njsm.stocks.client.view;
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.FakeLocationListInteractor;
 import de.njsm.stocks.client.business.LocationDeleter;
@@ -67,8 +68,8 @@ public class LocationListFragmentTest {
 
     @Before
     public void setUp() {
+        ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         scenario = FragmentScenario.launchInContainer(LocationListFragment.class, new Bundle(), R.style.StocksTheme);
-        scenario.onFragment(fragment -> ((Application) fragment.requireActivity().getApplication()).getDaggerRoot().inject(this));
     }
 
     @After

@@ -16,26 +16,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.view;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import android.widget.EditText;
+import com.google.android.material.textfield.TextInputLayout;
 
-@Module
-public interface NavigationModule {
+public class ViewUtility {
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
-
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
-
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
-
-    @Binds
-    Navigator navigator(NavigatorImpl impl);
+    static String stringFromForm(TextInputLayout view) {
+        EditText editText = view.getEditText();
+        if (editText != null) {
+            return editText.getText().toString();
+        } else {
+            return "";
+        }
+    }
 }

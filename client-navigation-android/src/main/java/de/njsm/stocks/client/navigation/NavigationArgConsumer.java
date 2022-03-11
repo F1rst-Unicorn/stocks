@@ -26,4 +26,6 @@ import androidx.navigation.NavDirections;
 public interface NavigationArgConsumer {
 
     void navigate(NavDirections direction);
+
+    void back();
 }

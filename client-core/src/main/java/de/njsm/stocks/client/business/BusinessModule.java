@@ -62,4 +62,7 @@ public interface BusinessModule {
 
     @Binds
     LocationListInteractor locationListInteractor(LocationListInteractorImpl impl);
+
+    @Binds
+    LocationAddInteractor locationAddInteractor(LocationAddInteractorImpl impl);
 }

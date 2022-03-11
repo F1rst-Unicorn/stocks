@@ -16,26 +16,34 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.navigation;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
-@Module
-public interface NavigationModule {
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+public class NavigatorImplTest {
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
+    private NavigatorImpl uut;
 
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
+    private NavigationArgConsumer navigationArgConsumer;
 
-    @Binds
-    Navigator navigator(NavigatorImpl impl);
+    @Before
+    public void setup() {
+        navigationArgConsumer = mock(NavigationArgConsumer.class);
+        uut = new NavigatorImpl(navigationArgConsumer);
+    }
+
+    @Test
+    public void backWorks() {
+        uut.back();
+
+        verify(navigationArgConsumer).back();
+    }
 }

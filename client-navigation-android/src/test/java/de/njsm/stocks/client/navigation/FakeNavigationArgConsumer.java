@@ -34,6 +34,10 @@ public class FakeNavigationArgConsumer implements NavigationArgConsumer {
         lastArgument = direction;
     }
 
+    @Override
+    public void back() {
+    }
+
     <T extends NavDirections> T getLastArgument(Class<T> clazz) {
         if (clazz.isInstance(lastArgument))
             return (T) lastArgument;

@@ -32,8 +32,4 @@ public class InjectableFragment extends Fragment {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
-
-
-
-
 }

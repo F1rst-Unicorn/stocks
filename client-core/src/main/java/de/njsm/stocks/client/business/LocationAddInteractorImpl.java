@@ -16,26 +16,23 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
 
-@Module
-public interface NavigationModule {
+import javax.inject.Inject;
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+public class LocationAddInteractorImpl implements LocationAddInteractor {
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
+    @Inject
+    public LocationAddInteractorImpl() {
+    }
 
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
+    @Override
+    public void addLocation(LocationAddForm locationAddForm) {
 
-    @Binds
-    Navigator navigator(NavigatorImpl impl);
+    }
 }

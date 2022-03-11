@@ -23,6 +23,7 @@ import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.SetupInteractor;
 import de.njsm.stocks.client.navigation.LocationListNavigator;
+import de.njsm.stocks.client.navigation.Navigator;
 import de.njsm.stocks.client.navigation.SetupFormNavigator;
 import de.njsm.stocks.client.navigation.SetupGreetingNavigator;
 import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
@@ -62,5 +63,11 @@ class FakeNavigationModule {
     @Singleton
     SetupFormNavigator setupFragmentNavigator() {
         return mock(SetupFormNavigator.class);
+    }
+
+    @Provides
+    @Singleton
+    Navigator navigator() {
+        return mock(Navigator.class);
     }
 }

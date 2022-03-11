@@ -20,9 +20,83 @@
 
 package de.njsm.stocks.client.view;
 
+import android.os.Bundle;
+import android.view.*;
+import android.widget.EditText;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import com.google.android.material.textfield.TextInputLayout;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.navigation.Navigator;
+import de.njsm.stocks.client.presenter.LocationAddViewModel;
+import de.njsm.stocks.client.ui.R;
+import de.njsm.stocks.client.util.NonEmptyValidator;
+
+import javax.inject.Inject;
+
+import static de.njsm.stocks.client.view.ViewUtility.stringFromForm;
+
 public class LocationAddFragment extends InjectableFragment {
 
+    private LocationAddViewModel locationViewModel;
 
+    private Navigator navigator;
 
+    private TextInputLayout nameField;
 
+    private boolean maySubmit = false;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View result = inflater.inflate(R.layout.fragment_location_form, container, false);
+        nameField = result.findViewById(R.id.fragment_location_form_name);
+        EditText editText = nameField.getEditText();
+        if (editText != null)
+            editText.addTextChangedListener(new NonEmptyValidator(nameField, this::onNameChanged));
+
+        setHasOptionsMenu(true);
+        return result;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.check, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (!maySubmit) {
+            nameField.setError(getString(R.string.error_may_not_be_empty));
+            return true;
+        }
+
+        LocationAddForm form = LocationAddForm.create(
+                stringFromForm(nameField),
+                stringFromForm(requireView().findViewById(R.id.fragment_location_form_description))
+        );
+        locationViewModel.addLocation(form);
+        navigator.back();
+        return true;
+    }
+
+    private void onNameChanged(TextInputLayout textInputLayout, Boolean isEmpty) {
+        maySubmit = !isEmpty;
+        if (isEmpty)
+            textInputLayout.setError(getString(R.string.error_may_not_be_empty));
+        else
+            textInputLayout.setError(null);
+    }
+
+    @Inject
+    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
+        ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
+        locationViewModel = viewModelProvider.get(LocationAddViewModel.class);
+    }
+
+    @Inject
+    public void setNavigator(Navigator navigator) {
+        this.navigator = navigator;
+    }
 }

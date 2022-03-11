@@ -16,26 +16,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business.entities;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import com.google.auto.value.AutoValue;
 
-@Module
-public interface NavigationModule {
+@AutoValue
+public abstract class LocationAddForm {
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+    public abstract String name();
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
+    public abstract String description();
 
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
+    public static LocationAddForm create(String name, String description) {
+        return new AutoValue_LocationAddForm(name, description);
+    }
 
-    @Binds
-    Navigator navigator(NavigatorImpl impl);
 }
