@@ -22,30 +22,22 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
-import de.njsm.stocks.server.util.HystrixWrapper;
+import de.njsm.stocks.server.util.FallibleOperationWrapper;
 import fj.data.Validation;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionHandler implements HystrixWrapper<Connection, SQLException> {
+public class ConnectionHandler implements FallibleOperationWrapper<Connection, SQLException> {
 
     private static final String SERIALISATION_FAILURE_SQL_STATE = "40001";
 
     private static final String CHECK_VIOLATION_SQL_STATE = "23514";
 
-    private final String resourceIdentifier;
-
     private final ConnectionFactory connectionFactory;
 
-    private final int timeout;
-
-    public ConnectionHandler(String resourceIdentifier,
-                             ConnectionFactory connectionFactory,
-                             int timeout) {
-        this.resourceIdentifier = resourceIdentifier;
+    public ConnectionHandler(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
-        this.timeout = timeout;
     }
 
     public StatusCode commit() {
@@ -73,16 +65,6 @@ public class ConnectionHandler implements HystrixWrapper<Connection, SQLExceptio
             con.setReadOnly(true);
             return StatusCode.SUCCESS;
         });
-    }
-
-    @Override
-    public String getResourceIdentifier() {
-        return resourceIdentifier;
-    }
-
-    @Override
-    public int getCircuitBreakerTimeout() {
-        return timeout;
     }
 
     @Override

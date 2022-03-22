@@ -34,7 +34,6 @@ public class Config {
     static final String DB_ADDRESS_KEY = "de.njsm.stocks.server.v2.db.host";
     static final String DB_PORT_KEY = "de.njsm.stocks.server.v2.db.port";
     static final String DB_NAME_KEY = "de.njsm.stocks.server.v2.db.name";
-    static final String DB_CIRCUIT_BREAKER_TIMEOUT_KEY = "de.njsm.stocks.server.v2.circuitbreaker.timeout";
     static final String DB_HISTORY_MAX_PERIOD = "de.njsm.stocks.server.v2.db.history.maxPeriod";
     static final String DB_VALIDITY_KEY = "de.njsm.stocks.internal.ticketValidityTimeInMinutes";
 
@@ -43,7 +42,6 @@ public class Config {
     private String dbAddress;
     private String dbPort;
     private String dbName;
-    private int circuitBreakerTimeout;
     private Properties dbProperties;
     private int ticketValidity;
     private Period dbHistoryMaxPeriod;
@@ -56,14 +54,6 @@ public class Config {
         dbAddress = p.getProperty(DB_ADDRESS_KEY);
         dbPort = p.getProperty(DB_PORT_KEY);
         dbName = p.getProperty(DB_NAME_KEY);
-
-        String rawCircuitBreakerTimeout = p.getProperty(DB_CIRCUIT_BREAKER_TIMEOUT_KEY);
-        try {
-            circuitBreakerTimeout = Integer.parseInt(rawCircuitBreakerTimeout);
-        } catch (NumberFormatException e) {
-            LOG.error(DB_CIRCUIT_BREAKER_TIMEOUT_KEY + " is not an integer", e);
-            throw e;
-        }
 
         dbProperties = filterPostgresqlProperties(p);
 
@@ -94,10 +84,6 @@ public class Config {
 
     public String getDbName() {
         return dbName;
-    }
-
-    public int getCircuitBreakerTimeout() {
-        return circuitBreakerTimeout;
     }
 
     public Properties getDbProperties() {

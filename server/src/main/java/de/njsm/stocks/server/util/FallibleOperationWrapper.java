@@ -19,24 +19,16 @@
 
 package de.njsm.stocks.server.util;
 
-import com.netflix.hystrix.exception.HystrixRuntimeException;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
 import fj.data.Validation;
-import io.prometheus.client.Counter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public interface HystrixWrapper<I, E extends Exception> {
+public interface FallibleOperationWrapper<I, E extends Exception> {
 
-    static final Counter CIRCUIT_BREAKER_EVENTS = Counter.build()
-            .name("stocks_circuit_breaker_trigger")
-            .labelNames("resource")
-            .help("Number of circuit breaker open events")
-            .register();
-
-    Logger LOG = LogManager.getLogger(HystrixWrapper.class);
+    Logger LOG = LogManager.getLogger(FallibleOperationWrapper.class);
 
     default StatusCode runCommand(FunctionWithExceptions<I, StatusCode, E> client) {
         Validation<StatusCode, StatusCode> result = runFunction(input -> Validation.fail(client.apply(input)));
@@ -44,30 +36,13 @@ public interface HystrixWrapper<I, E extends Exception> {
     }
 
     default <O> Validation<StatusCode, O> runFunction(FunctionWithExceptions<I, Validation<StatusCode, O>, E> function) {
-        HystrixProducer<I, Validation<StatusCode, O>, E> producer = new HystrixProducer<>(getResourceIdentifier(),
-                getCircuitBreakerTimeout(),
-                this::wrap,
-                function);
-
         try {
-            return producer.execute();
-        } catch (HystrixRuntimeException e) {
-            LOG.error("circuit breaker '{}' has error: {}", getResourceIdentifier(), e.getFailureType());
-
-            if (e.getFailureType() == HystrixRuntimeException.FailureType.COMMAND_EXCEPTION ||
-                    e.getFailureType() == HystrixRuntimeException.FailureType.BAD_REQUEST_EXCEPTION)
-                LOG.error("", e);
-            else
-                LOG.debug("", e);
-
-            CIRCUIT_BREAKER_EVENTS.labels(getResourceIdentifier()).inc();
+            return wrap(function).accept();
+        } catch (Exception e) {
+            LOG.error("", e);
             return Validation.fail(getDefaultErrorCode());
         }
     }
-
-    String getResourceIdentifier();
-
-    int getCircuitBreakerTimeout();
 
     StatusCode getDefaultErrorCode();
 

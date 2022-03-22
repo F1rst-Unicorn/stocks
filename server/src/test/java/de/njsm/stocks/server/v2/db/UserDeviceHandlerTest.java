@@ -42,9 +42,7 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
 
     @BeforeEach
     public void setup() {
-        uut = new UserDeviceHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new UserDeviceHandler(getConnectionFactory());
         uut.setPrincipals(TEST_USER);
     }
 

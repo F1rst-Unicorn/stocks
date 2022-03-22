@@ -40,9 +40,7 @@ public class TicketHandlerTest extends DbTestCase {
 
     @BeforeEach
     public void setup() {
-        uut = new TicketHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new TicketHandler(getConnectionFactory());
     }
 
     @Test

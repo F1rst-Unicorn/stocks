@@ -36,9 +36,7 @@ public class ConnectionHandlerTest extends DbTestCase {
 
     @BeforeEach
     public void setup() {
-        uut = new ConnectionHandler(getNewResourceIdentifier(),
-                getConnectionFactory(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new ConnectionHandler(getConnectionFactory());
     }
 
     @Test
@@ -100,9 +98,7 @@ public class ConnectionHandlerTest extends DbTestCase {
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
         Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
         Mockito.doThrow(new SQLException("test")).when(connection).setAutoCommit(false);
-        uut = new ConnectionHandler(getNewResourceIdentifier(),
-                connectionFactory,
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new ConnectionHandler(connectionFactory);
 
         uut.rollback();
 
@@ -119,9 +115,7 @@ public class ConnectionHandlerTest extends DbTestCase {
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
         Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
         Mockito.doThrow(new SQLException("test")).when(connection).rollback();
-        uut = new ConnectionHandler(getNewResourceIdentifier(),
-                connectionFactory,
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new ConnectionHandler(connectionFactory);
 
         uut.rollback();
 
@@ -139,9 +133,7 @@ public class ConnectionHandlerTest extends DbTestCase {
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
         Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
         Mockito.doThrow(new SQLException("test")).when(connection).close();
-        uut = new ConnectionHandler(getNewResourceIdentifier(),
-                connectionFactory,
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new ConnectionHandler(connectionFactory);
 
         uut.rollback();
 
@@ -160,9 +152,7 @@ public class ConnectionHandlerTest extends DbTestCase {
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
         Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
         Mockito.doThrow(new SQLException("test")).when(connection).setAutoCommit(false);
-        uut = new ConnectionHandler(getNewResourceIdentifier(),
-                connectionFactory,
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new ConnectionHandler(connectionFactory);
 
         uut.commit();
 
@@ -179,9 +169,7 @@ public class ConnectionHandlerTest extends DbTestCase {
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
         Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
         Mockito.doThrow(new SQLException("test")).when(connection).commit();
-        uut = new ConnectionHandler(getNewResourceIdentifier(),
-                connectionFactory,
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new ConnectionHandler(connectionFactory);
 
         uut.commit();
 
@@ -199,9 +187,7 @@ public class ConnectionHandlerTest extends DbTestCase {
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
         Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
         Mockito.doThrow(new SQLException("test")).when(connection).close();
-        uut = new ConnectionHandler(getNewResourceIdentifier(),
-                connectionFactory,
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new ConnectionHandler(connectionFactory);
 
         uut.commit();
 

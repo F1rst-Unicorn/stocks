@@ -20,11 +20,6 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.util.FunctionWithExceptions;
-import de.njsm.stocks.server.util.HystrixProducer;
-import fj.data.Validation;
-import org.jooq.DSLContext;
-import org.jooq.exception.DataAccessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,10 +27,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
@@ -45,9 +38,7 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
     public void setup() throws SQLException {
         Connection c = getConnectionFactory().getConnection();
         c.setAutoCommit(false);
-        uut = new FailSafeDatabaseHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new FailSafeDatabaseHandler(getConnectionFactory());
     }
 
     @Test
@@ -68,64 +59,6 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
         assertEquals(expected, actual);
     }
 
-
-    @Test
-    public void openCircuitBreaker() throws InterruptedException {
-        FunctionWithExceptions<DSLContext, StatusCode, SQLException> input = (con) -> {
-            throw new SQLException("test");
-        };
-
-        uut.runCommand(input);
-        Thread.sleep(500);      // hystrix window has to shift
-
-        assertTrue(uut.isCircuitBreakerOpen());
-    }
-
-    @Test
-    public void openCircuitBreakerWithUncheckedException() throws InterruptedException {
-        FunctionWithExceptions<DSLContext, StatusCode, SQLException> input = (con) -> {
-            throw new RuntimeException("test");
-        };
-
-        uut.runCommand(input);
-        Thread.sleep(500);      // hystrix window has to shift
-
-        assertTrue(uut.isCircuitBreakerOpen());
-    }
-
-    @Test
-    public void openCircuitBreakerWithTimeout() throws InterruptedException {
-        int timeout = 100;
-        FailSafeDatabaseHandler uut = new FailSafeDatabaseHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                timeout);
-
-        FunctionWithExceptions<DSLContext, StatusCode, SQLException> input = (con) -> {
-            try {
-                Thread.sleep(timeout * 2);
-            } catch (InterruptedException e) {
-                fail();
-            }
-            return StatusCode.SUCCESS;
-        };
-
-        uut.runCommand(input);
-        Thread.sleep(500);      // hystrix window has to shift
-
-        assertTrue(uut.isCircuitBreakerOpen());
-    }
-
-    @Test
-    public void openCircuitBreakerInNewApi() throws InterruptedException {
-        FunctionWithExceptions<DSLContext, Validation<StatusCode, String>, SQLException> input = (con) -> {
-            throw new DataAccessException("test");
-        };
-
-        uut.runFunction(input);
-        Thread.sleep(500);      // hystrix window has to shift
-
-        assertTrue(uut.isCircuitBreakerOpen());
-    }
 
     @Test
     public void testCommitting() throws SQLException {
@@ -210,6 +143,5 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
         assertEquals(StatusCode.SUCCESS, commandCode);
         assertEquals(StatusCode.SERIALISATION_CONFLICT, commitStatusCode);
-        assertFalse(new HystrixProducer<>(uut.getResourceIdentifier(), CIRCUIT_BREAKER_TIMEOUT, null, null).isCircuitBreakerOpen());
     }
 }

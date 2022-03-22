@@ -46,8 +46,6 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
         foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
         uut = new LocationHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT,
                 foodItemHandler);
         uut.setPrincipals(TEST_USER);
     }

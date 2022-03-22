@@ -39,10 +39,8 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.EAN_NUMBER;
 
 public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNumber> {
 
-    public EanNumberHandler(ConnectionFactory connectionFactory,
-                            String resourceIdentifier,
-                            int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public EanNumberHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     public StatusCode deleteOwnedByFood(Identifiable<Food> food) {

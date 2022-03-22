@@ -20,21 +20,16 @@
 package de.njsm.stocks.server.util;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.netflix.hystrix.Hystrix;
 import org.quartz.impl.StdScheduler;
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import rx.schedulers.Schedulers;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.lang.reflect.Field;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.concurrent.TimeUnit;
 
 public class ServletCleaner implements ServletContextListener {
 
@@ -46,7 +41,6 @@ public class ServletCleaner implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         closeConnectionPool(sce);
-        closeHystrix(sce);
         closeQuartzThreadPool(sce);
         closePgDriver(sce);
     }
@@ -76,23 +70,5 @@ public class ServletCleaner implements ServletContextListener {
             StdScheduler ds = springContext.getBean("scheduler", StdScheduler.class);
             ds.shutdown(true);
         }
-    }
-
-    // https://github.com/Netflix/Hystrix/issues/816
-    // https://stackoverflow.com/questions/37009425/fixing-the-web-application-root-created-a-threadlocal-with-key-of-type-com-n
-    private void closeHystrix(ServletContextEvent sce) {
-        Hystrix.reset(30, TimeUnit.SECONDS);
-
-        try {
-            Field currentCommandField = ReflectionUtils.findField(Hystrix.class, "currentCommand");
-            ReflectionUtils.makeAccessible(currentCommandField);
-
-            @SuppressWarnings("rawtypes")
-            ThreadLocal currentCommand = (ThreadLocal) currentCommandField.get(null);
-            currentCommand.remove();
-        } catch(Exception e) {
-            sce.getServletContext().log("Failed to clean hystrix thread-locals", e);
-        }
-        Schedulers.shutdown();
     }
 }

@@ -34,10 +34,8 @@ import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
 public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
 
 
-    public UserHandler(ConnectionFactory connectionFactory,
-                       String resourceIdentifier,
-                       int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public UserHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     @Override

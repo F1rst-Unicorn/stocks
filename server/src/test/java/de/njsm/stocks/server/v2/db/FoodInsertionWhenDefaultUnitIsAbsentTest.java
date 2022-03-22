@@ -37,9 +37,7 @@ public class FoodInsertionWhenDefaultUnitIsAbsentTest extends DbTestCase {
 
     @BeforeEach
     public void setup() {
-        uut = new FoodHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new FoodHandler(getConnectionFactory());
         uut.setPrincipals(TEST_USER);
     }
 

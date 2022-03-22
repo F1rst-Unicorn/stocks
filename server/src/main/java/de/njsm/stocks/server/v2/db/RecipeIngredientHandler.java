@@ -39,10 +39,8 @@ public class RecipeIngredientHandler
         implements CompleteReferenceChecker<Recipe, RecipeIngredient> {
 
 
-    public RecipeIngredientHandler(ConnectionFactory connectionFactory,
-                                   String resourceIdentifier,
-                                   int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public RecipeIngredientHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     @Override

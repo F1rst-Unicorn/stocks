@@ -40,7 +40,6 @@ public class ConfigTest {
         p.put(DB_ADDRESS_KEY, "localhost");
         p.put(DB_PORT_KEY, "1234");
         p.put(DB_NAME_KEY, "name");
-        p.put(DB_CIRCUIT_BREAKER_TIMEOUT_KEY, "2000");
         p.put(DB_VALIDITY_KEY, "10");
         p.put(POSTGRESQL_CONFIG_PREFIX + "user", "user");
         p.put(POSTGRESQL_CONFIG_PREFIX + "password", "password");
@@ -54,7 +53,6 @@ public class ConfigTest {
         assertEquals("localhost", uut.getDbAddress());
         assertEquals("1234", uut.getDbPort());
         assertEquals("name", uut.getDbName());
-        assertEquals(2000, uut.getCircuitBreakerTimeout());
         assertEquals("user", uut.getDbProperties().getProperty("user"));
         assertEquals("password", uut.getDbProperties().getProperty("password"));
         assertEquals(10, uut.getTicketValidity());
@@ -64,13 +62,6 @@ public class ConfigTest {
     @Test
     public void testInvalidNumberInTicketValidity() {
         p.put(DB_VALIDITY_KEY, "invalidNumber");
-
-        assertThrows(NumberFormatException.class, () -> new Config(p));
-    }
-
-    @Test
-    public void testInvalidNumberInCircuitBreakerTimeout() {
-        p.put(DB_CIRCUIT_BREAKER_TIMEOUT_KEY, "invalidNumber");
 
         assertThrows(NumberFormatException.class, () -> new Config(p));
     }

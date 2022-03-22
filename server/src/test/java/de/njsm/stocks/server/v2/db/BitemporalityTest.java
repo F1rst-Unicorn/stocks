@@ -52,10 +52,7 @@ public class BitemporalityTest extends DbTestCase {
     public void setup() {
         FoodItemHandler foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
-        uut = new LocationHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT,
-                foodItemHandler);
+        uut = new LocationHandler(getConnectionFactory(), foodItemHandler);
         uut.setPrincipals(TEST_USER);
     }
 

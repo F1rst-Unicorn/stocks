@@ -35,8 +35,8 @@ import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
 
 public class PrincipalsHandler extends FailSafeDatabaseHandler {
 
-    public PrincipalsHandler(ConnectionFactory connectionFactory, String resourceIdentifier, int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public PrincipalsHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     public Validation<StatusCode, Set<Principals>> getPrincipals() {

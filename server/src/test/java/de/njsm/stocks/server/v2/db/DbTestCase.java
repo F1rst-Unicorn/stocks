@@ -36,13 +36,9 @@ import java.util.Properties;
 
 public abstract class DbTestCase {
 
-    private static int resourceCounter = 0;
-
     private static ConnectionFactory factory;
 
     private static Connection connection;
-
-    public static final int CIRCUIT_BREAKER_TIMEOUT = 5000;
 
     private static ComboPooledDataSource ds;
 
@@ -65,8 +61,6 @@ public abstract class DbTestCase {
         factory = new ConnectionFactory(ds);
         connection = factory.getConnection();
         getSampleData(connection).apply();
-
-        resourceCounter++;
     }
 
     SampleData getSampleData(Connection connection) {
@@ -84,10 +78,6 @@ public abstract class DbTestCase {
 
     protected DSLContext getDSLContext() {
         return DSL.using(connection, SQLDialect.POSTGRES);
-    }
-
-    protected String getNewResourceIdentifier() {
-        return "hystrix group " + resourceCounter;
     }
 
     static Connection createConnection() throws SQLException {

@@ -41,13 +41,12 @@ public class FoodItemInsertionWhenDefaultUnitIsAbsentTest extends DbTestCase {
     private PresenceChecker<User> userPresenceChecker;
 
     @BeforeEach
+    @SuppressWarnings("unchecked")
     public void setup() {
         userDevicePresenceChecker = (PresenceChecker) Mockito.mock(PresenceChecker.class);
         userPresenceChecker = (PresenceChecker) Mockito.mock(PresenceChecker.class);
 
         uut = new FoodItemHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT,
                 userDevicePresenceChecker,
                 userPresenceChecker);
         uut.setPrincipals(TEST_USER);

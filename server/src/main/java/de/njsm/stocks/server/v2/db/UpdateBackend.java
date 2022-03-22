@@ -28,10 +28,8 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.UPDATES;
 
 public class UpdateBackend extends FailSafeDatabaseHandler {
 
-    public UpdateBackend(ConnectionFactory connectionFactory,
-                         String resourceIdentifier,
-                         int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public UpdateBackend(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     public Validation<StatusCode, Stream<Update>> get() {

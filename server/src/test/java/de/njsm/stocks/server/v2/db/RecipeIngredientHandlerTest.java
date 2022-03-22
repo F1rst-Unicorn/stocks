@@ -47,9 +47,7 @@ public class RecipeIngredientHandlerTest
 
     @BeforeEach
     public void setup() {
-        uut = new RecipeIngredientHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new RecipeIngredientHandler(getConnectionFactory());
         uut.setPrincipals(TEST_USER);
     }
 

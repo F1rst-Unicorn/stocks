@@ -40,9 +40,7 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
     @BeforeEach
     public void setup() {
-        uut = new ScaledUnitHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new ScaledUnitHandler(getConnectionFactory());
         uut.setPrincipals(TEST_USER);
     }
 

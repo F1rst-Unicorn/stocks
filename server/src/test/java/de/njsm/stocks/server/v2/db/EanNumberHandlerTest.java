@@ -37,9 +37,7 @@ public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTe
 
     @BeforeEach
     public void setup() {
-        uut = new EanNumberHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new EanNumberHandler(getConnectionFactory());
         uut.setPrincipals(TEST_USER);
     }
 

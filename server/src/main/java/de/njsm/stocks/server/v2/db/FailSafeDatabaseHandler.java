@@ -22,8 +22,7 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
-import de.njsm.stocks.server.util.HystrixProducer;
-import de.njsm.stocks.server.util.HystrixWrapper;
+import de.njsm.stocks.server.util.FallibleOperationWrapper;
 import de.njsm.stocks.server.util.Principals;
 import fj.data.Validation;
 import org.jooq.DSLContext;
@@ -33,27 +32,14 @@ import org.jooq.impl.DSL;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLException> {
-
-    private final String resourceIdentifier;
-
-    private final int timeout;
+public class FailSafeDatabaseHandler implements FallibleOperationWrapper<DSLContext, SQLException> {
 
     private final ConnectionFactory connectionFactory;
 
     protected Principals principals;
 
-    public FailSafeDatabaseHandler(ConnectionFactory connectionFactory,
-                                   String resourceIdentifier,
-                                   int timeout) {
-        this.resourceIdentifier = resourceIdentifier;
-        this.timeout = timeout;
+    public FailSafeDatabaseHandler(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
-    }
-
-    boolean isCircuitBreakerOpen() {
-        return new HystrixProducer<>(resourceIdentifier, 1000, null, null)
-                .isCircuitBreakerOpen();
     }
 
     public void setPrincipals(Principals principals) {
@@ -61,25 +47,15 @@ public class FailSafeDatabaseHandler implements HystrixWrapper<DSLContext, SQLEx
     }
 
     public StatusCode commit() {
-        return new ConnectionHandler(resourceIdentifier + "-cleanup", connectionFactory, timeout).commit();
+        return new ConnectionHandler(connectionFactory).commit();
     }
 
     public StatusCode rollback() {
-        return new ConnectionHandler(resourceIdentifier + "-cleanup", connectionFactory, timeout).rollback();
+        return new ConnectionHandler(connectionFactory).rollback();
     }
 
     public StatusCode setReadOnly() {
-        return new ConnectionHandler(resourceIdentifier, connectionFactory, timeout).setReadOnly();
-    }
-
-    @Override
-    public String getResourceIdentifier() {
-        return resourceIdentifier;
-    }
-
-    @Override
-    public int getCircuitBreakerTimeout() {
-        return timeout;
+        return new ConnectionHandler(connectionFactory).setReadOnly();
     }
 
     @Override

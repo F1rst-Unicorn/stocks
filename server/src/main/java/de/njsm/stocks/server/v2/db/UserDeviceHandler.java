@@ -38,11 +38,8 @@ import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
 
 public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, UserDevice> {
 
-
-    public UserDeviceHandler(ConnectionFactory connectionFactory,
-                             String resourceIdentifier,
-                             int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public UserDeviceHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     public Validation<StatusCode, List<Identifiable<UserDevice>>> getDevicesOfUser(Identifiable<User> user) {

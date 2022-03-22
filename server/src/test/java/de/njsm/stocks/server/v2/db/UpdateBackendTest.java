@@ -36,9 +36,7 @@ public class UpdateBackendTest extends DbTestCase {
 
     @BeforeEach
     public void setup() {
-        uut = new UpdateBackend(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new UpdateBackend(getConnectionFactory());
     }
 
     @Test

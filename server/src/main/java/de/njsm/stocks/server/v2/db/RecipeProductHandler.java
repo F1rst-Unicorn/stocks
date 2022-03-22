@@ -37,10 +37,8 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE_PRODUCT;
 public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecord, RecipeProduct> implements CompleteReferenceChecker<Recipe, RecipeProduct> {
 
 
-    public RecipeProductHandler(ConnectionFactory connectionFactory,
-                                String resourceIdentifier,
-                                int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public RecipeProductHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     @Override

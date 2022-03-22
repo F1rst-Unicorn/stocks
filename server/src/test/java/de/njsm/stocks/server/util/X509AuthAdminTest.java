@@ -30,8 +30,6 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
-import static de.njsm.stocks.server.v2.db.DbTestCase.CIRCUIT_BREAKER_TIMEOUT;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class X509AuthAdminTest {
@@ -57,9 +55,7 @@ public class X509AuthAdminTest {
     @BeforeEach
     public void setup() {
         uut = new X509AuthAdmin(caDirectory.getAbsolutePath(),
-                "touch " + caDirectory + "/reload-nginx",
-                "ca" + testCounter,
-                CIRCUIT_BREAKER_TIMEOUT);
+                "touch " + caDirectory + "/reload-nginx");
     }
 
     @AfterEach

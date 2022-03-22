@@ -36,10 +36,8 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.UNIT;
 public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
 
 
-    public UnitHandler(ConnectionFactory connectionFactory,
-                       String resourceIdentifier,
-                       int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public UnitHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     public StatusCode rename(UnitForRenaming unit) {

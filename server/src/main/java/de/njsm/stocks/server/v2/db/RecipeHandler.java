@@ -36,10 +36,8 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE;
 public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
 
 
-    public RecipeHandler(ConnectionFactory connectionFactory,
-                         String resourceIdentifier,
-                         int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public RecipeHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     public StatusCode edit(RecipeForEditing recipe) {

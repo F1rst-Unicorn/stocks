@@ -43,9 +43,7 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
 
     @BeforeEach
     public void setup() {
-        uut = new RecipeHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new RecipeHandler(getConnectionFactory());
         uut.setPrincipals(TEST_USER);
     }
 

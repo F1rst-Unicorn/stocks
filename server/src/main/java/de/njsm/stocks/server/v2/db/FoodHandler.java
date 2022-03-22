@@ -38,10 +38,8 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
 public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
 
 
-    public FoodHandler(ConnectionFactory connectionFactory,
-                       String resourceIdentifier,
-                       int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public FoodHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     public StatusCode setToBuyStatus(FoodForSetToBuy item) {

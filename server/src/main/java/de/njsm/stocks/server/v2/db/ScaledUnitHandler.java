@@ -40,10 +40,8 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.SCALED_UNIT;
 public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, ScaledUnit> {
 
 
-    public ScaledUnitHandler(ConnectionFactory connectionFactory,
-                             String resourceIdentifier,
-                             int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public ScaledUnitHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     public StatusCode edit(ScaledUnitForEditing data) {

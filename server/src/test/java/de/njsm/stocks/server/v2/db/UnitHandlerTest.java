@@ -39,9 +39,7 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @BeforeEach
     public void setup() {
-        uut = new UnitHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new UnitHandler(getConnectionFactory());
         uut.setPrincipals(TEST_USER);
     }
 

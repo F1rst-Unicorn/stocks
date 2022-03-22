@@ -39,10 +39,8 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
     private final FoodItemHandler foodItemHandler;
 
     public LocationHandler(ConnectionFactory connectionFactory,
-                           String resourceIdentifier,
-                           int timeout,
                            FoodItemHandler foodItemHandler) {
-        super(connectionFactory, resourceIdentifier, timeout);
+        super(connectionFactory);
         this.foodItemHandler = foodItemHandler;
     }
 

@@ -47,10 +47,8 @@ public class TicketHandler extends FailSafeDatabaseHandler {
 
     private static final Logger LOG = LogManager.getLogger(TicketHandler.class);
 
-    public TicketHandler(ConnectionFactory connectionFactory,
-                         String resourceIdentifier,
-                         int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public TicketHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     public StatusCode addTicket(int deviceId, String ticket) {

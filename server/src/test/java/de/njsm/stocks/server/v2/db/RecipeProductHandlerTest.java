@@ -44,9 +44,7 @@ public class RecipeProductHandlerTest extends DbTestCase
 
     @BeforeEach
     public void setup() {
-        uut = new RecipeProductHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new RecipeProductHandler(getConnectionFactory());
         uut.setPrincipals(TEST_USER);
     }
 

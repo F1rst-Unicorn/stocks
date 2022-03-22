@@ -39,9 +39,7 @@ public class PrincipalsHandlerTest extends DbTestCase {
 
     @BeforeEach
     public void setup() {
-        uut = new PrincipalsHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new PrincipalsHandler(getConnectionFactory());
         uut.setPrincipals(TEST_USER);
     }
 

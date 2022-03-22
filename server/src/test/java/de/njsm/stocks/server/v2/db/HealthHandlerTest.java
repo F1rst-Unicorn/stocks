@@ -32,9 +32,7 @@ public class HealthHandlerTest extends DbTestCase {
 
     @BeforeEach
     public void setup() {
-        uut = new HealthHandler(getConnectionFactory(),
-                getNewResourceIdentifier(),
-                CIRCUIT_BREAKER_TIMEOUT);
+        uut = new HealthHandler(getConnectionFactory());
         uut.setPrincipals(TEST_USER);
     }
 

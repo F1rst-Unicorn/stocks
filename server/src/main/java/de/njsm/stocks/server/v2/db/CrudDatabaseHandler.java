@@ -47,10 +47,8 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
 
     public static final OffsetDateTime NEGATIVE_INFINITY = OffsetDateTime.ofInstant(Instant.ofEpochMilli(PGStatement.DATE_NEGATIVE_INFINITY), ZoneId.of("UTC"));
 
-    public CrudDatabaseHandler(ConnectionFactory connectionFactory,
-                               String resourceIdentifier,
-                               int timeout) {
-        super(connectionFactory, resourceIdentifier, timeout);
+    public CrudDatabaseHandler(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     public StatusCode add(Insertable<N> item) {
