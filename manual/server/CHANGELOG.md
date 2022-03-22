@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Changed
+
+* Remove the hystrix circuit breaker support. Thus
+  `de.njsm.stocks.server.v2.circuitbreaker.timeout` is no longer needed in the
+  configuration file. Stability will likely increase on slow hardware.
+  ([#39](https://gitlab.com/veenj/stocks/-/issues/39))
+
 ## [5.5.0.6]
 
 ### Fixed
