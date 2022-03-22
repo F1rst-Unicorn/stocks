@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.5.0.7]
+
 ### Changed
 
 * Remove the hystrix circuit breaker support. Thus
