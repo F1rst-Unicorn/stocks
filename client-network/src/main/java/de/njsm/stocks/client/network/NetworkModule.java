@@ -21,10 +21,13 @@
 
 package de.njsm.stocks.client.network;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.CertificateFetcher;
+import de.njsm.stocks.client.business.LocationAddService;
 import de.njsm.stocks.client.business.Registrator;
 import de.njsm.stocks.client.business.UpdateService;
 import de.njsm.stocks.client.business.entities.ServerEndpoint;
@@ -54,14 +57,21 @@ public interface NetworkModule {
     @Binds
     UpdateService updateService(UpdateServiceImpl impl);
 
+    @Binds
+    LocationAddService locationAddService(LocationAddServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint) {
         String url = String.format(Locale.US, "https://%s:%d/", serverEndpoint.hostname(), serverEndpoint.port());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new Jdk8Module());
+
         return new Retrofit.Builder()
                 .baseUrl(url)
                 .client(getClient(serverEndpoint.trustManagerFactory(), serverEndpoint.keyManagerFactory()))
-                .addConverterFactory(JacksonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .build()
                 .create(ServerApi.class);
     }

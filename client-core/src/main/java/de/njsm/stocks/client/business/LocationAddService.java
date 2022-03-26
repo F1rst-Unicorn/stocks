@@ -19,26 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.network;
+package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.common.api.*;
-import retrofit2.Call;
-import retrofit2.http.*;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
 
-public interface ServerApi {
+public interface LocationAddService {
 
-    @GET("/v2/update")
-    Call<ListResponse<Update>> getUpdates();
-
-    @GET("/v2/location")
-    Call<ListResponse<BitemporalLocation>> getLocations(@Query("bitemporal") int bitemporal,
-                                                        @Query("startingFrom") String startingFrom);
-
-    @DELETE("/v2/location")
-    Call<Response> deleteLocation(@Query("id") int id,
-                                  @Query("version") int version,
-                                  @Query("cascade") int cascade);
-
-    @PUT("/v3/location")
-    Call<DataResponse<Integer>> addLocation(@Body LocationForInsertion locationForInsertion);
+    void add(LocationAddForm locationAddForm);
 }

@@ -21,12 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class SubsystemException extends RuntimeException {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SubsystemException.class);
 
     public SubsystemException() {
     }

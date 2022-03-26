@@ -26,6 +26,8 @@ public interface ErrorRecorder {
     void recordError(Action action, SubsystemException exception);
 
     enum Action {
-        SYNCHRONISATION
+        SYNCHRONISATION,
+
+        ADD_LOCATION,
     }
 }

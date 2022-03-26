@@ -41,6 +41,8 @@ public abstract class Job {
 
         SYNCHRONISATION,
 
+        ADD_LOCATION,
+
         UNKNOWN
     }
 }

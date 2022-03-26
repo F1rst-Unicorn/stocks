@@ -21,18 +21,50 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.Job;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.execution.Scheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class LocationAddInteractorImpl implements LocationAddInteractor {
 
+    private static final Logger LOG = LoggerFactory.getLogger(LocationAddInteractorImpl.class);
+
+    private final Scheduler scheduler;
+
+    private final ErrorRecorder errorRecorder;
+
+    private final LocationAddService locationAddService;
+
+    private final Synchroniser synchroniser;
+
     @Inject
-    public LocationAddInteractorImpl() {
+    public LocationAddInteractorImpl(Scheduler scheduler, ErrorRecorder errorRecorder, LocationAddService locationAddService, Synchroniser synchroniser) {
+        this.scheduler = scheduler;
+        this.errorRecorder = errorRecorder;
+        this.locationAddService = locationAddService;
+        this.synchroniser = synchroniser;
     }
 
     @Override
     public void addLocation(LocationAddForm locationAddForm) {
+        scheduler.schedule(Job.create(Job.Type.ADD_LOCATION, () -> addLocationInBackground(locationAddForm)));
+    }
 
+    void addLocationInBackground(LocationAddForm locationAddForm) {
+        try {
+            addLocationFallibly(locationAddForm);
+        } catch (SubsystemException e) {
+            LOG.warn("failed to add location " + locationAddForm);
+            errorRecorder.recordError(ErrorRecorder.Action.ADD_LOCATION, e);
+        }
+    }
+
+    private void addLocationFallibly(LocationAddForm locationAddForm) {
+        locationAddService.add(locationAddForm);
+        synchroniser.synchronise();
     }
 }

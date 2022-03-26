@@ -29,6 +29,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.1'
     implementation project(':client-core')
     implementation project(':common')
     implementation 'org.slf4j:slf4j-api:1.7.36'
