@@ -16,28 +16,35 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.view;
 
-import dagger.Module;
-import dagger.android.ContributesAndroidInjector;
+import android.view.View;
+import android.widget.TextView;
+import de.njsm.stocks.client.ui.R;
 
-@Module
-public abstract class FragmentModule {
+class BottomToolbar {
 
-    @ContributesAndroidInjector
-    public abstract LocationListFragment locationListFragment();
+    private final TextView backgroundCounter;
 
-    @ContributesAndroidInjector
-    public abstract LocationAddFragment locationAddFragment();
+    private final View backgroundLayout;
 
-    @ContributesAndroidInjector
-    public abstract SetupGreetingFragment setupGreetingFragment();
+    BottomToolbar(View root) {
+        backgroundLayout = root.findViewById(R.id.fragment_frame_toolbar_background_layout);
+        backgroundCounter = root.findViewById(R.id.fragment_frame_toolbar_background_counter);
 
-    @ContributesAndroidInjector
-    public abstract SetupFormFragment setupFormFragment();
+        View errorLayout = root.findViewById(R.id.fragment_frame_toolbar_error_layout);
+        errorLayout.setVisibility(View.INVISIBLE);
+    }
 
-    @ContributesAndroidInjector
-    public abstract BottomToolbarFragment bottomToolbarFragment();
+    void setBackgroundCounter(int counter) {
+        if (counter > 0) {
+            backgroundLayout.setVisibility(View.VISIBLE);
+            backgroundCounter.setText(String.valueOf(counter));
+        } else {
+            backgroundLayout.setVisibility(View.INVISIBLE);
+        }
+    }
 }

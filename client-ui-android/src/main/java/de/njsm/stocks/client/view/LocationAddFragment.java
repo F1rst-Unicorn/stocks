@@ -37,7 +37,7 @@ import javax.inject.Inject;
 
 import static de.njsm.stocks.client.view.ViewUtility.stringFromForm;
 
-public class LocationAddFragment extends InjectableFragment {
+public class LocationAddFragment extends BottomToolbarFragment {
 
     private LocationAddViewModel locationViewModel;
 
@@ -50,14 +50,16 @@ public class LocationAddFragment extends InjectableFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.fragment_location_form, container, false);
+        View root = super.onCreateView(inflater, container, savedInstanceState);
+
+        View result = insertContent(inflater, root, R.layout.fragment_location_form);
         nameField = result.findViewById(R.id.fragment_location_form_name);
         EditText editText = nameField.getEditText();
         if (editText != null)
             editText.addTextChangedListener(new NonEmptyValidator(nameField, this::onNameChanged));
 
         setHasOptionsMenu(true);
-        return result;
+        return root;
     }
 
     @Override
@@ -91,6 +93,7 @@ public class LocationAddFragment extends InjectableFragment {
 
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
+        super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
         locationViewModel = viewModelProvider.get(LocationAddViewModel.class);
     }

@@ -21,9 +21,23 @@
 
 package de.njsm.stocks.client.execution;
 
+import dagger.Module;
+import dagger.Provides;
 import io.reactivex.rxjava3.core.Observable;
 
-public interface SchedulerStatusInteractor {
+import javax.inject.Singleton;
 
-    Observable<Integer> getNumberOfRunningJobs();
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@Module
+public interface FakeExecutionModule {
+
+    @Provides
+    @Singleton
+    static SchedulerStatusReporter schedulerStatusReporter() {
+        SchedulerStatusReporter result = mock(SchedulerStatusReporter.class);
+        when(result.getNumberOfRunningJobs()).thenReturn(Observable.just(0));
+        return result;
+    }
 }

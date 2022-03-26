@@ -28,6 +28,7 @@ import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.di.ViewModelFactory;
 import de.njsm.stocks.client.di.ViewModelKey;
+import de.njsm.stocks.client.execution.SchedulerStatusReporter;
 
 import javax.inject.Provider;
 import java.util.Map;
@@ -59,5 +60,12 @@ public class ViewModelModule {
     @ViewModelKey(LocationAddViewModel.class)
     ViewModel locationAddViewModel(LocationAddInteractor locationAddInteractor) {
         return new LocationAddViewModel(locationAddInteractor);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ToolbarViewModel.class)
+    ViewModel toolbarViewModel(SchedulerStatusReporter schedulerStatusReporter) {
+        return new ToolbarViewModel(schedulerStatusReporter);
     }
 }

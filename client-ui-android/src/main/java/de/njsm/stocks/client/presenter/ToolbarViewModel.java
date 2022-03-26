@@ -16,28 +16,30 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.view;
+package de.njsm.stocks.client.presenter;
 
-import dagger.Module;
-import dagger.android.ContributesAndroidInjector;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LiveDataReactiveStreams;
+import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.execution.SchedulerStatusReporter;
+import io.reactivex.rxjava3.core.BackpressureStrategy;
 
-@Module
-public abstract class FragmentModule {
+import javax.inject.Inject;
 
-    @ContributesAndroidInjector
-    public abstract LocationListFragment locationListFragment();
+public class ToolbarViewModel extends ViewModel {
 
-    @ContributesAndroidInjector
-    public abstract LocationAddFragment locationAddFragment();
+    private final SchedulerStatusReporter schedulerStatusReporter;
 
-    @ContributesAndroidInjector
-    public abstract SetupGreetingFragment setupGreetingFragment();
+    @Inject
+    public ToolbarViewModel(SchedulerStatusReporter schedulerStatusReporter) {
+        this.schedulerStatusReporter = schedulerStatusReporter;
+    }
 
-    @ContributesAndroidInjector
-    public abstract SetupFormFragment setupFormFragment();
-
-    @ContributesAndroidInjector
-    public abstract BottomToolbarFragment bottomToolbarFragment();
+    public LiveData<Integer> backgroundJobCounter() {
+        return LiveDataReactiveStreams.fromPublisher(
+                schedulerStatusReporter.getNumberOfRunningJobs().toFlowable(BackpressureStrategy.LATEST));
+    }
 }

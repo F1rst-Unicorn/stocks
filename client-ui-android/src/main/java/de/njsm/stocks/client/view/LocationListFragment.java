@@ -40,7 +40,7 @@ import de.njsm.stocks.client.view.listswipe.SwipeCallback;
 import javax.inject.Inject;
 import java.util.List;
 
-public class LocationListFragment extends InjectableFragment {
+public class LocationListFragment extends BottomToolbarFragment {
 
     private LocationViewModel locationViewModel;
 
@@ -50,11 +50,13 @@ public class LocationListFragment extends InjectableFragment {
 
     private TemplateSwipeList templateSwipeList;
 
-    @Nullable
     @Override
+    @NonNull
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.template_swipe_list, container, false);
-        templateSwipeList = new TemplateSwipeList(result);
+        View root = super.onCreateView(inflater, container, savedInstanceState);
+
+        View swipeList = insertContent(inflater, root, R.layout.template_swipe_list);
+        templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
 
         locationListAdapter = new LocationAdapter(this::onItemClicked, this::onItemLongClicked);
@@ -70,7 +72,7 @@ public class LocationListFragment extends InjectableFragment {
         templateSwipeList.bindFloatingActionButton(this::onAddItem);
         templateSwipeList.bindSwipeDown(this::onSwipeDown);
 
-        return result;
+        return root;
     }
 
     private void onListDataReceived(List<LocationForListing> data) {
@@ -112,6 +114,7 @@ public class LocationListFragment extends InjectableFragment {
 
     @Inject
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
+        super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
         locationViewModel = viewModelProvider.get(LocationViewModel.class);
     }

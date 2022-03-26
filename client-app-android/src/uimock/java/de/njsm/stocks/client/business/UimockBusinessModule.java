@@ -24,6 +24,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.entities.SetupState;
+import de.njsm.stocks.client.execution.SchedulerStatusReporter;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.concurrent.TimeUnit;
@@ -47,7 +48,7 @@ public interface UimockBusinessModule {
 
     @Provides
     static SetupStatusChecker setupStatusChecker() {
-        return () -> false;
+        return () -> true;
     }
 
     @Provides
@@ -62,5 +63,10 @@ public interface UimockBusinessModule {
                                         SetupState.STORING_SETTINGS,
                                         SetupState.SUCCESS
                                 ).zipWith(Observable.interval(1, TimeUnit.SECONDS), (state, i) -> state));
+    }
+
+    @Provides
+    static SchedulerStatusReporter setupStatusReporter() {
+        return () -> Observable.just(1);
     }
 }

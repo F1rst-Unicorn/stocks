@@ -36,6 +36,15 @@ public interface ExecutionModule {
     @Binds
     Scheduler scheduler(SchedulerImpl impl);
 
+    @Binds
+    SchedulerStatusReporter schedulerStatusReporter(SchedulerImpl impl);
+
+    @Provides
+    @Singleton
+    static SchedulerImpl schedulerImpl(Executor executor) {
+        return new SchedulerImpl(executor);
+    }
+
     @Provides
     @Singleton
     static Executor executor() {
@@ -51,4 +60,5 @@ public interface ExecutionModule {
             }
         }, null, true);
     }
+
 }

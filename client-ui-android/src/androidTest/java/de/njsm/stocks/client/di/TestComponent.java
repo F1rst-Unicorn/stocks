@@ -24,6 +24,7 @@ import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.FakeBusinessModule;
+import de.njsm.stocks.client.execution.FakeExecutionModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.view.*;
 
@@ -37,6 +38,7 @@ import javax.inject.Singleton;
         FakeNavigationModule.class,
         TestActivityModule.class,
         FakeBusinessModule.class,
+        FakeExecutionModule.class,
 })
 public interface TestComponent {
 
@@ -49,6 +51,8 @@ public interface TestComponent {
     void inject(SetupFormFragmentTest test);
 
     void inject(LocationAddFragmentTest test);
+
+    void inject(BottomToolbarFragmentTest test);
 
     @Component.Builder
     interface Builder {
