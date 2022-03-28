@@ -99,6 +99,7 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
     public LocationForInsertion getInsertable() {
         return LocationForInsertion.builder()
                 .name("Fridge")
+                .description("A fridge")
                 .build();
     }
 

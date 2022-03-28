@@ -176,8 +176,8 @@ public class FoodTest extends Base implements Deleter {
     private static void addFoodType(String name) {
         given()
                 .log().ifValidationFails()
-                .queryParam("name", name).
-        when()
+                .queryParam("name", name)
+        .when()
                 .put(TestSuite.DOMAIN + "/v2/food").
         then()
                 .log().ifValidationFails()

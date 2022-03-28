@@ -170,7 +170,15 @@
         <constructor-arg index="0" ref="foodManager" />
     </bean>
 
+    <bean name="v3.foodEndpoint" class="de.njsm.stocks.server.v3.web.FoodEndpoint" scope="request">
+        <constructor-arg index="0" ref="foodManager" />
+    </bean>
+
     <bean name="locationEndpoint" class="de.njsm.stocks.server.v2.web.LocationEndpoint" scope="request">
+        <constructor-arg index="0" ref="locationManager" />
+    </bean>
+
+    <bean name="v3.locationEndpoint" class="de.njsm.stocks.server.v3.web.LocationEndpoint" scope="request">
         <constructor-arg index="0" ref="locationManager" />
     </bean>
 

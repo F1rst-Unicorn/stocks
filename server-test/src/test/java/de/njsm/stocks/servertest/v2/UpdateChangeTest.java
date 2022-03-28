@@ -25,6 +25,7 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 
+import static de.njsm.stocks.servertest.v2.LocationTest.addLocationType;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
@@ -74,14 +75,7 @@ public class UpdateChangeTest {
     }
 
     private void addALocation(String name) {
-        given()
-                .queryParam("name", "update" + name).
-        when()
-                .put(TestSuite.DOMAIN + "/v2/location").
-        then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(0));
+        addLocationType("update " + name);
     }
 
     private String getLocationChangeDate() {

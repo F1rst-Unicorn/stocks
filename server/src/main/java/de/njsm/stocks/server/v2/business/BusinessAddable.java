@@ -23,12 +23,17 @@ import de.njsm.stocks.common.api.Entity;
 import de.njsm.stocks.common.api.Insertable;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
+import fj.data.Validation;
 import org.jooq.TableRecord;
 
 public interface BusinessAddable<U extends TableRecord<U>, T extends Entity<T>> extends BusinessOperations {
 
     default StatusCode add(Insertable<T> item) {
         return runOperation(() -> getDbHandler().add(item));
+    }
+
+    default Validation<StatusCode, Integer> addReturningId(Insertable<T> item) {
+        return runFunction(() -> getDbHandler().addReturningId(item));
     }
 
     CrudDatabaseHandler<U, T> getDbHandler();

@@ -28,6 +28,7 @@ import org.jooq.TableRecord;
 import org.jooq.impl.DSL;
 
 import java.time.OffsetDateTime;
+import java.time.Period;
 import java.time.ZoneOffset;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.*;
@@ -47,13 +48,42 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
     @Override
     public InsertOnDuplicateStep<R> foodForInsertion(FoodForInsertion foodForInsertion, Input<R> input) {
         if (foodForInsertion.storeUnit().isEmpty())
-            return input.getInsertSetStep().columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
-                    .select(DSL.select(DSL.inline(foodForInsertion.name()), DSL.inline(input.getPrincipals().getDid()), DSL.min(CURRENT_SCALED_UNIT.ID))
-                            .from(CURRENT_SCALED_UNIT));
+            return input.getInsertSetStep().columns(
+                            FOOD.NAME,
+                            FOOD.EXPIRATION_OFFSET,
+                            FOOD.STORE_UNIT,
+                            FOOD.LOCATION,
+                            FOOD.DESCRIPTION,
+                            FOOD.TO_BUY,
+                            FOOD.INITIATES
+                    ).select(DSL.select(
+                            DSL.inline(foodForInsertion.name()),
+                            DSL.inline(foodForInsertion.expirationOffset().map(Period::ofDays).orElse(Period.ZERO)),
+                            DSL.min(CURRENT_SCALED_UNIT.ID),
+                            DSL.inline(foodForInsertion.location().orElse(null)),
+                            DSL.inline(foodForInsertion.description().orElse("")),
+                            DSL.inline(foodForInsertion.toBuy().orElse(false)),
+                            DSL.inline(input.getPrincipals().getDid())
+                    ).from(CURRENT_SCALED_UNIT));
 
         else
-            return input.getInsertSetStep().columns(FOOD.NAME, FOOD.INITIATES, FOOD.STORE_UNIT)
-                    .values(foodForInsertion.name(), input.getPrincipals().getDid(), foodForInsertion.storeUnit().get());
+            return input.getInsertSetStep().columns(
+                    FOOD.NAME,
+                    FOOD.EXPIRATION_OFFSET,
+                    FOOD.STORE_UNIT,
+                    FOOD.LOCATION,
+                    FOOD.DESCRIPTION,
+                    FOOD.TO_BUY,
+                    FOOD.INITIATES
+            ).values(
+                    foodForInsertion.name(),
+                    foodForInsertion.expirationOffset().map(Period::ofDays).orElse(Period.ZERO),
+                    foodForInsertion.storeUnit().get(),
+                    foodForInsertion.location().orElse(null),
+                    foodForInsertion.description().orElse(""),
+                    foodForInsertion.toBuy().orElse(false),
+                    input.getPrincipals().getDid()
+            );
     }
 
     @Override
@@ -94,8 +124,14 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
 
     @Override
     public InsertOnDuplicateStep<R> locationForInsertion(LocationForInsertion locationForInsertion, Input<R> input) {
-        return input.getInsertSetStep().columns(LOCATION.NAME, LOCATION.INITIATES)
-                .values(locationForInsertion.name(), input.getPrincipals().getDid());
+        return input.getInsertSetStep().columns(
+                        LOCATION.NAME,
+                        LOCATION.DESCRIPTION,
+                        LOCATION.INITIATES
+                ).values(
+                        locationForInsertion.name(),
+                        locationForInsertion.description().orElse(""),
+                        input.getPrincipals().getDid());
     }
 
     @Override

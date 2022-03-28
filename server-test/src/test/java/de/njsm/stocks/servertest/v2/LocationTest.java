@@ -31,24 +31,26 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
-public class LocationTest {
+public class LocationTest extends Base {
 
     @Test
     public void addAnItem() {
-        addLocationType("Location5");
+        String name = getUniqueName("addAnItem");
+        addLocationType(name);
 
         assertOnLocation()
                 .body("status", equalTo(0))
-                .body("data.name", hasItem("Location5"));
+                .body("data.name", hasItem(name));
     }
 
     @Test
     public void initiatingDevicesAreSet() {
-        addLocationType("Location6");
+        String name = getUniqueName("initiatingDevicesAreSet");
+        addLocationType(name);
 
         assertOnLocation(true)
                 .body("status", equalTo(0))
-                .body("data.name", hasItem("Location6"))
+                .body("data.name", hasItem(name))
                 .body("data.initiates", hasItem(1));
     }
 
@@ -171,8 +173,8 @@ public class LocationTest {
     static void addLocationType(String name) {
         given()
                 .log().ifValidationFails()
-                .queryParam("name", name).
-        when()
+                .queryParam("name", name)
+        .when()
                 .put(TestSuite.DOMAIN + "/v2/location").
         then()
                 .log().ifValidationFails()

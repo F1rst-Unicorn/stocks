@@ -27,6 +27,7 @@ import com.google.common.base.Preconditions;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 
 import javax.annotation.Nullable;
+import java.time.Period;
 import java.util.Optional;
 
 @AutoValue
@@ -37,7 +38,19 @@ public abstract class FoodForInsertion implements Insertable<Food>, SelfValidati
     public abstract String name();
 
     @JsonGetter
+    public abstract Optional<Integer> expirationOffset();
+
+    @JsonGetter
     public abstract Optional<Integer> storeUnit();
+
+    @JsonGetter
+    public abstract Optional<Integer> location();
+
+    @JsonGetter
+    public abstract Optional<String> description();
+
+    @JsonGetter
+    public abstract Optional<Boolean> toBuy();
 
     public static Builder builder() {
         return new AutoValue_FoodForInsertion.Builder();
@@ -50,18 +63,33 @@ public abstract class FoodForInsertion implements Insertable<Food>, SelfValidati
 
         public abstract Builder name(String v);
 
+        public abstract Builder expirationOffset(@Nullable Integer v);
+
         public abstract Builder storeUnit(@Nullable Integer v);
+
+        public abstract Builder location(@Nullable Integer v);
+
+        public abstract Builder description(@Nullable String v);
+
+        public abstract Builder toBuy(@Nullable Boolean v);
     }
 
     @Override
     public boolean isContainedIn(Food entity) {
         return name().equals(entity.name()) &&
-                storeUnit().map(v -> v.equals(entity.storeUnit())).orElse(true);
+                description().map(v -> v.equals(entity.description())).orElse(true) &&
+                location().map(v -> v.equals(entity.location())).orElse(true) &&
+                expirationOffset().map(Period::ofDays).map(v -> v.equals(entity.expirationOffset())).orElse(true) &&
+                storeUnit().map(v -> v.equals(entity.storeUnit())).orElse(true) &&
+                toBuy().map(v -> v.equals(entity.toBuy())).orElse(true);
     }
 
     @Override
     public void validate() {
+        Preconditions.checkState(!name().isEmpty(), "name is empty");
         Preconditions.checkState(storeUnit().map(v -> v > 0).orElse(true), "storeUnit id is invalid");
+        Preconditions.checkState(location().map(v -> v > 0).orElse(true), "location id is invalid");
+        Preconditions.checkState(expirationOffset().map(v -> v > 0).orElse(true), "expiration offset is invalid");
     }
 
     @Override

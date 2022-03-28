@@ -425,6 +425,23 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
+    "200-write-returning-id":
+      description: |
+        Data modification successful. The ID of the main entity created is
+        returned
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Response'
+              - type: object
+                properties:
+                  data:
+                    type: integer
+                    minimum: 1
+                    description: |
+                      The ID referencing the main entity of the request, which
+                      is understood from the context.
     "GET-400":
       description: No `startingFrom` given.
       content:
@@ -787,6 +804,25 @@ paths:
           $ref: '#/components/responses/PUT-400'
         "500":
           $ref: '#/components/responses/500'
+    delete:
+      description: |
+        Delete the food type. This will delete all items and EAN codesof this
+        type as well.
+        
+        This is only possible if no recipe ingredient or recipe product
+        references this food type.
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
+        "400":
+          $ref: '#/components/responses/DELETE-400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
   /v2/food/edit:
     put:
       parameters:
@@ -857,25 +893,6 @@ paths:
           $ref: '#/components/responses/200-write'
         "400":
           $ref: '#/components/responses/PUT-400'
-        "404":
-          $ref: '#/components/responses/404'
-        "500":
-          $ref: '#/components/responses/500'
-    delete:
-      description: |
-        Delete the food type. This will delete all items and EAN codesof this
-        type as well.
-
-        This is only possible if no recipe ingredient or recipe product
-        references this food type.
-      parameters:
-        - $ref: '#/components/parameters/id'
-        - $ref: '#/components/parameters/version'
-      responses:
-        "200":
-          $ref: '#/components/responses/200-write'
-        "400":
-          $ref: '#/components/responses/DELETE-400'
         "404":
           $ref: '#/components/responses/404'
         "500":
@@ -1258,7 +1275,7 @@ paths:
     put:
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -1282,7 +1299,7 @@ paths:
     delete:
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -1309,7 +1326,7 @@ paths:
     put:
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -1504,3 +1521,33 @@ paths:
                           client access to the system.
         "401":
           $ref: '#/components/responses/401'
+  "/v3/food":
+    put:
+      description: Add a food type.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Food'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write-returning-id'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
+  "/v3/location":
+    put:
+      description: Add a location.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write-returning-id'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'

@@ -23,7 +23,11 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_LocationForInsertion.Builder.class)
@@ -31,6 +35,9 @@ public abstract class LocationForInsertion implements Insertable<Location>, Self
 
     @JsonGetter
     public abstract String name();
+
+    @JsonGetter
+    public abstract Optional<String> description();
 
     public static Builder builder() {
         return new AutoValue_LocationForInsertion.Builder();
@@ -42,15 +49,20 @@ public abstract class LocationForInsertion implements Insertable<Location>, Self
             extends SelfValidating.Builder<LocationForInsertion> {
 
         public abstract Builder name(String v);
+
+        public abstract Builder description(@Nullable String v);
     }
 
     @Override
     public boolean isContainedIn(Location entity) {
-        return name().equals(entity.name());
+        return name().equals(entity.name()) &&
+                description().map(v -> v.equals(entity.description())).orElse(true);
     }
 
     @Override
-    public void validate() {}
+    public void validate() {
+        Preconditions.checkState(!name().isEmpty(), "name is empty");
+    }
 
     @Override
     public <I, O> O accept(InsertableVisitor<I, O> visitor, I argument) {
