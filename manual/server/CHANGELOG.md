@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.6.0.0]
+
 ### Added
 
 * New food and location endpoints to add these things with all fields set.
