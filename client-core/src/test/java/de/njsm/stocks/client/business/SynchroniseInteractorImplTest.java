@@ -140,7 +140,7 @@ class SynchroniseInteractorImplTest {
 
         uut.synchronise();
 
-        verify(errorRecorder).recordError(ErrorRecorder.Action.SYNCHRONISATION, expected);
+        verify(errorRecorder).recordSynchronisationError(expected);
         verify(updateService).getUpdates();
     }
 }

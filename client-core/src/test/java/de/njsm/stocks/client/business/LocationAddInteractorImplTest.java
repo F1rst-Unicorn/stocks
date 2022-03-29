@@ -66,7 +66,7 @@ class LocationAddInteractorImplTest {
         uut.addLocationInBackground(getInput());
 
         verify(locationAddService).add(getInput());
-        verify(errorRecorder).recordError(ErrorRecorder.Action.ADD_LOCATION, exception);
+        verify(errorRecorder).recordLocationAddError(exception, getInput());
         verifyNoInteractions(synchroniser);
     }
 

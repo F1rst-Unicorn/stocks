@@ -59,7 +59,7 @@ public class LocationAddInteractorImpl implements LocationAddInteractor {
             addLocationFallibly(locationAddForm);
         } catch (SubsystemException e) {
             LOG.warn("failed to add location " + locationAddForm);
-            errorRecorder.recordError(ErrorRecorder.Action.ADD_LOCATION, e);
+            errorRecorder.recordLocationAddError(e, locationAddForm);
         }
     }
 

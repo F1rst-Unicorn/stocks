@@ -32,6 +32,8 @@ import java.time.format.DateTimeFormatter;
                 LocationDbEntity.class,
                 StatusCodeExceptionEntity.class,
                 SubsystemExceptionEntity.class,
+                LocationAddEntity.class,
+                ErrorEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,

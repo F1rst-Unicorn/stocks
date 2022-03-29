@@ -26,7 +26,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.entities.StatusCode;
 
 @Entity(tableName = "status_code_error")
@@ -39,18 +38,16 @@ abstract class StatusCodeExceptionEntity implements IdFields, SubsystemException
     abstract StatusCode statusCode();
 
     static StatusCodeExceptionEntity create(int id,
-                                           ErrorRecorder.Action action,
                                            String stacktrace,
                                            String message,
                                            StatusCode statusCode) {
-        return new AutoValue_StatusCodeExceptionEntity(id, action, stacktrace, message, statusCode);
+        return new AutoValue_StatusCodeExceptionEntity(id, stacktrace, message, statusCode);
     }
 
     @Ignore
-    static StatusCodeExceptionEntity create(ErrorRecorder.Action action,
-                                           String stacktrace,
+    static StatusCodeExceptionEntity create(String stacktrace,
                                            String message,
                                            StatusCode statusCode) {
-        return new AutoValue_StatusCodeExceptionEntity(0, action, stacktrace, message, statusCode);
+        return new AutoValue_StatusCodeExceptionEntity(0, stacktrace, message, statusCode);
     }
 }

@@ -59,7 +59,7 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
             trySynchronisationFallibly();
         } catch (SubsystemException e) {
             LOG.warn("failed to synchronise", e);
-            errorRecorder.recordError(ErrorRecorder.Action.SYNCHRONISATION, e);
+            errorRecorder.recordSynchronisationError(e);
         }
     }
 

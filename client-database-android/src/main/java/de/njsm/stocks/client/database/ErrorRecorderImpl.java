@@ -21,9 +21,11 @@
 
 package de.njsm.stocks.client.database;
 
+import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
 
 import javax.inject.Inject;
 import java.io.PrintWriter;
@@ -41,28 +43,51 @@ class ErrorRecorderImpl implements ErrorRecorder {
     }
 
     @Override
-    public void recordError(Action action, SubsystemException input) {
-        new Inserter().visit(input, action);
+    public void recordSynchronisationError(SubsystemException input) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(input, null);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.SYNCHRONISATION, 0, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
-    private final class Inserter implements SubsystemException.Visitor<Action, Void> {
+    @Override
+    public void recordLocationAddError(SubsystemException exception, LocationAddForm form) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
+
+        LocationAddEntity locationAddEntity = LocationAddEntity.create(form.name(), form.description());
+        long dataId = errorDao.insert(locationAddEntity);
+
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_LOCATION, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @AutoValue
+    abstract static class ExceptionData {
+
+        static ExceptionData create(ErrorEntity.ExceptionType exceptionType, long exceptionId) {
+            return new AutoValue_ErrorRecorderImpl_ExceptionData(exceptionType, exceptionId);
+        }
+
+        abstract ErrorEntity.ExceptionType exceptionType();
+
+        abstract long exceptionId();
+    }
+
+    private final class ExceptionInserter implements SubsystemException.Visitor<Void, ExceptionData> {
 
         @Override
-        public Void subsystemException(SubsystemException exception, Action input) {
+        public ExceptionData subsystemException(SubsystemException exception, Void input) {
             String stacktrace = getStackTrace(exception);
             String message = getMessage(exception);
-            SubsystemExceptionEntity error = SubsystemExceptionEntity.create(0, input, stacktrace, message);
-            errorDao.insert(error);
-            return null;
+            SubsystemExceptionEntity error = SubsystemExceptionEntity.create(0, stacktrace, message);
+            long id = errorDao.insert(error);
+            return ExceptionData.create(ErrorEntity.ExceptionType.SUBSYSTEM_EXCEPTION, id);
         }
 
         @Override
-        public Void statusCodeException(StatusCodeException exception, Action input) {
+        public ExceptionData statusCodeException(StatusCodeException exception, Void input) {
             String stacktrace = getStackTrace(exception);
             String message = getMessage(exception);
-            StatusCodeExceptionEntity error = StatusCodeExceptionEntity.create(0, input, stacktrace, message, exception.getStatusCode());
-            errorDao.insert(error);
-            return null;
+            StatusCodeExceptionEntity error = StatusCodeExceptionEntity.create(0, stacktrace, message, exception.getStatusCode());
+            long id = errorDao.insert(error);
+            return ExceptionData.create(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, id);
         }
 
         private String getMessage(SubsystemException exception) {

@@ -24,23 +24,20 @@ package de.njsm.stocks.client.database;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.business.ErrorRecorder;
 
 @Entity(tableName = "subsystem_error")
 @AutoValue
 abstract class SubsystemExceptionEntity implements IdFields, SubsystemExceptionEntityFields {
 
     static SubsystemExceptionEntity create(int id,
-                                           ErrorRecorder.Action action,
                                            String stacktrace,
                                            String message) {
-        return new AutoValue_SubsystemExceptionEntity(id, action, stacktrace, message);
+        return new AutoValue_SubsystemExceptionEntity(id, stacktrace, message);
     }
 
     @Ignore
-    static SubsystemExceptionEntity create(ErrorRecorder.Action action,
-                                           String stacktrace,
+    static SubsystemExceptionEntity create(String stacktrace,
                                            String message) {
-        return new AutoValue_SubsystemExceptionEntity(0, action, stacktrace, message);
+        return new AutoValue_SubsystemExceptionEntity(0, stacktrace, message);
     }
 }

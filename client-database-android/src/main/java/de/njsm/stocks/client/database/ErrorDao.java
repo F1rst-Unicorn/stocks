@@ -37,8 +37,20 @@ abstract class ErrorDao {
     abstract List<SubsystemExceptionEntity> getSubsystemErrors();
 
     @Insert
-    abstract void insert(StatusCodeExceptionEntity synchronisationError);
+    abstract long insert(StatusCodeExceptionEntity synchronisationError);
 
     @Insert
-    abstract void insert(SubsystemExceptionEntity error);
+    abstract long insert(SubsystemExceptionEntity error);
+
+    @Query("select * from location_to_add")
+    abstract List<LocationAddEntity> getLocationAdds();
+
+    @Insert
+    abstract long insert(LocationAddEntity locationAddEntity);
+
+    @Insert
+    abstract void insert(ErrorEntity locationAddEntity);
+
+    @Query("select * from error")
+    abstract List<ErrorEntity> getErrors();
 }

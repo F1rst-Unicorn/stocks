@@ -21,19 +21,20 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
 
-interface SubsystemExceptionEntityFields {
+@AutoValue
+@Entity(tableName = "location_to_add")
+abstract class LocationAddEntity implements IdFields, LocationFields {
 
-    @ColumnInfo(name = "stacktrace")
-    @NonNull
-    @AutoValue.CopyAnnotations
-    String stacktrace();
+    static LocationAddEntity create(int id, String name, String description) {
+        return new AutoValue_LocationAddEntity(id, name, description);
+    }
 
-    @ColumnInfo(name = "message")
-    @NonNull
-    @AutoValue.CopyAnnotations
-    String message();
+    @Ignore
+    static LocationAddEntity create(String name, String description) {
+        return new AutoValue_LocationAddEntity(0, name, description);
+    }
 }

@@ -21,19 +21,42 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
 
-interface SubsystemExceptionEntityFields {
+@AutoValue
+@Entity(tableName = "error")
+abstract class ErrorEntity implements IdFields {
 
-    @ColumnInfo(name = "stacktrace")
-    @NonNull
-    @AutoValue.CopyAnnotations
-    String stacktrace();
+    static ErrorEntity create(int id, Action action, long dataId, ExceptionType exceptionType, long exceptionId) {
+        return new AutoValue_ErrorEntity(id, action, dataId, exceptionType, exceptionId);
+    }
 
-    @ColumnInfo(name = "message")
-    @NonNull
-    @AutoValue.CopyAnnotations
-    String message();
+    @Ignore
+    static ErrorEntity create(Action action, long dataId, ExceptionType exceptionType, long exceptionId) {
+        return new AutoValue_ErrorEntity(0, action, dataId, exceptionType, exceptionId);
+    }
+
+    abstract Action action();
+
+    abstract long dataId();
+
+    abstract ExceptionType exceptionType();
+
+    abstract long exceptionId();
+
+    enum Action {
+        SYNCHRONISATION,
+
+        ADD_LOCATION,
+    }
+
+    enum ExceptionType {
+
+        SUBSYSTEM_EXCEPTION,
+
+        STATUSCODE_EXCEPTION
+    }
 }
+

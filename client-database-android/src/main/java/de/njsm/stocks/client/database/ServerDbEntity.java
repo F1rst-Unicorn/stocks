@@ -23,7 +23,6 @@ package de.njsm.stocks.client.database;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
-import androidx.room.PrimaryKey;
 import com.google.auto.value.AutoValue;
 
 import java.time.Instant;
@@ -31,7 +30,6 @@ import java.time.Instant;
 abstract class ServerDbEntity<T extends ServerDbEntity<T>> {
 
     @ColumnInfo(name = "_id")
-    @PrimaryKey(autoGenerate = true)
     @AutoValue.CopyAnnotations
     abstract int id();
 

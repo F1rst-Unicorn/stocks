@@ -21,13 +21,12 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.LocationAddForm;
+
 public interface ErrorRecorder {
 
-    void recordError(Action action, SubsystemException exception);
+    void recordSynchronisationError(SubsystemException exception);
 
-    enum Action {
-        SYNCHRONISATION,
+    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
 
-        ADD_LOCATION,
-    }
 }
