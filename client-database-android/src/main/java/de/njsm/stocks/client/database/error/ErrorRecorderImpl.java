@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static de.njsm.stocks.client.database.DataMapper.map;
 import static java.util.Optional.ofNullable;
 
 public class ErrorRecorderImpl implements ErrorRecorder {
@@ -52,7 +53,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     public void recordLocationAddError(SubsystemException exception, LocationAddForm form) {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
 
-        LocationAddEntity locationAddEntity = LocationAddEntity.create(form.name(), form.description());
+        LocationAddEntity locationAddEntity = map(form);
         long dataId = errorDao.insert(locationAddEntity);
 
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_LOCATION, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));

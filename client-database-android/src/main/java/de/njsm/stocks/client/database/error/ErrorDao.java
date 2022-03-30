@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database.error;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
@@ -53,4 +54,19 @@ public abstract class ErrorDao {
 
     @Query("select * from error")
     abstract List<ErrorEntity> getErrors();
+
+    @Query("select count(*) from error")
+    abstract Observable<Integer> getNumberOfErrors();
+
+    @Query("select * from error")
+    abstract Observable<List<ErrorEntity>> observeErrors();
+
+    @Query("select * from location_to_add where _id = :id")
+    abstract LocationAddEntity getLocationAdd(long id);
+
+    @Query("select * from status_code_error where _id = :id")
+    abstract StatusCodeExceptionEntity getStatusCodeException(long id);
+
+    @Query("select * from subsystem_error where _id = :id")
+    abstract SubsystemExceptionEntity getSubsystemException(long id);
 }

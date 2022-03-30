@@ -24,6 +24,7 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.ErrorDetails;
 import de.njsm.stocks.client.business.entities.ErrorDetailsVisitor;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
 
 import javax.inject.Inject;
 
@@ -31,9 +32,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final LocationAddInteractor locationAddInteractor;
 
+    private final Synchroniser synchroniser;
+
     @Inject
-    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor) {
+    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, Synchroniser synchroniser) {
         this.locationAddInteractor = locationAddInteractor;
+        this.synchroniser = synchroniser;
     }
 
     @Override
@@ -44,6 +48,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     @Override
     public Void locationAddForm(LocationAddForm locationAddForm, Void input) {
         locationAddInteractor.addLocation(locationAddForm);
+        return null;
+    }
+
+    @Override
+    public Void synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, Void input) {
+        synchroniser.synchronise();
         return null;
     }
 }

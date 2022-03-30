@@ -21,13 +21,11 @@
 
 package de.njsm.stocks.client.business.entities;
 
-public interface ErrorDetailsVisitor<I, O> {
+public class SynchronisationErrorDetails implements ErrorDetails {
 
-    default O visit(ErrorDetails errorDetails, I input) {
-        return errorDetails.accept(this, input);
+
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.synchronisationErrorDetails(this, input);
     }
-
-    O locationAddForm(LocationAddForm locationAddForm, I input);
-
-    O synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, I input);
 }

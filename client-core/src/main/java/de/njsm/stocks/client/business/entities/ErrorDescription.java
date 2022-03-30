@@ -26,13 +26,13 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class ErrorDescription {
 
-    abstract StatusCode statusCode();
+    public abstract StatusCode statusCode();
 
-    abstract String stackTrace();
+    public abstract String stackTrace();
 
-    abstract String errorMessage();
+    public abstract String errorMessage();
 
-    abstract ErrorDetails errorDetails();
+    public abstract ErrorDetails errorDetails();
 
     public static ErrorDescription create(StatusCode statusCode, String stackTrace, String errorMessage, ErrorDetails errorDetails) {
         return new AutoValue_ErrorDescription(statusCode, stackTrace, errorMessage, errorDetails);

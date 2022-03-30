@@ -31,12 +31,12 @@ import de.njsm.stocks.client.database.LocationFields;
 @Entity(tableName = "location_to_add")
 public abstract class LocationAddEntity implements IdFields, LocationFields {
 
-    static LocationAddEntity create(int id, String name, String description) {
+    public static LocationAddEntity create(int id, String name, String description) {
         return new AutoValue_LocationAddEntity(id, name, description);
     }
 
     @Ignore
-    static LocationAddEntity create(String name, String description) {
+    public static LocationAddEntity create(String name, String description) {
         return new AutoValue_LocationAddEntity(0, name, description);
     }
 }

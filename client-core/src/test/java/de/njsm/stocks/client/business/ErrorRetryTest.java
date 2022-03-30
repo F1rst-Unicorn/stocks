@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,10 +35,13 @@ public class ErrorRetryTest {
 
     private LocationAddInteractor locationAddInteractor;
 
+    private Synchroniser synchroniser;
+
     @BeforeEach
     void setUp() {
         locationAddInteractor = mock(LocationAddInteractor.class);
-        uut = new ErrorRetryInteractorImpl(locationAddInteractor);
+        synchroniser = mock(Synchroniser.class);
+        uut = new ErrorRetryInteractorImpl(locationAddInteractor, synchroniser);
     }
 
     @Test
@@ -47,5 +51,14 @@ public class ErrorRetryTest {
         uut.retry(input);
 
         verify(locationAddInteractor).addLocation(input);
+    }
+
+    @Test
+    void retryingSynchronisationDispatches() {
+        SynchronisationErrorDetails input = new SynchronisationErrorDetails();
+
+        uut.retry(input);
+
+        verify(synchroniser).synchronise();
     }
 }

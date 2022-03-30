@@ -21,12 +21,10 @@
 
 package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.EntityType;
-import de.njsm.stocks.client.business.entities.LocationForListing;
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
+import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.database.error.LocationAddEntity;
 
-class DataMapper {
+public class DataMapper {
 
     static Update map(UpdateDbEntity input) {
         return Update.create(map(input.table()), input.lastUpdate());
@@ -52,6 +50,14 @@ class DataMapper {
 
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
+    }
+
+    public static LocationAddForm map(LocationAddEntity input) {
+        return LocationAddForm.create(input.name(), input.description());
+    }
+
+    public static LocationAddEntity map(LocationAddForm input) {
+        return LocationAddEntity.create(input.name(), input.description());
     }
 
     static EntityType map(String entityType) {

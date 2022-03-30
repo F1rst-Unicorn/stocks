@@ -48,16 +48,62 @@ public abstract class ErrorEntity implements IdFields {
     abstract long exceptionId();
 
     enum Action {
-        SYNCHRONISATION,
+        SYNCHRONISATION{
+            @Override
+            <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
+                return visitor.synchronisation(this, input);
+            }
+        },
 
-        ADD_LOCATION,
+        ADD_LOCATION{
+            @Override
+            <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
+                return visitor.addLocation(this, input);
+            }
+        };
+
+        abstract <I, O> O accept(ActionVisitor<I, O> visitor, I input);
+    }
+
+    interface ActionVisitor<I, O> {
+
+        default O visit(Action action, I input) {
+            return action.accept(this, input);
+        }
+
+        O synchronisation(Action action, I input);
+
+        O addLocation(Action action, I input);
     }
 
     enum ExceptionType {
 
-        SUBSYSTEM_EXCEPTION,
+        SUBSYSTEM_EXCEPTION {
+            @Override
+            public <I, O> O accept(ExceptionTypeVisitor<I, O> visitor, I input) {
+                return visitor.subsystemException(this, input);
+            }
+        },
 
-        STATUSCODE_EXCEPTION
+        STATUSCODE_EXCEPTION {
+            @Override
+            public <I, O> O accept(ExceptionTypeVisitor<I, O> visitor, I input) {
+                return visitor.statusCodeException(this, input);
+            }
+        };
+
+        public abstract <I, O> O accept(ExceptionTypeVisitor<I, O> visitor, I input);
+    }
+
+    interface ExceptionTypeVisitor<I, O> {
+
+        default O visit(ExceptionType exceptionType, I input) {
+            return exceptionType.accept(this, input);
+        }
+
+        O subsystemException(ExceptionType exceptionType, I input);
+
+        O statusCodeException(ExceptionType exceptionType, I input);
     }
 }
 
