@@ -25,7 +25,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.PrimaryKey;
 import com.google.auto.value.AutoValue;
 
-interface IdFields {
+public interface IdFields {
 
     @ColumnInfo(name = "_id")
     @PrimaryKey(autoGenerate = true)

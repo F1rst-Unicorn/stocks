@@ -21,6 +21,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
+import de.njsm.stocks.client.database.error.*;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -40,7 +41,7 @@ import java.time.format.DateTimeFormatter;
         },
         version = 40)
 @androidx.room.TypeConverters(TypeConverters.class)
-abstract class StocksDatabase extends RoomDatabase {
+public abstract class StocksDatabase extends RoomDatabase {
 
     /**
      * <code>datetime('now')</code> is precise up to second. Server time is
@@ -65,5 +66,5 @@ abstract class StocksDatabase extends RoomDatabase {
 
     abstract MetadataDao metadataDao();
 
-    abstract ErrorDao errorDao();
+    public abstract ErrorDao errorDao();
 }

@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.database.error;
 
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.ErrorRecorder;
@@ -33,7 +33,7 @@ import java.io.StringWriter;
 
 import static java.util.Optional.ofNullable;
 
-class ErrorRecorderImpl implements ErrorRecorder {
+public class ErrorRecorderImpl implements ErrorRecorder {
 
     private final ErrorDao errorDao;
 

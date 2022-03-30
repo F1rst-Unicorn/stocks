@@ -25,7 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import com.google.auto.value.AutoValue;
 
-interface LocationFields {
+public interface LocationFields {
 
     @ColumnInfo(name = "name")
     @NonNull

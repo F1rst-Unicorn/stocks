@@ -19,19 +19,21 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.business.entities.StatusCode;
+import de.njsm.stocks.client.database.DbTestCase;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class ErrorRecorderImplTest extends DbTestCase {
 

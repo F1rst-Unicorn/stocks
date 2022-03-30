@@ -34,7 +34,7 @@ import static java.util.Collections.singletonList;
 
 public class DbTestCase {
 
-    StocksDatabase stocksDatabase;
+    protected StocksDatabase stocksDatabase;
 
     @Before
     public void createDb() {

@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.database.error;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

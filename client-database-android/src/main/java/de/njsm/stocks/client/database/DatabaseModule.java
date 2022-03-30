@@ -29,6 +29,8 @@ import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.LocationRepository;
 import de.njsm.stocks.client.business.SynchronisationRepository;
 import de.njsm.stocks.client.business.entities.Job;
+import de.njsm.stocks.client.database.error.ErrorDao;
+import de.njsm.stocks.client.database.error.ErrorRecorderImpl;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 

@@ -19,22 +19,45 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.database.error;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.database.IdFields;
 
 @AutoValue
-@Entity(tableName = "location_to_add")
-abstract class LocationAddEntity implements IdFields, LocationFields {
+@Entity(tableName = "error")
+public abstract class ErrorEntity implements IdFields {
 
-    static LocationAddEntity create(int id, String name, String description) {
-        return new AutoValue_LocationAddEntity(id, name, description);
+    static ErrorEntity create(int id, Action action, long dataId, ExceptionType exceptionType, long exceptionId) {
+        return new AutoValue_ErrorEntity(id, action, dataId, exceptionType, exceptionId);
     }
 
     @Ignore
-    static LocationAddEntity create(String name, String description) {
-        return new AutoValue_LocationAddEntity(0, name, description);
+    static ErrorEntity create(Action action, long dataId, ExceptionType exceptionType, long exceptionId) {
+        return new AutoValue_ErrorEntity(0, action, dataId, exceptionType, exceptionId);
+    }
+
+    abstract Action action();
+
+    abstract long dataId();
+
+    abstract ExceptionType exceptionType();
+
+    abstract long exceptionId();
+
+    enum Action {
+        SYNCHRONISATION,
+
+        ADD_LOCATION,
+    }
+
+    enum ExceptionType {
+
+        SUBSYSTEM_EXCEPTION,
+
+        STATUSCODE_EXCEPTION
     }
 }
+

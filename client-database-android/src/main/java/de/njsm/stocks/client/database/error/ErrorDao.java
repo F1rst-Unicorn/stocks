@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.database.error;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -28,7 +28,7 @@ import androidx.room.Query;
 import java.util.List;
 
 @Dao
-abstract class ErrorDao {
+public abstract class ErrorDao {
 
     @Query("select * from status_code_error")
     abstract List<StatusCodeExceptionEntity> getStatusCodeErrors();
