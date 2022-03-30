@@ -24,33 +24,73 @@ package de.njsm.stocks.client.business.entities;
 public enum StatusCode {
 
     SUCCESS {
+        @Override
+        public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
+            return visitor.success(this, input);
+        }
     },
 
     GENERAL_ERROR {
+        @Override
+        public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
+            return visitor.generalError(this, input);
+        }
     },
 
     NOT_FOUND {
+        @Override
+        public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
+            return visitor.notFound(this, input);
+        }
     },
 
     INVALID_DATA_VERSION {
+        @Override
+        public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
+            return visitor.invalidDataVersion(this, input);
+        }
     },
 
     FOREIGN_KEY_CONSTRAINT_VIOLATION {
+        @Override
+        public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
+            return visitor.foreignKeyConstraintViolation(this, input);
+        }
     },
 
     DATABASE_UNREACHABLE {
+        @Override
+        public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
+            return visitor.databaseUnreachable(this, input);
+        }
     },
 
     ACCESS_DENIED {
+        @Override
+        public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
+            return visitor.accessDenied(this, input);
+        }
     },
 
     INVALID_ARGUMENT {
+        @Override
+        public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
+            return visitor.invalidArgument(this, input);
+        }
     },
 
     CA_UNREACHABLE {
+        @Override
+        public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
+            return visitor.caUnreachable(this, input);
+        }
     },
 
     SERIALISATION_CONFLICT {
+        @Override
+        public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
+            return visitor.serialisationConflict(this, input);
+        }
     };
 
     public boolean isFail() {
@@ -61,4 +101,5 @@ public enum StatusCode {
         return !isFail();
     }
 
+    public abstract <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input);
 }

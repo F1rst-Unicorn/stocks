@@ -19,23 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.ErrorDetails;
+import de.njsm.stocks.client.business.entities.ErrorDetailsVisitor;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
 
-@AutoValue
-public abstract class LocationAddForm implements ErrorDetails {
+import javax.inject.Inject;
 
-    public abstract String name();
+class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisitor<Void, Void> {
 
-    public abstract String description();
+    private final LocationAddInteractor locationAddInteractor;
 
-    public static LocationAddForm create(String name, String description) {
-        return new AutoValue_LocationAddForm(name, description);
+    @Inject
+    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor) {
+        this.locationAddInteractor = locationAddInteractor;
     }
 
     @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.locationAddForm(this, input);
+    public void retry(ErrorDetails errorDetails) {
+        visit(errorDetails, null);
+    }
+
+    @Override
+    public Void locationAddForm(LocationAddForm locationAddForm, Void input) {
+        locationAddInteractor.addLocation(locationAddForm);
+        return null;
     }
 }

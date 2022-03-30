@@ -19,23 +19,16 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.ErrorDescription;
+import io.reactivex.rxjava3.core.Observable;
 
-@AutoValue
-public abstract class LocationAddForm implements ErrorDetails {
+import java.util.List;
 
-    public abstract String name();
+public interface ErrorRepository {
 
-    public abstract String description();
+    Observable<List<ErrorDescription>> getErrors();
 
-    public static LocationAddForm create(String name, String description) {
-        return new AutoValue_LocationAddForm(name, description);
-    }
-
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.locationAddForm(this, input);
-    }
+    Observable<Integer> getNumberOfErrors();
 }

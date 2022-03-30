@@ -23,10 +23,14 @@ package de.njsm.stocks.client.business;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.client.business.entities.ErrorDescription;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.business.entities.SetupState;
+import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
 import io.reactivex.rxjava3.core.Observable;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 @Module
@@ -66,7 +70,27 @@ public interface UimockBusinessModule {
     }
 
     @Provides
-    static SchedulerStatusReporter setupStatusReporter() {
+    static SchedulerStatusReporter schedulerStatusReporter() {
         return () -> Observable.just(1);
+    }
+
+    @Binds
+    ErrorRetryInteractor errorRetryInteractor(ErrorRetryInteractorImpl impl);
+
+    @Provides
+    static ErrorListInteractor errorListInteractor() {
+        return () -> Observable.just(Arrays.asList(
+                ErrorDescription.create(
+                        StatusCode.DATABASE_UNREACHABLE,
+                        "StatusCodeException",
+                        "Database is unreachable",
+                        LocationAddForm.create("Fridge", "the cold one")
+                )
+        ));
+    }
+
+    @Provides
+    static ErrorStatusReporter errorStatusReporter() {
+        return () -> Observable.just(0);
     }
 }

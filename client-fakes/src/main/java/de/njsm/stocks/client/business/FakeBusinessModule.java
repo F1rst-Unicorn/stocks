@@ -78,4 +78,16 @@ public interface FakeBusinessModule {
     static LocationAddInteractor locationAddInteractor() {
         return mock(LocationAddInteractor.class);
     }
+
+    @Provides
+    @Singleton
+    static ErrorRetryInteractor errorRetryInteractor() {
+        return mock(ErrorRetryInteractor.class);
+    }
+
+    @Provides
+    @Singleton
+    static ErrorStatusReporter errorStatusReporter() {
+        return mock(ErrorStatusReporter.class);
+    }
 }

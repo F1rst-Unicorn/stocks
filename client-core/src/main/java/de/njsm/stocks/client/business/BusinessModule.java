@@ -65,4 +65,13 @@ public interface BusinessModule {
 
     @Binds
     LocationAddInteractor locationAddInteractor(LocationAddInteractorImpl impl);
+
+    @Binds
+    ErrorRetryInteractor errorRetryInteractor(ErrorRetryInteractorImpl impl);
+
+    @Binds
+    ErrorListInteractor errorListInteractor(ErrorListInteractorImpl impl);
+
+    @Binds
+    ErrorStatusReporter errorStatusReporter(ErrorListInteractorImpl impl);
 }

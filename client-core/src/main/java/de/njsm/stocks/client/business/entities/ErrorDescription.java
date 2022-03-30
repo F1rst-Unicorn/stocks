@@ -24,18 +24,17 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationAddForm implements ErrorDetails {
+public abstract class ErrorDescription {
 
-    public abstract String name();
+    abstract StatusCode statusCode();
 
-    public abstract String description();
+    abstract String stackTrace();
 
-    public static LocationAddForm create(String name, String description) {
-        return new AutoValue_LocationAddForm(name, description);
-    }
+    abstract String errorMessage();
 
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.locationAddForm(this, input);
+    abstract ErrorDetails errorDetails();
+
+    public static ErrorDescription create(StatusCode statusCode, String stackTrace, String errorMessage, ErrorDetails errorDetails) {
+        return new AutoValue_ErrorDescription(statusCode, stackTrace, errorMessage, errorDetails);
     }
 }

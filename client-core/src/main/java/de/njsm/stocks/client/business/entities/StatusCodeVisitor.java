@@ -21,21 +21,25 @@
 
 package de.njsm.stocks.client.business.entities;
 
-import com.google.auto.value.AutoValue;
+public interface StatusCodeVisitor<I, O> {
 
-@AutoValue
-public abstract class LocationAddForm implements ErrorDetails {
+    O success(StatusCode statusCode, I input);
 
-    public abstract String name();
+    O generalError(StatusCode statusCode, I input);
 
-    public abstract String description();
+    O notFound(StatusCode statusCode, I input);
 
-    public static LocationAddForm create(String name, String description) {
-        return new AutoValue_LocationAddForm(name, description);
-    }
+    O invalidDataVersion(StatusCode statusCode, I input);
 
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.locationAddForm(this, input);
-    }
+    O foreignKeyConstraintViolation(StatusCode statusCode, I input);
+
+    O databaseUnreachable(StatusCode statusCode, I input);
+
+    O accessDenied(StatusCode statusCode, I input);
+
+    O invalidArgument(StatusCode statusCode, I input);
+
+    O caUnreachable(StatusCode statusCode, I input);
+
+    O serialisationConflict(StatusCode statusCode, I input);
 }

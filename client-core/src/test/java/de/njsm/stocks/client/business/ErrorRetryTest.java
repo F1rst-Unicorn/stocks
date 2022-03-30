@@ -19,23 +19,33 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@AutoValue
-public abstract class LocationAddForm implements ErrorDetails {
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-    public abstract String name();
+public class ErrorRetryTest {
 
-    public abstract String description();
+    private ErrorRetryInteractor uut;
 
-    public static LocationAddForm create(String name, String description) {
-        return new AutoValue_LocationAddForm(name, description);
+    private LocationAddInteractor locationAddInteractor;
+
+    @BeforeEach
+    void setUp() {
+        locationAddInteractor = mock(LocationAddInteractor.class);
+        uut = new ErrorRetryInteractorImpl(locationAddInteractor);
     }
 
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.locationAddForm(this, input);
+    @Test
+    void retryingToAddLocationDispatchesToLocationAdder() {
+        LocationAddForm input = LocationAddForm.create("Fridge", "the cold one");
+
+        uut.retry(input);
+
+        verify(locationAddInteractor).addLocation(input);
     }
 }
