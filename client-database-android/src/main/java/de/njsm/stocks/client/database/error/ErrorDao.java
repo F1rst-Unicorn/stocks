@@ -69,4 +69,19 @@ public abstract class ErrorDao {
 
     @Query("select * from subsystem_error where _id = :id")
     abstract SubsystemExceptionEntity getSubsystemException(long id);
+
+    @Query("delete from error where _id = :id")
+    abstract void deleteError(long id);
+
+    @Query("delete from status_code_error where _id = :id")
+    abstract void deleteStatusCodeException(long id);
+
+    @Query("delete from subsystem_error where _id = :id")
+    abstract void deleteSubsystemException(long id);
+
+    @Query("delete from location_to_add where _id = :id")
+    abstract void deleteLocationAdd(long id);
+
+    @Query("select * from error where _id = :id")
+    abstract ErrorEntity getError(long id);
 }

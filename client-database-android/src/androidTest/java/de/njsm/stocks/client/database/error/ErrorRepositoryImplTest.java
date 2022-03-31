@@ -25,6 +25,7 @@ import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.ErrorRepository;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
+import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
@@ -33,6 +34,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 public class ErrorRepositoryImplTest extends DbTestCase {
 
@@ -92,5 +95,31 @@ public class ErrorRepositoryImplTest extends DbTestCase {
                 .assertValue(v -> v.get(0).errorDetails() instanceof SynchronisationErrorDetails);
         uut.getErrors().test().awaitCount(1)
                 .assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
+    }
+
+    @Test
+    public void locationAddErrorCanBeDeleted() {
+        LocationAddForm form = LocationAddForm.create("Fridge", "the cold one");
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        errorRecorder.recordLocationAddError(exception, form);
+        ErrorDescription input = uut.getErrors().test().awaitCount(1).values().get(0).get(0);
+
+        uut.deleteError(input);
+
+        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
+        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
+        assertTrue(stocksDatabase.errorDao().getLocationAdds().isEmpty());
+    }
+
+    @Test
+    public void synchronisationErrorCanBeDeleted() {
+        SubsystemException exception = new SubsystemException("test");
+        errorRecorder.recordSynchronisationError(exception);
+        ErrorDescription input = uut.getErrors().test().awaitCount(1).values().get(0).get(0);
+
+        uut.deleteError(input);
+
+        assertTrue(stocksDatabase.errorDao().getSubsystemErrors().isEmpty());
+        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
     }
 }

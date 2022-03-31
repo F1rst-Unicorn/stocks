@@ -21,7 +21,9 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,28 +39,35 @@ public class ErrorRetryTest {
 
     private Synchroniser synchroniser;
 
+    private ErrorRepository errorRepository;
+
     @BeforeEach
     void setUp() {
         locationAddInteractor = mock(LocationAddInteractor.class);
         synchroniser = mock(Synchroniser.class);
-        uut = new ErrorRetryInteractorImpl(locationAddInteractor, synchroniser);
+        errorRepository = mock(ErrorRepository.class);
+        uut = new ErrorRetryInteractorImpl(locationAddInteractor, synchroniser, errorRepository);
     }
 
     @Test
     void retryingToAddLocationDispatchesToLocationAdder() {
-        LocationAddForm input = LocationAddForm.create("Fridge", "the cold one");
+        LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "the cold one");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", locationAddForm);
 
         uut.retry(input);
 
-        verify(locationAddInteractor).addLocation(input);
+        verify(locationAddInteractor).addLocation(locationAddForm);
+        verify(errorRepository).deleteError(input);
     }
 
     @Test
     void retryingSynchronisationDispatches() {
-        SynchronisationErrorDetails input = new SynchronisationErrorDetails();
+        SynchronisationErrorDetails synchronisationErrorDetails = new SynchronisationErrorDetails();
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", synchronisationErrorDetails);
 
         uut.retry(input);
 
         verify(synchroniser).synchronise();
+        verify(errorRepository).deleteError(input);
     }
 }

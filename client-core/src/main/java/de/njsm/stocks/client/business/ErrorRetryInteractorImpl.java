@@ -21,10 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.ErrorDetails;
-import de.njsm.stocks.client.business.entities.ErrorDetailsVisitor;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.business.entities.*;
 
 import javax.inject.Inject;
 
@@ -34,15 +31,19 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final Synchroniser synchroniser;
 
+    private final ErrorRepository errorRepository;
+
     @Inject
-    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, Synchroniser synchroniser) {
+    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, Synchroniser synchroniser, ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
         this.synchroniser = synchroniser;
+        this.errorRepository = errorRepository;
     }
 
     @Override
-    public void retry(ErrorDetails errorDetails) {
-        visit(errorDetails, null);
+    public void retry(ErrorDescription errorDescription) {
+        visit(errorDescription.errorDetails(), null);
+        errorRepository.deleteError(errorDescription);
     }
 
     @Override

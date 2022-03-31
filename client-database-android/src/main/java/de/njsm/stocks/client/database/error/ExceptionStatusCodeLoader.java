@@ -19,24 +19,28 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database.error;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.StatusCode;
 
-@AutoValue
-public abstract class ErrorDescription {
+import javax.inject.Inject;
 
-    public abstract long getId();
+final class ExceptionStatusCodeLoader implements ErrorEntity.ExceptionTypeVisitor<Long, StatusCode> {
 
-    public abstract StatusCode statusCode();
+    private final ErrorDao errorDao;
 
-    public abstract String stackTrace();
+    @Inject
+    ExceptionStatusCodeLoader(ErrorDao errorDao) {
+        this.errorDao = errorDao;
+    }
 
-    public abstract String errorMessage();
+    @Override
+    public StatusCode subsystemException(ErrorEntity.ExceptionType exceptionType, Long input) {
+        return StatusCode.GENERAL_ERROR;
+    }
 
-    public abstract ErrorDetails errorDetails();
-
-    public static ErrorDescription create(long id, StatusCode statusCode, String stackTrace, String errorMessage, ErrorDetails errorDetails) {
-        return new AutoValue_ErrorDescription(id, statusCode, stackTrace, errorMessage, errorDetails);
+    @Override
+    public StatusCode statusCodeException(ErrorEntity.ExceptionType exceptionType, Long input) {
+        return errorDao.getStatusCodeException(input).statusCode();
     }
 }

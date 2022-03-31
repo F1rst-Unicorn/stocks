@@ -19,24 +19,28 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database.error;
 
-import com.google.auto.value.AutoValue;
+import javax.inject.Inject;
 
-@AutoValue
-public abstract class ErrorDescription {
+class DataDeleter implements ErrorEntity.ActionVisitor<Long, Void> {
 
-    public abstract long getId();
+    private final ErrorDao errorDao;
 
-    public abstract StatusCode statusCode();
+    @Inject
+    DataDeleter(ErrorDao errorDao) {
+        this.errorDao = errorDao;
+    }
 
-    public abstract String stackTrace();
 
-    public abstract String errorMessage();
+    @Override
+    public Void synchronisation(ErrorEntity.Action action, Long id) {
+        return null;
+    }
 
-    public abstract ErrorDetails errorDetails();
-
-    public static ErrorDescription create(long id, StatusCode statusCode, String stackTrace, String errorMessage, ErrorDetails errorDetails) {
-        return new AutoValue_ErrorDescription(id, statusCode, stackTrace, errorMessage, errorDetails);
+    @Override
+    public Void addLocation(ErrorEntity.Action action, Long id) {
+        errorDao.deleteLocationAdd(id);
+        return null;
     }
 }

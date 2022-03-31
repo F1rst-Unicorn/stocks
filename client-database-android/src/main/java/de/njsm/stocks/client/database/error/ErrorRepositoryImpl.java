@@ -49,6 +49,14 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     }
 
     @Override
+    public void deleteError(ErrorDescription input) {
+        ErrorEntity error = errorDao.getError(input.getId());
+        errorDao.deleteError(input.getId());
+        new ExceptionDeleter(errorDao).visit(error.exceptionType(), error.exceptionId());
+        new DataDeleter(errorDao).visit(error.action(), error.dataId());
+    }
+
+    @Override
     public Observable<List<ErrorDescription>> getErrors() {
         return errorDao.observeErrors()
                 .map(v -> v.stream().map(this::resolveData).collect(Collectors.toList()));
@@ -56,10 +64,11 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
 
     private ErrorDescription resolveData(ErrorEntity errorEntity) {
         ErrorDetails errorDetails = visit(errorEntity.action(), errorEntity.dataId());
-        StatusCode statusCode = new StatusCodeResolver().visit(errorEntity.exceptionType(), errorEntity.exceptionId());
-        SubsystemExceptionEntityFields textFields = new ExceptionTextResolver().visit(errorEntity.exceptionType(), errorEntity.exceptionId());
+        StatusCode statusCode = new ExceptionStatusCodeLoader(errorDao).visit(errorEntity.exceptionType(), errorEntity.exceptionId());
+        SubsystemExceptionEntityFields textFields = new ExceptionTextLoader(errorDao).visit(errorEntity.exceptionType(), errorEntity.exceptionId());
 
         return ErrorDescription.create(
+                errorEntity.id(),
                 statusCode,
                 textFields.stacktrace(),
                 textFields.message(),
@@ -76,29 +85,4 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         return map(errorDao.getLocationAdd(input));
     }
 
-    private final class ExceptionTextResolver implements ErrorEntity.ExceptionTypeVisitor<Long, SubsystemExceptionEntityFields> {
-
-        @Override
-        public SubsystemExceptionEntityFields subsystemException(ErrorEntity.ExceptionType exceptionType, Long input) {
-            return errorDao.getSubsystemException(input);
-        }
-
-        @Override
-        public SubsystemExceptionEntityFields statusCodeException(ErrorEntity.ExceptionType exceptionType, Long input) {
-            return errorDao.getStatusCodeException(input);
-        }
-    }
-
-    private final class StatusCodeResolver implements ErrorEntity.ExceptionTypeVisitor<Long, StatusCode> {
-
-        @Override
-        public StatusCode subsystemException(ErrorEntity.ExceptionType exceptionType, Long input) {
-            return StatusCode.GENERAL_ERROR;
-        }
-
-        @Override
-        public StatusCode statusCodeException(ErrorEntity.ExceptionType exceptionType, Long input) {
-            return errorDao.getStatusCodeException(input).statusCode();
-        }
-    }
 }

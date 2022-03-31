@@ -31,4 +31,6 @@ public interface ErrorRepository {
     Observable<List<ErrorDescription>> getErrors();
 
     Observable<Integer> getNumberOfErrors();
+
+    void deleteError(ErrorDescription input);
 }

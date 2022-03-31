@@ -81,6 +81,7 @@ public interface UimockBusinessModule {
     static ErrorListInteractor errorListInteractor() {
         return () -> Observable.just(Arrays.asList(
                 ErrorDescription.create(
+                        1,
                         StatusCode.DATABASE_UNREACHABLE,
                         "StatusCodeException",
                         "Database is unreachable",
