@@ -48,6 +48,7 @@ public class BottomToolbarFragment extends InjectableFragment {
 
         BottomToolbar bottomToolbar = new BottomToolbar(root);
         toolbarViewModel.backgroundJobCounter().observe(getViewLifecycleOwner(), bottomToolbar::setBackgroundCounter);
+        toolbarViewModel.errorCounter().observe(getViewLifecycleOwner(), bottomToolbar::setErrorCounter);
 
         return root;
     }

@@ -26,6 +26,7 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.ErrorStatusReporter;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
 import de.njsm.stocks.client.ui.R;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -46,21 +47,27 @@ public class BottomToolbarFragmentTest {
 
     private SchedulerStatusReporter schedulerStatusReporter;
 
-    private BehaviorSubject<Integer> counter;
+    private ErrorStatusReporter errorStatusReporter;
+
+    private BehaviorSubject<Integer> backgroundJobCounter;
+
+    private BehaviorSubject<Integer> errorCounter;
 
     @Before
     public void setup() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
 
-        counter = BehaviorSubject.create();
-        when(schedulerStatusReporter.getNumberOfRunningJobs()).thenReturn(counter);
+        backgroundJobCounter = BehaviorSubject.create();
+        errorCounter = BehaviorSubject.create();
+        when(schedulerStatusReporter.getNumberOfRunningJobs()).thenReturn(backgroundJobCounter);
+        when(errorStatusReporter.getNumberOfErrors()).thenReturn(errorCounter);
 
         scenario = FragmentScenario.launchInContainer(BottomToolbarFragment.class, new Bundle(), R.style.StocksTheme);
     }
 
     @Test
     public void backgroundJobCounterIsInvisibleByDefault() {
-        counter.onNext(0);
+        backgroundJobCounter.onNext(0);
 
         onView(withId(R.id.fragment_frame_toolbar_background_layout))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
@@ -68,7 +75,7 @@ public class BottomToolbarFragmentTest {
 
     @Test
     public void initialPresentBackgroundJobIsShown() {
-        counter.onNext(1);
+        backgroundJobCounter.onNext(1);
 
         onView(withId(R.id.fragment_frame_toolbar_background_layout))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
@@ -76,21 +83,41 @@ public class BottomToolbarFragmentTest {
 
     @Test
     public void changinCounterChangesVisibility() {
-        counter.onNext(0);
+        backgroundJobCounter.onNext(0);
         onView(withId(R.id.fragment_frame_toolbar_background_layout))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
 
-        counter.onNext(1);
+        backgroundJobCounter.onNext(1);
         onView(withId(R.id.fragment_frame_toolbar_background_layout))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
-        counter.onNext(0);
+        backgroundJobCounter.onNext(0);
         onView(withId(R.id.fragment_frame_toolbar_background_layout))
+                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
+    }
+
+    @Test
+    public void errorIndicatorShows() {
+        errorCounter.onNext(0);
+        onView(withId(R.id.fragment_frame_toolbar_error_layout))
+                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
+
+        errorCounter.onNext(1);
+        onView(withId(R.id.fragment_frame_toolbar_error_layout))
+                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+
+        errorCounter.onNext(0);
+        onView(withId(R.id.fragment_frame_toolbar_error_layout))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
     }
 
     @Inject
     public void setSchedulerStatusReporter(SchedulerStatusReporter schedulerStatusReporter) {
         this.schedulerStatusReporter = schedulerStatusReporter;
+    }
+
+    @Inject
+    public void setErrorStatusReporter(ErrorStatusReporter errorStatusReporter) {
+        this.errorStatusReporter = errorStatusReporter;
     }
 }

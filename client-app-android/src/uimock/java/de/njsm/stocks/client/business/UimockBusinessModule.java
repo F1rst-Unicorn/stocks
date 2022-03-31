@@ -92,6 +92,6 @@ public interface UimockBusinessModule {
 
     @Provides
     static ErrorStatusReporter errorStatusReporter() {
-        return () -> Observable.just(0);
+        return () -> Observable.just(1);
     }
 }

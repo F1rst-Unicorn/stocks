@@ -24,6 +24,7 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.ErrorStatusReporter;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 
@@ -33,13 +34,22 @@ public class ToolbarViewModel extends ViewModel {
 
     private final SchedulerStatusReporter schedulerStatusReporter;
 
+    private final ErrorStatusReporter errorStatusReporter;
+
     @Inject
-    public ToolbarViewModel(SchedulerStatusReporter schedulerStatusReporter) {
+    public ToolbarViewModel(SchedulerStatusReporter schedulerStatusReporter, ErrorStatusReporter errorStatusReporter) {
         this.schedulerStatusReporter = schedulerStatusReporter;
+        this.errorStatusReporter = errorStatusReporter;
     }
 
     public LiveData<Integer> backgroundJobCounter() {
         return LiveDataReactiveStreams.fromPublisher(
                 schedulerStatusReporter.getNumberOfRunningJobs().toFlowable(BackpressureStrategy.LATEST));
+    }
+
+    public LiveData<Integer> errorCounter() {
+        return LiveDataReactiveStreams.fromPublisher(
+                errorStatusReporter.getNumberOfErrors().toFlowable(BackpressureStrategy.LATEST)
+        );
     }
 }

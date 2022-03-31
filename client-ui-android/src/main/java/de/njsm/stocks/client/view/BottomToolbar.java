@@ -31,20 +31,33 @@ class BottomToolbar {
 
     private final View backgroundLayout;
 
+    private final View errorLayout;
+
+    private final TextView errorCounter;
+
     BottomToolbar(View root) {
         backgroundLayout = root.findViewById(R.id.fragment_frame_toolbar_background_layout);
         backgroundCounter = root.findViewById(R.id.fragment_frame_toolbar_background_counter);
 
-        View errorLayout = root.findViewById(R.id.fragment_frame_toolbar_error_layout);
+        errorLayout = root.findViewById(R.id.fragment_frame_toolbar_error_layout);
         errorLayout.setVisibility(View.INVISIBLE);
+        errorCounter = root.findViewById(R.id.fragment_frame_toolbar_error_counter);
     }
 
     void setBackgroundCounter(int counter) {
+        setCounter(counter, backgroundLayout, backgroundCounter);
+    }
+
+    void setErrorCounter(int counter) {
+        setCounter(counter, errorLayout, errorCounter);
+    }
+
+    private void setCounter(int counter, View layout, TextView counterView) {
         if (counter > 0) {
-            backgroundLayout.setVisibility(View.VISIBLE);
-            backgroundCounter.setText(String.valueOf(counter));
+            layout.setVisibility(View.VISIBLE);
+            counterView.setText(String.valueOf(counter));
         } else {
-            backgroundLayout.setVisibility(View.INVISIBLE);
+            layout.setVisibility(View.INVISIBLE);
         }
     }
 }

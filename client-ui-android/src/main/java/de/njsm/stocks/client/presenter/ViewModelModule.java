@@ -65,7 +65,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(ToolbarViewModel.class)
-    ViewModel toolbarViewModel(SchedulerStatusReporter schedulerStatusReporter) {
-        return new ToolbarViewModel(schedulerStatusReporter);
+    ViewModel toolbarViewModel(SchedulerStatusReporter schedulerStatusReporter, ErrorStatusReporter errorStatusReporter) {
+        return new ToolbarViewModel(schedulerStatusReporter, errorStatusReporter);
     }
 }

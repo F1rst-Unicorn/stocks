@@ -25,10 +25,12 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.execution.Scheduler;
+import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Singleton;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Module
 public interface FakeBusinessModule {
@@ -88,6 +90,8 @@ public interface FakeBusinessModule {
     @Provides
     @Singleton
     static ErrorStatusReporter errorStatusReporter() {
-        return mock(ErrorStatusReporter.class);
+        ErrorStatusReporter result = mock(ErrorStatusReporter.class);
+        when(result.getNumberOfErrors()).thenReturn(Observable.just(0));
+        return result;
     }
 }

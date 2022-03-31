@@ -26,11 +26,13 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.ErrorRecorder;
+import de.njsm.stocks.client.business.ErrorRepository;
 import de.njsm.stocks.client.business.LocationRepository;
 import de.njsm.stocks.client.business.SynchronisationRepository;
 import de.njsm.stocks.client.business.entities.Job;
 import de.njsm.stocks.client.database.error.ErrorDao;
 import de.njsm.stocks.client.database.error.ErrorRecorderImpl;
+import de.njsm.stocks.client.database.error.ErrorRepositoryImpl;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 
@@ -79,6 +81,9 @@ public interface DatabaseModule {
     static ErrorDao errorDao(StocksDatabase database) {
         return database.errorDao();
     }
+
+    @Binds
+    ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 
     static Executor toExecutor(Scheduler scheduler) {
         return command -> scheduler.schedule(Job.create(Job.Type.DATABASE, command));

@@ -1,3 +1,4 @@
 export DEPLOYMENT_VM=some.vm.example
 export ANDROID_DEVICE=emulator-5554
+export ANDROID_SERIAL=$ANDROID_DEVICE
 export ANDROID_SDK_ROOT=/path-to/android-sdk/
