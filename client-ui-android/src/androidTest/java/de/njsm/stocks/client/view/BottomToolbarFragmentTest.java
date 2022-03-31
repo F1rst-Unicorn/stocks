@@ -28,6 +28,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.ErrorStatusReporter;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
+import de.njsm.stocks.client.navigation.BottomToolbarNavigator;
 import de.njsm.stocks.client.ui.R;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import org.junit.Before;
@@ -36,9 +37,11 @@ import org.junit.Test;
 import javax.inject.Inject;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class BottomToolbarFragmentTest {
@@ -52,6 +55,8 @@ public class BottomToolbarFragmentTest {
     private BehaviorSubject<Integer> backgroundJobCounter;
 
     private BehaviorSubject<Integer> errorCounter;
+
+    private BottomToolbarNavigator navigator;
 
     @Before
     public void setup() {
@@ -82,7 +87,7 @@ public class BottomToolbarFragmentTest {
     }
 
     @Test
-    public void changinCounterChangesVisibility() {
+    public void changingCounterChangesVisibility() {
         backgroundJobCounter.onNext(0);
         onView(withId(R.id.fragment_frame_toolbar_background_layout))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
@@ -111,6 +116,16 @@ public class BottomToolbarFragmentTest {
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
     }
 
+    @Test
+    public void clickingErrorIndicatorNavigates() {
+        errorCounter.onNext(1);
+
+        onView(withId(R.id.fragment_frame_toolbar_error_layout))
+                .perform(click());
+
+        verify(navigator).goToErrors();
+    }
+
     @Inject
     public void setSchedulerStatusReporter(SchedulerStatusReporter schedulerStatusReporter) {
         this.schedulerStatusReporter = schedulerStatusReporter;
@@ -119,5 +134,10 @@ public class BottomToolbarFragmentTest {
     @Inject
     public void setErrorStatusReporter(ErrorStatusReporter errorStatusReporter) {
         this.errorStatusReporter = errorStatusReporter;
+    }
+
+    @Inject
+    public void setNavigator(BottomToolbarNavigator navigator) {
+        this.navigator = navigator;
     }
 }

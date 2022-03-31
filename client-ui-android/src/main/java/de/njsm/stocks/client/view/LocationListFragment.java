@@ -33,7 +33,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.navigation.LocationListNavigator;
-import de.njsm.stocks.client.presenter.LocationViewModel;
+import de.njsm.stocks.client.presenter.LocationListViewModel;
 import de.njsm.stocks.client.ui.R;
 import de.njsm.stocks.client.view.listswipe.SwipeCallback;
 
@@ -42,7 +42,7 @@ import java.util.List;
 
 public class LocationListFragment extends BottomToolbarFragment {
 
-    private LocationViewModel locationViewModel;
+    private LocationListViewModel locationListViewModel;
 
     private LocationListNavigator locationListNavigator;
 
@@ -60,7 +60,7 @@ public class LocationListFragment extends BottomToolbarFragment {
         templateSwipeList.setLoading();
 
         locationListAdapter = new LocationAdapter(this::onItemClicked, this::onItemLongClicked);
-        locationViewModel.getLocations().observe(getViewLifecycleOwner(), this::onListDataReceived);
+        locationListViewModel.getLocations().observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
@@ -85,17 +85,17 @@ public class LocationListFragment extends BottomToolbarFragment {
     }
 
     private void onItemSwipedRight(int listItemPosition) {
-        locationViewModel.deleteLocation(listItemPosition);
+        locationListViewModel.deleteLocation(listItemPosition);
     }
 
     private void onItemClicked(View listItem) {
         int listItemIndex = ((ViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        locationViewModel.resolveLocationId(listItemIndex, v -> locationListNavigator.showLocation(v));
+        locationListViewModel.resolveLocationId(listItemIndex, v -> locationListNavigator.showLocation(v));
     }
 
     private boolean onItemLongClicked(View listItem) {
         int listItemIndex = ((ViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        locationViewModel.resolveLocationId(listItemIndex, v -> locationListNavigator.editLocation(v));
+        locationListViewModel.resolveLocationId(listItemIndex, v -> locationListNavigator.editLocation(v));
         return true;
     }
 
@@ -104,7 +104,7 @@ public class LocationListFragment extends BottomToolbarFragment {
     }
 
     public void onSwipeDown() {
-        locationViewModel.synchronise();
+        locationListViewModel.synchronise();
     }
 
     @Inject
@@ -116,6 +116,6 @@ public class LocationListFragment extends BottomToolbarFragment {
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        locationViewModel = viewModelProvider.get(LocationViewModel.class);
+        locationListViewModel = viewModelProvider.get(LocationListViewModel.class);
     }
 }

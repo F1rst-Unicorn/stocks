@@ -30,15 +30,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 
-public class SetupGreetingNavigatorTest {
+public class SetupGreetingNavigatorTest extends NavigationTest {
 
     private SetupGreetingNavigator uut;
 
-    private FakeNavigationArgConsumer navigationArgConsumer;
-
     @Before
     public void setUp() {
-        navigationArgConsumer = new FakeNavigationArgConsumer();
         uut = new SetupGreetingNavigatorImpl(navigationArgConsumer);
     }
 

@@ -33,7 +33,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class LocationViewModel extends ViewModel {
+public class LocationListViewModel extends ViewModel {
 
     private final LocationListInteractor locationListInteractor;
 
@@ -42,7 +42,7 @@ public class LocationViewModel extends ViewModel {
     private final Synchroniser synchroniser;
 
     @Inject
-    public LocationViewModel(LocationListInteractor locationListInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser) {
+    public LocationListViewModel(LocationListInteractor locationListInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser) {
         this.locationListInteractor = locationListInteractor;
         this.locationDeleter = locationDeleter;
         this.synchroniser = synchroniser;

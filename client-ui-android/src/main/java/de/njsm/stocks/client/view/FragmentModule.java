@@ -40,4 +40,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract BottomToolbarFragment bottomToolbarFragment();
+
+    @ContributesAndroidInjector
+    public abstract ErrorListFragment errorListFragment();
 }

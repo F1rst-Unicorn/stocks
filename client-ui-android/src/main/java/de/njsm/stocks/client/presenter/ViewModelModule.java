@@ -43,9 +43,9 @@ public class ViewModelModule {
 
     @Provides
     @IntoMap
-    @ViewModelKey(LocationViewModel.class)
+    @ViewModelKey(LocationListViewModel.class)
     ViewModel locationViewModel(LocationListInteractor locationListInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser) {
-        return new LocationViewModel(locationListInteractor, locationDeleter, synchroniser);
+        return new LocationListViewModel(locationListInteractor, locationDeleter, synchroniser);
     }
 
     @Provides
@@ -67,5 +67,12 @@ public class ViewModelModule {
     @ViewModelKey(ToolbarViewModel.class)
     ViewModel toolbarViewModel(SchedulerStatusReporter schedulerStatusReporter, ErrorStatusReporter errorStatusReporter) {
         return new ToolbarViewModel(schedulerStatusReporter, errorStatusReporter);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ErrorListViewModel.class)
+    ViewModel errorListViewModel(Synchroniser synchroniser) {
+        return new ErrorListViewModel(synchroniser);
     }
 }

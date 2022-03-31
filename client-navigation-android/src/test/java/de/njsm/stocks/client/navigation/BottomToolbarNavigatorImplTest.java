@@ -16,32 +16,32 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.navigation;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import androidx.navigation.ActionOnlyNavDirections;
+import org.junit.Before;
+import org.junit.Test;
 
-@Module
-public interface NavigationModule {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+public class BottomToolbarNavigatorImplTest extends NavigationTest {
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
+    private BottomToolbarNavigatorImpl uut;
 
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
+    @Before
+    public void setup() {
+        uut = new BottomToolbarNavigatorImpl(navigationArgConsumer);
+    }
 
-    @Binds
-    Navigator navigator(NavigatorImpl impl);
+    @Test
+    public void navigatingToErrorsWorks() {
+        uut.goToErrors();
 
-    @Binds
-    ErrorListNavigator errorListNavigator(ErrorListNavigatorImpl impl);
-
-    @Binds
-    BottomToolbarNavigator bottomToolbarNavigator(BottomToolbarNavigatorImpl impl);
+        ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
+        assertThat(actual.getActionId(), is(R.id.action_global_nav_fragment_error_list));
+    }
 }

@@ -36,6 +36,7 @@
     <string name="title_delete_barcode">Remove barcode</string>
     <string name="title_qr_code_content_desc">QR Code</string>
     <string name="title_error">Error</string>
+    <string name="title_errors">Errors</string>
     <string name="title_principals">User information</string>
     <string name="title_camera_permission">Camera Permission</string>
     <string name="title_new_barcode">New barcode for&#8230;</string>

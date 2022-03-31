@@ -22,10 +22,7 @@ package de.njsm.stocks.client.di;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.SetupInteractor;
-import de.njsm.stocks.client.navigation.LocationListNavigator;
-import de.njsm.stocks.client.navigation.Navigator;
-import de.njsm.stocks.client.navigation.SetupFormNavigator;
-import de.njsm.stocks.client.navigation.SetupGreetingNavigator;
+import de.njsm.stocks.client.navigation.*;
 import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
 
 import javax.inject.Singleton;
@@ -69,5 +66,17 @@ class FakeNavigationModule {
     @Singleton
     Navigator navigator() {
         return mock(Navigator.class);
+    }
+
+    @Provides
+    @Singleton
+    BottomToolbarNavigator bottomToolbarNavigator() {
+        return mock(BottomToolbarNavigator.class);
+    }
+
+    @Provides
+    @Singleton
+    ErrorListNavigator errorListNavigator() {
+        return mock(ErrorListNavigator.class);
     }
 }

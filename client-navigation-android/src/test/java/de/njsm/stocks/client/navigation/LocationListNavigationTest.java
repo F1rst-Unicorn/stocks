@@ -29,15 +29,12 @@ import static org.hamcrest.Matchers.is;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class LocationListNavigationTest {
+public class LocationListNavigationTest extends NavigationTest {
 
     private LocationListNavigator uut;
 
-    private FakeNavigationArgConsumer navigationArgConsumer;
-
     @Before
     public void setUp() {
-        navigationArgConsumer = new FakeNavigationArgConsumer();
         uut = new LocationListNavigatorImpl(navigationArgConsumer);
     }
 

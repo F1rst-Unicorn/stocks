@@ -66,4 +66,12 @@
         android:id="@+id/nav_fragment_location_edit"
         android:name="androidx.fragment.app.Fragment">
     </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_error_list"
+        android:label="@string/title_error"
+        android:name="de.njsm.stocks.client.view.ErrorListFragment">
+    </fragment>
+    <action
+            android:id="@+id/action_global_nav_fragment_error_list"
+            app:destination="@id/nav_fragment_error_list" />
 </navigation>

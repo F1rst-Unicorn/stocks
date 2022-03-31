@@ -26,58 +26,51 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import androidx.annotation.CallSuper;
-import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.navigation.BottomToolbarNavigator;
-import de.njsm.stocks.client.presenter.ToolbarViewModel;
+import de.njsm.stocks.client.navigation.ErrorListNavigator;
+import de.njsm.stocks.client.presenter.ErrorListViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class BottomToolbarFragment extends InjectableFragment {
+public class ErrorListFragment extends BottomToolbarFragment {
 
-    private ToolbarViewModel toolbarViewModel;
+    private TemplateSwipeList templateSwipeList;
 
-    private BottomToolbarNavigator bottomToolbarNavigator;
+    private ErrorListViewModel errorListViewModel;
+
+    private ErrorListNavigator errorListNavigator;
 
     @Override
     @NonNull
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_frame, container, false);
+        View root = super.onCreateView(inflater, container, savedInstanceState);
 
-        BottomToolbar bottomToolbar = new BottomToolbar(root);
-        toolbarViewModel.backgroundJobCounter().observe(getViewLifecycleOwner(), bottomToolbar::setBackgroundCounter);
-        toolbarViewModel.errorCounter().observe(getViewLifecycleOwner(), bottomToolbar::setErrorCounter);
+        View swipeList = insertContent(inflater, root, R.layout.template_swipe_list);
+        templateSwipeList = new TemplateSwipeList(swipeList);
+        templateSwipeList.setLoading();
 
-        bottomToolbar.onErrorIndicatorClicked(this::goToErrors);
+        templateSwipeList.hideFloatingActionButton();
+        templateSwipeList.bindSwipeDown(this::onSwipeDown);
 
         return root;
     }
 
-    View insertContent(@NonNull LayoutInflater inflater, View root, @LayoutRes int contentLayout) {
-        LinearLayout container = root.findViewById(R.id.fragment_frame_content);
-        View content = inflater.inflate(contentLayout, container, false);
-        container.addView(content);
-        return content;
-    }
-
-    private void goToErrors(View unused) {
-        bottomToolbarNavigator.goToErrors();
+    private void onSwipeDown() {
+        errorListViewModel.synchronise();
     }
 
     @Inject
-    public void setBottomToolbarNavigator(BottomToolbarNavigator bottomToolbarNavigator) {
-        this.bottomToolbarNavigator = bottomToolbarNavigator;
+    public void setErrorListNavigator(ErrorListNavigator errorListNavigator) {
+        this.errorListNavigator = errorListNavigator;
     }
 
     @Inject
-    @CallSuper
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
+        super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        toolbarViewModel = viewModelProvider.get(ToolbarViewModel.class);
+        errorListViewModel = viewModelProvider.get(ErrorListViewModel.class);
     }
 }

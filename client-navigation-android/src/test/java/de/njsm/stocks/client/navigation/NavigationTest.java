@@ -16,32 +16,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.navigation;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import org.junit.Before;
 
-@Module
-public interface NavigationModule {
+public class NavigationTest {
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
+    FakeNavigationArgConsumer navigationArgConsumer;
 
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
-
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
-
-    @Binds
-    Navigator navigator(NavigatorImpl impl);
-
-    @Binds
-    ErrorListNavigator errorListNavigator(ErrorListNavigatorImpl impl);
-
-    @Binds
-    BottomToolbarNavigator bottomToolbarNavigator(BottomToolbarNavigatorImpl impl);
+    @Before
+    public void setupBase() {
+        navigationArgConsumer = new FakeNavigationArgConsumer();
+    }
 }

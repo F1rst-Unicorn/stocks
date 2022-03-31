@@ -60,4 +60,8 @@ class BottomToolbar {
             layout.setVisibility(View.INVISIBLE);
         }
     }
+
+    public void onErrorIndicatorClicked(View.OnClickListener callback) {
+        errorLayout.setOnClickListener(callback);
+    }
 }

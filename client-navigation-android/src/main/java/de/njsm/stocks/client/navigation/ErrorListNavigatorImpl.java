@@ -16,32 +16,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.client.navigation;
 
-import dagger.Binds;
-import dagger.Module;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import javax.inject.Inject;
 
-@Module
-public interface NavigationModule {
+public class ErrorListNavigatorImpl implements ErrorListNavigator {
 
-    @Binds
-    LocationListNavigator locationListNavigator(LocationListNavigatorImpl impl);
-
-    @Binds
-    SetupGreetingNavigator setupGreetingNavigator(SetupGreetingNavigatorImpl impl);
-
-    @Binds
-    SetupFormFragmentArgumentProvider setupFormFragmentArgumentProvider(SetupFormFragmentArgumentProviderImpl impl);
-
-    @Binds
-    Navigator navigator(NavigatorImpl impl);
-
-    @Binds
-    ErrorListNavigator errorListNavigator(ErrorListNavigatorImpl impl);
-
-    @Binds
-    BottomToolbarNavigator bottomToolbarNavigator(BottomToolbarNavigatorImpl impl);
+    @Inject
+    public ErrorListNavigatorImpl() {
+    }
 }

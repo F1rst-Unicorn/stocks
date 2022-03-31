@@ -82,6 +82,11 @@ class TemplateSwipeList {
         addButton.setOnClickListener(onClickListener);
     }
 
+    void hideFloatingActionButton() {
+        FloatingActionButton addButton = root.findViewById(R.id.template_swipe_list_fab);
+        addButton.setVisibility(View.GONE);
+    }
+
     void bindSwipeDown(Runnable listener) {
         SwipeRefreshLayout refreshLayout = root.findViewById(R.id.template_swipe_list_swipe);
         refreshLayout.setOnRefreshListener(() -> {
