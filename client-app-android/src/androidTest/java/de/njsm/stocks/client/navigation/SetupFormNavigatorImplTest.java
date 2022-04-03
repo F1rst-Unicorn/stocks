@@ -24,7 +24,7 @@ package de.njsm.stocks.client.navigation;
 import android.content.Context;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.platform.app.InstrumentationRegistry;
-import de.njsm.stocks.client.view.MainActivity;
+import de.njsm.stocks.client.fragment.MainActivity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

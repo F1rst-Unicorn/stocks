@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.view;
+package de.njsm.stocks.client.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;

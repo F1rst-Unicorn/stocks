@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="de.njsm.stocks.client.view.DummyActivity">
+        tools:context="de.njsm.stocks.client.fragment.DummyActivity">
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/activity_dummy_toolbar"

@@ -23,7 +23,7 @@ import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.SetupInteractor;
 import de.njsm.stocks.client.navigation.*;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentArgumentProvider;
 
 import javax.inject.Singleton;
 

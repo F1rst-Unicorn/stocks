@@ -30,7 +30,7 @@
 
     <fragment
             android:id="@+id/nav_fragment_setup_greeting"
-            android:name="de.njsm.stocks.client.view.SetupGreetingFragment"
+            android:name="de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragment"
             tools:layout="@layout/fragment_setup_greeting">
         <action
                 android:id="@+id/action_nav_fragment_setup_greeting_to_nav_fragment_setup_form"
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_setup_form"
-            android:name="de.njsm.stocks.client.view.SetupFormFragment"
+            android:name="de.njsm.stocks.client.fragment.setupform.SetupFormFragment"
             tools:layout="@layout/fragment_setup_form">
         <argument
                 android:name="registrationForm"

@@ -28,7 +28,7 @@
         android:id="@+id/activity_main_drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="de.njsm.stocks.client.view.MainActivity">
+        tools:context="de.njsm.stocks.client.fragment.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

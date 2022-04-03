@@ -21,7 +21,7 @@
 
 package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.view.LocationListFragmentDirections;
+import de.njsm.stocks.client.fragment.locationlist.LocationListFragmentDirections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

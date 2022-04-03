@@ -22,9 +22,9 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import de.njsm.stocks.client.view.SetupFormFragment;
-import de.njsm.stocks.client.view.SetupFormFragmentArgs;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
+import de.njsm.stocks.client.fragment.setupform.SetupFormFragment;
+import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentArgs;
+import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentArgumentProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

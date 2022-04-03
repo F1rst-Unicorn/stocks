@@ -23,9 +23,9 @@ package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
-import de.njsm.stocks.client.view.SetupFormFragment;
-import de.njsm.stocks.client.view.SetupFormFragmentArgumentProvider;
-import de.njsm.stocks.client.view.SetupGreetingFragmentDirections;
+import de.njsm.stocks.client.fragment.setupform.SetupFormFragment;
+import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentArgumentProvider;
+import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

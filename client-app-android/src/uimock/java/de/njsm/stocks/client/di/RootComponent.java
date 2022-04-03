@@ -31,7 +31,7 @@ import de.njsm.stocks.client.business.UimockBusinessModule;
 import de.njsm.stocks.client.navigation.NavigationModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.testdata.DataModule;
-import de.njsm.stocks.client.view.FragmentModule;
+import de.njsm.stocks.client.fragment.FragmentModule;
 
 import javax.inject.Singleton;
 

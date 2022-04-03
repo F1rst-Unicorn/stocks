@@ -25,8 +25,13 @@ import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.FakeBusinessModule;
 import de.njsm.stocks.client.execution.FakeExecutionModule;
+import de.njsm.stocks.client.fragment.BottomToolbarFragmentTest;
+import de.njsm.stocks.client.fragment.FragmentModule;
+import de.njsm.stocks.client.fragment.locationadd.LocationAddFragmentTest;
+import de.njsm.stocks.client.fragment.locationlist.LocationListFragmentTest;
+import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentTest;
+import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragmentTest;
 import de.njsm.stocks.client.presenter.ViewModelModule;
-import de.njsm.stocks.client.view.*;
 
 import javax.inject.Singleton;
 

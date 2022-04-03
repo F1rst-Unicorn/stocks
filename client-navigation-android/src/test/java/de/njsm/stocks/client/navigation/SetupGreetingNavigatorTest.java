@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.navigation;
 
 import de.njsm.stocks.client.business.entities.RegistrationForm;
-import de.njsm.stocks.client.view.SetupGreetingFragmentDirections;
+import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
 

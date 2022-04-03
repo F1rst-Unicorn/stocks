@@ -36,7 +36,7 @@ public abstract class ErrorDescription {
 
     public abstract ErrorDetails errorDetails();
 
-    public static ErrorDescription create(long id, StatusCode statusCode, String stackTrace, String errorMessage, ErrorDetails errorDetails) {
+    public static ErrorDescription create(int id, StatusCode statusCode, String stackTrace, String errorMessage, ErrorDetails errorDetails) {
         return new AutoValue_ErrorDescription(id, statusCode, stackTrace, errorMessage, errorDetails);
     }
 }

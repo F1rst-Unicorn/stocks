@@ -44,7 +44,7 @@
             android:theme="@style/StocksTheme">
 
         <activity
-                android:name=".client.view.StartupActivity"
+                android:name=".client.fragment.StartupActivity"
                 android:launchMode="singleTop"
                 android:exported="true"
                 android:theme="@style/StocksTheme">
@@ -58,7 +58,7 @@
                     android:resource="@xml/searchable" />
         </activity>
         <activity
-                android:name=".client.view.MainActivity"
+                android:name=".client.fragment.MainActivity"
                 android:launchMode="singleTop"
                 android:exported="true"
                 android:theme="@style/StocksTheme">
@@ -70,7 +70,7 @@
                     android:resource="@xml/searchable" />
         </activity>
         <activity
-                android:name=".client.view.SetupActivity"
+                android:name=".client.fragment.SetupActivity"
                 android:launchMode="singleTop"
                 android:exported="false"
                 android:theme="@style/StocksTheme">

@@ -34,7 +34,7 @@ import de.njsm.stocks.client.navigation.NavigationModule;
 import de.njsm.stocks.client.network.NetworkModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.settings.SettingsModule;
-import de.njsm.stocks.client.view.FragmentModule;
+import de.njsm.stocks.client.fragment.FragmentModule;
 
 import javax.inject.Singleton;
 

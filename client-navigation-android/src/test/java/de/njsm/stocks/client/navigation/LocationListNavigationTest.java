@@ -22,12 +22,12 @@
 package de.njsm.stocks.client.navigation;
 
 import androidx.navigation.ActionOnlyNavDirections;
-import de.njsm.stocks.client.view.LocationListFragmentDirections;
+import de.njsm.stocks.client.fragment.locationlist.LocationListFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
-import static org.hamcrest.Matchers.is;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class LocationListNavigationTest extends NavigationTest {
 
