@@ -19,21 +19,32 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.fragment.errorlist.ErrorListFragmentDirections;
+import de.njsm.stocks.client.business.entities.ErrorDescription;
+import de.njsm.stocks.client.testdata.ErrorDescriptions;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ErrorListNavigatorImpl extends BaseNavigator implements ErrorListNavigator {
+public class InMemoryErrorRetryInteractorImpl implements ErrorRetryInteractor {
+
+    private final BehaviorSubject<List<ErrorDescription>> data;
 
     @Inject
-    public ErrorListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
-        super(navigationArgConsumer);
+    InMemoryErrorRetryInteractorImpl(ErrorDescriptions locationsForListing) {
+        this.data = locationsForListing.getData();
     }
 
+
     @Override
-    public void showErrorDetails(long id) {
-        getNavigationArgConsumer().navigate(ErrorListFragmentDirections.actionNavFragmentErrorListToNavFragmentErrorDetail(id));
+    public void retry(ErrorDescription errorDetails) {
+        data.firstElement().subscribe(list -> {
+            List<ErrorDescription> newList = new ArrayList<>(list);
+            newList.removeIf(v -> v.id() == errorDetails.id());
+            data.onNext(newList);
+        });
     }
 }

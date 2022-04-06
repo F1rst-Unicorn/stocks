@@ -22,20 +22,25 @@
 package de.njsm.stocks.client.fragment.errorlist;
 
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
+import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
 import de.njsm.stocks.client.navigation.ErrorListNavigator;
 import de.njsm.stocks.client.presenter.ErrorListViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class ErrorListFragment extends BottomToolbarFragment {
 
@@ -44,6 +49,8 @@ public class ErrorListFragment extends BottomToolbarFragment {
     private ErrorListViewModel errorListViewModel;
 
     private ErrorListNavigator errorListNavigator;
+
+    private ErrorDescriptionAdapter errorDescriptionAdapter;
 
     @Override
     @NonNull
@@ -54,10 +61,38 @@ public class ErrorListFragment extends BottomToolbarFragment {
         templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
 
+        errorDescriptionAdapter = new ErrorDescriptionAdapter(this::onItemClicked);
+        errorListViewModel.getErrors().observe(getViewLifecycleOwner(), this::onListDataReceived);
+
+        SwipeCallback callback = new SwipeCallback(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_refresh_white_24dp),
+                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
+                this::onListItemSwiped
+        );
+
+        templateSwipeList.initialiseListWithSwiper(requireContext(), errorDescriptionAdapter, callback);
         templateSwipeList.hideFloatingActionButton();
         templateSwipeList.bindSwipeDown(this::onSwipeDown);
 
         return root;
+    }
+
+    private void onListDataReceived(List<ErrorDescription> data) {
+        if (data.isEmpty()) {
+            templateSwipeList.setEmpty(R.string.text_no_errors);
+        } else {
+            templateSwipeList.setList();
+        }
+        errorDescriptionAdapter.setData(data);
+    }
+
+    private void onItemClicked(View listItem) {
+        int listItemIndex = ((ErrorDescriptionViewHolder) listItem.getTag()).getBindingAdapterPosition();
+        errorListViewModel.resolveId(listItemIndex, errorListNavigator::showErrorDetails);
+    }
+
+    private void onListItemSwiped(int listItemPosition) {
+        errorListViewModel.retry(listItemPosition);
     }
 
     private void onSwipeDown() {

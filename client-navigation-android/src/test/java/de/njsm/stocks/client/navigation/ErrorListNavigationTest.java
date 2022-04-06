@@ -21,7 +21,29 @@
 
 package de.njsm.stocks.client.navigation;
 
-public interface ErrorListNavigator {
+import de.njsm.stocks.client.fragment.errorlist.ErrorListFragmentDirections;
+import org.junit.Before;
+import org.junit.Test;
 
-    void showErrorDetails(long id);
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+
+public class ErrorListNavigationTest extends NavigationTest {
+
+    private ErrorListNavigator uut;
+
+    @Before
+    public void setUp() {
+        uut = new ErrorListNavigatorImpl(navigationArgConsumer);
+    }
+
+    @Test
+    public void goingToErrorDetailsNavigates() {
+        long input = 3;
+
+        uut.showErrorDetails(input);
+
+        ErrorListFragmentDirections.ActionNavFragmentErrorListToNavFragmentErrorDetail direction = navigationArgConsumer.getLastArgument(ErrorListFragmentDirections.ActionNavFragmentErrorListToNavFragmentErrorDetail.class);
+        assertThat(direction.getId(), is(input));
+    }
 }

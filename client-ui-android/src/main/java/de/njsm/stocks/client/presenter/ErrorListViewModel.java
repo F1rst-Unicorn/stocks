@@ -19,21 +19,66 @@
 
 package de.njsm.stocks.client.presenter;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.ErrorListInteractor;
+import de.njsm.stocks.client.business.ErrorRetryInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.entities.ErrorDescription;
+import io.reactivex.rxjava3.core.BackpressureStrategy;
+import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.function.Consumer;
+
+import static io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread;
 
 public class ErrorListViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
+    private final ErrorListInteractor errorListInteractor;
+
+    private final ErrorRetryInteractor errorRetryInteractor;
+
+    private Observable<List<ErrorDescription>> data;
+
     @Inject
-    public ErrorListViewModel(Synchroniser synchroniser) {
+    public ErrorListViewModel(ErrorListInteractor errorListInteractor, ErrorRetryInteractor errorRetryInteractor, Synchroniser synchroniser) {
+        this.errorRetryInteractor = errorRetryInteractor;
         this.synchroniser = synchroniser;
+        this.errorListInteractor = errorListInteractor;
     }
 
     public void synchronise() {
         synchroniser.synchronise();
+    }
+
+    public LiveData<List<ErrorDescription>> getErrors() {
+        return LiveDataReactiveStreams.fromPublisher(
+                getData().toFlowable(BackpressureStrategy.LATEST));
+    }
+
+    public void resolveId(int listItemIndex, Consumer<Long> callback) {
+        performOnCurrentData(list -> callback.accept(list.get(listItemIndex).id()));
+    }
+
+    public void retry(int listItemIndex) {
+        performOnCurrentData(list -> errorRetryInteractor.retry(list.get(listItemIndex)));
+    }
+
+    private void performOnCurrentData(Consumer<List<ErrorDescription>> consumer) {
+        getData()
+                .firstElement()
+                .observeOn(mainThread())
+                .subscribe(consumer::accept);
+    }
+
+    private Observable<List<ErrorDescription>> getData() {
+        if (data == null)
+            data = errorListInteractor.getErrors();
+        return data;
     }
 }

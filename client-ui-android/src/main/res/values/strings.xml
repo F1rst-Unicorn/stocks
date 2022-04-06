@@ -280,4 +280,6 @@
     <string name="error_details_synchronisation_error_list">Synchronisation</string>
     <string name="error_details_location_add_error_list">Add Location</string>
 
+    <string name="text_no_errors">Everything is fine.</string>
+
 </resources>

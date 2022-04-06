@@ -21,13 +21,15 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.Job;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.execution.Scheduler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class LocationAddInteractorImplTest {
@@ -55,7 +57,9 @@ class LocationAddInteractorImplTest {
     void addingLocationFromInterfaceQueuesTask() {
         uut.addLocation(getInput());
 
-        verify(scheduler).schedule(any());
+        ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
+        verify(scheduler).schedule(captor.capture());
+        assertEquals(Job.Type.ADD_LOCATION, captor.getValue().name());
     }
 
     @Test

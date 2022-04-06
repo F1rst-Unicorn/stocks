@@ -68,7 +68,7 @@ public class TemplateSwipeList {
         noDataText.setVisibility(View.GONE);
     }
 
-    <T extends RecyclerView.ViewHolder> void initialiseList(Context context, RecyclerView.Adapter<T> adapter) {
+    public <T extends RecyclerView.ViewHolder> void initialiseList(Context context, RecyclerView.Adapter<T> adapter) {
         list.setLayoutManager(new LinearLayoutManager(context));
         list.setAdapter(adapter);
     }

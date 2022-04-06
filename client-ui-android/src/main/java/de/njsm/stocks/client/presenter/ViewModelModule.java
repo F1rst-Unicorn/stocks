@@ -72,7 +72,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(ErrorListViewModel.class)
-    ViewModel errorListViewModel(Synchroniser synchroniser) {
-        return new ErrorListViewModel(synchroniser);
+    ViewModel errorListViewModel(Synchroniser synchroniser, ErrorRetryInteractor errorRetryInteractor, ErrorListInteractor errorListInteractor) {
+        return new ErrorListViewModel(errorListInteractor, errorRetryInteractor, synchroniser);
     }
 }

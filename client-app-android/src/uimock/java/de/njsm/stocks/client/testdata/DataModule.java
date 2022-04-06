@@ -34,4 +34,10 @@ public class DataModule {
     public LocationsForListing locationsForListing() {
         return new LocationsForListing(LocationsForListing.generate());
     }
+
+    @Provides
+    @Singleton
+    public ErrorDescriptions errorDescriptions() {
+        return new ErrorDescriptions(ErrorDescriptions.generate());
+    }
 }

@@ -25,12 +25,14 @@ import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class FakeLocationListInteractor implements LocationListInteractor {
 
     private final BehaviorSubject<List<LocationForListing>> data;
 
+    @Inject
     public FakeLocationListInteractor() {
         this.data = BehaviorSubject.create();
     }

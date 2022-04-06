@@ -27,6 +27,7 @@ import de.njsm.stocks.client.business.FakeBusinessModule;
 import de.njsm.stocks.client.execution.FakeExecutionModule;
 import de.njsm.stocks.client.fragment.BottomToolbarFragmentTest;
 import de.njsm.stocks.client.fragment.FragmentModule;
+import de.njsm.stocks.client.fragment.errorlist.ErrorListFragmentTest;
 import de.njsm.stocks.client.fragment.locationadd.LocationAddFragmentTest;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragmentTest;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentTest;
@@ -58,6 +59,8 @@ public interface TestComponent {
     void inject(LocationAddFragmentTest test);
 
     void inject(BottomToolbarFragmentTest test);
+
+    void inject(ErrorListFragmentTest test);
 
     @Component.Builder
     interface Builder {

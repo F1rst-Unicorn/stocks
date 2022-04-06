@@ -28,21 +28,19 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-class SetupGreetingNavigatorImpl implements SetupGreetingNavigator {
+class SetupGreetingNavigatorImpl extends BaseNavigator implements SetupGreetingNavigator {
 
     private static final Logger LOG = LoggerFactory.getLogger(SetupGreetingNavigatorImpl.class);
 
-    private final NavigationArgConsumer navigationArgConsumer;
-
     @Inject
     SetupGreetingNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
-        this.navigationArgConsumer = navigationArgConsumer;
+        super(navigationArgConsumer);
     }
 
     @Override
     public void registerManually() {
         LOG.debug("going to manual setup");
-        navigationArgConsumer.navigate(
+        getNavigationArgConsumer().navigate(
                 SetupGreetingFragmentDirections.actionNavFragmentSetupGreetingToNavFragmentSetupForm());
     }
 
@@ -52,6 +50,6 @@ class SetupGreetingNavigatorImpl implements SetupGreetingNavigator {
         SetupGreetingFragmentDirections.ActionNavFragmentSetupGreetingToNavFragmentSetupForm direction =
                 SetupGreetingFragmentDirections.actionNavFragmentSetupGreetingToNavFragmentSetupForm()
                         .setRegistrationForm(registrationForm);
-        navigationArgConsumer.navigate(direction);
+        getNavigationArgConsumer().navigate(direction);
     }
 }

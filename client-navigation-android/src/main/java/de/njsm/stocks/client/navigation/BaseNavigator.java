@@ -21,7 +21,15 @@
 
 package de.njsm.stocks.client.navigation;
 
-public interface ErrorListNavigator {
+abstract class BaseNavigator {
 
-    void showErrorDetails(long id);
+    private final NavigationArgConsumer navigationArgConsumer;
+
+    BaseNavigator(NavigationArgConsumer navigationArgConsumer) {
+        this.navigationArgConsumer = navigationArgConsumer;
+    }
+
+    public NavigationArgConsumer getNavigationArgConsumer() {
+        return navigationArgConsumer;
+    }
 }

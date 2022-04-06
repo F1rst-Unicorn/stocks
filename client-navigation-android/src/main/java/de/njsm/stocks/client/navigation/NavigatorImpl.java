@@ -23,17 +23,15 @@ package de.njsm.stocks.client.navigation;
 
 import javax.inject.Inject;
 
-public class NavigatorImpl implements Navigator {
-
-    private final NavigationArgConsumer navigationArgConsumer;
+public class NavigatorImpl extends BaseNavigator implements Navigator {
 
     @Inject
     public NavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
-        this.navigationArgConsumer = navigationArgConsumer;
+        super(navigationArgConsumer);
     }
 
     @Override
     public void back() {
-        navigationArgConsumer.back();
+        getNavigationArgConsumer().back();
     }
 }

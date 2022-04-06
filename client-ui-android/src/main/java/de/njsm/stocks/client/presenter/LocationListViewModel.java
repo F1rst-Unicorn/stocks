@@ -28,6 +28,7 @@ import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
+import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -41,6 +42,8 @@ public class LocationListViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
+    private Observable<List<LocationForListing>> data;
+
     @Inject
     public LocationListViewModel(LocationListInteractor locationListInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser) {
         this.locationListInteractor = locationListInteractor;
@@ -50,7 +53,7 @@ public class LocationListViewModel extends ViewModel {
 
     public LiveData<List<LocationForListing>> getLocations() {
         return LiveDataReactiveStreams.fromPublisher(
-                locationListInteractor.getLocations().toFlowable(BackpressureStrategy.LATEST)
+                getData().toFlowable(BackpressureStrategy.LATEST)
         );
     }
 
@@ -63,7 +66,7 @@ public class LocationListViewModel extends ViewModel {
     }
 
     private void performOnCurrentLocations(Consumer<List<LocationForListing>> runnable) {
-        locationListInteractor.getLocations()
+        getData()
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(runnable::accept);
@@ -71,5 +74,11 @@ public class LocationListViewModel extends ViewModel {
 
     public void synchronise() {
         synchroniser.synchronise();
+    }
+
+    private Observable<List<LocationForListing>> getData() {
+        if (data == null)
+            data = locationListInteractor.getLocations();
+        return data;
     }
 }

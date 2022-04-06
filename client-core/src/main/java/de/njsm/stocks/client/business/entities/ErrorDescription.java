@@ -26,7 +26,7 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class ErrorDescription {
 
-    public abstract long getId();
+    public abstract long id();
 
     public abstract StatusCode statusCode();
 

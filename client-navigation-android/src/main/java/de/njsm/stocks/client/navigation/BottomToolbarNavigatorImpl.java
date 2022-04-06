@@ -23,18 +23,16 @@ package de.njsm.stocks.client.navigation;
 
 import javax.inject.Inject;
 
-public class BottomToolbarNavigatorImpl implements BottomToolbarNavigator {
-
-    private final NavigationArgConsumer navigationArgConsumer;
+public class BottomToolbarNavigatorImpl extends BaseNavigator implements BottomToolbarNavigator {
 
     @Inject
     BottomToolbarNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
-        this.navigationArgConsumer = navigationArgConsumer;
+        super(navigationArgConsumer);
     }
 
     @Override
     public void goToErrors() {
-        navigationArgConsumer.navigate(NavigationGraphDirections.actionGlobalNavFragmentErrorList());
+        getNavigationArgConsumer().navigate(NavigationGraphDirections.actionGlobalNavFragmentErrorList());
     }
 
     @Override

@@ -19,9 +19,28 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-public interface ErrorListNavigator {
+import de.njsm.stocks.client.business.entities.ErrorDescription;
+import de.njsm.stocks.client.testdata.ErrorDescriptions;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-    void showErrorDetails(long id);
+import javax.inject.Inject;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+class InMemoryErrorListInteractorImpl implements ErrorListInteractor {
+
+    private final BehaviorSubject<List<ErrorDescription>> data;
+
+    @Inject
+    InMemoryErrorListInteractorImpl(ErrorDescriptions locationsForListing) {
+        this.data = locationsForListing.getData();
+    }
+
+    @Override
+    public Observable<List<ErrorDescription>> getErrors() {
+        return data.delay(1, TimeUnit.SECONDS);
+    }
 }

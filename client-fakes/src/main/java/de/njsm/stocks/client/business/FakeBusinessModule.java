@@ -94,4 +94,13 @@ public interface FakeBusinessModule {
         when(result.getNumberOfErrors()).thenReturn(Observable.just(0));
         return result;
     }
+
+    @Binds
+    ErrorListInteractor errorListInteractor(FakeErrorListInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeErrorListInteractor fakeErrorListInteractor() {
+        return new FakeErrorListInteractor();
+    }
 }

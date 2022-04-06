@@ -21,19 +21,19 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.StatusCode;
-import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.execution.Scheduler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class ErrorRetryTest {
+public class ErrorRetryInteractorImplTest {
 
-    private ErrorRetryInteractor uut;
+    private ErrorRetryInteractorImpl uut;
 
     private LocationAddInteractor locationAddInteractor;
 
@@ -41,12 +41,27 @@ public class ErrorRetryTest {
 
     private ErrorRepository errorRepository;
 
+    private Scheduler scheduler;
+
     @BeforeEach
     void setUp() {
         locationAddInteractor = mock(LocationAddInteractor.class);
         synchroniser = mock(Synchroniser.class);
         errorRepository = mock(ErrorRepository.class);
-        uut = new ErrorRetryInteractorImpl(locationAddInteractor, synchroniser, errorRepository);
+        scheduler = mock(Scheduler.class);
+        uut = new ErrorRetryInteractorImpl(locationAddInteractor, synchroniser, scheduler, errorRepository);
+    }
+
+    @Test
+    void retryingQueuesTask() {
+        LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "the cold one");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", locationAddForm);
+
+        uut.retry(input);
+
+        ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
+        verify(scheduler).schedule(captor.capture());
+        assertEquals(Job.Type.ADD_LOCATION, captor.getValue().name());
     }
 
     @Test
@@ -54,7 +69,7 @@ public class ErrorRetryTest {
         LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "the cold one");
         ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", locationAddForm);
 
-        uut.retry(input);
+        uut.retryInBackground(input);
 
         verify(locationAddInteractor).addLocation(locationAddForm);
         verify(errorRepository).deleteError(input);
@@ -65,7 +80,7 @@ public class ErrorRetryTest {
         SynchronisationErrorDetails synchronisationErrorDetails = new SynchronisationErrorDetails();
         ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", synchronisationErrorDetails);
 
-        uut.retry(input);
+        uut.retryInBackground(input);
 
         verify(synchroniser).synchronise();
         verify(errorRepository).deleteError(input);

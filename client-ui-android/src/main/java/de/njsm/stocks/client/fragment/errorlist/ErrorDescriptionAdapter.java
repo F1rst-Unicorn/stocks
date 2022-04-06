@@ -56,7 +56,7 @@ public class ErrorDescriptionAdapter extends RecyclerView.Adapter<ErrorDescripti
     public void setData(List<ErrorDescription> newList) {
         List<ErrorDescription> oldList = errorDescriptions;
         errorDescriptions = newList;
-        DiffUtil.calculateDiff(byId(oldList, newList, ErrorDescription::getId), true).dispatchUpdatesTo(this);
+        DiffUtil.calculateDiff(byId(oldList, newList, ErrorDescription::id), true).dispatchUpdatesTo(this);
     }
 
     @NonNull

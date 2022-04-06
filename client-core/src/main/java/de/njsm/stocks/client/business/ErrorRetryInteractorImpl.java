@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.execution.Scheduler;
 
 import javax.inject.Inject;
 
@@ -31,17 +32,28 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final Synchroniser synchroniser;
 
+    private final Scheduler scheduler;
+
     private final ErrorRepository errorRepository;
 
+    private final JobTypeTranslator jobTypeTranslator;
+
     @Inject
-    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, Synchroniser synchroniser, ErrorRepository errorRepository) {
+    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
         this.synchroniser = synchroniser;
+        this.scheduler = scheduler;
         this.errorRepository = errorRepository;
+        this.jobTypeTranslator = new JobTypeTranslator();
     }
 
     @Override
     public void retry(ErrorDescription errorDescription) {
+        scheduler.schedule(Job.create(jobTypeTranslator.visit(errorDescription.errorDetails(), null),
+                () -> retryInBackground(errorDescription)));
+    }
+
+    void retryInBackground(ErrorDescription errorDescription) {
         visit(errorDescription.errorDetails(), null);
         errorRepository.deleteError(errorDescription);
     }
@@ -56,5 +68,18 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     public Void synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, Void input) {
         synchroniser.synchronise();
         return null;
+    }
+
+    private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
+
+        @Override
+        public Job.Type locationAddForm(LocationAddForm locationAddForm, Void input) {
+            return Job.Type.ADD_LOCATION;
+        }
+
+        @Override
+        public Job.Type synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, Void input) {
+            return Job.Type.SYNCHRONISATION;
+        }
     }
 }

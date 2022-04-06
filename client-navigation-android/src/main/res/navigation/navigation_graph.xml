@@ -53,7 +53,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_location_add"
-        android:name="de.njsm.stocks.client.fragment.LocationAddFragment"
+        android:name="de.njsm.stocks.client.fragment.locationadd.LocationAddFragment"
         android:label="@string/title_add_location"
         tools:layout="@layout/template_swipe_list">
     </fragment>
@@ -68,8 +68,18 @@
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_error_list"
-        android:label="@string/title_error"
+        android:label="@string/title_errors"
         android:name="de.njsm.stocks.client.fragment.errorlist.ErrorListFragment">
+        <action
+            android:id="@+id/action_nav_fragment_error_list_to_nav_fragment_error_detail"
+            app:destination="@id/nav_fragment_error_detail"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_fragment_error_detail"
+        android:name="androidx.fragment.app.Fragment">
+        <argument
+            android:name="id"
+            app:argType="long"/>
     </fragment>
     <action
             android:id="@+id/action_global_nav_fragment_error_list"

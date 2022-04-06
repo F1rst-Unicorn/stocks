@@ -50,8 +50,8 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
 
     @Override
     public void deleteError(ErrorDescription input) {
-        ErrorEntity error = errorDao.getError(input.getId());
-        errorDao.deleteError(input.getId());
+        ErrorEntity error = errorDao.getError(input.id());
+        errorDao.deleteError(input.id());
         new ExceptionDeleter(errorDao).visit(error.exceptionType(), error.exceptionId());
         new DataDeleter(errorDao).visit(error.action(), error.dataId());
     }

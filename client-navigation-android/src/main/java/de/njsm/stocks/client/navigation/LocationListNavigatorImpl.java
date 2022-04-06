@@ -27,21 +27,19 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-class LocationListNavigatorImpl implements LocationListNavigator {
+class LocationListNavigatorImpl extends BaseNavigator implements LocationListNavigator {
 
     private static final Logger LOG = LoggerFactory.getLogger(LocationListNavigatorImpl.class);
 
-    private final NavigationArgConsumer navigationArgConsumer;
-
     @Inject
     LocationListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
-        this.navigationArgConsumer = navigationArgConsumer;
+        super(navigationArgConsumer);
     }
 
     @Override
     public void addLocation() {
         LOG.debug("adding a location");
-        navigationArgConsumer.navigate(
+        getNavigationArgConsumer().navigate(
                 LocationListFragmentDirections.actionNavFragmentLocationListToNavFragmentLocationAdd()
         );
     }
@@ -49,7 +47,7 @@ class LocationListNavigatorImpl implements LocationListNavigator {
     @Override
     public void showLocation(int id) {
         LOG.debug("showing location " + id);
-        navigationArgConsumer.navigate(
+        getNavigationArgConsumer().navigate(
                 LocationListFragmentDirections.actionNavFragmentLocationListToNavFragmentLocationContent(id)
         );
     }
@@ -57,7 +55,7 @@ class LocationListNavigatorImpl implements LocationListNavigator {
     @Override
     public void editLocation(int id) {
         LOG.debug("editing location " + id);
-        navigationArgConsumer.navigate(
+        getNavigationArgConsumer().navigate(
                 LocationListFragmentDirections.actionNavFragmentLocationListToNavFragmentLocationEdit(id)
         );
     }
