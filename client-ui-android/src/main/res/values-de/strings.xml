@@ -265,4 +265,18 @@
 
     <string name="content_description_plus">Plus-Symbol</string>
 
+
+    <string name="statuscode_success_error_list">Erfolgreich</string>
+    <string name="statuscode_general_error_error_list">Unbekannter Fehler</string>
+    <string name="statuscode_not_found_error_list">Nicht gefunden</string>
+    <string name="statuscode_invalid_data_version_error_list">Veralteter Datenstand</string>
+    <string name="statuscode_foreign_key_constraint_violation_error_list">Wird noch verwendet</string>
+    <string name="statuscode_database_unreachable_error_list">Datenbankfehler</string>
+    <string name="statuscode_access_denied_error_list">Zugriff verweigert</string>
+    <string name="statuscode_invalid_argument_error_list">Eingabe ungültig</string>
+    <string name="statuscode_ca_unreachable_error_list">CA Fehler</string>
+    <string name="statuscode_serialisation_conflict_error_list">Konflikt mit anderer Änderung</string>
+
+    <string name="error_details_synchronisation_error_list">Synchronisieren</string>
+    <string name="error_details_location_add_error_list">Ort hinzufügen</string>
 </resources>

@@ -19,31 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.fragment.errorlist;
 
-public interface StatusCodeVisitor<I, O> {
+import de.njsm.stocks.client.business.entities.ErrorDetailsVisitor;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.ui.R;
 
-    default O visit(StatusCode statusCode, I input) {
-        return statusCode.accept(this, input);
+public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, Integer> {
+
+
+    @Override
+    public Integer locationAddForm(LocationAddForm locationAddForm, Void input) {
+        return R.string.error_details_location_add_error_list;
     }
 
-    O success(StatusCode statusCode, I input);
-
-    O generalError(StatusCode statusCode, I input);
-
-    O notFound(StatusCode statusCode, I input);
-
-    O invalidDataVersion(StatusCode statusCode, I input);
-
-    O foreignKeyConstraintViolation(StatusCode statusCode, I input);
-
-    O databaseUnreachable(StatusCode statusCode, I input);
-
-    O accessDenied(StatusCode statusCode, I input);
-
-    O invalidArgument(StatusCode statusCode, I input);
-
-    O caUnreachable(StatusCode statusCode, I input);
-
-    O serialisationConflict(StatusCode statusCode, I input);
+    @Override
+    public Integer synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, Void input) {
+        return R.string.error_details_synchronisation_error_list;
+    }
 }

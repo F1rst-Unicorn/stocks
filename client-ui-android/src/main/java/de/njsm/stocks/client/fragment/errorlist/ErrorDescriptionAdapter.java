@@ -40,8 +40,17 @@ public class ErrorDescriptionAdapter extends RecyclerView.Adapter<ErrorDescripti
 
     private final View.OnClickListener onClickListener;
 
+    private final StatusCodeTranslator statusCodeTranslator;
+
+    private final ErrorDetailsHeadlineVisitor errorDetailsHeadlineVisitor;
+
+    private final ErrorDetailsDetailsVisitor errorDetailsDetailsVisitor;
+
     public ErrorDescriptionAdapter(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
+        statusCodeTranslator = new StatusCodeTranslator();
+        errorDetailsHeadlineVisitor = new ErrorDetailsHeadlineVisitor();
+        errorDetailsDetailsVisitor = new ErrorDetailsDetailsVisitor();
     }
 
     public void setData(List<ErrorDescription> newList) {
@@ -62,6 +71,9 @@ public class ErrorDescriptionAdapter extends RecyclerView.Adapter<ErrorDescripti
     @Override
     public void onBindViewHolder(@NonNull ErrorDescriptionViewHolder holder, int position) {
         ErrorDescription item = errorDescriptions.get(position);
+        holder.setErrorCode(statusCodeTranslator.visit(item.statusCode(), null));
+        holder.setHeadline(errorDetailsHeadlineVisitor.visit(item.errorDetails(), null));
+        holder.setDetails(errorDetailsDetailsVisitor.visit(item.errorDetails(), null));
     }
 
     @Override

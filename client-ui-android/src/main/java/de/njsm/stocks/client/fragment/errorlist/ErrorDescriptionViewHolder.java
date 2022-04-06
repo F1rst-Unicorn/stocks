@@ -22,14 +22,38 @@
 package de.njsm.stocks.client.fragment.errorlist;
 
 import android.view.View;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
+import de.njsm.stocks.client.ui.R;
 
 class ErrorDescriptionViewHolder extends RecyclerView.ViewHolder {
+
+    private final TextView headline;
+
+    private final TextView details;
+
+    private final TextView code;
 
     ErrorDescriptionViewHolder(@NonNull View itemView) {
         super(itemView);
         itemView.setTag(this);
+
+        headline = itemView.findViewById(R.id.item_error_headline);
+        details = itemView.findViewById(R.id.item_error_details);
+        code = itemView.findViewById(R.id.item_error_code);
     }
 
+    void setHeadline(@StringRes int id) {
+        headline.setText(id);
+    }
+
+    void setErrorCode(@StringRes int id) {
+        code.setText(id);
+    }
+
+    void setDetails(String text) {
+        details.setText(text);
+    }
 }

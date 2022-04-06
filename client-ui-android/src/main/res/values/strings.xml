@@ -266,4 +266,18 @@
 
     <string name="content_description_plus">Plus symbol</string>
 
+    <string name="statuscode_success_error_list">Successful</string>
+    <string name="statuscode_general_error_error_list">Unknown Error</string>
+    <string name="statuscode_not_found_error_list">Not Found</string>
+    <string name="statuscode_invalid_data_version_error_list">Outdated Data</string>
+    <string name="statuscode_foreign_key_constraint_violation_error_list">Still In Use</string>
+    <string name="statuscode_database_unreachable_error_list">Database Error</string>
+    <string name="statuscode_access_denied_error_list">Access Denied</string>
+    <string name="statuscode_invalid_argument_error_list">Input Invalid</string>
+    <string name="statuscode_ca_unreachable_error_list">CA Error</string>
+    <string name="statuscode_serialisation_conflict_error_list">Conflict With Other Change</string>
+
+    <string name="error_details_synchronisation_error_list">Synchronisation</string>
+    <string name="error_details_location_add_error_list">Add Location</string>
+
 </resources>
