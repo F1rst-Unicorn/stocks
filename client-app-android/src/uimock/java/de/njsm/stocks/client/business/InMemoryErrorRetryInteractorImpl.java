@@ -40,10 +40,15 @@ public class InMemoryErrorRetryInteractorImpl implements ErrorRetryInteractor {
 
 
     @Override
-    public void retry(ErrorDescription errorDetails) {
+    public void retry(ErrorDescription errorDescription) {
+        delete(errorDescription);
+    }
+
+    @Override
+    public void delete(ErrorDescription errorDescription) {
         data.firstElement().subscribe(list -> {
             List<ErrorDescription> newList = new ArrayList<>(list);
-            newList.removeIf(v -> v.id() == errorDetails.id());
+            newList.removeIf(v -> v.id() == errorDescription.id());
             data.onNext(newList);
         });
     }

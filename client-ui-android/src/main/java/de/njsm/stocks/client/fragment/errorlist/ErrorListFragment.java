@@ -66,8 +66,10 @@ public class ErrorListFragment extends BottomToolbarFragment {
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_refresh_white_24dp),
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
                 new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
-                this::onListItemSwiped
+                this::onListItemSwipedRight,
+                this::onListItenSwipedLeft
         );
 
         templateSwipeList.initialiseListWithSwiper(requireContext(), errorDescriptionAdapter, callback);
@@ -91,8 +93,12 @@ public class ErrorListFragment extends BottomToolbarFragment {
         errorListViewModel.resolveId(listItemIndex, errorListNavigator::showErrorDetails);
     }
 
-    private void onListItemSwiped(int listItemPosition) {
+    private void onListItemSwipedRight(int listItemPosition) {
         errorListViewModel.retry(listItemPosition);
+    }
+
+    private void onListItenSwipedLeft(int listItemPosition) {
+        errorListViewModel.delete(listItemPosition);
     }
 
     private void onSwipeDown() {

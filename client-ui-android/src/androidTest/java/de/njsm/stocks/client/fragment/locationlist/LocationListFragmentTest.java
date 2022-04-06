@@ -80,14 +80,6 @@ public class LocationListFragmentTest {
     }
 
     @Test
-    public void swipingDownCausesARefresh() {
-
-        onView(withId(R.id.template_swipe_list_list)).perform(swipeDown());
-
-        verify(synchroniser).synchronise();
-    }
-
-    @Test
     public void locationsAreListed() {
         locationListInteractor.setData(LocationsForListing.generate());
 

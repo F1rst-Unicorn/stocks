@@ -43,6 +43,8 @@ public abstract class Job {
 
         ADD_LOCATION,
 
+        DELETE_ERROR,
+
         UNKNOWN
     }
 }

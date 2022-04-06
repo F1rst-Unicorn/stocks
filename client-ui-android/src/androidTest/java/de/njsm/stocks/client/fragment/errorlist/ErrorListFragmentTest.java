@@ -38,14 +38,15 @@ import org.junit.Test;
 
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.swipeRight;
+import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static org.hamcrest.Matchers.allOf;
 import static org.mockito.Mockito.verify;
 
 public class ErrorListFragmentTest {
@@ -62,6 +63,14 @@ public class ErrorListFragmentTest {
     public void setUp() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         scenario = FragmentScenario.launchInContainer(ErrorListFragment.class, new Bundle(), R.style.StocksTheme);
+    }
+
+    @Test
+    public void emptyListShowsText() {
+        errorListInteractor.setData(Collections.emptyList());
+
+        onView(withId(R.id.template_swipe_list_empty_text))
+                .check(matches(allOf(withEffectiveVisibility(Visibility.VISIBLE), withText(R.string.text_no_errors))));
     }
 
     @Test
@@ -91,6 +100,19 @@ public class ErrorListFragmentTest {
                 .perform(actionOnItemAtPosition(0, swipeRight()));
 
         verify(errorRetryInteractor).retry(errorDescription);
+    }
+
+    @Test
+    public void swipingListItemLeftDeletesTheError() {
+        LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "The cold one");
+        ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "", locationAddForm);
+        List<ErrorDescription> errors = Arrays.asList(errorDescription);
+        errorListInteractor.setData(errors);
+
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(actionOnItemAtPosition(0, swipeLeft()));
+
+        verify(errorRetryInteractor).delete(errorDescription);
     }
 
     @Test

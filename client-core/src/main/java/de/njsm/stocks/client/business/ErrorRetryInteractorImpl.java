@@ -53,8 +53,17 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                 () -> retryInBackground(errorDescription)));
     }
 
+    @Override
+    public void delete(ErrorDescription errorDescription) {
+        scheduler.schedule(Job.create(Job.Type.DELETE_ERROR, () -> deleteInBackground(errorDescription)));
+    }
+
     void retryInBackground(ErrorDescription errorDescription) {
         visit(errorDescription.errorDetails(), null);
+        errorRepository.deleteError(errorDescription);
+    }
+
+    void deleteInBackground(ErrorDescription errorDescription) {
         errorRepository.deleteError(errorDescription);
     }
 

@@ -25,5 +25,7 @@ import de.njsm.stocks.client.business.entities.ErrorDescription;
 
 public interface ErrorRetryInteractor {
 
-    void retry(ErrorDescription errorDetails);
+    void retry(ErrorDescription errorDescription);
+
+    void delete(ErrorDescription errorDescription);
 }

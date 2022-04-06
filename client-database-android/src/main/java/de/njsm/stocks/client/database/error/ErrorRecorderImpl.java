@@ -77,7 +77,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         public ExceptionData subsystemException(SubsystemException exception, Void input) {
             String stacktrace = getStackTrace(exception);
             String message = getMessage(exception);
-            SubsystemExceptionEntity error = SubsystemExceptionEntity.create(0, stacktrace, message);
+            SubsystemExceptionEntity error = SubsystemExceptionEntity.create(stacktrace, message);
             long id = errorDao.insert(error);
             return ExceptionData.create(ErrorEntity.ExceptionType.SUBSYSTEM_EXCEPTION, id);
         }
@@ -86,7 +86,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         public ExceptionData statusCodeException(StatusCodeException exception, Void input) {
             String stacktrace = getStackTrace(exception);
             String message = getMessage(exception);
-            StatusCodeExceptionEntity error = StatusCodeExceptionEntity.create(0, stacktrace, message, exception.getStatusCode());
+            StatusCodeExceptionEntity error = StatusCodeExceptionEntity.create(stacktrace, message, exception.getStatusCode());
             long id = errorDao.insert(error);
             return ExceptionData.create(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, id);
         }

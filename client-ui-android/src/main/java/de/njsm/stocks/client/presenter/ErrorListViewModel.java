@@ -69,6 +69,10 @@ public class ErrorListViewModel extends ViewModel {
         performOnCurrentData(list -> errorRetryInteractor.retry(list.get(listItemIndex)));
     }
 
+    public void delete(int listItemPosition) {
+        performOnCurrentData(list -> errorRetryInteractor.delete(list.get(listItemPosition)));
+    }
+
     private void performOnCurrentData(Consumer<List<ErrorDescription>> consumer) {
         getData()
                 .firstElement()

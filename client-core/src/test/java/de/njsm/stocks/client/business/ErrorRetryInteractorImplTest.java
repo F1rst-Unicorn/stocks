@@ -28,8 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class ErrorRetryInteractorImplTest {
 
@@ -62,6 +61,30 @@ public class ErrorRetryInteractorImplTest {
         ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
         verify(scheduler).schedule(captor.capture());
         assertEquals(Job.Type.ADD_LOCATION, captor.getValue().name());
+    }
+
+    @Test
+    void deletingErrorQueuesTask() {
+        LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "the cold one");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", locationAddForm);
+
+        uut.delete(input);
+
+        ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
+        verify(scheduler).schedule(captor.capture());
+        assertEquals(Job.Type.DELETE_ERROR, captor.getValue().name());
+    }
+
+    @Test
+    void deletingAnErrorInBackgroundForwardsToRepository() {
+        LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "the cold one");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", locationAddForm);
+
+        uut.deleteInBackground(input);
+
+        verify(errorRepository).deleteError(input);
+        verifyNoInteractions(locationAddInteractor);
+        verifyNoInteractions(synchroniser);
     }
 
     @Test
