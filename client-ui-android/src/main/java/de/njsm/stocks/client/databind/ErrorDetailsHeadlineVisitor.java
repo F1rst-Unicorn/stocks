@@ -19,16 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.databind;
 
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.business.entities.ErrorDetailsVisitor;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.ui.R;
 
-import java.util.List;
+public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, Integer> {
 
-public interface ErrorListInteractor {
 
-    Observable<List<ErrorDescription>> getErrors();
+    @Override
+    public Integer locationAddForm(LocationAddForm locationAddForm, Void input) {
+        return R.string.error_details_location_add_error_list;
+    }
 
-    Observable<ErrorDescription> getError(long id);
+    @Override
+    public Integer synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, Void input) {
+        return R.string.error_details_synchronisation_error_list;
+    }
 }

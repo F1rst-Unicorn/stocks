@@ -84,4 +84,7 @@ public abstract class ErrorDao {
 
     @Query("select * from error where _id = :id")
     abstract ErrorEntity getError(long id);
+
+    @Query("select * from error where _id = :id")
+    abstract Observable<ErrorEntity> observeError(long id);
 }

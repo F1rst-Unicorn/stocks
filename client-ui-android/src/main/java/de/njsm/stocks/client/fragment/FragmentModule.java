@@ -22,6 +22,7 @@ package de.njsm.stocks.client.fragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
+import de.njsm.stocks.client.fragment.errordetails.ErrorDetailsFragment;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragment;
 import de.njsm.stocks.client.fragment.locationadd.LocationAddFragment;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragment;
@@ -48,4 +49,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract ErrorListFragment errorListFragment();
+
+    @ContributesAndroidInjector
+    public abstract ErrorDetailsFragment errorDetailsFragment();
 }

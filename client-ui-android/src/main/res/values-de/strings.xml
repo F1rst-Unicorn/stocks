@@ -95,6 +95,8 @@
     <string name="action_scan_qr">QR CODE SCANNEN</string>
     <string name="action_manual">MANUELL</string>
     <string name="action_checkout">Zubereiten</string>
+    <string name="action_delete">Löschen</string>
+    <string name="action_retry">Erneut senden</string>
 
     <string name="hint_servername">Server Hostname</string>
     <string name="hint_expert">Expertenoptionen</string>

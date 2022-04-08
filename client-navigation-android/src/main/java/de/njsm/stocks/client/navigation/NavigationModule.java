@@ -44,4 +44,7 @@ public interface NavigationModule {
 
     @Binds
     BottomToolbarNavigator bottomToolbarNavigator(BottomToolbarNavigatorImpl impl);
+
+    @Binds
+    ErrorDetailsNavigator errorDetailsNavigatorImpl(ErrorDetailsNavigatorImpl impl);
 }

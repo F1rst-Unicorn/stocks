@@ -39,7 +39,7 @@ public class ErrorDetailsDetailsVisitorTest {
 
     @Test
     public void synchronsiationHasNoDetails() {
-        SynchronisationErrorDetails input = new SynchronisationErrorDetails();
+        SynchronisationErrorDetails input = SynchronisationErrorDetails.create();
 
         assertEquals("", uut.visit(input, null));
     }

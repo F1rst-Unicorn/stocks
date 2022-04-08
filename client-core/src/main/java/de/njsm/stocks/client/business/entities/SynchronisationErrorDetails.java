@@ -21,8 +21,14 @@
 
 package de.njsm.stocks.client.business.entities;
 
-public class SynchronisationErrorDetails implements ErrorDetails {
+import com.google.auto.value.AutoValue;
 
+@AutoValue
+public abstract class SynchronisationErrorDetails implements ErrorDetails {
+
+    public static SynchronisationErrorDetails create() {
+        return new AutoValue_SynchronisationErrorDetails();
+    }
 
     @Override
     public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {

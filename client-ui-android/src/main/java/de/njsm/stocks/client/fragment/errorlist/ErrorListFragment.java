@@ -106,12 +106,12 @@ public class ErrorListFragment extends BottomToolbarFragment {
     }
 
     @Inject
-    public void setErrorListNavigator(ErrorListNavigator errorListNavigator) {
+    void setErrorListNavigator(ErrorListNavigator errorListNavigator) {
         this.errorListNavigator = errorListNavigator;
     }
 
     @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
+    protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
         errorListViewModel = viewModelProvider.get(ErrorListViewModel.class);

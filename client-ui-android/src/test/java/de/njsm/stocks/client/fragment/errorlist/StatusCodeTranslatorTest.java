@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.fragment.errorlist;
 
 import de.njsm.stocks.client.business.entities.StatusCode;
+import de.njsm.stocks.client.databind.StatusCodeTranslator;
 import de.njsm.stocks.client.ui.R;
 import org.junit.Before;
 import org.junit.Test;

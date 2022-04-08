@@ -32,9 +32,12 @@ public class FakeErrorListInteractor implements ErrorListInteractor {
 
     private final BehaviorSubject<List<ErrorDescription>> data;
 
+    private final BehaviorSubject<ErrorDescription> singleData;
+
     @Inject
     public FakeErrorListInteractor() {
         this.data = BehaviorSubject.create();
+        this.singleData = BehaviorSubject.create();
     }
 
     public void setData(List<ErrorDescription> data) {
@@ -44,5 +47,14 @@ public class FakeErrorListInteractor implements ErrorListInteractor {
     @Override
     public Observable<List<ErrorDescription>> getErrors() {
         return data;
+    }
+
+    public void setData(ErrorDescription description) {
+        singleData.onNext(description);
+    }
+
+    @Override
+    public Observable<ErrorDescription> getError(long id) {
+        return singleData;
     }
 }

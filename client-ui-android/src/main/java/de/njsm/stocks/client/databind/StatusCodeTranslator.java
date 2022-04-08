@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.errorlist;
+package de.njsm.stocks.client.databind;
 
 import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.business.entities.StatusCodeVisitor;

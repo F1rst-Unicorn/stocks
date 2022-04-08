@@ -77,7 +77,7 @@ public class BottomToolbarFragment extends InjectableFragment {
 
     @Inject
     @CallSuper
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
+    protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
         toolbarViewModel = viewModelProvider.get(ToolbarViewModel.class);
     }

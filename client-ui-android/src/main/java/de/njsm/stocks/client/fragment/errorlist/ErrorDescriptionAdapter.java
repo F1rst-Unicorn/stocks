@@ -28,6 +28,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.entities.ErrorDescription;
+import de.njsm.stocks.client.databind.ErrorDetailsHeadlineVisitor;
+import de.njsm.stocks.client.databind.StatusCodeTranslator;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;

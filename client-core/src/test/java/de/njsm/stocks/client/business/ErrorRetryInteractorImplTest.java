@@ -100,7 +100,7 @@ public class ErrorRetryInteractorImplTest {
 
     @Test
     void retryingSynchronisationDispatches() {
-        SynchronisationErrorDetails synchronisationErrorDetails = new SynchronisationErrorDetails();
+        SynchronisationErrorDetails synchronisationErrorDetails = SynchronisationErrorDetails.create();
         ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", synchronisationErrorDetails);
 
         uut.retryInBackground(input);

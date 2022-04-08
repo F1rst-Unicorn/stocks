@@ -43,4 +43,9 @@ class InMemoryErrorListInteractorImpl implements ErrorListInteractor {
     public Observable<List<ErrorDescription>> getErrors() {
         return data.delay(1, TimeUnit.SECONDS);
     }
+
+    @Override
+    public Observable<ErrorDescription> getError(long id) {
+        return data.map(v -> v.get(0));
+    }
 }

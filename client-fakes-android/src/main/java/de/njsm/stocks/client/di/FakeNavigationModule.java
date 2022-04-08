@@ -79,4 +79,10 @@ class FakeNavigationModule {
     ErrorListNavigator errorListNavigator() {
         return mock(ErrorListNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    ErrorDetailsNavigator errorDetailsNavigator() {
+        return mock(ErrorDetailsNavigator.class);
+    }
 }

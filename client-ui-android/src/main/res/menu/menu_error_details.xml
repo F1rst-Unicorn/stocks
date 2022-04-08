@@ -25,9 +25,15 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_check"
-        android:icon="@drawable/ic_check_white_24dp"
+        android:id="@+id/menu_error_details_delete"
+        android:icon="@drawable/ic_delete_white_24dp"
         android:orderInCategory="100"
-        android:title="@string/action_save"
+        android:title="@string/action_delete"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_error_details_retry"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/dialog_retry"
         app:showAsAction="ifRoom" />
 </menu>

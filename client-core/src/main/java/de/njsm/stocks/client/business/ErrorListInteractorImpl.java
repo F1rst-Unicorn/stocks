@@ -42,6 +42,11 @@ class ErrorListInteractorImpl implements ErrorListInteractor, ErrorStatusReporte
     }
 
     @Override
+    public Observable<ErrorDescription> getError(long id) {
+        return errorRepository.getError(id);
+    }
+
+    @Override
     public Observable<Integer> getNumberOfErrors() {
         return errorRepository.getNumberOfErrors();
     }

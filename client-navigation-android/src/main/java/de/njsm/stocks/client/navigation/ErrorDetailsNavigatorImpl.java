@@ -19,16 +19,22 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import io.reactivex.rxjava3.core.Observable;
+import android.os.Bundle;
+import de.njsm.stocks.client.fragment.errordetails.ErrorDetailsFragmentArgs;
 
-import java.util.List;
+import javax.inject.Inject;
 
-public interface ErrorListInteractor {
+public class ErrorDetailsNavigatorImpl extends BaseNavigator implements ErrorDetailsNavigator {
 
-    Observable<List<ErrorDescription>> getErrors();
+    @Inject
+    ErrorDetailsNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    Observable<ErrorDescription> getError(long id);
+    @Override
+    public long readArguments(Bundle arguments) {
+        return ErrorDetailsFragmentArgs.fromBundle(arguments).getId();
+    }
 }

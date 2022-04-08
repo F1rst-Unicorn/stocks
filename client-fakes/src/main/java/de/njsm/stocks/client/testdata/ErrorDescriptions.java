@@ -43,7 +43,7 @@ public class ErrorDescriptions {
     public static List<ErrorDescription> generate() {
         return new ArrayList<>(Arrays.asList(
                 ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "", LocationAddForm.create("Fridge", "the cold one")),
-                ErrorDescription.create(2, StatusCode.GENERAL_ERROR, "", "", new SynchronisationErrorDetails())
+                ErrorDescription.create(2, StatusCode.GENERAL_ERROR, "", "", SynchronisationErrorDetails.create())
         ));
     }
 

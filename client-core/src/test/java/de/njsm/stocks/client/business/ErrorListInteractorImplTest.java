@@ -22,6 +22,9 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.ErrorDescription;
+import de.njsm.stocks.client.business.entities.ErrorDetails;
+import de.njsm.stocks.client.business.entities.StatusCode;
+import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,11 +48,22 @@ public class ErrorListInteractorImplTest {
     }
 
     @Test
-    void dataIsForwarded() {
+    void errorListIsForwarded() {
         List<ErrorDescription> expected = Collections.emptyList();
         when(errorRepository.getErrors()).thenReturn(Observable.just(expected));
 
         Observable<List<ErrorDescription>> actual = uut.getErrors();
+
+        actual.test().assertValue(expected);
+    }
+
+    @Test
+    void singleErrorIsForwarded() {
+        ErrorDetails details = SynchronisationErrorDetails.create();
+        ErrorDescription expected = ErrorDescription.create(2, StatusCode.GENERAL_ERROR, "", "", details);
+        when(errorRepository.getError(expected.id())).thenReturn(Observable.just(expected));
+
+        Observable<ErrorDescription> actual = uut.getError(expected.id());
 
         actual.test().assertValue(expected);
     }

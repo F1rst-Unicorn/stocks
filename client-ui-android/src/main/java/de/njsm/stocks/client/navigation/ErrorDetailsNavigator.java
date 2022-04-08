@@ -19,16 +19,10 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import io.reactivex.rxjava3.core.Observable;
+import android.os.Bundle;
 
-import java.util.List;
-
-public interface ErrorListInteractor {
-
-    Observable<List<ErrorDescription>> getErrors();
-
-    Observable<ErrorDescription> getError(long id);
+public interface ErrorDetailsNavigator extends Navigator {
+    long readArguments(Bundle arguments);
 }

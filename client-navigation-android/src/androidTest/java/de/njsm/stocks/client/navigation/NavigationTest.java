@@ -19,16 +19,16 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import io.reactivex.rxjava3.core.Observable;
+import org.junit.Before;
 
-import java.util.List;
+public class NavigationTest {
 
-public interface ErrorListInteractor {
+    FakeNavigationArgConsumer navigationArgConsumer;
 
-    Observable<List<ErrorDescription>> getErrors();
-
-    Observable<ErrorDescription> getError(long id);
+    @Before
+    public void setupBase() {
+        navigationArgConsumer = new FakeNavigationArgConsumer();
+    }
 }

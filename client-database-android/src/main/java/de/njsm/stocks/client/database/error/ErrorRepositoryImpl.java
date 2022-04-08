@@ -62,6 +62,11 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
                 .map(v -> v.stream().map(this::resolveData).collect(Collectors.toList()));
     }
 
+    @Override
+    public Observable<ErrorDescription> getError(long id) {
+        return errorDao.observeError(id).map(this::resolveData);
+    }
+
     private ErrorDescription resolveData(ErrorEntity errorEntity) {
         ErrorDetails errorDetails = visit(errorEntity.action(), errorEntity.dataId());
         StatusCode statusCode = new ExceptionStatusCodeLoader(errorDao).visit(errorEntity.exceptionType(), errorEntity.exceptionId());
@@ -77,7 +82,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
 
     @Override
     public ErrorDetails synchronisation(ErrorEntity.Action action, Long input) {
-        return new SynchronisationErrorDetails();
+        return SynchronisationErrorDetails.create();
     }
 
     @Override

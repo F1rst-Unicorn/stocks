@@ -30,6 +30,7 @@ import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
 import de.njsm.stocks.client.database.DbTestCase;
+import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -121,5 +122,16 @@ public class ErrorRepositoryImplTest extends DbTestCase {
 
         assertTrue(stocksDatabase.errorDao().getSubsystemErrors().isEmpty());
         stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
+    }
+
+    @Test
+    public void singleErrorCanBeRetrievedById() {
+        SubsystemException exception = new SubsystemException("test");
+        errorRecorder.recordSynchronisationError(exception);
+        ErrorDescription input = uut.getErrors().test().awaitCount(1).values().get(0).get(0);
+
+        Observable<ErrorDescription> actual = uut.getError(input.id());
+
+        actual.test().awaitCount(1).assertValue(input);
     }
 }

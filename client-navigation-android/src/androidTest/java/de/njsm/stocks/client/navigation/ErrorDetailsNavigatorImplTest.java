@@ -19,23 +19,25 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.errorlist;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.ErrorDetailsVisitor;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
-import de.njsm.stocks.client.ui.R;
+import android.os.Bundle;
+import org.junit.Test;
 
-public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, Integer> {
+import static org.junit.Assert.*;
+
+public class ErrorDetailsNavigatorImplTest extends NavigationTest {
 
 
-    @Override
-    public Integer locationAddForm(LocationAddForm locationAddForm, Void input) {
-        return R.string.error_details_location_add_error_list;
-    }
+    @Test
+    public void argumentIsExtracted() {
+        ErrorDetailsNavigatorImpl uut = new ErrorDetailsNavigatorImpl(navigationArgConsumer);
+        Bundle input = new Bundle();
+        int expected = 42;
+        input.putLong("id", expected);
 
-    @Override
-    public Integer synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, Void input) {
-        return R.string.error_details_synchronisation_error_list;
+        long actual = uut.readArguments(input);
+
+        assertEquals(expected, actual);
     }
 }

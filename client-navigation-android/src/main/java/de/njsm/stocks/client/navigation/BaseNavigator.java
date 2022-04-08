@@ -32,4 +32,8 @@ abstract class BaseNavigator {
     public NavigationArgConsumer getNavigationArgConsumer() {
         return navigationArgConsumer;
     }
+
+    public void back() {
+        navigationArgConsumer.back();
+    }
 }

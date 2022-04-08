@@ -19,16 +19,32 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import io.reactivex.rxjava3.core.Observable;
+import androidx.navigation.NavDirections;
 
-import java.util.List;
+import static org.junit.Assert.fail;
 
-public interface ErrorListInteractor {
+public class FakeNavigationArgConsumer implements NavigationArgConsumer {
 
-    Observable<List<ErrorDescription>> getErrors();
+    private NavDirections lastArgument;
 
-    Observable<ErrorDescription> getError(long id);
+    @Override
+    public void navigate(NavDirections direction) {
+        lastArgument = direction;
+    }
+
+    @Override
+    public void back() {
+    }
+
+    <T extends NavDirections> T getLastArgument(Class<T> clazz) {
+        if (clazz.isInstance(lastArgument))
+            return (T) lastArgument;
+        else {
+            String actualType = lastArgument != null ? lastArgument.getClass().getSimpleName() : "<null>";
+            fail("expected navigation argument " + clazz.getSimpleName() + ", got " + actualType);
+            return null;
+        }
+    }
 }
