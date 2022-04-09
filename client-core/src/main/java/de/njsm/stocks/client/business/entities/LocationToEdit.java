@@ -24,14 +24,30 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationAddForm implements ErrorDetails, LocationFields {
+public abstract class LocationToEdit implements Identifiable<Location>, LocationFields {
 
-    public static LocationAddForm create(String name, String description) {
-        return new AutoValue_LocationAddForm(name, description);
+    public LocationForEditing addVersion(int version) {
+        return LocationForEditing.builder()
+                .id(id())
+                .version(version)
+                .name(name())
+                .description(description())
+                .build();
     }
 
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.locationAddForm(this, input);
+    public static Builder builder() {
+        return new AutoValue_LocationToEdit.Builder();
+    }
+
+    public boolean isContainedIn(LocationForEditing currentState) {
+        return id() == id() &&
+                name().equals(currentState.name()) &&
+                description().equals(description());
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder
+            implements Identifiable.Builder<Builder>, LocationFields.Builder<Builder> {
+        public abstract LocationToEdit build();
     }
 }

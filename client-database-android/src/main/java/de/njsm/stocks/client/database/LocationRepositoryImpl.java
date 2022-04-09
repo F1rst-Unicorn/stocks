@@ -22,10 +22,7 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.LocationRepository;
-import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.LocationForListing;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.njsm.stocks.client.database.DataMapper.mapForDeletion;
+import static de.njsm.stocks.client.database.DataMapper.mapForEditing;
 
 class LocationRepositoryImpl implements LocationRepository {
 
@@ -58,5 +56,15 @@ class LocationRepositoryImpl implements LocationRepository {
     @Override
     public LocationForDeletion getLocation(Identifiable<Location> i) {
         return mapForDeletion(locationDao.getLocation(i.id()));
+    }
+
+    @Override
+    public Observable<LocationToEdit> getLocationForEditing(Identifiable<Location> location) {
+        return locationDao.getCurrentLocation(location.id()).map(DataMapper::mapToEdit);
+    }
+
+    @Override
+    public LocationForEditing getCurrentLocationBeforeEditing(Identifiable<Location> location) {
+        return mapForEditing(locationDao.getLocation(location.id()));
     }
 }

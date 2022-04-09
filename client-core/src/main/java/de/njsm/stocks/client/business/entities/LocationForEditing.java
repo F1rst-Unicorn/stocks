@@ -24,14 +24,16 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationAddForm implements ErrorDetails, LocationFields {
+public abstract class LocationForEditing implements Location {
 
-    public static LocationAddForm create(String name, String description) {
-        return new AutoValue_LocationAddForm(name, description);
+    public static Builder builder() {
+        return new AutoValue_LocationForEditing.Builder();
     }
 
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.locationAddForm(this, input);
+    @AutoValue.Builder
+    public abstract static class Builder
+            extends SelfValidating.Builder<LocationForEditing>
+            implements Versionable.Builder<Builder>, LocationFields.Builder<Builder> {
+
     }
 }

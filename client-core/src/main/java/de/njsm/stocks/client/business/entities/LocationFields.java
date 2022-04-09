@@ -21,17 +21,16 @@
 
 package de.njsm.stocks.client.business.entities;
 
-import com.google.auto.value.AutoValue;
+public interface LocationFields {
 
-@AutoValue
-public abstract class LocationAddForm implements ErrorDetails, LocationFields {
+    String name();
 
-    public static LocationAddForm create(String name, String description) {
-        return new AutoValue_LocationAddForm(name, description);
-    }
+    String description();
 
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.locationAddForm(this, input);
+    interface Builder<T> {
+
+        T name(String v);
+
+        T description(String v);
     }
 }

@@ -74,4 +74,7 @@ public interface BusinessModule {
 
     @Binds
     ErrorStatusReporter errorStatusReporter(ErrorListInteractorImpl impl);
+
+    @Binds
+    LocationEditInteractor locationEditInteractorImpl(LocationEditInteractorImpl impl);
 }

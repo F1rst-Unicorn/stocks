@@ -19,19 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.LocationForEditing;
 
-@AutoValue
-public abstract class LocationAddForm implements ErrorDetails, LocationFields {
+public interface LocationEditService {
 
-    public static LocationAddForm create(String name, String description) {
-        return new AutoValue_LocationAddForm(name, description);
-    }
-
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.locationAddForm(this, input);
-    }
+    void editLocation(LocationForEditing location);
 }

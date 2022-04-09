@@ -33,7 +33,7 @@ public abstract class LocationForSynchronisation implements Bitemporal<Location>
     @AutoValue.Builder
     public abstract static class Builder
             extends SelfValidating.Builder<LocationForSynchronisation>
-            implements Bitemporal.Builder<Builder>, Location.Builder<Builder> {
+            implements Bitemporal.Builder<Builder>, LocationFields.Builder<Builder> {
     }
 
     @Override

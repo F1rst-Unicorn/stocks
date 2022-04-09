@@ -21,18 +21,7 @@
 
 package de.njsm.stocks.client.business.entities;
 
-public interface Location extends Entity<Location> {
-
-    String name();
-
-    String description();
-
-    interface Builder<T> {
-
-        T name(String v);
-
-        T description(String v);
-    }
+public interface Location extends Entity<Location>, LocationFields {
 
     @Override
     default boolean isContainedIn(Location item, boolean increment) {

@@ -83,4 +83,21 @@ public class DataMapper {
     static String map(EntityType entityType) {
         return entityType.name().toLowerCase();
     }
+
+    public static LocationToEdit mapToEdit(LocationDbEntity location) {
+        return LocationToEdit.builder()
+                .id(location.id())
+                .name(location.name())
+                .description(location.description())
+                .build();
+    }
+
+    public static LocationForEditing mapForEditing(LocationDbEntity location) {
+        return LocationForEditing.builder()
+                .id(location.id())
+                .version(location.version())
+                .name(location.name())
+                .description(location.description())
+                .build();
+    }
 }

@@ -47,6 +47,8 @@ public abstract class Job {
 
         DELETE_LOCATION,
 
+        EDIT_LOCATION,
+
         UNKNOWN
     }
 }

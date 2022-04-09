@@ -41,4 +41,15 @@ public interface ServerApi {
 
     @PUT("/v3/location")
     Call<DataResponse<Integer>> addLocation(@Body LocationForInsertion locationForInsertion);
+
+    @PUT("/v2/location/rename")
+    Call<Response> renameLocation(@Query("id") int id,
+                                  @Query("version") int version,
+                                  @Query("new") String newName);
+
+    @POST("/v2/location/description")
+    @FormUrlEncoded
+    Call<Response> setLocationDescription(@Query("id") int id,
+                                          @Query("version") int version,
+                                          @Field("description") String description);
 }

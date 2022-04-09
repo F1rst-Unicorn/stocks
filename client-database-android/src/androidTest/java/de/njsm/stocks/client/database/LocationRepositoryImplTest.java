@@ -22,8 +22,11 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.LocationForDeletion;
+import de.njsm.stocks.client.business.entities.LocationForEditing;
 import de.njsm.stocks.client.business.entities.LocationForListing;
+import de.njsm.stocks.client.business.entities.LocationToEdit;
 import io.reactivex.rxjava3.core.Observable;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -32,13 +35,20 @@ import java.util.stream.Collectors;
 
 import static de.njsm.stocks.client.database.StandardEntities.locationDbEntity;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class LocationRepositoryImplTest extends DbTestCase {
+
+    private LocationRepositoryImpl uut;
+
+    @Before
+    public void setUp() {
+        uut = new LocationRepositoryImpl(stocksDatabase.locationDao());
+    }
 
     @Test
     public void gettingLocationsWorks() {
         List<LocationDbEntity> entities = Collections.singletonList(locationDbEntity());
-        LocationRepositoryImpl uut = new LocationRepositoryImpl(stocksDatabase.locationDao());
         stocksDatabase.synchronisationDao().synchroniseLocations(entities);
         List<LocationForListing> expected = entities.stream().map(DataMapper::map).collect(Collectors.toList());
 
@@ -50,12 +60,33 @@ public class LocationRepositoryImplTest extends DbTestCase {
     @Test
     public void gettingSingleLocationWorks() {
         LocationDbEntity location = locationDbEntity();
-        LocationRepositoryImpl uut = new LocationRepositoryImpl(stocksDatabase.locationDao());
         stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
 
         LocationForDeletion actual = uut.getLocation(location::id);
 
         assertEquals(location.id(), actual.id());
         assertEquals(location.version(), actual.version());
+    }
+
+    @Test
+    public void gettingLocationForEditingWorks() {
+        LocationDbEntity location = locationDbEntity();
+        stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
+        LocationToEdit expected = DataMapper.mapToEdit(location);
+
+        Observable<LocationToEdit> actual = uut.getLocationForEditing(location::id);
+
+        actual.test().awaitCount(1).assertValue(expected);
+    }
+
+    @Test
+    public void gettingLocationInBackgroundForEditingWorks() {
+        LocationDbEntity location = locationDbEntity();
+        stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
+        LocationToEdit expected = DataMapper.mapToEdit(location);
+
+        LocationForEditing actual = uut.getCurrentLocationBeforeEditing(location::id);
+
+        assertTrue(expected.isContainedIn(actual));
     }
 }
