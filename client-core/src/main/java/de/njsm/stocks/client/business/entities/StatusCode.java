@@ -42,6 +42,11 @@ public enum StatusCode {
         public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
             return visitor.notFound(this, input);
         }
+
+        @Override
+        public boolean isTriggeredByOutdatedLocalData() {
+            return true;
+        }
     },
 
     INVALID_DATA_VERSION {
@@ -49,12 +54,22 @@ public enum StatusCode {
         public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
             return visitor.invalidDataVersion(this, input);
         }
+
+        @Override
+        public boolean isTriggeredByOutdatedLocalData() {
+            return true;
+        }
     },
 
     FOREIGN_KEY_CONSTRAINT_VIOLATION {
         @Override
         public <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input) {
             return visitor.foreignKeyConstraintViolation(this, input);
+        }
+
+        @Override
+        public boolean isTriggeredByOutdatedLocalData() {
+            return true;
         }
     },
 
@@ -102,4 +117,8 @@ public enum StatusCode {
     }
 
     public abstract <I, O> O accept(StatusCodeVisitor<I, O> visitor, I input);
+
+    public boolean isTriggeredByOutdatedLocalData() {
+        return false;
+    }
 }

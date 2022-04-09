@@ -23,6 +23,7 @@ package de.njsm.stocks.client.fragment.errorlist;
 
 import de.njsm.stocks.client.business.entities.ErrorDetailsVisitor;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.LocationDeleteErrorDetails;
 import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
 
 public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, String> {
@@ -36,5 +37,10 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     @Override
     public String synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, Void input) {
         return "";
+    }
+
+    @Override
+    public String locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, Void input) {
+        return locationDeleteErrorDetails.name();
     }
 }

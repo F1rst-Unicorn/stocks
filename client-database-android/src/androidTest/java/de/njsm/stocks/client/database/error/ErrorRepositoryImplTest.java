@@ -25,15 +25,16 @@ import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.ErrorRepository;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.StatusCode;
-import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.DbTestCase;
+import de.njsm.stocks.client.database.LocationDbEntity;
+import de.njsm.stocks.client.database.StandardEntities;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -90,12 +91,10 @@ public class ErrorRepositoryImplTest extends DbTestCase {
         errorRecorder.recordSynchronisationError(exception);
 
         uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
-        uut.getErrors().test().awaitCount(1)
-                .assertValue(v -> v.get(0).statusCode() == StatusCode.GENERAL_ERROR);
-        uut.getErrors().test().awaitCount(1)
-                .assertValue(v -> v.get(0).errorDetails() instanceof SynchronisationErrorDetails);
-        uut.getErrors().test().awaitCount(1)
-                .assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
+        TestObserver<List<ErrorDescription>> actual = uut.getErrors().test().awaitCount(1);
+        actual.assertValue(v -> v.get(0).statusCode() == StatusCode.GENERAL_ERROR);
+        actual.assertValue(v -> v.get(0).errorDetails() instanceof SynchronisationErrorDetails);
+        actual.assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
     }
 
     @Test
@@ -121,7 +120,7 @@ public class ErrorRepositoryImplTest extends DbTestCase {
         uut.deleteError(input);
 
         assertTrue(stocksDatabase.errorDao().getSubsystemErrors().isEmpty());
-        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
+        stocksDatabase.errorDao().getNumberOfErrors().firstElement().test().awaitCount(1).assertValue(0);
     }
 
     @Test
@@ -133,5 +132,44 @@ public class ErrorRepositoryImplTest extends DbTestCase {
         Observable<ErrorDescription> actual = uut.getError(input.id());
 
         actual.test().awaitCount(1).assertValue(input);
+    }
+
+    @Test
+    public void locationDeleteErrorCanBeRetrieved() {
+        LocationDbEntity location = StandardEntities.locationDbEntity();
+        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
+                .id(location.id())
+                .version(location.version())
+                .build();
+        LocationDeleteErrorDetails errorDetails = LocationDeleteErrorDetails.create(location.id(), location.name());
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        stocksDatabase.synchronisationDao().writeLocations(Arrays.asList(location));
+        errorRecorder.recordLocationDeleteError(exception, locationForDeletion);
+
+        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
+        TestObserver<List<ErrorDescription>> actual = uut.getErrors().test().awaitCount(1);
+        actual.assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
+        actual.assertValue(v -> v.get(0).errorDetails().equals(errorDetails));
+        actual.assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
+    }
+
+    @Test
+    public void locationDeleteErrorCanBeDeleted() {
+        LocationDbEntity location = StandardEntities.locationDbEntity();
+        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
+                .id(location.id())
+                .version(location.version())
+                .build();
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        stocksDatabase.synchronisationDao().writeLocations(Arrays.asList(location));
+        errorRecorder.recordLocationDeleteError(exception, locationForDeletion);
+        TestObserver<List<ErrorDescription>> data = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1);
+        ErrorDescription input = data.values().get(0).get(0);
+
+        uut.deleteError(input);
+
+        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
+        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
+        assertTrue(stocksDatabase.errorDao().getLocationDeletes().isEmpty());
     }
 }

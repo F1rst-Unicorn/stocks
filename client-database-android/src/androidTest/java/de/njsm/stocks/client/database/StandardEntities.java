@@ -26,7 +26,7 @@ import static java.time.Instant.EPOCH;
 
 public class StandardEntities {
 
-    static LocationDbEntity locationDbEntity() {
+    public static LocationDbEntity locationDbEntity() {
         return locationDbEntityBuilder().build();
     }
 

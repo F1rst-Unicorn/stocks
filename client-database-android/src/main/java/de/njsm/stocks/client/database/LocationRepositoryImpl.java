@@ -22,6 +22,8 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.LocationRepository;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
@@ -31,6 +33,8 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static de.njsm.stocks.client.database.DataMapper.mapForDeletion;
 
 class LocationRepositoryImpl implements LocationRepository {
 
@@ -52,7 +56,7 @@ class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public LocationForDeletion getLocation(int i) {
-        return null;
+    public LocationForDeletion getLocation(Identifiable<Location> i) {
+        return mapForDeletion(locationDao.getLocation(i.id()));
     }
 }

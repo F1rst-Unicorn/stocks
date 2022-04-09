@@ -25,6 +25,7 @@ import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.database.DbTestCase;
 import org.junit.Before;
@@ -98,6 +99,32 @@ public class ErrorRecorderImplTest extends DbTestCase {
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.ADD_LOCATION, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
+
+    @Test
+    public void recordingErrorDeletingLocationWorks() {
+        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
+                .id(2)
+                .version(3)
+                .build();
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordLocationDeleteError(exception, locationForDeletion);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<LocationDeleteEntity> locationDeleteEntities = stocksDatabase.errorDao().getLocationDeletes();
+        assertEquals(1, locationDeleteEntities.size());
+        assertEquals(1, locationDeleteEntities.get(0).id());
+        assertEquals(locationForDeletion.id(), locationDeleteEntities.get(0).locationId());
+        assertEquals(locationForDeletion.version(), locationDeleteEntities.get(0).version());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.DELETE_LOCATION, errors.get(0).action());
         assertEquals(1, errors.get(0).dataId());
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());

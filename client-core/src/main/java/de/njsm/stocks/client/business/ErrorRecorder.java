@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.LocationForDeletion;
 
 public interface ErrorRecorder {
 
@@ -29,4 +30,5 @@ public interface ErrorRecorder {
 
     void recordLocationAddError(SubsystemException exception, LocationAddForm form);
 
+    void recordLocationDeleteError(SubsystemException exception, LocationForDeletion locationForDeletion);
 }

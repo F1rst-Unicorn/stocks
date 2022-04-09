@@ -60,6 +60,13 @@ public abstract class ErrorEntity implements IdFields {
             <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
                 return visitor.addLocation(this, input);
             }
+        },
+
+        DELETE_LOCATION{
+            @Override
+            <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
+                return visitor.deleteLocation(this, input);
+            }
         };
 
         abstract <I, O> O accept(ActionVisitor<I, O> visitor, I input);
@@ -74,6 +81,8 @@ public abstract class ErrorEntity implements IdFields {
         O synchronisation(Action action, I input);
 
         O addLocation(Action action, I input);
+
+        O deleteLocation(Action action, I input);
     }
 
     enum ExceptionType {

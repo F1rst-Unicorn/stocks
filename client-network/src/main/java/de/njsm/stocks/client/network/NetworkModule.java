@@ -26,10 +26,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import de.njsm.stocks.client.business.CertificateFetcher;
-import de.njsm.stocks.client.business.LocationAddService;
-import de.njsm.stocks.client.business.Registrator;
-import de.njsm.stocks.client.business.UpdateService;
+import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.ServerEndpoint;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -59,6 +56,9 @@ public interface NetworkModule {
 
     @Binds
     LocationAddService locationAddService(LocationAddServiceImpl impl);
+
+    @Binds
+    LocationDeleteService locationDeleteService(LocationDeleteServiceImpl impl);
 
     @Provides
     @Singleton

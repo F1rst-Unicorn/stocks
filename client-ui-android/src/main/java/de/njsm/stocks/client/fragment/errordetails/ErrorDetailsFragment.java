@@ -27,10 +27,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import de.njsm.stocks.client.business.entities.ErrorDetailsVisitor;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.databind.ErrorDetailsHeadlineVisitor;
 import de.njsm.stocks.client.databind.StatusCodeTranslator;
 import de.njsm.stocks.client.fragment.InjectableFragment;
@@ -115,6 +112,11 @@ public class ErrorDetailsFragment extends InjectableFragment {
         @Override
         public String synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, Void input) {
             return "";
+        }
+
+        @Override
+        public String locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, Void input) {
+            return locationDeleteErrorDetails.name();
         }
     }
 }

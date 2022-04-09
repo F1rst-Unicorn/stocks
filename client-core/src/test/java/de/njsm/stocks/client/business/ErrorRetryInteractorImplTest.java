@@ -36,6 +36,8 @@ public class ErrorRetryInteractorImplTest {
 
     private LocationAddInteractor locationAddInteractor;
 
+    private LocationDeleter locationDeleter;
+
     private Synchroniser synchroniser;
 
     private ErrorRepository errorRepository;
@@ -45,14 +47,15 @@ public class ErrorRetryInteractorImplTest {
     @BeforeEach
     void setUp() {
         locationAddInteractor = mock(LocationAddInteractor.class);
+        locationDeleter = mock(LocationDeleter.class);
         synchroniser = mock(Synchroniser.class);
         errorRepository = mock(ErrorRepository.class);
         scheduler = mock(Scheduler.class);
-        uut = new ErrorRetryInteractorImpl(locationAddInteractor, synchroniser, scheduler, errorRepository);
+        uut = new ErrorRetryInteractorImpl(locationAddInteractor, locationDeleter, synchroniser, scheduler, errorRepository);
     }
 
     @Test
-    void retryingQueuesTask() {
+    void retryingQueuesJob() {
         LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "the cold one");
         ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", locationAddForm);
 

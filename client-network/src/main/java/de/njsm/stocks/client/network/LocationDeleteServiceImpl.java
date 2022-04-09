@@ -23,9 +23,10 @@ package de.njsm.stocks.client.network;
 
 
 import de.njsm.stocks.client.business.LocationDeleteService;
+import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
 import retrofit2.Call;
 
 import javax.inject.Inject;
@@ -36,14 +37,19 @@ public class LocationDeleteServiceImpl implements LocationDeleteService {
 
     private final ServerApi api;
 
+    private final CallHandler callHandler;
+
     @Inject
-    public LocationDeleteServiceImpl(ServerApi api) {
+    public LocationDeleteServiceImpl(ServerApi api, CallHandler callHandler) {
         this.api = api;
+        this.callHandler = callHandler;
     }
 
     @Override
-    public StatusCode deleteLocation(LocationForDeletion locationForDeletion) {
+    public void deleteLocation(LocationForDeletion locationForDeletion) {
         Call<Response> call = api.deleteLocation(locationForDeletion.id(), locationForDeletion.version(), 0);
-        return map(new CallHandler().executeCommand(call));
+        StatusCode result = callHandler.executeCommand(call);
+        if (result.isFail())
+            throw new StatusCodeException(map(result));
     }
 }

@@ -21,6 +21,8 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
@@ -31,5 +33,5 @@ public interface LocationRepository {
 
     Observable<List<LocationForListing>> getLocations();
 
-    LocationForDeletion getLocation(int id);
+    LocationForDeletion getLocation(Identifiable<Location> location);
 }

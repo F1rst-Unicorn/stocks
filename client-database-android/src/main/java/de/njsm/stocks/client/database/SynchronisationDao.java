@@ -26,7 +26,7 @@ import androidx.room.*;
 import java.util.List;
 
 @Dao
-abstract class SynchronisationDao {
+public abstract class SynchronisationDao {
 
     @Query("select * from updates")
     abstract List<UpdateDbEntity> getAll();
@@ -44,7 +44,7 @@ abstract class SynchronisationDao {
     abstract void delete();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract void writeLocations(List<LocationDbEntity> locations);
+    public abstract void writeLocations(List<LocationDbEntity> locations);
 
     @Transaction
     void synchroniseLocations(List<LocationDbEntity> locations) {

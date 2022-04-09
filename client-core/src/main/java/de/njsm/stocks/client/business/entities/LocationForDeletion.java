@@ -35,5 +35,4 @@ public abstract class LocationForDeletion implements Versionable<Location> {
             extends SelfValidating.Builder<LocationForDeletion>
             implements Versionable.Builder<Builder> {
     }
-
 }

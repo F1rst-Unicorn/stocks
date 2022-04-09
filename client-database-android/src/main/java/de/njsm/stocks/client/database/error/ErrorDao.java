@@ -87,4 +87,19 @@ public abstract class ErrorDao {
 
     @Query("select * from error where _id = :id")
     abstract Observable<ErrorEntity> observeError(long id);
+
+    @Query("select * from location_to_delete")
+    abstract List<LocationDeleteEntity> getLocationDeletes();
+
+    @Insert
+    abstract long insert(LocationDeleteEntity locationDeleteEntity);
+
+    @Query("select * from location_to_delete where _id = :id")
+    abstract LocationDeleteEntity getLocationDelete(long id);
+
+    @Query("delete from location_to_delete where _id = :id")
+    abstract void deleteLocationDelete(long id);
+
+    @Query("select name from current_location where _id = :id")
+    abstract String getLocationName(int id);
 }

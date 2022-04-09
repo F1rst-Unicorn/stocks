@@ -19,12 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Location;
+import androidx.room.ColumnInfo;
+import com.google.auto.value.AutoValue;
 
-interface LocationDeleteInteractor {
+public interface VersionFields {
 
-    void deleteLocation(Identifiable<Location> location);
+    @ColumnInfo(name = "version")
+    @AutoValue.CopyAnnotations
+    int version();
 }

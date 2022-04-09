@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.njsm.stocks.client.database.StandardEntities.locationDbEntity;
+import static org.junit.Assert.assertEquals;
 
 public class LocationRepositoryImplTest extends DbTestCase {
 
@@ -43,5 +45,17 @@ public class LocationRepositoryImplTest extends DbTestCase {
         Observable<List<LocationForListing>> actual = uut.getLocations();
 
         actual.test().awaitCount(1).assertValue(expected);
+    }
+
+    @Test
+    public void gettingSingleLocationWorks() {
+        LocationDbEntity location = locationDbEntity();
+        LocationRepositoryImpl uut = new LocationRepositoryImpl(stocksDatabase.locationDao());
+        stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
+
+        LocationForDeletion actual = uut.getLocation(location::id);
+
+        assertEquals(location.id(), actual.id());
+        assertEquals(location.version(), actual.version());
     }
 }

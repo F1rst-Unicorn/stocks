@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.error.LocationAddEntity;
+import de.njsm.stocks.client.database.error.LocationDeleteEntity;
 
 public class DataMapper {
 
@@ -50,6 +51,17 @@ public class DataMapper {
 
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
+    }
+
+    static LocationForDeletion mapForDeletion(LocationDbEntity input) {
+        return LocationForDeletion.builder()
+                .id(input.id())
+                .version(input.version())
+                .build();
+    }
+
+    public static LocationDeleteEntity map(LocationForDeletion locationForDeletion) {
+        return LocationDeleteEntity.create(locationForDeletion.id(), locationForDeletion.version());
     }
 
     public static LocationAddForm map(LocationAddEntity input) {

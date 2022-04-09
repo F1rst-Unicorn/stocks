@@ -38,4 +38,7 @@ abstract class LocationDao {
             "from current_location " +
             "order by name")
     abstract Observable<List<LocationDbEntity>> getCurrentLocations();
+
+    @Query("select * from current_location where _id = :id")
+    public abstract LocationDbEntity getLocation(int id);
 }

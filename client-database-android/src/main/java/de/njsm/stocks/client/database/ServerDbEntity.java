@@ -31,35 +31,35 @@ abstract class ServerDbEntity<T extends ServerDbEntity<T>> {
 
     @ColumnInfo(name = "_id")
     @AutoValue.CopyAnnotations
-    abstract int id();
+    public abstract int id();
 
     @ColumnInfo(name = "version")
     @AutoValue.CopyAnnotations
-    abstract int version();
+    public abstract int version();
 
     @ColumnInfo(name = "valid_time_start")
     @NonNull
     @AutoValue.CopyAnnotations
-    abstract Instant validTimeStart();
+    public abstract Instant validTimeStart();
 
     @ColumnInfo(name = "valid_time_end")
     @NonNull
     @AutoValue.CopyAnnotations
-    abstract Instant validTimeEnd();
+    public abstract Instant validTimeEnd();
 
     @ColumnInfo(name = "transaction_time_start")
     @NonNull
     @AutoValue.CopyAnnotations
-    abstract Instant transactionTimeStart();
+    public abstract Instant transactionTimeStart();
 
     @ColumnInfo(name = "transaction_time_end")
     @NonNull
     @AutoValue.CopyAnnotations
-    abstract Instant transactionTimeEnd();
+    public abstract Instant transactionTimeEnd();
 
     @ColumnInfo(name = "initiates")
     @AutoValue.CopyAnnotations
-    abstract int initiates();
+    public abstract int initiates();
 
     abstract <B extends Builder<T, B>> Builder<T, B> toBuilder();
 

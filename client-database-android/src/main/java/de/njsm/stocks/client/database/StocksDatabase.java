@@ -35,6 +35,7 @@ import java.time.format.DateTimeFormatter;
                 SubsystemExceptionEntity.class,
                 LocationAddEntity.class,
                 ErrorEntity.class,
+                LocationDeleteEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,
@@ -62,7 +63,7 @@ public abstract class StocksDatabase extends RoomDatabase {
 
     abstract LocationDao locationDao();
 
-    abstract SynchronisationDao synchronisationDao();
+    public abstract SynchronisationDao synchronisationDao();
 
     abstract MetadataDao metadataDao();
 

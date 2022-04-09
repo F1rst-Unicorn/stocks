@@ -21,19 +21,61 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.execution.Scheduler;
 
 import javax.inject.Inject;
 
 class LocationDeleterImpl implements LocationDeleter {
 
+    private final LocationDeleteService locationDeleteService;
+
+    private final LocationRepository locationRepository;
+
+    private final Synchroniser synchroniser;
+
+    private final ErrorRecorder errorRecorder;
+
+    private final Scheduler scheduler;
+
     @Inject
-    LocationDeleterImpl() {
+    LocationDeleterImpl(LocationDeleteService locationDeleteService, LocationRepository locationRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
+        this.locationDeleteService = locationDeleteService;
+        this.locationRepository = locationRepository;
+        this.synchroniser = synchroniser;
+        this.errorRecorder = errorRecorder;
+        this.scheduler = scheduler;
     }
 
     @Override
     public void deleteLocation(Identifiable<Location> location) {
+        scheduler.schedule(Job.create(Job.Type.DELETE_LOCATION, () -> deleteLocationInBackground(location)));
+    }
 
+    void deleteLocationInBackground(Identifiable<Location> location) {
+        LocationForDeletion locationForDeletion = locationRepository.getLocation(location);
+        try {
+            locationDeleteService.deleteLocation(locationForDeletion);
+            synchroniser.synchronise();
+        } catch (SubsystemException e) {
+            errorRecorder.recordLocationDeleteError(e, locationForDeletion);
+            new ExceptionHandler().visit(e, null);
+        }
+    }
+
+    private final class ExceptionHandler implements SubsystemException.Visitor<Void, Void> {
+
+        @Override
+        public Void statusCodeException(StatusCodeException exception, Void input) {
+            if (exception.getStatusCode().isTriggeredByOutdatedLocalData()) {
+                synchroniser.synchronise();
+            }
+            return null;
+        }
+
+        @Override
+        public Void subsystemException(SubsystemException exception, Void input) {
+            return null;
+        }
     }
 }

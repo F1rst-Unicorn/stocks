@@ -31,7 +31,7 @@ import static de.njsm.stocks.client.business.Constants.INFINITY;
 import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_DATE_FORMAT;
 import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY;
 
-class TypeConverters {
+public class TypeConverters {
 
     @TypeConverter
     public String instantToDb(Instant instant) {

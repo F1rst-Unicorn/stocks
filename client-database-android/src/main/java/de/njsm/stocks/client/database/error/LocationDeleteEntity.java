@@ -19,34 +19,29 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database.error;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.database.IdFields;
+import de.njsm.stocks.client.database.VersionFields;
 
 @AutoValue
-public abstract class Job {
+@Entity(tableName = "location_to_delete")
+public abstract class LocationDeleteEntity implements IdFields, VersionFields {
 
-    public static Job create(Type name, Runnable runnable) {
-        return new AutoValue_Job(name, runnable);
+    @ColumnInfo(name = "location_id")
+    @AutoValue.CopyAnnotations
+    public abstract int locationId();
+
+    public static LocationDeleteEntity create(int id, int version, int locationId) {
+        return new AutoValue_LocationDeleteEntity(id, version, locationId);
     }
 
-    public abstract Type name();
-
-    public abstract Runnable runnable();
-
-    public enum Type {
-        SETUP,
-
-        DATABASE,
-
-        SYNCHRONISATION,
-
-        ADD_LOCATION,
-
-        DELETE_ERROR,
-
-        DELETE_LOCATION,
-
-        UNKNOWN
+    @Ignore
+    public static LocationDeleteEntity create(int locationId, int version) {
+        return new AutoValue_LocationDeleteEntity(0, version, locationId);
     }
 }

@@ -46,6 +46,6 @@ class InMemoryErrorListInteractorImpl implements ErrorListInteractor {
 
     @Override
     public Observable<ErrorDescription> getError(long id) {
-        return data.map(v -> v.get(0));
+        return data.filter(v -> !v.isEmpty()).map(v -> v.get(0));
     }
 }

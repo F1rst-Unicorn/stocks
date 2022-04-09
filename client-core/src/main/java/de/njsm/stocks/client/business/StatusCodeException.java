@@ -30,11 +30,12 @@ public class StatusCodeException extends SubsystemException {
     private final StatusCode statusCode;
 
     public StatusCodeException(StatusCode statusCode) {
+        super("");
         this.statusCode = statusCode;
     }
 
     public StatusCodeException(StatusCode statusCode, Throwable e) {
-        super(e);
+        super("", e);
         this.statusCode = statusCode;
     }
 

@@ -30,6 +30,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final LocationAddInteractor locationAddInteractor;
 
+    private final LocationDeleter locationDeleter;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -39,8 +41,9 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     private final JobTypeTranslator jobTypeTranslator;
 
     @Inject
-    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
+    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
+        this.locationDeleter = locationDeleter;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -79,6 +82,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, Void input) {
+        locationDeleter.deleteLocation(locationDeleteErrorDetails::id);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -89,6 +98,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, Void input) {
             return Job.Type.SYNCHRONISATION;
+        }
+
+        @Override
+        public Job.Type locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, Void input) {
+            return Job.Type.DELETE_LOCATION;
         }
     }
 }

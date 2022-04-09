@@ -19,11 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
+import com.google.auto.value.AutoValue;
 
-public interface LocationDeleteService {
+@AutoValue
+public abstract class LocationDeleteErrorDetails implements ErrorDetails {
 
-    void deleteLocation(LocationForDeletion location);
+    public abstract int id();
+
+    public abstract String name();
+
+    public static LocationDeleteErrorDetails create(int id, String name) {
+        return new AutoValue_LocationDeleteErrorDetails(id, name);
+    }
+
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.locationDeleteErrorDetails(this, input);
+    }
 }

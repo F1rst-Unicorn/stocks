@@ -30,4 +30,6 @@ public interface ErrorDetailsVisitor<I, O> {
     O locationAddForm(LocationAddForm locationAddForm, I input);
 
     O synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, I input);
+
+    O locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, I input);
 }

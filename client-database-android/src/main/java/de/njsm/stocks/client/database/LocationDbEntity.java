@@ -33,13 +33,13 @@ import java.time.Instant;
                 @Index(value = {"transaction_time_end"}, name = "location_transaction_time_end"),
         })
 @AutoValue
-abstract class LocationDbEntity extends ServerDbEntity<LocationDbEntity> implements LocationFields {
+public abstract class LocationDbEntity extends ServerDbEntity<LocationDbEntity> implements LocationFields {
 
     static Builder builder() {
         return new AutoValue_LocationDbEntity.Builder();
     }
 
-    static LocationDbEntity create(int id,
+    public static LocationDbEntity create(int id,
                                    int version,
                                    Instant validTimeStart,
                                    Instant validTimeEnd,
