@@ -5,7 +5,7 @@
 ### Added
 
 * Simplify android device registration by adding all information to the QR code
-  ([#26](https://gitlab.com/veenj/stocks/-/issues/26))
+  ([#26](https://j.njsm.de/git/veenj/stocks/issues/26))
 
 ### Fixed
 

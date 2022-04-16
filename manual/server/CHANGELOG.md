@@ -15,7 +15,7 @@
 * Remove the hystrix circuit breaker support. Thus
   `de.njsm.stocks.server.v2.circuitbreaker.timeout` is no longer needed in the
   configuration file. Stability will likely increase on slow hardware.
-  ([#39](https://gitlab.com/veenj/stocks/-/issues/39))
+  ([#39](https://j.njsm.de/git/veenj/stocks/issues/39))
 
 ## [5.5.0.6]
 
@@ -29,7 +29,7 @@
 ### Fixed
 
 * Prohibit devices from deleting themselves.
-  ([#29](https://gitlab.com/veenj/stocks/-/issues/29))
+  ([#29](https://j.njsm.de/git/veenj/stocks/issues/29))
 
 ## [5.5.0.4]
 
@@ -43,19 +43,19 @@
 
 * When removing the first created scaled unit "1 Default" from the system no
   more food could be created.
-  ([#24](https://gitlab.com/veenj/stocks/-/issues/24))
+  ([#24](https://j.njsm.de/git/veenj/stocks/issues/24))
 
 ## [5.5.0.2]
 
 ### Added
 
 * Every installation now has a default system user "Stocks" with a device "Job
-  Runner" ([#9](https://gitlab.com/veenj/stocks/-/issues/9))
+  Runner" ([#9](https://j.njsm.de/git/veenj/stocks/issues/9))
 
 ### Fixed
 
 * Background jobs cleaning up the database actually work now
-  ([#9](https://gitlab.com/veenj/stocks/-/issues/9))
+  ([#9](https://j.njsm.de/git/veenj/stocks/issues/9))
 
 ## [5.5.0.1]
 

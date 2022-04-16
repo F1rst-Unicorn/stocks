@@ -9,14 +9,14 @@
 * Allow searching for [subsequences](https://en.wikipedia.org/wiki/Subsequence)
   of food names. So searching for 'crt' can find the food 'Carrot' as all
   searched characters appear in the result in the same order.
-  ([#36](https://gitlab.com/veenj/stocks/-/issues/36))
+  ([#36](https://j.njsm.de/git/veenj/stocks/issues/36))
 
 * Hide recipe ingredients and products with amount 0 so they can be used to mark
   "optional" ingredients / products.
-  ([#18](https://gitlab.com/veenj/stocks/-/issues/18))
+  ([#18](https://j.njsm.de/git/veenj/stocks/issues/18))
 
 * Change layout of recipe registration form
-  ([#37](https://gitlab.com/veenj/stocks/-/issues/37))
+  ([#37](https://j.njsm.de/git/veenj/stocks/issues/37))
 
 ## [3.15.0.0]
 
@@ -24,21 +24,21 @@
 
 * Allow all ingredients and products of a recipe to be checked out and
   registered in one form.
-  ([#12](https://gitlab.com/veenj/stocks/-/issues/12))
+  ([#12](https://j.njsm.de/git/veenj/stocks/issues/12))
 
 ## [3.14.0.0]
 
 ### Added
 
 * Simplify device registration by adding all information to the QR code
-  ([#26](https://gitlab.com/veenj/stocks/-/issues/26))
+  ([#26](https://j.njsm.de/git/veenj/stocks/issues/26))
 
 ## [3.13.0.2]
 
 ### Fixed
 
 * Sort unit dropdown in food and recipes by the scale as well.
-  ([#10](https://gitlab.com/veenj/stocks/-/issues/10))
+  ([#10](https://j.njsm.de/git/veenj/stocks/issues/10))
 
 ## [3.13.0.1]
 
@@ -58,28 +58,28 @@
   Te second rating is "sufficient for cooking" which increases if an ingredient
   is present in the required unit of measure in sufficient amount. So a rating
   of 7 here guarantees that the recipe can be cooked.
-  ([#15](https://gitlab.com/veenj/stocks/-/issues/15))
+  ([#15](https://j.njsm.de/git/veenj/stocks/issues/15))
 
 ## [3.12.0.0]
 
 ### Added
 
 * Show current food stock in recipe detail view
-  ([#20](https://gitlab.com/veenj/stocks/-/issues/20))
+  ([#20](https://j.njsm.de/git/veenj/stocks/issues/20))
 
 ## [3.11.0.1]
 
 ### Fixed
 
 * Fix crash which would occur if a server cleanup job removes old devices
-  ([#9](https://gitlab.com/veenj/stocks/-/issues/9))
+  ([#9](https://j.njsm.de/git/veenj/stocks/issues/9))
 
 ## [3.11.0.0]
 
 ### Added
 
 * Allow management of recipes. This means adding, viewing, modifying and
-  deleting them ([#1](https://gitlab.com/veenj/stocks/-/issues/1))
+  deleting them ([#1](https://j.njsm.de/git/veenj/stocks/issues/1))
 
 ## [3.10.0.2]
 
