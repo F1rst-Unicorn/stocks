@@ -57,8 +57,8 @@ project {
 
 object HttpsGitlabComVeenjStocksGit : GitVcsRoot({
     id("HttpsGitlabComVeenjStocksGit")
-    name = "git@gitlab.com:veenj/stocks.git"
-    url = "git@gitlab.com:veenj/stocks.git"
+    name = "ssh://gitea@j.njsm.de:2222/veenj/stocks.git"
+    url = "ssh://gitea@j.njsm.de:2222/veenj/stocks.git"
     branch = "refs/heads/master"
     branchSpec = "refs/heads/*"
     checkoutPolicy = GitVcsRoot.AgentCheckoutPolicy.USE_MIRRORS
@@ -96,16 +96,6 @@ object Build : BuildType({
 
     vcs {
         root(HttpsGitlabComVeenjStocksGit)
-    }
-
-    features {
-        commitStatusPublisher {
-            vcsRootExtId = "Stocks_HttpsGitlabComVeenjStocksGit"
-            publisher = gitlab {
-                gitlabApiUrl = "https://gitlab.com/api/v4"
-                accessToken = "credentialsJSON:271c5ea5-69f0-4bc8-854f-413abaaa29ed"
-            }
-        }
     }
 
     steps {
