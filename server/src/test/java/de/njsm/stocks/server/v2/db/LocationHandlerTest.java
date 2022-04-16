@@ -225,6 +225,48 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
     }
 
+    @Test
+    public void editALocation() {
+        LocationForEditing data = LocationForEditing.builder()
+                .id(2)
+                .version(0)
+                .name("Basement")
+                .description("new description")
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEditingWorked(data, result);
+    }
+
+    @Test
+    public void wrongVersionEditingIsNotRenamed() {
+        LocationForEditing data = LocationForEditing.builder()
+                .id(2)
+                .version(100)
+                .name("Basement")
+                .description("new description")
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEquals(StatusCode.INVALID_DATA_VERSION, result);
+    }
+
+    @Test
+    public void unknownEditingIsReported() {
+        LocationForEditing data = LocationForEditing.builder()
+                .id(100)
+                .version(0)
+                .name("Basement")
+                .description("new description")
+                .build();
+
+        StatusCode result = uut.edit(data);
+
+        assertEquals(StatusCode.NOT_FOUND, result);
+    }
+
     @Override
     public CrudDatabaseHandler<LocationRecord, Location> getDbHandler() {
         return uut;

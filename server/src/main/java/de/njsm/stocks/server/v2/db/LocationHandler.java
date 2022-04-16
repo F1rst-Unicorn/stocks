@@ -25,13 +25,13 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.impl.DSL;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.LOCATION;
+import static org.jooq.impl.DSL.inline;
 
 
 public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Location> {
@@ -52,7 +52,7 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
 
             return currentUpdate(context, Arrays.asList(
                     LOCATION.ID,
-                    DSL.inline(item.name()),
+                    inline(item.name()),
                     LOCATION.VERSION.add(1),
                     LOCATION.DESCRIPTION
                     ),
@@ -79,11 +79,31 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                     LOCATION.ID,
                     LOCATION.NAME,
                     LOCATION.VERSION.add(1),
-                    DSL.inline(input.description())
+                    inline(input.description())
                     ),
                     LOCATION.ID.eq(input.id())
                             .and(LOCATION.VERSION.eq(input.version()))
                             .and(LOCATION.DESCRIPTION.ne(input.description())))
+                    .map(this::notFoundMeansInvalidVersion);
+        });
+    }
+
+    public StatusCode edit(LocationForEditing data) {
+        return runCommand(context -> {
+
+            if (isCurrentlyMissing(data, context))
+                return StatusCode.NOT_FOUND;
+
+            return currentUpdate(context, Arrays.asList(
+                    LOCATION.ID,
+                    inline(data.name()),
+                    LOCATION.VERSION.add(1),
+                    inline(data.description())
+                    ),
+                    LOCATION.ID.eq(data.id())
+                            .and(LOCATION.VERSION.eq(data.version()))
+                            .and(LOCATION.NAME.ne(data.name())
+                                    .or(LOCATION.DESCRIPTION.ne(data.description()))))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }

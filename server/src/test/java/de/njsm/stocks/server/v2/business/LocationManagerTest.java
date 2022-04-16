@@ -19,12 +19,7 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.common.api.Location;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.LocationForDeletion;
-import de.njsm.stocks.common.api.LocationForInsertion;
-import de.njsm.stocks.common.api.LocationForRenaming;
-import de.njsm.stocks.common.api.LocationForSetDescription;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
@@ -115,6 +110,25 @@ public class LocationManagerTest {
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(dbLayer).rename(input);
+        Mockito.verify(dbLayer).commit();
+
+    }
+
+    @Test
+    public void editingIsDelegated() {
+        LocationForEditing input = LocationForEditing.builder()
+                .id(1)
+                .version(2)
+                .name("new name")
+                .description("new description")
+                .build();
+        Mockito.when(dbLayer.edit(input)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
+
+        StatusCode result = uut.edit(input);
+
+        assertEquals(StatusCode.SUCCESS, result);
+        Mockito.verify(dbLayer).edit(input);
         Mockito.verify(dbLayer).commit();
 
     }

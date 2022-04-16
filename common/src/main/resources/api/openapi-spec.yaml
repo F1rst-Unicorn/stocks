@@ -94,7 +94,7 @@ security:
       - mutualTLS
 
 externalDocs:
-  url: https://gitlab.com/veenj/stocks
+  url: https://j.njsm.de/git/veenj/stocks
 
 components:
   schemas:
@@ -1547,6 +1547,23 @@ paths:
       responses:
         "200":
           $ref: '#/components/responses/200-write-returning-id'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
+  "/v3/location/edit":
+    put:
+      description: Edit a location.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Location'
+                - $ref: '#/components/schemas/Data'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write'
         "400":
           $ref: '#/components/responses/PUT-400'
         "500":

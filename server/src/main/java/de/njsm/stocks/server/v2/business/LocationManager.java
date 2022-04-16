@@ -20,12 +20,7 @@
 package de.njsm.stocks.server.v2.business;
 
 
-import de.njsm.stocks.common.api.Location;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.LocationForDeletion;
-import de.njsm.stocks.common.api.LocationForInsertion;
-import de.njsm.stocks.common.api.LocationForRenaming;
-import de.njsm.stocks.common.api.LocationForSetDescription;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
@@ -57,6 +52,10 @@ public class LocationManager extends BusinessObject<LocationRecord, Location> im
 
     public StatusCode rename(LocationForRenaming item) {
         return runOperation(() -> locationHandler.rename(item));
+    }
+
+    public StatusCode edit(LocationForEditing item) {
+        return runOperation(() -> locationHandler.edit(item));
     }
 
     public StatusCode delete(LocationForDeletion l) {
