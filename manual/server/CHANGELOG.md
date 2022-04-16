@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.7.0.0]
+
 ### Added
 
 * New location endpoint to edit all its fields at once.
