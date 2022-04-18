@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
@@ -30,8 +31,10 @@ import com.google.common.base.Preconditions;
 @JsonDeserialize(builder = AutoValue_LocationForEditing.Builder.class)
 public abstract class LocationForEditing implements Versionable<Location> {
 
+    @JsonGetter
     public abstract String name();
 
+    @JsonGetter
     public abstract String description();
 
     public static LocationForEditing.Builder builder() {

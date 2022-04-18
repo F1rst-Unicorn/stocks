@@ -42,7 +42,7 @@ public abstract class LocationToEdit implements Identifiable<Location>, Location
     public boolean isContainedIn(LocationForEditing currentState) {
         return id() == id() &&
                 name().equals(currentState.name()) &&
-                description().equals(description());
+                description().equals(currentState.description());
     }
 
     @AutoValue.Builder

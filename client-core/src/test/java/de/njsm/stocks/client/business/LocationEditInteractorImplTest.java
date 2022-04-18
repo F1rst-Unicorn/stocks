@@ -127,4 +127,27 @@ class LocationEditInteractorImplTest {
         verify(locationEditService).editLocation(dataToNetwork);
         verify(synchroniser).synchronise();
     }
+
+    @Test
+    void differentDescriptionCausesEditing() {
+        int id = 42;
+        int version = 2;
+        LocationToEdit localData = LocationToEdit.builder()
+                .id(id)
+                .name("current name")
+                .description("current description")
+                .build();
+        LocationToEdit editedForm = LocationToEdit.builder()
+                .id(id)
+                .name(localData.name())
+                .description("edited description")
+                .build();
+        LocationForEditing dataToNetwork = editedForm.addVersion(version);
+        when(locationRepository.getCurrentLocationBeforeEditing(editedForm)).thenReturn(localData.addVersion(version));
+
+        uut.editInBackground(editedForm);
+
+        verify(locationEditService).editLocation(dataToNetwork);
+        verify(synchroniser).synchronise();
+    }
 }
