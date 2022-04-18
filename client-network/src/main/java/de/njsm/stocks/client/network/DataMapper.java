@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.business.entities.Update;
 import de.njsm.stocks.common.api.BitemporalLocation;
+import de.njsm.stocks.common.api.LocationForEditing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,5 +66,14 @@ public class DataMapper {
 
     static StatusCode map(de.njsm.stocks.common.api.StatusCode input) {
         return StatusCode.values()[input.ordinal()];
+    }
+
+    static LocationForEditing map(de.njsm.stocks.client.business.entities.LocationForEditing location) {
+        return LocationForEditing.builder()
+                .id(location.id())
+                .version(location.version())
+                .name(location.name())
+                .description(location.description())
+                .build();
     }
 }

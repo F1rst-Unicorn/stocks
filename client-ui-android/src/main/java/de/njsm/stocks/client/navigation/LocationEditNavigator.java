@@ -19,30 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.view;
+package de.njsm.stocks.client.navigation;
 
-import android.widget.EditText;
-import com.google.android.material.textfield.TextInputLayout;
+import android.os.Bundle;
 
-public class ViewUtility {
+public interface LocationEditNavigator extends Navigator {
 
-    public static String stringFromForm(TextInputLayout view) {
-        EditText editText = view.getEditText();
-        if (editText != null) {
-            return editText.getText().toString();
-        } else {
-            return "";
-        }
-    }
-
-    public static void setText(TextInputLayout view, int text) {
-        setText(view, String.valueOf(text));
-    }
-
-    public static void setText(TextInputLayout inputField, String text) {
-        EditText editor = inputField.getEditText();
-        if (editor != null) {
-            editor.setText(text);
-        }
-    }
+    int getLocationId(Bundle arguments);
 }

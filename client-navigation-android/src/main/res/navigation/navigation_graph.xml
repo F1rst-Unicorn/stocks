@@ -64,7 +64,11 @@
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_location_edit"
-        android:name="androidx.fragment.app.Fragment">
+        android:name="de.njsm.stocks.client.fragment.locationedit.LocationEditFragment"
+        android:label="@string/title_edit_location">
+        <argument
+                android:name="id"
+                app:argType="integer"/>
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_error_list"

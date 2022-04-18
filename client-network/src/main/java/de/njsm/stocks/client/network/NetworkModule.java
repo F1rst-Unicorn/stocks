@@ -60,6 +60,9 @@ public interface NetworkModule {
     @Binds
     LocationDeleteService locationDeleteService(LocationDeleteServiceImpl impl);
 
+    @Binds
+    LocationEditService locationEditService(LocationEditServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint) {

@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static de.njsm.stocks.client.fragment.view.ViewUtility.setText;
 import static de.njsm.stocks.client.fragment.view.ViewUtility.stringFromForm;
 
 class SetupFormView {
@@ -179,17 +180,6 @@ class SetupFormView {
         boolean largeEnough = isTextFieldEmpty.size() == 10;
         boolean noneEmpty = isTextFieldEmpty.values().stream().noneMatch(v -> v);
         submitButton.setEnabled(largeEnough && noneEmpty);
-    }
-
-    private void setText(TextInputLayout view, int text) {
-        setText(view, String.valueOf(text));
-    }
-
-    private void setText(TextInputLayout inputField, String text) {
-        EditText editor = inputField.getEditText();
-        if (editor != null) {
-            editor.setText(text);
-        }
     }
 
     private int intFromForm(TextInputLayout view) {

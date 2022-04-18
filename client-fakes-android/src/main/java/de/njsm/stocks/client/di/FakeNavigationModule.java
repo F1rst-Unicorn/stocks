@@ -85,4 +85,10 @@ class FakeNavigationModule {
     ErrorDetailsNavigator errorDetailsNavigator() {
         return mock(ErrorDetailsNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    LocationEditNavigator locationEditNavigator() {
+        return mock(LocationEditNavigator.class);
+    }
 }

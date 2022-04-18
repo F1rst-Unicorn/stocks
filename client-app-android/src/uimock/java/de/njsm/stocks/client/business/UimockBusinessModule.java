@@ -80,4 +80,7 @@ public interface UimockBusinessModule {
     static ErrorStatusReporter errorStatusReporter() {
         return () -> Observable.just(1);
     }
+
+    @Binds
+    LocationEditInteractor locationEditInteractor(InMemoryLocationEditInteractorImpl impl);
 }

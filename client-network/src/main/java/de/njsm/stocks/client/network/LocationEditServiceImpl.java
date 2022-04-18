@@ -46,12 +46,8 @@ public class LocationEditServiceImpl implements LocationEditService {
 
     @Override
     public void editLocation(LocationForEditing location) {
-        Call<Response> call = api.renameLocation(location.id(), location.version(), location.name());
+        Call<Response> call = api.editLocation(map(location));
         StatusCode result = callHandler.executeCommand(call);
-        if (result.isFail())
-            throw new StatusCodeException(map(result));
-        call = api.setLocationDescription(location.id(), location.version() + 1, location.description());
-        result = callHandler.executeCommand(call);
         if (result.isFail())
             throw new StatusCodeException(map(result));
     }

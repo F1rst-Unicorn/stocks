@@ -47,4 +47,7 @@ public interface NavigationModule {
 
     @Binds
     ErrorDetailsNavigator errorDetailsNavigatorImpl(ErrorDetailsNavigatorImpl impl);
+
+    @Binds
+    LocationEditNavigator locationEditNavigator(LocationEditNavigatorImpl impl);
 }

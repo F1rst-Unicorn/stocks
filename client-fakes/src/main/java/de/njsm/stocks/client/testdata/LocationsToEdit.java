@@ -19,30 +19,18 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.view;
+package de.njsm.stocks.client.testdata;
 
-import android.widget.EditText;
-import com.google.android.material.textfield.TextInputLayout;
 
-public class ViewUtility {
+import de.njsm.stocks.client.business.entities.LocationToEdit;
 
-    public static String stringFromForm(TextInputLayout view) {
-        EditText editText = view.getEditText();
-        if (editText != null) {
-            return editText.getText().toString();
-        } else {
-            return "";
-        }
-    }
+public class LocationsToEdit {
 
-    public static void setText(TextInputLayout view, int text) {
-        setText(view, String.valueOf(text));
-    }
-
-    public static void setText(TextInputLayout inputField, String text) {
-        EditText editor = inputField.getEditText();
-        if (editor != null) {
-            editor.setText(text);
-        }
+    public static LocationToEdit generate() {
+        return LocationToEdit.builder()
+                        .id(2)
+                        .name("Fridge")
+                        .description("The cold one")
+                        .build();
     }
 }

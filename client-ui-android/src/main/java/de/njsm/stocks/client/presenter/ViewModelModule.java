@@ -82,4 +82,11 @@ public class ViewModelModule {
     ViewModel errorDetailsViewModel(ErrorListInteractor errorListInteractor, ErrorRetryInteractor errorRetryInteractor) {
         return new ErrorDetailsViewModel(errorListInteractor, errorRetryInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(LocationEditViewModel.class)
+    ViewModel locationEditViewModel(LocationEditInteractor locationEditInteractor) {
+        return new LocationEditViewModel(locationEditInteractor);
+    }
 }

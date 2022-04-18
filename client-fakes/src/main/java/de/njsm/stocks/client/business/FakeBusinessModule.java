@@ -103,4 +103,13 @@ public interface FakeBusinessModule {
     static FakeErrorListInteractor fakeErrorListInteractor() {
         return new FakeErrorListInteractor();
     }
+
+    @Binds
+    LocationEditInteractor locationEditInteractor(FakeLocationEditInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeLocationEditInteractor fakeLocationEditInteractor() {
+        return new FakeLocationEditInteractor();
+    }
 }

@@ -19,30 +19,25 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.view;
+package de.njsm.stocks.client.navigation;
 
-import android.widget.EditText;
-import com.google.android.material.textfield.TextInputLayout;
+import android.os.Bundle;
+import org.junit.Test;
 
-public class ViewUtility {
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
-    public static String stringFromForm(TextInputLayout view) {
-        EditText editText = view.getEditText();
-        if (editText != null) {
-            return editText.getText().toString();
-        } else {
-            return "";
-        }
-    }
+public class LocationEditNavigatorImplTest extends NavigationTest {
 
-    public static void setText(TextInputLayout view, int text) {
-        setText(view, String.valueOf(text));
-    }
+    @Test
+    public void argumentIsExtracted() {
+        LocationEditNavigatorImpl uut = new LocationEditNavigatorImpl(navigationArgConsumer);
+        Bundle input = new Bundle();
+        int expected = 42;
+        input.putInt("id", expected);
 
-    public static void setText(TextInputLayout inputField, String text) {
-        EditText editor = inputField.getEditText();
-        if (editor != null) {
-            editor.setText(text);
-        }
+        int actual = uut.getLocationId(input);
+
+        assertEquals(expected, actual);
     }
 }
