@@ -102,7 +102,7 @@ public class ErrorDetailsFragment extends InjectableFragment {
         this.errorDetailsNavigator = errorDetailsNavigator;
     }
 
-    private static final class ErrorDetailsPrinter implements ErrorDetailsVisitor<Void, String> {
+    static final class ErrorDetailsPrinter implements ErrorDetailsVisitor<Void, String> {
 
         @Override
         public String locationAddForm(LocationAddForm locationAddForm, Void input) {

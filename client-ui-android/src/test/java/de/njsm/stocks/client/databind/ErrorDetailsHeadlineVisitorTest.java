@@ -19,51 +19,32 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.errorlist;
+package de.njsm.stocks.client.databind;
 
 import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.business.entities.LocationDeleteErrorDetails;
 import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
 import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.ui.R;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ErrorDetailsDetailsVisitorTest {
+public class ErrorDetailsHeadlineVisitorTest {
 
-    private ErrorDetailsDetailsVisitor uut;
+    private ErrorDetailsHeadlineVisitor uut;
 
     @Before
     public void setup() {
-        uut = new ErrorDetailsDetailsVisitor();
+        uut = new ErrorDetailsHeadlineVisitor();
     }
 
     @Test
-    public void synchronsiationHasNoDetails() {
-        SynchronisationErrorDetails input = SynchronisationErrorDetails.create();
-
-        assertEquals("", uut.visit(input, null));
-    }
-
-    @Test
-    public void locationAddShowsNameAndDescription() {
-        LocationAddForm input = LocationAddForm.create("Fridge", "the cold one");
-
-        assertEquals(input.name() + "\n" + input.description(), uut.visit(input, null));
-    }
-
-    @Test
-    public void locationDeletionShowsName() {
-        LocationDeleteErrorDetails data = LocationDeleteErrorDetails.create(1, "name");
-
-        assertEquals(data.name(), uut.visit(data, null));
-    }
-
-    @Test
-    public void locationEditingShowsNameAndDescription() {
-        LocationEditErrorDetails data = LocationEditErrorDetails.create(1, "name", "description");
-
-        assertEquals(data.name() + "\n" + data.description(), uut.visit(data, null));
+    public void headlinesAreMappedCorrectly() {
+        assertEquals(R.string.error_details_location_add_error_list, (long) uut.visit(LocationAddForm.create("name", "description"), null));
+        assertEquals(R.string.error_details_synchronisation_error_list, (long) uut.visit(SynchronisationErrorDetails.create(), null));
+        assertEquals(R.string.error_details_location_delete_error_list, (long) uut.visit(LocationDeleteErrorDetails.create(2, "name"), null));
+        assertEquals(R.string.error_details_location_edit_error_list, (long) uut.visit(LocationEditErrorDetails.create(2, "name", "description"), null));
     }
 }

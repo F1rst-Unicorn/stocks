@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.errorlist;
+package de.njsm.stocks.client.fragment.errordetails;
 
 import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.business.entities.LocationDeleteErrorDetails;
@@ -30,40 +30,36 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ErrorDetailsDetailsVisitorTest {
+public class ErrorDetailsPrinterTest {
 
-    private ErrorDetailsDetailsVisitor uut;
+    private ErrorDetailsFragment.ErrorDetailsPrinter uut;
 
     @Before
     public void setup() {
-        uut = new ErrorDetailsDetailsVisitor();
+        uut = new ErrorDetailsFragment.ErrorDetailsPrinter();
     }
 
     @Test
-    public void synchronsiationHasNoDetails() {
-        SynchronisationErrorDetails input = SynchronisationErrorDetails.create();
-
-        assertEquals("", uut.visit(input, null));
+    public void synchronisationErrorIsEmpty() {
+        SynchronisationErrorDetails data = SynchronisationErrorDetails.create();
+        assertEquals("", uut.visit(data, null));
     }
 
     @Test
-    public void locationAddShowsNameAndDescription() {
-        LocationAddForm input = LocationAddForm.create("Fridge", "the cold one");
-
-        assertEquals(input.name() + "\n" + input.description(), uut.visit(input, null));
+    public void locationAddErrorShowsNameAndDescription() {
+        LocationAddForm data = LocationAddForm.create("name", "description");
+        assertEquals(data.name() + "\n" + data.description(), uut.visit(data, null));
     }
 
     @Test
-    public void locationDeletionShowsName() {
-        LocationDeleteErrorDetails data = LocationDeleteErrorDetails.create(1, "name");
-
+    public void locationDeleteErrorShowsName() {
+        LocationDeleteErrorDetails data = LocationDeleteErrorDetails.create(2, "name");
         assertEquals(data.name(), uut.visit(data, null));
     }
 
     @Test
-    public void locationEditingShowsNameAndDescription() {
-        LocationEditErrorDetails data = LocationEditErrorDetails.create(1, "name", "description");
-
-        assertEquals(data.name() + "\n" + data.description(), uut.visit(data, null));
+    public void locationEditErrorShowsName() {
+        LocationEditErrorDetails data = LocationEditErrorDetails.create(2, "name", "description");
+        assertEquals(data.name(), uut.visit(data, null));
     }
 }
