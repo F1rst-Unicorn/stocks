@@ -24,6 +24,7 @@ import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.exec
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.schedule
+import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.v2019_2.vcs.GitVcsRoot
 
 /*
@@ -231,6 +232,10 @@ object Build : BuildType({
             enabled = false
             param("hour", "1")
             param("revisionRuleDependsOn", "Stocks_Build")
+        }
+        vcs {
+            id = "vcsTrigger"
+            branchFilter = "+:refs/heads/*"
         }
     }
 
