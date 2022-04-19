@@ -21,13 +21,9 @@
 
 package de.njsm.stocks.client.fragment.errorlist;
 
-import de.njsm.stocks.client.business.entities.ErrorDetailsVisitor;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationDeleteErrorDetails;
-import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.business.entities.*;
 
 public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, String> {
-
 
     @Override
     public String locationAddForm(LocationAddForm locationAddForm, Void input) {
@@ -42,5 +38,10 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     @Override
     public String locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, Void input) {
         return locationDeleteErrorDetails.name();
+    }
+
+    @Override
+    public String locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, Void input) {
+        return String.format("%1$s\n%2$s", locationEditErrorDetails.name(), locationEditErrorDetails.description());
     }
 }

@@ -118,5 +118,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, Void input) {
             return locationDeleteErrorDetails.name();
         }
+
+        @Override
+        public String locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, Void input) {
+            return locationEditErrorDetails.name();
+        }
     }
 }

@@ -59,23 +59,7 @@ class LocationDeleterImpl implements LocationDeleter {
             synchroniser.synchronise();
         } catch (SubsystemException e) {
             errorRecorder.recordLocationDeleteError(e, locationForDeletion);
-            new ExceptionHandler().visit(e, null);
-        }
-    }
-
-    private final class ExceptionHandler implements SubsystemException.Visitor<Void, Void> {
-
-        @Override
-        public Void statusCodeException(StatusCodeException exception, Void input) {
-            if (exception.getStatusCode().isTriggeredByOutdatedLocalData()) {
-                synchroniser.synchronise();
-            }
-            return null;
-        }
-
-        @Override
-        public Void subsystemException(SubsystemException exception, Void input) {
-            return null;
+            new AfterErrorSynchroniser(synchroniser).visit(e, null);
         }
     }
 }

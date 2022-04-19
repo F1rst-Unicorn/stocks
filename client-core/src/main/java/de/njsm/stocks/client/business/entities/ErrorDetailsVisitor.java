@@ -32,4 +32,6 @@ public interface ErrorDetailsVisitor<I, O> {
     O synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, I input);
 
     O locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, I input);
+
+    O locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, I input);
 }

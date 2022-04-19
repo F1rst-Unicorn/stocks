@@ -19,19 +19,21 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.LocationForEditing;
+import com.google.auto.value.AutoValue;
 
-public interface ErrorRecorder {
+@AutoValue
+public abstract class LocationEditErrorDetails implements ErrorDetails, LocationFields {
 
-    void recordSynchronisationError(SubsystemException exception);
+    public abstract int id();
 
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
+    public static LocationEditErrorDetails create(int id, String name, String description) {
+        return new AutoValue_LocationEditErrorDetails(name, description, id);
+    }
 
-    void recordLocationDeleteError(SubsystemException exception, LocationForDeletion locationForDeletion);
-
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.locationEditErrorDetails(this, input);
+    }
 }

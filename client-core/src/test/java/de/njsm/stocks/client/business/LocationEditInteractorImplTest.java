@@ -63,11 +63,7 @@ class LocationEditInteractorImplTest {
     void gettingLocationIsForwarded() {
         int id = 42;
         Identifiable<Location> input = () -> id;
-        LocationToEdit expected = LocationToEdit.builder()
-                .id(id)
-                .name("current name")
-                .description("current description")
-                .build();
+        LocationToEdit expected = getLocationToEdit(id);
         when(locationRepository.getLocationForEditing(input)).thenReturn(Observable.just(expected));
 
         Observable<LocationToEdit> actual = uut.getLocation(input);
@@ -77,11 +73,7 @@ class LocationEditInteractorImplTest {
 
     @Test
     void editingDispatchesToBackend() {
-        LocationToEdit expected = LocationToEdit.builder()
-                .id(42)
-                .name("current name")
-                .description("current description")
-                .build();
+        LocationToEdit expected = getLocationToEdit(42);
 
         uut.edit(expected);
 
@@ -93,11 +85,7 @@ class LocationEditInteractorImplTest {
     @Test
     void editingWithoutChangeDoesNothing() {
         int id = 42;
-        LocationToEdit sameData = LocationToEdit.builder()
-                .id(id)
-                .name("current name")
-                .description("current description")
-                .build();
+        LocationToEdit sameData = getLocationToEdit(id);
         when(locationRepository.getCurrentLocationBeforeEditing(sameData)).thenReturn(sameData.addVersion(2));
 
         uut.editInBackground(sameData);
@@ -109,11 +97,7 @@ class LocationEditInteractorImplTest {
     void differentInputDataCausesEditing() {
         int id = 42;
         int version = 2;
-        LocationToEdit localData = LocationToEdit.builder()
-                .id(id)
-                .name("current name")
-                .description("current description")
-                .build();
+        LocationToEdit localData = getLocationToEdit(id);
         LocationToEdit editedForm = LocationToEdit.builder()
                 .id(id)
                 .name("edited name")
@@ -132,11 +116,7 @@ class LocationEditInteractorImplTest {
     void differentDescriptionCausesEditing() {
         int id = 42;
         int version = 2;
-        LocationToEdit localData = LocationToEdit.builder()
-                .id(id)
-                .name("current name")
-                .description("current description")
-                .build();
+        LocationToEdit localData = getLocationToEdit(id);
         LocationToEdit editedForm = LocationToEdit.builder()
                 .id(id)
                 .name(localData.name())
@@ -149,5 +129,35 @@ class LocationEditInteractorImplTest {
 
         verify(locationEditService).editLocation(dataToNetwork);
         verify(synchroniser).synchronise();
+    }
+
+    @Test
+    void failingEditingErrorIsRecorded() {
+        int id = 42;
+        int version = 2;
+        LocationToEdit localData = getLocationToEdit(id);
+        LocationToEdit editedForm = LocationToEdit.builder()
+                .id(id)
+                .name(localData.name())
+                .description("edited description")
+                .build();
+        LocationForEditing dataToNetwork = editedForm.addVersion(version);
+        when(locationRepository.getCurrentLocationBeforeEditing(editedForm)).thenReturn(localData.addVersion(version));
+        SubsystemException exception = new SubsystemException("test");
+        doThrow(exception).when(locationEditService).editLocation(dataToNetwork);
+
+        uut.editInBackground(editedForm);
+
+        verify(locationEditService).editLocation(dataToNetwork);
+        verify(errorRecorder).recordLocationEditError(exception, dataToNetwork);
+        verifyNoInteractions(synchroniser);
+    }
+
+    private LocationToEdit getLocationToEdit(int id) {
+        return LocationToEdit.builder()
+                .id(id)
+                .name("current name")
+                .description("current description")
+                .build();
     }
 }

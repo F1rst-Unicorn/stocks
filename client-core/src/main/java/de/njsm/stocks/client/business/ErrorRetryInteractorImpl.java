@@ -32,6 +32,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final LocationDeleter locationDeleter;
 
+    private final LocationEditInteractor locationEditInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -41,9 +43,10 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     private final JobTypeTranslator jobTypeTranslator;
 
     @Inject
-    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
+    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, LocationDeleter locationDeleter, LocationEditInteractor locationEditInteractor, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
         this.locationDeleter = locationDeleter;
+        this.locationEditInteractor = locationEditInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -88,6 +91,17 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, Void input) {
+        LocationToEdit data = LocationToEdit.builder()
+                .id(locationEditErrorDetails.id())
+                .name(locationEditErrorDetails.name())
+                .description(locationEditErrorDetails.description())
+                .build();
+        locationEditInteractor.edit(data);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -103,6 +117,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, Void input) {
             return Job.Type.DELETE_LOCATION;
+        }
+
+        @Override
+        public Job.Type locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, Void input) {
+            return Job.Type.EDIT_LOCATION;
         }
     }
 }

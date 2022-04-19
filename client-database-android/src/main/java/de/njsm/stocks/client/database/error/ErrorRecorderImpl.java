@@ -27,6 +27,7 @@ import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.business.entities.LocationForDeletion;
+import de.njsm.stocks.client.business.entities.LocationForEditing;
 import de.njsm.stocks.client.database.DataMapper;
 
 import javax.inject.Inject;
@@ -69,6 +70,16 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         long dataId = errorDao.insert(locationDeleteEntity);
 
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_LOCATION, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @Override
+    public void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
+
+        LocationEditEntity locationEditEntity = DataMapper.map(locationForEditing);
+        long dataId = errorDao.insert(locationEditEntity);
+
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_LOCATION, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
     @AutoValue

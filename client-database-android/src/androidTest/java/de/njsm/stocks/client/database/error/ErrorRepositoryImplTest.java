@@ -172,4 +172,47 @@ public class ErrorRepositoryImplTest extends DbTestCase {
         stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
         assertTrue(stocksDatabase.errorDao().getLocationDeletes().isEmpty());
     }
+
+    @Test
+    public void locationEditErrorCanBeRetrieved() {
+        LocationDbEntity location = StandardEntities.locationDbEntity();
+        LocationForEditing locationForEditing = LocationForEditing.builder()
+                .id(location.id())
+                .version(location.version())
+                .name("name")
+                .description("description")
+                .build();
+        LocationEditErrorDetails errorDetails = LocationEditErrorDetails.create(location.id(), location.name(), location.description());
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        stocksDatabase.synchronisationDao().writeLocations(Arrays.asList(location));
+        errorRecorder.recordLocationEditError(exception, locationForEditing);
+
+        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
+        TestObserver<List<ErrorDescription>> actual = uut.getErrors().test().awaitCount(1);
+        actual.assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
+        actual.assertValue(v -> v.get(0).errorDetails().equals(errorDetails));
+        actual.assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
+    }
+
+    @Test
+    public void locationEditErrorCanBeDeleted() throws InterruptedException {
+        LocationDbEntity location = StandardEntities.locationDbEntity();
+        LocationForEditing locationForEditing = LocationForEditing.builder()
+                .id(location.id())
+                .version(location.version())
+                .name(location.name())
+                .description(location.description())
+                .build();
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        stocksDatabase.synchronisationDao().writeLocations(Arrays.asList(location));
+        errorRecorder.recordLocationEditError(exception, locationForEditing);
+        TestObserver<List<ErrorDescription>> data = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1);
+        ErrorDescription input = data.values().get(0).get(0);
+
+        uut.deleteError(input);
+
+        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
+        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
+        assertTrue(stocksDatabase.errorDao().getLocationEdits().isEmpty());
+    }
 }

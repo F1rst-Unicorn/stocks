@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.error.LocationAddEntity;
 import de.njsm.stocks.client.database.error.LocationDeleteEntity;
+import de.njsm.stocks.client.database.error.LocationEditEntity;
 
 public class DataMapper {
 
@@ -99,5 +100,13 @@ public class DataMapper {
                 .name(location.name())
                 .description(location.description())
                 .build();
+    }
+
+    public static LocationEditEntity map(LocationForEditing locationForEditing) {
+        return LocationEditEntity.create(
+                locationForEditing.version(),
+                locationForEditing.name(),
+                locationForEditing.description(),
+                locationForEditing.id());
     }
 }

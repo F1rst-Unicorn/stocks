@@ -102,4 +102,16 @@ public abstract class ErrorDao {
 
     @Query("select name from current_location where _id = :id")
     abstract String getLocationName(int id);
+
+    @Query("select * from location_to_edit")
+    abstract List<LocationEditEntity> getLocationEdits();
+
+    @Insert
+    abstract long insert(LocationEditEntity locationEditEntity);
+
+    @Query("select * from location_to_edit where _id = :id")
+    abstract LocationEditEntity getLocationEdit(Long id);
+
+    @Query("delete from location_to_edit where _id = :id")
+    abstract void deleteLocationEdit(long id);
 }

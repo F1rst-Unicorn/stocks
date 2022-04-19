@@ -21,17 +21,24 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.LocationForEditing;
+final class AfterErrorSynchroniser implements SubsystemException.Visitor<Void, Void> {
 
-public interface ErrorRecorder {
+    private final Synchroniser synchroniser;
 
-    void recordSynchronisationError(SubsystemException exception);
+    public AfterErrorSynchroniser(Synchroniser synchroniser) {
+        this.synchroniser = synchroniser;
+    }
 
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
+    @Override
+    public Void statusCodeException(StatusCodeException exception, Void input) {
+        if (exception.getStatusCode().isTriggeredByOutdatedLocalData()) {
+            synchroniser.synchronise();
+        }
+        return null;
+    }
 
-    void recordLocationDeleteError(SubsystemException exception, LocationForDeletion locationForDeletion);
-
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
+    @Override
+    public Void subsystemException(SubsystemException exception, Void input) {
+        return null;
+    }
 }

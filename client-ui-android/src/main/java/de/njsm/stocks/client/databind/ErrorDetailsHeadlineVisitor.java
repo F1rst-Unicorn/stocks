@@ -21,10 +21,7 @@
 
 package de.njsm.stocks.client.databind;
 
-import de.njsm.stocks.client.business.entities.ErrorDetailsVisitor;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationDeleteErrorDetails;
-import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.ui.R;
 
 public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, Integer> {
@@ -43,5 +40,10 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     @Override
     public Integer locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, Void input) {
         return R.string.error_details_location_delete_error_list;
+    }
+
+    @Override
+    public Integer locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, Void input) {
+        return R.string.error_details_location_edit_error_list;
     }
 }

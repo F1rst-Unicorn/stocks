@@ -63,7 +63,14 @@ class LocationEditInteractorImpl implements LocationEditInteractor {
         if (formData.isContainedIn(currentState)) {
             return;
         }
-        locationEditService.editLocation(formData.addVersion(currentState.version()));
-        synchroniser.synchronise();
+        LocationForEditing dataToNetwork = formData.addVersion(currentState.version());
+
+        try {
+            locationEditService.editLocation(dataToNetwork);
+            synchroniser.synchronise();
+        } catch (SubsystemException e) {
+            errorRecorder.recordLocationEditError(e, dataToNetwork);
+            new AfterErrorSynchroniser(synchroniser).visit(e, null);
+        }
     }
 }
