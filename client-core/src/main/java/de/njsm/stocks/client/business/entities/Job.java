@@ -34,21 +34,91 @@ public abstract class Job {
 
     public abstract Runnable runnable();
 
+    @Override
+    public String toString() {
+        return name().toString();
+    }
+
     public enum Type {
-        SETUP,
+        SETUP {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.setup(this, input);
+            }
+        },
 
-        DATABASE,
+        DATABASE {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.database(this, input);
+            }
+        },
 
-        SYNCHRONISATION,
+        SYNCHRONISATION {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.synchronisation(this, input);
+            }
+        },
 
-        ADD_LOCATION,
+        ADD_LOCATION {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.addLocation(this, input);
+            }
+        },
 
-        DELETE_ERROR,
+        DELETE_ERROR {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.deleteError(this, input);
+            }
+        },
 
-        DELETE_LOCATION,
+        DELETE_LOCATION {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.deleteLocation(this, input);
+            }
+        },
 
-        EDIT_LOCATION,
+        EDIT_LOCATION {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.editLocation(this, input);
+            }
+        },
 
-        UNKNOWN
+        UNKNOWN {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.unknown(this, input);
+            }
+        };
+
+        public abstract <I, O> O accept(TypeVisitor<I, O> visitor, I input);
+    }
+
+    public static interface TypeVisitor<I, O> {
+
+        default O visit(Type type, I input) {
+            return type.accept(this, input);
+        }
+
+        O setup(Type type, I input);
+
+        O database(Type type, I input);
+
+        O synchronisation(Type type, I input);
+
+        O addLocation(Type type, I input);
+
+        O deleteError(Type type, I input);
+
+        O deleteLocation(Type type, I input);
+
+        O editLocation(Type type, I input);
+
+        O unknown(Type type, I input);
     }
 }

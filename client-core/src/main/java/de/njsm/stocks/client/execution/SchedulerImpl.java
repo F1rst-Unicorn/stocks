@@ -42,23 +42,32 @@ class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
 
     private final Subject<Integer> numberOfRunningJobs;
 
+    private final SynchronisationLock lock;
+
     @Inject
     SchedulerImpl(Executor executor) {
         this.executor = executor;
         counter = new AtomicInteger(0);
         numberOfRunningJobs = BehaviorSubject.createDefault(counter.get()).toSerialized();
+        lock = new SynchronisationLock();
     }
 
     @Override
     public void schedule(Job job) {
-        LOG.trace("Job " + job.name() + " scheduled");
+        LOG.trace("Job " + job + " scheduled");
         numberOfRunningJobs.onNext(counter.incrementAndGet());
 
         executor.execute(() -> {
-            LOG.trace("Job " + job.name() + " started");
+            if (!lock.visit(job.name(), true)) {
+                LOG.trace("Job " + job + " skipped");
+                numberOfRunningJobs.onNext(counter.decrementAndGet());
+                return;
+            }
+            LOG.trace("Job " + job + " started");
             job.runnable().run();
             numberOfRunningJobs.onNext(counter.decrementAndGet());
-            LOG.trace("Job " + job.name() + " stopped");
+            LOG.trace("Job " + job + " stopped");
+            lock.visit(job.name(), false);
         });
     }
 
