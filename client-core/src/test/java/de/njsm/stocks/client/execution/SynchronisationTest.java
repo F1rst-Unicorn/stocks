@@ -59,18 +59,16 @@ public class SynchronisationTest {
             deletion.run();
             stopSign.readLock().lock();
             stopSign.readLock().unlock();
+            uut.schedule(Job.create(Job.Type.SYNCHRONISATION, sync));
         });
         uut.schedule(deleter);
-        uut.schedule(Job.create(Job.Type.SYNCHRONISATION, sync));
 
         verifyNoInteractions(deletion);
         verifyNoInteractions(sync);
 
         startSign.writeLock().unlock();
 
-        while (stopSign.getQueueLength() < 1);
-
-        verify(deletion).run();
+        verify(deletion, timeout(1000)).run();
         verifyNoInteractions(sync);
 
         stopSign.writeLock().unlock();
@@ -95,6 +93,8 @@ public class SynchronisationTest {
         });
         uut.schedule(deleter);
         uut.schedule(deleter);
+
+        while (startSign.getQueueLength() < 2);
         uut.schedule(Job.create(Job.Type.SYNCHRONISATION, sync));
 
         verifyNoInteractions(deletion);
@@ -102,9 +102,7 @@ public class SynchronisationTest {
 
         startSign.writeLock().unlock();
 
-        while (stopSign.getQueueLength() < 2);
-
-        verify(deletion, times(2)).run();
+        verify(deletion, timeout(1000).times(2)).run();
         verifyNoInteractions(sync);
 
         stopSign.writeLock().unlock();
@@ -126,20 +124,17 @@ public class SynchronisationTest {
             deletion.run();
             stopSign.readLock().lock();
             stopSign.readLock().unlock();
+            uut.schedule(Job.create(Job.Type.SYNCHRONISATION, sync));
         });
         uut.schedule(deleter);
         uut.schedule(deleter);
-        uut.schedule(Job.create(Job.Type.SYNCHRONISATION, sync));
-        uut.schedule(Job.create(Job.Type.SYNCHRONISATION, sync));
 
         verifyNoInteractions(deletion);
         verifyNoInteractions(sync);
 
         startSign.writeLock().unlock();
 
-        while (stopSign.getQueueLength() < 2);
-
-        verify(deletion, times(2)).run();
+        verify(deletion, timeout(1000).times(2)).run();
         verifyNoInteractions(sync);
 
         stopSign.writeLock().unlock();
