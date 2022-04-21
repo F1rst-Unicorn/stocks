@@ -5,6 +5,27 @@ task mergeCoverageReports(type: JacocoReport) {
     description = "Generate Jacoco coverage reports on the whole build"
     onlyIf = { true }
 
+
+    subprojects.forEach {
+        dependsOn("${it.name}:check")
+        if (it.name.endsWith("android")) {
+            dependsOn("${it.name}:connectedCheck")
+
+            if (!it.name.endsWith("app-android")) {
+                dependsOn("${it.name}:testCoverageUnitTestCoverage")
+                dependsOn("${it.name}:copyCoverageJniLibsProjectOnly")
+                dependsOn("${it.name}:copyReleaseJniLibsProjectOnly")
+                dependsOn("${it.name}:mergeReleaseResources")
+                dependsOn("${it.name}:mergeCoverageResources")
+                dependsOn("${it.name}:mergeDebugResources")
+                dependsOn("${it.name}:bundleLibRuntimeToDirCoverage")
+                dependsOn("${it.name}:bundleLibRuntimeToDirRelease")
+            }
+        } else {
+            dependsOn("${it.name}:jacocoTestReport")
+        }
+    }
+
     def sourceDirs = []
 
     subprojects.forEach {

@@ -137,3 +137,7 @@ task generateSqlSnippets(type: Exec) {
 tasks.withType(JavaCompile) {
     dependsOn generateSqlSnippets
 }
+
+tasks.withType(com.android.build.gradle.tasks.ExtractAnnotations) {
+    dependsOn generateSqlSnippets
+}
