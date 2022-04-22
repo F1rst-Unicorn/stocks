@@ -22,21 +22,17 @@ package de.njsm.stocks.client.fragment.locationadd;
 
 import android.os.Bundle;
 import android.view.*;
-import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
+import de.njsm.stocks.client.fragment.view.LocationForm;
 import de.njsm.stocks.client.navigation.Navigator;
 import de.njsm.stocks.client.presenter.LocationAddViewModel;
 import de.njsm.stocks.client.ui.R;
-import de.njsm.stocks.client.util.NonEmptyValidator;
 
 import javax.inject.Inject;
-
-import static de.njsm.stocks.client.fragment.view.ViewUtility.stringFromForm;
 
 public class LocationAddFragment extends BottomToolbarFragment {
 
@@ -44,9 +40,7 @@ public class LocationAddFragment extends BottomToolbarFragment {
 
     private Navigator navigator;
 
-    private TextInputLayout nameField;
-
-    private boolean maySubmit = false;
+    private LocationForm form;
 
     @Nullable
     @Override
@@ -54,10 +48,7 @@ public class LocationAddFragment extends BottomToolbarFragment {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
         View result = insertContent(inflater, root, R.layout.fragment_location_form);
-        nameField = result.findViewById(R.id.fragment_location_form_name);
-        EditText editText = nameField.getEditText();
-        if (editText != null)
-            editText.addTextChangedListener(new NonEmptyValidator(nameField, this::onNameChanged));
+        form = new LocationForm(result, this::getString);
 
         setHasOptionsMenu(true);
         return root;
@@ -70,26 +61,18 @@ public class LocationAddFragment extends BottomToolbarFragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (!maySubmit) {
-            nameField.setError(getString(R.string.error_may_not_be_empty));
+        if (!form.maySubmit()) {
+            form.setNameError(R.string.error_may_not_be_empty);
             return true;
         }
 
-        LocationAddForm form = LocationAddForm.create(
-                stringFromForm(nameField),
-                stringFromForm(requireView().findViewById(R.id.fragment_location_form_description))
+        LocationAddForm data = LocationAddForm.create(
+                form.getName(),
+                form.getDescription()
         );
-        locationViewModel.addLocation(form);
+        locationViewModel.addLocation(data);
         navigator.back();
         return true;
-    }
-
-    private void onNameChanged(TextInputLayout textInputLayout, Boolean isEmpty) {
-        maySubmit = !isEmpty;
-        if (isEmpty)
-            textInputLayout.setError(getString(R.string.error_may_not_be_empty));
-        else
-            textInputLayout.setError(null);
     }
 
     @Inject

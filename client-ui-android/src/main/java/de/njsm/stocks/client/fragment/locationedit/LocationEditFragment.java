@@ -23,24 +23,19 @@ package de.njsm.stocks.client.fragment.locationedit;
 
 import android.os.Bundle;
 import android.view.*;
-import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationToEdit;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
+import de.njsm.stocks.client.fragment.view.LocationForm;
 import de.njsm.stocks.client.navigation.LocationEditNavigator;
 import de.njsm.stocks.client.presenter.LocationEditViewModel;
 import de.njsm.stocks.client.ui.R;
-import de.njsm.stocks.client.util.NonEmptyValidator;
 
 import javax.inject.Inject;
-
-import static de.njsm.stocks.client.fragment.view.ViewUtility.setText;
-import static de.njsm.stocks.client.fragment.view.ViewUtility.stringFromForm;
 
 public class LocationEditFragment extends BottomToolbarFragment {
 
@@ -48,31 +43,22 @@ public class LocationEditFragment extends BottomToolbarFragment {
 
     private LocationEditNavigator locationEditNavigator;
 
-    private TextInputLayout nameField;
-
-    private TextInputLayout descriptionField;
+    private LocationForm form;
 
     private Identifiable<Location> id;
-
-    private boolean maySubmit = false;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
-        View result = insertContent(inflater, root, R.layout.fragment_location_form);
-        descriptionField = result.findViewById(R.id.fragment_location_form_description);
-        nameField = result.findViewById(R.id.fragment_location_form_name);
-        EditText editText = nameField.getEditText();
-        if (editText != null)
-            editText.addTextChangedListener(new NonEmptyValidator(nameField, this::onNameChanged));
+        this.form = new LocationForm(insertContent(inflater, root, R.layout.fragment_location_form), this::getString);
 
         int rawId = locationEditNavigator.getLocationId(requireArguments());
         this.id = () -> rawId;
         locationViewModel.get(id).observe(getViewLifecycleOwner(), v -> {
-            setText(nameField, v.name());
-            setText(descriptionField, v.description());
+            form.setName(v.name());
+            form.setDescription(v.description());
         });
 
         setHasOptionsMenu(true);
@@ -86,27 +72,19 @@ public class LocationEditFragment extends BottomToolbarFragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (!maySubmit) {
-            nameField.setError(getString(R.string.error_may_not_be_empty));
+        if (!form.maySubmit()) {
+            form.setNameError(R.string.error_may_not_be_empty);
             return true;
         }
 
-        LocationToEdit form = LocationToEdit.builder()
+        LocationToEdit data = LocationToEdit.builder()
                 .id(id.id())
-                .name(stringFromForm(nameField))
-                .description(stringFromForm(requireView().findViewById(R.id.fragment_location_form_description)))
+                .name(form.getName())
+                .description(form.getDescription())
                 .build();
-        locationViewModel.editLocation(form);
+        locationViewModel.editLocation(data);
         locationEditNavigator.back();
         return true;
-    }
-
-    private void onNameChanged(TextInputLayout textInputLayout, Boolean isEmpty) {
-        maySubmit = !isEmpty;
-        if (isEmpty)
-            textInputLayout.setError(getString(R.string.error_may_not_be_empty));
-        else
-            textInputLayout.setError(null);
     }
 
     @Inject
