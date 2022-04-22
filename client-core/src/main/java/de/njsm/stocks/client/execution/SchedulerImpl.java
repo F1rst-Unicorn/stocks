@@ -54,19 +54,19 @@ class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
 
     @Override
     public void schedule(Job job) {
-        LOG.trace("Job " + job + " scheduled");
+        LOG.trace(job + " scheduled");
         numberOfRunningJobs.onNext(counter.incrementAndGet());
 
         executor.execute(() -> {
             if (!lock.visit(job.name(), true)) {
-                LOG.trace("Job " + job + " skipped");
+                LOG.trace(job + " skipped");
                 numberOfRunningJobs.onNext(counter.decrementAndGet());
                 return;
             }
-            LOG.trace("Job " + job + " started");
+            LOG.trace(job + " started");
             job.runnable().run();
             numberOfRunningJobs.onNext(counter.decrementAndGet());
-            LOG.trace("Job " + job + " stopped");
+            LOG.trace(job + " stopped");
             lock.visit(job.name(), false);
         });
     }

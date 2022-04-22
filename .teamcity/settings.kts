@@ -240,7 +240,7 @@ object Build : BuildType({
         }
         vcs {
             id = "vcsTrigger"
-            branchFilter = "+:refs/heads/*"
+            branchFilter = "+:*"
         }
     }
 
