@@ -36,4 +36,9 @@ public class ErrorListNavigatorImpl extends BaseNavigator implements ErrorListNa
     public void showErrorDetails(long id) {
         getNavigationArgConsumer().navigate(ErrorListFragmentDirections.actionNavFragmentErrorListToNavFragmentErrorDetail(id));
     }
+
+    @Override
+    public void resolveLocationEditConflict(long id) {
+        getNavigationArgConsumer().navigate(ErrorListFragmentDirections.actionNavFragmentErrorListToNavFragmentLocationConflict(id));
+    }
 }

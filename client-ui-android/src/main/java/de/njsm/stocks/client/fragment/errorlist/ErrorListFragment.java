@@ -52,6 +52,8 @@ public class ErrorListFragment extends BottomToolbarFragment {
 
     private ErrorDescriptionAdapter errorDescriptionAdapter;
 
+    private ErrorClickedNavigator errorClickedNavigator;
+
     @Override
     @NonNull
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,7 +92,7 @@ public class ErrorListFragment extends BottomToolbarFragment {
 
     private void onItemClicked(View listItem) {
         int listItemIndex = ((ErrorDescriptionViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        errorListViewModel.resolveId(listItemIndex, errorListNavigator::showErrorDetails);
+        errorListViewModel.resolveId(listItemIndex, v -> errorClickedNavigator.visit(v.errorDetails(), v));
     }
 
     private void onListItemSwipedRight(int listItemPosition) {
@@ -115,5 +117,10 @@ public class ErrorListFragment extends BottomToolbarFragment {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
         errorListViewModel = viewModelProvider.get(ErrorListViewModel.class);
+    }
+
+    @Inject
+    public void setErrorClickedVisitor(ErrorClickedNavigator errorClickedNavigator) {
+        this.errorClickedNavigator = errorClickedNavigator;
     }
 }

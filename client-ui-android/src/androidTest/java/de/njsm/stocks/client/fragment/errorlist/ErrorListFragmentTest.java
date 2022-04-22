@@ -30,6 +30,7 @@ import de.njsm.stocks.client.business.ErrorRetryInteractor;
 import de.njsm.stocks.client.business.FakeErrorListInteractor;
 import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
 import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.navigation.ErrorListNavigator;
 import de.njsm.stocks.client.ui.R;
@@ -126,6 +127,19 @@ public class ErrorListFragmentTest {
                 .perform(actionOnItemAtPosition(0, click()));
 
         verify(errorListNavigator).showErrorDetails(errorDescription.id());
+    }
+
+    @Test
+    public void locationEditConflictNavigatesToConflictFragment() {
+        LocationEditErrorDetails details = LocationEditErrorDetails.create(3, "name", "description");
+        ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.INVALID_DATA_VERSION, "", "", details);
+        List<ErrorDescription> errors = Arrays.asList(errorDescription);
+        errorListInteractor.setData(errors);
+
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(actionOnItemAtPosition(0, click()));
+
+        verify(errorListNavigator).resolveLocationEditConflict(errorDescription.id());
     }
 
     @Inject

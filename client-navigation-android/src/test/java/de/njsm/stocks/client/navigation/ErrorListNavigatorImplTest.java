@@ -28,7 +28,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
-public class ErrorListNavigationTest extends NavigationTest {
+public class ErrorListNavigatorImplTest extends NavigationTest {
 
     private ErrorListNavigator uut;
 
@@ -44,6 +44,16 @@ public class ErrorListNavigationTest extends NavigationTest {
         uut.showErrorDetails(input);
 
         ErrorListFragmentDirections.ActionNavFragmentErrorListToNavFragmentErrorDetail direction = navigationArgConsumer.getLastArgument(ErrorListFragmentDirections.ActionNavFragmentErrorListToNavFragmentErrorDetail.class);
+        assertThat(direction.getId(), is(input));
+    }
+
+    @Test
+    public void goingToLocationConflictResolutionNavigates() {
+        long input = 3;
+
+        uut.resolveLocationEditConflict(input);
+
+        ErrorListFragmentDirections.ActionNavFragmentErrorListToNavFragmentLocationConflict direction = navigationArgConsumer.getLastArgument(ErrorListFragmentDirections.ActionNavFragmentErrorListToNavFragmentLocationConflict.class);
         assertThat(direction.getId(), is(input));
     }
 }

@@ -24,4 +24,6 @@ package de.njsm.stocks.client.navigation;
 public interface ErrorListNavigator {
 
     void showErrorDetails(long id);
+
+    void resolveLocationEditConflict(long id);
 }

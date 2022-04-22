@@ -106,7 +106,7 @@ public abstract class ErrorDao {
             "from location " +
             "where _id = :id " +
             "and version = :version " +
-            "and transaction_time_end = " + DATABASE_INFINITY_STRING)
+            "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "'")
     abstract String getLocationName(int id, int version);
 
     @Query("select * from location_to_edit")

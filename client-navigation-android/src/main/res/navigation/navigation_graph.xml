@@ -71,12 +71,23 @@
                 app:argType="integer"/>
     </fragment>
     <fragment
+        android:id="@+id/nav_fragment_location_conflict"
+        android:name="androidx.fragment.app.Fragment"
+        android:label="@string/title_conflict">
+        <argument
+            android:name="id"
+            app:argType="long"/>
+    </fragment>
+    <fragment
         android:id="@+id/nav_fragment_error_list"
         android:label="@string/title_errors"
         android:name="de.njsm.stocks.client.fragment.errorlist.ErrorListFragment">
         <action
             android:id="@+id/action_nav_fragment_error_list_to_nav_fragment_error_detail"
             app:destination="@id/nav_fragment_error_detail"/>
+        <action
+            android:id="@+id/action_nav_fragment_error_list_to_nav_fragment_location_conflict"
+            app:destination="@id/nav_fragment_location_conflict"/>
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_error_detail"

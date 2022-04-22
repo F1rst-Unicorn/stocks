@@ -61,8 +61,8 @@ public class ErrorListViewModel extends ViewModel {
                 getData().toFlowable(BackpressureStrategy.LATEST));
     }
 
-    public void resolveId(int listItemIndex, Consumer<Long> callback) {
-        performOnCurrentData(list -> callback.accept(list.get(listItemIndex).id()));
+    public void resolveId(int listItemIndex, Consumer<ErrorDescription> callback) {
+        performOnCurrentData(list -> callback.accept(list.get(listItemIndex)));
     }
 
     public void retry(int listItemIndex) {
