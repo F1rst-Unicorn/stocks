@@ -19,11 +19,12 @@
  *
  */
 
-package de.njsm.stocks.client;
+package de.njsm.stocks.client.navigation;
 
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
-import de.njsm.stocks.client.navigation.NavigationArgConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,6 +32,8 @@ import java.util.Optional;
 
 @Singleton
 public class NavigationArgConsumerImpl implements NavigationArgConsumer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NavigationArgConsumerImpl.class);
 
     private Optional<NavController> navController;
 
@@ -45,7 +48,11 @@ public class NavigationArgConsumerImpl implements NavigationArgConsumer {
 
     @Override
     public void navigate(NavDirections direction) {
-        navController.ifPresent(v -> v.navigate(direction));
+        try {
+            navController.ifPresent(v -> v.navigate(direction));
+        } catch (IllegalArgumentException e) {
+            LOG.debug("ignoring illegal navigation");
+        }
     }
 
     @Override

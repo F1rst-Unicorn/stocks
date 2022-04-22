@@ -93,12 +93,12 @@ public class LocationListFragment extends BottomToolbarFragment {
 
     private void onItemClicked(View listItem) {
         int listItemIndex = ((TextWithPrefixIconViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        locationListViewModel.resolveLocationId(listItemIndex, v -> locationListNavigator.showLocation(v));
+        locationListViewModel.resolveLocationId(listItemIndex, locationListNavigator::showLocation);
     }
 
     private boolean onItemLongClicked(View listItem) {
         int listItemIndex = ((TextWithPrefixIconViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        locationListViewModel.resolveLocationId(listItemIndex, v -> locationListNavigator.editLocation(v));
+        locationListViewModel.resolveLocationId(listItemIndex, locationListNavigator::editLocation);
         return true;
     }
 

@@ -28,7 +28,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 import dagger.android.AndroidInjection;
 import de.njsm.stocks.R;
-import de.njsm.stocks.client.NavigationArgConsumerImpl;
+import de.njsm.stocks.client.navigation.NavigationArgConsumerImpl;
 
 import javax.inject.Inject;
 

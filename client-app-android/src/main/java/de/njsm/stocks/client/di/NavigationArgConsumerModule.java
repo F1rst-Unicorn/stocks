@@ -23,8 +23,8 @@ package de.njsm.stocks.client.di;
 
 import dagger.Binds;
 import dagger.Module;
-import de.njsm.stocks.client.NavigationArgConsumerImpl;
 import de.njsm.stocks.client.navigation.NavigationArgConsumer;
+import de.njsm.stocks.client.navigation.NavigationArgConsumerImpl;
 
 import javax.inject.Singleton;
 
