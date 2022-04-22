@@ -28,6 +28,8 @@ import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
+import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY_STRING;
+
 @Dao
 public abstract class ErrorDao {
 
@@ -100,8 +102,12 @@ public abstract class ErrorDao {
     @Query("delete from location_to_delete where _id = :id")
     abstract void deleteLocationDelete(long id);
 
-    @Query("select name from current_location where _id = :id")
-    abstract String getLocationName(int id);
+    @Query("select name " +
+            "from location " +
+            "where _id = :id " +
+            "and version = :version " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING)
+    abstract String getLocationName(int id, int version);
 
     @Query("select * from location_to_edit")
     abstract List<LocationEditEntity> getLocationEdits();
