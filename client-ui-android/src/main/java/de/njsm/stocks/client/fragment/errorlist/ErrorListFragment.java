@@ -35,7 +35,6 @@ import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
-import de.njsm.stocks.client.navigation.ErrorListNavigator;
 import de.njsm.stocks.client.presenter.ErrorListViewModel;
 import de.njsm.stocks.client.ui.R;
 
@@ -48,11 +47,11 @@ public class ErrorListFragment extends BottomToolbarFragment {
 
     private ErrorListViewModel errorListViewModel;
 
-    private ErrorListNavigator errorListNavigator;
-
     private ErrorDescriptionAdapter errorDescriptionAdapter;
 
     private ErrorClickedNavigator errorClickedNavigator;
+
+    private RetryVisitor retryVisitor;
 
     @Override
     @NonNull
@@ -92,11 +91,12 @@ public class ErrorListFragment extends BottomToolbarFragment {
 
     private void onItemClicked(View listItem) {
         int listItemIndex = ((ErrorDescriptionViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        errorListViewModel.resolveId(listItemIndex, v -> errorClickedNavigator.visit(v.errorDetails(), v));
+        errorListViewModel.resolveDataByPosition(listItemIndex, v -> errorClickedNavigator.visit(v.errorDetails(), v));
     }
 
     private void onListItemSwipedRight(int listItemPosition) {
-        errorListViewModel.retry(listItemPosition);
+        retryVisitor.setRetryDirectlyCallback(errorListViewModel::retry);
+        errorListViewModel.resolveDataByPosition(listItemPosition, v -> retryVisitor.visit(v.errorDetails(), v));
     }
 
     private void onListItenSwipedLeft(int listItemPosition) {
@@ -108,11 +108,6 @@ public class ErrorListFragment extends BottomToolbarFragment {
     }
 
     @Inject
-    void setErrorListNavigator(ErrorListNavigator errorListNavigator) {
-        this.errorListNavigator = errorListNavigator;
-    }
-
-    @Inject
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
@@ -120,7 +115,12 @@ public class ErrorListFragment extends BottomToolbarFragment {
     }
 
     @Inject
-    public void setErrorClickedVisitor(ErrorClickedNavigator errorClickedNavigator) {
+    void setErrorClickedVisitor(ErrorClickedNavigator errorClickedNavigator) {
         this.errorClickedNavigator = errorClickedNavigator;
+    }
+
+    @Inject
+    void setRetryVisitor(RetryVisitor retryVisitor) {
+        this.retryVisitor = retryVisitor;
     }
 }

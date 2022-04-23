@@ -137,7 +137,7 @@ public class ErrorListFragmentTest {
     }
 
     @Test
-    public void locationEditConflictNavigatesToConflictFragment() {
+    public void clickingLocationEditConflictNavigatesToConflictFragment() {
         LocationEditErrorDetails details = LocationEditErrorDetails.create(3, "name", "description");
         ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.INVALID_DATA_VERSION, "", "", details);
         List<ErrorDescription> errors = Arrays.asList(errorDescription);
@@ -145,6 +145,19 @@ public class ErrorListFragmentTest {
 
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(0, click()));
+
+        verify(errorListNavigator).resolveLocationEditConflict(errorDescription.id());
+    }
+
+    @Test
+    public void retryingLocationEditConflictNavigatesToConflictFragment() {
+        LocationEditErrorDetails details = LocationEditErrorDetails.create(3, "name", "description");
+        ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.INVALID_DATA_VERSION, "", "", details);
+        List<ErrorDescription> errors = Arrays.asList(errorDescription);
+        errorListInteractor.setData(errors);
+
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(actionOnItemAtPosition(0, swipeLeft()));
 
         verify(errorListNavigator).resolveLocationEditConflict(errorDescription.id());
     }
