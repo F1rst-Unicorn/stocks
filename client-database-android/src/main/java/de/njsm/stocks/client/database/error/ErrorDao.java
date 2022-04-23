@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database.error;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import de.njsm.stocks.client.database.LocationDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -102,13 +103,6 @@ public abstract class ErrorDao {
     @Query("delete from location_to_delete where _id = :id")
     abstract void deleteLocationDelete(long id);
 
-    @Query("select name " +
-            "from location " +
-            "where _id = :id " +
-            "and version = :version " +
-            "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "'")
-    abstract String getLocationName(int id, int version);
-
     @Query("select * from location_to_edit")
     abstract List<LocationEditEntity> getLocationEdits();
 
@@ -120,4 +114,16 @@ public abstract class ErrorDao {
 
     @Query("delete from location_to_edit where _id = :id")
     abstract void deleteLocationEdit(long id);
+
+    @Query("select * " +
+            "from location " +
+            "where _id = :id " +
+            "and version = :version " +
+            "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "' ")
+    abstract LocationDbEntity getLocation(int id, int version);
+
+    @Query("select * " +
+            "from current_location " +
+            "where _id = :locationId")
+    abstract LocationDbEntity getCurrentLocation(int locationId);
 }

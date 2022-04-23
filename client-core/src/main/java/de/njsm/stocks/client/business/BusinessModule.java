@@ -77,4 +77,7 @@ public interface BusinessModule {
 
     @Binds
     LocationEditInteractor locationEditInteractorImpl(LocationEditInteractorImpl impl);
+
+    @Binds
+    LocationConflictInteractor locationConflictInteractor(LocationConflictInteractorImpl impl);
 }

@@ -83,4 +83,7 @@ public interface UimockBusinessModule {
 
     @Binds
     LocationEditInteractor locationEditInteractor(InMemoryLocationEditInteractorImpl impl);
+
+    @Binds
+    LocationConflictInteractor locationConflictInteractor(InMemoryLocationConflictInteractorImpl impl);
 }

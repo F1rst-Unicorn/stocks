@@ -66,6 +66,7 @@ public class ErrorDetailsFragmentTest {
     @After
     public void tearDown() {
         reset(errorDetailsNavigator);
+        reset(errorRetryInteractor);
     }
 
     @Test

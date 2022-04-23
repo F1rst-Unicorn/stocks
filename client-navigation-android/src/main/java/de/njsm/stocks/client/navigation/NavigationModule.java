@@ -50,4 +50,7 @@ public interface NavigationModule {
 
     @Binds
     LocationEditNavigator locationEditNavigator(LocationEditNavigatorImpl impl);
+
+    @Binds
+    LocationConflictNavigator locationConflictNavigator(LocationConflictNavigatorImpl impl);
 }

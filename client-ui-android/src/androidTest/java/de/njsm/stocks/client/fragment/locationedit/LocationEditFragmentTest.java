@@ -23,7 +23,6 @@ package de.njsm.stocks.client.fragment.locationedit;
 
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.android.material.textfield.TextInputEditText;
 import de.njsm.stocks.client.Application;
@@ -34,7 +33,6 @@ import de.njsm.stocks.client.testdata.LocationsToEdit;
 import de.njsm.stocks.client.ui.R;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
@@ -49,10 +47,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(AndroidJUnit4.class)
 public class LocationEditFragmentTest {
 
     private FragmentScenario<LocationEditFragment> scenario;
@@ -66,6 +63,7 @@ public class LocationEditFragmentTest {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         scenario = FragmentScenario.launchInContainer(LocationEditFragment.class, new Bundle(), R.style.StocksTheme);
         when(navigator.getLocationId(any(Bundle.class))).thenReturn(LocationsToEdit.generate().id());
+        locationEditInteractor.reset();
     }
 
     @Test
@@ -147,7 +145,7 @@ public class LocationEditFragmentTest {
     }
 
     @Inject
-    public void setNavigator(LocationEditNavigator navigator) {
+    void setNavigator(LocationEditNavigator navigator) {
         this.navigator = navigator;
     }
 }

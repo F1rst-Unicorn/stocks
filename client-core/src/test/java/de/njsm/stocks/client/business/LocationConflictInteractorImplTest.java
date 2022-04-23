@@ -21,30 +21,26 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import de.njsm.stocks.client.testdata.ErrorDescriptions;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.inject.Inject;
-import java.util.List;
+import static org.mockito.Mockito.verify;
 
-class InMemoryErrorListInteractorImpl implements ErrorListInteractor {
+@ExtendWith(MockitoExtension.class)
+class LocationConflictInteractorImplTest {
 
-    private final BehaviorSubject<List<ErrorDescription>> data;
+    @Mock
+    ConflictRepository conflictRepository;
 
-    @Inject
-    InMemoryErrorListInteractorImpl(ErrorDescriptions errorDescriptions) {
-        this.data = errorDescriptions.getData();
-    }
+    @Test
+    void gettingLocationEditConflictDelegates() {
+        long input = 42L;
+        LocationConflictInteractor uut = new LocationConflictInteractorImpl(conflictRepository);
 
-    @Override
-    public Observable<List<ErrorDescription>> getErrors() {
-        return data;
-    }
+        uut.getLocationEditConflict(input);
 
-    @Override
-    public Observable<ErrorDescription> getError(long id) {
-        return data.filter(v -> !v.isEmpty()).mapOptional(list -> list.stream().filter(v -> v.id() == id).findAny());
+        verify(conflictRepository).getLocationEditConflict(input);
     }
 }

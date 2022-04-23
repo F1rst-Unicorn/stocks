@@ -34,6 +34,7 @@ import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
 import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.navigation.ErrorListNavigator;
 import de.njsm.stocks.client.ui.R;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,6 +49,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static org.hamcrest.Matchers.allOf;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 public class ErrorListFragmentTest {
@@ -64,6 +66,11 @@ public class ErrorListFragmentTest {
     public void setUp() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         scenario = FragmentScenario.launchInContainer(ErrorListFragment.class, new Bundle(), R.style.StocksTheme);
+    }
+
+    @After
+    public void tearDown() {
+        reset(errorRetryInteractor);
     }
 
     @Test

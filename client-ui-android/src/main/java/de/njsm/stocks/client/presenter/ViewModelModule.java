@@ -89,4 +89,11 @@ public class ViewModelModule {
     ViewModel locationEditViewModel(LocationEditInteractor locationEditInteractor) {
         return new LocationEditViewModel(locationEditInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(LocationConflictViewModel.class)
+    ViewModel locationConflictViewModel(LocationConflictInteractor locationConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
+        return new LocationConflictViewModel(locationConflictInteractor, errorRetryInteractor);
+    }
 }

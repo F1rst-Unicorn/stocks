@@ -1,6 +1,6 @@
 /*
  * stocks is client-server program to manage a household's food stock
- * Copyright (C) 2021  The stocks developers
+ * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
  *
@@ -16,16 +16,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.navigation;
 
-import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY_STRING;
-import static de.njsm.stocks.client.database.StocksDatabase.NOW;
+import android.os.Bundle;
 
-public abstract class CurrentTable {
-    public static final String NOW_AS_BEST_KNOWN =
-            "where valid_time_start <= " + NOW +
-            "and " + NOW + " < valid_time_end " +
-            "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "'";
+public interface LocationConflictNavigator extends Navigator {
+
+    long getErrorId(Bundle arguments);
 }

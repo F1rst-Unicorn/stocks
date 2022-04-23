@@ -112,4 +112,13 @@ public interface FakeBusinessModule {
     static FakeLocationEditInteractor fakeLocationEditInteractor() {
         return new FakeLocationEditInteractor();
     }
+
+    @Binds
+    LocationConflictInteractor locationConflictInteractor(FakeLocationConflictInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeLocationConflictInteractor fakeLocationConflictInteractor() {
+        return new FakeLocationConflictInteractor();
+    }
 }

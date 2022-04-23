@@ -56,4 +56,8 @@ public class FakeLocationEditInteractor implements LocationEditInteractor {
     public Optional<LocationToEdit> getFormData() {
         return formData;
     }
+
+    public void reset() {
+        formData = Optional.empty();
+    }
 }

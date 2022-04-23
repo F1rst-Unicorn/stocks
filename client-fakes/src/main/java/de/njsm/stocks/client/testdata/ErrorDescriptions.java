@@ -22,10 +22,7 @@
 package de.njsm.stocks.client.testdata;
 
 
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.StatusCode;
-import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import java.util.ArrayList;
@@ -43,7 +40,8 @@ public class ErrorDescriptions {
     public static List<ErrorDescription> generate() {
         return new ArrayList<>(Arrays.asList(
                 ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "", LocationAddForm.create("Fridge", "the cold one")),
-                ErrorDescription.create(2, StatusCode.GENERAL_ERROR, "", "", SynchronisationErrorDetails.create())
+                ErrorDescription.create(2, StatusCode.GENERAL_ERROR, "", "", SynchronisationErrorDetails.create()),
+                ErrorDescription.create(3, StatusCode.INVALID_DATA_VERSION, "", "", LocationEditErrorDetails.create(3, "name", "description"))
         ));
     }
 

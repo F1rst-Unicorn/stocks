@@ -25,6 +25,7 @@ import dagger.android.ContributesAndroidInjector;
 import de.njsm.stocks.client.fragment.errordetails.ErrorDetailsFragment;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragment;
 import de.njsm.stocks.client.fragment.locationadd.LocationAddFragment;
+import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragment;
 import de.njsm.stocks.client.fragment.locationedit.LocationEditFragment;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragment;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragment;
@@ -56,4 +57,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract LocationEditFragment locationEditFragment();
+
+    @ContributesAndroidInjector
+    public abstract LocationConflictFragment locationConflictFragment();
 }

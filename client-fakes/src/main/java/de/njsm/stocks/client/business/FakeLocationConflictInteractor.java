@@ -21,30 +21,29 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import de.njsm.stocks.client.testdata.ErrorDescriptions;
+import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-import javax.inject.Inject;
-import java.util.List;
+import java.util.Optional;
 
-class InMemoryErrorListInteractorImpl implements ErrorListInteractor {
+public class FakeLocationConflictInteractor implements LocationConflictInteractor {
 
-    private final BehaviorSubject<List<ErrorDescription>> data;
+    private final BehaviorSubject<LocationEditConflictData> data;
 
-    @Inject
-    InMemoryErrorListInteractorImpl(ErrorDescriptions errorDescriptions) {
-        this.data = errorDescriptions.getData();
+    private Optional<LocationToEdit> formData = Optional.empty();
+
+    public FakeLocationConflictInteractor() {
+        this.data = BehaviorSubject.create();
     }
 
     @Override
-    public Observable<List<ErrorDescription>> getErrors() {
+    public Observable<LocationEditConflictData> getLocationEditConflict(long errorId) {
         return data;
     }
 
-    @Override
-    public Observable<ErrorDescription> getError(long id) {
-        return data.filter(v -> !v.isEmpty()).mapOptional(list -> list.stream().filter(v -> v.id() == id).findAny());
+    public void setData(LocationEditConflictData data) {
+        this.data.onNext(data);
     }
 }

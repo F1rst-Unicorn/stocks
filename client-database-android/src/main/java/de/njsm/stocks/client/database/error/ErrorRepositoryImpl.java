@@ -91,7 +91,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteLocation(ErrorEntity.Action action, Long input) {
         LocationDeleteEntity locationDeleteEntity = errorDao.getLocationDelete(input);
-        String locationName = errorDao.getLocationName(locationDeleteEntity.locationId(), locationDeleteEntity.version());
+        String locationName = errorDao.getLocation(locationDeleteEntity.locationId(), locationDeleteEntity.version()).name();
         return LocationDeleteErrorDetails.create(locationDeleteEntity.locationId(), locationName);
     }
 

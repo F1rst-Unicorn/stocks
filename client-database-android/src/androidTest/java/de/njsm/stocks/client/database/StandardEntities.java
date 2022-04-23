@@ -21,6 +21,12 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.entities.LocationToEdit;
+
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+
 import static de.njsm.stocks.client.business.Constants.INFINITY;
 import static java.time.Instant.EPOCH;
 
@@ -41,5 +47,28 @@ public class StandardEntities {
                 .initiates(3)
                 .name("name")
                 .description("description");
+    }
+
+    public static List<LocationDbEntity> bitemporalEdit(LocationDbEntity current, LocationToEdit edit, Instant when) {
+        LocationDbEntity deletedCurrent = current.toBuilder()
+                .transactionTimeEnd(when)
+                .build();
+        LocationDbEntity terminatedCurrent = current.toBuilder()
+                .validTimeEnd(when)
+                .transactionTimeStart(when)
+                .build();
+        LocationDbEntity edited = current.toBuilder()
+                .validTimeStart(when)
+                .transactionTimeStart(when)
+                .version(current.version() + 1)
+                .name(edit.name())
+                .description(edit.description())
+                .build();
+
+        return Arrays.asList(
+                deletedCurrent,
+                terminatedCurrent,
+                edited
+        );
     }
 }

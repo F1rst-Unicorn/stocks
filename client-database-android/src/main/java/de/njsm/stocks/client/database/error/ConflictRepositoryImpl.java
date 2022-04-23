@@ -1,0 +1,55 @@
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2019  The stocks developers
+ *
+ * This file is part of the stocks program suite.
+ *
+ * stocks is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * stocks is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+package de.njsm.stocks.client.database.error;
+
+import de.njsm.stocks.client.business.ConflictRepository;
+import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
+import de.njsm.stocks.client.database.LocationDbEntity;
+import io.reactivex.rxjava3.core.Observable;
+
+import javax.inject.Inject;
+
+public class ConflictRepositoryImpl implements ConflictRepository {
+
+    private final ErrorDao errorDao;
+
+    @Inject
+    ConflictRepositoryImpl(ErrorDao errorDao) {
+        this.errorDao = errorDao;
+    }
+
+    @Override
+    public Observable<LocationEditConflictData> getLocationEditConflict(long errorId) {
+        return errorDao.observeError(errorId).map(error -> {
+            if (error.action() != ErrorEntity.Action.EDIT_LOCATION)
+                throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_LOCATION + " but to " + error.action());
+
+            LocationEditEntity locationEditEntity = errorDao.getLocationEdit(error.dataId());
+            LocationDbEntity original = errorDao.getLocation(locationEditEntity.locationId(), locationEditEntity.version());
+            LocationDbEntity remote = errorDao.getCurrentLocation(locationEditEntity.locationId());
+
+            return LocationEditConflictData.create(error.id(), locationEditEntity.locationId(), locationEditEntity.version(),
+                    original.name(), remote.name(), locationEditEntity.name(),
+                    original.description(), remote.description(), locationEditEntity.description());
+        });
+    }
+}
