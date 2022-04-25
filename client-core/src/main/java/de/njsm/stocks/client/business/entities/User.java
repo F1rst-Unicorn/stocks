@@ -19,25 +19,18 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
+public interface User extends Entity<User>, UserFields {
 
-import java.util.List;
+    @Override
+    default boolean isContainedIn(User item, boolean increment) {
+        return Entity.super.isContainedIn(item, increment) &&
+                name().equals(item.name());
+    }
 
-public interface SynchronisationRepository {
-
-    List<Update> getUpdates();
-
-    void writeUpdates(List<Update> updates);
-
-    void writeLocations(List<LocationForSynchronisation> locations);
-
-    void initialiseLocations(List<LocationForSynchronisation> locations);
-
-    void writeUsers(List<UserForSynchronisation> users);
-
-    void initialiseUsers(List<UserForSynchronisation> users);
+    @Override
+    default void validate() {
+        Entity.super.validate();
+    }
 }

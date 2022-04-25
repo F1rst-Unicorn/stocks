@@ -19,25 +19,17 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
+import androidx.room.Dao;
+import androidx.room.Query;
 
 import java.util.List;
 
-public interface SynchronisationRepository {
+@Dao
+abstract class UserDao {
 
-    List<Update> getUpdates();
-
-    void writeUpdates(List<Update> updates);
-
-    void writeLocations(List<LocationForSynchronisation> locations);
-
-    void initialiseLocations(List<LocationForSynchronisation> locations);
-
-    void writeUsers(List<UserForSynchronisation> users);
-
-    void initialiseUsers(List<UserForSynchronisation> users);
+    @Query("select * " +
+            "from current_user")
+    abstract List<UserDbEntity> getAll();
 }

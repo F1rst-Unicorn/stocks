@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
+import de.njsm.stocks.client.business.entities.UserForSynchronisation;
 
 import java.time.Instant;
 import java.util.List;
@@ -32,4 +33,6 @@ public interface UpdateService {
     List<Update> getUpdates();
 
     List<LocationForSynchronisation> getLocations(Instant startingFrom);
+
+    List<UserForSynchronisation> getUsers(Instant startingFrom);
 }

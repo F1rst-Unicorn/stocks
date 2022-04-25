@@ -50,6 +50,19 @@ public class DataMapper {
         );
     }
 
+    static UserDbEntity map(UserForSynchronisation user) {
+        return UserDbEntity.create(
+                user.id(),
+                user.version(),
+                user.validTimeStart(),
+                user.validTimeEnd(),
+                user.transactionTimeStart(),
+                user.transactionTimeEnd(),
+                user.initiates(),
+                user.name()
+        );
+    }
+
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
     }

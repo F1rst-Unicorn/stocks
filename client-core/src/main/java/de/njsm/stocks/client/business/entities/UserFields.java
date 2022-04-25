@@ -19,25 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
+public interface UserFields {
 
-import java.util.List;
+    String name();
 
-public interface SynchronisationRepository {
+    interface Builder<T> {
 
-    List<Update> getUpdates();
-
-    void writeUpdates(List<Update> updates);
-
-    void writeLocations(List<LocationForSynchronisation> locations);
-
-    void initialiseLocations(List<LocationForSynchronisation> locations);
-
-    void writeUsers(List<UserForSynchronisation> users);
-
-    void initialiseUsers(List<UserForSynchronisation> users);
+        T name(String v);
+    }
 }

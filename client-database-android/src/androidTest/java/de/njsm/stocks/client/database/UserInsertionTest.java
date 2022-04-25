@@ -19,25 +19,35 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 
-public interface SynchronisationRepository {
+import static de.njsm.stocks.client.database.StandardEntities.userDbEntityBuilder;
 
-    List<Update> getUpdates();
+@RunWith(AndroidJUnit4.class)
+public class UserInsertionTest extends InsertionTest<UserDbEntity, UserDbEntity.Builder> {
 
-    void writeUpdates(List<Update> updates);
+    @Override
+    UserDbEntity.Builder getFreshDto() {
+        return userDbEntityBuilder();
+    }
 
-    void writeLocations(List<LocationForSynchronisation> locations);
+    @Override
+    List<UserDbEntity> getAll() {
+        return stocksDatabase.userDao().getAll();
+    }
 
-    void initialiseLocations(List<LocationForSynchronisation> locations);
+    @Override
+    void insert(List<UserDbEntity> data, SynchronisationDao synchronisationDao) {
+        synchronisationDao.writeUsers(data);
+    }
 
-    void writeUsers(List<UserForSynchronisation> users);
-
-    void initialiseUsers(List<UserForSynchronisation> users);
+    @Override
+    void synchronise(List<UserDbEntity> data, SynchronisationDao synchronisationDao) {
+        synchronisationDao.synchroniseUsers(data);
+    }
 }

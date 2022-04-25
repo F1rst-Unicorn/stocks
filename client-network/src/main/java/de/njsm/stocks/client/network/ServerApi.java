@@ -55,4 +55,8 @@ public interface ServerApi {
     Call<Response> setLocationDescription(@Query("id") int id,
                                           @Query("version") int version,
                                           @Field("description") String description);
+
+    @GET("/v2/user")
+    Call<ListResponse<BitemporalUser>> getUsers(@Query("bitemporal") int bitemporal,
+                                                @Query("startingFrom") String startingFrom);
 }

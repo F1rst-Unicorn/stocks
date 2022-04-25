@@ -21,32 +21,30 @@
 
 package de.njsm.stocks.client.business.entities;
 
-public enum EntityType {
+import com.google.auto.value.AutoValue;
 
-    LOCATION {
-        @Override
-        <I, O> O accept(Visitor<I, O> visitor, I input) {
-            return visitor.location(input);
-        }
-    },
+@AutoValue
+public abstract class UserForSynchronisation implements Bitemporal<User>, User {
 
-    USER {
-        @Override
-        <I, O> O accept(Visitor<I, O> visitor, I input) {
-            return visitor.user(input);
-        }
-    };
+    public static Builder builder() {
+        return new AutoValue_UserForSynchronisation.Builder();
+    }
 
-    abstract <I, O> O accept(Visitor<I, O> visitor, I input);
+    @AutoValue.Builder
+    public abstract static class Builder
+            extends SelfValidating.Builder<UserForSynchronisation>
+            implements Bitemporal.Builder<Builder>, UserFields.Builder<Builder> {
+    }
 
-    public interface Visitor<I, O> {
+    @Override
+    public boolean isContainedIn(User item, boolean increment) {
+        return Bitemporal.super.isContainedIn(item, increment) &&
+                User.super.isContainedIn(item, increment);
+    }
 
-        default O visit(EntityType item, I input) {
-            return item.accept(this, input);
-        }
-
-        O location(I input);
-
-        O user(I input);
+    @Override
+    public void validate() {
+        Bitemporal.super.validate();
+        User.super.validate();
     }
 }

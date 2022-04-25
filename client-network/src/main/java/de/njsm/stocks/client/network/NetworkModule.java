@@ -94,6 +94,4 @@ public interface NetworkModule {
             throw new NetworkException("setting up http client", e);
         }
     }
-
-
 }

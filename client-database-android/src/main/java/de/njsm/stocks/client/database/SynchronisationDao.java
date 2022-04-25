@@ -25,13 +25,15 @@ import androidx.room.*;
 
 import java.util.List;
 
+import static androidx.room.OnConflictStrategy.REPLACE;
+
 @Dao
 public abstract class SynchronisationDao {
 
     @Query("select * from updates")
     abstract List<UpdateDbEntity> getAll();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = REPLACE)
     abstract void insert(List<UpdateDbEntity> updates);
 
     @Transaction
@@ -43,7 +45,7 @@ public abstract class SynchronisationDao {
     @Query("delete from updates")
     abstract void delete();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = REPLACE)
     public abstract void writeLocations(List<LocationDbEntity> locations);
 
     @Transaction
@@ -54,4 +56,16 @@ public abstract class SynchronisationDao {
 
     @Query("delete from location")
     abstract void deleteLocations();
+
+    @Transaction
+    void synchroniseUsers(List<UserDbEntity> data) {
+        deleteUsers();
+        writeUsers(data);
+    }
+
+    @Insert(onConflict = REPLACE)
+    abstract void writeUsers(List<UserDbEntity> data);
+
+    @Query("delete from user")
+    abstract void deleteUsers();
 }

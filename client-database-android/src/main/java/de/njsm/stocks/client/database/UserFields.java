@@ -19,25 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+public interface UserFields {
 
-public interface SynchronisationRepository {
+    @ColumnInfo(name = "name")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    String name();
 
-    List<Update> getUpdates();
-
-    void writeUpdates(List<Update> updates);
-
-    void writeLocations(List<LocationForSynchronisation> locations);
-
-    void initialiseLocations(List<LocationForSynchronisation> locations);
-
-    void writeUsers(List<UserForSynchronisation> users);
-
-    void initialiseUsers(List<UserForSynchronisation> users);
+    interface Builder<T extends ServerDbEntity<T>, B extends ServerDbEntity.Builder<T, B>> {
+        B name(String v);
+    }
 }

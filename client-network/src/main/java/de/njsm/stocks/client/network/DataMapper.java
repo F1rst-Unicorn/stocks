@@ -21,11 +21,9 @@
 
 package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.entities.EntityType;
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.StatusCode;
-import de.njsm.stocks.client.business.entities.Update;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.common.api.BitemporalLocation;
+import de.njsm.stocks.common.api.BitemporalUser;
 import de.njsm.stocks.common.api.LocationForEditing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,9 +53,24 @@ public class DataMapper {
                 .build();
     }
 
+    public static UserForSynchronisation map(BitemporalUser source) {
+        return UserForSynchronisation.builder()
+                .id(source.id())
+                .version(source.version())
+                .validTimeStart(source.validTimeStart())
+                .validTimeEnd(source.validTimeEnd())
+                .transactionTimeStart(source.transactionTimeStart())
+                .transactionTimeEnd(source.transactionTimeEnd())
+                .initiates(source.initiates())
+                .name(source.name())
+                .build();
+    }
+
     static Optional<EntityType> map(String entityType) {
         if (entityType.equalsIgnoreCase("location")) {
             return Optional.of(EntityType.LOCATION);
+        } else if (entityType.equalsIgnoreCase("user")) {
+            return Optional.of(EntityType.USER);
         }
 
         LOG.info("unknown entity type '" + entityType + "'");

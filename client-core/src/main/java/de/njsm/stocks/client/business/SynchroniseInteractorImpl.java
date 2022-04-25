@@ -25,6 +25,7 @@ import com.google.common.collect.Comparators;
 import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
+import de.njsm.stocks.client.business.entities.UserForSynchronisation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,6 +103,13 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
             synchronisationRepository.writeLocations(items);
             return null;
         }
+
+        @Override
+        public Void user(Instant input) {
+            List<UserForSynchronisation> items = updateService.getUsers(input);
+            synchronisationRepository.writeUsers(items);
+            return null;
+        }
     }
 
     private final class EntityInitialiser implements EntityType.Visitor<Instant, Void> {
@@ -116,6 +124,13 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
         public Void location(Instant startingFrom) {
             List<LocationForSynchronisation> items = updateService.getLocations(startingFrom);
             synchronisationRepository.initialiseLocations(items);
+            return null;
+        }
+
+        @Override
+        public Void user(Instant input) {
+            List<UserForSynchronisation> items = updateService.getUsers(input);
+            synchronisationRepository.initialiseUsers(items);
             return null;
         }
     }

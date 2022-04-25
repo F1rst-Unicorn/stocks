@@ -43,6 +43,7 @@ def fileFilter = [
 
 ext.coverageExclusionFiles = [
         "**/AutoValue_*",
+        "**/\$AutoValue_*",
 
         // android
         '**/R.class',

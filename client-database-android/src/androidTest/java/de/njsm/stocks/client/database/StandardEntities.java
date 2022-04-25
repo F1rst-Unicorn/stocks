@@ -49,6 +49,22 @@ public class StandardEntities {
                 .description("description");
     }
 
+    public static UserDbEntity userDbEntity() {
+        return userDbEntityBuilder().build();
+    }
+
+    static UserDbEntity.Builder userDbEntityBuilder() {
+        return UserDbEntity.builder()
+                .id(1)
+                .version(2)
+                .validTimeStart(EPOCH)
+                .validTimeEnd(INFINITY)
+                .transactionTimeStart(EPOCH)
+                .transactionTimeEnd(INFINITY)
+                .initiates(3)
+                .name("name");
+    }
+
     public static List<LocationDbEntity> bitemporalEdit(LocationDbEntity current, LocationToEdit edit, Instant when) {
         LocationDbEntity deletedCurrent = current.toBuilder()
                 .transactionTimeEnd(when)

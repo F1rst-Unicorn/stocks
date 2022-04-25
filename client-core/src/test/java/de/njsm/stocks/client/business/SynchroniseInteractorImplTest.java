@@ -21,12 +21,10 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.EntityType;
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.StatusCode;
-import de.njsm.stocks.client.business.entities.Update;
+import de.njsm.stocks.client.business.entities.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -35,8 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,6 +62,134 @@ class SynchroniseInteractorImplTest {
         verifyNoMoreInteractions(errorRecorder);
     }
 
+    @Nested
+    class UserSynchronisation extends TestSkeleton<UserForSynchronisation> {
+
+        @Override
+        UserForSynchronisation getEntity() {
+            return UserForSynchronisation.builder()
+                    .id(1)
+                    .version(2)
+                    .validTimeStart(Instant.EPOCH)
+                    .validTimeEnd(Constants.INFINITY)
+                    .transactionTimeStart(Instant.EPOCH)
+                    .transactionTimeEnd(Constants.INFINITY)
+                    .initiates(3)
+                    .name("name")
+                    .build();
+        }
+
+        @Override
+        EntityType getEntityType() {
+            return EntityType.USER;
+        }
+
+        @Override
+        void prepareMocks(List<UserForSynchronisation> entities, Instant startingFrom) {
+            when(updateService.getUsers(startingFrom)).thenReturn(entities);
+        }
+
+        @Override
+        void verifyInitialisationMocks(List<UserForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getUsers(startingFrom);
+            verify(synchronisationRepository).initialiseUsers(entities);
+
+        }
+
+        @Override
+        void verifyMocks(List<UserForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getUsers(startingFrom);
+            verify(synchronisationRepository).writeUsers(entities);
+        }
+    }
+
+    @Nested
+    class LocationSynchronisation extends TestSkeleton<LocationForSynchronisation> {
+
+        @Override
+        LocationForSynchronisation getEntity() {
+            return LocationForSynchronisation.builder()
+                    .id(1)
+                    .version(2)
+                    .validTimeStart(Instant.EPOCH)
+                    .validTimeEnd(Constants.INFINITY)
+                    .transactionTimeStart(Instant.EPOCH)
+                    .transactionTimeEnd(Constants.INFINITY)
+                    .initiates(3)
+                    .name("name")
+                    .description("description")
+                    .build();
+        }
+
+        @Override
+        EntityType getEntityType() {
+            return EntityType.LOCATION;
+        }
+
+        @Override
+        void prepareMocks(List<LocationForSynchronisation> entities, Instant startingFrom) {
+            when(updateService.getLocations(startingFrom)).thenReturn(entities);
+        }
+
+        @Override
+        void verifyInitialisationMocks(List<LocationForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getLocations(startingFrom);
+            verify(synchronisationRepository).initialiseLocations(entities);
+        }
+
+        @Override
+        void verifyMocks(List<LocationForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getLocations(startingFrom);
+            verify(synchronisationRepository).writeLocations(entities);
+        }
+    }
+
+    abstract class TestSkeleton<E> {
+
+        abstract E getEntity();
+
+        abstract EntityType getEntityType();
+
+        abstract void prepareMocks(List<E> entities, Instant startingFrom);
+
+        abstract void verifyInitialisationMocks(List<E> entities, Instant startingFrom);
+
+        abstract void verifyMocks(List<E> entities, Instant startingFrom);
+
+        @Test
+        void synchronisesIfServerHasMoreRecentData() {
+            Update localUpdate = Update.create(getEntityType(), Instant.EPOCH);
+            Update serverUpdate = Update.create(localUpdate.table(), localUpdate.lastUpdate().plusSeconds(1));
+            when(updateService.getUpdates()).thenReturn(singletonList(serverUpdate));
+            when(synchronisationRepository.getUpdates()).thenReturn(singletonList(localUpdate));
+            List<E> entities = singletonList(getEntity());
+            prepareMocks(entities, localUpdate.lastUpdate());
+
+            uut.synchronise();
+
+            verify(updateService).getUpdates();
+            verify(synchronisationRepository).getUpdates();
+            verifyMocks(entities, localUpdate.lastUpdate());
+            verify(synchronisationRepository).writeUpdates(singletonList(serverUpdate));
+        }
+
+        @Test
+        void initialisesDataIfNoLocalUpdatePresent() {
+            Update serverUpdate = Update.create(getEntityType(), Instant.EPOCH);
+            when(updateService.getUpdates()).thenReturn(singletonList(serverUpdate));
+            when(synchronisationRepository.getUpdates()).thenReturn(emptyList());
+            List<E> entities = singletonList(getEntity());
+            prepareMocks(entities, Instant.MIN);
+
+            uut.synchronise();
+
+            verify(updateService).getUpdates();
+            verify(synchronisationRepository).getUpdates();
+            verifyInitialisationMocks(entities, Instant.MIN);
+            verify(synchronisationRepository).writeUpdates(singletonList(serverUpdate));
+        }
+    }
+
     @Test
     void doesntSynchroniseIfNoServerChanges() {
         List<Update> commonlyAgreedState = singletonList(Update.create(EntityType.LOCATION, Instant.EPOCH));
@@ -76,61 +201,6 @@ class SynchroniseInteractorImplTest {
         verify(updateService).getUpdates();
         verify(synchronisationRepository).getUpdates();
         verify(synchronisationRepository).writeUpdates(commonlyAgreedState);
-    }
-
-    @Test
-    void synchronisesIfServerHasMoreRecentData() {
-        Update localUpdate = Update.create(EntityType.LOCATION, Instant.EPOCH);
-        Update serverUpdate = Update.create(localUpdate.table(), localUpdate.lastUpdate().plusSeconds(1));
-        when(updateService.getUpdates()).thenReturn(singletonList(serverUpdate));
-        when(synchronisationRepository.getUpdates()).thenReturn(singletonList(localUpdate));
-        List<LocationForSynchronisation> locations = singletonList(LocationForSynchronisation.builder()
-                .id(1)
-                .version(2)
-                .validTimeStart(Instant.EPOCH)
-                .validTimeEnd(Constants.INFINITY)
-                .transactionTimeStart(Instant.EPOCH)
-                .transactionTimeEnd(Constants.INFINITY)
-                .initiates(3)
-                .name("name")
-                .description("description")
-                .build());
-        when(updateService.getLocations(localUpdate.lastUpdate())).thenReturn(locations);
-
-        uut.synchronise();
-
-        verify(updateService).getUpdates();
-        verify(synchronisationRepository).getUpdates();
-        verify(updateService).getLocations(localUpdate.lastUpdate());
-        verify(synchronisationRepository).writeLocations(locations);
-        verify(synchronisationRepository).writeUpdates(singletonList(serverUpdate));
-    }
-
-    @Test
-    void initialisesDataIfNoLocalUpdatePresent() {
-        Update serverUpdate = Update.create(EntityType.LOCATION, Instant.EPOCH);
-        when(updateService.getUpdates()).thenReturn(singletonList(serverUpdate));
-        when(synchronisationRepository.getUpdates()).thenReturn(emptyList());
-        List<LocationForSynchronisation> locations = singletonList(LocationForSynchronisation.builder()
-                .id(1)
-                .version(2)
-                .validTimeStart(Instant.EPOCH)
-                .validTimeEnd(Constants.INFINITY)
-                .transactionTimeStart(Instant.EPOCH)
-                .transactionTimeEnd(Constants.INFINITY)
-                .initiates(3)
-                .name("name")
-                .description("description")
-                .build());
-        when(updateService.getLocations(Instant.MIN)).thenReturn(locations);
-
-        uut.synchronise();
-
-        verify(updateService).getUpdates();
-        verify(synchronisationRepository).getUpdates();
-        verify(updateService).getLocations(Instant.MIN);
-        verify(synchronisationRepository).initialiseLocations(locations);
-        verify(synchronisationRepository).writeUpdates(singletonList(serverUpdate));
     }
 
     @Test

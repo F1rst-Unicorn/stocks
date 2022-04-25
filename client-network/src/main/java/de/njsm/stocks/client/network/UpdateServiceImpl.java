@@ -24,7 +24,9 @@ package de.njsm.stocks.client.network;
 import de.njsm.stocks.client.business.UpdateService;
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
+import de.njsm.stocks.client.business.entities.UserForSynchronisation;
 import de.njsm.stocks.common.api.BitemporalLocation;
+import de.njsm.stocks.common.api.BitemporalUser;
 import de.njsm.stocks.common.api.ListResponse;
 import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import org.slf4j.Logger;
@@ -71,4 +73,11 @@ public class UpdateServiceImpl implements UpdateService {
                 .stream().map(DataMapper::map).collect(Collectors.toList());
     }
 
+    @Override
+    public List<UserForSynchronisation> getUsers(Instant startingFrom) {
+        LOG.debug("getting users from " + startingFrom);
+        Call<ListResponse<BitemporalUser>> call = api.getUsers(1, InstantSerialiser.serialize(startingFrom));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(Collectors.toList());
+    }
 }

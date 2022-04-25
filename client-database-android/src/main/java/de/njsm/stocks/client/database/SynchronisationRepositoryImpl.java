@@ -24,10 +24,12 @@ package de.njsm.stocks.client.database;
 import de.njsm.stocks.client.business.SynchronisationRepository;
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
+import de.njsm.stocks.client.business.entities.UserForSynchronisation;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 class SynchronisationRepositoryImpl implements SynchronisationRepository {
 
@@ -40,21 +42,31 @@ class SynchronisationRepositoryImpl implements SynchronisationRepository {
 
     @Override
     public List<Update> getUpdates() {
-        return synchronisationDao.getAll().stream().map(DataMapper::map).collect(Collectors.toList());
+        return synchronisationDao.getAll().stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
     public void writeUpdates(List<Update> updates) {
-        synchronisationDao.writeUpdates(updates.stream().map(DataMapper::map).collect(Collectors.toList()));
+        synchronisationDao.writeUpdates(updates.stream().map(DataMapper::map).collect(toList()));
     }
 
     @Override
     public void writeLocations(List<LocationForSynchronisation> locations) {
-        synchronisationDao.writeLocations(locations.stream().map(DataMapper::map).collect(Collectors.toList()));
+        synchronisationDao.writeLocations(locations.stream().map(DataMapper::map).collect(toList()));
     }
 
     @Override
     public void initialiseLocations(List<LocationForSynchronisation> locations) {
-        synchronisationDao.synchroniseLocations(locations.stream().map(DataMapper::map).collect(Collectors.toList()));
+        synchronisationDao.synchroniseLocations(locations.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void writeUsers(List<UserForSynchronisation> users) {
+        synchronisationDao.writeUsers(users.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void initialiseUsers(List<UserForSynchronisation> users) {
+        synchronisationDao.synchroniseUsers(users.stream().map(DataMapper::map).collect(toList()));
     }
 }
