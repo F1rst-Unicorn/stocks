@@ -21,40 +21,30 @@
 
 package de.njsm.stocks.client.business.entities;
 
-public enum EntityType {
+import com.google.auto.value.AutoValue;
 
-    LOCATION {
-        @Override
-        <I, O> O accept(Visitor<I, O> visitor, I input) {
-            return visitor.location(input);
-        }
-    },
+@AutoValue
+public abstract class UserDeviceForSynchronisation implements Bitemporal<UserDevice>, UserDevice {
 
-    USER {
-        @Override
-        <I, O> O accept(Visitor<I, O> visitor, I input) {
-            return visitor.user(input);
-        }
-    },
-    USER_DEVICE {
-        @Override
-        <I, O> O accept(Visitor<I, O> visitor, I input) {
-            return visitor.userDevice(input);
-        }
-    };
+    public static Builder builder() {
+        return new AutoValue_UserDeviceForSynchronisation.Builder();
+    }
 
-    abstract <I, O> O accept(Visitor<I, O> visitor, I input);
+    @AutoValue.Builder
+    public abstract static class Builder
+            extends SelfValidating.Builder<UserDeviceForSynchronisation>
+            implements Bitemporal.Builder<Builder>, UserDeviceFields.Builder<Builder> {
+    }
 
-    public interface Visitor<I, O> {
+    @Override
+    public boolean isContainedIn(UserDevice item, boolean increment) {
+        return Bitemporal.super.isContainedIn(item, increment) &&
+                UserDevice.super.isContainedIn(item, increment);
+    }
 
-        default O visit(EntityType item, I input) {
-            return item.accept(this, input);
-        }
-
-        O location(I input);
-
-        O user(I input);
-
-        O userDevice(I input);
+    @Override
+    public void validate() {
+        Bitemporal.super.validate();
+        UserDevice.super.validate();
     }
 }

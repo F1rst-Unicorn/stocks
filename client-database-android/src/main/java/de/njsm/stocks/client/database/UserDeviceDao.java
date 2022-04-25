@@ -19,23 +19,17 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserDeviceForSynchronisation;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
+import androidx.room.Dao;
+import androidx.room.Query;
 
-import java.time.Instant;
 import java.util.List;
 
-public interface UpdateService {
+@Dao
+abstract class UserDeviceDao {
 
-    List<Update> getUpdates();
-
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
-
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
-
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
+    @Query("select * " +
+            "from current_user_device")
+    abstract List<UserDeviceDbEntity> getAll();
 }

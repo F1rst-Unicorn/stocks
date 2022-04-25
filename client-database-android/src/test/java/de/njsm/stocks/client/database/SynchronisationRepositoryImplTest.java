@@ -25,9 +25,12 @@ import de.njsm.stocks.client.business.entities.Update;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -45,11 +48,16 @@ public class SynchronisationRepositoryImplTest {
 
     @Test
     public void updateListIsReturned() {
-        when(synchronisationDao.getAll()).thenReturn(emptyList());
+        List<UpdateDbEntity> data = Arrays.asList(
+                UpdateDbEntity.create(1, "location", Instant.MIN),
+                UpdateDbEntity.create(2, "user", Instant.MIN),
+                UpdateDbEntity.create(3, "user_device", Instant.MIN)
+        );
+        when(synchronisationDao.getAll()).thenReturn(data);
 
         List<Update> actual = uut.getUpdates();
 
-        assertEquals(emptyList(), actual);
+        assertEquals(data.stream().map(DataMapper::map).collect(toList()), actual);
         verify(synchronisationDao).getAll();
     }
 
@@ -86,5 +94,19 @@ public class SynchronisationRepositoryImplTest {
         uut.initialiseUsers(emptyList());
 
         verify(synchronisationDao).synchroniseUsers(emptyList());
+    }
+
+    @Test
+    public void userDevicesToWriteAreForwarded() {
+        uut.writeUserDevices(emptyList());
+
+        verify(synchronisationDao).writeUserDevices(emptyList());
+    }
+
+    @Test
+    public void userDevicesToInitialiseAreForwarded() {
+        uut.initialiseUserDevices(emptyList());
+
+        verify(synchronisationDao).synchroniseUserDevices(emptyList());
     }
 }

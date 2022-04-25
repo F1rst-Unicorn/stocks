@@ -68,4 +68,16 @@ public abstract class SynchronisationDao {
 
     @Query("delete from user")
     abstract void deleteUsers();
+
+    @Transaction
+    void synchroniseUserDevices(List<UserDeviceDbEntity> data) {
+        deleteUserDevices();
+        writeUserDevices(data);
+    }
+
+    @Insert(onConflict = REPLACE)
+    abstract void writeUserDevices(List<UserDeviceDbEntity> data);
+
+    @Query("delete from user_device")
+    abstract void deleteUserDevices();
 }

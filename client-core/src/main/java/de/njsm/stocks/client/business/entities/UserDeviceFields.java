@@ -19,23 +19,18 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserDeviceForSynchronisation;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
+public interface UserDeviceFields {
 
-import java.time.Instant;
-import java.util.List;
+    String name();
 
-public interface UpdateService {
+    int belongsTo();
 
-    List<Update> getUpdates();
+    interface Builder<T> {
 
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
+        T name(String v);
 
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
-
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
+        T belongsTo(int v);
+    }
 }

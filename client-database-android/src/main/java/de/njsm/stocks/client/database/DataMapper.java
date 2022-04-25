@@ -63,6 +63,20 @@ public class DataMapper {
         );
     }
 
+    static UserDeviceDbEntity map(UserDeviceForSynchronisation userDevice) {
+        return UserDeviceDbEntity.create(
+                userDevice.id(),
+                userDevice.version(),
+                userDevice.validTimeStart(),
+                userDevice.validTimeEnd(),
+                userDevice.transactionTimeStart(),
+                userDevice.transactionTimeEnd(),
+                userDevice.initiates(),
+                userDevice.name(),
+                userDevice.belongsTo()
+        );
+    }
+
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
     }
@@ -89,6 +103,10 @@ public class DataMapper {
     static EntityType map(String entityType) {
         if (entityType.equalsIgnoreCase("location")) {
             return EntityType.LOCATION;
+        } else if (entityType.equalsIgnoreCase("user")) {
+            return EntityType.USER;
+        } else if (entityType.equalsIgnoreCase("user_device")) {
+            return EntityType.USER_DEVICE;
         }
 
         throw new IllegalArgumentException("invalid entity type '" + entityType + "'");

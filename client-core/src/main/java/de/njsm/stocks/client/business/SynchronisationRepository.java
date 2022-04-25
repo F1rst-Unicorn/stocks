@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
+import de.njsm.stocks.client.business.entities.UserDeviceForSynchronisation;
 import de.njsm.stocks.client.business.entities.UserForSynchronisation;
 
 import java.util.List;
@@ -40,4 +41,8 @@ public interface SynchronisationRepository {
     void writeUsers(List<UserForSynchronisation> users);
 
     void initialiseUsers(List<UserForSynchronisation> users);
+
+    void writeUserDevices(List<UserDeviceForSynchronisation> userDevices);
+
+    void initialiseUserDevices(List<UserDeviceForSynchronisation> userDevices);
 }

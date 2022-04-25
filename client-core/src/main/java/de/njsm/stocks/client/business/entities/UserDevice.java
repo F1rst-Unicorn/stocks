@@ -19,23 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserDeviceForSynchronisation;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
+public interface UserDevice extends Entity<UserDevice>, UserDeviceFields {
 
-import java.time.Instant;
-import java.util.List;
+    @Override
+    default boolean isContainedIn(UserDevice item, boolean increment) {
+        return Entity.super.isContainedIn(item, increment) &&
+                name().equals(item.name()) &&
+                belongsTo() == item.belongsTo();
+    }
 
-public interface UpdateService {
-
-    List<Update> getUpdates();
-
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
-
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
-
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
+    @Override
+    default void validate() {
+        Entity.super.validate();
+    }
 }

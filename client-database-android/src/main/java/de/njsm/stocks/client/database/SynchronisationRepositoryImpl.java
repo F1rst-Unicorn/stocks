@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database;
 import de.njsm.stocks.client.business.SynchronisationRepository;
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.client.business.entities.Update;
+import de.njsm.stocks.client.business.entities.UserDeviceForSynchronisation;
 import de.njsm.stocks.client.business.entities.UserForSynchronisation;
 
 import javax.inject.Inject;
@@ -68,5 +69,15 @@ class SynchronisationRepositoryImpl implements SynchronisationRepository {
     @Override
     public void initialiseUsers(List<UserForSynchronisation> users) {
         synchronisationDao.synchroniseUsers(users.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void writeUserDevices(List<UserDeviceForSynchronisation> userDevices) {
+        synchronisationDao.writeUserDevices(userDevices.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void initialiseUserDevices(List<UserDeviceForSynchronisation> userDevices) {
+        synchronisationDao.synchroniseUserDevices(userDevices.stream().map(DataMapper::map).collect(toList()));
     }
 }

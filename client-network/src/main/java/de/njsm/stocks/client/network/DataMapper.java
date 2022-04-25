@@ -24,6 +24,8 @@ package de.njsm.stocks.client.network;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.common.api.BitemporalLocation;
 import de.njsm.stocks.common.api.BitemporalUser;
+import de.njsm.stocks.common.api.BitemporalUserDevice;
+import de.njsm.stocks.common.api.Entity;
 import de.njsm.stocks.common.api.LocationForEditing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,30 +42,34 @@ public class DataMapper {
     }
 
     public static LocationForSynchronisation map(BitemporalLocation source) {
-        return LocationForSynchronisation.builder()
-                .id(source.id())
-                .version(source.version())
-                .validTimeStart(source.validTimeStart())
-                .validTimeEnd(source.validTimeEnd())
-                .transactionTimeStart(source.transactionTimeStart())
-                .transactionTimeEnd(source.transactionTimeEnd())
-                .initiates(source.initiates())
+        return map(source, LocationForSynchronisation.builder())
                 .name(source.name())
                 .description(source.description())
                 .build();
     }
 
     public static UserForSynchronisation map(BitemporalUser source) {
-        return UserForSynchronisation.builder()
+        return map(source, UserForSynchronisation.builder())
+                .name(source.name())
+                .build();
+    }
+
+    public static UserDeviceForSynchronisation map(BitemporalUserDevice source) {
+        return map(source, UserDeviceForSynchronisation.builder())
+                .name(source.name())
+                .belongsTo(source.belongsTo())
+                .build();
+    }
+
+    private static <T extends Bitemporal.Builder<T>, E extends Entity<E>> T map(de.njsm.stocks.common.api.Bitemporal<E> source, T destination) {
+        return destination
                 .id(source.id())
                 .version(source.version())
                 .validTimeStart(source.validTimeStart())
                 .validTimeEnd(source.validTimeEnd())
                 .transactionTimeStart(source.transactionTimeStart())
                 .transactionTimeEnd(source.transactionTimeEnd())
-                .initiates(source.initiates())
-                .name(source.name())
-                .build();
+                .initiates(source.initiates());
     }
 
     static Optional<EntityType> map(String entityType) {
@@ -71,6 +77,8 @@ public class DataMapper {
             return Optional.of(EntityType.LOCATION);
         } else if (entityType.equalsIgnoreCase("user")) {
             return Optional.of(EntityType.USER);
+        } else if (entityType.equalsIgnoreCase("user_device")) {
+            return Optional.of(EntityType.USER_DEVICE);
         }
 
         LOG.info("unknown entity type '" + entityType + "'");

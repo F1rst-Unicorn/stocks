@@ -104,6 +104,48 @@ class SynchroniseInteractorImplTest {
     }
 
     @Nested
+    class UserDeviceSynchronisation extends TestSkeleton<UserDeviceForSynchronisation> {
+
+        @Override
+        UserDeviceForSynchronisation getEntity() {
+            return UserDeviceForSynchronisation.builder()
+                    .id(1)
+                    .version(2)
+                    .validTimeStart(Instant.EPOCH)
+                    .validTimeEnd(Constants.INFINITY)
+                    .transactionTimeStart(Instant.EPOCH)
+                    .transactionTimeEnd(Constants.INFINITY)
+                    .initiates(3)
+                    .name("name")
+                    .belongsTo(4)
+                    .build();
+        }
+
+        @Override
+        EntityType getEntityType() {
+            return EntityType.USER_DEVICE;
+        }
+
+        @Override
+        void prepareMocks(List<UserDeviceForSynchronisation> entities, Instant startingFrom) {
+            when(updateService.getUserDevices(startingFrom)).thenReturn(entities);
+        }
+
+        @Override
+        void verifyInitialisationMocks(List<UserDeviceForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getUserDevices(startingFrom);
+            verify(synchronisationRepository).initialiseUserDevices(entities);
+
+        }
+
+        @Override
+        void verifyMocks(List<UserDeviceForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getUserDevices(startingFrom);
+            verify(synchronisationRepository).writeUserDevices(entities);
+        }
+    }
+
+    @Nested
     class LocationSynchronisation extends TestSkeleton<LocationForSynchronisation> {
 
         @Override

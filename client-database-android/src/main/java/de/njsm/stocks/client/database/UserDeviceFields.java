@@ -19,23 +19,27 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserDeviceForSynchronisation;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import com.google.auto.value.AutoValue;
 
-import java.time.Instant;
-import java.util.List;
+public interface UserDeviceFields {
 
-public interface UpdateService {
+    @ColumnInfo(name = "name")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    String name();
 
-    List<Update> getUpdates();
+    @ColumnInfo(name = "belongs_to")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    int belongsTo();
 
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
+    interface Builder<T extends ServerDbEntity<T>, B extends ServerDbEntity.Builder<T, B>> {
+        B name(String v);
 
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
-
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
+        B belongsTo(int v);
+    }
 }
