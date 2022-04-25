@@ -25,25 +25,31 @@ package de.njsm.stocks.client.execution;
 import de.njsm.stocks.client.business.entities.Job;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.concurrent.Executor;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class SchedulerImplTest {
 
     private SchedulerImpl uut;
 
+    @Mock
     private Executor executor;
+
+    @Mock
+    private SynchronisationLock lock;
 
     @BeforeEach
     public void setUp() {
-        executor = mock(Executor.class);
-
-        uut = new SchedulerImpl(executor);
+        uut = new SchedulerImpl(executor, lock);
     }
 
     @Test
@@ -67,6 +73,7 @@ public class SchedulerImplTest {
 
     @Test
     void completingAJobDecreasesTheCounter() {
+        when(lock.visit(any(), anyBoolean())).thenReturn(true);
         Job input = Job.create(Job.Type.UNKNOWN, mock(Runnable.class));
 
         uut.schedule(input);

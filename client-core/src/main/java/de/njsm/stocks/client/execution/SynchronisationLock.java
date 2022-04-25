@@ -24,19 +24,22 @@ package de.njsm.stocks.client.execution;
 import com.google.common.base.Preconditions;
 import de.njsm.stocks.client.business.entities.Job;
 
+import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class SynchronisationLock implements Job.TypeVisitor<Boolean, Boolean> {
+class SynchronisationLock implements Job.TypeVisitor<Boolean, Boolean> {
 
     private final ReadWriteLock lock;
 
     private final AtomicInteger counter;
 
-    public SynchronisationLock() {
+    @Inject
+    SynchronisationLock(AtomicInteger counter) {
         lock = new ReentrantReadWriteLock();
-        counter = new AtomicInteger();
+        this.counter = counter;
+        counter.set(0);
     }
 
     @Override

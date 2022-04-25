@@ -29,6 +29,7 @@ import javax.inject.Singleton;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Module
 public interface ExecutionModule {
@@ -41,8 +42,13 @@ public interface ExecutionModule {
 
     @Provides
     @Singleton
-    static SchedulerImpl schedulerImpl(Executor executor) {
-        return new SchedulerImpl(executor);
+    static SchedulerImpl schedulerImpl(Executor executor, SynchronisationLock lock) {
+        return new SchedulerImpl(executor, lock);
+    }
+
+    @Provides
+    static AtomicInteger atomicInteger() {
+        return new AtomicInteger();
     }
 
     @Provides

@@ -26,11 +26,14 @@ import de.njsm.stocks.client.business.entities.Job;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 public class SynchronisationTest {
@@ -39,39 +42,42 @@ public class SynchronisationTest {
 
     private ForkJoinPool executor;
 
+    private AtomicInteger counter;
+
     @BeforeEach
     public void setUp() {
+        counter = new AtomicInteger(0);
         executor = new ForkJoinPool(3);
-        uut = new SchedulerImpl(executor);
+        uut = new SchedulerImpl(executor, new SynchronisationLock(counter));
     }
 
     @RepeatedTest(20)
     void synchronisationWaitsForWriteFirst() {
         Runnable sync = mock(Runnable.class);
         Runnable deletion = mock(Runnable.class);
-        ReentrantReadWriteLock startSign = new ReentrantReadWriteLock();
-        ReentrantReadWriteLock stopSign = new ReentrantReadWriteLock();
-        startSign.writeLock().lock();
-        stopSign.writeLock().lock();
+        CountDownLatch startSign = new CountDownLatch(1);
+        CountDownLatch stopSign = new CountDownLatch(1);
         Job deleter = Job.create(Job.Type.DELETE_LOCATION, () -> {
-            startSign.readLock().lock();
-            startSign.readLock().unlock();
-            deletion.run();
-            stopSign.readLock().lock();
-            stopSign.readLock().unlock();
-            uut.schedule(Job.create(Job.Type.SYNCHRONISATION, sync));
+            try {
+                startSign.await();
+                deletion.run();
+                stopSign.await();
+                uut.schedule(Job.create(Job.Type.SYNCHRONISATION, sync));
+            } catch (InterruptedException e) {
+                fail("interrupted");
+            }
         });
         uut.schedule(deleter);
 
         verifyNoInteractions(deletion);
         verifyNoInteractions(sync);
 
-        startSign.writeLock().unlock();
+        startSign.countDown();
 
         verify(deletion, timeout(1000)).run();
         verifyNoInteractions(sync);
 
-        stopSign.writeLock().unlock();
+        stopSign.countDown();
 
         verify(sync, timeout(1000)).run();
     }
@@ -81,15 +87,17 @@ public class SynchronisationTest {
         Runnable sync = mock(Runnable.class);
         Runnable deletion = mock(Runnable.class);
         ReentrantReadWriteLock startSign = new ReentrantReadWriteLock();
-        ReentrantReadWriteLock stopSign = new ReentrantReadWriteLock();
+        CountDownLatch stopSign = new CountDownLatch(1);
         startSign.writeLock().lock();
-        stopSign.writeLock().lock();
         Job deleter = Job.create(Job.Type.DELETE_LOCATION, () -> {
-            startSign.readLock().lock();
-            startSign.readLock().unlock();
-            deletion.run();
-            stopSign.readLock().lock();
-            stopSign.readLock().unlock();
+            try {
+                startSign.readLock().lock();
+                startSign.readLock().unlock();
+                deletion.run();
+                stopSign.await();
+            } catch (InterruptedException e) {
+                fail("interrupted");
+            }
         });
         uut.schedule(deleter);
         uut.schedule(deleter);
@@ -105,7 +113,7 @@ public class SynchronisationTest {
         verify(deletion, timeout(1000).times(2)).run();
         verifyNoInteractions(sync);
 
-        stopSign.writeLock().unlock();
+        stopSign.countDown();
 
         verify(sync, timeout(1000)).run();
     }
@@ -114,17 +122,19 @@ public class SynchronisationTest {
     void twoScheduledSyncsLeadToOneActualExecution() throws InterruptedException {
         Runnable sync = mock(Runnable.class);
         Runnable deletion = mock(Runnable.class);
-        ReentrantReadWriteLock startSign = new ReentrantReadWriteLock();
-        ReentrantReadWriteLock stopSign = new ReentrantReadWriteLock();
-        startSign.writeLock().lock();
-        stopSign.writeLock().lock();
+        CountDownLatch startSign = new CountDownLatch(1);
+        CountDownLatch stopSign = new CountDownLatch(1);
+        CountDownLatch syncReadySign = new CountDownLatch(1);
         Job deleter = Job.create(Job.Type.DELETE_LOCATION, () -> {
-            startSign.readLock().lock();
-            startSign.readLock().unlock();
-            deletion.run();
-            stopSign.readLock().lock();
-            stopSign.readLock().unlock();
-            uut.schedule(Job.create(Job.Type.SYNCHRONISATION, sync));
+            try {
+                startSign.await();
+                deletion.run();
+                stopSign.await();
+                uut.schedule(Job.create(Job.Type.SYNCHRONISATION, sync));
+                syncReadySign.await();
+            } catch (InterruptedException e) {
+                fail("interrupted");
+            }
         });
         uut.schedule(deleter);
         uut.schedule(deleter);
@@ -132,12 +142,15 @@ public class SynchronisationTest {
         verifyNoInteractions(deletion);
         verifyNoInteractions(sync);
 
-        startSign.writeLock().unlock();
+        startSign.countDown();
 
         verify(deletion, timeout(1000).times(2)).run();
         verifyNoInteractions(sync);
 
-        stopSign.writeLock().unlock();
+        stopSign.countDown();
+
+        while (counter.get() == 0);
+        syncReadySign.countDown();
 
         executor.shutdown();
         assertTrue(executor.awaitTermination(5, SECONDS));

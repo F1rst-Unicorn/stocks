@@ -45,11 +45,11 @@ class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
     private final SynchronisationLock lock;
 
     @Inject
-    SchedulerImpl(Executor executor) {
+    SchedulerImpl(Executor executor, SynchronisationLock lock) {
         this.executor = executor;
         counter = new AtomicInteger(0);
         numberOfRunningJobs = BehaviorSubject.createDefault(counter.get()).toSerialized();
-        lock = new SynchronisationLock();
+        this.lock = lock;
     }
 
     @Override
