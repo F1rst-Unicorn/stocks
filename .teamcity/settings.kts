@@ -218,11 +218,6 @@ object Build : BuildType({
             path = "android-client/app/src/test/system/bin/vm-deployment-test.sh"
             enabled = false
         }
-        exec {
-            name = "Service messages"
-            path = "gradle/issue-service-messages.sh"
-            executionMode = BuildStep.ExecutionMode.ALWAYS
-        }
     }
 
     triggers {
