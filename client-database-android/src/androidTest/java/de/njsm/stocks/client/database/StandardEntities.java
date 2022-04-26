@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database;
 import de.njsm.stocks.client.business.entities.LocationToEdit;
 
 import java.time.Instant;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,41 +38,41 @@ public class StandardEntities {
     }
 
     static LocationDbEntity.Builder locationDbEntityBuilder() {
-        return LocationDbEntity.builder()
-                .id(1)
-                .version(2)
-                .validTimeStart(EPOCH)
-                .validTimeEnd(INFINITY)
-                .transactionTimeStart(EPOCH)
-                .transactionTimeEnd(INFINITY)
-                .initiates(3)
+        return initialiseBuilder(LocationDbEntity.builder())
                 .name("name")
                 .description("description");
     }
 
     static UserDbEntity.Builder userDbEntityBuilder() {
-        return UserDbEntity.builder()
-                .id(1)
-                .version(2)
-                .validTimeStart(EPOCH)
-                .validTimeEnd(INFINITY)
-                .transactionTimeStart(EPOCH)
-                .transactionTimeEnd(INFINITY)
-                .initiates(3)
+        return initialiseBuilder(UserDbEntity.builder())
                 .name("name");
     }
 
     static UserDeviceDbEntity.Builder userDeviceDbEntityBuilder() {
-        return UserDeviceDbEntity.builder()
+        return initialiseBuilder(UserDeviceDbEntity.builder())
+                .name("name")
+                .belongsTo(4);
+    }
+
+    static FoodDbEntity.Builder foodDbEntityBuilder() {
+        return initialiseBuilder(FoodDbEntity.builder())
+                .name("name")
+                .toBuy(true)
+                .expirationOffset(Period.ofDays(4))
+                .location(5)
+                .storeUnit(6)
+                .description("description");
+    }
+
+    private static <E extends ServerDbEntity<E>, T extends ServerDbEntity.Builder<E, T>> T initialiseBuilder(T builder) {
+        return builder
                 .id(1)
                 .version(2)
                 .validTimeStart(EPOCH)
                 .validTimeEnd(INFINITY)
                 .transactionTimeStart(EPOCH)
                 .transactionTimeEnd(INFINITY)
-                .initiates(3)
-                .name("name")
-                .belongsTo(4);
+                .initiates(3);
     }
 
     public static List<LocationDbEntity> bitemporalEdit(LocationDbEntity current, LocationToEdit edit, Instant when) {

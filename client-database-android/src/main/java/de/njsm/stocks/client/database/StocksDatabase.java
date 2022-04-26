@@ -39,11 +39,13 @@ import java.time.format.DateTimeFormatter;
                 LocationEditEntity.class,
                 UserDbEntity.class,
                 UserDeviceDbEntity.class,
+                FoodDbEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,
                 CurrentUserDbView.class,
                 CurrentUserDeviceDbView.class,
+                CurrentFoodDbView.class,
         },
         version = 40)
 @androidx.room.TypeConverters(TypeConverters.class)
@@ -77,4 +79,6 @@ public abstract class StocksDatabase extends RoomDatabase {
     abstract UserDao userDao();
 
     abstract UserDeviceDao userDeviceDao();
+
+    abstract FoodDao foodDao();
 }

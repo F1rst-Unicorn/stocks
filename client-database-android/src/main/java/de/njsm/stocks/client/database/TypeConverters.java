@@ -22,10 +22,11 @@
 package de.njsm.stocks.client.database;
 
 import androidx.room.TypeConverter;
-import java.time.Duration;
-import java.time.Instant;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.Period;
 
 import static de.njsm.stocks.client.business.Constants.INFINITY;
 import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_DATE_FORMAT;
@@ -73,5 +74,15 @@ public class TypeConverters {
     @TypeConverter
     public Duration dbToDuration(String rawDuration) {
         return Duration.parse(rawDuration);
+    }
+
+    @TypeConverter
+    public Period dbToPeriod(int periodInDays) {
+        return Period.ofDays(periodInDays);
+    }
+
+    @TypeConverter
+    public int periodToDb(Period period) {
+        return period.getDays();
     }
 }

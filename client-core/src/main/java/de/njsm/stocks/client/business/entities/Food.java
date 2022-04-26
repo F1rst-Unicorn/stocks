@@ -19,22 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.*;
+public interface Food extends Entity<Food>, FoodFields {
 
-import java.time.Instant;
-import java.util.List;
+    @Override
+    default boolean isContainedIn(Food item, boolean increment) {
+        return Entity.super.isContainedIn(item, increment) &&
+                name().equals(item.name()) &&
+                toBuy() == item.toBuy() &&
+                expirationOffset().equals(item.expirationOffset()) &&
+                location().equals(item.location()) &&
+                storeUnit() == item.storeUnit() &&
+                description().equals(item.description());
+    }
 
-public interface UpdateService {
-
-    List<Update> getUpdates();
-
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
-
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
-
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
-
-    List<FoodForSynchronisation> getFood(Instant startingFrom);
+    @Override
+    default void validate() {
+        Entity.super.validate();
+    }
 }

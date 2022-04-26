@@ -31,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.time.Period;
 import java.util.List;
 
 import static java.util.Collections.*;
@@ -63,18 +64,50 @@ class SynchroniseInteractorImplTest {
     }
 
     @Nested
+    class FoodSynchronisation extends TestSkeleton<FoodForSynchronisation> {
+
+        @Override
+        FoodForSynchronisation getEntity() {
+            return initialiseEntity(FoodForSynchronisation.builder())
+                    .name("name")
+                    .toBuy(true)
+                    .expirationOffset(Period.ofDays(4))
+                    .location(5)
+                    .storeUnit(6)
+                    .description("description")
+                    .build();
+        }
+
+        @Override
+        EntityType getEntityType() {
+            return EntityType.FOOD;
+        }
+
+        @Override
+        void prepareMocks(List<FoodForSynchronisation> entities, Instant startingFrom) {
+            when(updateService.getFood(startingFrom)).thenReturn(entities);
+        }
+
+        @Override
+        void verifyInitialisationMocks(List<FoodForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getFood(startingFrom);
+            verify(synchronisationRepository).initialiseFood(entities);
+
+        }
+
+        @Override
+        void verifyMocks(List<FoodForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getFood(startingFrom);
+            verify(synchronisationRepository).writeFood(entities);
+        }
+    }
+
+    @Nested
     class UserSynchronisation extends TestSkeleton<UserForSynchronisation> {
 
         @Override
         UserForSynchronisation getEntity() {
-            return UserForSynchronisation.builder()
-                    .id(1)
-                    .version(2)
-                    .validTimeStart(Instant.EPOCH)
-                    .validTimeEnd(Constants.INFINITY)
-                    .transactionTimeStart(Instant.EPOCH)
-                    .transactionTimeEnd(Constants.INFINITY)
-                    .initiates(3)
+            return initialiseEntity(UserForSynchronisation.builder())
                     .name("name")
                     .build();
         }
@@ -108,14 +141,7 @@ class SynchroniseInteractorImplTest {
 
         @Override
         UserDeviceForSynchronisation getEntity() {
-            return UserDeviceForSynchronisation.builder()
-                    .id(1)
-                    .version(2)
-                    .validTimeStart(Instant.EPOCH)
-                    .validTimeEnd(Constants.INFINITY)
-                    .transactionTimeStart(Instant.EPOCH)
-                    .transactionTimeEnd(Constants.INFINITY)
-                    .initiates(3)
+            return initialiseEntity(UserDeviceForSynchronisation.builder())
                     .name("name")
                     .belongsTo(4)
                     .build();
@@ -150,14 +176,7 @@ class SynchroniseInteractorImplTest {
 
         @Override
         LocationForSynchronisation getEntity() {
-            return LocationForSynchronisation.builder()
-                    .id(1)
-                    .version(2)
-                    .validTimeStart(Instant.EPOCH)
-                    .validTimeEnd(Constants.INFINITY)
-                    .transactionTimeStart(Instant.EPOCH)
-                    .transactionTimeEnd(Constants.INFINITY)
-                    .initiates(3)
+            return initialiseEntity(LocationForSynchronisation.builder())
                     .name("name")
                     .description("description")
                     .build();
@@ -197,6 +216,17 @@ class SynchroniseInteractorImplTest {
         abstract void verifyInitialisationMocks(List<E> entities, Instant startingFrom);
 
         abstract void verifyMocks(List<E> entities, Instant startingFrom);
+
+        <T extends Bitemporal.Builder<T>> T initialiseEntity(T builder) {
+            return builder
+                    .id(1)
+                    .version(2)
+                    .validTimeStart(Instant.EPOCH)
+                    .validTimeEnd(Constants.INFINITY)
+                    .transactionTimeStart(Instant.EPOCH)
+                    .transactionTimeEnd(Constants.INFINITY)
+                    .initiates(3);
+        }
 
         @Test
         void synchronisesIfServerHasMoreRecentData() {

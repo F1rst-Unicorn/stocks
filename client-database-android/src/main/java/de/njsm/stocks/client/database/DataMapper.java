@@ -77,6 +77,24 @@ public class DataMapper {
         );
     }
 
+    static FoodDbEntity map(FoodForSynchronisation food) {
+        return FoodDbEntity.create(
+                food.id(),
+                food.version(),
+                food.validTimeStart(),
+                food.validTimeEnd(),
+                food.transactionTimeStart(),
+                food.transactionTimeEnd(),
+                food.initiates(),
+                food.name(),
+                food.toBuy(),
+                food.expirationOffset(),
+                food.location().orElse(null),
+                food.storeUnit(),
+                food.description()
+        );
+    }
+
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
     }
@@ -98,10 +116,6 @@ public class DataMapper {
 
     public static LocationAddEntity map(LocationAddForm input) {
         return LocationAddEntity.create(input.name(), input.description());
-    }
-
-    static String map(EntityType entityType) {
-        return entityType.name().toLowerCase();
     }
 
     public static LocationToEdit mapToEdit(LocationDbEntity location) {

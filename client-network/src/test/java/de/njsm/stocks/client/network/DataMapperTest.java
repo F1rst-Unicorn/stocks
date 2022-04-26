@@ -49,6 +49,9 @@ class DataMapperTest {
     @Test
     void entityTypesMapCorrectly() {
         assertThat(DataMapper.map("Location"), is(Optional.of(EntityType.LOCATION)));
+        assertThat(DataMapper.map("User"), is(Optional.of(EntityType.USER)));
+        assertThat(DataMapper.map("User_device"), is(Optional.of(EntityType.USER_DEVICE)));
+        assertThat(DataMapper.map("Food"), is(Optional.of(EntityType.FOOD)));
     }
 
     @Test

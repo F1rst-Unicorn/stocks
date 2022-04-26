@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "6658cc7011d250672e102c8195eb4de8",
+    "identityHash": "731ec0f4b86a0f65eb0470de96f0ab43",
     "entities": [
       {
         "tableName": "updates",
@@ -112,6 +112,7 @@
               "valid_time_start",
               "valid_time_end"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `location_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
           },
           {
@@ -120,6 +121,7 @@
             "columnNames": [
               "_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `location_pkey` ON `${TABLE_NAME}` (`_id`)"
           },
           {
@@ -128,6 +130,7 @@
             "columnNames": [
               "transaction_time_start"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `location_transaction_time_start` ON `${TABLE_NAME}` (`transaction_time_start`)"
           },
           {
@@ -136,6 +139,7 @@
             "columnNames": [
               "transaction_time_end"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `location_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
           }
         ],
@@ -433,6 +437,7 @@
               "valid_time_start",
               "valid_time_end"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `user_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
           },
           {
@@ -441,6 +446,7 @@
             "columnNames": [
               "_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `user_pkey` ON `${TABLE_NAME}` (`_id`)"
           },
           {
@@ -449,6 +455,7 @@
             "columnNames": [
               "transaction_time_start"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `user_transaction_time_start` ON `${TABLE_NAME}` (`transaction_time_start`)"
           },
           {
@@ -457,6 +464,7 @@
             "columnNames": [
               "transaction_time_end"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `user_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
           }
         ],
@@ -538,6 +546,7 @@
               "valid_time_start",
               "valid_time_end"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `user_device_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
           },
           {
@@ -546,6 +555,7 @@
             "columnNames": [
               "_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `user_device_pkey` ON `${TABLE_NAME}` (`_id`)"
           },
           {
@@ -554,6 +564,7 @@
             "columnNames": [
               "transaction_time_start"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `user_device_transaction_time_start` ON `${TABLE_NAME}` (`transaction_time_start`)"
           },
           {
@@ -562,7 +573,141 @@
             "columnNames": [
               "transaction_time_end"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `user_device_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "food",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `to_buy` INTEGER NOT NULL, `expiration_offset` INTEGER NOT NULL, `location` INTEGER, `storeUnit` INTEGER NOT NULL, `description` TEXT NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "toBuy",
+            "columnName": "to_buy",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expirationOffset",
+            "columnName": "expiration_offset",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "storeUnit",
+            "columnName": "storeUnit",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeStart",
+            "columnName": "valid_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeEnd",
+            "columnName": "valid_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeStart",
+            "columnName": "transaction_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeEnd",
+            "columnName": "transaction_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "initiates",
+            "columnName": "initiates",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id",
+            "version",
+            "transaction_time_start"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "food_current",
+            "unique": false,
+            "columnNames": [
+              "_id",
+              "valid_time_start",
+              "valid_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+          },
+          {
+            "name": "food_pkey",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_pkey` ON `${TABLE_NAME}` (`_id`)"
+          },
+          {
+            "name": "food_transaction_time_start",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_start"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_transaction_time_start` ON `${TABLE_NAME}` (`transaction_time_start`)"
+          },
+          {
+            "name": "food_transaction_time_end",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
           }
         ],
         "foreignKeys": []
@@ -580,11 +725,15 @@
       {
         "viewName": "current_user_device",
         "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from user_device where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
+      },
+      {
+        "viewName": "current_food",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from food where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6658cc7011d250672e102c8195eb4de8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '731ec0f4b86a0f65eb0470de96f0ab43')"
     ]
   }
 }

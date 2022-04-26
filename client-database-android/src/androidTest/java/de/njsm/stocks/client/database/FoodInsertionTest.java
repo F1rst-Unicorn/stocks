@@ -19,22 +19,35 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.*;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import org.junit.runner.RunWith;
 
-import java.time.Instant;
 import java.util.List;
 
-public interface UpdateService {
+import static de.njsm.stocks.client.database.StandardEntities.foodDbEntityBuilder;
 
-    List<Update> getUpdates();
+@RunWith(AndroidJUnit4.class)
+public class FoodInsertionTest extends InsertionTest<FoodDbEntity, FoodDbEntity.Builder> {
 
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
+    @Override
+    FoodDbEntity.Builder getFreshDto() {
+        return foodDbEntityBuilder();
+    }
 
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
+    @Override
+    List<FoodDbEntity> getAll() {
+        return stocksDatabase.foodDao().getAll();
+    }
 
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
+    @Override
+    void insert(List<FoodDbEntity> data, SynchronisationDao synchronisationDao) {
+        synchronisationDao.writeFood(data);
+    }
 
-    List<FoodForSynchronisation> getFood(Instant startingFrom);
+    @Override
+    void synchronise(List<FoodDbEntity> data, SynchronisationDao synchronisationDao) {
+        synchronisationDao.synchroniseFood(data);
+    }
 }

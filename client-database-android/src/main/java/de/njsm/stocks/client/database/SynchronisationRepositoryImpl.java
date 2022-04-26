@@ -22,10 +22,7 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.SynchronisationRepository;
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserDeviceForSynchronisation;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
+import de.njsm.stocks.client.business.entities.*;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -79,5 +76,15 @@ class SynchronisationRepositoryImpl implements SynchronisationRepository {
     @Override
     public void initialiseUserDevices(List<UserDeviceForSynchronisation> userDevices) {
         synchronisationDao.synchroniseUserDevices(userDevices.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void writeFood(List<FoodForSynchronisation> food) {
+        synchronisationDao.writeFood(food.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void initialiseFood(List<FoodForSynchronisation> food) {
+        synchronisationDao.synchroniseFood(food.stream().map(DataMapper::map).collect(toList()));
     }
 }

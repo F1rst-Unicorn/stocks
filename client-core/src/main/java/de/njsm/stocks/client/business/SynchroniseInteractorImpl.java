@@ -114,6 +114,13 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
             synchronisationRepository.writeUserDevices(items);
             return null;
         }
+
+        @Override
+        public Void food(Instant input) {
+            List<FoodForSynchronisation> items = updateService.getFood(input);
+            synchronisationRepository.writeFood(items);
+            return null;
+        }
     }
 
     private final class EntityInitialiser implements EntityType.Visitor<Instant, Void> {
@@ -142,6 +149,13 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
         public Void userDevice(Instant input) {
             List<UserDeviceForSynchronisation> items = updateService.getUserDevices(input);
             synchronisationRepository.initialiseUserDevices(items);
+            return null;
+        }
+
+        @Override
+        public Void food(Instant input) {
+            List<FoodForSynchronisation> items = updateService.getFood(input);
+            synchronisationRepository.initialiseFood(items);
             return null;
         }
     }

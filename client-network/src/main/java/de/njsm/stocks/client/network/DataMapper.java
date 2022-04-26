@@ -21,12 +21,13 @@
 
 package de.njsm.stocks.client.network;
 
+import de.njsm.stocks.client.business.entities.Bitemporal;
+import de.njsm.stocks.client.business.entities.StatusCode;
+import de.njsm.stocks.client.business.entities.Update;
 import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.common.api.BitemporalLocation;
-import de.njsm.stocks.common.api.BitemporalUser;
-import de.njsm.stocks.common.api.BitemporalUserDevice;
 import de.njsm.stocks.common.api.Entity;
 import de.njsm.stocks.common.api.LocationForEditing;
+import de.njsm.stocks.common.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +62,17 @@ public class DataMapper {
                 .build();
     }
 
+    public static FoodForSynchronisation map(BitemporalFood source) {
+        return map(source, FoodForSynchronisation.builder())
+                .name(source.name())
+                .toBuy(source.toBuy())
+                .expirationOffset(source.expirationOffset())
+                .location(source.location())
+                .storeUnit(source.storeUnit())
+                .description(source.description())
+                .build();
+    }
+
     private static <T extends Bitemporal.Builder<T>, E extends Entity<E>> T map(de.njsm.stocks.common.api.Bitemporal<E> source, T destination) {
         return destination
                 .id(source.id())
@@ -79,6 +91,8 @@ public class DataMapper {
             return Optional.of(EntityType.USER);
         } else if (entityType.equalsIgnoreCase("user_device")) {
             return Optional.of(EntityType.USER_DEVICE);
+        } else if (entityType.equalsIgnoreCase("food")) {
+            return Optional.of(EntityType.FOOD);
         }
 
         LOG.info("unknown entity type '" + entityType + "'");

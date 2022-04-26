@@ -22,14 +22,9 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.UpdateService;
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.entities.Update;
-import de.njsm.stocks.client.business.entities.UserDeviceForSynchronisation;
-import de.njsm.stocks.client.business.entities.UserForSynchronisation;
-import de.njsm.stocks.common.api.BitemporalLocation;
-import de.njsm.stocks.common.api.BitemporalUser;
-import de.njsm.stocks.common.api.BitemporalUserDevice;
-import de.njsm.stocks.common.api.ListResponse;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +82,14 @@ public class UpdateServiceImpl implements UpdateService {
     public List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom) {
         LOG.debug("getting user devices from " + startingFrom);
         Call<ListResponse<BitemporalUserDevice>> call = api.getUserDevices(1, InstantSerialiser.serialize(startingFrom));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FoodForSynchronisation> getFood(Instant startingFrom) {
+        LOG.debug("getting food from " + startingFrom);
+        Call<ListResponse<BitemporalFood>> call = api.getFood(1, InstantSerialiser.serialize(startingFrom));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(Collectors.toList());
     }

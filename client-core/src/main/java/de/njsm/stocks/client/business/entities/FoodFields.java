@@ -19,22 +19,38 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.*;
+import javax.annotation.Nullable;
+import java.time.Period;
+import java.util.Optional;
 
-import java.time.Instant;
-import java.util.List;
+public interface FoodFields {
 
-public interface UpdateService {
+    String name();
 
-    List<Update> getUpdates();
+    boolean toBuy();
 
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
+    Period expirationOffset();
 
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
+    Optional<Integer> location();
 
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
+    int storeUnit();
 
-    List<FoodForSynchronisation> getFood(Instant startingFrom);
+    String description();
+
+    interface Builder<T> {
+
+        T name(String v);
+
+        T toBuy(boolean v);
+
+        T expirationOffset(Period v);
+
+        T location(@Nullable Integer v);
+
+        T storeUnit(int v);
+
+        T description(String v);
+    }
 }

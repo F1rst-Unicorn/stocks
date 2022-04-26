@@ -63,4 +63,8 @@ public interface ServerApi {
     @GET("/v2/device")
     Call<ListResponse<BitemporalUserDevice>> getUserDevices(@Query("bitemporal") int bitemporal,
                                                             @Query("startingFrom") String startingFrom);
+
+    @GET("/v2/food")
+    Call<ListResponse<BitemporalFood>> getFood(@Query("bitemporal") int bitemporal,
+                                               @Query("startingFrom") String startingFrom);
 }

@@ -110,4 +110,18 @@ public class SynchronisationRepositoryImplTest {
 
         verify(synchronisationDao).synchroniseUserDevices(emptyList());
     }
+
+    @Test
+    public void foodToWriteAreForwarded() {
+        uut.writeFood(emptyList());
+
+        verify(synchronisationDao).writeFood(emptyList());
+    }
+
+    @Test
+    public void foodToInitialiseAreForwarded() {
+        uut.initialiseFood(emptyList());
+
+        verify(synchronisationDao).synchroniseFood(emptyList());
+    }
 }
