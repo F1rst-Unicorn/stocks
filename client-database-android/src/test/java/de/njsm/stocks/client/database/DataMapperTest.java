@@ -34,13 +34,12 @@ import static de.njsm.stocks.client.database.StandardEntities.locationDbEntity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 
 public class DataMapperTest {
 
     @Test
     public void mappingUpdateWorks() {
-        UpdateDbEntity input = UpdateDbEntity.create("location", Instant.MAX);
+        UpdateDbEntity input = UpdateDbEntity.create(EntityType.LOCATION, Instant.MAX);
 
         Update actual = map(input);
 
@@ -93,15 +92,5 @@ public class DataMapperTest {
 
         assertEquals(input.id(), actual.id());
         assertEquals(input.name(), actual.name());
-    }
-
-    @Test
-    public void entityTypesMapCorrectly() {
-        assertThat(map("Location"), is(EntityType.LOCATION));
-    }
-
-    @Test
-    public void invalidEntityTypeThrows() {
-        assertThrows(IllegalArgumentException.class, () -> map("unknown entity type"));
     }
 }

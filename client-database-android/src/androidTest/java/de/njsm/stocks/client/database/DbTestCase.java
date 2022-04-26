@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database;
 import android.content.Context;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
+import de.njsm.stocks.client.business.entities.EntityType;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -56,7 +57,7 @@ public class DbTestCase {
      * @see de.njsm.stocks.client.database.StocksDatabase.NOW
      */
     public void setArtificialDbNow(Instant now) {
-        UpdateDbEntity update = UpdateDbEntity.create("artificial_db_now", now);
+        UpdateDbEntity update = UpdateDbEntity.create(EntityType.LOCATION, now);
 
         stocksDatabase.synchronisationDao().writeUpdates(singletonList(update));
     }

@@ -29,11 +29,11 @@ import de.njsm.stocks.client.database.error.LocationEditEntity;
 public class DataMapper {
 
     static Update map(UpdateDbEntity input) {
-        return Update.create(map(input.table()), input.lastUpdate());
+        return Update.create(input.table(), input.lastUpdate());
     }
 
     static UpdateDbEntity map(Update input) {
-        return UpdateDbEntity.create(map(input.table()), input.lastUpdate());
+        return UpdateDbEntity.create(input.table(), input.lastUpdate());
     }
 
     static LocationDbEntity map(LocationForSynchronisation location) {
@@ -98,18 +98,6 @@ public class DataMapper {
 
     public static LocationAddEntity map(LocationAddForm input) {
         return LocationAddEntity.create(input.name(), input.description());
-    }
-
-    static EntityType map(String entityType) {
-        if (entityType.equalsIgnoreCase("location")) {
-            return EntityType.LOCATION;
-        } else if (entityType.equalsIgnoreCase("user")) {
-            return EntityType.USER;
-        } else if (entityType.equalsIgnoreCase("user_device")) {
-            return EntityType.USER_DEVICE;
-        }
-
-        throw new IllegalArgumentException("invalid entity type '" + entityType + "'");
     }
 
     static String map(EntityType entityType) {

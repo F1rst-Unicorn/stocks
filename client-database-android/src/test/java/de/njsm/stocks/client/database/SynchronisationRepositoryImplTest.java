@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.Update;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,9 +50,9 @@ public class SynchronisationRepositoryImplTest {
     @Test
     public void updateListIsReturned() {
         List<UpdateDbEntity> data = Arrays.asList(
-                UpdateDbEntity.create(1, "location", Instant.MIN),
-                UpdateDbEntity.create(2, "user", Instant.MIN),
-                UpdateDbEntity.create(3, "user_device", Instant.MIN)
+                UpdateDbEntity.create(1, EntityType.LOCATION, Instant.MIN),
+                UpdateDbEntity.create(2, EntityType.USER, Instant.MIN),
+                UpdateDbEntity.create(3, EntityType.USER_DEVICE, Instant.MIN)
         );
         when(synchronisationDao.getAll()).thenReturn(data);
 

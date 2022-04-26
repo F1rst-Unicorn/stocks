@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.entities.EntityType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class SynchronisationDaoTest extends DbTestCase {
 
     @Test
     public void insertingWorks() {
-        UpdateDbEntity input = UpdateDbEntity.create("table", Instant.EPOCH);
+        UpdateDbEntity input = UpdateDbEntity.create(EntityType.LOCATION, Instant.EPOCH);
         UpdateDbEntity expected = UpdateDbEntity.create(1, input.table(), input.lastUpdate());
 
         uut.insert(singletonList(input));
@@ -53,9 +54,9 @@ public class SynchronisationDaoTest extends DbTestCase {
 
     @Test
     public void synchronisingDeletesOldContent() {
-        UpdateDbEntity oldContent = UpdateDbEntity.create("table", Instant.EPOCH);
+        UpdateDbEntity oldContent = UpdateDbEntity.create(EntityType.LOCATION, Instant.EPOCH);
         uut.insert(singletonList(oldContent));
-        UpdateDbEntity input = UpdateDbEntity.create("other table", Instant.EPOCH);
+        UpdateDbEntity input = UpdateDbEntity.create(EntityType.USER, Instant.EPOCH);
         UpdateDbEntity expected = UpdateDbEntity.create(2, input.table(), input.lastUpdate());
 
         uut.writeUpdates(singletonList(input));

@@ -25,6 +25,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.EntityType;
 
 import java.time.Instant;
 
@@ -36,19 +37,19 @@ abstract class UpdateDbEntity implements IdFields {
     @ColumnInfo(name = "name")
     @NonNull
     @AutoValue.CopyAnnotations
-    abstract String table();
+    abstract EntityType table();
 
     @ColumnInfo(name = "last_update")
     @NonNull
     @AutoValue.CopyAnnotations
     abstract Instant lastUpdate();
 
-    static UpdateDbEntity create(int id, String table, Instant lastUpdate) {
+    static UpdateDbEntity create(int id, EntityType table, Instant lastUpdate) {
         return new AutoValue_UpdateDbEntity(id, table, lastUpdate);
     }
 
     @Ignore
-    static UpdateDbEntity create(String table, Instant lastUpdate) {
+    static UpdateDbEntity create(EntityType table, Instant lastUpdate) {
         return create(0, table, lastUpdate);
     }
 }
