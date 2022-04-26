@@ -18,8 +18,8 @@
  */
 
 plugins {
-    id 'com.android.library'
-    id 'checkstyle'
+    id "com.android.library"
+    id "checkstyle"
 }
 
 apply from: "$project.rootDir/gradle/jacoco/android.gradle"
@@ -65,43 +65,43 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/DEPENDENCIES.txt'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/LICENSE.md'
-        exclude 'META-INF/LICENSE-notice.md'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/notice.txt'
-        exclude 'META-INF/license.txt'
-        exclude 'META-INF/dependencies.txt'
-        exclude 'META-INF/LGPL2.1'
+        exclude "META-INF/DEPENDENCIES.txt"
+        exclude "META-INF/LICENSE.txt"
+        exclude "META-INF/LICENSE.md"
+        exclude "META-INF/LICENSE-notice.md"
+        exclude "META-INF/NOTICE.txt"
+        exclude "META-INF/NOTICE"
+        exclude "META-INF/LICENSE"
+        exclude "META-INF/DEPENDENCIES"
+        exclude "META-INF/notice.txt"
+        exclude "META-INF/license.txt"
+        exclude "META-INF/dependencies.txt"
+        exclude "META-INF/LGPL2.1"
     }
 }
 
 dependencies {
-    implementation 'javax.inject:javax.inject:1'
-    implementation project(':client-core')
-    implementation project(':client-ui-android')
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.3'
-    implementation "com.google.auto.value:auto-value-annotations:1.8.2"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation 'com.google.dagger:dagger:2.40.5'
-    implementation 'org.mockito:mockito-core:4.3.1'
+    implementation project(":client-core")
+    implementation project(":client-ui-android")
+    implementation "javax.inject:javax.inject:${inject_version}"
+    implementation "io.reactivex.rxjava3:rxjava:${rxjava_version}"
+    implementation "com.google.auto.value:auto-value-annotations:${autovalue_version}"
+    implementation "androidx.lifecycle:lifecycle-extensions:${lifecycle_extensions_version}"
+    implementation "com.google.dagger:dagger:${dagger_version}"
+    implementation "org.mockito:mockito-core:${mockito_version}"
 
-    annotationProcessor "com.google.auto.value:auto-value:1.8.2"
-    annotationProcessor "com.google.dagger:dagger-compiler:2.40.5"
+    annotationProcessor "com.google.auto.value:auto-value:${autovalue_version}"
+    annotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.hamcrest:hamcrest:2.2'
-    testImplementation 'org.mockito:mockito-core:4.3.1'
+    testImplementation "junit:junit:${junit4_version}"
+    testImplementation "org.hamcrest:hamcrest:${hamcrest_version}"
+    testImplementation "org.mockito:mockito-core:${mockito_version}"
 
-    androidTestImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'org.mockito:mockito-core:4.3.1'
-    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation "junit:junit:${junit4_version}"
+    androidTestImplementation "org.mockito:mockito-core:${mockito_version}"
+    androidTestImplementation "androidx.arch.core:core-testing:${androidx_core_version}"
+    androidTestImplementation "androidx.test.ext:junit:${androidx_test_junit_version}"
+    androidTestImplementation "androidx.test:runner:${androidx_test_version}"
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:${desugar_jdk_version}"
 }

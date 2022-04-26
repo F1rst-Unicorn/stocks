@@ -18,9 +18,9 @@
  */
 
 plugins {
-    id 'com.android.library'
-    id 'checkstyle'
-    id 'androidx.navigation.safeargs'
+    id "com.android.library"
+    id "checkstyle"
+    id "androidx.navigation.safeargs"
 }
 
 apply from: "$project.rootDir/gradle/jacoco/android.gradle"
@@ -66,38 +66,38 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/DEPENDENCIES.txt'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/LICENSE.md'
-        exclude 'META-INF/LICENSE-notice.md'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/notice.txt'
-        exclude 'META-INF/license.txt'
-        exclude 'META-INF/dependencies.txt'
-        exclude 'META-INF/LGPL2.1'
+        exclude "META-INF/DEPENDENCIES.txt"
+        exclude "META-INF/LICENSE.txt"
+        exclude "META-INF/LICENSE.md"
+        exclude "META-INF/LICENSE-notice.md"
+        exclude "META-INF/NOTICE.txt"
+        exclude "META-INF/NOTICE"
+        exclude "META-INF/LICENSE"
+        exclude "META-INF/DEPENDENCIES"
+        exclude "META-INF/notice.txt"
+        exclude "META-INF/license.txt"
+        exclude "META-INF/dependencies.txt"
+        exclude "META-INF/LGPL2.1"
     }
 }
 
 dependencies {
-    implementation project(':client-core')
-    implementation project(':client-ui-android')
-    implementation 'androidx.navigation:navigation-fragment:2.3.5'
-    implementation 'androidx.navigation:navigation-ui:2.3.5'
-    implementation 'javax.inject:javax.inject:1'
-    implementation "com.google.dagger:dagger-android:2.40.4"
-    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation project(":client-core")
+    implementation project(":client-ui-android")
+    implementation "androidx.navigation:navigation-fragment:${navigation_version}"
+    implementation "androidx.navigation:navigation-ui:${navigation_version}"
+    implementation "javax.inject:javax.inject:${inject_version}"
+    implementation "com.google.dagger:dagger-android:${dagger_version}"
+    implementation "org.slf4j:slf4j-api:${slf4j_version}"
 
-    testImplementation 'junit:junit:4.13.1'
-    testImplementation 'org.mockito:mockito-core:4.1.0'
-    testImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation "junit:junit:${junit4_version}"
+    testImplementation "org.mockito:mockito-core:${mockito_version}"
+    testImplementation "org.hamcrest:hamcrest:${hamcrest_version}"
 
-    androidTestImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'org.mockito:mockito-core:4.1.0'
-    androidTestImplementation 'org.mockito:mockito-android:4.1.0'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation "junit:junit:${junit4_version}"
+    androidTestImplementation "org.mockito:mockito-core:${mockito_version}"
+    androidTestImplementation "org.mockito:mockito-android:${mockito_version}"
+    androidTestImplementation "androidx.test:runner:${androidx_test_version}"
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:${desugar_jdk_version}"
 }

@@ -32,6 +32,6 @@ public class SqliteVersionTest extends DbTestCase {
 
     @Test
     public void verifyRecentSqliteVersion() {
-        assertEquals("3.35.5", stocksDatabase.metadataDao().getSqliteVersion());
+        assertEquals("3.36.0", stocksDatabase.metadataDao().getSqliteVersion());
     }
 }

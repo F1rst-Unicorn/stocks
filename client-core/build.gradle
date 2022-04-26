@@ -18,37 +18,37 @@
  */
 
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'checkstyle'
+    id "java-library"
+    id "maven-publish"
+    id "checkstyle"
 }
 
 apply from: "$project.rootDir/gradle/jacoco/java.gradle"
 
 dependencies {
-    implementation 'javax.inject:javax.inject:1'
-    implementation 'org.slf4j:slf4j-api:1.7.36'
-    implementation 'com.google.dagger:dagger:2.40.5'
-    implementation "com.google.auto.value:auto-value-annotations:1.8.2"
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.3'
-    implementation 'com.google.guava:guava:31.0.1-jre'
+    implementation "javax.inject:javax.inject:${inject_version}"
+    implementation "org.slf4j:slf4j-api:${slf4j_version}"
+    implementation "com.google.dagger:dagger:${dagger_version}"
+    implementation "com.google.auto.value:auto-value-annotations:${autovalue_version}"
+    implementation "io.reactivex.rxjava3:rxjava:${rxjava_version}"
+    implementation "com.google.guava:guava:${guava_version}"
 
 
-    annotationProcessor "com.google.auto.value:auto-value:1.8.2"
-    annotationProcessor "com.google.dagger:dagger-compiler:2.40.5"
+    annotationProcessor "com.google.auto.value:auto-value:${autovalue_version}"
+    annotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
-    testImplementation 'org.hamcrest:hamcrest:2.2'
-    testImplementation 'org.mockito:mockito-core:4.3.1'
-    testImplementation 'org.mockito:mockito-junit-jupiter:4.3.1'
-    testImplementation 'org.apache.logging.log4j:log4j-api:2.13.3'
-    testImplementation 'org.apache.logging.log4j:log4j-core:2.13.3'
-    testImplementation 'org.apache.logging.log4j:log4j-web:2.13.3'
-    testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.3'
+    testImplementation "org.junit.jupiter:junit-jupiter:${junit5_version}"
+    testImplementation "org.hamcrest:hamcrest:${hamcrest_version}"
+    testImplementation "org.mockito:mockito-core:${mockito_version}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockito_version}"
+    testImplementation "org.apache.logging.log4j:log4j-api:${log4j_version}"
+    testImplementation "org.apache.logging.log4j:log4j-core:${log4j_version}"
+    testImplementation "org.apache.logging.log4j:log4j-web:${log4j_version}"
+    testImplementation "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
 }
 
-group = 'de.njsm.stocks'
-version = '0.1'
+group = "de.njsm.stocks"
+version = "0.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -56,7 +56,7 @@ java {
 }
 
 tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+    options.encoding = "UTF-8"
 }
 
 test {

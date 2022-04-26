@@ -18,33 +18,37 @@
  */
 
 plugins {
-    id 'java-library'
-    id 'checkstyle'
+    id "java-library"
+    id "checkstyle"
 }
 
 apply from: "$project.rootDir/gradle/jacoco/java.gradle"
 
-dependencies {
-    implementation 'javax.inject:javax.inject:1'
-    implementation project(':client-core')
-    implementation 'org.slf4j:slf4j-api:1.7.35'
-    implementation 'com.google.dagger:dagger:2.40.5'
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.69'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.69'
-
-    annotationProcessor "com.google.dagger:dagger-compiler:2.40.5"
-
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-    testImplementation 'org.hamcrest:hamcrest:2.2'
-    testImplementation 'org.mockito:mockito-core:4.3.1'
-    testImplementation 'org.apache.logging.log4j:log4j-api:2.17.0'
-    testImplementation 'org.apache.logging.log4j:log4j-core:2.17.0'
-    testImplementation 'org.apache.logging.log4j:log4j-web:2.17.0'
-    testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.0'
+ext {
+    bouncycastle_version = "1.70"
 }
 
-group = 'de.njsm.stocks'
-version = '0.1'
+dependencies {
+    implementation "javax.inject:javax.inject:${inject_version}"
+    implementation project(":client-core")
+    implementation "org.slf4j:slf4j-api:${slf4j_version}"
+    implementation "com.google.dagger:dagger:${dagger_version}"
+    implementation "org.bouncycastle:bcprov-jdk15on:${bouncycastle_version}"
+    implementation "org.bouncycastle:bcpkix-jdk15on:${bouncycastle_version}"
+
+    annotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:${junit5_version}"
+    testImplementation "org.hamcrest:hamcrest:${hamcrest_version}"
+    testImplementation "org.mockito:mockito-core:${mockito_version}"
+    testImplementation "org.apache.logging.log4j:log4j-api:${log4j_version}"
+    testImplementation "org.apache.logging.log4j:log4j-core:${log4j_version}"
+    testImplementation "org.apache.logging.log4j:log4j-web:${log4j_version}"
+    testImplementation "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
+}
+
+group = "de.njsm.stocks"
+version = "0.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -52,7 +56,7 @@ java {
 }
 
 tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+    options.encoding = "UTF-8"
 }
 
 test {
