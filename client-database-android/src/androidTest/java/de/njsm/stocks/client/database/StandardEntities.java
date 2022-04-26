@@ -64,6 +64,12 @@ public class StandardEntities {
                 .description("description");
     }
 
+    static EanNumberDbEntity.Builder eanNumberDbEntityBuilder() {
+        return initialiseBuilder(EanNumberDbEntity.builder())
+                .number("number")
+                .identifies(4);
+    }
+
     private static <E extends ServerDbEntity<E>, T extends ServerDbEntity.Builder<E, T>> T initialiseBuilder(T builder) {
         return builder
                 .id(1)

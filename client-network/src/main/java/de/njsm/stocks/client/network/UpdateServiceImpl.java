@@ -22,8 +22,8 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.UpdateService;
-import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.entities.Update;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import org.slf4j.Logger;
@@ -34,7 +34,8 @@ import javax.inject.Inject;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class UpdateServiceImpl implements UpdateService {
 
@@ -59,7 +60,7 @@ public class UpdateServiceImpl implements UpdateService {
                 .map(DataMapper::map)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -67,7 +68,7 @@ public class UpdateServiceImpl implements UpdateService {
         LOG.debug("getting locations from " + startingFrom);
         Call<ListResponse<BitemporalLocation>> call = api.getLocations(1, InstantSerialiser.serialize(startingFrom));
         return callHandler.executeForResult(call)
-                .stream().map(DataMapper::map).collect(Collectors.toList());
+                .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
@@ -75,7 +76,7 @@ public class UpdateServiceImpl implements UpdateService {
         LOG.debug("getting users from " + startingFrom);
         Call<ListResponse<BitemporalUser>> call = api.getUsers(1, InstantSerialiser.serialize(startingFrom));
         return callHandler.executeForResult(call)
-                .stream().map(DataMapper::map).collect(Collectors.toList());
+                .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
@@ -83,7 +84,7 @@ public class UpdateServiceImpl implements UpdateService {
         LOG.debug("getting user devices from " + startingFrom);
         Call<ListResponse<BitemporalUserDevice>> call = api.getUserDevices(1, InstantSerialiser.serialize(startingFrom));
         return callHandler.executeForResult(call)
-                .stream().map(DataMapper::map).collect(Collectors.toList());
+                .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
@@ -91,6 +92,14 @@ public class UpdateServiceImpl implements UpdateService {
         LOG.debug("getting food from " + startingFrom);
         Call<ListResponse<BitemporalFood>> call = api.getFood(1, InstantSerialiser.serialize(startingFrom));
         return callHandler.executeForResult(call)
-                .stream().map(DataMapper::map).collect(Collectors.toList());
+                .stream().map(DataMapper::map).collect(toList());
+    }
+
+    @Override
+    public List<EanNumberForSynchronisation> getEanNumbers(Instant startingFrom) {
+        LOG.debug("getting ean numbers from " + startingFrom);
+        Call<ListResponse<BitemporalEanNumber>> call = api.getEanNumbers(1, InstantSerialiser.serialize(startingFrom));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(toList());
     }
 }

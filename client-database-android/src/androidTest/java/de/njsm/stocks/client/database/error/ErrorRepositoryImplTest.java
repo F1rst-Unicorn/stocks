@@ -102,7 +102,7 @@ public class ErrorRepositoryImplTest extends DbTestCase {
         LocationAddForm form = LocationAddForm.create("Fridge", "the cold one");
         StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
         errorRecorder.recordLocationAddError(exception, form);
-        ErrorDescription input = uut.getErrors().test().awaitCount(1).values().get(0).get(0);
+        ErrorDescription input = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
 
         uut.deleteError(input);
 

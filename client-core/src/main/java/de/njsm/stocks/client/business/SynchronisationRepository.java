@@ -46,4 +46,8 @@ public interface SynchronisationRepository {
     void writeFood(List<FoodForSynchronisation> entities);
 
     void initialiseFood(List<FoodForSynchronisation> food);
+
+    void writeEanNumbers(List<EanNumberForSynchronisation> entities);
+
+    void initialiseEanNumbers(List<EanNumberForSynchronisation> entities);
 }

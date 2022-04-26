@@ -19,24 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.*;
+public interface EanNumber extends Entity<EanNumber>, EanNumberFields {
 
-import java.time.Instant;
-import java.util.List;
+    @Override
+    default boolean isContainedIn(EanNumber item, boolean increment) {
+        return Entity.super.isContainedIn(item, increment) &&
+                number().equals(item.number()) &&
+                identifies() == item.identifies();
+    }
 
-public interface UpdateService {
-
-    List<Update> getUpdates();
-
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
-
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
-
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
-
-    List<FoodForSynchronisation> getFood(Instant startingFrom);
-
-    List<EanNumberForSynchronisation> getEanNumbers(Instant startingFrom);
+    @Override
+    default void validate() {
+        Entity.super.validate();
+    }
 }

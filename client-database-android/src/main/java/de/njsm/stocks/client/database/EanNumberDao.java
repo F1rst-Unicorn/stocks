@@ -19,24 +19,17 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.*;
+import androidx.room.Dao;
+import androidx.room.Query;
 
-import java.time.Instant;
 import java.util.List;
 
-public interface UpdateService {
+@Dao
+abstract class EanNumberDao {
 
-    List<Update> getUpdates();
-
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
-
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
-
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
-
-    List<FoodForSynchronisation> getFood(Instant startingFrom);
-
-    List<EanNumberForSynchronisation> getEanNumbers(Instant startingFrom);
+    @Query("select * " +
+            "from current_ean_number")
+    abstract List<EanNumberDbEntity> getAll();
 }

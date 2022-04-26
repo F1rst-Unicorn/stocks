@@ -95,6 +95,20 @@ public class DataMapper {
         );
     }
 
+    static EanNumberDbEntity map(EanNumberForSynchronisation eanNumber) {
+        return EanNumberDbEntity.create(
+                eanNumber.id(),
+                eanNumber.version(),
+                eanNumber.validTimeStart(),
+                eanNumber.validTimeEnd(),
+                eanNumber.transactionTimeStart(),
+                eanNumber.transactionTimeEnd(),
+                eanNumber.initiates(),
+                eanNumber.number(),
+                eanNumber.identifies()
+        );
+    }
+
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
     }

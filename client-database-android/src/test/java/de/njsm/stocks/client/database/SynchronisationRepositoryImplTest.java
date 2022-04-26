@@ -124,4 +124,18 @@ public class SynchronisationRepositoryImplTest {
 
         verify(synchronisationDao).synchroniseFood(emptyList());
     }
+
+    @Test
+    public void eanNumberToWriteAreForwarded() {
+        uut.writeEanNumbers(emptyList());
+
+        verify(synchronisationDao).writeEanNumbers(emptyList());
+    }
+
+    @Test
+    public void eanNumberToInitialiseAreForwarded() {
+        uut.initialiseEanNumbers(emptyList());
+
+        verify(synchronisationDao).synchroniseEanNumbers(emptyList());
+    }
 }
