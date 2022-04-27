@@ -32,19 +32,7 @@ public abstract class EanNumberForSynchronisation implements Bitemporal<EanNumbe
 
     @AutoValue.Builder
     public abstract static class Builder
-            extends SelfValidating.Builder<EanNumberForSynchronisation>
+            extends BaseBuilder<EanNumberForSynchronisation>
             implements Bitemporal.Builder<Builder>, EanNumberFields.Builder<Builder> {
-    }
-
-    @Override
-    public boolean isContainedIn(EanNumber item, boolean increment) {
-        return Bitemporal.super.isContainedIn(item, increment) &&
-                EanNumber.super.isContainedIn(item, increment);
-    }
-
-    @Override
-    public void validate() {
-        Bitemporal.super.validate();
-        EanNumber.super.validate();
     }
 }

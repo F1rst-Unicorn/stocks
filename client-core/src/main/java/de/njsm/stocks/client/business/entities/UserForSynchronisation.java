@@ -32,19 +32,7 @@ public abstract class UserForSynchronisation implements Bitemporal<User>, User {
 
     @AutoValue.Builder
     public abstract static class Builder
-            extends SelfValidating.Builder<UserForSynchronisation>
+            extends BaseBuilder<UserForSynchronisation>
             implements Bitemporal.Builder<Builder>, UserFields.Builder<Builder> {
-    }
-
-    @Override
-    public boolean isContainedIn(User item, boolean increment) {
-        return Bitemporal.super.isContainedIn(item, increment) &&
-                User.super.isContainedIn(item, increment);
-    }
-
-    @Override
-    public void validate() {
-        Bitemporal.super.validate();
-        User.super.validate();
     }
 }

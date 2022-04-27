@@ -32,19 +32,7 @@ public abstract class FoodForSynchronisation implements Bitemporal<Food>, Food {
 
     @AutoValue.Builder
     public abstract static class Builder
-            extends SelfValidating.Builder<FoodForSynchronisation>
+            extends BaseBuilder<FoodForSynchronisation>
             implements Bitemporal.Builder<Builder>, FoodFields.Builder<Builder> {
-    }
-
-    @Override
-    public boolean isContainedIn(Food item, boolean increment) {
-        return Bitemporal.super.isContainedIn(item, increment) &&
-                Food.super.isContainedIn(item, increment);
-    }
-
-    @Override
-    public void validate() {
-        Bitemporal.super.validate();
-        Food.super.validate();
     }
 }

@@ -22,16 +22,4 @@
 package de.njsm.stocks.client.business.entities;
 
 public interface UserDevice extends Entity<UserDevice>, UserDeviceFields {
-
-    @Override
-    default boolean isContainedIn(UserDevice item, boolean increment) {
-        return Entity.super.isContainedIn(item, increment) &&
-                name().equals(item.name()) &&
-                belongsTo() == item.belongsTo();
-    }
-
-    @Override
-    default void validate() {
-        Entity.super.validate();
-    }
 }

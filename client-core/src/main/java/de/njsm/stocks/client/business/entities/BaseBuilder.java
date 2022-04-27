@@ -21,22 +21,15 @@
 
 package de.njsm.stocks.client.business.entities;
 
-public interface SelfValidating {
+public abstract class BaseBuilder<T> {
 
-    void validate();
+    protected abstract T autoBuild();
 
-    abstract class Builder<T extends SelfValidating> {
+    protected void normalise() {}
 
-        protected abstract T autoBuild();
-
-        protected void normalise() {}
-
-        public final T build() {
-            normalise();
-            T result = autoBuild();
-            result.validate();
-            return result;
-        }
-
+    public final T build() {
+        normalise();
+        return autoBuild();
     }
+
 }

@@ -22,16 +22,4 @@
 package de.njsm.stocks.client.business.entities;
 
 public interface Location extends Entity<Location>, LocationFields {
-
-    @Override
-    default boolean isContainedIn(Location item, boolean increment) {
-        return Entity.super.isContainedIn(item, increment) &&
-                name().equals(item.name()) &&
-                description().equals(item.description());
-    }
-
-    @Override
-    default void validate() {
-        Entity.super.validate();
-    }
 }

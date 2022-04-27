@@ -21,22 +21,9 @@
 
 package de.njsm.stocks.client.business.entities;
 
-import com.google.common.base.Preconditions;
-
-public interface Versionable<T extends Entity<T>> extends Identifiable<T>, SelfValidating {
+public interface Versionable<T extends Entity<T>> extends Identifiable<T> {
 
     int version();
-
-    default boolean isContainedIn(T item, boolean increment) {
-        return id() == item.id() &&
-                version() + (increment ? 1 : 0) == item.version();
-    }
-
-    @Override
-    default void validate() {
-        Identifiable.super.validate();
-        Preconditions.checkState(version() >= 0, "version below 0");
-    }
 
     interface Builder<T> extends Identifiable.Builder<T> {
         T version(int v);

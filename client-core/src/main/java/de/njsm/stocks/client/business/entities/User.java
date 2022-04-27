@@ -22,15 +22,4 @@
 package de.njsm.stocks.client.business.entities;
 
 public interface User extends Entity<User>, UserFields {
-
-    @Override
-    default boolean isContainedIn(User item, boolean increment) {
-        return Entity.super.isContainedIn(item, increment) &&
-                name().equals(item.name());
-    }
-
-    @Override
-    default void validate() {
-        Entity.super.validate();
-    }
 }

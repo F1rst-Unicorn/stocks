@@ -21,8 +21,6 @@
 
 package de.njsm.stocks.client.business.entities;
 
-import com.google.common.base.Preconditions;
-
 import java.time.Instant;
 
 public interface Bitemporal<T extends Entity<T>> extends Versionable<T> {
@@ -36,26 +34,6 @@ public interface Bitemporal<T extends Entity<T>> extends Versionable<T> {
     Instant transactionTimeEnd();
 
     int initiates();
-
-    @Override
-    default boolean isContainedIn(T item, boolean increment) {
-        if (item instanceof Bitemporal) {
-            Bitemporal<T> castedItem = (Bitemporal) item;
-            return Versionable.super.isContainedIn(item, increment) &&
-                    validTimeStart().equals(castedItem.validTimeStart()) &&
-                    validTimeEnd().equals(castedItem.validTimeEnd()) &&
-                    transactionTimeStart().equals(castedItem.transactionTimeStart()) &&
-                    transactionTimeEnd().equals(castedItem.transactionTimeEnd());
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    default void validate() {
-        Versionable.super.validate();
-        Preconditions.checkState(initiates() > 0, "initiates id is invalid");
-    }
 
     interface Builder<T> extends Versionable.Builder<T> {
 

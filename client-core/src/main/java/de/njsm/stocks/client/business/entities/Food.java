@@ -22,20 +22,4 @@
 package de.njsm.stocks.client.business.entities;
 
 public interface Food extends Entity<Food>, FoodFields {
-
-    @Override
-    default boolean isContainedIn(Food item, boolean increment) {
-        return Entity.super.isContainedIn(item, increment) &&
-                name().equals(item.name()) &&
-                toBuy() == item.toBuy() &&
-                expirationOffset().equals(item.expirationOffset()) &&
-                location().equals(item.location()) &&
-                storeUnit() == item.storeUnit() &&
-                description().equals(item.description());
-    }
-
-    @Override
-    default void validate() {
-        Entity.super.validate();
-    }
 }

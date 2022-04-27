@@ -22,16 +22,4 @@
 package de.njsm.stocks.client.business.entities;
 
 public interface EanNumber extends Entity<EanNumber>, EanNumberFields {
-
-    @Override
-    default boolean isContainedIn(EanNumber item, boolean increment) {
-        return Entity.super.isContainedIn(item, increment) &&
-                number().equals(item.number()) &&
-                identifies() == item.identifies();
-    }
-
-    @Override
-    default void validate() {
-        Entity.super.validate();
-    }
 }

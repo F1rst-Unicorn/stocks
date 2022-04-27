@@ -32,7 +32,7 @@ public abstract class LocationForEditing implements Location {
 
     @AutoValue.Builder
     public abstract static class Builder
-            extends SelfValidating.Builder<LocationForEditing>
+            extends BaseBuilder<LocationForEditing>
             implements Versionable.Builder<Builder>, LocationFields.Builder<Builder> {
 
     }

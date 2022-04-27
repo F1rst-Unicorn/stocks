@@ -32,7 +32,7 @@ public abstract class LocationForDeletion implements Versionable<Location> {
 
     @AutoValue.Builder
     public abstract static class Builder
-            extends SelfValidating.Builder<LocationForDeletion>
+            extends BaseBuilder<LocationForDeletion>
             implements Versionable.Builder<Builder> {
     }
 }

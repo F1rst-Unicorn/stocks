@@ -32,19 +32,7 @@ public abstract class LocationForSynchronisation implements Bitemporal<Location>
 
     @AutoValue.Builder
     public abstract static class Builder
-            extends SelfValidating.Builder<LocationForSynchronisation>
+            extends BaseBuilder<LocationForSynchronisation>
             implements Bitemporal.Builder<Builder>, LocationFields.Builder<Builder> {
-    }
-
-    @Override
-    public boolean isContainedIn(Location item, boolean increment) {
-        return Bitemporal.super.isContainedIn(item, increment) &&
-                Location.super.isContainedIn(item, increment);
-    }
-
-    @Override
-    public void validate() {
-        Bitemporal.super.validate();
-        Location.super.validate();
     }
 }
