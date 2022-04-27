@@ -140,16 +140,30 @@ public class SynchronisationRepositoryImplTest {
     }
 
     @Test
-    public void foodItemToWriteAreForwarded() {
+    public void foodItemsToWriteAreForwarded() {
         uut.writeFoodItems(emptyList());
 
         verify(synchronisationDao).writeFoodItems(emptyList());
     }
 
     @Test
-    public void foodItemToInitialiseAreForwarded() {
+    public void foodItemsToInitialiseAreForwarded() {
         uut.initialiseFoodItems(emptyList());
 
         verify(synchronisationDao).synchroniseFoodItems(emptyList());
+    }
+
+    @Test
+    public void unitsToWriteAreForwarded() {
+        uut.writeUnits(emptyList());
+
+        verify(synchronisationDao).writeUnits(emptyList());
+    }
+
+    @Test
+    public void unitsToInitialiseAreForwarded() {
+        uut.initialiseUnits(emptyList());
+
+        verify(synchronisationDao).synchroniseUnits(emptyList());
     }
 }

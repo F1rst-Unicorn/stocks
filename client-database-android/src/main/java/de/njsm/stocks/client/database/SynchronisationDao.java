@@ -117,4 +117,16 @@ public abstract class SynchronisationDao {
 
     @Query("delete from food_item")
     abstract void deleteFoodItems();
+
+    @Transaction
+    void synchroniseUnits(List<UnitDbEntity> data) {
+        deleteUnits();
+        writeUnits(data);
+    }
+
+    @Insert(onConflict = REPLACE)
+    abstract void writeUnits(List<UnitDbEntity> data);
+
+    @Query("delete from unit")
+    abstract void deleteUnits();
 }

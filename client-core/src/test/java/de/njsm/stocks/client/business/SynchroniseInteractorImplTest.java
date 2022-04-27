@@ -64,6 +64,41 @@ class SynchroniseInteractorImplTest {
     }
 
     @Nested
+    class UnitSynchronisation extends TestSkeleton<UnitForSynchronisation> {
+
+        @Override
+        UnitForSynchronisation getEntity() {
+            return initialiseEntity(UnitForSynchronisation.builder())
+                    .name("name")
+                    .abbreviation("abbreviation")
+                    .build();
+        }
+
+        @Override
+        EntityType getEntityType() {
+            return EntityType.UNIT;
+        }
+
+        @Override
+        void prepareMocks(List<UnitForSynchronisation> entities, Instant startingFrom) {
+            when(updateService.getUnits(startingFrom)).thenReturn(entities);
+        }
+
+        @Override
+        void verifyInitialisationMocks(List<UnitForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getUnits(startingFrom);
+            verify(synchronisationRepository).initialiseUnits(entities);
+
+        }
+
+        @Override
+        void verifyMocks(List<UnitForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getUnits(startingFrom);
+            verify(synchronisationRepository).writeUnits(entities);
+        }
+    }
+
+    @Nested
     class FoodItemSynchronisation extends TestSkeleton<FoodItemForSynchronisation> {
 
         @Override

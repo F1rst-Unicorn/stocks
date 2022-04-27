@@ -91,6 +91,13 @@ public class DataMapper {
                 .build();
     }
 
+    public static UnitForSynchronisation map(BitemporalUnit source) {
+        return map(source, UnitForSynchronisation.builder())
+                .name(source.name())
+                .abbreviation(source.abbreviation())
+                .build();
+    }
+
     private static <T extends Bitemporal.Builder<T>, E extends Entity<E>> T map(de.njsm.stocks.common.api.Bitemporal<E> source, T destination) {
         return destination
                 .id(source.id())
@@ -111,8 +118,12 @@ public class DataMapper {
             return Optional.of(EntityType.USER_DEVICE);
         } else if (entityType.equalsIgnoreCase("food")) {
             return Optional.of(EntityType.FOOD);
-        } else if (entityType.equalsIgnoreCase("EAN_number")) {
+        } else if (entityType.equalsIgnoreCase("ean_number")) {
             return Optional.of(EntityType.EAN_NUMBER);
+        } else if (entityType.equalsIgnoreCase("food_item")) {
+            return Optional.of(EntityType.FOOD_ITEM);
+        } else if (entityType.equalsIgnoreCase("unit")) {
+            return Optional.of(EntityType.UNIT);
         }
 
         LOG.info("unknown entity type '" + entityType + "'");

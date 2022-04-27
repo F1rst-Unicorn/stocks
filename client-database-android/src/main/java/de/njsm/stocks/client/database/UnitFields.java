@@ -19,28 +19,27 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.*;
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import com.google.auto.value.AutoValue;
 
-import java.time.Instant;
-import java.util.List;
+public interface UnitFields {
 
-public interface UpdateService {
+    @ColumnInfo(name = "name")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    String name();
 
-    List<Update> getUpdates();
+    @ColumnInfo(name = "abbreviation")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    String abbreviation();
 
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
+    interface Builder<T extends ServerDbEntity<T>, B extends ServerDbEntity.Builder<T, B>> {
+        B name(String v);
 
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
-
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
-
-    List<FoodForSynchronisation> getFood(Instant startingFrom);
-
-    List<EanNumberForSynchronisation> getEanNumbers(Instant startingFrom);
-
-    List<FoodItemForSynchronisation> getFoodItems(Instant startingFrom);
-
-    List<UnitForSynchronisation> getUnits(Instant startingFrom);
+        B abbreviation(String v);
+    }
 }

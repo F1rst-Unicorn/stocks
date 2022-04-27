@@ -110,4 +110,12 @@ public class UpdateServiceImpl implements UpdateService {
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
+
+    @Override
+    public List<UnitForSynchronisation> getUnits(Instant startingFrom) {
+        LOG.debug("getting food items from " + startingFrom);
+        Call<ListResponse<BitemporalUnit>> call = api.getUnits(1, InstantSerialiser.serialize(startingFrom));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(toList());
+    }
 }

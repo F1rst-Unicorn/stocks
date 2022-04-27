@@ -42,6 +42,7 @@ import java.time.format.DateTimeFormatter;
                 FoodDbEntity.class,
                 EanNumberDbEntity.class,
                 FoodItemDbEntity.class,
+                UnitDbEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,
@@ -50,6 +51,7 @@ import java.time.format.DateTimeFormatter;
                 CurrentFoodDbView.class,
                 CurrentEanNumberDbView.class,
                 CurrentFoodItemDbView.class,
+                CurrentUnitDbView.class,
         },
         version = 40)
 @androidx.room.TypeConverters(TypeConverters.class)
@@ -89,4 +91,6 @@ public abstract class StocksDatabase extends RoomDatabase {
     abstract EanNumberDao eanNumberDao();
 
     abstract FoodItemDao foodItemDao();
+
+    abstract UnitDao unitDao();
 }

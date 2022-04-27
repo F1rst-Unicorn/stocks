@@ -54,4 +54,8 @@ public interface SynchronisationRepository {
     void writeFoodItems(List<FoodItemForSynchronisation> entities);
 
     void initialiseFoodItems(List<FoodItemForSynchronisation> entities);
+
+    void writeUnits(List<UnitForSynchronisation> entities);
+
+    void initialiseUnits(List<UnitForSynchronisation> entities);
 }

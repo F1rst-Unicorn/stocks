@@ -19,28 +19,18 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.*;
+public interface UnitFields {
 
-import java.time.Instant;
-import java.util.List;
+    String name();
 
-public interface UpdateService {
+    String abbreviation();
 
-    List<Update> getUpdates();
+    interface Builder<T> {
 
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
+        T name(String v);
 
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
-
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
-
-    List<FoodForSynchronisation> getFood(Instant startingFrom);
-
-    List<EanNumberForSynchronisation> getEanNumbers(Instant startingFrom);
-
-    List<FoodItemForSynchronisation> getFoodItems(Instant startingFrom);
-
-    List<UnitForSynchronisation> getUnits(Instant startingFrom);
+        T abbreviation(String v);
+    }
 }

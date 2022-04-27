@@ -107,4 +107,14 @@ class SynchronisationRepositoryImpl implements SynchronisationRepository {
     public void initialiseFoodItems(List<FoodItemForSynchronisation> foodItems) {
         synchronisationDao.synchroniseFoodItems(foodItems.stream().map(DataMapper::map).collect(toList()));
     }
+
+    @Override
+    public void writeUnits(List<UnitForSynchronisation> units) {
+        synchronisationDao.writeUnits(units.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void initialiseUnits(List<UnitForSynchronisation> units) {
+        synchronisationDao.synchroniseUnits(units.stream().map(DataMapper::map).collect(toList()));
+    }
 }

@@ -52,6 +52,9 @@ class DataMapperTest {
         assertThat(DataMapper.map("User"), is(Optional.of(EntityType.USER)));
         assertThat(DataMapper.map("User_device"), is(Optional.of(EntityType.USER_DEVICE)));
         assertThat(DataMapper.map("Food"), is(Optional.of(EntityType.FOOD)));
+        assertThat(DataMapper.map("EAN_number"), is(Optional.of(EntityType.EAN_NUMBER)));
+        assertThat(DataMapper.map("Food_item"), is(Optional.of(EntityType.FOOD_ITEM)));
+        assertThat(DataMapper.map("unit"), is(Optional.of(EntityType.UNIT)));
     }
 
     @Test

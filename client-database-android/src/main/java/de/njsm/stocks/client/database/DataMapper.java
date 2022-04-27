@@ -127,6 +127,20 @@ public class DataMapper {
         );
     }
 
+    static UnitDbEntity map(UnitForSynchronisation unit) {
+        return UnitDbEntity.create(
+                unit.id(),
+                unit.version(),
+                unit.validTimeStart(),
+                unit.validTimeEnd(),
+                unit.transactionTimeStart(),
+                unit.transactionTimeEnd(),
+                unit.initiates(),
+                unit.name(),
+                unit.abbreviation()
+        );
+    }
+
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
     }

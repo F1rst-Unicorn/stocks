@@ -74,6 +74,12 @@ public class StandardEntities {
                 .unit(8);
     }
 
+    static UnitDbEntity.Builder unitDbEntityBuilder() {
+        return initialiseBuilder(UnitDbEntity.builder())
+                .name("name")
+                .abbreviation("abbreviation");
+    }
+
     static EanNumberDbEntity.Builder eanNumberDbEntityBuilder() {
         return initialiseBuilder(EanNumberDbEntity.builder())
                 .number("number")

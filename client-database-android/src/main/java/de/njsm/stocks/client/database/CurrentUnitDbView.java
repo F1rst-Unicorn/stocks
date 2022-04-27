@@ -27,25 +27,25 @@ import java.time.Instant;
 
 import static de.njsm.stocks.client.database.CurrentTable.NOW_AS_BEST_KNOWN;
 
-@DatabaseView(viewName = CurrentEanNumberDbView.CURRENT_EAN_NUMBER_TABLE, value =
+@DatabaseView(viewName = CurrentUnitDbView.CURRENT_UNIT_TABLE, value =
         "select * " +
-        "from ean_number " +
+        "from unit " +
         NOW_AS_BEST_KNOWN)
 @AutoValue
-abstract class CurrentEanNumberDbView implements IdFields, BitemporalFields, EanNumberFields {
+abstract class CurrentUnitDbView implements IdFields, BitemporalFields, UnitFields {
 
-    static final String CURRENT_EAN_NUMBER_TABLE = "current_ean_number";
+    static final String CURRENT_UNIT_TABLE = "current_unit";
 
-    static CurrentEanNumberDbView create(int id,
-                                         int version,
-                                         Instant validTimeStart,
-                                         Instant validTimeEnd,
-                                         Instant transactionTimeStart,
-                                         Instant transactionTimeEnd,
-                                         int initiates,
-                                         String number,
-                                         int identifies) {
-        return new AutoValue_CurrentEanNumberDbView(
+    static CurrentUnitDbView create(int id,
+                                    int version,
+                                    Instant validTimeStart,
+                                    Instant validTimeEnd,
+                                    Instant transactionTimeStart,
+                                    Instant transactionTimeEnd,
+                                    int initiates,
+                                    String name,
+                                    String abbreviation) {
+        return new AutoValue_CurrentUnitDbView(
                 id,
                 version,
                 validTimeStart,
@@ -53,8 +53,8 @@ abstract class CurrentEanNumberDbView implements IdFields, BitemporalFields, Ean
                 transactionTimeStart,
                 transactionTimeEnd,
                 initiates,
-                number,
-                identifies
+                name,
+                abbreviation
         );
     }
 }
