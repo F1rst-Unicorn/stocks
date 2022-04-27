@@ -64,6 +64,45 @@ class SynchroniseInteractorImplTest {
     }
 
     @Nested
+    class FoodItemSynchronisation extends TestSkeleton<FoodItemForSynchronisation> {
+
+        @Override
+        FoodItemForSynchronisation getEntity() {
+            return initialiseEntity(FoodItemForSynchronisation.builder())
+                    .eatBy(Instant.EPOCH)
+                    .ofType(4)
+                    .storedIn(5)
+                    .buys(6)
+                    .registers(7)
+                    .unit(8)
+                    .build();
+        }
+
+        @Override
+        EntityType getEntityType() {
+            return EntityType.FOOD_ITEM;
+        }
+
+        @Override
+        void prepareMocks(List<FoodItemForSynchronisation> entities, Instant startingFrom) {
+            when(updateService.getFoodItems(startingFrom)).thenReturn(entities);
+        }
+
+        @Override
+        void verifyInitialisationMocks(List<FoodItemForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getFoodItems(startingFrom);
+            verify(synchronisationRepository).initialiseFoodItems(entities);
+
+        }
+
+        @Override
+        void verifyMocks(List<FoodItemForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getFoodItems(startingFrom);
+            verify(synchronisationRepository).writeFoodItems(entities);
+        }
+    }
+
+    @Nested
     class EanNumberSynchronisation extends TestSkeleton<EanNumberForSynchronisation> {
 
         @Override

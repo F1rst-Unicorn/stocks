@@ -19,26 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.*;
+import com.google.auto.value.AutoValue;
 
-import java.time.Instant;
-import java.util.List;
+@AutoValue
+public abstract class FoodItemForSynchronisation implements Bitemporal<FoodItem>, FoodItem {
 
-public interface UpdateService {
+    public static Builder builder() {
+        return new AutoValue_FoodItemForSynchronisation.Builder();
+    }
 
-    List<Update> getUpdates();
-
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
-
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
-
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
-
-    List<FoodForSynchronisation> getFood(Instant startingFrom);
-
-    List<EanNumberForSynchronisation> getEanNumbers(Instant startingFrom);
-
-    List<FoodItemForSynchronisation> getFoodItems(Instant startingFrom);
+    @AutoValue.Builder
+    public abstract static class Builder
+            extends BaseBuilder<FoodItemForSynchronisation>
+            implements Bitemporal.Builder<Builder>, FoodItemFields.Builder<Builder> {
+    }
 }

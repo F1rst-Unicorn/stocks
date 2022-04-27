@@ -64,6 +64,16 @@ public class StandardEntities {
                 .description("description");
     }
 
+    static FoodItemDbEntity.Builder foodItemDbEntityBuilder() {
+        return initialiseBuilder(FoodItemDbEntity.builder())
+                .eatBy(EPOCH)
+                .ofType(4)
+                .storedIn(5)
+                .buys(6)
+                .registers(7)
+                .unit(8);
+    }
+
     static EanNumberDbEntity.Builder eanNumberDbEntityBuilder() {
         return initialiseBuilder(EanNumberDbEntity.builder())
                 .number("number")

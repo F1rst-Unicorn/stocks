@@ -89,12 +89,22 @@ class SynchronisationRepositoryImpl implements SynchronisationRepository {
     }
 
     @Override
-    public void writeEanNumbers(List<EanNumberForSynchronisation> food) {
-        synchronisationDao.writeEanNumbers(food.stream().map(DataMapper::map).collect(toList()));
+    public void writeEanNumbers(List<EanNumberForSynchronisation> eanNumbers) {
+        synchronisationDao.writeEanNumbers(eanNumbers.stream().map(DataMapper::map).collect(toList()));
     }
 
     @Override
-    public void initialiseEanNumbers(List<EanNumberForSynchronisation> food) {
-        synchronisationDao.synchroniseEanNumbers(food.stream().map(DataMapper::map).collect(toList()));
+    public void initialiseEanNumbers(List<EanNumberForSynchronisation> eanNumbers) {
+        synchronisationDao.synchroniseEanNumbers(eanNumbers.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void writeFoodItems(List<FoodItemForSynchronisation> foodItems) {
+        synchronisationDao.writeFoodItems(foodItems.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void initialiseFoodItems(List<FoodItemForSynchronisation> foodItems) {
+        synchronisationDao.synchroniseFoodItems(foodItems.stream().map(DataMapper::map).collect(toList()));
     }
 }

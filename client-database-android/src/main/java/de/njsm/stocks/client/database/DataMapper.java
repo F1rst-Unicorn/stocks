@@ -109,6 +109,24 @@ public class DataMapper {
         );
     }
 
+    static FoodItemDbEntity map(FoodItemForSynchronisation foodItem) {
+        return FoodItemDbEntity.create(
+                foodItem.id(),
+                foodItem.version(),
+                foodItem.validTimeStart(),
+                foodItem.validTimeEnd(),
+                foodItem.transactionTimeStart(),
+                foodItem.transactionTimeEnd(),
+                foodItem.initiates(),
+                foodItem.eatBy(),
+                foodItem.ofType(),
+                foodItem.storedIn(),
+                foodItem.buys(),
+                foodItem.registers(),
+                foodItem.unit()
+        );
+    }
+
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
     }

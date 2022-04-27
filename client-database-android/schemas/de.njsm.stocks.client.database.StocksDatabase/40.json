@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "aebbb1fe374184fdb47e9d2aa5437a69",
+    "identityHash": "c09bd59cc49a69d4763312ea88792e44",
     "entities": [
       {
         "tableName": "updates",
@@ -820,6 +820,139 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "food_item",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eat_by` TEXT NOT NULL, `of_type` INTEGER NOT NULL, `stored_in` INTEGER NOT NULL, `buys` INTEGER NOT NULL, `registers` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "fields": [
+          {
+            "fieldPath": "eatBy",
+            "columnName": "eat_by",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ofType",
+            "columnName": "of_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storedIn",
+            "columnName": "stored_in",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "buys",
+            "columnName": "buys",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "registers",
+            "columnName": "registers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unit",
+            "columnName": "unit",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeStart",
+            "columnName": "valid_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeEnd",
+            "columnName": "valid_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeStart",
+            "columnName": "transaction_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeEnd",
+            "columnName": "transaction_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "initiates",
+            "columnName": "initiates",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id",
+            "version",
+            "transaction_time_start"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "food_item_current",
+            "unique": false,
+            "columnNames": [
+              "_id",
+              "valid_time_start",
+              "valid_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_item_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+          },
+          {
+            "name": "food_item_pkey",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_item_pkey` ON `${TABLE_NAME}` (`_id`)"
+          },
+          {
+            "name": "food_item_transaction_time_start",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_start"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_item_transaction_time_start` ON `${TABLE_NAME}` (`transaction_time_start`)"
+          },
+          {
+            "name": "food_item_transaction_time_end",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_item_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "views": [
@@ -842,11 +975,15 @@
       {
         "viewName": "current_ean_number",
         "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from ean_number where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
+      },
+      {
+        "viewName": "current_food_item",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from food_item where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aebbb1fe374184fdb47e9d2aa5437a69')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c09bd59cc49a69d4763312ea88792e44')"
     ]
   }
 }

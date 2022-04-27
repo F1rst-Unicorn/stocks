@@ -80,6 +80,17 @@ public class DataMapper {
                 .build();
     }
 
+    public static FoodItemForSynchronisation map(BitemporalFoodItem source) {
+        return map(source, FoodItemForSynchronisation.builder())
+                .eatBy(source.eatByDate())
+                .ofType(source.ofType())
+                .storedIn(source.storedIn())
+                .buys(source.buys())
+                .registers(source.registers())
+                .unit(source.unit())
+                .build();
+    }
+
     private static <T extends Bitemporal.Builder<T>, E extends Entity<E>> T map(de.njsm.stocks.common.api.Bitemporal<E> source, T destination) {
         return destination
                 .id(source.id())

@@ -50,4 +50,8 @@ public interface SynchronisationRepository {
     void writeEanNumbers(List<EanNumberForSynchronisation> entities);
 
     void initialiseEanNumbers(List<EanNumberForSynchronisation> entities);
+
+    void writeFoodItems(List<FoodItemForSynchronisation> entities);
+
+    void initialiseFoodItems(List<FoodItemForSynchronisation> entities);
 }

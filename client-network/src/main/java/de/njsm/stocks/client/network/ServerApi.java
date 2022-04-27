@@ -71,4 +71,8 @@ public interface ServerApi {
     @GET("/v2/ean")
     Call<ListResponse<BitemporalEanNumber>> getEanNumbers(@Query("bitemporal") int bitemporal,
                                                           @Query("startingFrom") String startingFrom);
+
+    @GET("/v2/fooditem")
+    Call<ListResponse<BitemporalFoodItem>> getFoodItems(@Query("bitemporal") int bitemporal,
+                                                        @Query("startingFrom") String startingFrom);
 }
