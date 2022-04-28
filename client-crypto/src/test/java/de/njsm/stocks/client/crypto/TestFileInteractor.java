@@ -21,6 +21,8 @@
 
 package de.njsm.stocks.client.crypto;
 
+import de.njsm.stocks.client.runtime.FileInteractor;
+
 import java.io.*;
 
 public class TestFileInteractor implements FileInteractor {

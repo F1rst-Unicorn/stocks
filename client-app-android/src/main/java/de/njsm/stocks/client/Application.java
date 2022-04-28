@@ -25,6 +25,8 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
 import de.njsm.stocks.client.di.DaggerRootComponent;
 import de.njsm.stocks.client.di.RootComponent;
+import de.njsm.stocks.client.runtime.ExceptionHandler;
+import de.njsm.stocks.client.runtime.FileInteractor;
 
 import javax.inject.Inject;
 
@@ -34,11 +36,18 @@ public class Application extends android.app.Application implements HasAndroidIn
 
     private RootComponent dagger;
 
+    private FileInteractor fileInteractor;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        getDaggerRoot()
-                .inject(this);
+        getDaggerRoot().inject(this);
+
+        if (! (Thread.getDefaultUncaughtExceptionHandler() instanceof ExceptionHandler))
+            Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(
+                    Thread.getDefaultUncaughtExceptionHandler(),
+                    fileInteractor)
+            );
     }
 
     public RootComponent getDaggerRoot() {
@@ -61,5 +70,10 @@ public class Application extends android.app.Application implements HasAndroidIn
     @Override
     public AndroidInjector<Object> androidInjector() {
         return injector;
+    }
+
+    @Inject
+    void setFileInteractor(FileInteractor fileInteractor) {
+        this.fileInteractor = fileInteractor;
     }
 }

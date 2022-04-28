@@ -24,6 +24,7 @@ package de.njsm.stocks.client.crypto;
 import de.njsm.stocks.client.business.CertificateStore;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.PemFile;
+import de.njsm.stocks.client.runtime.FileInteractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

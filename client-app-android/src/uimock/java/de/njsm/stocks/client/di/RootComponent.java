@@ -39,6 +39,7 @@ import javax.inject.Singleton;
 @Component(
         modules = {
                 AndroidInjectionModule.class,
+                PrimitiveModule.class,
                 DataModule.class,
                 UimockBusinessModule.class,
                 ViewModelModule.class,

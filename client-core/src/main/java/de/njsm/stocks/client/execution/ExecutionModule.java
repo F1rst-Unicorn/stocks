@@ -24,6 +24,7 @@ package de.njsm.stocks.client.execution;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.client.runtime.ExceptionHandler;
 
 import javax.inject.Singleton;
 import java.util.concurrent.Executor;
@@ -53,7 +54,7 @@ public interface ExecutionModule {
 
     @Provides
     @Singleton
-    static Executor executor() {
+    static Executor executor(ExceptionHandler exceptionHandler) {
         return new ForkJoinPool(4, new ForkJoinPool.ForkJoinWorkerThreadFactory() {
 
             int numberOfThreads = 0;
@@ -64,7 +65,7 @@ public interface ExecutionModule {
                 result.setName("stocks-background-" + numberOfThreads++);
                 return result;
             }
-        }, null, true);
+        }, exceptionHandler, true);
     }
 
 }

@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.crypto;
+package de.njsm.stocks.client.runtime;
 
 import java.io.File;
 import java.io.FileNotFoundException;
