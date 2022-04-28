@@ -80,4 +80,7 @@ public interface BusinessModule {
 
     @Binds
     LocationConflictInteractor locationConflictInteractor(LocationConflictInteractorImpl impl);
+
+    @Binds
+    UnitListInteractor unitListInteractor(UnitListInteractorImpl impl);
 }

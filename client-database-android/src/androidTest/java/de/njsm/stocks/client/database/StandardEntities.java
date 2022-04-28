@@ -76,6 +76,10 @@ public class StandardEntities {
                 .unit(8);
     }
 
+    static UnitDbEntity unitDbEntity() {
+        return unitDbEntityBuilder().build();
+    }
+
     static UnitDbEntity.Builder unitDbEntityBuilder() {
         return initialiseBuilder(UnitDbEntity.builder())
                 .name("name")

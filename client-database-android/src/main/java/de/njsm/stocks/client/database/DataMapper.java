@@ -249,4 +249,8 @@ public class DataMapper {
                 locationForEditing.description(),
                 locationForEditing.id());
     }
+
+    public static UnitForListing map(UnitDbEntity unitDbEntity) {
+        return UnitForListing.create(unitDbEntity.id(), unitDbEntity.name(), unitDbEntity.abbreviation());
+    }
 }

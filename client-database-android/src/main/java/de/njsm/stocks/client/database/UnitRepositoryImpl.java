@@ -21,20 +21,26 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import de.njsm.stocks.client.business.UnitRepository;
+import de.njsm.stocks.client.business.entities.UnitForListing;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
-@Dao
-abstract class UnitDao {
+import static java.util.stream.Collectors.toList;
 
-    @Query("select * " +
-            "from current_unit")
-    abstract List<UnitDbEntity> getAll();
+public class UnitRepositoryImpl implements UnitRepository {
 
-    @Query("select * " +
-            "from current_unit")
-    abstract Observable<List<UnitDbEntity>> getCurrentUnits();
+    private final UnitDao unitDao;
+
+    public UnitRepositoryImpl(UnitDao unitDao) {
+        this.unitDao = unitDao;
+    }
+
+    @Override
+    public Observable<List<UnitForListing>> getUnits() {
+        return unitDao.getCurrentUnits()
+                .distinctUntilChanged()
+                .map(v -> v.stream().map(DataMapper::map).collect(toList()));
+    }
 }

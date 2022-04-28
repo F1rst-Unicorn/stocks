@@ -19,22 +19,29 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.UnitForListing;
 import io.reactivex.rxjava3.core.Observable;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-@Dao
-abstract class UnitDao {
+import static java.util.Collections.singletonList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-    @Query("select * " +
-            "from current_unit")
-    abstract List<UnitDbEntity> getAll();
+class UnitListInteractorImplTest {
 
-    @Query("select * " +
-            "from current_unit")
-    abstract Observable<List<UnitDbEntity>> getCurrentUnits();
+    @Test
+    void gettingUnitsFetchesFromRepository() {
+        List<UnitForListing> expected = singletonList(UnitForListing.create(1, "Liter", "l"));
+        UnitRepository repository = mock(UnitRepository.class);
+        when(repository.getUnits()).thenReturn(Observable.just(expected));
+        UnitListInteractor uut = new UnitListInteractorImpl(repository);
+
+        Observable<List<UnitForListing>> actual = uut.getUnits();
+
+        actual.test().assertValue(expected);
+    }
 }

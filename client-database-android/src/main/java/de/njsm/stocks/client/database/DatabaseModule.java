@@ -89,4 +89,7 @@ public interface DatabaseModule {
 
     @Binds
     ConflictRepository conflictRepository(ConflictRepositoryImpl impl);
+
+    @Binds
+    UnitRepository unitRepository(UnitRepositoryImpl impl);
 }

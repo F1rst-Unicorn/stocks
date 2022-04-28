@@ -19,22 +19,25 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.UnitForListing;
 import io.reactivex.rxjava3.core.Observable;
 
+import javax.inject.Inject;
 import java.util.List;
 
-@Dao
-abstract class UnitDao {
+public class UnitListInteractorImpl implements UnitListInteractor {
 
-    @Query("select * " +
-            "from current_unit")
-    abstract List<UnitDbEntity> getAll();
+    private final UnitRepository unitRepository;
 
-    @Query("select * " +
-            "from current_unit")
-    abstract Observable<List<UnitDbEntity>> getCurrentUnits();
+    @Inject
+    UnitListInteractorImpl(UnitRepository unitRepository) {
+        this.unitRepository = unitRepository;
+    }
+
+    @Override
+    public Observable<List<UnitForListing>> getUnits() {
+        return unitRepository.getUnits();
+    }
 }

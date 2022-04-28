@@ -19,22 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+@AutoValue
+public abstract class UnitForListing implements Identifiable<Unit>, UnitFields {
 
-@Dao
-abstract class UnitDao {
-
-    @Query("select * " +
-            "from current_unit")
-    abstract List<UnitDbEntity> getAll();
-
-    @Query("select * " +
-            "from current_unit")
-    abstract Observable<List<UnitDbEntity>> getCurrentUnits();
+    public static UnitForListing create(int id, String name, String abbreviation) {
+        return new AutoValue_UnitForListing(id, name, abbreviation);
+    }
 }
