@@ -166,4 +166,60 @@ public class SynchronisationRepositoryImplTest {
 
         verify(synchronisationDao).synchroniseUnits(emptyList());
     }
+
+    @Test
+    public void scaledUnitsToWriteAreForwarded() {
+        uut.writeScaledUnits(emptyList());
+
+        verify(synchronisationDao).writeScaledUnits(emptyList());
+    }
+
+    @Test
+    public void scaledUnitsToInitialiseAreForwarded() {
+        uut.initialiseScaledUnits(emptyList());
+
+        verify(synchronisationDao).synchroniseScaledUnits(emptyList());
+    }
+
+    @Test
+    public void recipesToWriteAreForwarded() {
+        uut.writeRecipes(emptyList());
+
+        verify(synchronisationDao).writeRecipes(emptyList());
+    }
+
+    @Test
+    public void recipesToInitialiseAreForwarded() {
+        uut.initialiseRecipes(emptyList());
+
+        verify(synchronisationDao).synchroniseRecipes(emptyList());
+    }
+
+    @Test
+    public void recipeIngredientsToWriteAreForwarded() {
+        uut.writeRecipeIngredients(emptyList());
+
+        verify(synchronisationDao).writeRecipeIngredients(emptyList());
+    }
+
+    @Test
+    public void recipeIngredientsToInitialiseAreForwarded() {
+        uut.initialiseRecipeIngredients(emptyList());
+
+        verify(synchronisationDao).synchroniseRecipeIngredients(emptyList());
+    }
+
+    @Test
+    public void recipeProductsToWriteAreForwarded() {
+        uut.writeRecipeProducts(emptyList());
+
+        verify(synchronisationDao).writeRecipeProducts(emptyList());
+    }
+
+    @Test
+    public void recipeProductsToInitialiseAreForwarded() {
+        uut.initialiseRecipeProducts(emptyList());
+
+        verify(synchronisationDao).synchroniseRecipeProducts(emptyList());
+    }
 }

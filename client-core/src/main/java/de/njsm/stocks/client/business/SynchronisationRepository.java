@@ -58,4 +58,20 @@ public interface SynchronisationRepository {
     void writeUnits(List<UnitForSynchronisation> entities);
 
     void initialiseUnits(List<UnitForSynchronisation> entities);
+
+    void writeScaledUnits(List<ScaledUnitForSynchronisation> entities);
+
+    void initialiseScaledUnits(List<ScaledUnitForSynchronisation> entities);
+
+    void writeRecipes(List<RecipeForSynchronisation> entities);
+
+    void initialiseRecipes(List<RecipeForSynchronisation> entities);
+
+    void writeRecipeIngredients(List<RecipeIngredientForSynchronisation> entities);
+
+    void initialiseRecipeIngredients(List<RecipeIngredientForSynchronisation> entities);
+
+    void writeRecipeProducts(List<RecipeProductForSynchronisation> entities);
+
+    void initialiseRecipeProducts(List<RecipeProductForSynchronisation> entities);
 }

@@ -129,4 +129,52 @@ public abstract class SynchronisationDao {
 
     @Query("delete from unit")
     abstract void deleteUnits();
+
+    @Transaction
+    void synchroniseScaledUnits(List<ScaledUnitDbEntity> data) {
+        deleteScaledUnits();
+        writeScaledUnits(data);
+    }
+
+    @Insert(onConflict = REPLACE)
+    abstract void writeScaledUnits(List<ScaledUnitDbEntity> data);
+
+    @Query("delete from scaled_unit")
+    abstract void deleteScaledUnits();
+
+    @Transaction
+    void synchroniseRecipes(List<RecipeDbEntity> data) {
+        deleteRecipes();
+        writeRecipes(data);
+    }
+
+    @Insert(onConflict = REPLACE)
+    abstract void writeRecipes(List<RecipeDbEntity> data);
+
+    @Query("delete from recipe")
+    abstract void deleteRecipes();
+
+    @Transaction
+    void synchroniseRecipeIngredients(List<RecipeIngredientDbEntity> data) {
+        deleteRecipeIngredients();
+        writeRecipeIngredients(data);
+    }
+
+    @Insert(onConflict = REPLACE)
+    abstract void writeRecipeIngredients(List<RecipeIngredientDbEntity> data);
+
+    @Query("delete from recipe_ingredient")
+    abstract void deleteRecipeIngredients();
+
+    @Transaction
+    void synchroniseRecipeProducts(List<RecipeProductDbEntity> data) {
+        deleteRecipeProducts();
+        writeRecipeProducts(data);
+    }
+
+    @Insert(onConflict = REPLACE)
+    abstract void writeRecipeProducts(List<RecipeProductDbEntity> data);
+
+    @Query("delete from recipe_product")
+    abstract void deleteRecipeProducts();
 }

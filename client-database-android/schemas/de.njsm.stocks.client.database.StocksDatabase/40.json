@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "7094e925aae486ea60d86f09da1c9686",
+    "identityHash": "aeb216665bff3484d6bea46cb30edc15",
     "entities": [
       {
         "tableName": "updates",
@@ -1062,6 +1062,472 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "scaled_unit",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`scale` TEXT NOT NULL, `unit` INTEGER NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "fields": [
+          {
+            "fieldPath": "scale",
+            "columnName": "scale",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unit",
+            "columnName": "unit",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeStart",
+            "columnName": "valid_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeEnd",
+            "columnName": "valid_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeStart",
+            "columnName": "transaction_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeEnd",
+            "columnName": "transaction_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "initiates",
+            "columnName": "initiates",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id",
+            "version",
+            "transaction_time_start"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "scaled_unit_current",
+            "unique": false,
+            "columnNames": [
+              "_id",
+              "valid_time_start",
+              "valid_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `scaled_unit_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+          },
+          {
+            "name": "scaled_unit_pkey",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `scaled_unit_pkey` ON `${TABLE_NAME}` (`_id`)"
+          },
+          {
+            "name": "scaled_unit_transaction_time_start",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_start"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `scaled_unit_transaction_time_start` ON `${TABLE_NAME}` (`transaction_time_start`)"
+          },
+          {
+            "name": "scaled_unit_transaction_time_end",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `scaled_unit_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "recipe",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `instructions` TEXT NOT NULL, `duration` TEXT NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "instructions",
+            "columnName": "instructions",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeStart",
+            "columnName": "valid_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeEnd",
+            "columnName": "valid_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeStart",
+            "columnName": "transaction_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeEnd",
+            "columnName": "transaction_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "initiates",
+            "columnName": "initiates",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id",
+            "version",
+            "transaction_time_start"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "recipe_current",
+            "unique": false,
+            "columnNames": [
+              "_id",
+              "valid_time_start",
+              "valid_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+          },
+          {
+            "name": "recipe_pkey",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_pkey` ON `${TABLE_NAME}` (`_id`)"
+          },
+          {
+            "name": "recipe_transaction_time_start",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_start"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_transaction_time_start` ON `${TABLE_NAME}` (`transaction_time_start`)"
+          },
+          {
+            "name": "recipe_transaction_time_end",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "recipe_ingredient",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`amount` INTEGER NOT NULL, `ingredient` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `recipe` INTEGER NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "fields": [
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ingredient",
+            "columnName": "ingredient",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unit",
+            "columnName": "unit",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipe",
+            "columnName": "recipe",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeStart",
+            "columnName": "valid_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeEnd",
+            "columnName": "valid_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeStart",
+            "columnName": "transaction_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeEnd",
+            "columnName": "transaction_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "initiates",
+            "columnName": "initiates",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id",
+            "version",
+            "transaction_time_start"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "recipe_ingredient_current",
+            "unique": false,
+            "columnNames": [
+              "_id",
+              "valid_time_start",
+              "valid_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_ingredient_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+          },
+          {
+            "name": "recipe_ingredient_pkey",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_ingredient_pkey` ON `${TABLE_NAME}` (`_id`)"
+          },
+          {
+            "name": "recipe_ingredient_transaction_time_start",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_start"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_ingredient_transaction_time_start` ON `${TABLE_NAME}` (`transaction_time_start`)"
+          },
+          {
+            "name": "recipe_ingredient_transaction_time_end",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_ingredient_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "recipe_product",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`amount` INTEGER NOT NULL, `product` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `recipe` INTEGER NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "fields": [
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "product",
+            "columnName": "product",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unit",
+            "columnName": "unit",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipe",
+            "columnName": "recipe",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeStart",
+            "columnName": "valid_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeEnd",
+            "columnName": "valid_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeStart",
+            "columnName": "transaction_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeEnd",
+            "columnName": "transaction_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "initiates",
+            "columnName": "initiates",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id",
+            "version",
+            "transaction_time_start"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "recipe_product_current",
+            "unique": false,
+            "columnNames": [
+              "_id",
+              "valid_time_start",
+              "valid_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_product_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+          },
+          {
+            "name": "recipe_product_pkey",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_product_pkey` ON `${TABLE_NAME}` (`_id`)"
+          },
+          {
+            "name": "recipe_product_transaction_time_start",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_start"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_product_transaction_time_start` ON `${TABLE_NAME}` (`transaction_time_start`)"
+          },
+          {
+            "name": "recipe_product_transaction_time_end",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_product_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "views": [
@@ -1092,11 +1558,27 @@
       {
         "viewName": "current_unit",
         "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from unit where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
+      },
+      {
+        "viewName": "current_scaled_unit",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from scaled_unit where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
+      },
+      {
+        "viewName": "current_recipe",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from recipe where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
+      },
+      {
+        "viewName": "current_recipe_ingredient",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from recipe_ingredient where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
+      },
+      {
+        "viewName": "current_recipe_product",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from recipe_product where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7094e925aae486ea60d86f09da1c9686')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aeb216665bff3484d6bea46cb30edc15')"
     ]
   }
 }

@@ -43,4 +43,12 @@ public interface UpdateService {
     List<FoodItemForSynchronisation> getFoodItems(Instant startingFrom);
 
     List<UnitForSynchronisation> getUnits(Instant startingFrom);
+
+    List<ScaledUnitForSynchronisation> getScaledUnits(Instant startingFrom);
+
+    List<RecipeForSynchronisation> getRecipes(Instant startingFrom);
+
+    List<RecipeIngredientForSynchronisation> getRecipeIngredients(Instant startingFrom);
+
+    List<RecipeProductForSynchronisation> getRecipeProducts(Instant startingFrom);
 }

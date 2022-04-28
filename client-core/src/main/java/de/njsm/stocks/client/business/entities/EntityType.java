@@ -65,6 +65,30 @@ public enum EntityType {
         <I, O> O accept(Visitor<I, O> visitor, I input) {
             return visitor.unit(input);
         }
+    },
+    SCALED_UNIT {
+        @Override
+        <I, O> O accept(Visitor<I, O> visitor, I input) {
+            return visitor.scaledUnit(input);
+        }
+    },
+    RECIPE {
+        @Override
+        <I, O> O accept(Visitor<I, O> visitor, I input) {
+            return visitor.recipe(input);
+        }
+    },
+    RECIPE_INGREDIENT {
+        @Override
+        <I, O> O accept(Visitor<I, O> visitor, I input) {
+            return visitor.recipeIngredient(input);
+        }
+    },
+    RECIPE_PRODUCT {
+        @Override
+        <I, O> O accept(Visitor<I, O> visitor, I input) {
+            return visitor.recipeProduct(input);
+        }
     };
 
     abstract <I, O> O accept(Visitor<I, O> visitor, I input);
@@ -88,5 +112,13 @@ public enum EntityType {
         O foodItem(I input);
 
         O unit(I input);
+
+        O scaledUnit(I input);
+
+        O recipe(I input);
+
+        O recipeIngredient(I input);
+
+        O recipeProduct(I input);
     }
 }

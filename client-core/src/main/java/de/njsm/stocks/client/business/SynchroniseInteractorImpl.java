@@ -142,6 +142,34 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
             synchronisationRepository.writeUnits(items);
             return null;
         }
+
+        @Override
+        public Void scaledUnit(Instant input) {
+            List<ScaledUnitForSynchronisation> items = updateService.getScaledUnits(input);
+            synchronisationRepository.writeScaledUnits(items);
+            return null;
+        }
+
+        @Override
+        public Void recipe(Instant input) {
+            List<RecipeForSynchronisation> items = updateService.getRecipes(input);
+            synchronisationRepository.writeRecipes(items);
+            return null;
+        }
+
+        @Override
+        public Void recipeIngredient(Instant input) {
+            List<RecipeIngredientForSynchronisation> items = updateService.getRecipeIngredients(input);
+            synchronisationRepository.writeRecipeIngredients(items);
+            return null;
+        }
+
+        @Override
+        public Void recipeProduct(Instant input) {
+            List<RecipeProductForSynchronisation> items = updateService.getRecipeProducts(input);
+            synchronisationRepository.writeRecipeProducts(items);
+            return null;
+        }
     }
 
     private final class EntityInitialiser implements EntityType.Visitor<Instant, Void> {
@@ -198,6 +226,34 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
         public Void unit(Instant input) {
             List<UnitForSynchronisation> items = updateService.getUnits(input);
             synchronisationRepository.initialiseUnits(items);
+            return null;
+        }
+
+        @Override
+        public Void scaledUnit(Instant input) {
+            List<ScaledUnitForSynchronisation> items = updateService.getScaledUnits(input);
+            synchronisationRepository.initialiseScaledUnits(items);
+            return null;
+        }
+
+        @Override
+        public Void recipe(Instant input) {
+            List<RecipeForSynchronisation> items = updateService.getRecipes(input);
+            synchronisationRepository.initialiseRecipes(items);
+            return null;
+        }
+
+        @Override
+        public Void recipeIngredient(Instant input) {
+            List<RecipeIngredientForSynchronisation> items = updateService.getRecipeIngredients(input);
+            synchronisationRepository.initialiseRecipeIngredients(items);
+            return null;
+        }
+
+        @Override
+        public Void recipeProduct(Instant input) {
+            List<RecipeProductForSynchronisation> items = updateService.getRecipeProducts(input);
+            synchronisationRepository.initialiseRecipeProducts(items);
             return null;
         }
     }

@@ -113,8 +113,40 @@ public class UpdateServiceImpl implements UpdateService {
 
     @Override
     public List<UnitForSynchronisation> getUnits(Instant startingFrom) {
-        LOG.debug("getting food items from " + startingFrom);
+        LOG.debug("getting units from " + startingFrom);
         Call<ListResponse<BitemporalUnit>> call = api.getUnits(1, InstantSerialiser.serialize(startingFrom));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(toList());
+    }
+
+    @Override
+    public List<ScaledUnitForSynchronisation> getScaledUnits(Instant startingFrom) {
+        LOG.debug("getting scaled units from " + startingFrom);
+        Call<ListResponse<BitemporalScaledUnit>> call = api.getScaledUnits(1, InstantSerialiser.serialize(startingFrom));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(toList());
+    }
+
+    @Override
+    public List<RecipeForSynchronisation> getRecipes(Instant startingFrom) {
+        LOG.debug("getting recipes from " + startingFrom);
+        Call<ListResponse<BitemporalRecipe>> call = api.getRecipes(1, InstantSerialiser.serialize(startingFrom));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(toList());
+    }
+
+    @Override
+    public List<RecipeIngredientForSynchronisation> getRecipeIngredients(Instant startingFrom) {
+        LOG.debug("getting recipe ingredients from " + startingFrom);
+        Call<ListResponse<BitemporalRecipeIngredient>> call = api.getRecipeIngredients(1, InstantSerialiser.serialize(startingFrom));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(toList());
+    }
+
+    @Override
+    public List<RecipeProductForSynchronisation> getRecipeProducts(Instant startingFrom) {
+        LOG.debug("getting recipe products from " + startingFrom);
+        Call<ListResponse<BitemporalRecipeProduct>> call = api.getRecipeProducts(1, InstantSerialiser.serialize(startingFrom));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }

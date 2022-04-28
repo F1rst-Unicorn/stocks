@@ -23,6 +23,8 @@ package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.LocationToEdit;
 
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.Period;
 import java.util.Arrays;
@@ -78,6 +80,35 @@ public class StandardEntities {
         return initialiseBuilder(UnitDbEntity.builder())
                 .name("name")
                 .abbreviation("abbreviation");
+    }
+
+    static ScaledUnitDbEntity.Builder scaledUnitDbEntityBuilder() {
+        return initialiseBuilder(ScaledUnitDbEntity.builder())
+                .scale(BigDecimal.TEN)
+                .unit(4);
+    }
+
+    static RecipeDbEntity.Builder recipeDbEntityBuilder() {
+        return initialiseBuilder(RecipeDbEntity.builder())
+                .name("name")
+                .instructions("instructions")
+                .duration(Duration.ofDays(4));
+    }
+
+    static RecipeIngredientDbEntity.Builder recipeIngredientDbEntityBuilder() {
+        return initialiseBuilder(RecipeIngredientDbEntity.builder())
+                .amount(4)
+                .ingredient(5)
+                .unit(6)
+                .recipe(7);
+    }
+
+    static RecipeProductDbEntity.Builder recipeProductDbEntityBuilder() {
+        return initialiseBuilder(RecipeProductDbEntity.builder())
+                .amount(4)
+                .product(5)
+                .unit(6)
+                .recipe(7);
     }
 
     static EanNumberDbEntity.Builder eanNumberDbEntityBuilder() {

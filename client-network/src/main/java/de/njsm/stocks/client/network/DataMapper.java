@@ -98,6 +98,39 @@ public class DataMapper {
                 .build();
     }
 
+    public static ScaledUnitForSynchronisation map(BitemporalScaledUnit source) {
+        return map(source, ScaledUnitForSynchronisation.builder())
+                .scale(source.scale())
+                .unit(source.unit())
+                .build();
+    }
+
+    public static RecipeForSynchronisation map(BitemporalRecipe source) {
+        return map(source, RecipeForSynchronisation.builder())
+                .name(source.name())
+                .instructions(source.instructions())
+                .duration(source.duration())
+                .build();
+    }
+
+    public static RecipeIngredientForSynchronisation map(BitemporalRecipeIngredient source) {
+        return map(source, RecipeIngredientForSynchronisation.builder())
+                .amount(source.amount())
+                .ingredient(source.ingredient())
+                .recipe(source.recipe())
+                .unit(source.unit())
+                .build();
+    }
+
+    public static RecipeProductForSynchronisation map(BitemporalRecipeProduct source) {
+        return map(source, RecipeProductForSynchronisation.builder())
+                .amount(source.amount())
+                .product(source.product())
+                .recipe(source.recipe())
+                .unit(source.unit())
+                .build();
+    }
+
     private static <T extends Bitemporal.Builder<T>, E extends Entity<E>> T map(de.njsm.stocks.common.api.Bitemporal<E> source, T destination) {
         return destination
                 .id(source.id())
@@ -124,6 +157,14 @@ public class DataMapper {
             return Optional.of(EntityType.FOOD_ITEM);
         } else if (entityType.equalsIgnoreCase("unit")) {
             return Optional.of(EntityType.UNIT);
+        } else if (entityType.equalsIgnoreCase("scaled_unit")) {
+            return Optional.of(EntityType.SCALED_UNIT);
+        } else if (entityType.equalsIgnoreCase("recipe")) {
+            return Optional.of(EntityType.RECIPE);
+        } else if (entityType.equalsIgnoreCase("recipe_ingredient")) {
+            return Optional.of(EntityType.RECIPE_INGREDIENT);
+        } else if (entityType.equalsIgnoreCase("recipe_product")) {
+            return Optional.of(EntityType.RECIPE_PRODUCT);
         }
 
         LOG.info("unknown entity type '" + entityType + "'");

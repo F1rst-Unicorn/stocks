@@ -37,7 +37,7 @@ buildscript {
     ext.zxing_version = "3.4.0"
 
     ext.retrofit_version = "2.9.0"
-    ext.jackson_version = "2.13.2"
+    ext.jackson_version = "2.13.1"
 
     ext.navigation_version = "2.4.2"
     ext.lifecycle_version = "2.4.1"

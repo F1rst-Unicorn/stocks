@@ -79,4 +79,20 @@ public interface ServerApi {
     @GET("/v2/unit")
     Call<ListResponse<BitemporalUnit>> getUnits(@Query("bitemporal") int bitemporal,
                                                 @Query("startingFrom") String startingFrom);
+
+    @GET("/v2/scaled-unit")
+    Call<ListResponse<BitemporalScaledUnit>> getScaledUnits(@Query("bitemporal") int bitemporal,
+                                                            @Query("startingFrom") String startingFrom);
+
+    @GET("/v2/recipe")
+    Call<ListResponse<BitemporalRecipe>> getRecipes(@Query("bitemporal") int bitemporal,
+                                                    @Query("startingFrom") String startingFrom);
+
+    @GET("/v2/recipe-ingredient")
+    Call<ListResponse<BitemporalRecipeIngredient>> getRecipeIngredients(@Query("bitemporal") int bitemporal,
+                                                                        @Query("startingFrom") String startingFrom);
+
+    @GET("/v2/recipe-product")
+    Call<ListResponse<BitemporalRecipeProduct>> getRecipeProducts(@Query("bitemporal") int bitemporal,
+                                                                  @Query("startingFrom") String startingFrom);
 }

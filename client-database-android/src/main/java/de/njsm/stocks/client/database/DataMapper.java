@@ -141,6 +141,67 @@ public class DataMapper {
         );
     }
 
+    static ScaledUnitDbEntity map(ScaledUnitForSynchronisation scaledUnit) {
+        return ScaledUnitDbEntity.create(
+                scaledUnit.id(),
+                scaledUnit.version(),
+                scaledUnit.validTimeStart(),
+                scaledUnit.validTimeEnd(),
+                scaledUnit.transactionTimeStart(),
+                scaledUnit.transactionTimeEnd(),
+                scaledUnit.initiates(),
+                scaledUnit.scale(),
+                scaledUnit.unit()
+        );
+    }
+
+    static RecipeDbEntity map(RecipeForSynchronisation recipe) {
+        return RecipeDbEntity.create(
+                recipe.id(),
+                recipe.version(),
+                recipe.validTimeStart(),
+                recipe.validTimeEnd(),
+                recipe.transactionTimeStart(),
+                recipe.transactionTimeEnd(),
+                recipe.initiates(),
+                recipe.name(),
+                recipe.instructions(),
+                recipe.duration()
+        );
+    }
+
+    static RecipeIngredientDbEntity map(RecipeIngredientForSynchronisation recipeIngredient) {
+        return RecipeIngredientDbEntity.create(
+                recipeIngredient.id(),
+                recipeIngredient.version(),
+                recipeIngredient.validTimeStart(),
+                recipeIngredient.validTimeEnd(),
+                recipeIngredient.transactionTimeStart(),
+                recipeIngredient.transactionTimeEnd(),
+                recipeIngredient.initiates(),
+                recipeIngredient.amount(),
+                recipeIngredient.ingredient(),
+                recipeIngredient.unit(),
+                recipeIngredient.recipe()
+        );
+    }
+
+    static RecipeProductDbEntity map(RecipeProductForSynchronisation recipeProduct) {
+        return RecipeProductDbEntity.create(
+                recipeProduct.id(),
+                recipeProduct.version(),
+                recipeProduct.validTimeStart(),
+                recipeProduct.validTimeEnd(),
+                recipeProduct.transactionTimeStart(),
+                recipeProduct.transactionTimeEnd(),
+                recipeProduct.initiates(),
+                recipeProduct.amount(),
+                recipeProduct.product(),
+                recipeProduct.unit(),
+                recipeProduct.recipe()
+        );
+    }
+
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
     }

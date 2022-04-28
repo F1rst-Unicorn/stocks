@@ -30,6 +30,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.Period;
 import java.util.List;
@@ -61,6 +63,151 @@ class SynchroniseInteractorImplTest {
         verifyNoMoreInteractions(synchronisationRepository);
         verifyNoMoreInteractions(updateService);
         verifyNoMoreInteractions(errorRecorder);
+    }
+
+    @Nested
+    class RecipeProductSynchronisation extends TestSkeleton<RecipeProductForSynchronisation> {
+
+        @Override
+        RecipeProductForSynchronisation getEntity() {
+            return initialiseEntity(RecipeProductForSynchronisation.builder())
+                    .amount(4)
+                    .product(5)
+                    .recipe(6)
+                    .unit(7)
+                    .build();
+        }
+
+        @Override
+        EntityType getEntityType() {
+            return EntityType.RECIPE_PRODUCT;
+        }
+
+        @Override
+        void prepareMocks(List<RecipeProductForSynchronisation> entities, Instant startingFrom) {
+            when(updateService.getRecipeProducts(startingFrom)).thenReturn(entities);
+        }
+
+        @Override
+        void verifyInitialisationMocks(List<RecipeProductForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getRecipeProducts(startingFrom);
+            verify(synchronisationRepository).initialiseRecipeProducts(entities);
+
+        }
+
+        @Override
+        void verifyMocks(List<RecipeProductForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getRecipeProducts(startingFrom);
+            verify(synchronisationRepository).writeRecipeProducts(entities);
+        }
+    }
+
+    @Nested
+    class RecipeIngredientSynchronisation extends TestSkeleton<RecipeIngredientForSynchronisation> {
+
+        @Override
+        RecipeIngredientForSynchronisation getEntity() {
+            return initialiseEntity(RecipeIngredientForSynchronisation.builder())
+                    .amount(4)
+                    .ingredient(5)
+                    .recipe(6)
+                    .unit(7)
+                    .build();
+        }
+
+        @Override
+        EntityType getEntityType() {
+            return EntityType.RECIPE_INGREDIENT;
+        }
+
+        @Override
+        void prepareMocks(List<RecipeIngredientForSynchronisation> entities, Instant startingFrom) {
+            when(updateService.getRecipeIngredients(startingFrom)).thenReturn(entities);
+        }
+
+        @Override
+        void verifyInitialisationMocks(List<RecipeIngredientForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getRecipeIngredients(startingFrom);
+            verify(synchronisationRepository).initialiseRecipeIngredients(entities);
+
+        }
+
+        @Override
+        void verifyMocks(List<RecipeIngredientForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getRecipeIngredients(startingFrom);
+            verify(synchronisationRepository).writeRecipeIngredients(entities);
+        }
+    }
+
+    @Nested
+    class RecipeSynchronisation extends TestSkeleton<RecipeForSynchronisation> {
+
+        @Override
+        RecipeForSynchronisation getEntity() {
+            return initialiseEntity(RecipeForSynchronisation.builder())
+                    .name("name")
+                    .instructions("instructions")
+                    .duration(Duration.ofDays(4))
+                    .build();
+        }
+
+        @Override
+        EntityType getEntityType() {
+            return EntityType.RECIPE;
+        }
+
+        @Override
+        void prepareMocks(List<RecipeForSynchronisation> entities, Instant startingFrom) {
+            when(updateService.getRecipes(startingFrom)).thenReturn(entities);
+        }
+
+        @Override
+        void verifyInitialisationMocks(List<RecipeForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getRecipes(startingFrom);
+            verify(synchronisationRepository).initialiseRecipes(entities);
+
+        }
+
+        @Override
+        void verifyMocks(List<RecipeForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getRecipes(startingFrom);
+            verify(synchronisationRepository).writeRecipes(entities);
+        }
+    }
+
+    @Nested
+    class ScaledUnitSynchronisation extends TestSkeleton<ScaledUnitForSynchronisation> {
+
+        @Override
+        ScaledUnitForSynchronisation getEntity() {
+            return initialiseEntity(ScaledUnitForSynchronisation.builder())
+                    .scale(BigDecimal.TEN)
+                    .unit(4)
+                    .build();
+        }
+
+        @Override
+        EntityType getEntityType() {
+            return EntityType.SCALED_UNIT;
+        }
+
+        @Override
+        void prepareMocks(List<ScaledUnitForSynchronisation> entities, Instant startingFrom) {
+            when(updateService.getScaledUnits(startingFrom)).thenReturn(entities);
+        }
+
+        @Override
+        void verifyInitialisationMocks(List<ScaledUnitForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getScaledUnits(startingFrom);
+            verify(synchronisationRepository).initialiseScaledUnits(entities);
+
+        }
+
+        @Override
+        void verifyMocks(List<ScaledUnitForSynchronisation> entities, Instant startingFrom) {
+            verify(updateService).getScaledUnits(startingFrom);
+            verify(synchronisationRepository).writeScaledUnits(entities);
+        }
     }
 
     @Nested

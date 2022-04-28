@@ -117,4 +117,44 @@ class SynchronisationRepositoryImpl implements SynchronisationRepository {
     public void initialiseUnits(List<UnitForSynchronisation> units) {
         synchronisationDao.synchroniseUnits(units.stream().map(DataMapper::map).collect(toList()));
     }
+
+    @Override
+    public void writeScaledUnits(List<ScaledUnitForSynchronisation> scaledUnits) {
+        synchronisationDao.writeScaledUnits(scaledUnits.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void initialiseScaledUnits(List<ScaledUnitForSynchronisation> scaledUnits) {
+        synchronisationDao.synchroniseScaledUnits(scaledUnits.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void writeRecipes(List<RecipeForSynchronisation> recipes) {
+        synchronisationDao.writeRecipes(recipes.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void initialiseRecipes(List<RecipeForSynchronisation> recipes) {
+        synchronisationDao.synchroniseRecipes(recipes.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void writeRecipeIngredients(List<RecipeIngredientForSynchronisation> recipeIngredients) {
+        synchronisationDao.writeRecipeIngredients(recipeIngredients.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void initialiseRecipeIngredients(List<RecipeIngredientForSynchronisation> recipeIngredients) {
+        synchronisationDao.synchroniseRecipeIngredients(recipeIngredients.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void writeRecipeProducts(List<RecipeProductForSynchronisation> recipeProducts) {
+        synchronisationDao.writeRecipeProducts(recipeProducts.stream().map(DataMapper::map).collect(toList()));
+    }
+
+    @Override
+    public void initialiseRecipeProducts(List<RecipeProductForSynchronisation> recipeProducts) {
+        synchronisationDao.synchroniseRecipeProducts(recipeProducts.stream().map(DataMapper::map).collect(toList()));
+    }
 }
