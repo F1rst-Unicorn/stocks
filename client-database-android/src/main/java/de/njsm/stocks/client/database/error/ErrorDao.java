@@ -64,31 +64,31 @@ public abstract class ErrorDao {
     @Query("select * from error")
     abstract Observable<List<ErrorEntity>> observeErrors();
 
-    @Query("select * from location_to_add where _id = :id")
+    @Query("select * from location_to_add where id = :id")
     abstract LocationAddEntity getLocationAdd(long id);
 
-    @Query("select * from status_code_error where _id = :id")
+    @Query("select * from status_code_error where id = :id")
     abstract StatusCodeExceptionEntity getStatusCodeException(long id);
 
-    @Query("select * from subsystem_error where _id = :id")
+    @Query("select * from subsystem_error where id = :id")
     abstract SubsystemExceptionEntity getSubsystemException(long id);
 
-    @Query("delete from error where _id = :id")
+    @Query("delete from error where id = :id")
     abstract void deleteError(long id);
 
-    @Query("delete from status_code_error where _id = :id")
+    @Query("delete from status_code_error where id = :id")
     abstract void deleteStatusCodeException(long id);
 
-    @Query("delete from subsystem_error where _id = :id")
+    @Query("delete from subsystem_error where id = :id")
     abstract void deleteSubsystemException(long id);
 
-    @Query("delete from location_to_add where _id = :id")
+    @Query("delete from location_to_add where id = :id")
     abstract void deleteLocationAdd(long id);
 
-    @Query("select * from error where _id = :id")
+    @Query("select * from error where id = :id")
     abstract ErrorEntity getError(long id);
 
-    @Query("select * from error where _id = :id")
+    @Query("select * from error where id = :id")
     abstract Observable<ErrorEntity> observeError(long id);
 
     @Query("select * from location_to_delete")
@@ -97,10 +97,10 @@ public abstract class ErrorDao {
     @Insert
     abstract long insert(LocationDeleteEntity locationDeleteEntity);
 
-    @Query("select * from location_to_delete where _id = :id")
+    @Query("select * from location_to_delete where id = :id")
     abstract LocationDeleteEntity getLocationDelete(long id);
 
-    @Query("delete from location_to_delete where _id = :id")
+    @Query("delete from location_to_delete where id = :id")
     abstract void deleteLocationDelete(long id);
 
     @Query("select * from location_to_edit")
@@ -109,21 +109,21 @@ public abstract class ErrorDao {
     @Insert
     abstract long insert(LocationEditEntity locationEditEntity);
 
-    @Query("select * from location_to_edit where _id = :id")
+    @Query("select * from location_to_edit where id = :id")
     abstract LocationEditEntity getLocationEdit(Long id);
 
-    @Query("delete from location_to_edit where _id = :id")
+    @Query("delete from location_to_edit where id = :id")
     abstract void deleteLocationEdit(long id);
 
     @Query("select * " +
             "from location " +
-            "where _id = :id " +
+            "where id = :id " +
             "and version = :version " +
             "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "' ")
     abstract LocationDbEntity getLocation(int id, int version);
 
     @Query("select * " +
             "from current_location " +
-            "where _id = :locationId")
+            "where id = :locationId")
     abstract LocationDbEntity getCurrentLocation(int locationId);
 }

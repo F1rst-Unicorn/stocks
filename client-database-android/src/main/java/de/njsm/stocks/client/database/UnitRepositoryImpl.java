@@ -28,8 +28,6 @@ import io.reactivex.rxjava3.core.Observable;
 import javax.inject.Inject;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 class UnitRepositoryImpl implements UnitRepository {
 
     private final UnitDao unitDao;
@@ -42,7 +40,6 @@ class UnitRepositoryImpl implements UnitRepository {
     @Override
     public Observable<List<UnitForListing>> getUnits() {
         return unitDao.getCurrentUnits()
-                .distinctUntilChanged()
-                .map(v -> v.stream().map(DataMapper::map).collect(toList()));
+                .distinctUntilChanged();
     }
 }

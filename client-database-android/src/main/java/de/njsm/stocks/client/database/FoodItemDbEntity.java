@@ -19,18 +19,16 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Index;
 import com.google.auto.value.AutoValue;
 
 import java.time.Instant;
-import java.time.Period;
 
-@Entity(tableName = "food_item", primaryKeys = {"_id", "version", "transaction_time_start"},
+@Entity(tableName = "food_item", primaryKeys = {"id", "version", "transaction_time_start"},
         indices = {
-                @Index(value = {"_id", "valid_time_start", "valid_time_end"}, name = "food_item_current"),
-                @Index(value = {"_id"}, name = "food_item_pkey"),
+                @Index(value = {"id", "valid_time_start", "valid_time_end"}, name = "food_item_current"),
+                @Index(value = {"id"}, name = "food_item_pkey"),
                 @Index(value = {"transaction_time_start"}, name = "food_item_transaction_time_start"),
                 @Index(value = {"transaction_time_end"}, name = "food_item_transaction_time_end"),
         })

@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -37,11 +38,11 @@ abstract class LocationDao {
     @Query("select * " +
             "from current_location " +
             "order by name")
-    abstract Observable<List<LocationDbEntity>> getCurrentLocations();
+    abstract Observable<List<LocationForListing>> getCurrentLocations();
 
-    @Query("select * from current_location where _id = :id")
+    @Query("select * from current_location where id = :id")
     public abstract LocationDbEntity getLocation(int id);
 
-    @Query("select * from current_location where _id = :id")
+    @Query("select * from current_location where id = :id")
     public abstract Observable<LocationDbEntity> getCurrentLocation(int id);
 }

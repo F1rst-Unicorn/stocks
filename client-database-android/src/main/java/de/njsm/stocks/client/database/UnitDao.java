@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.UnitForListing;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -36,5 +37,5 @@ abstract class UnitDao {
 
     @Query("select * " +
             "from current_unit")
-    abstract Observable<List<UnitDbEntity>> getCurrentUnits();
+    abstract Observable<List<UnitForListing>> getCurrentUnits();
 }

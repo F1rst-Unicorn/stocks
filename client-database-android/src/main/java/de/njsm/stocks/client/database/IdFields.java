@@ -27,7 +27,7 @@ import com.google.auto.value.AutoValue;
 
 public interface IdFields {
 
-    @ColumnInfo(name = "_id")
+    @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     @AutoValue.CopyAnnotations
     int id();

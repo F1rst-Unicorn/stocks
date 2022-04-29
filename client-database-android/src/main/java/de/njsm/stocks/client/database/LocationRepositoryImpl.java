@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.njsm.stocks.client.database.DataMapper.mapForDeletion;
 import static de.njsm.stocks.client.database.DataMapper.mapForEditing;
@@ -49,8 +48,7 @@ class LocationRepositoryImpl implements LocationRepository {
     public Observable<List<LocationForListing>> getLocations() {
         LOG.debug("loading all locations");
         return locationDao.getCurrentLocations()
-                .distinctUntilChanged()
-                .map(v -> v.stream().map(DataMapper::map).collect(Collectors.toList()));
+                .distinctUntilChanged();
     }
 
     @Override

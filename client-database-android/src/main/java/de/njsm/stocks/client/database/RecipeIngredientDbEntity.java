@@ -25,13 +25,12 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import com.google.auto.value.AutoValue;
 
-import java.time.Duration;
 import java.time.Instant;
 
-@Entity(tableName = "recipe_ingredient", primaryKeys = {"_id", "version", "transaction_time_start"},
+@Entity(tableName = "recipe_ingredient", primaryKeys = {"id", "version", "transaction_time_start"},
         indices = {
-                @Index(value = {"_id", "valid_time_start", "valid_time_end"}, name = "recipe_ingredient_current"),
-                @Index(value = {"_id"}, name = "recipe_ingredient_pkey"),
+                @Index(value = {"id", "valid_time_start", "valid_time_end"}, name = "recipe_ingredient_current"),
+                @Index(value = {"id"}, name = "recipe_ingredient_pkey"),
                 @Index(value = {"transaction_time_start"}, name = "recipe_ingredient_transaction_time_start"),
                 @Index(value = {"transaction_time_end"}, name = "recipe_ingredient_transaction_time_end"),
         })

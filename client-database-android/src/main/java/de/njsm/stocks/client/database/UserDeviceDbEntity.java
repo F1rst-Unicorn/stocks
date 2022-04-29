@@ -25,10 +25,10 @@ import com.google.auto.value.AutoValue;
 
 import java.time.Instant;
 
-@Entity(tableName = "user_device", primaryKeys = {"_id", "version", "transaction_time_start"},
+@Entity(tableName = "user_device", primaryKeys = {"id", "version", "transaction_time_start"},
         indices = {
-                @Index(value = {"_id", "valid_time_start", "valid_time_end"}, name = "user_device_current"),
-                @Index(value = {"_id"}, name = "user_device_pkey"),
+                @Index(value = {"id", "valid_time_start", "valid_time_end"}, name = "user_device_current"),
+                @Index(value = {"id"}, name = "user_device_pkey"),
                 @Index(value = {"transaction_time_start"}, name = "user_device_transaction_time_start"),
                 @Index(value = {"transaction_time_end"}, name = "user_device_transaction_time_end"),
         })

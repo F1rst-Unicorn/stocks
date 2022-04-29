@@ -29,7 +29,7 @@ import java.time.Instant;
 
 abstract class ServerDbEntity<T extends ServerDbEntity<T>> {
 
-    @ColumnInfo(name = "_id")
+    @ColumnInfo(name = "id")
     @AutoValue.CopyAnnotations
     public abstract int id();
 

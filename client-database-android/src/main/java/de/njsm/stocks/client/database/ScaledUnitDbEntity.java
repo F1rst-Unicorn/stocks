@@ -28,10 +28,10 @@ import com.google.auto.value.AutoValue;
 import java.math.BigDecimal;
 import java.time.Instant;
 
-@Entity(tableName = "scaled_unit", primaryKeys = {"_id", "version", "transaction_time_start"},
+@Entity(tableName = "scaled_unit", primaryKeys = {"id", "version", "transaction_time_start"},
         indices = {
-                @Index(value = {"_id", "valid_time_start", "valid_time_end"}, name = "scaled_unit_current"),
-                @Index(value = {"_id"}, name = "scaled_unit_pkey"),
+                @Index(value = {"id", "valid_time_start", "valid_time_end"}, name = "scaled_unit_current"),
+                @Index(value = {"id"}, name = "scaled_unit_pkey"),
                 @Index(value = {"transaction_time_start"}, name = "scaled_unit_transaction_time_start"),
                 @Index(value = {"transaction_time_end"}, name = "scaled_unit_transaction_time_end"),
         })

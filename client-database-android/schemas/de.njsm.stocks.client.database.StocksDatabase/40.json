@@ -2,15 +2,15 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "aeb216665bff3484d6bea46cb30edc15",
+    "identityHash": "3bfb9fb181066d0f1cf3140ded389ff3",
     "entities": [
       {
         "tableName": "updates",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `last_update` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `last_update` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -29,7 +29,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id"
+            "id"
           ],
           "autoGenerate": true
         },
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "location",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -54,7 +54,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -97,7 +97,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -108,21 +108,21 @@
             "name": "location_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `location_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `location_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "location_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `location_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `location_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "location_transaction_time_start",
@@ -147,11 +147,11 @@
       },
       {
         "tableName": "status_code_error",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stacktrace` TEXT NOT NULL, `message` TEXT NOT NULL, `status_code` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stacktrace` TEXT NOT NULL, `message` TEXT NOT NULL, `status_code` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -176,7 +176,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id"
+            "id"
           ],
           "autoGenerate": true
         },
@@ -185,11 +185,11 @@
       },
       {
         "tableName": "subsystem_error",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stacktrace` TEXT NOT NULL, `message` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stacktrace` TEXT NOT NULL, `message` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -208,7 +208,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id"
+            "id"
           ],
           "autoGenerate": true
         },
@@ -217,11 +217,11 @@
       },
       {
         "tableName": "location_to_add",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -240,7 +240,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id"
+            "id"
           ],
           "autoGenerate": true
         },
@@ -249,11 +249,11 @@
       },
       {
         "tableName": "error",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `action` TEXT, `dataId` INTEGER NOT NULL, `exceptionType` TEXT, `exceptionId` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `action` TEXT, `dataId` INTEGER NOT NULL, `exceptionType` TEXT, `exceptionId` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -284,7 +284,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id"
+            "id"
           ],
           "autoGenerate": true
         },
@@ -293,11 +293,11 @@
       },
       {
         "tableName": "location_to_delete",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `location_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `location_id` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -316,7 +316,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id"
+            "id"
           ],
           "autoGenerate": true
         },
@@ -325,11 +325,11 @@
       },
       {
         "tableName": "location_to_edit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `location_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `location_id` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -360,7 +360,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id"
+            "id"
           ],
           "autoGenerate": true
         },
@@ -369,7 +369,7 @@
       },
       {
         "tableName": "user",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -379,7 +379,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -422,7 +422,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -433,21 +433,21 @@
             "name": "user_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `user_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `user_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "user_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `user_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `user_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "user_transaction_time_start",
@@ -472,7 +472,7 @@
       },
       {
         "tableName": "user_device",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `belongs_to` INTEGER NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `belongs_to` INTEGER NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -488,7 +488,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -531,7 +531,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -542,21 +542,21 @@
             "name": "user_device_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `user_device_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `user_device_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "user_device_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `user_device_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `user_device_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "user_device_transaction_time_start",
@@ -581,7 +581,7 @@
       },
       {
         "tableName": "food",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `to_buy` INTEGER NOT NULL, `expiration_offset` INTEGER NOT NULL, `location` INTEGER, `storeUnit` INTEGER NOT NULL, `description` TEXT NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `to_buy` INTEGER NOT NULL, `expiration_offset` INTEGER NOT NULL, `location` INTEGER, `storeUnit` INTEGER NOT NULL, `description` TEXT NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -621,7 +621,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -664,7 +664,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -675,21 +675,21 @@
             "name": "food_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `food_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "food_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `food_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "food_transaction_time_start",
@@ -714,7 +714,7 @@
       },
       {
         "tableName": "ean_number",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`number` TEXT NOT NULL, `identifies` INTEGER NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`number` TEXT NOT NULL, `identifies` INTEGER NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "number",
@@ -730,7 +730,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -773,7 +773,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -784,21 +784,21 @@
             "name": "ean_number_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `ean_number_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `ean_number_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "ean_number_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `ean_number_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `ean_number_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "ean_number_transaction_time_start",
@@ -823,7 +823,7 @@
       },
       {
         "tableName": "food_item",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eat_by` TEXT NOT NULL, `of_type` INTEGER NOT NULL, `stored_in` INTEGER NOT NULL, `buys` INTEGER NOT NULL, `registers` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eat_by` TEXT NOT NULL, `of_type` INTEGER NOT NULL, `stored_in` INTEGER NOT NULL, `buys` INTEGER NOT NULL, `registers` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "eatBy",
@@ -863,7 +863,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -906,7 +906,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -917,21 +917,21 @@
             "name": "food_item_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `food_item_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_item_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "food_item_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `food_item_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `food_item_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "food_item_transaction_time_start",
@@ -956,7 +956,7 @@
       },
       {
         "tableName": "unit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `abbreviation` TEXT NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `abbreviation` TEXT NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -972,7 +972,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -1015,7 +1015,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -1026,21 +1026,21 @@
             "name": "unit_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `unit_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `unit_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "unit_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `unit_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `unit_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "unit_transaction_time_start",
@@ -1065,7 +1065,7 @@
       },
       {
         "tableName": "scaled_unit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`scale` TEXT NOT NULL, `unit` INTEGER NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`scale` TEXT NOT NULL, `unit` INTEGER NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "scale",
@@ -1081,7 +1081,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -1124,7 +1124,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -1135,21 +1135,21 @@
             "name": "scaled_unit_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `scaled_unit_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `scaled_unit_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "scaled_unit_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `scaled_unit_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `scaled_unit_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "scaled_unit_transaction_time_start",
@@ -1174,7 +1174,7 @@
       },
       {
         "tableName": "recipe",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `instructions` TEXT NOT NULL, `duration` TEXT NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `instructions` TEXT NOT NULL, `duration` TEXT NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -1196,7 +1196,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -1239,7 +1239,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -1250,21 +1250,21 @@
             "name": "recipe_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "recipe_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "recipe_transaction_time_start",
@@ -1289,7 +1289,7 @@
       },
       {
         "tableName": "recipe_ingredient",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`amount` INTEGER NOT NULL, `ingredient` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `recipe` INTEGER NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`amount` INTEGER NOT NULL, `ingredient` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `recipe` INTEGER NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "amount",
@@ -1317,7 +1317,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -1360,7 +1360,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -1371,21 +1371,21 @@
             "name": "recipe_ingredient_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_ingredient_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_ingredient_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "recipe_ingredient_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_ingredient_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_ingredient_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "recipe_ingredient_transaction_time_start",
@@ -1410,7 +1410,7 @@
       },
       {
         "tableName": "recipe_product",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`amount` INTEGER NOT NULL, `product` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `recipe` INTEGER NOT NULL, `_id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`_id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`amount` INTEGER NOT NULL, `product` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `recipe` INTEGER NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "amount",
@@ -1438,7 +1438,7 @@
           },
           {
             "fieldPath": "id",
-            "columnName": "_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -1481,7 +1481,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "_id",
+            "id",
             "version",
             "transaction_time_start"
           ],
@@ -1492,21 +1492,21 @@
             "name": "recipe_product_current",
             "unique": false,
             "columnNames": [
-              "_id",
+              "id",
               "valid_time_start",
               "valid_time_end"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_product_current` ON `${TABLE_NAME}` (`_id`, `valid_time_start`, `valid_time_end`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_product_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
           },
           {
             "name": "recipe_product_pkey",
             "unique": false,
             "columnNames": [
-              "_id"
+              "id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_product_pkey` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `recipe_product_pkey` ON `${TABLE_NAME}` (`id`)"
           },
           {
             "name": "recipe_product_transaction_time_start",
@@ -1578,7 +1578,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aeb216665bff3484d6bea46cb30edc15')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3bfb9fb181066d0f1cf3140ded389ff3')"
     ]
   }
 }
