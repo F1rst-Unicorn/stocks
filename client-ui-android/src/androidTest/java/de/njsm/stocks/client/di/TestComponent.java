@@ -36,6 +36,7 @@ import de.njsm.stocks.client.fragment.locationedit.LocationEditFragmentTest;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragmentTest;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentTest;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragmentTest;
+import de.njsm.stocks.client.fragment.unitlist.UnitListFragmentTest;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 
 import javax.inject.Singleton;
@@ -73,6 +74,8 @@ public interface TestComponent {
     void inject(LocationEditFragmentTest test);
 
     void inject(LocationConflictFragmentTest test);
+
+    void inject(UnitListFragmentTest test);
 
     @Component.Builder
     interface Builder {

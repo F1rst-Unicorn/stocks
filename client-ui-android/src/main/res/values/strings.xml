@@ -128,6 +128,7 @@
     <string name="hint_duration">Duration (min)</string>
     <string name="hint_amount">Amount</string>
     <string name="hint_no_locations">No locations.\nCreate one using the + button.</string>
+    <string name="hint_no_units">No Units of Measure.\nCreate one using the + button.</string>
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>

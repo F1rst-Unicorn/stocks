@@ -86,4 +86,11 @@ public interface UimockBusinessModule {
 
     @Binds
     LocationConflictInteractor locationConflictInteractor(InMemoryLocationConflictInteractorImpl impl);
+
+
+    @Binds
+    UnitListInteractor unitListInteractor(InMemoryUnitListInteractorImpl impl);
+
+    @Binds
+    UnitDeleter UnitDeleter(InMemoryUnitDeleterImpl impl);
 }

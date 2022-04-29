@@ -20,6 +20,7 @@
 package de.njsm.stocks.client.database;
 
 import androidx.room.Database;
+import androidx.room.RewriteQueriesToDropUnusedColumns;
 import androidx.room.RoomDatabase;
 import de.njsm.stocks.client.database.error.*;
 
@@ -63,6 +64,7 @@ import java.time.format.DateTimeFormatter;
         },
         version = 40)
 @androidx.room.TypeConverters(TypeConverters.class)
+@RewriteQueriesToDropUnusedColumns
 public abstract class StocksDatabase extends RoomDatabase {
 
     /**

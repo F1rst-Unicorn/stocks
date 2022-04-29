@@ -40,4 +40,10 @@ public class DataModule {
     public ErrorDescriptions errorDescriptions() {
         return new ErrorDescriptions(ErrorDescriptions.generate());
     }
+
+    @Provides
+    @Singleton
+    public UnitsForListing unitsForListing() {
+        return new UnitsForListing(UnitsForListing.generate());
+    }
 }

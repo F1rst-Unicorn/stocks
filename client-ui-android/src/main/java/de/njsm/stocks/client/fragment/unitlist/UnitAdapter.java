@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.locationlist;
+package de.njsm.stocks.client.fragment.unitlist;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,55 +27,51 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.business.entities.LocationForListing;
-import de.njsm.stocks.client.fragment.view.TextWithPrefixIconViewHolder;
+import de.njsm.stocks.client.business.entities.UnitForListing;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
 
 import static de.njsm.stocks.client.fragment.ListDiffer.byId;
 
-public class LocationAdapter extends RecyclerView.Adapter<TextWithPrefixIconViewHolder> {
+public class UnitAdapter extends RecyclerView.Adapter<UnitViewHolder> {
 
-    private List<LocationForListing> locations;
+    private List<UnitForListing> units;
 
     private final View.OnClickListener onClickListener;
 
-    private final View.OnLongClickListener onLongClickListener;
-
-    public LocationAdapter(View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener) {
+    public UnitAdapter(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
-        this.onLongClickListener = onLongClickListener;
     }
 
-    public void setData(List<LocationForListing> newList) {
-        List<LocationForListing> oldList = locations;
-        locations = newList;
+    public void setData(List<UnitForListing> newList) {
+        List<UnitForListing> oldList = units;
+        units = newList;
         DiffUtil.calculateDiff(byId(oldList, newList), true).dispatchUpdatesTo(this);
     }
 
     @NonNull
     @Override
-    public TextWithPrefixIconViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public UnitViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_text_with_prefix_icon, parent, false);
+                .inflate(R.layout.item_unit, parent, false);
         v.setOnClickListener(onClickListener);
-        v.setOnLongClickListener(onLongClickListener);
-        return new TextWithPrefixIconViewHolder(v);
+        return new UnitViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TextWithPrefixIconViewHolder holder, int position) {
-        LocationForListing item = locations.get(position);
-        holder.setText(item.name());
+    public void onBindViewHolder(@NonNull UnitViewHolder holder, int position) {
+        UnitForListing item = units.get(position);
+        holder.setName(item.name());
+        holder.setAbbreviation(item.abbreviation());
     }
 
     @Override
     public int getItemCount() {
-        if (locations == null) {
+        if (units == null) {
             return 0;
         } else {
-            return locations.size();
+            return units.size();
         }
     }
 }

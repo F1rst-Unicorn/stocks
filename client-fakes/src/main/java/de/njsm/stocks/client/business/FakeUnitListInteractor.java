@@ -23,21 +23,26 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.UnitForListing;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
 import java.util.List;
 
-class UnitListInteractorImpl implements UnitListInteractor {
+public class FakeUnitListInteractor implements UnitListInteractor {
 
-    private final UnitRepository unitRepository;
+    private final BehaviorSubject<List<UnitForListing>> data;
 
     @Inject
-    UnitListInteractorImpl(UnitRepository unitRepository) {
-        this.unitRepository = unitRepository;
+    public FakeUnitListInteractor() {
+        this.data = BehaviorSubject.create();
+    }
+
+    public void setData(List<UnitForListing> data) {
+        this.data.onNext(data);
     }
 
     @Override
     public Observable<List<UnitForListing>> getUnits() {
-        return unitRepository.getUnits();
+        return data;
     }
 }

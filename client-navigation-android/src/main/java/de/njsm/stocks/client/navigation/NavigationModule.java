@@ -53,4 +53,7 @@ public interface NavigationModule {
 
     @Binds
     LocationConflictNavigator locationConflictNavigator(LocationConflictNavigatorImpl impl);
+
+    @Binds
+    UnitListNavigator UnitListNavigator(UnitListNavigatorImpl impl);
 }

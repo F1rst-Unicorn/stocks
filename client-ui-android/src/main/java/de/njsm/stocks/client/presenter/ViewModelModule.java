@@ -96,4 +96,11 @@ public class ViewModelModule {
     ViewModel locationConflictViewModel(LocationConflictInteractor locationConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
         return new LocationConflictViewModel(locationConflictInteractor, errorRetryInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UnitListViewModel.class)
+    ViewModel UnitListViewModel(UnitListInteractor unitListInteractor, UnitDeleter unitDeleter) {
+        return new UnitListViewModel(unitListInteractor, unitDeleter);
+    }
 }

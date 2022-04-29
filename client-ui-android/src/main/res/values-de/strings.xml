@@ -127,6 +127,7 @@
     <string name="hint_duration">Dauer (min)</string>
     <string name="hint_amount">Menge</string>
     <string name="hint_no_locations">Keine Orte.\nErstelle einen mit dem + Knopf.</string>
+    <string name="hint_no_units">Keine Maßeinheiten.\nErstelle eine mit dem + Knopf.</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>

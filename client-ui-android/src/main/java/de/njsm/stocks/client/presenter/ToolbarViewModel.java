@@ -37,7 +37,7 @@ public class ToolbarViewModel extends ViewModel {
     private final ErrorStatusReporter errorStatusReporter;
 
     @Inject
-    public ToolbarViewModel(SchedulerStatusReporter schedulerStatusReporter, ErrorStatusReporter errorStatusReporter) {
+    ToolbarViewModel(SchedulerStatusReporter schedulerStatusReporter, ErrorStatusReporter errorStatusReporter) {
         this.schedulerStatusReporter = schedulerStatusReporter;
         this.errorStatusReporter = errorStatusReporter;
     }

@@ -19,25 +19,10 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.UnitForListing;
-import io.reactivex.rxjava3.core.Observable;
+public interface UnitListNavigator {
+    void addUnit();
 
-import javax.inject.Inject;
-import java.util.List;
-
-class UnitListInteractorImpl implements UnitListInteractor {
-
-    private final UnitRepository unitRepository;
-
-    @Inject
-    UnitListInteractorImpl(UnitRepository unitRepository) {
-        this.unitRepository = unitRepository;
-    }
-
-    @Override
-    public Observable<List<UnitForListing>> getUnits() {
-        return unitRepository.getUnits();
-    }
+    void editUnit(int id);
 }

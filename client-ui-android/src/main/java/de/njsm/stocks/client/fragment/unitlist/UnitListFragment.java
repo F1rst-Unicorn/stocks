@@ -19,8 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.locationlist;
-
+package de.njsm.stocks.client.fragment.unitlist;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -31,39 +30,40 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.LocationForListing;
+import androidx.recyclerview.widget.RecyclerView;
+import de.njsm.stocks.client.business.entities.UnitForListing;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
-import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
-import de.njsm.stocks.client.fragment.view.TextWithPrefixIconViewHolder;
-import de.njsm.stocks.client.navigation.LocationListNavigator;
-import de.njsm.stocks.client.presenter.LocationListViewModel;
-import de.njsm.stocks.client.ui.R;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
+import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
+import de.njsm.stocks.client.navigation.UnitListNavigator;
+import de.njsm.stocks.client.presenter.UnitListViewModel;
+import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 import java.util.List;
 
-public class LocationListFragment extends BottomToolbarFragment {
+public class UnitListFragment extends BottomToolbarFragment {
 
-    private LocationListViewModel locationListViewModel;
+    private UnitListViewModel unitListViewModel;
 
-    private LocationListNavigator locationListNavigator;
+    private UnitListNavigator unitListNavigator;
 
-    private LocationAdapter locationListAdapter;
+    private UnitAdapter unitListAdapter;
 
     private TemplateSwipeList templateSwipeList;
 
-    @Override
     @NonNull
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
         View swipeList = insertContent(inflater, root, R.layout.template_swipe_list);
         templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
+        templateSwipeList.disableSwipeRefresh();
 
-        locationListAdapter = new LocationAdapter(this::onItemClicked, this::onItemLongClicked);
-        locationListViewModel.getLocations().observe(getViewLifecycleOwner(), this::onListDataReceived);
+        unitListAdapter = new UnitAdapter(this::onItemClicked);
+        unitListViewModel.getUnits().observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
@@ -71,48 +71,37 @@ public class LocationListFragment extends BottomToolbarFragment {
                 this::onItemSwipedRight
         );
 
-        templateSwipeList.initialiseListWithSwiper(requireContext(), locationListAdapter, callback);
+        templateSwipeList.initialiseListWithSwiper(requireContext(), unitListAdapter, callback);
         templateSwipeList.bindFloatingActionButton(this::onAddItem);
-        templateSwipeList.bindSwipeDown(this::onSwipeDown);
 
         return root;
     }
 
-    private void onListDataReceived(List<LocationForListing> data) {
-        if (data.isEmpty()) {
-            templateSwipeList.setEmpty(R.string.hint_no_locations);
+    private void onListDataReceived(List<UnitForListing> unitForListings) {
+        if (unitForListings.isEmpty()) {
+            templateSwipeList.setEmpty(R.string.hint_no_units);
         } else {
             templateSwipeList.setList();
         }
-        locationListAdapter.setData(data);
-    }
-
-    private void onItemSwipedRight(int listItemIndex) {
-        locationListViewModel.deleteLocation(listItemIndex);
+        unitListAdapter.setData(unitForListings);
     }
 
     private void onItemClicked(View listItem) {
-        int listItemIndex = ((TextWithPrefixIconViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        locationListViewModel.resolveLocationId(listItemIndex, locationListNavigator::showLocation);
+        int listItemIndex = ((RecyclerView.ViewHolder) listItem.getTag()).getBindingAdapterPosition();
+        unitListViewModel.resolveUnitId(listItemIndex, unitListNavigator::editUnit);
     }
 
-    private boolean onItemLongClicked(View listItem) {
-        int listItemIndex = ((TextWithPrefixIconViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        locationListViewModel.resolveLocationId(listItemIndex, locationListNavigator::editLocation);
-        return true;
+    private void onItemSwipedRight(int listItemIndex) {
+        unitListViewModel.deleteUnit(listItemIndex);
     }
 
-    private void onAddItem(View button) {
-        locationListNavigator.addLocation();
-    }
-
-    public void onSwipeDown() {
-        locationListViewModel.synchronise();
+    private void onAddItem(View view) {
+        unitListNavigator.addUnit();
     }
 
     @Inject
-    public void setLocationListNavigator(LocationListNavigator locationListNavigator) {
-        this.locationListNavigator = locationListNavigator;
+    void setUnitListNavigator(UnitListNavigator unitListNavigator) {
+        this.unitListNavigator = unitListNavigator;
     }
 
     @Inject
@@ -120,6 +109,6 @@ public class LocationListFragment extends BottomToolbarFragment {
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        locationListViewModel = viewModelProvider.get(LocationListViewModel.class);
+        unitListViewModel = viewModelProvider.get(UnitListViewModel.class);
     }
 }

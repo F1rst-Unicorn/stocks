@@ -97,4 +97,10 @@ class FakeNavigationModule {
     LocationConflictNavigator locationConflictNavigator() {
         return mock(LocationConflictNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    UnitListNavigator unitListNavigator() {
+        return mock(UnitListNavigator.class);
+    }
 }

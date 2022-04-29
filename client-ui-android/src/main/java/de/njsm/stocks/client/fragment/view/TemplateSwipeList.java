@@ -95,4 +95,9 @@ public class TemplateSwipeList {
             refreshLayout.setRefreshing(false);
         });
     }
+
+    public void disableSwipeRefresh() {
+        SwipeRefreshLayout refreshLayout = root.findViewById(R.id.template_swipe_list_swipe);
+        refreshLayout.setEnabled(false);
+    }
 }

@@ -30,6 +30,8 @@ import de.njsm.stocks.client.fragment.locationedit.LocationEditFragment;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragment;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragment;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragment;
+import de.njsm.stocks.client.fragment.unitlist.UnitListFragment;
+import de.njsm.stocks.client.fragment.unittabs.UnitTabsFragment;
 
 @Module
 public abstract class FragmentModule {
@@ -60,4 +62,10 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract LocationConflictFragment locationConflictFragment();
+
+    @ContributesAndroidInjector
+    public abstract UnitListFragment unitListFragment();
+
+    @ContributesAndroidInjector
+    public abstract UnitTabsFragment UnitTabsFragment();
 }

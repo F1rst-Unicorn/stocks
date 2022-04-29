@@ -19,25 +19,33 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.testdata;
+
 
 import de.njsm.stocks.client.business.entities.UnitForListing;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-class UnitListInteractorImpl implements UnitListInteractor {
+public class UnitsForListing {
 
-    private final UnitRepository unitRepository;
+    private final BehaviorSubject<List<UnitForListing>> data;
 
-    @Inject
-    UnitListInteractorImpl(UnitRepository unitRepository) {
-        this.unitRepository = unitRepository;
+    public UnitsForListing(List<UnitForListing> data) {
+        this.data = BehaviorSubject.createDefault(data);
     }
 
-    @Override
-    public Observable<List<UnitForListing>> getUnits() {
-        return unitRepository.getUnits();
+    public static List<UnitForListing> generate() {
+        return new ArrayList<>(Arrays.asList(
+                UnitForListing.create(1, "Liter", "l"),
+                UnitForListing.create(2, "Gramm", "g"),
+                UnitForListing.create(4, "Bottle", "Bottle")
+        ));
+    }
+
+    public BehaviorSubject<List<UnitForListing>> getData() {
+        return data;
     }
 }

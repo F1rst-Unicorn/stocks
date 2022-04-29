@@ -25,15 +25,17 @@ import de.njsm.stocks.client.business.UnitRepository;
 import de.njsm.stocks.client.business.entities.UnitForListing;
 import io.reactivex.rxjava3.core.Observable;
 
+import javax.inject.Inject;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class UnitRepositoryImpl implements UnitRepository {
+class UnitRepositoryImpl implements UnitRepository {
 
     private final UnitDao unitDao;
 
-    public UnitRepositoryImpl(UnitDao unitDao) {
+    @Inject
+    UnitRepositoryImpl(UnitDao unitDao) {
         this.unitDao = unitDao;
     }
 

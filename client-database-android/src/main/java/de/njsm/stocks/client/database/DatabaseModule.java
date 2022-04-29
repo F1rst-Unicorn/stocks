@@ -84,6 +84,11 @@ public interface DatabaseModule {
         return database.errorDao();
     }
 
+    @Provides
+    static UnitDao unitDao(StocksDatabase database) {
+        return database.unitDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 

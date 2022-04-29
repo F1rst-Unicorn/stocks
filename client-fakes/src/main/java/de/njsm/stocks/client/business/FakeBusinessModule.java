@@ -121,4 +121,19 @@ public interface FakeBusinessModule {
     static FakeLocationConflictInteractor fakeLocationConflictInteractor() {
         return new FakeLocationConflictInteractor();
     }
+
+    @Binds
+    UnitListInteractor unitListInteractor(FakeUnitListInteractor unitListInteractor);
+
+    @Provides
+    @Singleton
+    static FakeUnitListInteractor fakeunitListInteractor() {
+        return new FakeUnitListInteractor();
+    }
+
+    @Provides
+    @Singleton
+    static UnitDeleter unitDeleter() {
+        return mock(UnitDeleter.class);
+    }
 }

@@ -22,22 +22,28 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.UnitForListing;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.testdata.UnitsForListing;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
-class UnitListInteractorImpl implements UnitListInteractor {
+public class InMemoryUnitDeleterImpl implements UnitDeleter {
 
-    private final UnitRepository unitRepository;
+    private final BehaviorSubject<List<UnitForListing>> data;
 
     @Inject
-    UnitListInteractorImpl(UnitRepository unitRepository) {
-        this.unitRepository = unitRepository;
+    InMemoryUnitDeleterImpl(UnitsForListing unitsForListing) {
+        this.data = unitsForListing.getData();
     }
 
     @Override
-    public Observable<List<UnitForListing>> getUnits() {
-        return unitRepository.getUnits();
+    public void deleteUnit(UnitForListing unit) {
+        data.firstElement().subscribe(list -> {
+            List<UnitForListing> newList = new ArrayList<>(list);
+            newList.removeIf(v -> v.id() == unit.id());
+            data.onNext(newList);
+        });
     }
 }
