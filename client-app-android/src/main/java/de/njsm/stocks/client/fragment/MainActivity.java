@@ -68,6 +68,8 @@ public class MainActivity extends BaseActivity {
         int id = menuItem.getItemId();
         if (id == R.id.activity_main_drawer_units) {
             navigationArgConsumer.navigate(NavigationGraphDirections.actionGlobalNavFragmentUnitTabs());
+        } else if (id == R.id.activity_main_drawer_locations) {
+            navigationArgConsumer.navigate(NavigationGraphDirections.actionGlobalNavFragmentLocationList());
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
