@@ -33,6 +33,7 @@ import com.google.android.material.navigation.NavigationView;
 import dagger.android.AndroidInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.client.navigation.NavigationArgConsumerImpl;
+import de.njsm.stocks.client.navigation.NavigationGraphDirections;
 
 import javax.inject.Inject;
 
@@ -65,7 +66,8 @@ public class MainActivity extends BaseActivity {
 
     private boolean onNavigationItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
-        switch (id) {
+        if (id == R.id.activity_main_drawer_units) {
+            navigationArgConsumer.navigate(NavigationGraphDirections.actionGlobalNavFragmentUnitTabs());
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

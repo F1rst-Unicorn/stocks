@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.fragment;
 
 import android.os.Bundle;
+import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -29,6 +30,7 @@ import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragment;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragment;
+import de.njsm.stocks.client.fragment.unittabs.UnitTabsFragment;
 import de.njsm.stocks.client.ui.R;
 import org.junit.Test;
 
@@ -46,8 +48,15 @@ public class SwipeDownSupportTest {
 
     private static final List<Class<? extends Fragment>> FRAGMENTS = Arrays.asList(
             LocationListFragment.class,
-            ErrorListFragment.class
+            ErrorListFragment.class,
+            UnitTabsFragment.class
     );
+
+    private static final int[] swiperIds = new int[] {
+            R.id.template_swipe_list_swipe,
+            R.id.template_swipe_list_swipe,
+            R.id.fragment_tab_layout_swipe,
+    };
 
     private Synchroniser synchroniser;
 
@@ -55,11 +64,14 @@ public class SwipeDownSupportTest {
     public void swipingDownSynchronises() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
 
-        for (Class<? extends Fragment> fragmentClass : FRAGMENTS) {
+        for (int i = 0; i < FRAGMENTS.size(); i++) {
+            Class<? extends Fragment> fragmentClass = FRAGMENTS.get(i);
+
+            @IdRes int swiperId = swiperIds[i];
             reset(synchroniser);
             FragmentScenario.launchInContainer(fragmentClass, new Bundle(), R.style.StocksTheme);
 
-            onView(withId(R.id.template_swipe_list_swipe)).perform(swipeDown());
+            onView(withId(swiperId)).perform(swipeDown());
 
             verify(synchroniser).synchronise();
         }

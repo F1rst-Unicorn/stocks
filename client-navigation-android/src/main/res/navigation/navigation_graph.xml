@@ -140,4 +140,7 @@
     <action
             android:id="@+id/action_global_nav_fragment_error_list"
             app:destination="@id/nav_fragment_error_list" />
+    <action
+            android:id="@+id/action_global_nav_fragment_unit_tabs"
+            app:destination="@id/nav_fragment_unit_tabs" />
 </navigation>

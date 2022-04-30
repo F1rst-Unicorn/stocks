@@ -110,4 +110,11 @@ public class ViewModelModule {
     ViewModel ScaledUnitListViewModel(ScaledUnitListInteractor scaledUnitListInteractor, ScaledUnitDeleter scaledUnitDeleter) {
         return new ScaledUnitListViewModel(scaledUnitListInteractor, scaledUnitDeleter);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UnitTabsViewModel.class)
+    ViewModel UnitTabsViewModel(Synchroniser synchroniser) {
+        return new UnitTabsViewModel(synchroniser);
+    }
 }

@@ -52,8 +52,6 @@ public class SetupService extends Service {
         }));
     }
 
-
-
     @Override
     public void onDestroy() {
         LOG.debug("Setup service destroyed");
