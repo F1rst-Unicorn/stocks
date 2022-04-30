@@ -19,28 +19,25 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.view;
+package de.njsm.stocks.client.business;
 
-import android.view.View;
-import android.widget.TextView;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.ui.R;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import io.reactivex.rxjava3.core.Observable;
 
-public class TextWithPrefixIconViewHolder extends RecyclerView.ViewHolder {
+import javax.inject.Inject;
+import java.util.List;
 
-    private final TextView text;
+public class ScaledUnitListInteractorImpl implements ScaledUnitListInteractor {
 
-    public TextWithPrefixIconViewHolder(@NonNull View itemView, @DrawableRes int icon) {
-        super(itemView);
-        text = itemView.findViewById(R.id.item_text_with_prefix_icon_name);
-        itemView.setTag(this);
+    private final ScaledUnitRepository repository;
 
-        text.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, 0, 0, 0);
+    @Inject
+    ScaledUnitListInteractorImpl(ScaledUnitRepository repository) {
+        this.repository = repository;
     }
 
-    public void setText(CharSequence text) {
-        this.text.setText(text);
+    @Override
+    public Observable<List<ScaledUnitForListing>> getScaledUnits() {
+        return repository.getScaledUnits();
     }
 }

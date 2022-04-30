@@ -19,18 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.unitlist;
+package de.njsm.stocks.client.fragment.scaledunitlist;
 
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
-import de.njsm.stocks.client.business.FakeUnitListInteractor;
-import de.njsm.stocks.client.business.UnitDeleter;
-import de.njsm.stocks.client.business.entities.UnitForListing;
-import de.njsm.stocks.client.navigation.UnitListNavigator;
-import de.njsm.stocks.client.testdata.UnitsForListing;
+import de.njsm.stocks.client.business.FakeScaledUnitListInteractor;
+import de.njsm.stocks.client.business.ScaledUnitDeleter;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import de.njsm.stocks.client.navigation.ScaledUnitListNavigator;
+import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
+import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
 import org.junit.Before;
@@ -54,74 +55,74 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
-public class UnitListFragmentTest {
+public class ScaledUnitListFragmentTest {
 
-    private FragmentScenario<UnitListFragment> scenario;
+    private FragmentScenario<ScaledUnitListFragment> scenario;
 
-    private FakeUnitListInteractor unitListInteractor;
+    private FakeScaledUnitListInteractor scaledUnitListInteractor;
 
-    private UnitListNavigator mockUnitListNavigator;
+    private ScaledUnitListNavigator mockScaledUnitListNavigator;
 
-    private UnitDeleter unitDeleter;
+    private ScaledUnitDeleter scaledUnitDeleter;
+
+    private ScaledUnitRenderStrategy scaledUnitRenderStrategy;
 
     @Before
     public void setUp() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
-        scenario = FragmentScenario.launchInContainer(UnitListFragment.class, new Bundle(), R.style.StocksTheme);
+        scenario = FragmentScenario.launchInContainer(ScaledUnitListFragment.class, new Bundle(), R.style.StocksTheme);
     }
 
     @After
     public void tearDown() {
-        reset(unitDeleter);
-        reset(mockUnitListNavigator);
+        reset(scaledUnitDeleter);
+        reset(mockScaledUnitListNavigator);
     }
 
     @Test
     public void unitsAreListed() {
-        unitListInteractor.setData(UnitsForListing.generate());
+        scaledUnitListInteractor.setData(ScaledUnitsForListing.generate());
 
-        for (UnitForListing item : UnitsForListing.generate()) {
+        for (ScaledUnitForListing item : ScaledUnitsForListing.generate()) {
             onView(withId(R.id.template_swipe_list_list))
-                    .check(matches(withChild(withChild(allOf(withText(item.name()))))));
-            onView(withId(R.id.template_swipe_list_list))
-                    .check(matches(withChild(withChild(allOf(withText(item.abbreviation()))))));
+                    .check(matches(withChild(allOf(withText(scaledUnitRenderStrategy.render(item))))));
         }
     }
 
     @Test
     public void emptyListShowsText() {
-        unitListInteractor.setData(Collections.emptyList());
+        scaledUnitListInteractor.setData(Collections.emptyList());
 
         onView(withId(R.id.template_swipe_list_empty_text))
-                .check(matches(allOf(withEffectiveVisibility(Visibility.VISIBLE), withText(R.string.hint_no_units))));
+                .check(matches(allOf(withEffectiveVisibility(Visibility.VISIBLE), withText(R.string.hint_no_scaled_units))));
     }
 
     @Test
     public void clickingAUnitNavigates() {
         int itemIndex = 1;
-        List<UnitForListing> data = UnitsForListing.generate();
+        List<ScaledUnitForListing> data = ScaledUnitsForListing.generate();
         assertTrue("The test wants to access element " + itemIndex, data.size() >= itemIndex + 1);
-        UnitForListing Unit = data.get(itemIndex);
+        ScaledUnitForListing Unit = data.get(itemIndex);
         assertTrue("Make sure the list position is mapped to an ID by having different values", Unit.id() != itemIndex);
-        unitListInteractor.setData(data);
+        scaledUnitListInteractor.setData(data);
 
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(itemIndex, click()));
 
-        verify(mockUnitListNavigator).editUnit(Unit.id());
+        verify(mockScaledUnitListNavigator).editScaledUnit(Unit.id());
     }
 
     @Test
     public void unitDeletionWorks() {
-        List<UnitForListing> data = UnitsForListing.generate();
+        List<ScaledUnitForListing> data = ScaledUnitsForListing.generate();
         assertFalse(data.isEmpty());
-        unitListInteractor.setData(data);
+        scaledUnitListInteractor.setData(data);
         int itemIndex = 0;
 
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(itemIndex, swipeRight()));
 
-        verify(unitDeleter).deleteUnit(data.get(itemIndex));
+        verify(scaledUnitDeleter).deleteScaledUnit(data.get(itemIndex));
     }
 
     @Test
@@ -129,21 +130,26 @@ public class UnitListFragmentTest {
         onView(withId(R.id.template_swipe_list_fab))
                 .perform(click());
 
-        verify(mockUnitListNavigator).addUnit();
+        verify(mockScaledUnitListNavigator).addScaledUnit();
     }
 
     @Inject
-    void setUnitListInteractor(FakeUnitListInteractor UnitListInteractor) {
-        this.unitListInteractor = UnitListInteractor;
+    void setScaledUnitListInteractor(FakeScaledUnitListInteractor fakeScaledUnitListInteractor) {
+        this.scaledUnitListInteractor = fakeScaledUnitListInteractor;
     }
 
     @Inject
-    void setMockUnitListNavigator(UnitListNavigator mockUnitListNavigator) {
-        this.mockUnitListNavigator = mockUnitListNavigator;
+    void setMockScaledUnitListNavigator(ScaledUnitListNavigator scaledUnitListNavigator) {
+        this.mockScaledUnitListNavigator = scaledUnitListNavigator;
     }
 
     @Inject
-    void setUnitDeleter(UnitDeleter UnitDeleter) {
-        this.unitDeleter = UnitDeleter;
+    void setScaledUnitDeleter(ScaledUnitDeleter scaledUnitDeleter) {
+        this.scaledUnitDeleter = scaledUnitDeleter;
+    }
+
+    @Inject
+    void setScaledUnitRenderStrategy(ScaledUnitRenderStrategy scaledUnitRenderStrategy) {
+        this.scaledUnitRenderStrategy = scaledUnitRenderStrategy;
     }
 }

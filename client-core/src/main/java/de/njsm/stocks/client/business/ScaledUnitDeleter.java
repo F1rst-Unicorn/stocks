@@ -19,28 +19,10 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.view;
+package de.njsm.stocks.client.business;
 
-import android.view.View;
-import android.widget.TextView;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.ui.R;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 
-public class TextWithPrefixIconViewHolder extends RecyclerView.ViewHolder {
-
-    private final TextView text;
-
-    public TextWithPrefixIconViewHolder(@NonNull View itemView, @DrawableRes int icon) {
-        super(itemView);
-        text = itemView.findViewById(R.id.item_text_with_prefix_icon_name);
-        itemView.setTag(this);
-
-        text.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, 0, 0, 0);
-    }
-
-    public void setText(CharSequence text) {
-        this.text.setText(text);
-    }
+public interface ScaledUnitDeleter {
+    void deleteScaledUnit(ScaledUnitForListing scaledUnitForListing);
 }

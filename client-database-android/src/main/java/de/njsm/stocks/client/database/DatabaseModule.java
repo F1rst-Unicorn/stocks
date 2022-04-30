@@ -89,6 +89,11 @@ public interface DatabaseModule {
         return database.unitDao();
     }
 
+    @Provides
+    static ScaledUnitDao ScaledUnitDao(StocksDatabase database) {
+        return database.scaledUnitDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 
@@ -97,4 +102,7 @@ public interface DatabaseModule {
 
     @Binds
     UnitRepository unitRepository(UnitRepositoryImpl impl);
+
+    @Binds
+    ScaledUnitRepository ScaledUnitRepository(ScaledUnitRepositoryImpl impl);
 }

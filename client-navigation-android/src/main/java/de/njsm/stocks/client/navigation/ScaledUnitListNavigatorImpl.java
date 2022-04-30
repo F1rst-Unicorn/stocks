@@ -27,28 +27,28 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-class UnitListNavigatorImpl extends BaseNavigator implements UnitListNavigator {
+class ScaledUnitListNavigatorImpl extends NavigatorImpl implements ScaledUnitListNavigator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UnitListNavigatorImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScaledUnitListNavigatorImpl.class);
 
     @Inject
-    UnitListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+    ScaledUnitListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
         super(navigationArgConsumer);
     }
 
     @Override
-    public void addUnit() {
-        LOG.debug("adding a unit");
+    public void addScaledUnit() {
+        LOG.debug("adding a scaled unit");
         getNavigationArgConsumer().navigate(
-                UnitTabsFragmentDirections.actionNavFragmentUnitTabsToNavFragmentUnitAdd()
+                UnitTabsFragmentDirections.actionNavFragmentUnitTabsToNavFragmentScaledUnitAdd()
         );
     }
 
     @Override
-    public void editUnit(int id) {
-        LOG.debug("editing unit " + id);
+    public void editScaledUnit(int id) {
+        LOG.debug("editing scaled unit " + id);
         getNavigationArgConsumer().navigate(
-                UnitTabsFragmentDirections.actionNavFragmentUnitTabsToNavFragmentUnitEdit(id)
+                UnitTabsFragmentDirections.actionNavFragmentUnitTabsToNavFragmentScaledUnitEdit(id)
         );
     }
 }

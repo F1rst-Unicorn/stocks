@@ -103,4 +103,11 @@ public class ViewModelModule {
     ViewModel UnitListViewModel(UnitListInteractor unitListInteractor, UnitDeleter unitDeleter) {
         return new UnitListViewModel(unitListInteractor, unitDeleter);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ScaledUnitListViewModel.class)
+    ViewModel ScaledUnitListViewModel(ScaledUnitListInteractor scaledUnitListInteractor, ScaledUnitDeleter scaledUnitDeleter) {
+        return new ScaledUnitListViewModel(scaledUnitListInteractor, scaledUnitDeleter);
+    }
 }

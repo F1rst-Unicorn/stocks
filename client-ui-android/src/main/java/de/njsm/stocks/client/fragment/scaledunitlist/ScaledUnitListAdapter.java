@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.locationlist;
+package de.njsm.stocks.client.fragment.scaledunitlist;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,30 +27,31 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.business.entities.LocationForListing;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.fragment.view.TextWithPrefixIconViewHolder;
+import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
 
 import static de.njsm.stocks.client.fragment.ListDiffer.byId;
 
-public class LocationAdapter extends RecyclerView.Adapter<TextWithPrefixIconViewHolder> {
+public class ScaledUnitListAdapter extends RecyclerView.Adapter<TextWithPrefixIconViewHolder> {
 
-    private List<LocationForListing> locations;
+    private List<ScaledUnitForListing> scaledUnits;
 
     private final View.OnClickListener onClickListener;
 
-    private final View.OnLongClickListener onLongClickListener;
+    private final ScaledUnitRenderStrategy scaledUnitRenderStrategy;
 
-    public LocationAdapter(View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener) {
+    public ScaledUnitListAdapter(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
-        this.onLongClickListener = onLongClickListener;
+        scaledUnitRenderStrategy = new ScaledUnitRenderStrategy();
     }
 
-    public void setData(List<LocationForListing> newList) {
-        List<LocationForListing> oldList = locations;
-        locations = newList;
+    public void setData(List<ScaledUnitForListing> newList) {
+        List<ScaledUnitForListing> oldList = scaledUnits;
+        scaledUnits = newList;
         DiffUtil.calculateDiff(byId(oldList, newList), true).dispatchUpdatesTo(this);
     }
 
@@ -60,22 +61,21 @@ public class LocationAdapter extends RecyclerView.Adapter<TextWithPrefixIconView
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_text_with_prefix_icon, parent, false);
         v.setOnClickListener(onClickListener);
-        v.setOnLongClickListener(onLongClickListener);
-        return new TextWithPrefixIconViewHolder(v, R.drawable.ic_account_balance_wallet_black_24dp);
+        return new TextWithPrefixIconViewHolder(v, R.drawable.ic_weight_numbered_black_24);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TextWithPrefixIconViewHolder holder, int position) {
-        LocationForListing item = locations.get(position);
-        holder.setText(item.name());
+        ScaledUnitForListing item = scaledUnits.get(position);
+        holder.setText(scaledUnitRenderStrategy.render(item));
     }
 
     @Override
     public int getItemCount() {
-        if (locations == null) {
+        if (scaledUnits == null) {
             return 0;
         } else {
-            return locations.size();
+            return scaledUnits.size();
         }
     }
 }

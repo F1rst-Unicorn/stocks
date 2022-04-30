@@ -136,4 +136,19 @@ public interface FakeBusinessModule {
     static UnitDeleter unitDeleter() {
         return mock(UnitDeleter.class);
     }
+
+    @Binds
+    ScaledUnitListInteractor ScaledUnitListInteractor(FakeScaledUnitListInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeScaledUnitListInteractor FakeScaledUnitListInteractor() {
+        return new FakeScaledUnitListInteractor();
+    }
+
+    @Provides
+    @Singleton
+    static ScaledUnitDeleter ScaledUnitDeleter() {
+        return mock(ScaledUnitDeleter.class);
+    }
 }

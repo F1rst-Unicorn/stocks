@@ -19,24 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
-@Dao
-abstract class ScaledUnitDao {
+public class InMemoryScaledUnitDeleterImpl implements ScaledUnitDeleter {
 
-    @Query("select * " +
-            "from current_scaled_unit")
-    abstract List<ScaledUnitDbEntity> getAll();
+    private final BehaviorSubject<List<ScaledUnitForListing>> data;
 
-    @Query("select scaled_unit.id, unit.abbreviation, scaled_unit.scale " +
-            "from current_scaled_unit scaled_unit " +
-            "join current_unit unit on scaled_unit.unit = unit.id")
-    abstract Observable<List<ScaledUnitForListing>> getCurrentScaledUnits();
+    @Inject
+    InMemoryScaledUnitDeleterImpl(ScaledUnitsForListing unitsForListing) {
+        this.data = unitsForListing.getData();
+    }
+
+    @Override
+    public void deleteScaledUnit(ScaledUnitForListing unit) {
+        data.firstElement().subscribe(list -> {
+            List<ScaledUnitForListing> newList = new ArrayList<>(list);
+            newList.removeIf(v -> v.id() == unit.id());
+            data.onNext(newList);
+        });
+    }
 }

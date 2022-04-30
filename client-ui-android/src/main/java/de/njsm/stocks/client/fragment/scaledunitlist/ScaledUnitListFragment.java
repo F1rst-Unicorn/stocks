@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.unitlist;
+package de.njsm.stocks.client.fragment.scaledunitlist;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -31,24 +31,24 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.business.entities.UnitForListing;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.fragment.InjectableFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
-import de.njsm.stocks.client.navigation.UnitListNavigator;
-import de.njsm.stocks.client.presenter.UnitListViewModel;
+import de.njsm.stocks.client.navigation.ScaledUnitListNavigator;
+import de.njsm.stocks.client.presenter.ScaledUnitListViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 import java.util.List;
 
-public class UnitListFragment extends InjectableFragment {
+public class ScaledUnitListFragment extends InjectableFragment {
 
-    private UnitListViewModel unitListViewModel;
+    private ScaledUnitListViewModel scaledUnitListViewModel;
 
-    private UnitListNavigator unitListNavigator;
+    private ScaledUnitListNavigator scaledUnitListNavigator;
 
-    private UnitAdapter unitListAdapter;
+    private ScaledUnitListAdapter scaledUnitListAdapter;
 
     private TemplateSwipeList templateSwipeList;
 
@@ -60,8 +60,8 @@ public class UnitListFragment extends InjectableFragment {
         templateSwipeList.setLoading();
         templateSwipeList.disableSwipeRefresh();
 
-        unitListAdapter = new UnitAdapter(this::onItemClicked);
-        unitListViewModel.getUnits().observe(getViewLifecycleOwner(), this::onListDataReceived);
+        scaledUnitListAdapter = new ScaledUnitListAdapter(this::onItemClicked);
+        scaledUnitListViewModel.getScaledUnits().observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
@@ -69,42 +69,42 @@ public class UnitListFragment extends InjectableFragment {
                 this::onItemSwipedRight
         );
 
-        templateSwipeList.initialiseListWithSwiper(requireContext(), unitListAdapter, callback);
+        templateSwipeList.initialiseListWithSwiper(requireContext(), scaledUnitListAdapter, callback);
         templateSwipeList.bindFloatingActionButton(this::onAddItem);
 
         return root;
     }
 
-    private void onListDataReceived(List<UnitForListing> unitForListings) {
+    private void onListDataReceived(List<ScaledUnitForListing> unitForListings) {
         if (unitForListings.isEmpty()) {
-            templateSwipeList.setEmpty(R.string.hint_no_units);
+            templateSwipeList.setEmpty(R.string.hint_no_scaled_units);
         } else {
             templateSwipeList.setList();
         }
-        unitListAdapter.setData(unitForListings);
+        scaledUnitListAdapter.setData(unitForListings);
+    }
+
+    private void onItemSwipedRight(int listItemIndex) {
+        scaledUnitListViewModel.deleteScaledUnit(listItemIndex);
     }
 
     private void onItemClicked(View listItem) {
         int listItemIndex = ((RecyclerView.ViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        unitListViewModel.resolveUnitId(listItemIndex, unitListNavigator::editUnit);
-    }
-
-    private void onItemSwipedRight(int listItemIndex) {
-        unitListViewModel.deleteUnit(listItemIndex);
+        scaledUnitListViewModel.resolveScaledUnitId(listItemIndex, scaledUnitListNavigator::editScaledUnit);
     }
 
     private void onAddItem(View view) {
-        unitListNavigator.addUnit();
+        scaledUnitListNavigator.addScaledUnit();
     }
 
     @Inject
-    void setUnitListNavigator(UnitListNavigator unitListNavigator) {
-        this.unitListNavigator = unitListNavigator;
+    void setScaledUnitListNavigator(ScaledUnitListNavigator scaledUnitListNavigator) {
+        this.scaledUnitListNavigator = scaledUnitListNavigator;
     }
 
     @Inject
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        unitListViewModel = viewModelProvider.get(UnitListViewModel.class);
+        scaledUnitListViewModel = viewModelProvider.get(ScaledUnitListViewModel.class);
     }
 }

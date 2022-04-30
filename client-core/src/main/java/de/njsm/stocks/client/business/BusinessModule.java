@@ -86,4 +86,10 @@ public interface BusinessModule {
 
     @Binds
     UnitDeleter UnitDeleter(UnitDeleterImpl impl);
+
+    @Binds
+    ScaledUnitListInteractor ScaledUnitListInteractor(ScaledUnitListInteractorImpl impl);
+
+    @Binds
+    ScaledUnitDeleter ScaledUnitDeleter(ScaledUnitDeleterImpl impl);
 }

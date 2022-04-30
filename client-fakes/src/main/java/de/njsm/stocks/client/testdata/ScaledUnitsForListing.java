@@ -21,35 +21,32 @@
 
 package de.njsm.stocks.client.testdata;
 
-import dagger.Module;
-import dagger.Provides;
 
-import javax.inject.Singleton;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-@Module
-public class DataModule {
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-    @Provides
-    @Singleton
-    public LocationsForListing locationsForListing() {
-        return new LocationsForListing(LocationsForListing.generate());
+public class ScaledUnitsForListing {
+
+    private final BehaviorSubject<List<ScaledUnitForListing>> data;
+
+    public ScaledUnitsForListing(List<ScaledUnitForListing> data) {
+        this.data = BehaviorSubject.createDefault(data);
     }
 
-    @Provides
-    @Singleton
-    public ErrorDescriptions errorDescriptions() {
-        return new ErrorDescriptions(ErrorDescriptions.generate());
+    public static List<ScaledUnitForListing> generate() {
+        return new ArrayList<>(Arrays.asList(
+                ScaledUnitForListing.create(1, "l", BigDecimal.ONE),
+                ScaledUnitForListing.create(2, "g", BigDecimal.valueOf(1000)),
+                ScaledUnitForListing.create(4, "Bottle", BigDecimal.ONE)
+        ));
     }
 
-    @Provides
-    @Singleton
-    public UnitsForListing unitsForListing() {
-        return new UnitsForListing(UnitsForListing.generate());
-    }
-
-    @Provides
-    @Singleton
-    public ScaledUnitsForListing ScaledUnitsForListing() {
-        return new ScaledUnitsForListing(ScaledUnitsForListing.generate());
+    public BehaviorSubject<List<ScaledUnitForListing>> getData() {
+        return data;
     }
 }

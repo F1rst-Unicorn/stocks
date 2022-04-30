@@ -29,30 +29,30 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class UnitListNavigatorTest extends NavigationTest {
+public class ScaledUnitListNavigatorTest extends NavigationTest {
 
-    private UnitListNavigator uut;
+    private ScaledUnitListNavigator uut;
 
     @Before
     public void setUp() {
-        uut = new UnitListNavigatorImpl(navigationArgConsumer);
+        uut = new ScaledUnitListNavigatorImpl(navigationArgConsumer);
     }
 
     @Test
-    public void editingUnitContentBindsCorrectly() {
+    public void editingScaledUnitContentBindsCorrectly() {
         int expectedId = 42;
 
-        uut.editUnit(expectedId);
+        uut.editScaledUnit(expectedId);
 
-        UnitTabsFragmentDirections.ActionNavFragmentUnitTabsToNavFragmentUnitEdit actual = navigationArgConsumer.getLastArgument(UnitTabsFragmentDirections.ActionNavFragmentUnitTabsToNavFragmentUnitEdit.class);
+        UnitTabsFragmentDirections.ActionNavFragmentUnitTabsToNavFragmentScaledUnitEdit actual = navigationArgConsumer.getLastArgument(UnitTabsFragmentDirections.ActionNavFragmentUnitTabsToNavFragmentScaledUnitEdit.class);
         assertThat(actual.getId(), is(expectedId));
     }
 
     @Test
-    public void addingUnitBindsCorrectly() {
-        uut.addUnit();
+    public void addingScaledUnitBindsCorrectly() {
+        uut.addScaledUnit();
 
         ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
-        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_unit_tabs_to_nav_fragment_unit_add));
+        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_unit_tabs_to_nav_fragment_scaled_unit_add));
     }
 }

@@ -19,24 +19,30 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import io.reactivex.rxjava3.core.Observable;
+import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-@Dao
-abstract class ScaledUnitDao {
+import static java.util.Collections.singletonList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-    @Query("select * " +
-            "from current_scaled_unit")
-    abstract List<ScaledUnitDbEntity> getAll();
+class ScaledUnitListInteractorImplTest {
 
-    @Query("select scaled_unit.id, unit.abbreviation, scaled_unit.scale " +
-            "from current_scaled_unit scaled_unit " +
-            "join current_unit unit on scaled_unit.unit = unit.id")
-    abstract Observable<List<ScaledUnitForListing>> getCurrentScaledUnits();
+    @Test
+    void gettingScaledUnitsFetchesFromRepository() {
+        List<ScaledUnitForListing> expected = singletonList(ScaledUnitForListing.create(1, "g", BigDecimal.TEN));
+        ScaledUnitRepository repository = mock(ScaledUnitRepository.class);
+        when(repository.getScaledUnits()).thenReturn(Observable.just(expected));
+        ScaledUnitListInteractor uut = new ScaledUnitListInteractorImpl(repository);
+
+        Observable<List<ScaledUnitForListing>> actual = uut.getScaledUnits();
+
+        actual.test().assertValue(expected);
+    }
 }

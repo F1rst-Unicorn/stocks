@@ -19,28 +19,28 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.view;
+package de.njsm.stocks.client.business;
 
-import android.view.View;
-import android.widget.TextView;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.ui.R;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-public class TextWithPrefixIconViewHolder extends RecyclerView.ViewHolder {
+import javax.inject.Inject;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-    private final TextView text;
+public class InMemoryScaledUnitListInteractorImpl implements ScaledUnitListInteractor {
 
-    public TextWithPrefixIconViewHolder(@NonNull View itemView, @DrawableRes int icon) {
-        super(itemView);
-        text = itemView.findViewById(R.id.item_text_with_prefix_icon_name);
-        itemView.setTag(this);
+    private final BehaviorSubject<List<ScaledUnitForListing>> data;
 
-        text.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, 0, 0, 0);
+    @Inject
+    InMemoryScaledUnitListInteractorImpl(ScaledUnitsForListing unitsForListing) {
+        this.data = unitsForListing.getData();
     }
 
-    public void setText(CharSequence text) {
-        this.text.setText(text);
+    @Override
+    public Observable<List<ScaledUnitForListing>> getScaledUnits() {
+        return data.delay(1, TimeUnit.SECONDS);
     }
 }
