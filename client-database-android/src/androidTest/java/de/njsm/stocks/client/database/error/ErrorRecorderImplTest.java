@@ -24,10 +24,7 @@ package de.njsm.stocks.client.database.error;
 import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.LocationForEditing;
-import de.njsm.stocks.client.business.entities.StatusCode;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.DbTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -154,6 +151,28 @@ public class ErrorRecorderImplTest extends DbTestCase {
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.EDIT_LOCATION, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
+
+    @Test
+    public void recordingErrorAddingUnitWorks() {
+        UnitAddForm form = UnitAddForm.create("Gramm", "g");
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordUnitAddError(exception, form);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<UnitAddEntity> unitAddEntities = stocksDatabase.errorDao().getUnitAdds();
+        assertEquals(1, unitAddEntities.size());
+        assertEquals(form.name(), unitAddEntities.get(0).name());
+        assertEquals(form.abbreviation(), unitAddEntities.get(0).abbreviation());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.ADD_UNIT, errors.get(0).action());
         assertEquals(1, errors.get(0).dataId());
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());

@@ -22,8 +22,8 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Job;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.business.entities.StatusCode;
+import de.njsm.stocks.client.business.entities.UnitAddForm;
 import de.njsm.stocks.client.execution.Scheduler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,57 +36,57 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class LocationAddInteractorImplTest {
+class UnitAddInteractorImplTest {
 
-    private LocationAddInteractorImpl uut;
+    private UnitAddInteractorImpl uut;
 
     @Mock
-    private Scheduler scheduler;
+    private UnitAddService unitAddService;
+
+    @Mock
+    private Synchroniser synchroniser;
 
     @Mock
     private ErrorRecorder errorRecorder;
 
     @Mock
-    private LocationAddService locationAddService;
-
-    @Mock
-    private Synchroniser synchroniser;
+    private Scheduler scheduler;
 
     @BeforeEach
     void setUp() {
-        uut = new LocationAddInteractorImpl(scheduler, errorRecorder, locationAddService, synchroniser);
+        uut = new UnitAddInteractorImpl(unitAddService, synchroniser, errorRecorder, scheduler);
     }
 
     @Test
-    void addingLocationFromInterfaceQueuesTask() {
-        uut.addLocation(getInput());
+    void addingUnitFromInterfaceQueuesTask() {
+        uut.addUnit(getInput());
 
         ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
         verify(scheduler).schedule(captor.capture());
-        assertEquals(Job.Type.ADD_LOCATION, captor.getValue().name());
+        assertEquals(Job.Type.ADD_UNIT, captor.getValue().name());
     }
 
     @Test
-    void addingALocationFromFailingNetworkRecordsError() {
+    void addingAUnitFromFailingNetworkRecordsError() {
         StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        doThrow(exception).when(locationAddService).add(getInput());
+        doThrow(exception).when(unitAddService).addUnit(getInput());
 
-        uut.addLocationInBackground(getInput());
+        uut.addUnitInBackground(getInput());
 
-        verify(locationAddService).add(getInput());
-        verify(errorRecorder).recordLocationAddError(exception, getInput());
+        verify(unitAddService).addUnit(getInput());
+        verify(errorRecorder).recordUnitAddError(exception, getInput());
         verifyNoInteractions(synchroniser);
     }
 
     @Test
-    void addingLocationIsForwardedAndSynchronised() {
-        uut.addLocationInBackground(getInput());
+    void addingUnitIsForwardedAndSynchronised() {
+        uut.addUnitInBackground(getInput());
 
-        verify(locationAddService).add(getInput());
+        verify(unitAddService).addUnit(getInput());
         verify(synchroniser).synchronise();
     }
 
-    private LocationAddForm getInput() {
-        return LocationAddForm.create("Fridge", "my fridge");
+    private UnitAddForm getInput() {
+        return UnitAddForm.create("Gramm", "g");
     }
 }

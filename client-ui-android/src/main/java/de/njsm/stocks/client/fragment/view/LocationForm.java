@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.fragment.view;
 
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
@@ -31,8 +30,7 @@ import de.njsm.stocks.client.util.NonEmptyValidator;
 
 import java.util.function.Function;
 
-import static de.njsm.stocks.client.fragment.view.ViewUtility.setText;
-import static de.njsm.stocks.client.fragment.view.ViewUtility.stringFromForm;
+import static de.njsm.stocks.client.fragment.view.ViewUtility.*;
 
 public class LocationForm {
 
@@ -61,9 +59,7 @@ public class LocationForm {
         this.localNameField = root.findViewById(R.id.fragment_location_form_name_conflict_local_content);
         this.stringResourceLookup = stringResourceLookup;
 
-        EditText editText = nameField.getEditText();
-        if (editText != null)
-            editText.addTextChangedListener(new NonEmptyValidator(nameField, this::onNameChanged));
+        onEditorOf(nameField, e -> e.addTextChangedListener(new NonEmptyValidator(nameField, this::onNameChanged)));
     }
 
     public void setName(String text) {
@@ -114,7 +110,7 @@ public class LocationForm {
         nameField.setVisibility(View.GONE);
     }
 
-    private void onNameChanged(TextInputLayout textInputLayout, Boolean isEmpty) {
+    private void onNameChanged(TextInputLayout textInputLayout, boolean isEmpty) {
         maySubmit = !isEmpty;
         if (isEmpty)
             textInputLayout.setError(stringResourceLookup.apply(R.string.error_may_not_be_empty));

@@ -42,6 +42,11 @@ public class ConflictNavigator implements ErrorDetailsVisitor<ErrorDescription, 
     }
 
     @Override
+    public Void unitAddForm(UnitAddForm unitAddForm, ErrorDescription input) {
+        throw new IllegalStateException("unexpected conflict resolution");
+    }
+
+    @Override
     public Void locationAddForm(LocationAddForm locationAddForm, ErrorDescription input) {
         throw new IllegalStateException("unexpected conflict resolution");
     }

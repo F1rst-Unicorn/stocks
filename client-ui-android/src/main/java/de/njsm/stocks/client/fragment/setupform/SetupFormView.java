@@ -23,7 +23,6 @@ package de.njsm.stocks.client.fragment.setupform;
 
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.StringRes;
@@ -37,8 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static de.njsm.stocks.client.fragment.view.ViewUtility.setText;
-import static de.njsm.stocks.client.fragment.view.ViewUtility.stringFromForm;
+import static de.njsm.stocks.client.fragment.view.ViewUtility.*;
 
 class SetupFormView {
 
@@ -111,9 +109,7 @@ class SetupFormView {
     }
 
     private void addTextChangeListener(TextInputLayout textInputLayout) {
-        EditText editText = textInputLayout.getEditText();
-        if (editText != null)
-            editText.addTextChangedListener(new NonEmptyValidator(textInputLayout, this::onFormFieldInput));
+        onEditorOf(textInputLayout, e -> e.addTextChangedListener(new NonEmptyValidator(textInputLayout, this::onFormFieldInput)));
     }
 
     void initialiseForm(RegistrationForm data) {
@@ -159,12 +155,10 @@ class SetupFormView {
     }
 
     private void checkTextFieldContent(TextInputLayout textInputLayout) {
-        EditText editText = textInputLayout.getEditText();
-        if (editText != null)
-            isTextFieldEmpty.put(textInputLayout, editText.getText().length() == 0);
+        onEditorOf(textInputLayout, e -> isTextFieldEmpty.put(textInputLayout, e.getText().length() == 0));
     }
 
-    private void onFormFieldInput(TextInputLayout view, Boolean isEmpty) {
+    private void onFormFieldInput(TextInputLayout view, boolean isEmpty) {
         isTextFieldEmpty.put(view, isEmpty);
         if (isEmpty) {
             String error = stringResourceLookup.apply(R.string.error_may_not_be_empty);
@@ -208,8 +202,6 @@ class SetupFormView {
         progressIndicator.setVisibility(View.GONE);
         submitButton.setVisibility(View.VISIBLE);
         submitButton.setText(R.string.dialog_retry);
-        scrollView.post(() -> {
-            scrollView.smoothScrollTo(scrollView.getScrollX(), scrollView.getBottom());
-        });
+        scrollView.post(() -> scrollView.smoothScrollTo(scrollView.getScrollX(), scrollView.getBottom()));
     }
 }

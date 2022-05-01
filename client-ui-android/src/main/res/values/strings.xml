@@ -287,6 +287,7 @@
     <string name="error_details_location_add_error_list">Add Location</string>
     <string name="error_details_location_delete_error_list">Delete Location</string>
     <string name="error_details_location_edit_error_list">Edit Location</string>
+    <string name="error_details_unit_add_error_list">Add Unit of Measure</string>
 
     <string name="text_no_errors">Everything is fine.</string>
 

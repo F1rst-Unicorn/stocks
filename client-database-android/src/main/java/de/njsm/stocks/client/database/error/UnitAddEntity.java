@@ -19,22 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database.error;
 
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.LocationForEditing;
-import de.njsm.stocks.client.business.entities.UnitAddForm;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.database.IdFields;
+import de.njsm.stocks.client.database.UnitFields;
 
-public interface ErrorRecorder {
+@AutoValue
+@Entity(tableName = "unit_to_add")
+public abstract class UnitAddEntity implements IdFields, UnitFields {
 
-    void recordSynchronisationError(SubsystemException exception);
+    public static UnitAddEntity create(int id, String name, String abbreviation) {
+        return new AutoValue_UnitAddEntity(id, name, abbreviation);
+    }
 
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
-
-    void recordLocationDeleteError(SubsystemException exception, LocationForDeletion locationForDeletion);
-
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
-
-    void recordUnitAddError(SubsystemException exception, UnitAddForm input);
+    @Ignore
+    public static UnitAddEntity create(String name, String abbreviation) {
+        return new AutoValue_UnitAddEntity(0, name, abbreviation);
+    }
 }

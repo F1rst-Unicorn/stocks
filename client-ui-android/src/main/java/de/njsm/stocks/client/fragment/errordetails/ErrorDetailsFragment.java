@@ -123,5 +123,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, Void input) {
             return locationEditErrorDetails.name();
         }
+
+        @Override
+        public String unitAddForm(UnitAddForm unitAddForm, Void input) {
+            return String.format("%s (%s)", unitAddForm.name(), unitAddForm.abbreviation());
+        }
     }
 }

@@ -95,4 +95,9 @@ public interface ServerApi {
     @GET("/v2/recipe-product")
     Call<ListResponse<BitemporalRecipeProduct>> getRecipeProducts(@Query("bitemporal") int bitemporal,
                                                                   @Query("startingFrom") String startingFrom);
+
+
+    @PUT("/v2/unit")
+    Call<Response> addUnit(@Query("name") String name,
+                           @Query("abbreviation") String abbreviation);
 }

@@ -21,10 +21,7 @@
 
 package de.njsm.stocks.client.databind;
 
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationDeleteErrorDetails;
-import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
-import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.ui.R;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,5 +43,6 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_synchronisation_error_list, (long) uut.visit(SynchronisationErrorDetails.create(), null));
         assertEquals(R.string.error_details_location_delete_error_list, (long) uut.visit(LocationDeleteErrorDetails.create(2, "name"), null));
         assertEquals(R.string.error_details_location_edit_error_list, (long) uut.visit(LocationEditErrorDetails.create(2, "name", "description"), null));
+        assertEquals(R.string.error_details_unit_add_error_list, (long) uut.visit(UnitAddForm.create("name", "abbreviation"), null));
     }
 }

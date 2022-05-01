@@ -89,6 +89,13 @@ public abstract class Job {
             }
         },
 
+        ADD_UNIT {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.addUnit(this, input);
+            }
+        },
+
         UNKNOWN {
             @Override
             public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
@@ -99,7 +106,7 @@ public abstract class Job {
         public abstract <I, O> O accept(TypeVisitor<I, O> visitor, I input);
     }
 
-    public static interface TypeVisitor<I, O> {
+    public interface TypeVisitor<I, O> {
 
         default O visit(Type type, I input) {
             return type.accept(this, input);
@@ -120,5 +127,7 @@ public abstract class Job {
         O editLocation(Type type, I input);
 
         O unknown(Type type, I input);
+
+        O addUnit(Type type, I input);
     }
 }

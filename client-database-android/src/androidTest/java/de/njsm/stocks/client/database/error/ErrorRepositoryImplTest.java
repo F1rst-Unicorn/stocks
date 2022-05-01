@@ -212,7 +212,34 @@ public class ErrorRepositoryImplTest extends DbTestCase {
         uut.deleteError(input);
 
         assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
-        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
+        stocksDatabase.errorDao().getNumberOfErrors().distinctUntilChanged().test().awaitCount(1).assertValues(0);
         assertTrue(stocksDatabase.errorDao().getLocationEdits().isEmpty());
+    }
+
+    @Test
+    public void unitAddErrorCanBeRetrieved() {
+        UnitAddForm form = UnitAddForm.create("Gramm", "g");
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        errorRecorder.recordUnitAddError(exception, form);
+
+        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
+        uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1)
+                .assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
+        uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1)
+                .assertValue(v -> v.get(0).errorDetails().equals(form));
+    }
+
+    @Test
+    public void unitAddErrorCanBeDeleted() {
+        UnitAddForm form = UnitAddForm.create("Gramm", "g");
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        errorRecorder.recordUnitAddError(exception, form);
+        ErrorDescription input = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
+
+        uut.deleteError(input);
+
+        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
+        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
+        assertTrue(stocksDatabase.errorDao().getUnitAdds().isEmpty());
     }
 }

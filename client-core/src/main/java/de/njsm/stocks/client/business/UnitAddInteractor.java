@@ -21,20 +21,9 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.LocationForEditing;
 import de.njsm.stocks.client.business.entities.UnitAddForm;
 
-public interface ErrorRecorder {
+public interface UnitAddInteractor {
 
-    void recordSynchronisationError(SubsystemException exception);
-
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
-
-    void recordLocationDeleteError(SubsystemException exception, LocationForDeletion locationForDeletion);
-
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
-
-    void recordUnitAddError(SubsystemException exception, UnitAddForm input);
+    void addUnit(UnitAddForm unitAddForm);
 }

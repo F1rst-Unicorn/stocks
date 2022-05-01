@@ -45,6 +45,12 @@ public class ErrorClickedNavigator implements ErrorDetailsVisitor<ErrorDescripti
     }
 
     @Override
+    public Void unitAddForm(UnitAddForm unitAddForm, ErrorDescription input) {
+        errorListNavigator.showErrorDetails(input.id());
+        return null;
+    }
+
+    @Override
     public Void locationAddForm(LocationAddForm locationAddForm, ErrorDescription input) {
         errorListNavigator.showErrorDetails(input.id());
         return null;

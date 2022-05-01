@@ -21,39 +21,39 @@
 
 package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.LocationAddService;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.common.api.DataResponse;
-import de.njsm.stocks.common.api.LocationForInsertion;
+import de.njsm.stocks.client.business.StatusCodeException;
+import de.njsm.stocks.client.business.UnitAddService;
+import de.njsm.stocks.client.business.entities.UnitAddForm;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class LocationAddServiceImpl implements LocationAddService {
+import static de.njsm.stocks.client.network.DataMapper.map;
 
-    private static final Logger LOG = LoggerFactory.getLogger(LocationAddServiceImpl.class);
+class UnitAddServiceImpl implements UnitAddService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UnitAddServiceImpl.class);
 
     private final ServerApi api;
 
     private final CallHandler callHandler;
 
     @Inject
-    public LocationAddServiceImpl(ServerApi api, CallHandler callHandler) {
+    UnitAddServiceImpl(ServerApi api, CallHandler callHandler) {
         this.api = api;
         this.callHandler = callHandler;
     }
 
     @Override
-    public void add(LocationAddForm locationAddForm) {
-        LOG.debug(locationAddForm.toString());
-        LocationForInsertion networkData = LocationForInsertion.builder()
-                .name(locationAddForm.name())
-                .description(locationAddForm.description())
-                .build();
-
-        Call<DataResponse<Integer>> call = api.addLocation(networkData);
-        callHandler.executeForResult(call);
+    public void addUnit(UnitAddForm form) {
+        LOG.debug(form.toString());
+        Call<Response> call = api.addUnit(form.name(), form.abbreviation());
+        StatusCode result = callHandler.executeCommand(call);
+        if (result.isFail())
+            throw new StatusCodeException(map(result));
     }
 }

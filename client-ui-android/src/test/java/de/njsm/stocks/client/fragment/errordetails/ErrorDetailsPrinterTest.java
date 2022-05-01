@@ -21,10 +21,7 @@
 
 package de.njsm.stocks.client.fragment.errordetails;
 
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationDeleteErrorDetails;
-import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
-import de.njsm.stocks.client.business.entities.SynchronisationErrorDetails;
+import de.njsm.stocks.client.business.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,5 +58,11 @@ public class ErrorDetailsPrinterTest {
     public void locationEditErrorShowsName() {
         LocationEditErrorDetails data = LocationEditErrorDetails.create(2, "name", "description");
         assertEquals(data.name(), uut.visit(data, null));
+    }
+
+    @Test
+    public void unitAddErrorShowsName() {
+        UnitAddForm data = UnitAddForm.create("Gramm", "g");
+        assertEquals(data.name() + " (" + data.abbreviation() + ")", uut.visit(data, null));
     }
 }

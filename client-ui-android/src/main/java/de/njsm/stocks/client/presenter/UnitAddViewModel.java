@@ -19,22 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.presenter;
 
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.LocationForEditing;
+import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.UnitAddInteractor;
 import de.njsm.stocks.client.business.entities.UnitAddForm;
 
-public interface ErrorRecorder {
+import javax.inject.Inject;
 
-    void recordSynchronisationError(SubsystemException exception);
+public class UnitAddViewModel extends ViewModel {
 
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
+    private final UnitAddInteractor unitAddInteractor;
 
-    void recordLocationDeleteError(SubsystemException exception, LocationForDeletion locationForDeletion);
+    @Inject
+    UnitAddViewModel(UnitAddInteractor unitAddInteractor) {
+        this.unitAddInteractor = unitAddInteractor;
+    }
 
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
-
-    void recordUnitAddError(SubsystemException exception, UnitAddForm input);
+    public void addUnit(UnitAddForm data) {
+        unitAddInteractor.addUnit(data);
+    }
 }

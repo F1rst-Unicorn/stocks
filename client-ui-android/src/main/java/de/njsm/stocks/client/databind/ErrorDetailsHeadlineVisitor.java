@@ -46,4 +46,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, Void input) {
         return R.string.error_details_location_edit_error_list;
     }
+
+    @Override
+    public Integer unitAddForm(UnitAddForm unitAddForm, Void input) {
+        return R.string.error_details_unit_add_error_list;
+    }
 }

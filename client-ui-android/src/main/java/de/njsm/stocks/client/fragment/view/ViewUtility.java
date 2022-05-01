@@ -24,6 +24,8 @@ package de.njsm.stocks.client.fragment.view;
 import android.widget.EditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.function.Consumer;
+
 public class ViewUtility {
 
     public static String stringFromForm(TextInputLayout view) {
@@ -40,9 +42,12 @@ public class ViewUtility {
     }
 
     public static void setText(TextInputLayout inputField, String text) {
+        onEditorOf(inputField, e -> e.setText(text));
+    }
+
+    public static void onEditorOf(TextInputLayout inputField, Consumer<EditText> callback) {
         EditText editor = inputField.getEditText();
-        if (editor != null) {
-            editor.setText(text);
-        }
+        if (editor != null)
+            callback.accept(editor);
     }
 }

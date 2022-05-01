@@ -34,6 +34,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final LocationEditInteractor locationEditInteractor;
 
+    private final UnitAddInteractor unitAddInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -43,10 +45,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     private final JobTypeTranslator jobTypeTranslator;
 
     @Inject
-    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, LocationDeleter locationDeleter, LocationEditInteractor locationEditInteractor, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
+    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, LocationDeleter locationDeleter, LocationEditInteractor locationEditInteractor, UnitAddInteractor unitAddInteractor, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
         this.locationDeleter = locationDeleter;
         this.locationEditInteractor = locationEditInteractor;
+        this.unitAddInteractor = unitAddInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -102,6 +105,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void unitAddForm(UnitAddForm unitAddForm, Void input) {
+        unitAddInteractor.addUnit(unitAddForm);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -122,6 +131,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, Void input) {
             return Job.Type.EDIT_LOCATION;
+        }
+
+        @Override
+        public Job.Type unitAddForm(UnitAddForm unitAddForm, Void input) {
+            return Job.Type.ADD_UNIT;
         }
     }
 }

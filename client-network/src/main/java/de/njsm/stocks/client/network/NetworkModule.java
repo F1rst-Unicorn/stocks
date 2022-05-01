@@ -63,6 +63,9 @@ public interface NetworkModule {
     @Binds
     LocationEditService locationEditService(LocationEditServiceImpl impl);
 
+    @Binds
+    UnitAddService unitAddService(UnitAddServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint) {

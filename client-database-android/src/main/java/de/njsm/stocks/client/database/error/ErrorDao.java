@@ -126,4 +126,16 @@ public abstract class ErrorDao {
             "from current_location " +
             "where id = :locationId")
     abstract LocationDbEntity getCurrentLocation(int locationId);
+
+    @Query("select * from unit_to_add")
+    abstract List<UnitAddEntity> getUnitAdds();
+
+    @Insert
+    abstract long insert(UnitAddEntity unitAddEntity);
+
+    @Query("delete from unit_to_add where id = :id")
+    abstract void deleteUnitAdd(long id);
+
+    @Query("select * from unit_to_add where id = :id")
+    abstract UnitAddEntity getUnitAdd(long id);
 }

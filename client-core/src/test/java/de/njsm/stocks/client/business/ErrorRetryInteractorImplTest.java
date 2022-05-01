@@ -48,6 +48,9 @@ public class ErrorRetryInteractorImplTest {
     private LocationEditInteractor locationEditInteractor;
 
     @Mock
+    private UnitAddInteractor unitAddInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -58,7 +61,7 @@ public class ErrorRetryInteractorImplTest {
 
     @BeforeEach
     void setUp() {
-        uut = new ErrorRetryInteractorImpl(locationAddInteractor, locationDeleter, locationEditInteractor, synchroniser, scheduler, errorRepository);
+        uut = new ErrorRetryInteractorImpl(locationAddInteractor, locationDeleter, locationEditInteractor, unitAddInteractor, synchroniser, scheduler, errorRepository);
     }
 
     @Test
@@ -146,6 +149,17 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(locationEditInteractor).edit(expected);
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingUnitAddingDispatches() {
+        UnitAddForm errorDetails = UnitAddForm.create("name", "abbreviation");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", errorDetails);
+
+        uut.retryInBackground(input);
+
+        verify(unitAddInteractor).addUnit(errorDetails);
         verify(errorRepository).deleteError(input);
     }
 }

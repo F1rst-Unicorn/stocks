@@ -117,4 +117,11 @@ public class ViewModelModule {
     ViewModel UnitTabsViewModel(Synchroniser synchroniser) {
         return new UnitTabsViewModel(synchroniser);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UnitAddViewModel.class)
+    ViewModel UnitAddViewModel(UnitAddInteractor unitAddInteractor) {
+        return new UnitAddViewModel(unitAddInteractor);
+    }
 }

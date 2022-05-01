@@ -151,4 +151,10 @@ public interface FakeBusinessModule {
     static ScaledUnitDeleter ScaledUnitDeleter() {
         return mock(ScaledUnitDeleter.class);
     }
+
+    @Provides
+    @Singleton
+    static UnitAddInteractor UnitAddInteractor() {
+        return mock(UnitAddInteractor.class);
+    }
 }

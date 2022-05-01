@@ -44,4 +44,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, Void input) {
         return String.format("%1$s\n%2$s", locationEditErrorDetails.name(), locationEditErrorDetails.description());
     }
+
+    @Override
+    public String unitAddForm(UnitAddForm unitAddForm, Void input) {
+        return String.format("%s, %s", unitAddForm.name(), unitAddForm.abbreviation());
+    }
 }

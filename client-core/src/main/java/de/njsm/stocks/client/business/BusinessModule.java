@@ -92,4 +92,7 @@ public interface BusinessModule {
 
     @Binds
     ScaledUnitDeleter ScaledUnitDeleter(ScaledUnitDeleterImpl impl);
+
+    @Binds
+    UnitAddInteractor UnitAddInteractor(UnitAddInteractorImpl impl);
 }

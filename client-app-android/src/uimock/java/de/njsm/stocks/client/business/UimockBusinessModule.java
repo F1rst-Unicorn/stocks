@@ -99,4 +99,7 @@ public interface UimockBusinessModule {
 
     @Binds
     ScaledUnitDeleter ScaledUnitDeleter(InMemoryScaledUnitDeleterImpl impl);
+
+    @Binds
+    UnitAddInteractor UnitAddInteractor(InMemoryUnitAddInteractorImpl impl);
 }

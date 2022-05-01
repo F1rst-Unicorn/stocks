@@ -22,45 +22,45 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Job;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.UnitAddForm;
 import de.njsm.stocks.client.execution.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-public class LocationAddInteractorImpl implements LocationAddInteractor {
+class UnitAddInteractorImpl implements UnitAddInteractor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LocationAddInteractorImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UnitAddInteractorImpl.class);
 
-    private final Scheduler scheduler;
-
-    private final ErrorRecorder errorRecorder;
-
-    private final LocationAddService locationAddService;
+    private final UnitAddService unitAddService;
 
     private final Synchroniser synchroniser;
 
+    private final ErrorRecorder errorRecorder;
+
+    private final Scheduler scheduler;
+
     @Inject
-    public LocationAddInteractorImpl(Scheduler scheduler, ErrorRecorder errorRecorder, LocationAddService locationAddService, Synchroniser synchroniser) {
-        this.scheduler = scheduler;
-        this.errorRecorder = errorRecorder;
-        this.locationAddService = locationAddService;
+    UnitAddInteractorImpl(UnitAddService unitAddService, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
+        this.unitAddService = unitAddService;
         this.synchroniser = synchroniser;
+        this.errorRecorder = errorRecorder;
+        this.scheduler = scheduler;
     }
 
     @Override
-    public void addLocation(LocationAddForm locationAddForm) {
-        scheduler.schedule(Job.create(Job.Type.ADD_LOCATION, () -> addLocationInBackground(locationAddForm)));
+    public void addUnit(UnitAddForm unitAddForm) {
+        scheduler.schedule(Job.create(Job.Type.ADD_UNIT, () -> addUnitInBackground(unitAddForm)));
     }
 
-    void addLocationInBackground(LocationAddForm locationAddForm) {
+    void addUnitInBackground(UnitAddForm unitAddForm) {
         try {
-            locationAddService.add(locationAddForm);
+            unitAddService.addUnit(unitAddForm);
             synchroniser.synchronise();
         } catch (SubsystemException e) {
-            LOG.warn("failed to add location " + locationAddForm);
-            errorRecorder.recordLocationAddError(e, locationAddForm);
+            LOG.warn("failed to add unit " + unitAddForm);
+            errorRecorder.recordUnitAddError(e, unitAddForm);
         }
     }
 }

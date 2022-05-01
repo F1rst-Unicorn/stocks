@@ -19,22 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.LocationForEditing;
-import de.njsm.stocks.client.business.entities.UnitAddForm;
+import com.google.auto.value.AutoValue;
 
-public interface ErrorRecorder {
+@AutoValue
+public abstract class UnitAddForm implements UnitFields, ErrorDetails {
 
-    void recordSynchronisationError(SubsystemException exception);
+    public static UnitAddForm create(String name, String abbreviation) {
+        return new AutoValue_UnitAddForm(name, abbreviation);
+    }
 
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
-
-    void recordLocationDeleteError(SubsystemException exception, LocationForDeletion locationForDeletion);
-
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
-
-    void recordUnitAddError(SubsystemException exception, UnitAddForm input);
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.unitAddForm(this, input);
+    }
 }
