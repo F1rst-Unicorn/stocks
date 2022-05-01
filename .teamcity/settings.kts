@@ -78,17 +78,11 @@ object Build : BuildType({
     artifactRules = """
         deploy-server/stocks-server-*-any.pkg.tar.zst
         deploy-client/stocks-*-any.pkg.tar.zst
-        android-client/app/build/outputs/apk/app-release-unsigned.apk
-        android-client/app/build/outputs/apk/debug/app-debug.apk
-        android-client/app/build/outputs/apk/release/app-release-unsigned.apk
 
         server/target/server.log
         client/target/client-client.log
         client/target/client-server.log
-        android-client/app/build/android-app.log
-        android-client/app/build/android-server.log
 
-        android-client/app/build/reports/**/* => android-test-report
         client-app-android/build/reports/**/* => client-app-android
         client-core/build/reports/**/* => client-core
         client-database-android/build/reports/**/* => client-database-android
@@ -144,26 +138,6 @@ object Build : BuildType({
             gradleWrapperPath = "."
             enableStacktrace = true
         }
-        gradle {
-            name = "Compile & Unit Test Android Client"
-            tasks = "test"
-            buildFile = "android-client/build.gradle"
-            gradleHome = "/usr/bin/gradle"
-            gradleWrapperPath = "android-client"
-            enableStacktrace = true
-        }
-        gradle {
-            name = "Android Client Instrumented Test"
-            tasks = "connectedDebugAndroidTest"
-            buildFile = "android-client/build.gradle"
-            gradleHome = "/usr/bin/gradle"
-            gradleWrapperPath = "android-client"
-            enableStacktrace = true
-            // https://developer.android.com/reference/android/support/test/runner/AndroidJUnitRunner.html
-            gradleParams = """
-                -Pandroid.testInstrumentationRunnerArguments.notPackage=de.njsm.stocks.android.test.system
-            """.trimIndent()
-        }
         exec {
             name = "Package server"
             workingDir = "deploy-server"
@@ -175,12 +149,6 @@ object Build : BuildType({
             workingDir = "deploy-client"
             path = "makepkg"
             arguments = "-cf"
-        }
-        gradle {
-            name = "Package Android App"
-            tasks = "assemble"
-            buildFile = "android-client/build.gradle"
-            gradleWrapperPath = "android-client"
         }
         exec {
             name = "Clean server"
@@ -212,11 +180,6 @@ object Build : BuildType({
         exec {
             name = "Client Deployment test"
             path = "client/src/test/system/bin/vm-deployment-test.sh"
-        }
-        exec {
-            name = "Android Deployment test"
-            path = "android-client/app/src/test/system/bin/vm-deployment-test.sh"
-            enabled = false
         }
     }
 
