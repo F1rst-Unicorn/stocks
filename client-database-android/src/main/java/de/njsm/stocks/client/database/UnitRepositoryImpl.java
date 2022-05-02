@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.UnitRepository;
-import de.njsm.stocks.client.business.entities.UnitForListing;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -41,5 +41,10 @@ class UnitRepositoryImpl implements UnitRepository {
     public Observable<List<UnitForListing>> getUnits() {
         return unitDao.getCurrentUnits()
                 .distinctUntilChanged();
+    }
+
+    @Override
+    public UnitForDeletion getEntityForDeletion(Identifiable<Unit> id) {
+        return unitDao.getUnit(id.id());
     }
 }

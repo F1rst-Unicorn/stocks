@@ -29,6 +29,7 @@ import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.DbTestCase;
 import de.njsm.stocks.client.database.LocationDbEntity;
 import de.njsm.stocks.client.database.StandardEntities;
+import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.observers.TestObserver;
 import org.junit.Before;
@@ -37,6 +38,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.njsm.stocks.client.database.StandardEntities.unitDbEntity;
 import static org.junit.Assert.assertTrue;
 
 public class ErrorRepositoryImplTest extends DbTestCase {
@@ -241,5 +243,37 @@ public class ErrorRepositoryImplTest extends DbTestCase {
         assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
         stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
         assertTrue(stocksDatabase.errorDao().getUnitAdds().isEmpty());
+    }
+
+    @Test
+    public void unitDeleteErrorCanBeRetrieved() {
+        UnitDbEntity unit = unitDbEntity();
+        UnitForDeletion data = UnitForDeletion.create(unit.id(), unit.version());
+        UnitDeleteErrorDetails errorDetails = UnitDeleteErrorDetails.create(unit.id(), unit.name(), unit.abbreviation());
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        stocksDatabase.synchronisationDao().writeUnits(Arrays.asList(unit));
+        errorRecorder.recordUnitDeleteError(exception, data);
+
+        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
+        TestObserver<List<ErrorDescription>> actual = uut.getErrors().test().awaitCount(1);
+        actual.assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
+        actual.assertValue(v -> v.get(0).errorDetails().equals(errorDetails));
+        actual.assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
+    }
+
+    @Test
+    public void unitDeleteErrorCanBeDeleted() {
+        UnitDbEntity unit = unitDbEntity();
+        UnitForDeletion data = UnitForDeletion.create(1, 2);
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        stocksDatabase.synchronisationDao().writeUnits(Arrays.asList(unit));
+        errorRecorder.recordUnitDeleteError(exception, data);
+        ErrorDescription input = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
+
+        uut.deleteError(input);
+
+        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
+        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
+        assertTrue(stocksDatabase.errorDao().getUnitDeletes().isEmpty());
     }
 }

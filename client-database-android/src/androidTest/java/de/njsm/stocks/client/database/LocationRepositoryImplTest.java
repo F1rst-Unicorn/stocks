@@ -62,7 +62,7 @@ public class LocationRepositoryImplTest extends DbTestCase {
         LocationDbEntity location = locationDbEntity();
         stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
 
-        LocationForDeletion actual = uut.getLocation(location::id);
+        LocationForDeletion actual = uut.getEntityForDeletion(location::id);
 
         assertEquals(location.id(), actual.id());
         assertEquals(location.version(), actual.version());

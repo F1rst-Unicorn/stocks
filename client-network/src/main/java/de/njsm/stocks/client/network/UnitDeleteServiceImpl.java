@@ -21,10 +21,9 @@
 
 package de.njsm.stocks.client.network;
 
-
 import de.njsm.stocks.client.business.EntityDeleteService;
 import de.njsm.stocks.client.business.StatusCodeException;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.business.entities.Versionable;
 import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
@@ -34,21 +33,21 @@ import javax.inject.Inject;
 
 import static de.njsm.stocks.client.network.DataMapper.map;
 
-public class LocationDeleteServiceImpl implements EntityDeleteService<Location> {
+public class UnitDeleteServiceImpl implements EntityDeleteService<Unit> {
 
     private final ServerApi api;
 
     private final CallHandler callHandler;
 
     @Inject
-    LocationDeleteServiceImpl(ServerApi api, CallHandler callHandler) {
+    UnitDeleteServiceImpl(ServerApi api, CallHandler callHandler) {
         this.api = api;
         this.callHandler = callHandler;
     }
 
     @Override
-    public void delete(Versionable<Location> locationForDeletion) {
-        Call<Response> call = api.deleteLocation(locationForDeletion.id(), locationForDeletion.version(), 0);
+    public void delete(Versionable<Unit> unit) {
+        Call<Response> call = api.deleteUnit(unit.id(), unit.version());
         StatusCode result = callHandler.executeCommand(call);
         if (result.isFail())
             throw new StatusCodeException(map(result));

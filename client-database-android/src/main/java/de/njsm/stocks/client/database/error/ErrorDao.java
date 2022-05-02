@@ -24,12 +24,13 @@ package de.njsm.stocks.client.database.error;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.UnitDeleteErrorDetails;
 import de.njsm.stocks.client.database.LocationDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
-import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY_STRING;
+import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY_STRING_SQL;
 
 @Dao
 public abstract class ErrorDao {
@@ -119,7 +120,7 @@ public abstract class ErrorDao {
             "from location " +
             "where id = :id " +
             "and version = :version " +
-            "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "' ")
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL)
     abstract LocationDbEntity getLocation(int id, int version);
 
     @Query("select * " +
@@ -138,4 +139,23 @@ public abstract class ErrorDao {
 
     @Query("select * from unit_to_add where id = :id")
     abstract UnitAddEntity getUnitAdd(long id);
+
+    @Query("select * from unit_to_delete")
+    abstract List<UnitDeleteEntity> getUnitDeletes();
+
+    @Insert
+    abstract long insert(UnitDeleteEntity entity);
+
+    @Query("delete from unit_to_delete where id = :id")
+    abstract void deleteUnitDelete(long id);
+
+    @Query("select * from unit_to_delete where id = :id")
+    abstract UnitDeleteEntity getUnitDelete(long id);
+
+    @Query("select * " +
+            "from unit " +
+            "where id = :id " +
+            "and version = :version " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL)
+    abstract UnitDeleteErrorDetails getUnit(long id, int version);
 }

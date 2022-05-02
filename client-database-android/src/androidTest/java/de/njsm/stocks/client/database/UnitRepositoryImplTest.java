@@ -21,21 +21,22 @@
 
 package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.UnitRepository;
+import de.njsm.stocks.client.business.entities.UnitForDeletion;
 import de.njsm.stocks.client.business.entities.UnitForListing;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.StandardEntities.unitDbEntity;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static org.junit.Assert.assertEquals;
 
 public class UnitRepositoryImplTest extends DbTestCase {
 
-    private UnitRepository uut;
+    private UnitRepositoryImpl uut;
 
     @Before
     public void setUp() {
@@ -44,12 +45,23 @@ public class UnitRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingUnitsWorks() {
-        List<UnitDbEntity> entities = Collections.singletonList(unitDbEntity());
+        List<UnitDbEntity> entities = singletonList(unitDbEntity());
         stocksDatabase.synchronisationDao().synchroniseUnits(entities);
         List<UnitForListing> expected = entities.stream().map(DataMapper::map).collect(toList());
 
         Observable<List<UnitForListing>> actual = uut.getUnits();
 
         actual.test().awaitCount(1).assertValue(expected);
+    }
+
+    @Test
+    public void gettingUnitForDeletionWorks() {
+        UnitDbEntity unit = unitDbEntity();
+        stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
+
+        UnitForDeletion actual = uut.getEntityForDeletion(unit::id);
+
+        assertEquals(unit.id(), actual.id());
+        assertEquals(unit.version(), actual.version());
     }
 }

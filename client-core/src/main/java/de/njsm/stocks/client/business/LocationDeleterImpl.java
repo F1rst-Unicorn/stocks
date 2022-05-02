@@ -26,40 +26,20 @@ import de.njsm.stocks.client.execution.Scheduler;
 
 import javax.inject.Inject;
 
-class LocationDeleterImpl implements LocationDeleter {
-
-    private final LocationDeleteService locationDeleteService;
-
-    private final LocationRepository locationRepository;
-
-    private final Synchroniser synchroniser;
-
-    private final ErrorRecorder errorRecorder;
-
-    private final Scheduler scheduler;
+class LocationDeleterImpl extends AbstractDeleterImpl<Location> {
 
     @Inject
-    LocationDeleterImpl(LocationDeleteService locationDeleteService, LocationRepository locationRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
-        this.locationDeleteService = locationDeleteService;
-        this.locationRepository = locationRepository;
-        this.synchroniser = synchroniser;
-        this.errorRecorder = errorRecorder;
-        this.scheduler = scheduler;
+    LocationDeleterImpl(EntityDeleteService<Location> locationDeleteService, EntityDeleteRepository<Location> locationRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
+        super(locationDeleteService, locationRepository, synchroniser, errorRecorder, scheduler);
     }
 
     @Override
-    public void deleteLocation(Identifiable<Location> location) {
-        scheduler.schedule(Job.create(Job.Type.DELETE_LOCATION, () -> deleteLocationInBackground(location)));
+    Job.Type getJobType() {
+        return Job.Type.DELETE_LOCATION;
     }
 
-    void deleteLocationInBackground(Identifiable<Location> location) {
-        LocationForDeletion locationForDeletion = locationRepository.getLocation(location);
-        try {
-            locationDeleteService.deleteLocation(locationForDeletion);
-            synchroniser.synchronise();
-        } catch (SubsystemException e) {
-            errorRecorder.recordLocationDeleteError(e, locationForDeletion);
-            new AfterErrorSynchroniser(synchroniser).visit(e, null);
-        }
+    @Override
+    void recordError(SubsystemException e, Versionable<Location> data) {
+        errorRecorder.recordLocationDeleteError(e, data);
     }
 }

@@ -26,8 +26,9 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FakeUnitListInteractor;
-import de.njsm.stocks.client.business.UnitDeleter;
+import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.business.entities.UnitForListing;
 import de.njsm.stocks.client.navigation.UnitListNavigator;
 import de.njsm.stocks.client.testdata.UnitsForListing;
@@ -62,7 +63,7 @@ public class UnitListFragmentTest {
 
     private UnitListNavigator mockUnitListNavigator;
 
-    private UnitDeleter unitDeleter;
+    private EntityDeleter<Unit> unitDeleter;
 
     @Before
     public void setUp() {
@@ -121,7 +122,7 @@ public class UnitListFragmentTest {
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(itemIndex, swipeRight()));
 
-        verify(unitDeleter).deleteUnit(data.get(itemIndex));
+        verify(unitDeleter).delete(data.get(itemIndex));
     }
 
     @Test
@@ -143,7 +144,7 @@ public class UnitListFragmentTest {
     }
 
     @Inject
-    void setUnitDeleter(UnitDeleter UnitDeleter) {
+    void setUnitDeleter(EntityDeleter<Unit> UnitDeleter) {
         this.unitDeleter = UnitDeleter;
     }
 }

@@ -24,6 +24,8 @@ package de.njsm.stocks.client.business;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -46,8 +48,9 @@ public interface FakeBusinessModule {
 
     @Provides
     @Singleton
-    static LocationDeleter locationDeleter() {
-        return mock(LocationDeleter.class);
+    @SuppressWarnings("unchecked")
+    static EntityDeleter<Location> locationDeleter() {
+        return mock(EntityDeleter.class);
     }
 
     @Provides
@@ -133,8 +136,9 @@ public interface FakeBusinessModule {
 
     @Provides
     @Singleton
-    static UnitDeleter unitDeleter() {
-        return mock(UnitDeleter.class);
+    @SuppressWarnings("unchecked")
+    static EntityDeleter<Unit> unitDeleter() {
+        return mock(EntityDeleter.class);
     }
 
     @Binds

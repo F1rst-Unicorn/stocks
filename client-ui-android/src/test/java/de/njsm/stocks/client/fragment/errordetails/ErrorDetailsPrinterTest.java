@@ -65,4 +65,10 @@ public class ErrorDetailsPrinterTest {
         UnitAddForm data = UnitAddForm.create("Gramm", "g");
         assertEquals(data.name() + " (" + data.abbreviation() + ")", uut.visit(data, null));
     }
+
+    @Test
+    public void unitDeleteErrorShowsName() {
+        UnitDeleteErrorDetails data = UnitDeleteErrorDetails.create(1, "Gramm", "g");
+        assertEquals(data.name() + " (" + data.abbreviation() + ")", uut.visit(data, null));
+    }
 }

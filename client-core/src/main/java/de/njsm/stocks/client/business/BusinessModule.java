@@ -24,6 +24,8 @@ package de.njsm.stocks.client.business;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.execution.ExecutionModule;
 
 import javax.inject.Singleton;
@@ -58,7 +60,7 @@ public interface BusinessModule {
     SynchroniseInteractor synchroniseInteractor(SynchroniseInteractorImpl impl);
 
     @Binds
-    LocationDeleter locationDeleter(LocationDeleterImpl impl);
+    EntityDeleter<Location> locationDeleter(LocationDeleterImpl impl);
 
     @Binds
     LocationListInteractor locationListInteractor(LocationListInteractorImpl impl);
@@ -85,7 +87,7 @@ public interface BusinessModule {
     UnitListInteractor unitListInteractor(UnitListInteractorImpl impl);
 
     @Binds
-    UnitDeleter UnitDeleter(UnitDeleterImpl impl);
+    EntityDeleter<Unit> UnitDeleter(UnitDeleterImpl impl);
 
     @Binds
     ScaledUnitListInteractor ScaledUnitListInteractor(ScaledUnitListInteractorImpl impl);

@@ -23,7 +23,9 @@ package de.njsm.stocks.client.business;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.SetupState;
+import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -36,7 +38,7 @@ public interface UimockBusinessModule {
     LocationListInteractor locationListInteractor(InMemoryLocationListInteractorImpl implementation);
 
     @Binds
-    LocationDeleter locationDeleter(InMemoryLocationDeleterImpl implementation);
+    EntityDeleter<Location> locationDeleter(InMemoryLocationDeleterImpl implementation);
 
     @Binds
     LocationAddInteractor locationAddInteractor(InMemoryLocationAddInteractorImpl implementation);
@@ -92,7 +94,7 @@ public interface UimockBusinessModule {
     UnitListInteractor unitListInteractor(InMemoryUnitListInteractorImpl impl);
 
     @Binds
-    UnitDeleter UnitDeleter(InMemoryUnitDeleterImpl impl);
+    EntityDeleter<Unit> UnitDeleter(InMemoryUnitDeleterImpl impl);
 
     @Binds
     ScaledUnitListInteractor ScaledUnitListInteractor(InMemoryScaledUnitListInteractorImpl impl);

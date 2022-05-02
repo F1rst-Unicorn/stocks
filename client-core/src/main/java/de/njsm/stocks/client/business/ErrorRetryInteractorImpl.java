@@ -30,11 +30,13 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final LocationAddInteractor locationAddInteractor;
 
-    private final LocationDeleter locationDeleter;
+    private final EntityDeleter<Location> locationDeleter;
 
     private final LocationEditInteractor locationEditInteractor;
 
     private final UnitAddInteractor unitAddInteractor;
+
+    private final EntityDeleter<Unit> unitDeleter;
 
     private final Synchroniser synchroniser;
 
@@ -45,11 +47,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     private final JobTypeTranslator jobTypeTranslator;
 
     @Inject
-    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, LocationDeleter locationDeleter, LocationEditInteractor locationEditInteractor, UnitAddInteractor unitAddInteractor, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
+    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, EntityDeleter<Location> locationDeleter, LocationEditInteractor locationEditInteractor, UnitAddInteractor unitAddInteractor, EntityDeleter<Unit> unitDeleter, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
         this.locationDeleter = locationDeleter;
         this.locationEditInteractor = locationEditInteractor;
         this.unitAddInteractor = unitAddInteractor;
+        this.unitDeleter = unitDeleter;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -90,7 +93,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     @Override
     public Void locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, Void input) {
-        locationDeleter.deleteLocation(locationDeleteErrorDetails::id);
+        locationDeleter.delete(locationDeleteErrorDetails);
         return null;
     }
 
@@ -108,6 +111,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     @Override
     public Void unitAddForm(UnitAddForm unitAddForm, Void input) {
         unitAddInteractor.addUnit(unitAddForm);
+        return null;
+    }
+
+    @Override
+    public Void unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, Void input) {
+        unitDeleter.delete(unitDeleteErrorDetails);
         return null;
     }
 
@@ -136,6 +145,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type unitAddForm(UnitAddForm unitAddForm, Void input) {
             return Job.Type.ADD_UNIT;
+        }
+
+        @Override
+        public Job.Type unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, Void input) {
+            return Job.Type.DELETE_UNIT;
         }
     }
 }

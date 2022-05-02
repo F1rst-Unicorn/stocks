@@ -66,6 +66,6 @@ public class ErrorDetailsDetailsVisitorTest {
     @Test
     public void unitAddingShowsNameAndAbbreviation() {
         UnitAddForm data = UnitAddForm.create("Gramm", "g");
-        assertEquals(data.name() + ", " + data.abbreviation(), uut.visit(data, null));
+        assertEquals(data.name() + " (" + data.abbreviation() + ")", uut.visit(data, null));
     }
 }

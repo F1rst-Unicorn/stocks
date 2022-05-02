@@ -51,4 +51,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer unitAddForm(UnitAddForm unitAddForm, Void input) {
         return R.string.error_details_unit_add_error_list;
     }
+
+    @Override
+    public Integer unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, Void input) {
+        return R.string.error_details_unit_delete_error_list;
+    }
 }

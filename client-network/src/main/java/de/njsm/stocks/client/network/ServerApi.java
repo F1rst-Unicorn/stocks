@@ -100,4 +100,8 @@ public interface ServerApi {
     @PUT("/v2/unit")
     Call<Response> addUnit(@Query("name") String name,
                            @Query("abbreviation") String abbreviation);
+
+    @DELETE("/v2/unit")
+    Call<Response> deleteUnit(@Query("id") int id,
+                              @Query("version") int version);
 }

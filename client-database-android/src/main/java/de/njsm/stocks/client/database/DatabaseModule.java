@@ -27,6 +27,8 @@ import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.Job;
+import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.database.error.ConflictRepositoryImpl;
 import de.njsm.stocks.client.database.error.ErrorDao;
 import de.njsm.stocks.client.database.error.ErrorRecorderImpl;
@@ -57,6 +59,9 @@ public interface DatabaseModule {
 
     @Binds
     LocationRepository locationRepository(LocationRepositoryImpl impl);
+
+    @Binds
+    EntityDeleteRepository<Location> locationDeleterRepository(LocationRepository impl);
 
     @Binds
     SynchronisationRepository synchronisationRepository(SynchronisationRepositoryImpl impl);
@@ -102,6 +107,9 @@ public interface DatabaseModule {
 
     @Binds
     UnitRepository unitRepository(UnitRepositoryImpl impl);
+
+    @Binds
+    EntityDeleteRepository<Unit> unitDeleterRepository(UnitRepository impl);
 
     @Binds
     ScaledUnitRepository ScaledUnitRepository(ScaledUnitRepositoryImpl impl);

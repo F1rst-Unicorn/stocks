@@ -41,8 +41,8 @@ abstract class LocationDao {
     abstract Observable<List<LocationForListing>> getCurrentLocations();
 
     @Query("select * from current_location where id = :id")
-    public abstract LocationDbEntity getLocation(int id);
+    abstract LocationDbEntity getLocation(int id);
 
     @Query("select * from current_location where id = :id")
-    public abstract Observable<LocationDbEntity> getCurrentLocation(int id);
+    abstract Observable<LocationDbEntity> getCurrentLocation(int id);
 }

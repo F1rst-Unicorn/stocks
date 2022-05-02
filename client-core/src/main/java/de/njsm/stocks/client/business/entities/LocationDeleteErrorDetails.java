@@ -24,9 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationDeleteErrorDetails implements ErrorDetails {
-
-    public abstract int id();
+public abstract class LocationDeleteErrorDetails implements ErrorDetails, Identifiable<Location> {
 
     public abstract String name();
 

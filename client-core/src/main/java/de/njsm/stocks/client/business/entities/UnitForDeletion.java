@@ -19,10 +19,27 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.UnitForListing;
+import com.google.auto.value.AutoValue;
 
-public interface UnitDeleter {
-    void deleteUnit(UnitForListing unitForListing);
+@AutoValue
+public abstract class UnitForDeletion implements Versionable<Unit> {
+
+    public static UnitForDeletion create(int id, int version) {
+        return builder()
+                .id(id)
+                .version(version)
+                .build();
+    }
+
+    public static UnitForDeletion.Builder builder() {
+        return new AutoValue_UnitForDeletion.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder
+            extends BaseBuilder<UnitForDeletion>
+            implements Versionable.Builder<Builder> {
+    }
 }

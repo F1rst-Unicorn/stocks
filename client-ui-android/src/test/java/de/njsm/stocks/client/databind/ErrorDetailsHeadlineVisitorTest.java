@@ -44,5 +44,6 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_location_delete_error_list, (long) uut.visit(LocationDeleteErrorDetails.create(2, "name"), null));
         assertEquals(R.string.error_details_location_edit_error_list, (long) uut.visit(LocationEditErrorDetails.create(2, "name", "description"), null));
         assertEquals(R.string.error_details_unit_add_error_list, (long) uut.visit(UnitAddForm.create("name", "abbreviation"), null));
+        assertEquals(R.string.error_details_unit_delete_error_list, (long) uut.visit(UnitDeleteErrorDetails.create(1, "name", "abbreviation"), null));
     }
 }

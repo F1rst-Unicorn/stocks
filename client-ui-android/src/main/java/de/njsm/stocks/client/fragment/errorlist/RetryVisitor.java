@@ -52,6 +52,12 @@ class RetryVisitor implements ErrorDetailsVisitor<ErrorDescription, Void>, Statu
     }
 
     @Override
+    public Void unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, ErrorDescription input) {
+        retryDirectlyCallback.accept(input);
+        return null;
+    }
+
+    @Override
     public Void locationAddForm(LocationAddForm locationAddForm, ErrorDescription input) {
         retryDirectlyCallback.accept(input);
         return null;

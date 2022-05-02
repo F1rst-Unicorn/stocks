@@ -42,13 +42,16 @@ public class ErrorRetryInteractorImplTest {
     private LocationAddInteractor locationAddInteractor;
 
     @Mock
-    private LocationDeleter locationDeleter;
+    private EntityDeleter<Location> locationDeleter;
 
     @Mock
     private LocationEditInteractor locationEditInteractor;
 
     @Mock
     private UnitAddInteractor unitAddInteractor;
+
+    @Mock
+    private EntityDeleter<Unit> unitDeleter;
 
     @Mock
     private Synchroniser synchroniser;
@@ -61,7 +64,7 @@ public class ErrorRetryInteractorImplTest {
 
     @BeforeEach
     void setUp() {
-        uut = new ErrorRetryInteractorImpl(locationAddInteractor, locationDeleter, locationEditInteractor, unitAddInteractor, synchroniser, scheduler, errorRepository);
+        uut = new ErrorRetryInteractorImpl(locationAddInteractor, locationDeleter, locationEditInteractor, unitAddInteractor, unitDeleter, synchroniser, scheduler, errorRepository);
     }
 
     @Test
@@ -131,7 +134,7 @@ public class ErrorRetryInteractorImplTest {
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<Identifiable<Location>> captor = ArgumentCaptor.forClass(Identifiable.class);
-        verify(locationDeleter).deleteLocation(captor.capture());
+        verify(locationDeleter).delete(captor.capture());
         assertEquals(locationDeleteErrorDetails.id(), captor.getValue().id());
         verify(errorRepository).deleteError(input);
     }
@@ -160,6 +163,20 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(unitAddInteractor).addUnit(errorDetails);
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingUnitDeletingDispatches() {
+        UnitDeleteErrorDetails unitDeleteErrorDetails = UnitDeleteErrorDetails.create(1, "Gramm", "g");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", unitDeleteErrorDetails);
+
+        uut.retryInBackground(input);
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Identifiable<Unit>> captor = ArgumentCaptor.forClass(Identifiable.class);
+        verify(unitDeleter).delete(captor.capture());
+        assertEquals(unitDeleteErrorDetails.id(), captor.getValue().id());
         verify(errorRepository).deleteError(input);
     }
 }

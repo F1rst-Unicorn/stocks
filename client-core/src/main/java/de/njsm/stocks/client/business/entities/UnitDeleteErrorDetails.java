@@ -19,21 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.*;
+import com.google.auto.value.AutoValue;
 
-public interface ErrorRecorder {
+@AutoValue
+public abstract class UnitDeleteErrorDetails implements ErrorDetails, Identifiable<Unit>, UnitFields {
 
-    void recordSynchronisationError(SubsystemException exception);
+    public static UnitDeleteErrorDetails create(int id, String name, String abbreviation) {
+        return new AutoValue_UnitDeleteErrorDetails(id, name, abbreviation);
+    }
 
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
-
-    void recordLocationDeleteError(SubsystemException exception, Versionable<Location> locationForDeletion);
-
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
-
-    void recordUnitAddError(SubsystemException exception, UnitAddForm input);
-
-    void recordUnitDeleteError(SubsystemException exception, Versionable<Unit> outputToService);
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.unitDeleteErrorDetails(this, input);
+    }
 }

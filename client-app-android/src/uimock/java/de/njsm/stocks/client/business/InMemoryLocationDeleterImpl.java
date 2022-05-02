@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-class InMemoryLocationDeleterImpl implements LocationDeleter {
+class InMemoryLocationDeleterImpl implements EntityDeleter<Location> {
 
     private final BehaviorSubject<List<LocationForListing>> data;
 
@@ -41,7 +41,7 @@ class InMemoryLocationDeleterImpl implements LocationDeleter {
     }
 
     @Override
-    public void deleteLocation(Identifiable<Location> location) {
+    public void delete(Identifiable<Location> location) {
         data.firstElement().subscribe(list -> {
             List<LocationForListing> newList = new ArrayList<>(list);
             newList.removeIf(v -> v.id() == location.id());

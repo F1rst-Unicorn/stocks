@@ -76,7 +76,7 @@ public class StandardEntities {
                 .unit(8);
     }
 
-    static UnitDbEntity unitDbEntity() {
+    public static UnitDbEntity unitDbEntity() {
         return unitDbEntityBuilder().build();
     }
 

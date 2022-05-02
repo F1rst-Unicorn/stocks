@@ -213,7 +213,7 @@ public class DataMapper {
                 .build();
     }
 
-    public static LocationDeleteEntity map(LocationForDeletion locationForDeletion) {
+    public static LocationDeleteEntity map(Versionable<Location> locationForDeletion) {
         return LocationDeleteEntity.create(locationForDeletion.id(), locationForDeletion.version());
     }
 

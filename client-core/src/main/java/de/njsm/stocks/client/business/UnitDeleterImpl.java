@@ -21,18 +21,27 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.UnitForListing;
+import de.njsm.stocks.client.business.entities.Job;
+import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.Versionable;
+import de.njsm.stocks.client.execution.Scheduler;
 
 import javax.inject.Inject;
 
-class UnitDeleterImpl implements UnitDeleter {
+class UnitDeleterImpl extends AbstractDeleterImpl<Unit> {
 
     @Inject
-    UnitDeleterImpl() {
+    UnitDeleterImpl(EntityDeleteService<Unit> deleteService, EntityDeleteRepository<Unit> entityDeleteRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
+        super(deleteService, entityDeleteRepository, synchroniser, errorRecorder, scheduler);
     }
 
     @Override
-    public void deleteUnit(UnitForListing unitForListing) {
+    Job.Type getJobType() {
+        return Job.Type.DELETE_UNIT;
+    }
 
+    @Override
+    void recordError(SubsystemException e, Versionable<Unit> data) {
+        errorRecorder.recordUnitDeleteError(e, data);
     }
 }

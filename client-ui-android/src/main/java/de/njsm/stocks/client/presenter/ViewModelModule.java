@@ -26,6 +26,8 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.*;
+import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.di.ViewModelFactory;
 import de.njsm.stocks.client.di.ViewModelKey;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
@@ -44,7 +46,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(LocationListViewModel.class)
-    ViewModel locationViewModel(LocationListInteractor locationListInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser) {
+    ViewModel locationViewModel(LocationListInteractor locationListInteractor, EntityDeleter<Location> locationDeleter, Synchroniser synchroniser) {
         return new LocationListViewModel(locationListInteractor, locationDeleter, synchroniser);
     }
 
@@ -100,7 +102,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(UnitListViewModel.class)
-    ViewModel UnitListViewModel(UnitListInteractor unitListInteractor, UnitDeleter unitDeleter) {
+    ViewModel UnitListViewModel(UnitListInteractor unitListInteractor, EntityDeleter<Unit> unitDeleter) {
         return new UnitListViewModel(unitListInteractor, unitDeleter);
     }
 

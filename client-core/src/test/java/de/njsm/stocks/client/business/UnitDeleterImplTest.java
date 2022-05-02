@@ -21,19 +21,27 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.Job;
+import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.Versionable;
+import org.junit.jupiter.api.BeforeEach;
 
-public interface ErrorRecorder {
+import static org.mockito.Mockito.verify;
 
-    void recordSynchronisationError(SubsystemException exception);
+class UnitDeleterImplTest extends DeleterImplTest<Unit> {
 
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
+    @BeforeEach
+    void setUp() {
+        uut = new UnitDeleterImpl(deleteService, deleteRepository, synchroniser, errorRecorder, scheduler);
+    }
 
-    void recordLocationDeleteError(SubsystemException exception, Versionable<Location> locationForDeletion);
+    @Override
+    Job.Type getJobType() {
+        return Job.Type.DELETE_UNIT;
+    }
 
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
-
-    void recordUnitAddError(SubsystemException exception, UnitAddForm input);
-
-    void recordUnitDeleteError(SubsystemException exception, Versionable<Unit> outputToService);
+    @Override
+    void verifyRecorder(SubsystemException exception, Versionable<Unit> outputToService) {
+        verify(errorRecorder).recordUnitDeleteError(exception, outputToService);
+    }
 }

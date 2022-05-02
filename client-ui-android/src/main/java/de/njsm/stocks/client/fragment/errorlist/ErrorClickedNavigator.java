@@ -26,7 +26,7 @@ import de.njsm.stocks.client.navigation.ErrorListNavigator;
 
 import javax.inject.Inject;
 
-public class ErrorClickedNavigator implements ErrorDetailsVisitor<ErrorDescription, Void>, StatusCodeVisitor<ErrorDescription, Void> {
+class ErrorClickedNavigator implements ErrorDetailsVisitor<ErrorDescription, Void>, StatusCodeVisitor<ErrorDescription, Void> {
 
     private final ErrorListNavigator errorListNavigator;
 
@@ -46,6 +46,12 @@ public class ErrorClickedNavigator implements ErrorDetailsVisitor<ErrorDescripti
 
     @Override
     public Void unitAddForm(UnitAddForm unitAddForm, ErrorDescription input) {
+        errorListNavigator.showErrorDetails(input.id());
+        return null;
+    }
+
+    @Override
+    public Void unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, ErrorDescription input) {
         errorListNavigator.showErrorDetails(input.id());
         return null;
     }

@@ -52,7 +52,7 @@ class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public LocationForDeletion getLocation(Identifiable<Location> i) {
+    public LocationForDeletion getEntityForDeletion(Identifiable<Location> i) {
         return mapForDeletion(locationDao.getLocation(i.id()));
     }
 

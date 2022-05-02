@@ -26,7 +26,7 @@ import de.njsm.stocks.client.navigation.ErrorListNavigator;
 
 import javax.inject.Inject;
 
-public class ConflictNavigator implements ErrorDetailsVisitor<ErrorDescription, Void> {
+class ConflictNavigator implements ErrorDetailsVisitor<ErrorDescription, Void> {
 
     private final ErrorListNavigator errorListNavigator;
 
@@ -43,6 +43,11 @@ public class ConflictNavigator implements ErrorDetailsVisitor<ErrorDescription, 
 
     @Override
     public Void unitAddForm(UnitAddForm unitAddForm, ErrorDescription input) {
+        throw new IllegalStateException("unexpected conflict resolution");
+    }
+
+    @Override
+    public Void unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, ErrorDescription input) {
         throw new IllegalStateException("unexpected conflict resolution");
     }
 

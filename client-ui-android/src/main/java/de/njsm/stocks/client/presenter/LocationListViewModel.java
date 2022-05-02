@@ -22,9 +22,10 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
-import de.njsm.stocks.client.business.LocationDeleter;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.LocationListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
@@ -38,14 +39,14 @@ public class LocationListViewModel extends ViewModel {
 
     private final LocationListInteractor locationListInteractor;
 
-    private final LocationDeleter locationDeleter;
+    private final EntityDeleter<Location> locationDeleter;
 
     private final Synchroniser synchroniser;
 
     private Observable<List<LocationForListing>> data;
 
     @Inject
-    public LocationListViewModel(LocationListInteractor locationListInteractor, LocationDeleter locationDeleter, Synchroniser synchroniser) {
+    public LocationListViewModel(LocationListInteractor locationListInteractor, EntityDeleter<Location> locationDeleter, Synchroniser synchroniser) {
         this.locationListInteractor = locationListInteractor;
         this.locationDeleter = locationDeleter;
         this.synchroniser = synchroniser;
@@ -58,7 +59,7 @@ public class LocationListViewModel extends ViewModel {
     }
 
     public void deleteLocation(int listItemIndex) {
-        performOnCurrentLocations(list -> locationDeleter.deleteLocation(list.get(listItemIndex)));
+        performOnCurrentLocations(list -> locationDeleter.delete(list.get(listItemIndex)));
     }
 
     public void resolveLocationId(int listItemIndex, Consumer<Integer> callback) {

@@ -27,7 +27,9 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.*;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.ServerEndpoint;
+import de.njsm.stocks.client.business.entities.Unit;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -58,13 +60,16 @@ public interface NetworkModule {
     LocationAddService locationAddService(LocationAddServiceImpl impl);
 
     @Binds
-    LocationDeleteService locationDeleteService(LocationDeleteServiceImpl impl);
+    EntityDeleteService<Location> locationDeleteService(LocationDeleteServiceImpl impl);
 
     @Binds
     LocationEditService locationEditService(LocationEditServiceImpl impl);
 
     @Binds
     UnitAddService unitAddService(UnitAddServiceImpl impl);
+
+    @Binds
+    EntityDeleteService<Unit> unitDeleteService(UnitDeleteServiceImpl impl);
 
     @Provides
     @Singleton

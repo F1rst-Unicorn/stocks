@@ -21,9 +21,10 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
+import de.njsm.stocks.client.business.entities.Entity;
+import de.njsm.stocks.client.business.entities.Versionable;
 
-public interface LocationDeleteService {
+public interface EntityDeleteService<E extends Entity<E>> {
 
-    void deleteLocation(LocationForDeletion location);
+    void delete(Versionable<E> data);
 }

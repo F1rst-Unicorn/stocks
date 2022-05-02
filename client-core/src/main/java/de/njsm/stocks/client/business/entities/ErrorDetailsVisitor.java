@@ -36,4 +36,6 @@ public interface ErrorDetailsVisitor<I, O> {
     O locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, I input);
 
     O unitAddForm(UnitAddForm unitAddForm, I input);
+
+    O unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, I input);
 }

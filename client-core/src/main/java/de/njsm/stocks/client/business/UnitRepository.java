@@ -26,7 +26,7 @@ import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
-public interface UnitRepository {
+public interface UnitRepository extends EntityDeleteRepository<Unit> {
 
     Observable<List<UnitForListing>> getUnits();
 }

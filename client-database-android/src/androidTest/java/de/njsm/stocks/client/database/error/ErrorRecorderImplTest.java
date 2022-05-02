@@ -177,4 +177,30 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());
     }
+
+    @Test
+    public void recordingErrorDeletingUnitWorks() {
+        UnitForDeletion unitForDeletion = UnitForDeletion.builder()
+                .id(2)
+                .version(3)
+                .build();
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordUnitDeleteError(exception, unitForDeletion);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<UnitDeleteEntity> unitDeleteEntities = stocksDatabase.errorDao().getUnitDeletes();
+        assertEquals(1, unitDeleteEntities.size());
+        assertEquals(1, unitDeleteEntities.get(0).id());
+        assertEquals(unitForDeletion.id(), unitDeleteEntities.get(0).unitId());
+        assertEquals(unitForDeletion.version(), unitDeleteEntities.get(0).version());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.DELETE_UNIT, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
 }

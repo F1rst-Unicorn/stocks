@@ -21,125 +21,27 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.execution.Scheduler;
+import de.njsm.stocks.client.business.entities.Job;
+import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.Versionable;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
-
-class LocationDeleterImplTest {
-
-    private LocationDeleterImpl uut;
-
-    private Scheduler scheduler;
-
-    private LocationDeleteService locationDeleteService;
-
-    private LocationRepository locationRepository;
-
-    private ErrorRecorder errorRecorder;
-
-    private Synchroniser synchroniser;
+class LocationDeleterImplTest extends DeleterImplTest<Location> {
 
     @BeforeEach
     void setUp() {
-        scheduler = mock(Scheduler.class);
-        locationDeleteService = mock(LocationDeleteService.class);
-        locationRepository = mock(LocationRepository.class);
-        errorRecorder = mock(ErrorRecorder.class);
-        synchroniser = mock(Synchroniser.class);
-        uut = new LocationDeleterImpl(locationDeleteService, locationRepository, synchroniser, errorRecorder, scheduler);
+        uut = new LocationDeleterImpl(deleteService, deleteRepository, synchroniser, errorRecorder, scheduler);
     }
 
-    @Test
-    void deletingQueuesTask() {
-        Identifiable<Location> input = () -> 42;
-
-        uut.deleteLocation(input);
-
-        ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
-        verify(scheduler).schedule(captor.capture());
-        assertEquals(Job.Type.DELETE_LOCATION, captor.getValue().name());
+    @Override
+    Job.Type getJobType() {
+        return Job.Type.DELETE_LOCATION;
     }
 
-    @Test
-    void deletingInBackgroundWorks() {
-        int id = 42;
-        Identifiable<Location> input = () -> id;
-        LocationForDeletion outputToService = LocationForDeletion.builder()
-                .id(id)
-                .version(3)
-                .build();
-        when(locationRepository.getLocation(input)).thenReturn(outputToService);
-
-        uut.deleteLocationInBackground(input);
-
-        verify(locationRepository).getLocation(input);
-        verify(locationDeleteService).deleteLocation(outputToService);
-        verify(synchroniser).synchronise();
-    }
-
-    @Test
-    void failingDeletionIsRecorded() {
-        int id = 42;
-        Identifiable<Location> input = () -> id;
-        LocationForDeletion outputToService = LocationForDeletion.builder()
-                .id(id)
-                .version(3)
-                .build();
-        when(locationRepository.getLocation(input)).thenReturn(outputToService);
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        doThrow(exception).when(locationDeleteService).deleteLocation(outputToService);
-
-        uut.deleteLocationInBackground(input);
-
-        verify(locationRepository).getLocation(input);
-        verify(locationDeleteService).deleteLocation(outputToService);
-        verifyNoInteractions(synchroniser);
-        verify(errorRecorder).recordLocationDeleteError(exception, outputToService);
-    }
-
-    @Test
-    void failingDeletionWithSubsystemExceptionIsRecorded() {
-        int id = 42;
-        Identifiable<Location> input = () -> id;
-        LocationForDeletion outputToService = LocationForDeletion.builder()
-                .id(id)
-                .version(3)
-                .build();
-        when(locationRepository.getLocation(input)).thenReturn(outputToService);
-        SubsystemException exception = new SubsystemException("test");
-        doThrow(exception).when(locationDeleteService).deleteLocation(outputToService);
-
-        uut.deleteLocationInBackground(input);
-
-        verify(locationRepository).getLocation(input);
-        verify(locationDeleteService).deleteLocation(outputToService);
-        verifyNoInteractions(synchroniser);
-        verify(errorRecorder).recordLocationDeleteError(exception, outputToService);
-    }
-
-    @Test
-    void failingDeletionWithOutdatedDataTriggersSynchronisation() {
-        int id = 42;
-        Identifiable<Location> input = () -> id;
-        LocationForDeletion outputToService = LocationForDeletion.builder()
-                .id(id)
-                .version(3)
-                .build();
-        when(locationRepository.getLocation(input)).thenReturn(outputToService);
-        StatusCodeException exception = new StatusCodeException(StatusCode.INVALID_DATA_VERSION);
-        doThrow(exception).when(locationDeleteService).deleteLocation(outputToService);
-
-        uut.deleteLocationInBackground(input);
-
-        verify(locationRepository).getLocation(input);
-        verify(locationDeleteService).deleteLocation(outputToService);
-        verify(synchroniser).synchronise();
+    @Override
+    void verifyRecorder(SubsystemException exception, Versionable<Location> outputToService) {
         verify(errorRecorder).recordLocationDeleteError(exception, outputToService);
     }
 }

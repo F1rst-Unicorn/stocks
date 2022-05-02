@@ -21,19 +21,10 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.Entity;
+import de.njsm.stocks.client.business.entities.Identifiable;
 
-public interface ErrorRecorder {
+public interface EntityDeleter<E extends Entity<E>> {
 
-    void recordSynchronisationError(SubsystemException exception);
-
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
-
-    void recordLocationDeleteError(SubsystemException exception, Versionable<Location> locationForDeletion);
-
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
-
-    void recordUnitAddError(SubsystemException exception, UnitAddForm input);
-
-    void recordUnitDeleteError(SubsystemException exception, Versionable<Unit> outputToService);
+    void delete(Identifiable<E> location);
 }

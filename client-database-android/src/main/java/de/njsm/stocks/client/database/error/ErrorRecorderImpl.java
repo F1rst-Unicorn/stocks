@@ -25,10 +25,7 @@ import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.LocationForEditing;
-import de.njsm.stocks.client.business.entities.UnitAddForm;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.DataMapper;
 
 import javax.inject.Inject;
@@ -64,7 +61,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     }
 
     @Override
-    public void recordLocationDeleteError(SubsystemException exception, LocationForDeletion locationForDeletion) {
+    public void recordLocationDeleteError(SubsystemException exception, Versionable<Location> locationForDeletion) {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
 
         LocationDeleteEntity locationDeleteEntity = DataMapper.map(locationForDeletion);
@@ -88,6 +85,16 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
         long dataId = errorDao.insert(UnitAddEntity.create(input.name(), input.abbreviation()));
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @Override
+    public void recordUnitDeleteError(SubsystemException exception, Versionable<Unit> unit) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
+
+        UnitDeleteEntity entity = UnitDeleteEntity.create(unit.id(), unit.version());
+        long dataId = errorDao.insert(entity);
+
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
     @AutoValue
