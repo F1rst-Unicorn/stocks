@@ -25,5 +25,5 @@ import de.njsm.stocks.client.business.entities.UnitForEditing;
 
 public interface UnitEditService {
 
-    void editUnit(UnitForEditing location);
+    void edit(UnitForEditing location);
 }

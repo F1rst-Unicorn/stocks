@@ -81,12 +81,13 @@ public class LocationRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingLocationInBackgroundForEditingWorks() {
-        LocationDbEntity location = locationDbEntity();
-        stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
-        LocationToEdit expected = DataMapper.mapToEdit(location);
+        LocationDbEntity entity = locationDbEntity();
+        stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(entity));
+        LocationToEdit expected = DataMapper.mapToEdit(entity);
 
-        LocationForEditing actual = uut.getCurrentLocationBeforeEditing(location::id);
+        LocationForEditing actual = uut.getCurrentLocationBeforeEditing(entity::id);
 
         assertTrue(expected.isContainedIn(actual));
+        assertEquals(entity.version(), actual.version());
     }
 }

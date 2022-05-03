@@ -99,9 +99,15 @@ class SynchronisationLock implements Job.TypeVisitor<Boolean, Boolean> {
     }
 
     @Override
-    public Boolean deleteUnit(Job.Type type, Boolean input) {
-        readLock(input);
+    public Boolean deleteUnit(Job.Type type, Boolean aquireLock) {
+        readLock(aquireLock);
         return true;
+    }
+
+    @Override
+    public Boolean editUnit(Job.Type type, Boolean aquireLock) {
+        readLock(aquireLock);
+        return null;
     }
 
     private void readLock(boolean aquireLock) {

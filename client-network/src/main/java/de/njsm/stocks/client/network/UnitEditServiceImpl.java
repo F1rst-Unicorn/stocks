@@ -45,7 +45,7 @@ class UnitEditServiceImpl implements UnitEditService {
     }
 
     @Override
-    public void editUnit(UnitForEditing unit) {
+    public void edit(UnitForEditing unit) {
         Call<Response> call = api.editUnit(unit.id(), unit.version(), unit.name(), unit.abbreviation());
         StatusCode result = callHandler.executeCommand(call);
         if (result.isFail())

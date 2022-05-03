@@ -44,6 +44,16 @@ class UnitRepositoryImpl implements UnitRepository {
     }
 
     @Override
+    public Observable<UnitToEdit> getUnit(Identifiable<Unit> id) {
+        return unitDao.getUnitToEdit(id.id());
+    }
+
+    @Override
+    public UnitForEditing getCurrentDataBeforeEditing(Identifiable<Unit> data) {
+        return unitDao.getUnitForEditing(data.id());
+    }
+
+    @Override
     public UnitForDeletion getEntityForDeletion(Identifiable<Unit> id) {
         return unitDao.getUnit(id.id());
     }

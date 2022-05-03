@@ -26,6 +26,14 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class UnitToEdit implements Identifiable<Unit>, UnitFields {
 
+    public static UnitToEdit create(int id, String name, String abbreviation) {
+        return UnitToEdit.builder()
+                .id(id)
+                .name(name)
+                .abbreviation(abbreviation)
+                .build();
+    }
+
     public UnitForEditing addVersion(int version) {
         return UnitForEditing.builder()
                 .id(id())

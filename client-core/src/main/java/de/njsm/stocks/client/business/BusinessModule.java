@@ -97,4 +97,7 @@ public interface BusinessModule {
 
     @Binds
     UnitAddInteractor UnitAddInteractor(UnitAddInteractorImpl impl);
+
+    @Binds
+    UnitEditInteractor UnitEditInteractor(UnitEditInteractorImpl impl);
 }

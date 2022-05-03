@@ -22,20 +22,11 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.*;
+import io.reactivex.rxjava3.core.Observable;
 
-public interface ErrorRecorder {
+public interface UnitEditInteractor {
 
-    void recordSynchronisationError(SubsystemException exception);
+    Observable<UnitToEdit> get(Identifiable<Unit> id);
 
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
-
-    void recordLocationDeleteError(SubsystemException exception, Versionable<Location> locationForDeletion);
-
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
-
-    void recordUnitAddError(SubsystemException exception, UnitAddForm input);
-
-    void recordUnitDeleteError(SubsystemException exception, Versionable<Unit> outputToService);
-
-    void recordUnitEditError(SubsystemException exception, UnitForEditing unitForEditing);
+    void edit(UnitToEdit formData);
 }

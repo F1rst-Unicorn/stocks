@@ -22,7 +22,9 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.UnitForDeletion;
+import de.njsm.stocks.client.business.entities.UnitForEditing;
 import de.njsm.stocks.client.business.entities.UnitForListing;
+import de.njsm.stocks.client.business.entities.UnitToEdit;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +35,7 @@ import static de.njsm.stocks.client.database.StandardEntities.unitDbEntity;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UnitRepositoryImplTest extends DbTestCase {
 
@@ -55,6 +58,18 @@ public class UnitRepositoryImplTest extends DbTestCase {
     }
 
     @Test
+    public void gettingSingleUnitWorks() {
+        UnitDbEntity entity = unitDbEntity();
+        List<UnitDbEntity> entities = singletonList(entity);
+        stocksDatabase.synchronisationDao().synchroniseUnits(entities);
+        UnitToEdit expected = UnitToEdit.create(entity.id(), entity.name(), entity.abbreviation());
+
+        Observable<UnitToEdit> actual = uut.getUnit(entity::id);
+
+        actual.test().awaitCount(1).assertValue(expected);
+    }
+
+    @Test
     public void gettingUnitForDeletionWorks() {
         UnitDbEntity unit = unitDbEntity();
         stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
@@ -63,5 +78,17 @@ public class UnitRepositoryImplTest extends DbTestCase {
 
         assertEquals(unit.id(), actual.id());
         assertEquals(unit.version(), actual.version());
+    }
+
+    @Test
+    public void gettingUnitInBackgroundForEditingWorks() {
+        UnitDbEntity entity = unitDbEntity();
+        stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(entity));
+        UnitToEdit expected = UnitToEdit.create(entity.id(), entity.name(), entity.abbreviation());
+
+        UnitForEditing actual = uut.getCurrentDataBeforeEditing(expected);
+
+        assertTrue(expected.isContainedIn(actual));
+        assertEquals(entity.version(), actual.version());
     }
 }

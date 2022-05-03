@@ -29,4 +29,8 @@ import java.util.List;
 public interface UnitRepository extends EntityDeleteRepository<Unit> {
 
     Observable<List<UnitForListing>> getUnits();
+
+    Observable<UnitToEdit> getUnit(Identifiable<Unit> id);
+
+    UnitForEditing getCurrentDataBeforeEditing(Identifiable<Unit> data);
 }

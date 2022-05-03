@@ -102,7 +102,12 @@ public abstract class Job {
                 return visitor.deleteUnit(this, input);
             }
         },
-
+        EDIT_UNIT {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.editUnit(this, input);
+            }
+        },
         UNKNOWN {
             @Override
             public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
@@ -138,5 +143,7 @@ public abstract class Job {
         O addUnit(Type type, I input);
 
         O deleteUnit(Type type, I input);
+
+        O editUnit(Type type, I input);
     }
 }

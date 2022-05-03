@@ -26,6 +26,15 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class UnitForEditing implements Unit {
 
+    public static UnitForEditing create(int id, int version, String name, String abbreviation) {
+        return UnitForEditing.builder()
+                .id(id)
+                .version(version)
+                .name(name)
+                .abbreviation(abbreviation)
+                .build();
+    }
+
     public static Builder builder() {
         return new AutoValue_UnitForEditing.Builder();
     }

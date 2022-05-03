@@ -97,6 +97,11 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
+    @Override
+    public void recordUnitEditError(SubsystemException exception, UnitForEditing unitForEditing) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
     @AutoValue
     abstract static class ExceptionData {
 
