@@ -71,6 +71,9 @@ public interface NetworkModule {
     @Binds
     EntityDeleteService<Unit> unitDeleteService(UnitDeleteServiceImpl impl);
 
+    @Binds
+    UnitEditService unitEditService(UnitEditServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint) {
