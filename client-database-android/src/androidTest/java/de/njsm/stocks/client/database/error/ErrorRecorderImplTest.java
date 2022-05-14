@@ -145,9 +145,12 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(exception.getStatusCode(), actual.statusCode());
         List<LocationEditEntity> locationEditEntities = stocksDatabase.errorDao().getLocationEdits();
         assertEquals(1, locationEditEntities.size());
-        assertEquals(1, locationEditEntities.get(0).id());
-        assertEquals(locationForEditing.id(), locationEditEntities.get(0).locationId());
-        assertEquals(locationForEditing.version(), locationEditEntities.get(0).version());
+        LocationEditEntity locationEditEntity = locationEditEntities.get(0);
+        assertEquals(1, locationEditEntity.id());
+        assertEquals(locationForEditing.id(), locationEditEntity.locationId());
+        assertEquals(locationForEditing.version(), locationEditEntity.version());
+        assertEquals(locationForEditing.name(), locationEditEntity.name());
+        assertEquals(locationForEditing.description(), locationEditEntity.description());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.EDIT_LOCATION, errors.get(0).action());
@@ -199,6 +202,37 @@ public class ErrorRecorderImplTest extends DbTestCase {
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.DELETE_UNIT, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
+
+    @Test
+    public void recordingErrorEditingUnitWorks() {
+        UnitForEditing unitForEditing = UnitForEditing.builder()
+                .id(2)
+                .version(3)
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordUnitEditError(exception, unitForEditing);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<UnitEditEntity> unitEditEntities = stocksDatabase.errorDao().getUnitEdits();
+        assertEquals(1, unitEditEntities.size());
+        UnitEditEntity unitEditEntity = unitEditEntities.get(0);
+        assertEquals(1, unitEditEntity.id());
+        assertEquals(unitForEditing.id(), unitEditEntity.unitId());
+        assertEquals(unitForEditing.version(), unitEditEntity.version());
+        assertEquals(unitForEditing.name(), unitEditEntity.name());
+        assertEquals(unitForEditing.abbreviation(), unitEditEntity.abbreviation());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.EDIT_UNIT, errors.get(0).action());
         assertEquals(1, errors.get(0).dataId());
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());

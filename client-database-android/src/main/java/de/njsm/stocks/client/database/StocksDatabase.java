@@ -50,6 +50,7 @@ import java.time.format.DateTimeFormatter;
                 RecipeProductDbEntity.class,
                 UnitAddEntity.class,
                 UnitDeleteEntity.class,
+                UnitEditEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,

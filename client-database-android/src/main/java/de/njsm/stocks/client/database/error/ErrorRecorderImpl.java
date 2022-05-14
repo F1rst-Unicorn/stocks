@@ -98,8 +98,11 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     }
 
     @Override
-    public void recordUnitEditError(SubsystemException exception, UnitForEditing unitForEditing) {
-        throw new UnsupportedOperationException("TODO");
+    public void recordUnitEditError(SubsystemException exception, UnitForEditing unit) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
+        UnitEditEntity entity = UnitEditEntity.create(unit.id(), unit.version(), unit.name(), unit.abbreviation());
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
     @AutoValue

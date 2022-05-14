@@ -126,4 +126,11 @@ public class ViewModelModule {
     ViewModel UnitAddViewModel(UnitAddInteractor unitAddInteractor) {
         return new UnitAddViewModel(unitAddInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UnitEditViewModel.class)
+    ViewModel UnitEditViewModel(UnitEditInteractor unitEditInteractor) {
+        return new UnitEditViewModel(unitEditInteractor);
+    }
 }

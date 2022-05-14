@@ -126,11 +126,20 @@ public class ErrorDetailsFragment extends InjectableFragment {
 
         @Override
         public String unitAddForm(UnitAddForm unitAddForm, Void input) {
-            return String.format("%s (%s)", unitAddForm.name(), unitAddForm.abbreviation());
+            return formatUnit(unitAddForm);
         }
 
         @Override
         public String unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, Void input) {
+            return formatUnit(unitDeleteErrorDetails);
+        }
+
+        @Override
+        public String unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, Void input) {
+            return formatUnit(unitEditErrorDetails);
+        }
+
+        private String formatUnit(UnitFields unitDeleteErrorDetails) {
             return String.format("%s (%s)", unitDeleteErrorDetails.name(), unitDeleteErrorDetails.abbreviation());
         }
     }

@@ -109,4 +109,10 @@ class FakeNavigationModule {
     ScaledUnitListNavigator ScaledUnitListNavigator() {
         return mock(ScaledUnitListNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    UnitEditNavigator  UnitEditNavigator() {
+        return mock(UnitEditNavigator.class);
+    }
 }

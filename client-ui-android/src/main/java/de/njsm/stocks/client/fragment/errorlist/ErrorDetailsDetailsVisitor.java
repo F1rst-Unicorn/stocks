@@ -47,11 +47,20 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
 
     @Override
     public String unitAddForm(UnitAddForm unitAddForm, Void input) {
-        return String.format("%s (%s)", unitAddForm.name(), unitAddForm.abbreviation());
+        return formatUnit(unitAddForm);
     }
 
     @Override
     public String unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, Void input) {
-        return String.format("%s (%s)", unitDeleteErrorDetails.name(), unitDeleteErrorDetails.abbreviation());
+        return formatUnit(unitDeleteErrorDetails);
+    }
+
+    @Override
+    public String unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, Void input) {
+        return formatUnit(unitEditErrorDetails);
+    }
+
+    private String formatUnit(UnitFields unit) {
+        return String.format("%s (%s)", unit.name(), unit.abbreviation());
     }
 }

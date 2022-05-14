@@ -111,9 +111,6 @@
         <action
                 android:id="@+id/action_nav_fragment_unit_tabs_to_nav_fragment_unit_edit"
                 app:destination="@id/nav_fragment_unit_edit">
-            <argument
-                    android:name="id"
-                    app:argType="integer"/>
         </action>
         <action
                 android:id="@+id/action_nav_fragment_unit_tabs_to_nav_fragment_scaled_unit_add"
@@ -136,7 +133,10 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_unit_edit"
-            android:name="androidx.fragment.app.Fragment">
+            android:name="de.njsm.stocks.client.fragment.unitedit.UnitEditFragment">
+        <argument
+                android:name="id"
+                app:argType="integer"/>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_unit_add"

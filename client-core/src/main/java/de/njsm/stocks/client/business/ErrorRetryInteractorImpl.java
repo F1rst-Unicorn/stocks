@@ -38,6 +38,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final EntityDeleter<Unit> unitDeleter;
 
+    private final UnitEditInteractor unitEditInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -47,12 +49,13 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     private final JobTypeTranslator jobTypeTranslator;
 
     @Inject
-    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, EntityDeleter<Location> locationDeleter, LocationEditInteractor locationEditInteractor, UnitAddInteractor unitAddInteractor, EntityDeleter<Unit> unitDeleter, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
+    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, EntityDeleter<Location> locationDeleter, LocationEditInteractor locationEditInteractor, UnitAddInteractor unitAddInteractor, EntityDeleter<Unit> unitDeleter, UnitEditInteractor unitEditInteractor, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
         this.locationDeleter = locationDeleter;
         this.locationEditInteractor = locationEditInteractor;
         this.unitAddInteractor = unitAddInteractor;
         this.unitDeleter = unitDeleter;
+        this.unitEditInteractor = unitEditInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -120,6 +123,17 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, Void input) {
+        UnitToEdit data = UnitToEdit.builder()
+                .id(unitEditErrorDetails.id())
+                .name(unitEditErrorDetails.name())
+                .abbreviation(unitEditErrorDetails.abbreviation())
+                .build();
+        unitEditInteractor.edit(data);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -150,6 +164,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, Void input) {
             return Job.Type.DELETE_UNIT;
+        }
+
+        @Override
+        public Job.Type unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, Void input) {
+            return Job.Type.EDIT_UNIT;
         }
     }
 }

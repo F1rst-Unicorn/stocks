@@ -38,4 +38,46 @@ public interface ErrorDetailsVisitor<I, O> {
     O unitAddForm(UnitAddForm unitAddForm, I input);
 
     O unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, I input);
+
+    O unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, I input);
+
+    interface Default<I, O> extends ErrorDetailsVisitor<I, O> {
+
+        O defaultImpl(ErrorDetails errorDetails, I input);
+
+        @Override
+        default O locationAddForm(LocationAddForm locationAddForm, I input) {
+            return defaultImpl(locationAddForm, input);
+        }
+
+        @Override
+        default O synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, I input) {
+            return defaultImpl(synchronisationErrorDetails, input);
+        }
+
+        @Override
+        default O locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, I input) {
+            return defaultImpl(locationDeleteErrorDetails, input);
+        }
+
+        @Override
+        default O locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, I input) {
+            return defaultImpl(locationEditErrorDetails, input);
+        }
+
+        @Override
+        default O unitAddForm(UnitAddForm unitAddForm, I input) {
+            return defaultImpl(unitAddForm, input);
+        }
+
+        @Override
+        default O unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, I input) {
+            return defaultImpl(unitDeleteErrorDetails, input);
+        }
+
+        @Override
+        default O unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, I input) {
+            return defaultImpl(unitEditErrorDetails, input);
+        }
+    }
 }

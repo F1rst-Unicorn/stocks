@@ -58,6 +58,11 @@ class RetryVisitor implements ErrorDetailsVisitor<ErrorDescription, Void>, Statu
     }
 
     @Override
+    public Void unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, ErrorDescription input) {
+        return visit(input.statusCode(), input);
+    }
+
+    @Override
     public Void locationAddForm(LocationAddForm locationAddForm, ErrorDescription input) {
         retryDirectlyCallback.accept(input);
         return null;

@@ -67,4 +67,10 @@ class DataDeleter implements ErrorEntity.ActionVisitor<Long, Void> {
         errorDao.deleteUnitDelete(id);
         return null;
     }
+
+    @Override
+    public Void editUnit(ErrorEntity.Action action, Long id) {
+        errorDao.deleteUnitEdit(id);
+        return null;
+    }
 }

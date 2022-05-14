@@ -46,4 +46,59 @@ public interface StatusCodeVisitor<I, O> {
     O caUnreachable(StatusCode statusCode, I input);
 
     O serialisationConflict(StatusCode statusCode, I input);
+
+    interface Default<I, O> extends StatusCodeVisitor<I, O> {
+
+        O defaultImpl(StatusCode statusCode, I input);
+
+        @Override
+        default O success(StatusCode statusCode, I input) {
+            return defaultImpl(statusCode, input);
+        }
+
+        @Override
+        default O generalError(StatusCode statusCode, I input) {
+            return defaultImpl(statusCode, input);
+        }
+
+        @Override
+        default O notFound(StatusCode statusCode, I input) {
+            return defaultImpl(statusCode, input);
+        }
+
+        @Override
+        default O invalidDataVersion(StatusCode statusCode, I input) {
+            return defaultImpl(statusCode, input);
+        }
+
+        @Override
+        default O foreignKeyConstraintViolation(StatusCode statusCode, I input) {
+            return defaultImpl(statusCode, input);
+        }
+
+        @Override
+        default O databaseUnreachable(StatusCode statusCode, I input) {
+            return defaultImpl(statusCode, input);
+        }
+
+        @Override
+        default O accessDenied(StatusCode statusCode, I input) {
+            return defaultImpl(statusCode, input);
+        }
+
+        @Override
+        default O invalidArgument(StatusCode statusCode, I input) {
+            return defaultImpl(statusCode, input);
+        }
+
+        @Override
+        default O caUnreachable(StatusCode statusCode, I input) {
+            return defaultImpl(statusCode, input);
+        }
+
+        @Override
+        default O serialisationConflict(StatusCode statusCode, I input) {
+            return defaultImpl(statusCode, input);
+        }
+    }
 }

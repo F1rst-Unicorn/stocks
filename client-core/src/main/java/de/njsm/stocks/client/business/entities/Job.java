@@ -146,4 +146,64 @@ public abstract class Job {
 
         O editUnit(Type type, I input);
     }
+
+    public interface DefaultTypeVisitor<I, O> extends TypeVisitor<I, O> {
+
+        O defaultImpl(Type type, I input);
+
+        @Override
+        default O setup(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O database(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O synchronisation(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O addLocation(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O deleteError(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O deleteLocation(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O editLocation(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O unknown(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O addUnit(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O deleteUnit(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O editUnit(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+    }
 }

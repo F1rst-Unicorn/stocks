@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-class SynchronisationLock implements Job.TypeVisitor<Boolean, Boolean> {
+class SynchronisationLock implements Job.DefaultTypeVisitor<Boolean, Boolean> {
 
     private final ReadWriteLock lock;
 
@@ -40,16 +40,6 @@ class SynchronisationLock implements Job.TypeVisitor<Boolean, Boolean> {
         lock = new ReentrantReadWriteLock();
         this.counter = counter;
         counter.set(0);
-    }
-
-    @Override
-    public Boolean setup(Job.Type type, Boolean aquireLock) {
-        return true;
-    }
-
-    @Override
-    public Boolean database(Job.Type type, Boolean aquireLock) {
-        return true;
     }
 
     @Override
@@ -65,8 +55,18 @@ class SynchronisationLock implements Job.TypeVisitor<Boolean, Boolean> {
     }
 
     @Override
-    public Boolean addLocation(Job.Type type, Boolean aquireLock) {
+    public Boolean defaultImpl(Job.Type type, Boolean aquireLock) {
         readLock(aquireLock);
+        return true;
+    }
+
+    @Override
+    public Boolean setup(Job.Type type, Boolean aquireLock) {
+        return true;
+    }
+
+    @Override
+    public Boolean database(Job.Type type, Boolean aquireLock) {
         return true;
     }
 
@@ -76,38 +76,8 @@ class SynchronisationLock implements Job.TypeVisitor<Boolean, Boolean> {
     }
 
     @Override
-    public Boolean deleteLocation(Job.Type type, Boolean aquireLock) {
-        readLock(aquireLock);
-        return true;
-    }
-
-    @Override
-    public Boolean editLocation(Job.Type type, Boolean aquireLock) {
-        readLock(aquireLock);
-        return true;
-    }
-
-    @Override
     public Boolean unknown(Job.Type type, Boolean aquireLock) {
         return true;
-    }
-
-    @Override
-    public Boolean addUnit(Job.Type type, Boolean aquireLock) {
-        readLock(aquireLock);
-        return true;
-    }
-
-    @Override
-    public Boolean deleteUnit(Job.Type type, Boolean aquireLock) {
-        readLock(aquireLock);
-        return true;
-    }
-
-    @Override
-    public Boolean editUnit(Job.Type type, Boolean aquireLock) {
-        readLock(aquireLock);
-        return null;
     }
 
     private void readLock(boolean aquireLock) {

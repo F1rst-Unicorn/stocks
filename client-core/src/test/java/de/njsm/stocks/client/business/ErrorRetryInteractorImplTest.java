@@ -54,6 +54,9 @@ public class ErrorRetryInteractorImplTest {
     private EntityDeleter<Unit> unitDeleter;
 
     @Mock
+    private UnitEditInteractor unitEditInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -64,7 +67,7 @@ public class ErrorRetryInteractorImplTest {
 
     @BeforeEach
     void setUp() {
-        uut = new ErrorRetryInteractorImpl(locationAddInteractor, locationDeleter, locationEditInteractor, unitAddInteractor, unitDeleter, synchroniser, scheduler, errorRepository);
+        uut = new ErrorRetryInteractorImpl(locationAddInteractor, locationDeleter, locationEditInteractor, unitAddInteractor, unitDeleter, unitEditInteractor, synchroniser, scheduler, errorRepository);
     }
 
     @Test
@@ -177,6 +180,19 @@ public class ErrorRetryInteractorImplTest {
         ArgumentCaptor<Identifiable<Unit>> captor = ArgumentCaptor.forClass(Identifiable.class);
         verify(unitDeleter).delete(captor.capture());
         assertEquals(unitDeleteErrorDetails.id(), captor.getValue().id());
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingUnitEditingDispatches() {
+        UnitEditErrorDetails unitEditErrorDetails = UnitEditErrorDetails.create(1, "Gramm", "g");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", unitEditErrorDetails);
+
+        uut.retryInBackground(input);
+
+        ArgumentCaptor<UnitToEdit> captor = ArgumentCaptor.forClass(UnitToEdit.class);
+        verify(unitEditInteractor).edit(captor.capture());
+        assertEquals(unitEditErrorDetails.id(), captor.getValue().id());
         verify(errorRepository).deleteError(input);
     }
 }

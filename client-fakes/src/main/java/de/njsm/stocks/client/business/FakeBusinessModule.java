@@ -161,4 +161,13 @@ public interface FakeBusinessModule {
     static UnitAddInteractor UnitAddInteractor() {
         return mock(UnitAddInteractor.class);
     }
+
+    @Binds
+    UnitEditInteractor UnitEditInteractor(FakeUnitEditInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeUnitEditInteractor FakeUnitEditInteractor() {
+        return new FakeUnitEditInteractor();
+    }
 }

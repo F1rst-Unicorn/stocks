@@ -197,7 +197,7 @@ public class ErrorRepositoryImplTest extends DbTestCase {
     }
 
     @Test
-    public void locationEditErrorCanBeDeleted() throws InterruptedException {
+    public void locationEditErrorCanBeDeleted() {
         LocationDbEntity location = StandardEntities.locationDbEntity();
         LocationForEditing locationForEditing = LocationForEditing.builder()
                 .id(location.id())
@@ -275,5 +275,48 @@ public class ErrorRepositoryImplTest extends DbTestCase {
         assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
         stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
         assertTrue(stocksDatabase.errorDao().getUnitDeletes().isEmpty());
+    }
+
+    @Test
+    public void unitEditErrorCanBeRetrieved() {
+        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        UnitForEditing unitForEditing = UnitForEditing.builder()
+                .id(unit.id())
+                .version(unit.version())
+                .name("name")
+                .abbreviation("abbreviation")
+                .build();
+        UnitEditErrorDetails errorDetails = UnitEditErrorDetails.create(unit.id(), unit.name(), unit.abbreviation());
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        stocksDatabase.synchronisationDao().writeUnits(Arrays.asList(unit));
+        errorRecorder.recordUnitEditError(exception, unitForEditing);
+
+        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
+        TestObserver<List<ErrorDescription>> actual = uut.getErrors().test().awaitCount(1);
+        actual.assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
+        actual.assertValue(v -> v.get(0).errorDetails().equals(errorDetails));
+        actual.assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
+    }
+
+    @Test
+    public void unitEditErrorCanBeDeleted() {
+        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        UnitForEditing unitForEditing = UnitForEditing.builder()
+                .id(unit.id())
+                .version(unit.version())
+                .name(unit.name())
+                .abbreviation(unit.abbreviation())
+                .build();
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        stocksDatabase.synchronisationDao().writeUnits(Arrays.asList(unit));
+        errorRecorder.recordUnitEditError(exception, unitForEditing);
+        TestObserver<List<ErrorDescription>> data = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1);
+        ErrorDescription input = data.values().get(0).get(0);
+
+        uut.deleteError(input);
+
+        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
+        stocksDatabase.errorDao().getNumberOfErrors().distinctUntilChanged().test().awaitCount(1).assertValues(0);
+        assertTrue(stocksDatabase.errorDao().getUnitEdits().isEmpty());
     }
 }

@@ -24,39 +24,37 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
-import de.njsm.stocks.client.business.LocationEditInteractor;
-import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.UnitEditInteractor;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
-public class LocationEditViewModel extends ViewModel {
+public class UnitEditViewModel extends ViewModel {
 
-    private final LocationEditInteractor locationEditInteractor;
+    private final UnitEditInteractor unitEditInteractor;
 
-    private Observable<LocationToEdit> data;
+    private Observable<UnitToEdit> data;
 
     @Inject
-    LocationEditViewModel(LocationEditInteractor locationEditInteractor) {
-        this.locationEditInteractor = locationEditInteractor;
+    UnitEditViewModel(UnitEditInteractor unitEditInteractor) {
+        this.unitEditInteractor = unitEditInteractor;
     }
 
-    public LiveData<LocationToEdit> get(Identifiable<Location> id) {
+    public LiveData<UnitToEdit> get(Identifiable<Unit> id) {
         return LiveDataReactiveStreams.fromPublisher(
                 getData(id).toFlowable(BackpressureStrategy.LATEST)
         );
     }
 
-    public void editLocation(LocationToEdit locationToEdit) {
-        locationEditInteractor.edit(locationToEdit);
+    public void edit(UnitToEdit data) {
+        unitEditInteractor.edit(data);
     }
 
-    private Observable<LocationToEdit> getData(Identifiable<Location> id) {
+    private Observable<UnitToEdit> getData(Identifiable<Unit> id) {
         if (data == null)
-            data = locationEditInteractor.getLocation(id);
+            data = unitEditInteractor.get(id);
         return data;
     }
 }

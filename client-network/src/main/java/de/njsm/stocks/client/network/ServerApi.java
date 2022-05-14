@@ -105,7 +105,7 @@ public interface ServerApi {
     Call<Response> deleteUnit(@Query("id") int id,
                               @Query("version") int version);
 
-    @PUT("/v2/rename")
+    @PUT("/v2/unit/rename")
     Call<Response> editUnit(@Query("id") int id,
                             @Query("version") int version,
                             @Query("name") String name,

@@ -158,4 +158,16 @@ public abstract class ErrorDao {
             "and version = :version " +
             "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL)
     abstract UnitDeleteErrorDetails getUnit(long id, int version);
+
+    @Query("select * from unit_to_edit")
+    abstract List<UnitEditEntity> getUnitEdits();
+
+    @Insert
+    abstract long insert(UnitEditEntity entity);
+
+    @Query("delete from unit_to_edit where id = :id")
+    abstract void deleteUnitEdit(long id);
+
+    @Query("select * from unit_to_edit where id = :id")
+    abstract UnitEditEntity getUnitEdit(long id);
 }

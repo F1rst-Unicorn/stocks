@@ -38,6 +38,7 @@ import de.njsm.stocks.client.fragment.locationlist.LocationListFragmentTest;
 import de.njsm.stocks.client.fragment.scaledunitlist.ScaledUnitListFragmentTest;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentTest;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragmentTest;
+import de.njsm.stocks.client.fragment.unitedit.UnitEditFragmentTest;
 import de.njsm.stocks.client.fragment.unitlist.UnitListFragmentTest;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 
@@ -82,6 +83,8 @@ public interface TestComponent {
     void inject(ScaledUnitListFragmentTest test);
 
     void inject(UnitAddFragmentTest test);
+
+    void inject(UnitEditFragmentTest test);
 
     @Component.Builder
     interface Builder {

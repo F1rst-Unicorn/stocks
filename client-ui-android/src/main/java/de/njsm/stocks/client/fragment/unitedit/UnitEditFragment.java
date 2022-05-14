@@ -16,31 +16,36 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.fragment.unitadd;
+package de.njsm.stocks.client.fragment.unitedit;
 
 import android.os.Bundle;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.UnitAddForm;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.UnitToEdit;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.view.UnitForm;
-import de.njsm.stocks.client.navigation.Navigator;
-import de.njsm.stocks.client.presenter.UnitAddViewModel;
+import de.njsm.stocks.client.navigation.UnitEditNavigator;
+import de.njsm.stocks.client.presenter.UnitEditViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class UnitAddFragment extends BottomToolbarFragment {
+public class UnitEditFragment extends BottomToolbarFragment {
 
-    private UnitAddViewModel unitAddViewModel;
+    private UnitEditViewModel unitEditViewModel;
 
-    private Navigator navigator;
+    private UnitEditNavigator unitEditNavigator;
 
     private UnitForm form;
+
+    private Identifiable<Unit> id;
 
     @Nullable
     @Override
@@ -49,6 +54,12 @@ public class UnitAddFragment extends BottomToolbarFragment {
 
         View result = insertContent(inflater, root, R.layout.fragment_unit_form);
         form = new UnitForm(result, this::getString);
+        int rawId = unitEditNavigator.getUnitId(requireArguments());
+        id = () -> rawId;
+        unitEditViewModel.get(id).observe(getViewLifecycleOwner(), v -> {
+            form.setName(v.name());
+            form.setAbbreviation(v.abbreviation());
+        });
 
         setHasOptionsMenu(true);
         return root;
@@ -66,25 +77,26 @@ public class UnitAddFragment extends BottomToolbarFragment {
             return true;
         }
 
-        UnitAddForm data = UnitAddForm.create(
-                form.getName(),
-                form.getAbbreviation()
-        );
-        unitAddViewModel.addUnit(data);
-        navigator.back();
+        UnitToEdit data = UnitToEdit.builder()
+                .id(id.id())
+                .name(form.getName())
+                .abbreviation(form.getAbbreviation())
+                .build();
+        unitEditViewModel.edit(data);
+        unitEditNavigator.back();
         return true;
     }
 
-    @Override
     @Inject
+    @Override
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        unitAddViewModel = viewModelProvider.get(UnitAddViewModel.class);
+        unitEditViewModel = viewModelProvider.get(UnitEditViewModel.class);
     }
 
     @Inject
-    void setNavigator(Navigator navigator) {
-        this.navigator = navigator;
+    void setNavigator(UnitEditNavigator unitEditNavigator) {
+        this.unitEditNavigator = unitEditNavigator;
     }
 }

@@ -59,4 +59,7 @@ public interface NavigationModule {
 
     @Binds
     ScaledUnitListNavigator ScaledUnitListNavigator(ScaledUnitListNavigatorImpl impl);
+
+    @Binds
+    UnitEditNavigator UnitEditNavigator(UnitEditNavigatorImpl impl);
 }

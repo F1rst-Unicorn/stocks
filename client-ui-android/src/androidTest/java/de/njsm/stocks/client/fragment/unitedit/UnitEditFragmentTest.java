@@ -19,17 +19,17 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.locationedit;
+package de.njsm.stocks.client.fragment.unitedit;
 
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.android.material.textfield.TextInputEditText;
 import de.njsm.stocks.client.Application;
-import de.njsm.stocks.client.business.FakeLocationEditInteractor;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
-import de.njsm.stocks.client.navigation.LocationEditNavigator;
-import de.njsm.stocks.client.testdata.LocationsToEdit;
+import de.njsm.stocks.client.business.FakeUnitEditInteractor;
+import de.njsm.stocks.client.business.entities.UnitToEdit;
+import de.njsm.stocks.client.navigation.UnitEditNavigator;
+import de.njsm.stocks.client.testdata.UnitsToEdit;
 import de.njsm.stocks.client.ui.R;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,88 +50,114 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class LocationEditFragmentTest {
+public class UnitEditFragmentTest {
 
-    private FragmentScenario<LocationEditFragment> scenario;
+    private FragmentScenario<UnitEditFragment> scenario;
 
-    private FakeLocationEditInteractor locationEditInteractor;
+    private FakeUnitEditInteractor editInteractor;
 
-    private LocationEditNavigator navigator;
+    private UnitEditNavigator navigator;
 
     @Before
     public void setup() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
-        scenario = FragmentScenario.launchInContainer(LocationEditFragment.class, new Bundle(), R.style.StocksTheme);
-        when(navigator.getLocationId(any(Bundle.class))).thenReturn(LocationsToEdit.generate().id());
-        locationEditInteractor.reset();
+        scenario = FragmentScenario.launchInContainer(UnitEditFragment.class, new Bundle(), R.style.StocksTheme);
+        when(navigator.getUnitId(any(Bundle.class))).thenReturn(UnitsToEdit.generate().id());
+        editInteractor.reset();
     }
 
     @Test
     public void uiIsShown() {
-        LocationToEdit location = LocationsToEdit.generate();
+        UnitToEdit unit = UnitsToEdit.generate();
 
-        locationEditInteractor.setData(location);
+        editInteractor.setData(unit);
 
         onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_name)),
+                isDescendantOfA(withId(R.id.fragment_unit_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(location.name())));
+        )).check(matches(withText(unit.name())));
         onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_description)),
+                isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)),
                 withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(location.description())));
+        )).check(matches(withText(unit.abbreviation())));
     }
 
     @Test
     public void submittingWithoutNameShowsError() {
-        LocationToEdit location = LocationsToEdit.generate();
-        locationEditInteractor.setData(location);
+        UnitToEdit unit = UnitsToEdit.generate();
+        editInteractor.setData(unit);
+        String newAbbreviation = "new abbreviation";
         onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_name)),
+                isDescendantOfA(withId(R.id.fragment_unit_form_name)),
+                withClassName(is(TextInputEditText.class.getName()))
+        )).perform(clearText());
+        onView(allOf(
+                isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)),
+                withClassName(is(TextInputEditText.class.getName()))
+        )).perform(replaceText(newAbbreviation));
+
+        scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+
+        onView(withId(R.id.fragment_unit_form_name))
+                .check(matches(hasDescendant(withText(R.string.error_may_not_be_empty))));
+        assertFalse(editInteractor.getFormData().isPresent());
+    }
+
+    @Test
+    public void submittingWithoutAbbreviationShowsError() {
+        UnitToEdit unit = UnitsToEdit.generate();
+        editInteractor.setData(unit);
+        String newName = "new name";
+        onView(allOf(
+                isDescendantOfA(withId(R.id.fragment_unit_form_name)),
+                withClassName(is(TextInputEditText.class.getName()))
+        )).perform(replaceText(newName));
+        onView(allOf(
+                isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).perform(clearText());
 
         scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
-        onView(withId(R.id.fragment_location_form_name))
+        onView(withId(R.id.fragment_unit_form_abbreviation))
                 .check(matches(hasDescendant(withText(R.string.error_may_not_be_empty))));
-        assertFalse(locationEditInteractor.getFormData().isPresent());
+        assertFalse(editInteractor.getFormData().isPresent());
     }
 
     @Test
     public void submittingWorks() {
-        LocationToEdit location = LocationsToEdit.generate();
-        locationEditInteractor.setData(location);
+        UnitToEdit unit = UnitsToEdit.generate();
+        editInteractor.setData(unit);
         String newName = "new name";
-        String newDescription = "new description";
+        String newAbbreviation = "new abbreviation";
         onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_name)),
+                isDescendantOfA(withId(R.id.fragment_unit_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).perform(replaceText(newName));
         onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_description)),
+                isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)),
                 withClassName(is(TextInputEditText.class.getName()))
-        )).perform(replaceText(newDescription));
+        )).perform(replaceText(newAbbreviation));
 
         scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
-        assertEquals(LocationToEdit.builder()
-                .id(location.id())
+        assertEquals(UnitToEdit.builder()
+                .id(unit.id())
                 .name(newName)
-                .description(newDescription)
+                .abbreviation(newAbbreviation)
                 .build(),
-                locationEditInteractor.getFormData().get()
+                editInteractor.getFormData().get()
         );
         verify(navigator).back();
     }
 
     @Inject
-    public void setLocationEditInteractor(FakeLocationEditInteractor locationEditInteractor) {
-        this.locationEditInteractor = locationEditInteractor;
+    public void setEditInteractor(FakeUnitEditInteractor editInteractor) {
+        this.editInteractor = editInteractor;
     }
 
     @Inject
-    void setNavigator(LocationEditNavigator navigator) {
+    void setNavigator(UnitEditNavigator navigator) {
         this.navigator = navigator;
     }
 }

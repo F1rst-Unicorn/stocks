@@ -26,7 +26,7 @@ import de.njsm.stocks.client.navigation.ErrorListNavigator;
 
 import javax.inject.Inject;
 
-class ErrorClickedNavigator implements ErrorDetailsVisitor<ErrorDescription, Void>, StatusCodeVisitor<ErrorDescription, Void> {
+class ErrorClickedNavigator implements ErrorDetailsVisitor.Default<ErrorDescription, Void>, StatusCodeVisitor.Default<ErrorDescription, Void> {
 
     private final ErrorListNavigator errorListNavigator;
 
@@ -40,55 +40,13 @@ class ErrorClickedNavigator implements ErrorDetailsVisitor<ErrorDescription, Voi
 
     @Override
     public Void locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, ErrorDescription input) {
-        StatusCodeVisitor.super.visit(input.statusCode(), input);
+        resolveEditingConflict(input);
         return null;
     }
 
     @Override
-    public Void unitAddForm(UnitAddForm unitAddForm, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
-        return null;
-    }
-
-    @Override
-    public Void unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
-        return null;
-    }
-
-    @Override
-    public Void locationAddForm(LocationAddForm locationAddForm, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
-        return null;
-    }
-
-    @Override
-    public Void synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
-        return null;
-    }
-
-    @Override
-    public Void locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
-        return null;
-    }
-
-    @Override
-    public Void success(StatusCode statusCode, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
-        return null;
-    }
-
-    @Override
-    public Void generalError(StatusCode statusCode, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
-        return null;
-    }
-
-    @Override
-    public Void notFound(StatusCode statusCode, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
+    public Void unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, ErrorDescription input) {
+        resolveEditingConflict(input);
         return null;
     }
 
@@ -99,38 +57,22 @@ class ErrorClickedNavigator implements ErrorDetailsVisitor<ErrorDescription, Voi
     }
 
     @Override
-    public Void foreignKeyConstraintViolation(StatusCode statusCode, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
+    public Void defaultImpl(ErrorDetails errorDetails, ErrorDescription input) {
+        showErrorDetails(input);
         return null;
     }
 
     @Override
-    public Void databaseUnreachable(StatusCode statusCode, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
+    public Void defaultImpl(StatusCode statusCode, ErrorDescription input) {
+        showErrorDetails(input);
         return null;
     }
 
-    @Override
-    public Void accessDenied(StatusCode statusCode, ErrorDescription input) {
+    private void showErrorDetails(ErrorDescription input) {
         errorListNavigator.showErrorDetails(input.id());
-        return null;
     }
 
-    @Override
-    public Void invalidArgument(StatusCode statusCode, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
-        return null;
-    }
-
-    @Override
-    public Void caUnreachable(StatusCode statusCode, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
-        return null;
-    }
-
-    @Override
-    public Void serialisationConflict(StatusCode statusCode, ErrorDescription input) {
-        errorListNavigator.showErrorDetails(input.id());
-        return null;
+    private void resolveEditingConflict(ErrorDescription input) {
+        StatusCodeVisitor.Default.super.visit(input.statusCode(), input);
     }
 }

@@ -19,35 +19,39 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.errorlist;
+package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.navigation.ErrorListNavigator;
+import de.njsm.stocks.client.testdata.UnitsForListing;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
+import java.util.List;
 
-class ConflictNavigator implements ErrorDetailsVisitor.Default<ErrorDescription, Void> {
+class InMemoryUnitEditInteractorImpl implements UnitEditInteractor {
 
-    private final ErrorListNavigator errorListNavigator;
+    private final BehaviorSubject<List<UnitForListing>> data;
 
     @Inject
-    public ConflictNavigator(ErrorListNavigator errorListNavigator) {
-        this.errorListNavigator = errorListNavigator;
+    InMemoryUnitEditInteractorImpl(UnitsForListing unitsForListing) {
+        this.data = unitsForListing.getData();
     }
 
     @Override
-    public Void locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, ErrorDescription input) {
-        errorListNavigator.resolveLocationEditConflict(input.id());
-        return null;
+    public Observable<UnitToEdit> get(Identifiable<Unit> id) {
+        return data.firstElement().map(list -> {
+            UnitForListing item = list.stream().filter(v -> v.id() == id.id()).findAny().get();
+            return UnitToEdit.builder()
+                    .id(item.id())
+                    .name(item.name())
+                    .abbreviation("Lorem ipsum")
+                    .build();
+        }).toObservable();
     }
 
     @Override
-    public Void unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, ErrorDescription input) {
-        throw new UnsupportedOperationException("TODO");
-    }
+    public void edit(UnitToEdit formData) {
 
-    @Override
-    public Void defaultImpl(ErrorDetails errorDetails, ErrorDescription input) {
-        throw new IllegalStateException("unexpected conflict resolution");
     }
 }

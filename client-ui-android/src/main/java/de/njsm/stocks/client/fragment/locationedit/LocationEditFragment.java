@@ -88,14 +88,15 @@ public class LocationEditFragment extends BottomToolbarFragment {
     }
 
     @Inject
-    public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
+    @Override
+    protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
         locationViewModel = viewModelProvider.get(LocationEditViewModel.class);
     }
 
     @Inject
-    public void setNavigator(LocationEditNavigator locationEditNavigator) {
+    void setNavigator(LocationEditNavigator locationEditNavigator) {
         this.locationEditNavigator = locationEditNavigator;
     }
 }

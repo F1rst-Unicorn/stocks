@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.unitadd;
+package de.njsm.stocks.client.fragment.view;
 
 import android.view.View;
 import androidx.annotation.StringRes;
@@ -31,10 +31,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import static de.njsm.stocks.client.fragment.view.ViewUtility.onEditorOf;
-import static de.njsm.stocks.client.fragment.view.ViewUtility.stringFromForm;
+import static de.njsm.stocks.client.fragment.view.ViewUtility.*;
 
-class UnitForm {
+public class UnitForm {
 
     private final TextInputLayout nameField;
 
@@ -44,7 +43,7 @@ class UnitForm {
 
     private final Set<TextInputLayout> invalidFields;
 
-    UnitForm(View root, Function<Integer, String> stringProvider) {
+    public UnitForm(View root, Function<Integer, String> stringProvider) {
         this.nameField = root.findViewById(R.id.fragment_unit_form_name);
         this.abbreviationField = root.findViewById(R.id.fragment_unit_form_abbreviation);
         this.stringProvider = stringProvider;
@@ -66,20 +65,28 @@ class UnitForm {
         }
     }
 
-    boolean maySubmit() {
+    public boolean maySubmit() {
         return invalidFields.isEmpty();
     }
 
-    void setError(@StringRes int text) {
+    public void setError(@StringRes int text) {
         for (TextInputLayout invalidField : invalidFields)
             invalidField.setError(stringProvider.apply(text));
     }
 
-    String getName() {
+    public String getName() {
         return stringFromForm(nameField);
     }
 
-    String getAbbreviation() {
+    public String getAbbreviation() {
         return stringFromForm(abbreviationField);
+    }
+
+    public void setName(String name) {
+        setText(nameField, name);
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        setText(abbreviationField, abbreviation);
     }
 }

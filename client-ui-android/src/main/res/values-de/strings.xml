@@ -289,6 +289,7 @@
     <string name="error_details_location_edit_error_list">Ort bearbeiten</string>
     <string name="error_details_unit_add_error_list">Maßeinheit bearbeiten</string>
     <string name="error_details_unit_delete_error_list">Maßeinheit löschen</string>
+    <string name="error_details_unit_edit_error_list">Maßeinheit bearbeiten</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>
 </resources>
