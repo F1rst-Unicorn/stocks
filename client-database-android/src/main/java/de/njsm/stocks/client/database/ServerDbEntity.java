@@ -61,9 +61,9 @@ abstract class ServerDbEntity<T extends ServerDbEntity<T>> {
     @AutoValue.CopyAnnotations
     public abstract int initiates();
 
-    abstract <B extends Builder<T, B>> Builder<T, B> toBuilder();
+    abstract <B extends Builder<T, B>> B toBuilder();
 
-    abstract static class Builder<T extends ServerDbEntity<T>, B extends ServerDbEntity.Builder<T, B>> {
+    abstract static class Builder<E extends ServerDbEntity<E>, B extends ServerDbEntity.Builder<E, B>> {
 
         abstract B id(int v);
 
@@ -79,6 +79,6 @@ abstract class ServerDbEntity<T extends ServerDbEntity<T>> {
 
         abstract B initiates(int v);
 
-        abstract T build();
+        abstract E build();
     }
 }

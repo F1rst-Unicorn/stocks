@@ -66,7 +66,7 @@ public abstract class UnitDbEntity extends ServerDbEntity<UnitDbEntity> implemen
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    abstract static class Builder extends ServerDbEntity.Builder<UnitDbEntity, Builder> implements UnitFields.Builder<UnitDbEntity, Builder> {
+    public abstract static class Builder extends ServerDbEntity.Builder<UnitDbEntity, Builder> implements UnitFields.Builder<UnitDbEntity, Builder> {
 
         abstract UnitDbEntity build();
     }

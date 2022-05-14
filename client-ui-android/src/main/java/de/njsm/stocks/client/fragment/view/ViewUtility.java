@@ -24,6 +24,7 @@ package de.njsm.stocks.client.fragment.view;
 import android.widget.EditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ViewUtility {
@@ -46,8 +47,6 @@ public class ViewUtility {
     }
 
     public static void onEditorOf(TextInputLayout inputField, Consumer<EditText> callback) {
-        EditText editor = inputField.getEditText();
-        if (editor != null)
-            callback.accept(editor);
+        Optional.ofNullable(inputField.getEditText()).ifPresent(callback);
     }
 }

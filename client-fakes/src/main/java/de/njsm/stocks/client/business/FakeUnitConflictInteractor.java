@@ -21,12 +21,27 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
 import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-public interface ConflictRepository {
-    Observable<LocationEditConflictData> getLocationEditConflict(long errorId);
+import javax.inject.Inject;
 
-    Observable<UnitEditConflictData> getUnitEditConflict(long errorId);
+public class FakeUnitConflictInteractor implements UnitConflictInteractor {
+
+    private final BehaviorSubject<UnitEditConflictData> data;
+
+    @Inject
+    FakeUnitConflictInteractor() {
+        this.data = BehaviorSubject.create();
+    }
+
+    @Override
+    public Observable<UnitEditConflictData> getUnitEditConflict(long errorId) {
+        return data;
+    }
+
+    public void setData(UnitEditConflictData data) {
+        this.data.onNext(data);
+    }
 }

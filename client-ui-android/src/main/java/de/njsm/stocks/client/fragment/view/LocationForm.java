@@ -22,48 +22,37 @@
 package de.njsm.stocks.client.fragment.view;
 
 import android.view.View;
-import android.widget.TextView;
 import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
+import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 import de.njsm.stocks.client.ui.R;
-import de.njsm.stocks.client.util.NonEmptyValidator;
 
 import java.util.function.Function;
 
-import static de.njsm.stocks.client.fragment.view.ViewUtility.*;
+import static de.njsm.stocks.client.fragment.view.ViewUtility.setText;
+import static de.njsm.stocks.client.fragment.view.ViewUtility.stringFromForm;
 
 public class LocationForm {
 
-    private final TextInputLayout nameField;
+    private final ConflictTextField nameField;
 
     private final TextInputLayout descriptionField;
-
-    private final View nameConflictField;
-
-    private final TextView originalNameField;
-
-    private final TextView remoteNameField;
-
-    private final TextView localNameField;
 
     private final Function<Integer, String> stringResourceLookup;
 
     private boolean maySubmit = false;
 
     public LocationForm(View root, Function<Integer, String> stringResourceLookup) {
-        this.nameField = root.findViewById(R.id.fragment_location_form_name);
+        this.nameField = new ConflictTextField(root.findViewById(R.id.fragment_location_form_name));
         this.descriptionField = root.findViewById(R.id.fragment_location_form_description);
-        this.nameConflictField = root.findViewById(R.id.fragment_location_form_name_conflict);
-        this.originalNameField = root.findViewById(R.id.fragment_location_form_name_conflict_original_content);
-        this.remoteNameField = root.findViewById(R.id.fragment_location_form_name_conflict_remote_content);
-        this.localNameField = root.findViewById(R.id.fragment_location_form_name_conflict_local_content);
         this.stringResourceLookup = stringResourceLookup;
 
-        onEditorOf(nameField, e -> e.addTextChangedListener(new NonEmptyValidator(nameField, this::onNameChanged)));
+        nameField.addNonEmptyValidator(this::onNameChanged);
+        nameField.setEditorHint(R.string.hint_name);
     }
 
     public void setName(String text) {
-        setText(nameField, text);
+        nameField.setEditorContent(text);
     }
 
     public void setNameError(@StringRes int message) {
@@ -79,27 +68,15 @@ public class LocationForm {
     }
 
     public String getName() {
-        return stringFromForm(nameField);
+        return nameField.get();
     }
 
     public String getDescription() {
         return stringFromForm(descriptionField);
     }
 
-    public void showNameConflict() {
-        nameConflictField.setVisibility(View.VISIBLE);
-    }
-
-    public void setOriginalName(String name) {
-        originalNameField.setText(name);
-    }
-
-    public void setRemoteName(String name) {
-        remoteNameField.setText(name);
-    }
-
-    public void setLocalName(String name) {
-        localNameField.setText(name);
+    public void showNameConflict(ConflictData<String> data) {
+        nameField.showConflictInfo(data);
     }
 
     public void hideDescription() {
@@ -107,7 +84,7 @@ public class LocationForm {
     }
 
     public void hideName() {
-        nameField.setVisibility(View.GONE);
+        nameField.hide();
     }
 
     private void onNameChanged(TextInputLayout textInputLayout, boolean isEmpty) {

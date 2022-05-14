@@ -21,18 +21,13 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.LocationToEdit;
 import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-import java.util.Optional;
-
 public class FakeLocationConflictInteractor implements LocationConflictInteractor {
 
     private final BehaviorSubject<LocationEditConflictData> data;
-
-    private Optional<LocationToEdit> formData = Optional.empty();
 
     public FakeLocationConflictInteractor() {
         this.data = BehaviorSubject.create();

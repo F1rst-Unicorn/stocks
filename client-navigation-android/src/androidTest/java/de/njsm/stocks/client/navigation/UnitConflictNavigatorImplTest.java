@@ -19,14 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
-import io.reactivex.rxjava3.core.Observable;
+import android.os.Bundle;
+import org.junit.Test;
 
-public interface ConflictRepository {
-    Observable<LocationEditConflictData> getLocationEditConflict(long errorId);
+import static org.junit.Assert.assertEquals;
 
-    Observable<UnitEditConflictData> getUnitEditConflict(long errorId);
+public class UnitConflictNavigatorImplTest extends NavigationTest {
+
+    @Test
+    public void argumentIsExtracted() {
+        UnitConflictNavigator uut = new UnitConflictNavigatorImpl(navigationArgConsumer);
+        Bundle input = new Bundle();
+        long expected = 42L;
+        input.putLong("id", expected);
+
+        long actual = uut.getErrorId(input);
+
+        assertEquals(expected, actual);
+    }
 }

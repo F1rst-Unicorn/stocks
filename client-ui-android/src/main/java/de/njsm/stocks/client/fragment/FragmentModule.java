@@ -32,6 +32,7 @@ import de.njsm.stocks.client.fragment.scaledunitlist.ScaledUnitListFragment;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragment;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragment;
 import de.njsm.stocks.client.fragment.unitadd.UnitAddFragment;
+import de.njsm.stocks.client.fragment.unitconflict.UnitConflictFragment;
 import de.njsm.stocks.client.fragment.unitedit.UnitEditFragment;
 import de.njsm.stocks.client.fragment.unitlist.UnitListFragment;
 import de.njsm.stocks.client.fragment.unittabs.UnitTabsFragment;
@@ -80,4 +81,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract UnitEditFragment UnitEditFragment();
+
+    @ContributesAndroidInjector
+    public abstract UnitConflictFragment UnitConflictFragment();
 }

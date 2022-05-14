@@ -19,14 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
-import io.reactivex.rxjava3.core.Observable;
+import android.os.Bundle;
 
-public interface ConflictRepository {
-    Observable<LocationEditConflictData> getLocationEditConflict(long errorId);
+public interface UnitConflictNavigator extends Navigator {
 
-    Observable<UnitEditConflictData> getUnitEditConflict(long errorId);
+    long getErrorId(Bundle arguments);
 }

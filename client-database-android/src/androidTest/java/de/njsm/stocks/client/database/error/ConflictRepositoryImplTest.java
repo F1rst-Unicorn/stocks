@@ -25,13 +25,13 @@ import de.njsm.stocks.client.business.ConflictRepository;
 import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.ErrorRepository;
 import de.njsm.stocks.client.business.SubsystemException;
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import de.njsm.stocks.client.business.entities.LocationForEditing;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
+import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
 import de.njsm.stocks.client.database.DbTestCase;
 import de.njsm.stocks.client.database.LocationDbEntity;
 import de.njsm.stocks.client.database.StandardEntities;
+import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,7 +81,11 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 .name("remote name")
                 .description("remote description")
                 .build();
-        stocksDatabase.synchronisationDao().writeLocations(StandardEntities.bitemporalEdit(original, remoteEdit, editTime));
+        stocksDatabase.synchronisationDao().writeLocations(StandardEntities.bitemporalEdit(original,
+                (StandardEntities.EntityEditor<LocationDbEntity, LocationDbEntity.Builder>) builder ->
+                        builder.name(remoteEdit.name())
+                                .description(remoteEdit.description()),
+                editTime));
         errorRecorder.recordLocationEditError(new SubsystemException("test"), localEdit);
         setArtificialDbNow(editTime.plusSeconds(1));
         ErrorDescription error = errorRepository.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
@@ -99,5 +103,45 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         assertEquals(original.description(), actual.description().original());
         assertEquals(remoteEdit.name(), actual.name().remote());
         assertEquals(remoteEdit.description(), actual.description().remote());
+    }
+
+    @Test
+    public void gettingUnitEditConflictWorks() {
+        Instant editTime = Instant.now();
+        UnitDbEntity original = StandardEntities.unitDbEntity();
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(original));
+        UnitForEditing localEdit = UnitForEditing.builder()
+                .id(original.id())
+                .version(original.version())
+                .name("Fridge")
+                .abbreviation("The cold one")
+                .build();
+        UnitToEdit remoteEdit = UnitToEdit.builder()
+                .id(original.id())
+                .name("remote name")
+                .abbreviation("remote abbreviation")
+                .build();
+        stocksDatabase.synchronisationDao().writeUnits(StandardEntities.bitemporalEdit(original,
+                (StandardEntities.EntityEditor<UnitDbEntity, UnitDbEntity.Builder>) builder ->
+                        builder.name(remoteEdit.name())
+                                .abbreviation(remoteEdit.abbreviation()),
+                editTime));
+        errorRecorder.recordUnitEditError(new SubsystemException("test"), localEdit);
+        setArtificialDbNow(editTime.plusSeconds(1));
+        ErrorDescription error = errorRepository.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
+
+        TestObserver<UnitEditConflictData> observable = uut.getUnitEditConflict(error.id()).test().awaitCount(1);
+
+        observable.assertNoErrors();
+        UnitEditConflictData actual = observable.values().get(0);
+        assertEquals(error.id(), actual.errorId());
+        assertEquals(localEdit.id(), actual.id());
+        assertEquals(localEdit.version(), actual.originalVersion());
+        assertEquals(localEdit.name(), actual.name().local());
+        assertEquals(localEdit.abbreviation(), actual.abbreviation().local());
+        assertEquals(original.name(), actual.name().original());
+        assertEquals(original.abbreviation(), actual.abbreviation().original());
+        assertEquals(remoteEdit.name(), actual.name().remote());
+        assertEquals(remoteEdit.abbreviation(), actual.abbreviation().remote());
     }
 }

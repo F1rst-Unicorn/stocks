@@ -21,8 +21,6 @@
 
 package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.LocationToEdit;
-
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
@@ -132,26 +130,31 @@ public class StandardEntities {
                 .initiates(3);
     }
 
-    public static List<LocationDbEntity> bitemporalEdit(LocationDbEntity current, LocationToEdit edit, Instant when) {
-        LocationDbEntity deletedCurrent = current.toBuilder()
+    public static <E extends ServerDbEntity<E>, B extends ServerDbEntity.Builder<E, B>>
+    List<E> bitemporalEdit(E current,
+                           EntityEditor<E, B> editor,
+                           Instant when) {
+        E deletedCurrent = current.toBuilder()
                 .transactionTimeEnd(when)
                 .build();
-        LocationDbEntity terminatedCurrent = current.toBuilder()
+        E terminatedCurrent = current.toBuilder()
                 .validTimeEnd(when)
                 .transactionTimeStart(when)
                 .build();
-        LocationDbEntity edited = current.toBuilder()
+        E temporaryToSatisfyTypeSystem = current.toBuilder()
                 .validTimeStart(when)
                 .transactionTimeStart(when)
-                .version(current.version() + 1)
-                .name(edit.name())
-                .description(edit.description())
-                .build();
+                .version(current.version() + 1).build();
+        E edited = editor.edit(temporaryToSatisfyTypeSystem.toBuilder()).build();
 
         return Arrays.asList(
                 deletedCurrent,
                 terminatedCurrent,
                 edited
         );
+    }
+
+    public interface EntityEditor<E extends ServerDbEntity<E>, B extends ServerDbEntity.Builder<E, B>> {
+        B edit(B builder);
     }
 }

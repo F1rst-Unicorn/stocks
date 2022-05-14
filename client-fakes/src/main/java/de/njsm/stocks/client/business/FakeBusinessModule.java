@@ -170,4 +170,13 @@ public interface FakeBusinessModule {
     static FakeUnitEditInteractor FakeUnitEditInteractor() {
         return new FakeUnitEditInteractor();
     }
+
+    @Binds
+    UnitConflictInteractor UnitConflictInteractor(FakeUnitConflictInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeUnitConflictInteractor FakeUnitConflictInteractor() {
+        return new FakeUnitConflictInteractor();
+    }
 }

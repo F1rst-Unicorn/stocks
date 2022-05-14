@@ -133,4 +133,11 @@ public class ViewModelModule {
     ViewModel UnitEditViewModel(UnitEditInteractor unitEditInteractor) {
         return new UnitEditViewModel(unitEditInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UnitConflictViewModel.class)
+    ViewModel UnitConflictViewModel(UnitConflictInteractor unitConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
+        return new UnitConflictViewModel(unitConflictInteractor, errorRetryInteractor);
+    }
 }

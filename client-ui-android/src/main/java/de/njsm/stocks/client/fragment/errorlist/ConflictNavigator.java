@@ -43,7 +43,8 @@ class ConflictNavigator implements ErrorDetailsVisitor.Default<ErrorDescription,
 
     @Override
     public Void unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, ErrorDescription input) {
-        throw new UnsupportedOperationException("TODO");
+        errorListNavigator.resolveUnitEditConflict(input.id());
+        return null;
     }
 
     @Override

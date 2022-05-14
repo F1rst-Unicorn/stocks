@@ -72,7 +72,7 @@ public class LocationAddFragmentTest {
 
     @Test
     public void uiIsShown() {
-        onView(withId(R.id.fragment_location_form_name)).check(matches(isDisplayed()));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_text_field))).check(matches(isDisplayed()));
         onView(withId(R.id.fragment_location_form_description)).check(matches(isDisplayed()));
     }
 

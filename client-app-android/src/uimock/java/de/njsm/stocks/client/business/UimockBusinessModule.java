@@ -107,4 +107,7 @@ public interface UimockBusinessModule {
 
     @Binds
     UnitEditInteractor UnitEditInteractor(InMemoryUnitEditInteractorImpl impl);
+
+    @Binds
+    UnitConflictInteractor UnitConflictInteractor(InMemoryUnitConflictInteractorImpl impl);
 }

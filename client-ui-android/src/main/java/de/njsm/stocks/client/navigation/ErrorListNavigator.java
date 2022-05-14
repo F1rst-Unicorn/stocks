@@ -26,4 +26,6 @@ public interface ErrorListNavigator {
     void showErrorDetails(long id);
 
     void resolveLocationEditConflict(long id);
+
+    void resolveUnitEditConflict(long id);
 }

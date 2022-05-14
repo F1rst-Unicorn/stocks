@@ -26,6 +26,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.UnitDeleteErrorDetails;
 import de.njsm.stocks.client.database.LocationDbEntity;
+import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -170,4 +171,16 @@ public abstract class ErrorDao {
 
     @Query("select * from unit_to_edit where id = :id")
     abstract UnitEditEntity getUnitEdit(long id);
+
+    @Query("select * " +
+            "from unit " +
+            "where id = :id " +
+            "and version = :version " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL)
+    abstract UnitDbEntity getUnitEntity(int id, int version);
+
+    @Query("select * " +
+            "from current_unit " +
+            "where id = :id")
+    abstract UnitDbEntity getCurrentUnit(int id);
 }

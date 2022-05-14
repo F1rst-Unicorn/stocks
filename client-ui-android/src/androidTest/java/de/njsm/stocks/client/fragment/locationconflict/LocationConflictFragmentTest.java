@@ -65,6 +65,8 @@ public class LocationConflictFragmentTest {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         scenario = FragmentScenario.launchInContainer(LocationConflictFragment.class, new Bundle(), R.style.StocksTheme);
         when(navigator.getErrorId(any(Bundle.class))).thenReturn(42L);
+        reset(navigator);
+        reset(errorRetryInteractor);
     }
 
     @After
@@ -82,9 +84,9 @@ public class LocationConflictFragmentTest {
                 isDescendantOfA(withId(R.id.fragment_location_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).check(matches(withText(data.name().suggestedValue())));
-        onView(withId(R.id.fragment_location_form_name_conflict_original_content)).check(matches(withText(data.name().original())));
-        onView(withId(R.id.fragment_location_form_name_conflict_remote_content)).check(matches(withText(data.name().remote())));
-        onView(withId(R.id.fragment_location_form_name_conflict_local_content)).check(matches(withText(data.name().local())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_original_content))).check(matches(withText(data.name().original())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_remote_content))).check(matches(withText(data.name().remote())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_local_content))).check(matches(withText(data.name().local())));
         String mergedDescription = String.format(data.description().suggestedValue(),
                 InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_original),
                 InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_remote),
@@ -125,9 +127,9 @@ public class LocationConflictFragmentTest {
                 isDescendantOfA(withId(R.id.fragment_location_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).check(matches(withText(data.name().suggestedValue())));
-        onView(withId(R.id.fragment_location_form_name_conflict_original_content)).check(matches(withText(data.name().original())));
-        onView(withId(R.id.fragment_location_form_name_conflict_remote_content)).check(matches(withText(data.name().remote())));
-        onView(withId(R.id.fragment_location_form_name_conflict_local_content)).check(matches(withText(data.name().local())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_original_content))).check(matches(withText(data.name().original())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_remote_content))).check(matches(withText(data.name().remote())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_local_content))).check(matches(withText(data.name().local())));
         onView(withId(R.id.fragment_location_form_description)).check(matches(withEffectiveVisibility(Visibility.GONE)));
     }
 
@@ -137,7 +139,6 @@ public class LocationConflictFragmentTest {
         locationConflictInteractor.setData(data);
 
         onView(withId(R.id.fragment_location_form_name)).check(matches(withEffectiveVisibility(Visibility.GONE)));
-        onView(withId(R.id.fragment_location_form_name_conflict)).check(matches(withEffectiveVisibility(Visibility.GONE)));
         String mergedDescription = String.format(data.description().suggestedValue(),
                 InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_original),
                 InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_remote),

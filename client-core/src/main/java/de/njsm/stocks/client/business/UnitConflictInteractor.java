@@ -21,12 +21,10 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
 import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
 import io.reactivex.rxjava3.core.Observable;
 
-public interface ConflictRepository {
-    Observable<LocationEditConflictData> getLocationEditConflict(long errorId);
+public interface UnitConflictInteractor {
 
     Observable<UnitEditConflictData> getUnitEditConflict(long errorId);
 }

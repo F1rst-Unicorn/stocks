@@ -100,4 +100,7 @@ public interface BusinessModule {
 
     @Binds
     UnitEditInteractor UnitEditInteractor(UnitEditInteractorImpl impl);
+
+    @Binds
+    UnitConflictInteractor UnitConflictInteractor(UnitConflictInteractorImpl impl);
 }

@@ -23,7 +23,9 @@ package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ConflictRepository;
 import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
+import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
 import de.njsm.stocks.client.database.LocationDbEntity;
+import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -50,6 +52,22 @@ public class ConflictRepositoryImpl implements ConflictRepository {
             return LocationEditConflictData.create(error.id(), locationEditEntity.locationId(), locationEditEntity.version(),
                     original.name(), remote.name(), locationEditEntity.name(),
                     original.description(), remote.description(), locationEditEntity.description());
+        });
+    }
+
+    @Override
+    public Observable<UnitEditConflictData> getUnitEditConflict(long errorId) {
+        return errorDao.observeError(errorId).map(error -> {
+            if (error.action() != ErrorEntity.Action.EDIT_UNIT)
+                throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_UNIT + " but to " + error.action());
+
+            UnitEditEntity unitEditEntity = errorDao.getUnitEdit(error.dataId());
+            UnitDbEntity original = errorDao.getUnitEntity(unitEditEntity.unitId(), unitEditEntity.version());
+            UnitDbEntity remote = errorDao.getCurrentUnit(unitEditEntity.unitId());
+
+            return UnitEditConflictData.create(error.id(), unitEditEntity.unitId(), unitEditEntity.version(),
+                    original.name(), remote.name(), unitEditEntity.name(),
+                    original.abbreviation(), remote.abbreviation(), unitEditEntity.abbreviation());
         });
     }
 }

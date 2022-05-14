@@ -21,12 +21,26 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
-import io.reactivex.rxjava3.core.Observable;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-public interface ConflictRepository {
-    Observable<LocationEditConflictData> getLocationEditConflict(long errorId);
+import static org.mockito.Mockito.verify;
 
-    Observable<UnitEditConflictData> getUnitEditConflict(long errorId);
+@ExtendWith(MockitoExtension.class)
+class UnitConflictInteractorImplTest {
+
+    @Mock
+    ConflictRepository conflictRepository;
+
+    @Test
+    void gettingUnitEditConflictDelegates() {
+        long input = 42L;
+        UnitConflictInteractor uut = new UnitConflictInteractorImpl(conflictRepository);
+
+        uut.getUnitEditConflict(input);
+
+        verify(conflictRepository).getUnitEditConflict(input);
+    }
 }

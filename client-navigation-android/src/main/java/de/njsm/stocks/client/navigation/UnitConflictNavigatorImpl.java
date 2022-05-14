@@ -21,29 +21,20 @@
 
 package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.fragment.errorlist.ErrorListFragmentDirections;
+import android.os.Bundle;
+import de.njsm.stocks.client.fragment.unitconflict.UnitConflictFragmentArgs;
 
 import javax.inject.Inject;
 
-class ErrorListNavigatorImpl extends BaseNavigator implements ErrorListNavigator {
+class UnitConflictNavigatorImpl extends BaseNavigator implements UnitConflictNavigator {
 
     @Inject
-    ErrorListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+    UnitConflictNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
         super(navigationArgConsumer);
     }
 
     @Override
-    public void showErrorDetails(long id) {
-        getNavigationArgConsumer().navigate(ErrorListFragmentDirections.actionNavFragmentErrorListToNavFragmentErrorDetail(id));
-    }
-
-    @Override
-    public void resolveLocationEditConflict(long id) {
-        getNavigationArgConsumer().navigate(ErrorListFragmentDirections.actionNavFragmentErrorListToNavFragmentLocationConflict(id));
-    }
-
-    @Override
-    public void resolveUnitEditConflict(long id) {
-        getNavigationArgConsumer().navigate(ErrorListFragmentDirections.actionNavFragmentErrorListToNavFragmentUnitConflict(id));
+    public long getErrorId(Bundle arguments) {
+        return UnitConflictFragmentArgs.fromBundle(arguments).getId();
     }
 }

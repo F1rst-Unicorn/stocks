@@ -66,7 +66,7 @@ public abstract class LocationDbEntity extends ServerDbEntity<LocationDbEntity> 
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    abstract static class Builder extends ServerDbEntity.Builder<LocationDbEntity, Builder> implements LocationFields.Builder<LocationDbEntity, Builder> {
+    public abstract static class Builder extends ServerDbEntity.Builder<LocationDbEntity, Builder> implements LocationFields.Builder<LocationDbEntity, Builder> {
 
         abstract LocationDbEntity build();
     }

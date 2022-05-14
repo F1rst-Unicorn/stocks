@@ -21,12 +21,22 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
 import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
 import io.reactivex.rxjava3.core.Observable;
 
-public interface ConflictRepository {
-    Observable<LocationEditConflictData> getLocationEditConflict(long errorId);
+import javax.inject.Inject;
 
-    Observable<UnitEditConflictData> getUnitEditConflict(long errorId);
+class InMemoryUnitConflictInteractorImpl implements UnitConflictInteractor {
+
+    @Inject
+    InMemoryUnitConflictInteractorImpl() {
+    }
+
+    @Override
+    public Observable<UnitEditConflictData> getUnitEditConflict(long errorId) {
+        return Observable.just(UnitEditConflictData.create(1, 42, 43,
+                "original name", "remote name", "local name",
+                "original abbreviation", "remote abbreviation", "local abbreviation"
+        ));
+    }
 }

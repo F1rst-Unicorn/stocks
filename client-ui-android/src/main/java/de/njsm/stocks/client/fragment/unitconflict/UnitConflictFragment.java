@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.locationconflict;
+package de.njsm.stocks.client.fragment.unitconflict;
 
 import android.os.Bundle;
 import android.view.*;
@@ -27,41 +27,37 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.UnitToEdit;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
-import de.njsm.stocks.client.fragment.view.LocationForm;
-import de.njsm.stocks.client.navigation.LocationConflictNavigator;
-import de.njsm.stocks.client.presenter.LocationConflictViewModel;
+import de.njsm.stocks.client.fragment.view.UnitForm;
+import de.njsm.stocks.client.navigation.UnitConflictNavigator;
+import de.njsm.stocks.client.presenter.UnitConflictViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class LocationConflictFragment extends BottomToolbarFragment {
+public class UnitConflictFragment extends BottomToolbarFragment {
 
-    private LocationConflictViewModel locationViewModel;
+    private UnitConflictViewModel unitConflictViewModel;
 
-    private LocationConflictNavigator locationConflictNavigator;
+    private UnitConflictNavigator unitConflictNavigator;
 
-    private LocationForm form;
+    private UnitForm form;
 
-    private Identifiable<Location> id;
+    private Identifiable<Unit> id;
 
-    @Nullable
+    @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
-        this.form = new LocationForm(insertContent(inflater, root, R.layout.fragment_location_form), this::getString);
+        this.form = new UnitForm(insertContent(inflater, root, R.layout.fragment_unit_form), this::getString);
 
-        long errorId = locationConflictNavigator.getErrorId(requireArguments());
-        locationViewModel.getLocationEditConflict(errorId).observe(getViewLifecycleOwner(), v -> {
+        long errorId = unitConflictNavigator.getErrorId(requireArguments());
+        unitConflictViewModel.getUnitEditConflict(errorId).observe(getViewLifecycleOwner(), v -> {
             id = v;
             form.setName(v.name().suggestedValue());
-            form.setDescription(String.format(v.description().suggestedValue(),
-                    getString(R.string.hint_original),
-                    getString(R.string.hint_remote),
-                    getString(R.string.hint_local)
-            ));
+            form.setAbbreviation(v.abbreviation().suggestedValue());
 
             if (v.hasNoConflict()) {
                 submit();
@@ -74,8 +70,10 @@ public class LocationConflictFragment extends BottomToolbarFragment {
                 form.hideName();
             }
 
-            if (!v.description().needsHandling()) {
-                form.hideDescription();
+            if (v.abbreviation().needsHandling()) {
+                form.showAbbreviationConflict(v.abbreviation());
+            } else {
+                form.hideAbbreviation();
             }
         });
 
@@ -96,17 +94,17 @@ public class LocationConflictFragment extends BottomToolbarFragment {
 
     private void submit() {
         if (!form.maySubmit()) {
-            form.setNameError(R.string.error_may_not_be_empty);
+            form.setError(R.string.error_may_not_be_empty);
             return;
         }
 
-        LocationToEdit data = LocationToEdit.builder()
+        UnitToEdit data = UnitToEdit.builder()
                 .id(id.id())
                 .name(form.getName())
-                .description(form.getDescription())
+                .abbreviation(form.getAbbreviation())
                 .build();
-        locationViewModel.editLocation(data);
-        locationConflictNavigator.back();
+        unitConflictViewModel.edit(data);
+        unitConflictNavigator.back();
     }
 
     @Inject
@@ -114,11 +112,11 @@ public class LocationConflictFragment extends BottomToolbarFragment {
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        locationViewModel = viewModelProvider.get(LocationConflictViewModel.class);
+        unitConflictViewModel = viewModelProvider.get(UnitConflictViewModel.class);
     }
 
     @Inject
-    void setLocationConflictNavigator(LocationConflictNavigator locationConflictNavigator) {
-        this.locationConflictNavigator = locationConflictNavigator;
+    void setUnitConflictNavigator(UnitConflictNavigator unitConflictNavigator) {
+        this.unitConflictNavigator = unitConflictNavigator;
     }
 }
