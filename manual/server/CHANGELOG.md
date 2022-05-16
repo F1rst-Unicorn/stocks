@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.7.0.1]
+
 ### Performance
 
 * Accelerate consistency check done on every data change
