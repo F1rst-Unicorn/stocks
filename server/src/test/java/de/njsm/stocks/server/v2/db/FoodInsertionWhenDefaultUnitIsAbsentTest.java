@@ -42,7 +42,7 @@ public class FoodInsertionWhenDefaultUnitIsAbsentTest extends DbTestCase {
     }
 
     @Override
-    SampleData getSampleData(Connection connection) {
+    protected SampleData getSampleData(Connection connection) {
         return new TayloredSampleData(connection);
     }
 

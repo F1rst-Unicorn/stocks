@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        context="production">
+
+    <changeSet id="1" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function contiguous_primary_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+            id int;
+            begin
+            execute format(
+                    'select versions_as_range.id '
+                    'from ('
+                            'select id, tstzrange(valid_time_start, valid_time_end) part '
+                            'from %I '
+                            'where transaction_time_end = %L) versions_as_range '
+                    'group by id '
+                    'having not range_agg(versions_as_range.part) '
+                            '@> tstzrange(lower(range_agg(versions_as_range.part)), upper(range_agg(versions_as_range.part))) '
+                    'limit 1',
+                    tg_table_name, 'infinity')
+                into id;
+
+            if id is not null then
+                    raise check_violation using message = 'on table ' || tg_table_name || ' with id ' || id;
+            end if;
+            return new;
+            end;
+            $$;;
+        </sql>
+        <rollback>
+            <sql>
+                create or replace function contiguous_primary_key() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    execute format(
+                            'select count(*) '
+                                'from %I u1, '
+                                '%I u2 '
+                                'where u1.valid_time_end &lt; u2.valid_time_end '
+                                'and u1.id = u2.id '
+                                'and u1.transaction_time_end = %L '
+                                'and u2.transaction_time_end = %L '
+                                'and not exists( '
+                                'select * '
+                                'from %I u3 '
+                                'where u3.id = u1.id '
+                                'and u3.transaction_time_end = %L '
+                                'and (((u3.valid_time_start &lt;= u1.valid_time_end) '
+                                'and (u1.valid_time_end &lt; u3.valid_time_end)) '
+                                'or ((u3.valid_time_start &lt; u2.valid_time_start) '
+                                'and '
+                                'u2.valid_time_start &lt;= u3.valid_time_end)) '
+                                ')',
+                            tg_table_name, tg_table_name, 'infinity', 'infinity', tg_table_name, 'infinity')
+                        into count;
+
+                    if count != 0 then
+                        raise check_violation using message = 'on table ' || tg_table_name;
+                    end if;
+                    return new;
+                end;
+                $$;;
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

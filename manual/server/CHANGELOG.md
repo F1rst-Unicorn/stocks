@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Performance
+
+* Accelerate consistency check done on every data change
+  ([#58](https://j.njsm.de/git/veenj/stocks/issues/58))
+
 ## [5.7.0.0]
 
 ### Added

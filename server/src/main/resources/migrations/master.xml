@@ -35,4 +35,5 @@
     <include file="0007-recipes.xml" relativeToChangelogFile="true"/>
     <include file="0008-technical-users.xml" relativeToChangelogFile="true"/>
     <include file="0009-views-for-current-data.xml" relativeToChangelogFile="true"/>
+    <include file="0010-accelerate-contiguous-primary-key.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

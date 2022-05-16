@@ -63,7 +63,7 @@ public abstract class DbTestCase {
         getSampleData(connection).apply();
     }
 
-    SampleData getSampleData(Connection connection) {
+    protected SampleData getSampleData(Connection connection) {
         return new SampleData(connection);
     }
 

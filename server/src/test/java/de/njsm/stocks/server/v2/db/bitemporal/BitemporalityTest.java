@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,9 +16,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.server.v2.db;
+package de.njsm.stocks.server.v2.db.bitemporal;
 
 import de.njsm.stocks.common.api.Location;
 import de.njsm.stocks.common.api.StatusCode;
@@ -26,6 +28,9 @@ import de.njsm.stocks.common.api.BitemporalUserDevice;
 import de.njsm.stocks.common.api.LocationForDeletion;
 import de.njsm.stocks.common.api.LocationForRenaming;
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.db.DbTestCase;
+import de.njsm.stocks.server.v2.db.FoodItemHandler;
+import de.njsm.stocks.server.v2.db.LocationHandler;
 import fj.data.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
