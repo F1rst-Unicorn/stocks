@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.locationadd;
+package de.njsm.stocks.client.fragment.unitadd;
 
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
@@ -29,7 +29,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.UnitAddInteractor;
 import de.njsm.stocks.client.business.entities.UnitAddForm;
-import de.njsm.stocks.client.fragment.unitadd.UnitAddFragment;
 import de.njsm.stocks.client.navigation.Navigator;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;

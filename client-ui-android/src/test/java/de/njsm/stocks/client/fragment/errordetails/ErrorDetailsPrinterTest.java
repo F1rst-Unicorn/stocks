@@ -25,6 +25,8 @@ import de.njsm.stocks.client.business.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.assertEquals;
 
 public class ErrorDetailsPrinterTest {
@@ -76,5 +78,11 @@ public class ErrorDetailsPrinterTest {
     public void unitEditErrorShowsName() {
         UnitEditErrorDetails data = UnitEditErrorDetails.create(1, "Gramm", "g");
         assertEquals(data.name() + " (" + data.abbreviation() + ")", uut.visit(data, null));
+    }
+
+    @Test
+    public void scaledUnitAddErrorShowsScaleAndUnit() {
+        ScaledUnitAddErrorDetails data = ScaledUnitAddErrorDetails.create(BigDecimal.TEN.pow(3), 1, "Gramm", "g");
+        assertEquals("1kg (Gramm)", uut.visit(data, null));
     }
 }

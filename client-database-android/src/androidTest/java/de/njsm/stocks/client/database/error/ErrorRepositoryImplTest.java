@@ -35,10 +35,12 @@ import io.reactivex.rxjava3.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.StandardEntities.unitDbEntity;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertTrue;
 
 public class ErrorRepositoryImplTest extends DbTestCase {
@@ -318,5 +320,46 @@ public class ErrorRepositoryImplTest extends DbTestCase {
         assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
         stocksDatabase.errorDao().getNumberOfErrors().distinctUntilChanged().test().awaitCount(1).assertValues(0);
         assertTrue(stocksDatabase.errorDao().getUnitEdits().isEmpty());
+    }
+
+    @Test
+    public void scaledUnitAddErrorCanBeRetrieved() {
+        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        ScaledUnitAddForm form = ScaledUnitAddForm.create(BigDecimal.ONE, unit.id());
+        ScaledUnitAddErrorDetails expected = ScaledUnitAddErrorDetails.create(form.scale(),
+                form.unit(),
+                unit.name(),
+                unit.abbreviation());
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
+        errorRecorder.recordScaledUnitAddError(exception, form);
+
+        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
+        test(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
+        test(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(expected));
+    }
+
+    @Test
+    public void scaledUnitAddErrorCanBeDeleted() {
+        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        ScaledUnitAddForm form = ScaledUnitAddForm.create(BigDecimal.ONE, unit.id());
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+        errorRecorder.recordScaledUnitAddError(exception, form);
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
+        ErrorDescription input = test(uut.getErrors()).values().get(0).get(0);
+
+        uut.deleteError(input);
+
+        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
+        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
+        assertTrue(stocksDatabase.errorDao().getScaledUnitAdds().isEmpty());
+    }
+
+    private <T> TestObserver<List<T>> test(Observable<List<T>> input) {
+        return input
+                .filter(v -> !v.isEmpty())
+                .test()
+                .awaitCount(1)
+                .assertNoErrors();
     }
 }

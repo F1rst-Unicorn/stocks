@@ -32,6 +32,7 @@ import io.reactivex.rxjava3.core.Observable;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY_STRING_SQL;
+import static de.njsm.stocks.client.database.StocksDatabase.NOW;
 
 @Dao
 public abstract class ErrorDao {
@@ -180,7 +181,32 @@ public abstract class ErrorDao {
     abstract UnitDbEntity getUnitEntity(int id, int version);
 
     @Query("select * " +
+            "from unit " +
+            "where id = :id " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from unit " +
+            "   where id = :id " +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")" +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL)
+    abstract UnitDbEntity getLatestUnitEntity(int id);
+
+    @Query("select * " +
             "from current_unit " +
             "where id = :id")
     abstract UnitDbEntity getCurrentUnit(int id);
+
+    @Query("select * from scaled_unit_to_add")
+    abstract List<ScaledUnitAddEntity> getScaledUnitAdds();
+
+    @Query("select * from scaled_unit_to_add where id = :id")
+    abstract ScaledUnitAddEntity getScaledUnitAdd(Long id);
+
+    @Query("delete from scaled_unit_to_add where id = :id")
+    abstract void deleteScaledUnitAdd(Long id);
+
+    @Insert
+    abstract long insert(ScaledUnitAddEntity entity);
 }

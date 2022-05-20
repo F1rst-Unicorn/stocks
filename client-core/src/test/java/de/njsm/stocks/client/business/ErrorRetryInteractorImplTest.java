@@ -30,6 +30,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -57,6 +59,9 @@ public class ErrorRetryInteractorImplTest {
     private UnitEditInteractor unitEditInteractor;
 
     @Mock
+    private ScaledUnitAddInteractor scaledUnitAddInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -67,7 +72,16 @@ public class ErrorRetryInteractorImplTest {
 
     @BeforeEach
     void setUp() {
-        uut = new ErrorRetryInteractorImpl(locationAddInteractor, locationDeleter, locationEditInteractor, unitAddInteractor, unitDeleter, unitEditInteractor, synchroniser, scheduler, errorRepository);
+        uut = new ErrorRetryInteractorImpl(locationAddInteractor,
+                locationDeleter,
+                locationEditInteractor,
+                unitAddInteractor,
+                unitDeleter,
+                unitEditInteractor,
+                scaledUnitAddInteractor,
+                synchroniser,
+                scheduler,
+                errorRepository);
     }
 
     @Test
@@ -193,6 +207,18 @@ public class ErrorRetryInteractorImplTest {
         ArgumentCaptor<UnitToEdit> captor = ArgumentCaptor.forClass(UnitToEdit.class);
         verify(unitEditInteractor).edit(captor.capture());
         assertEquals(unitEditErrorDetails.id(), captor.getValue().id());
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingScaledUnitAddingDispatches() {
+        ScaledUnitAddErrorDetails errorDetails = ScaledUnitAddErrorDetails.create(BigDecimal.ONE, 2, "Gramm", "g");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", errorDetails);
+
+        uut.retryInBackground(input);
+
+        ScaledUnitAddForm expected = ScaledUnitAddForm.create(errorDetails.scale(), errorDetails.unit());
+        verify(scaledUnitAddInteractor).add(expected);
         verify(errorRepository).deleteError(input);
     }
 }

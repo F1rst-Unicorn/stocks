@@ -19,29 +19,22 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.testdata;
 
-import com.google.auto.value.AutoValue;
-import com.google.auto.value.extension.memoized.Memoized;
 
-import java.math.BigDecimal;
+import de.njsm.stocks.client.business.entities.UnitForSelection;
 
-@AutoValue
-public abstract class ScaledUnitForListing implements Identifiable<ScaledUnit>, ScaledUnitSummaryFields {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-    @Override
-    @Memoized
-    public UnitPrefix unitPrefix() {
-        return ScaledUnitSummaryFields.super.unitPrefix();
-    }
+public class UnitsForSelection {
 
-    @Override
-    @Memoized
-    public BigDecimal prefixedScale() {
-        return ScaledUnitSummaryFields.super.prefixedScale();
-    }
-
-    public static ScaledUnitForListing create(int id, String abbreviation, BigDecimal scale) {
-        return new AutoValue_ScaledUnitForListing(id, scale, abbreviation);
+    public static List<UnitForSelection> generate() {
+        return new ArrayList<>(Arrays.asList(
+                UnitForSelection.create(1, "Liter"),
+                UnitForSelection.create(2, "Gramm"),
+                UnitForSelection.create(4, "Bottle")
+        ));
     }
 }

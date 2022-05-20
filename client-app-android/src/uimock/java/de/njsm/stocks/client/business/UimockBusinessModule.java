@@ -110,4 +110,7 @@ public interface UimockBusinessModule {
 
     @Binds
     UnitConflictInteractor UnitConflictInteractor(InMemoryUnitConflictInteractorImpl impl);
+
+    @Binds
+    ScaledUnitAddInteractor ScaledUnitAddInteractor(InMemoryScaledUnitAddInteractorImpl impl);
 }

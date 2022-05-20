@@ -108,6 +108,12 @@ public abstract class Job {
                 return visitor.editUnit(this, input);
             }
         },
+        ADD_SCALED_UNIT {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.addScaledUnit(this, input);
+            }
+        },
         UNKNOWN {
             @Override
             public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
@@ -145,6 +151,8 @@ public abstract class Job {
         O deleteUnit(Type type, I input);
 
         O editUnit(Type type, I input);
+
+        O addScaledUnit(Type type, I input);
     }
 
     public interface DefaultTypeVisitor<I, O> extends TypeVisitor<I, O> {
@@ -203,6 +211,11 @@ public abstract class Job {
 
         @Override
         default O editUnit(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O addScaledUnit(Type type, I input) {
             return defaultImpl(type, input);
         }
     }

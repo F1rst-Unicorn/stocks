@@ -140,4 +140,11 @@ public class ViewModelModule {
     ViewModel UnitConflictViewModel(UnitConflictInteractor unitConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
         return new UnitConflictViewModel(unitConflictInteractor, errorRetryInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ScaledUnitAddViewModel.class)
+    ViewModel ScaledUnitAddViewModel(ScaledUnitAddInteractor scaledUnitAddInteractor) {
+        return new ScaledUnitAddViewModel(scaledUnitAddInteractor);
+    }
 }

@@ -31,13 +31,14 @@ import de.njsm.stocks.client.fragment.SwipeDownSupportTest;
 import de.njsm.stocks.client.fragment.errordetails.ErrorDetailsFragmentTest;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragmentTest;
 import de.njsm.stocks.client.fragment.locationadd.LocationAddFragmentTest;
-import de.njsm.stocks.client.fragment.locationadd.UnitAddFragmentTest;
 import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragmentTest;
 import de.njsm.stocks.client.fragment.locationedit.LocationEditFragmentTest;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragmentTest;
+import de.njsm.stocks.client.fragment.scaledunitadd.ScaledUnitAddFragmentTest;
 import de.njsm.stocks.client.fragment.scaledunitlist.ScaledUnitListFragmentTest;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentTest;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragmentTest;
+import de.njsm.stocks.client.fragment.unitadd.UnitAddFragmentTest;
 import de.njsm.stocks.client.fragment.unitconflict.UnitConflictFragmentTest;
 import de.njsm.stocks.client.fragment.unitedit.UnitEditFragmentTest;
 import de.njsm.stocks.client.fragment.unitlist.UnitListFragmentTest;
@@ -88,6 +89,8 @@ public interface TestComponent {
     void inject(UnitEditFragmentTest test);
 
     void inject(UnitConflictFragmentTest test);
+
+    void inject(ScaledUnitAddFragmentTest test);
 
     @Component.Builder
     interface Builder {

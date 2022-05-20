@@ -37,14 +37,14 @@ public class UnitForm {
 
     private final ConflictTextField abbreviationField;
 
-    private final Function<Integer, String> stringProvider;
+    private final Function<Integer, String> dictionary;
 
     private final Set<ConflictTextField> invalidFields;
 
-    public UnitForm(View root, Function<Integer, String> stringProvider) {
+    public UnitForm(View root, Function<Integer, String> dictionary) {
         this.nameField = new ConflictTextField(root.findViewById(R.id.fragment_unit_form_name));
         this.abbreviationField = new ConflictTextField(root.findViewById(R.id.fragment_unit_form_abbreviation));
-        this.stringProvider = stringProvider;
+        this.dictionary = dictionary;
         invalidFields = new HashSet<>();
         invalidFields.add(nameField);
         invalidFields.add(abbreviationField);
@@ -58,7 +58,7 @@ public class UnitForm {
     private void onInputChanged(ConflictTextField conflictTextField, TextInputLayout textInputLayout, boolean isEmpty) {
         if (isEmpty) {
             invalidFields.add(conflictTextField);
-            textInputLayout.setError(stringProvider.apply(R.string.error_may_not_be_empty));
+            textInputLayout.setError(dictionary.apply(R.string.error_may_not_be_empty));
         } else {
             invalidFields.remove(conflictTextField);
             textInputLayout.setError(null);
@@ -71,7 +71,7 @@ public class UnitForm {
 
     public void setError(@StringRes int text) {
         for (ConflictTextField invalidField : invalidFields)
-            invalidField.setError(stringProvider.apply(text));
+            invalidField.setError(dictionary.apply(text));
     }
 
     public String getName() {

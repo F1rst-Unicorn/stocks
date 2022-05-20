@@ -21,27 +21,7 @@
 
 package de.njsm.stocks.client.business.entities;
 
-import com.google.auto.value.AutoValue;
-import com.google.auto.value.extension.memoized.Memoized;
+public interface FullScaledUnitSummaryFields extends ScaledUnitSummaryFields {
 
-import java.math.BigDecimal;
-
-@AutoValue
-public abstract class ScaledUnitForListing implements Identifiable<ScaledUnit>, ScaledUnitSummaryFields {
-
-    @Override
-    @Memoized
-    public UnitPrefix unitPrefix() {
-        return ScaledUnitSummaryFields.super.unitPrefix();
-    }
-
-    @Override
-    @Memoized
-    public BigDecimal prefixedScale() {
-        return ScaledUnitSummaryFields.super.prefixedScale();
-    }
-
-    public static ScaledUnitForListing create(int id, String abbreviation, BigDecimal scale) {
-        return new AutoValue_ScaledUnitForListing(id, scale, abbreviation);
-    }
+    String name();
 }

@@ -103,4 +103,7 @@ public interface BusinessModule {
 
     @Binds
     UnitConflictInteractor UnitConflictInteractor(UnitConflictInteractorImpl impl);
+
+    @Binds
+    ScaledUnitAddInteractor ScaledUnitAddInteractor(ScaledUnitAddInteractorImpl impl);
 }

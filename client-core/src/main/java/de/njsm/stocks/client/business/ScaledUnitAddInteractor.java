@@ -21,23 +21,15 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.ScaledUnitAddForm;
+import de.njsm.stocks.client.business.entities.UnitForSelection;
+import io.reactivex.rxjava3.core.Observable;
 
-public interface ErrorRecorder {
+import java.util.List;
 
-    void recordSynchronisationError(SubsystemException exception);
+public interface ScaledUnitAddInteractor {
 
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
+    Observable<List<UnitForSelection>> getUnits();
 
-    void recordLocationDeleteError(SubsystemException exception, Versionable<Location> locationForDeletion);
-
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
-
-    void recordUnitAddError(SubsystemException exception, UnitAddForm input);
-
-    void recordUnitDeleteError(SubsystemException exception, Versionable<Unit> outputToService);
-
-    void recordUnitEditError(SubsystemException exception, UnitForEditing unitForEditing);
-
-    void recordScaledUnitAddError(SubsystemException e, ScaledUnitAddForm form);
+    void add(ScaledUnitAddForm form);
 }

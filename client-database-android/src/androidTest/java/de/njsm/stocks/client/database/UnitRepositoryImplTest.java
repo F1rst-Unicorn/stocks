@@ -21,10 +21,7 @@
 
 package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.UnitForDeletion;
-import de.njsm.stocks.client.business.entities.UnitForEditing;
-import de.njsm.stocks.client.business.entities.UnitForListing;
-import de.njsm.stocks.client.business.entities.UnitToEdit;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,5 +87,16 @@ public class UnitRepositoryImplTest extends DbTestCase {
 
         assertTrue(expected.isContainedIn(actual));
         assertEquals(entity.version(), actual.version());
+    }
+
+    @Test
+    public void gettingUnitForSelectionWorks() {
+        UnitDbEntity entity = unitDbEntity();
+        stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(entity));
+
+        Observable<List<UnitForSelection>> actual = uut.getUnitsForSelection();
+
+        actual.test().awaitCount(1).assertValue(v -> v.get(0).id() == entity.id()
+                && v.get(0).name().equals(entity.name()));
     }
 }

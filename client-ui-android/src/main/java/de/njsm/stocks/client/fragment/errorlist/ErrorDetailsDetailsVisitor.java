@@ -22,8 +22,18 @@
 package de.njsm.stocks.client.fragment.errorlist;
 
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
+
+import javax.inject.Inject;
 
 public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, String> {
+
+    private final ScaledUnitRenderStrategy scaledUnitRenderStrategy;
+
+    @Inject
+    ErrorDetailsDetailsVisitor() {
+        this.scaledUnitRenderStrategy = new ScaledUnitRenderStrategy();
+    }
 
     @Override
     public String locationAddForm(LocationAddForm locationAddForm, Void input) {
@@ -58,6 +68,11 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     @Override
     public String unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, Void input) {
         return formatUnit(unitEditErrorDetails);
+    }
+
+    @Override
+    public String scaledUnitAddErrorDetails(ScaledUnitAddErrorDetails scaledUnitAddErrorDetails, Void input) {
+        return scaledUnitRenderStrategy.render(scaledUnitAddErrorDetails);
     }
 
     private String formatUnit(UnitFields unit) {

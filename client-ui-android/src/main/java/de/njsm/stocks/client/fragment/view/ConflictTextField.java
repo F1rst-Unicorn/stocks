@@ -60,6 +60,10 @@ public class ConflictTextField {
         onEditorOf(textInputField, v -> v.setHint(id));
     }
 
+    public void setInputType(int inputType) {
+        onEditorOf(textInputField, v -> v.setInputType(inputType));
+    }
+
     public void setError(String error) {
         textInputField.setError(error);
     }

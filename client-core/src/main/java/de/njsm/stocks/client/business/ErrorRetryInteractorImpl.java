@@ -40,6 +40,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final UnitEditInteractor unitEditInteractor;
 
+    private final ScaledUnitAddInteractor scaledUnitAddInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -49,13 +51,23 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     private final JobTypeTranslator jobTypeTranslator;
 
     @Inject
-    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor, EntityDeleter<Location> locationDeleter, LocationEditInteractor locationEditInteractor, UnitAddInteractor unitAddInteractor, EntityDeleter<Unit> unitDeleter, UnitEditInteractor unitEditInteractor, Synchroniser synchroniser, Scheduler scheduler, ErrorRepository errorRepository) {
+    ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor,
+                             EntityDeleter<Location> locationDeleter,
+                             LocationEditInteractor locationEditInteractor,
+                             UnitAddInteractor unitAddInteractor,
+                             EntityDeleter<Unit> unitDeleter,
+                             UnitEditInteractor unitEditInteractor,
+                             ScaledUnitAddInteractor scaledUnitAddInteractor,
+                             Synchroniser synchroniser,
+                             Scheduler scheduler,
+                             ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
         this.locationDeleter = locationDeleter;
         this.locationEditInteractor = locationEditInteractor;
         this.unitAddInteractor = unitAddInteractor;
         this.unitDeleter = unitDeleter;
         this.unitEditInteractor = unitEditInteractor;
+        this.scaledUnitAddInteractor = scaledUnitAddInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -134,6 +146,16 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void scaledUnitAddErrorDetails(ScaledUnitAddErrorDetails scaledUnitAddErrorDetails, Void input) {
+        ScaledUnitAddForm data = ScaledUnitAddForm.create(
+                scaledUnitAddErrorDetails.scale(),
+                scaledUnitAddErrorDetails.unit()
+        );
+        scaledUnitAddInteractor.add(data);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -169,6 +191,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, Void input) {
             return Job.Type.EDIT_UNIT;
+        }
+
+        @Override
+        public Job.Type scaledUnitAddErrorDetails(ScaledUnitAddErrorDetails scaledUnitAddErrorDetails, Void input) {
+            return Job.Type.ADD_SCALED_UNIT;
         }
     }
 }

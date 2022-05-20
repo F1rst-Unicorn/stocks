@@ -19,29 +19,26 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database.error;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
-import com.google.auto.value.extension.memoized.Memoized;
+import de.njsm.stocks.client.database.IdFields;
+import de.njsm.stocks.client.database.ScaledUnitFields;
 
 import java.math.BigDecimal;
 
 @AutoValue
-public abstract class ScaledUnitForListing implements Identifiable<ScaledUnit>, ScaledUnitSummaryFields {
+@Entity(tableName = "scaled_unit_to_add")
+public abstract class ScaledUnitAddEntity implements IdFields, ScaledUnitFields {
 
-    @Override
-    @Memoized
-    public UnitPrefix unitPrefix() {
-        return ScaledUnitSummaryFields.super.unitPrefix();
+    public static ScaledUnitAddEntity create(int id, BigDecimal scale, int unit) {
+        return new AutoValue_ScaledUnitAddEntity(id, scale, unit);
     }
 
-    @Override
-    @Memoized
-    public BigDecimal prefixedScale() {
-        return ScaledUnitSummaryFields.super.prefixedScale();
-    }
-
-    public static ScaledUnitForListing create(int id, String abbreviation, BigDecimal scale) {
-        return new AutoValue_ScaledUnitForListing(id, scale, abbreviation);
+    @Ignore
+    public static ScaledUnitAddEntity create(BigDecimal scale, int unit) {
+        return new AutoValue_ScaledUnitAddEntity(0, scale, unit);
     }
 }

@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ErrorRepository;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -117,5 +118,12 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     public ErrorDetails editUnit(ErrorEntity.Action action, Long input) {
         UnitEditEntity unitEditEntity = errorDao.getUnitEdit(input);
         return UnitEditErrorDetails.create(unitEditEntity.unitId(), unitEditEntity.name(), unitEditEntity.abbreviation());
+    }
+
+    @Override
+    public ErrorDetails addScaledUnit(ErrorEntity.Action action, Long input) {
+        ScaledUnitAddEntity scaledUnitAddEntity = errorDao.getScaledUnitAdd(input);
+        UnitDbEntity unit = errorDao.getLatestUnitEntity(scaledUnitAddEntity.unit());
+        return ScaledUnitAddErrorDetails.create(scaledUnitAddEntity.scale(), scaledUnitAddEntity.unit(), unit.name(), unit.abbreviation());
     }
 }

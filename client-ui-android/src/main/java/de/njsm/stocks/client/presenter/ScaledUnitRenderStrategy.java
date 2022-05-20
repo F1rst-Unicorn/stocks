@@ -21,7 +21,8 @@
 
 package de.njsm.stocks.client.presenter;
 
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import de.njsm.stocks.client.business.entities.FullScaledUnitSummaryFields;
+import de.njsm.stocks.client.business.entities.ScaledUnitSummaryFields;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -34,17 +35,21 @@ public class ScaledUnitRenderStrategy {
     public ScaledUnitRenderStrategy() {
     }
 
-    public String render(ScaledUnitForListing scaledUnitForListing) {
-        if (scaledUnitForListing.unitPrefix().getSymbol().isEmpty())
-            return toLocaleString(scaledUnitForListing.prefixedScale())
-                    + spaceForFullWordAbbreviation(scaledUnitForListing.abbreviation())
-                    + scaledUnitForListing.abbreviation();
+    public String render(ScaledUnitSummaryFields scaledUnit) {
+        if (scaledUnit.unitPrefix().getSymbol().isEmpty())
+            return toLocaleString(scaledUnit.prefixedScale())
+                    + spaceForFullWordAbbreviation(scaledUnit.abbreviation())
+                    + scaledUnit.abbreviation();
         else
-            return toLocaleString(scaledUnitForListing.prefixedScale())
-                    + spaceForFullWordAbbreviation(scaledUnitForListing.abbreviation())
-                    + scaledUnitForListing.unitPrefix().getSymbol()
-                    + spaceForFullWordAbbreviation(scaledUnitForListing.abbreviation())
-                    + scaledUnitForListing.abbreviation();
+            return toLocaleString(scaledUnit.prefixedScale())
+                    + spaceForFullWordAbbreviation(scaledUnit.abbreviation())
+                    + scaledUnit.unitPrefix().getSymbol()
+                    + spaceForFullWordAbbreviation(scaledUnit.abbreviation())
+                    + scaledUnit.abbreviation();
+    }
+
+    public String render(FullScaledUnitSummaryFields scaledUnit) {
+        return String.format("%s (%s)", render((ScaledUnitSummaryFields) scaledUnit), scaledUnit.name());
     }
 
     private String spaceForFullWordAbbreviation(String abbreviation) {

@@ -21,23 +21,9 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.ScaledUnitAddForm;
 
-public interface ErrorRecorder {
+public interface ScaledUnitAddService {
 
-    void recordSynchronisationError(SubsystemException exception);
-
-    void recordLocationAddError(SubsystemException exception, LocationAddForm form);
-
-    void recordLocationDeleteError(SubsystemException exception, Versionable<Location> locationForDeletion);
-
-    void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
-
-    void recordUnitAddError(SubsystemException exception, UnitAddForm input);
-
-    void recordUnitDeleteError(SubsystemException exception, Versionable<Unit> outputToService);
-
-    void recordUnitEditError(SubsystemException exception, UnitForEditing unitForEditing);
-
-    void recordScaledUnitAddError(SubsystemException e, ScaledUnitAddForm form);
+    void add(ScaledUnitAddForm form);
 }

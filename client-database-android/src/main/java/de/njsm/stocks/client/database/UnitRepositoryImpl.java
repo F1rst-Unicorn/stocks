@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.ScaledUnitAddRepository;
 import de.njsm.stocks.client.business.UnitRepository;
 import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
@@ -28,7 +29,7 @@ import io.reactivex.rxjava3.core.Observable;
 import javax.inject.Inject;
 import java.util.List;
 
-class UnitRepositoryImpl implements UnitRepository {
+class UnitRepositoryImpl implements UnitRepository, ScaledUnitAddRepository {
 
     private final UnitDao unitDao;
 
@@ -56,5 +57,11 @@ class UnitRepositoryImpl implements UnitRepository {
     @Override
     public UnitForDeletion getEntityForDeletion(Identifiable<Unit> id) {
         return unitDao.getUnit(id.id());
+    }
+
+    @Override
+    public Observable<List<UnitForSelection>> getUnitsForSelection() {
+        return unitDao.getCurrentUnitsForSelection()
+                .distinctUntilChanged();
     }
 }

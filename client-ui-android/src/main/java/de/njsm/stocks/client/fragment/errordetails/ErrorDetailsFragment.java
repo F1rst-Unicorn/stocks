@@ -33,6 +33,7 @@ import de.njsm.stocks.client.databind.StatusCodeTranslator;
 import de.njsm.stocks.client.fragment.InjectableFragment;
 import de.njsm.stocks.client.navigation.ErrorDetailsNavigator;
 import de.njsm.stocks.client.presenter.ErrorDetailsViewModel;
+import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
@@ -48,6 +49,7 @@ public class ErrorDetailsFragment extends InjectableFragment {
     private final ErrorDetailsPrinter errorDetailsPrinter;
 
     private final ErrorDetailsHeadlineVisitor errorDetailsHeadlineVisitor;
+
 
     public ErrorDetailsFragment() {
         statusCodeTranslator = new StatusCodeTranslator();
@@ -104,6 +106,12 @@ public class ErrorDetailsFragment extends InjectableFragment {
 
     static final class ErrorDetailsPrinter implements ErrorDetailsVisitor<Void, String> {
 
+        private final ScaledUnitRenderStrategy scaledUnitRenderStrategy;
+
+        ErrorDetailsPrinter() {
+            scaledUnitRenderStrategy = new ScaledUnitRenderStrategy();
+        }
+
         @Override
         public String locationAddForm(LocationAddForm locationAddForm, Void input) {
             return String.format("%1$s\n%2$s", locationAddForm.name(), locationAddForm.description());
@@ -141,6 +149,11 @@ public class ErrorDetailsFragment extends InjectableFragment {
 
         private String formatUnit(UnitFields unitDeleteErrorDetails) {
             return String.format("%s (%s)", unitDeleteErrorDetails.name(), unitDeleteErrorDetails.abbreviation());
+        }
+
+        @Override
+        public String scaledUnitAddErrorDetails(ScaledUnitAddErrorDetails scaledUnitAddErrorDetails, Void input) {
+            return scaledUnitRenderStrategy.render(scaledUnitAddErrorDetails);
         }
     }
 }

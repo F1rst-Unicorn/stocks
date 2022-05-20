@@ -74,6 +74,9 @@ public interface NetworkModule {
     @Binds
     UnitEditService unitEditService(UnitEditServiceImpl impl);
 
+    @Binds
+    ScaledUnitAddService ScaledUnitAddService(ScaledUnitAddServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint) {

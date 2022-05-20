@@ -22,26 +22,18 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
-import com.google.auto.value.extension.memoized.Memoized;
 
 import java.math.BigDecimal;
 
 @AutoValue
-public abstract class ScaledUnitForListing implements Identifiable<ScaledUnit>, ScaledUnitSummaryFields {
+public abstract class ScaledUnitAddErrorDetails implements ScaledUnitFields, FullScaledUnitSummaryFields, ErrorDetails {
 
-    @Override
-    @Memoized
-    public UnitPrefix unitPrefix() {
-        return ScaledUnitSummaryFields.super.unitPrefix();
+    public static ScaledUnitAddErrorDetails create(BigDecimal scale, int unit, String name, String abbreviation) {
+        return new AutoValue_ScaledUnitAddErrorDetails(scale, unit, abbreviation, name);
     }
 
     @Override
-    @Memoized
-    public BigDecimal prefixedScale() {
-        return ScaledUnitSummaryFields.super.prefixedScale();
-    }
-
-    public static ScaledUnitForListing create(int id, String abbreviation, BigDecimal scale) {
-        return new AutoValue_ScaledUnitForListing(id, scale, abbreviation);
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.scaledUnitAddErrorDetails(this, input);
     }
 }

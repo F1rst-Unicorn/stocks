@@ -51,6 +51,7 @@ import java.time.format.DateTimeFormatter;
                 UnitAddEntity.class,
                 UnitDeleteEntity.class,
                 UnitEditEntity.class,
+                ScaledUnitAddEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,
@@ -79,7 +80,7 @@ public abstract class StocksDatabase extends RoomDatabase {
      * This solution prevents entities to be presented to the user which will be
      * absent on the server in the same second as the one reported by <code>datetime('now')</code>.
      */
-    static final String NOW = "(select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) ";
+    public static final String NOW = "(select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) ";
 
     static final DateTimeFormatter DATABASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS").withZone(ZoneId.of("UTC"));
 

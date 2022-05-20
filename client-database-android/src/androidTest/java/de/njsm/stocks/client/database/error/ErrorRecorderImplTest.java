@@ -29,6 +29,7 @@ import de.njsm.stocks.client.database.DbTestCase;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -233,6 +234,28 @@ public class ErrorRecorderImplTest extends DbTestCase {
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.EDIT_UNIT, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
+
+    @Test
+    public void recordingErrorAddingScaledUnitWorks() {
+        ScaledUnitAddForm form = ScaledUnitAddForm.create(BigDecimal.ONE, 2);
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordScaledUnitAddError(exception, form);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<ScaledUnitAddEntity> scaledUnitAdds = stocksDatabase.errorDao().getScaledUnitAdds();
+        assertEquals(1, scaledUnitAdds.size());
+        assertEquals(form.scale(), scaledUnitAdds.get(0).scale());
+        assertEquals(form.unit(), scaledUnitAdds.get(0).unit());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.ADD_SCALED_UNIT, errors.get(0).action());
         assertEquals(1, errors.get(0).dataId());
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());

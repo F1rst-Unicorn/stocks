@@ -110,4 +110,8 @@ public interface ServerApi {
                             @Query("version") int version,
                             @Query("name") String name,
                             @Query("abbreviation") String abbreviation);
+
+    @PUT("v2/scaled-unit")
+    Call<Response> addScaledUnit(@Query("scale") String scale,
+                                 @Query("unit") int unit);
 }

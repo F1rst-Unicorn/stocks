@@ -27,6 +27,7 @@ import dagger.Provides;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.execution.Scheduler;
+import de.njsm.stocks.client.testdata.UnitsForSelection;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Singleton;
@@ -178,5 +179,13 @@ public interface FakeBusinessModule {
     @Singleton
     static FakeUnitConflictInteractor FakeUnitConflictInteractor() {
         return new FakeUnitConflictInteractor();
+    }
+
+    @Provides
+    @Singleton
+    static ScaledUnitAddInteractor ScaledUnitAddInteractor() {
+        ScaledUnitAddInteractor result = mock(ScaledUnitAddInteractor.class);
+        when(result.getUnits()).thenReturn(Observable.just(UnitsForSelection.generate()));
+        return result;
     }
 }

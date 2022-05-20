@@ -139,6 +139,12 @@ class RetryVisitor implements ErrorDetailsVisitor<ErrorDescription, Void>, Statu
         return null;
     }
 
+    @Override
+    public Void scaledUnitAddErrorDetails(ScaledUnitAddErrorDetails scaledUnitAddErrorDetails, ErrorDescription input) {
+        retryDirectlyCallback.accept(input);
+        return null;
+    }
+
     void setRetryDirectlyCallback(Consumer<ErrorDescription> retryDirectlyCallback) {
         this.retryDirectlyCallback = retryDirectlyCallback;
     }
