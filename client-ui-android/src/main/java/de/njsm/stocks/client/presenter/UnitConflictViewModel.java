@@ -52,7 +52,7 @@ public class UnitConflictViewModel extends ViewModel {
         );
     }
 
-    public void edit(UnitToEdit data) {
+    public void edit(UnitToEdit editedData) {
         if (this.data != null)
             this.data.firstElement()
                     .observeOn(AndroidSchedulers.mainThread())
@@ -62,7 +62,7 @@ public class UnitConflictViewModel extends ViewModel {
                                 StatusCode.GENERAL_ERROR,
                                 "",
                                 "",
-                                UnitEditErrorDetails.create(data.id(), data.name(), data.abbreviation())
+                                UnitEditErrorDetails.create(editedData.id(), editedData.name(), editedData.abbreviation())
                         );
                         errorRetryInteractor.retry(errorToRetry);
                     });

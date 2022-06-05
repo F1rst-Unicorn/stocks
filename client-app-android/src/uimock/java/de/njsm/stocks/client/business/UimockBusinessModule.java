@@ -113,4 +113,7 @@ public interface UimockBusinessModule {
 
     @Binds
     ScaledUnitAddInteractor ScaledUnitAddInteractor(InMemoryScaledUnitAddInteractorImpl impl);
+
+    @Binds
+    ScaledUnitEditInteractor ScaledUnitEditInteractor(InMemoryScaledUnitEditInteractorImpl impl);
 }

@@ -60,6 +60,9 @@ public class ConflictTextField {
         onEditorOf(textInputField, v -> v.setHint(id));
     }
 
+    /**
+     * @see android.view.inputmethod.EditorInfo
+     */
     public void setInputType(int inputType) {
         onEditorOf(textInputField, v -> v.setInputType(inputType));
     }

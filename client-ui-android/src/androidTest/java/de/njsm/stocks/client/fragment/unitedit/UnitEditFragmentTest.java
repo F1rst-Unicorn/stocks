@@ -62,7 +62,7 @@ public class UnitEditFragmentTest {
     public void setup() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         scenario = FragmentScenario.launchInContainer(UnitEditFragment.class, new Bundle(), R.style.StocksTheme);
-        when(navigator.getUnitId(any(Bundle.class))).thenReturn(UnitsToEdit.generate().id());
+        when(navigator.getUnitId(any(Bundle.class))).thenReturn(UnitsToEdit.generate());
         editInteractor.reset();
     }
 

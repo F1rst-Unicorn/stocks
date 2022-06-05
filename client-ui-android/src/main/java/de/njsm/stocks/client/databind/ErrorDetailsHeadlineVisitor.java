@@ -26,7 +26,6 @@ import de.njsm.stocks.client.ui.R;
 
 public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, Integer> {
 
-
     @Override
     public Integer locationAddForm(LocationAddForm locationAddForm, Void input) {
         return R.string.error_details_location_add_error_list;
@@ -65,5 +64,10 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     @Override
     public Integer scaledUnitAddErrorDetails(ScaledUnitAddErrorDetails scaledUnitAddErrorDetails, Void input) {
         return R.string.error_details_scaled_unit_add_error_list;
+    }
+
+    @Override
+    public Integer scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, Void input) {
+        return R.string.error_details_scaled_unit_edit_error_list;
     }
 }

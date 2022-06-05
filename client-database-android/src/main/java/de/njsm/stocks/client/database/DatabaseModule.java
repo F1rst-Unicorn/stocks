@@ -116,4 +116,7 @@ public interface DatabaseModule {
 
     @Binds
     ScaledUnitAddRepository ScaledUnitAddRepository(UnitRepositoryImpl impl);
+
+    @Binds
+    ScaledUnitEditRepository ScaledUnitEditRepository(ScaledUnitEditRepositoryImpl impl);
 }

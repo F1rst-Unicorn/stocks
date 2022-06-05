@@ -36,12 +36,15 @@ abstract class AbstractDeleterImpl<E extends Entity<E>> implements EntityDeleter
 
     final Scheduler scheduler;
 
-    AbstractDeleterImpl(EntityDeleteService<E> deleteService, EntityDeleteRepository<E> entityDeleteRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
+    final AfterErrorSynchroniser afterErrorSynchroniser;
+
+    AbstractDeleterImpl(EntityDeleteService<E> deleteService, EntityDeleteRepository<E> entityDeleteRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler, AfterErrorSynchroniser afterErrorSynchroniser) {
         this.deleteService = deleteService;
         this.entityDeleteRepository = entityDeleteRepository;
         this.synchroniser = synchroniser;
         this.errorRecorder = errorRecorder;
         this.scheduler = scheduler;
+        this.afterErrorSynchroniser = afterErrorSynchroniser;
     }
 
     @Override
@@ -56,7 +59,7 @@ abstract class AbstractDeleterImpl<E extends Entity<E>> implements EntityDeleter
             synchroniser.synchronise();
         } catch (SubsystemException e) {
             recordError(e, data);
-            new AfterErrorSynchroniser(synchroniser).visit(e, null);
+            afterErrorSynchroniser.visit(e, null);
         }
     }
 

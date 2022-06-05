@@ -209,4 +209,18 @@ public abstract class ErrorDao {
 
     @Insert
     abstract long insert(ScaledUnitAddEntity entity);
+
+    @Query("select * from scaled_unit_to_edit")
+    abstract List<ScaledUnitEditEntity> getScaledUnitEdits();
+
+    @Insert
+    abstract long insert(ScaledUnitEditEntity entity);
+
+    @Query("delete from scaled_unit_to_edit where id = :id")
+    abstract void deleteScaledUnitEdit(long id);
+
+    @Query("select * " +
+            "from scaled_unit_to_edit " +
+            "where id = :id")
+    abstract ScaledUnitEditEntity getScaledUnitEdit(Long id);
 }

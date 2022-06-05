@@ -42,6 +42,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final ScaledUnitAddInteractor scaledUnitAddInteractor;
 
+    private final ScaledUnitEditInteractor scaledUnitEditInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -58,6 +60,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              EntityDeleter<Unit> unitDeleter,
                              UnitEditInteractor unitEditInteractor,
                              ScaledUnitAddInteractor scaledUnitAddInteractor,
+                             ScaledUnitEditInteractor scaledUnitEditInteractor,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
@@ -68,6 +71,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.unitDeleter = unitDeleter;
         this.unitEditInteractor = unitEditInteractor;
         this.scaledUnitAddInteractor = scaledUnitAddInteractor;
+        this.scaledUnitEditInteractor = scaledUnitEditInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -156,6 +160,17 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, Void input) {
+        ScaledUnitToEdit data = ScaledUnitToEdit.create(
+                scaledUnitEditErrorDetails.id(),
+                scaledUnitEditErrorDetails.scale(),
+                scaledUnitEditErrorDetails.unit());
+
+        scaledUnitEditInteractor.edit(data);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -196,6 +211,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type scaledUnitAddErrorDetails(ScaledUnitAddErrorDetails scaledUnitAddErrorDetails, Void input) {
             return Job.Type.ADD_SCALED_UNIT;
+        }
+
+        @Override
+        public Job.Type scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, Void input) {
+            return Job.Type.EDIT_SCALED_UNIT;
         }
     }
 }

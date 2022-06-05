@@ -38,6 +38,8 @@ import org.junit.Test;
 
 import java.time.Instant;
 
+import static de.njsm.stocks.client.database.Util.test;
+import static de.njsm.stocks.client.database.Util.testList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
@@ -60,7 +62,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
     @Test
     public void invalidErrorActionThrowsException() throws InterruptedException {
         errorRecorder.recordSynchronisationError(new SubsystemException("test"));
-        ErrorDescription error = errorRepository.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
+        ErrorDescription error = testList(errorRepository.getErrors()).values().get(0).get(0);
 
         uut.getLocationEditConflict(error.id()).test().await().assertError(IllegalArgumentException.class);
     }
@@ -88,11 +90,10 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 editTime));
         errorRecorder.recordLocationEditError(new SubsystemException("test"), localEdit);
         setArtificialDbNow(editTime.plusSeconds(1));
-        ErrorDescription error = errorRepository.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
+        ErrorDescription error = testList(errorRepository.getErrors()).values().get(0).get(0);
 
-        TestObserver<LocationEditConflictData> observable = uut.getLocationEditConflict(error.id()).test().awaitCount(1);
+        TestObserver<LocationEditConflictData> observable = test(uut.getLocationEditConflict(error.id()));
 
-        observable.assertNoErrors();
         LocationEditConflictData actual = observable.values().get(0);
         assertEquals(error.id(), actual.errorId());
         assertEquals(localEdit.id(), actual.id());
@@ -128,11 +129,10 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 editTime));
         errorRecorder.recordUnitEditError(new SubsystemException("test"), localEdit);
         setArtificialDbNow(editTime.plusSeconds(1));
-        ErrorDescription error = errorRepository.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
+        ErrorDescription error = testList(errorRepository.getErrors()).values().get(0).get(0);
 
-        TestObserver<UnitEditConflictData> observable = uut.getUnitEditConflict(error.id()).test().awaitCount(1);
+        TestObserver<UnitEditConflictData> observable = test(uut.getUnitEditConflict(error.id()));
 
-        observable.assertNoErrors();
         UnitEditConflictData actual = observable.values().get(0);
         assertEquals(error.id(), actual.errorId());
         assertEquals(localEdit.id(), actual.id());

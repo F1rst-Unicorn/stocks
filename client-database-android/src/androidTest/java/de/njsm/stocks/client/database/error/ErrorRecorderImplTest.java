@@ -260,4 +260,26 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());
     }
+
+    @Test
+    public void recordingErrorEditingScaledUnitWorks() {
+        ScaledUnitForEditing form = ScaledUnitForEditing.create(1, 2, BigDecimal.valueOf(3), 4);
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordScaledUnitEditError(exception, form);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<ScaledUnitEditEntity> scaledUnitEdits = stocksDatabase.errorDao().getScaledUnitEdits();
+        assertEquals(1, scaledUnitEdits.size());
+        assertEquals(form.scale(), scaledUnitEdits.get(0).scale());
+        assertEquals(form.unit(), scaledUnitEdits.get(0).unit());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.EDIT_SCALED_UNIT, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
 }

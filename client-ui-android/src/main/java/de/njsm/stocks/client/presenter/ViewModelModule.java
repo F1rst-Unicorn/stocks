@@ -147,4 +147,11 @@ public class ViewModelModule {
     ViewModel ScaledUnitAddViewModel(ScaledUnitAddInteractor scaledUnitAddInteractor) {
         return new ScaledUnitAddViewModel(scaledUnitAddInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ScaledUnitEditViewModel.class)
+    ViewModel ScaledUnitEditViewModel(ScaledUnitEditInteractor scaledUnitEditInteractor) {
+        return new ScaledUnitEditViewModel(scaledUnitEditInteractor);
+    }
 }

@@ -75,6 +75,11 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
         return scaledUnitRenderStrategy.render(scaledUnitAddErrorDetails);
     }
 
+    @Override
+    public String scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, Void input) {
+        return scaledUnitRenderStrategy.render(scaledUnitEditErrorDetails);
+    }
+
     private String formatUnit(UnitFields unit) {
         return String.format("%s (%s)", unit.name(), unit.abbreviation());
     }

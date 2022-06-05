@@ -26,6 +26,8 @@ import de.njsm.stocks.client.ui.R;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.assertEquals;
 
 public class ErrorDetailsHeadlineVisitorTest {
@@ -46,5 +48,7 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_unit_add_error_list, (long) uut.visit(UnitAddForm.create("name", "abbreviation"), null));
         assertEquals(R.string.error_details_unit_delete_error_list, (long) uut.visit(UnitDeleteErrorDetails.create(1, "name", "abbreviation"), null));
         assertEquals(R.string.error_details_unit_edit_error_list, (long) uut.visit(UnitEditErrorDetails.create(1, "name", "abbreviation"), null));
+        assertEquals(R.string.error_details_scaled_unit_add_error_list, (long) uut.visit(ScaledUnitAddErrorDetails.create(BigDecimal.ONE, 2, "name", "abbreviation"), null));
+        assertEquals(R.string.error_details_scaled_unit_edit_error_list, (long) uut.visit(ScaledUnitEditErrorDetails.create(1, BigDecimal.ONE, 2, "name", "abbreviation"), null));
     }
 }

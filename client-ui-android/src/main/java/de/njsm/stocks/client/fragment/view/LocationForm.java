@@ -38,14 +38,14 @@ public class LocationForm {
 
     private final TextInputLayout descriptionField;
 
-    private final Function<Integer, String> stringResourceLookup;
+    private final Function<Integer, String> dictionary;
 
     private boolean maySubmit = false;
 
-    public LocationForm(View root, Function<Integer, String> stringResourceLookup) {
+    public LocationForm(View root, Function<Integer, String> dictionary) {
         this.nameField = new ConflictTextField(root.findViewById(R.id.fragment_location_form_name));
         this.descriptionField = root.findViewById(R.id.fragment_location_form_description);
-        this.stringResourceLookup = stringResourceLookup;
+        this.dictionary = dictionary;
 
         nameField.addNonEmptyValidator(this::onNameChanged);
         nameField.setEditorHint(R.string.hint_name);
@@ -56,7 +56,7 @@ public class LocationForm {
     }
 
     public void setNameError(@StringRes int message) {
-        nameField.setError(stringResourceLookup.apply(message));
+        nameField.setError(dictionary.apply(message));
     }
 
     public void setDescription(String text) {
@@ -90,7 +90,7 @@ public class LocationForm {
     private void onNameChanged(TextInputLayout textInputLayout, boolean isEmpty) {
         maySubmit = !isEmpty;
         if (isEmpty)
-            textInputLayout.setError(stringResourceLookup.apply(R.string.error_may_not_be_empty));
+            textInputLayout.setError(dictionary.apply(R.string.error_may_not_be_empty));
         else
             textInputLayout.setError(null);
     }

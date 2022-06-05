@@ -21,11 +21,14 @@
 
 package de.njsm.stocks.client.business;
 
-final class AfterErrorSynchroniser implements SubsystemException.Visitor<Void, Void> {
+import javax.inject.Inject;
+
+class AfterErrorSynchroniser implements SubsystemException.Visitor<Void, Void> {
 
     private final Synchroniser synchroniser;
 
-    public AfterErrorSynchroniser(Synchroniser synchroniser) {
+    @Inject
+    AfterErrorSynchroniser(Synchroniser synchroniser) {
         this.synchroniser = synchroniser;
     }
 

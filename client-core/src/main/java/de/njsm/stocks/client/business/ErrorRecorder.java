@@ -40,4 +40,6 @@ public interface ErrorRecorder {
     void recordUnitEditError(SubsystemException exception, UnitForEditing unitForEditing);
 
     void recordScaledUnitAddError(SubsystemException e, ScaledUnitAddForm form);
+
+    void recordScaledUnitEditError(SubsystemException e, ScaledUnitForEditing scaledUnitForEditing);
 }

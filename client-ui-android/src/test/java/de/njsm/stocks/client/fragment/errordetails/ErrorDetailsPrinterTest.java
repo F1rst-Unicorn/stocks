@@ -85,4 +85,10 @@ public class ErrorDetailsPrinterTest {
         ScaledUnitAddErrorDetails data = ScaledUnitAddErrorDetails.create(BigDecimal.TEN.pow(3), 1, "Gramm", "g");
         assertEquals("1kg (Gramm)", uut.visit(data, null));
     }
+
+    @Test
+    public void scaledUnitEditErrorShowsScaleAndUnit() {
+        ScaledUnitEditErrorDetails data = ScaledUnitEditErrorDetails.create(1, BigDecimal.TEN.pow(3), 1, "Gramm", "g");
+        assertEquals("1kg (Gramm)", uut.visit(data, null));
+    }
 }

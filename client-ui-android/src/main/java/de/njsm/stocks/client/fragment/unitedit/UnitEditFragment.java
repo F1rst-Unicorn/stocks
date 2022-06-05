@@ -47,15 +47,14 @@ public class UnitEditFragment extends BottomToolbarFragment {
 
     private Identifiable<Unit> id;
 
-    @Nullable
+    @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
         View result = insertContent(inflater, root, R.layout.fragment_unit_form);
         form = new UnitForm(result, this::getString);
-        int rawId = unitEditNavigator.getUnitId(requireArguments());
-        id = () -> rawId;
+        id = unitEditNavigator.getUnitId(requireArguments());
         unitEditViewModel.get(id).observe(getViewLifecycleOwner(), v -> {
             form.setName(v.name());
             form.setAbbreviation(v.abbreviation());

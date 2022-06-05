@@ -26,7 +26,7 @@ import de.njsm.stocks.client.business.entities.*;
 import javax.inject.Inject;
 import java.util.function.Consumer;
 
-class RetryVisitor implements ErrorDetailsVisitor<ErrorDescription, Void>, StatusCodeVisitor<ErrorDescription, Void> {
+class RetryVisitor implements ErrorDetailsVisitor.Default<ErrorDescription, Void>, StatusCodeVisitor.Default<ErrorDescription, Void> {
 
     private final ConflictNavigator conflictNavigator;
 
@@ -46,54 +46,17 @@ class RetryVisitor implements ErrorDetailsVisitor<ErrorDescription, Void>, Statu
     }
 
     @Override
-    public Void unitAddForm(UnitAddForm unitAddForm, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
     public Void unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, ErrorDescription input) {
         return visit(input.statusCode(), input);
     }
 
     @Override
-    public Void locationAddForm(LocationAddForm locationAddForm, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
+    public Void scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, ErrorDescription input) {
+        return visit(input.statusCode(), input);
     }
 
     @Override
-    public Void synchronisationErrorDetails(SynchronisationErrorDetails synchronisationErrorDetails, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void success(StatusCode statusCode, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void generalError(StatusCode statusCode, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void notFound(StatusCode statusCode, ErrorDescription input) {
+    public Void defaultImpl(ErrorDetails errorDetails, ErrorDescription input) {
         retryDirectlyCallback.accept(input);
         return null;
     }
@@ -104,37 +67,7 @@ class RetryVisitor implements ErrorDetailsVisitor<ErrorDescription, Void>, Statu
     }
 
     @Override
-    public Void foreignKeyConstraintViolation(StatusCode statusCode, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void databaseUnreachable(StatusCode statusCode, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void accessDenied(StatusCode statusCode, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void invalidArgument(StatusCode statusCode, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void caUnreachable(StatusCode statusCode, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void serialisationConflict(StatusCode statusCode, ErrorDescription input) {
+    public Void defaultImpl(StatusCode statusCode, ErrorDescription input) {
         retryDirectlyCallback.accept(input);
         return null;
     }

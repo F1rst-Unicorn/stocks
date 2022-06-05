@@ -54,9 +54,12 @@ class UnitEditInteractorImplTest {
     @Mock
     private ErrorRecorder errorRecorder;
 
+    @Mock
+    private AfterErrorSynchroniser afterErrorSynchroniser;
+
     @BeforeEach
     void setUp() {
-        uut = new UnitEditInteractorImpl(repository, editService, synchroniser, scheduler, errorRecorder);
+        uut = new UnitEditInteractorImpl(repository, editService, synchroniser, scheduler, errorRecorder, afterErrorSynchroniser);
     }
 
     @Test
@@ -113,6 +116,25 @@ class UnitEditInteractorImplTest {
     }
 
     @Test
+    void differentNameCausesEditing() {
+        int id = 42;
+        int version = 2;
+        UnitToEdit localData = getDataToEdit(id);
+        UnitToEdit editedForm = UnitToEdit.builder()
+                .id(id)
+                .name("edited name")
+                .abbreviation(localData.name())
+                .build();
+        UnitForEditing dataToNetwork = editedForm.addVersion(version);
+        when(repository.getCurrentDataBeforeEditing(editedForm)).thenReturn(localData.addVersion(version));
+
+        uut.editInBackground(editedForm);
+
+        verify(editService).edit(dataToNetwork);
+        verify(synchroniser).synchronise();
+    }
+
+    @Test
     void differentDescriptionCausesEditing() {
         int id = 42;
         int version = 2;
@@ -144,6 +166,28 @@ class UnitEditInteractorImplTest {
         UnitForEditing dataToNetwork = editedForm.addVersion(version);
         when(repository.getCurrentDataBeforeEditing(editedForm)).thenReturn(localData.addVersion(version));
         SubsystemException exception = new SubsystemException("test");
+        doThrow(exception).when(editService).edit(dataToNetwork);
+
+        uut.editInBackground(editedForm);
+
+        verify(editService).edit(dataToNetwork);
+        verify(errorRecorder).recordUnitEditError(exception, dataToNetwork);
+        verifyNoInteractions(synchroniser);
+    }
+
+    @Test
+    void failingEditingErrorWithOutdatedDataIsRecorded() {
+        int id = 42;
+        int version = 2;
+        UnitToEdit localData = getDataToEdit(id);
+        UnitToEdit editedForm = UnitToEdit.builder()
+                .id(id)
+                .name(localData.name())
+                .abbreviation("edited abbreviation")
+                .build();
+        UnitForEditing dataToNetwork = editedForm.addVersion(version);
+        when(repository.getCurrentDataBeforeEditing(editedForm)).thenReturn(localData.addVersion(version));
+        StatusCodeException exception = new StatusCodeException(StatusCode.INVALID_DATA_VERSION);
         doThrow(exception).when(editService).edit(dataToNetwork);
 
         uut.editInBackground(editedForm);

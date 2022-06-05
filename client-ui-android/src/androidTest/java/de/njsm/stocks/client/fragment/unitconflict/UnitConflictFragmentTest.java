@@ -63,10 +63,10 @@ public class UnitConflictFragmentTest {
     @Before
     public void setup() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
-        scenario = FragmentScenario.launchInContainer(UnitConflictFragment.class, new Bundle(), R.style.StocksTheme);
-        when(navigator.getErrorId(any(Bundle.class))).thenReturn(42L);
         reset(navigator);
+        when(navigator.getErrorId(any(Bundle.class))).thenReturn(42L);
         reset(errorRetryInteractor);
+        scenario = FragmentScenario.launchInContainer(UnitConflictFragment.class, new Bundle(), R.style.StocksTheme);
     }
 
     @After

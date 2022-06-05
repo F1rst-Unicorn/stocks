@@ -52,6 +52,9 @@ abstract class DeleterImplTest<E extends Entity<E>> {
     @Mock
     Synchroniser synchroniser;
 
+    @Mock
+    AfterErrorSynchroniser afterErrorSynchroniser;
+
     abstract Job.Type getJobType();
 
     abstract void verifyRecorder(SubsystemException exception, Versionable<E> outputToService);
@@ -128,7 +131,7 @@ abstract class DeleterImplTest<E extends Entity<E>> {
 
         verify(deleteRepository).getEntityForDeletion(input);
         verify(deleteService).delete(outputToService);
-        verify(synchroniser).synchronise();
+        verify(afterErrorSynchroniser).visit(exception, null);
         verifyRecorder(exception, outputToService);
     }
 

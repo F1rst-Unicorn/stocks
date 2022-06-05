@@ -39,13 +39,16 @@ class UnitEditInteractorImpl implements UnitEditInteractor {
 
     private final ErrorRecorder errorRecorder;
 
+    private final AfterErrorSynchroniser afterErrorSynchroniser;
+
     @Inject
-    UnitEditInteractorImpl(UnitRepository repository, UnitEditService editService, Synchroniser synchroniser, Scheduler scheduler, ErrorRecorder errorRecorder) {
+    UnitEditInteractorImpl(UnitRepository repository, UnitEditService editService, Synchroniser synchroniser, Scheduler scheduler, ErrorRecorder errorRecorder, AfterErrorSynchroniser afterErrorSynchroniser) {
         this.repository = repository;
         this.editService = editService;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRecorder = errorRecorder;
+        this.afterErrorSynchroniser = afterErrorSynchroniser;
     }
 
     @Override
@@ -70,7 +73,7 @@ class UnitEditInteractorImpl implements UnitEditInteractor {
             synchroniser.synchronise();
         } catch (SubsystemException e) {
             errorRecorder.recordUnitEditError(e, dataToNetwork);
-            new AfterErrorSynchroniser(synchroniser).visit(e, null);
+            afterErrorSynchroniser.visit(e, null);
         }
     }
 }

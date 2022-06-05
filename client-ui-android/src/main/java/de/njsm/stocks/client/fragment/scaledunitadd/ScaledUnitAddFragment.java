@@ -49,8 +49,8 @@ public class ScaledUnitAddFragment extends BottomToolbarFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
-        View result = insertContent(inflater, root, R.layout.fragment_scaled_unit_form);
-        form = new ScaledUnitForm(result, this::getString);
+        View ownContent = insertContent(inflater, root, R.layout.fragment_scaled_unit_form);
+        form = new ScaledUnitForm(ownContent, this::getString);
 
         scaledUnitAddViewModel.getUnits().observe(getViewLifecycleOwner(), form::showUnits);
 
@@ -83,8 +83,8 @@ public class ScaledUnitAddFragment extends BottomToolbarFragment {
         return true;
     }
 
-    @Override
     @Inject
+    @Override
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);

@@ -28,6 +28,7 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
+import de.njsm.stocks.client.business.entities.ScaledUnitEditingFormData;
 import de.njsm.stocks.client.business.entities.UnitForSelection;
 import de.njsm.stocks.client.ui.R;
 
@@ -59,7 +60,7 @@ public class ScaledUnitForm {
         scaleField.setEditorHint(R.string.hint_scale);
         scaleField.setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_FLAG_DECIMAL);
         maySubmit = false;
-        unitAdapter = new ArrayAdapter(root.getContext(),
+        unitAdapter = new ArrayAdapter<>(root.getContext(),
                 android.R.layout.simple_list_item_1, android.R.id.text1);
         unitField.setAdapter(unitAdapter);
     }
@@ -93,6 +94,12 @@ public class ScaledUnitForm {
 
     public Optional<UnitForSelection> getUnit() {
         return Optional.ofNullable(((DataWrapper) unitField.getSelectedItem())).map(DataWrapper::delegate);
+    }
+
+    public void showScaledUnit(ScaledUnitEditingFormData scaledUnitEditingFormData) {
+        scaleField.setEditorContent(scaledUnitEditingFormData.scale().toPlainString());
+        showUnits(scaledUnitEditingFormData.availableUnits());
+        unitField.setSelection(scaledUnitEditingFormData.currentUnitListPosition());
     }
 
     private static final class DataWrapper {

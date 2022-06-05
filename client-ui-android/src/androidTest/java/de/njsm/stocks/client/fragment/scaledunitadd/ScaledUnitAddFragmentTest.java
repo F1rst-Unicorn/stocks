@@ -49,6 +49,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static de.njsm.stocks.client.fragment.Util.menuItem;
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.anything;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
@@ -64,16 +65,19 @@ public class ScaledUnitAddFragmentTest {
     @Before
     public void setup() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
-        scenario = FragmentScenario.launchInContainer(ScaledUnitAddFragment.class, new Bundle(), R.style.StocksTheme);
         reset(scaledUnitAddInteractor);
         reset(navigator);
         when(scaledUnitAddInteractor.getUnits()).thenReturn(Observable.just(UnitsForSelection.generate()));
+        scenario = FragmentScenario.launchInContainer(ScaledUnitAddFragment.class, new Bundle(), R.style.StocksTheme);
     }
 
     @After
     public void tearDown() {
         verifyNoMoreInteractions(scaledUnitAddInteractor);
         verifyNoMoreInteractions(navigator);
+        reset(scaledUnitAddInteractor);
+        reset(navigator);
+        when(scaledUnitAddInteractor.getUnits()).thenReturn(Observable.just(UnitsForSelection.generate()));
     }
 
     @Test
@@ -85,6 +89,16 @@ public class ScaledUnitAddFragmentTest {
                 isDisplayed(),
                 hasDescendant(withText(unit.name()))
         )));
+
+        onView(withId(R.id.fragment_scaled_unit_form_unit)).perform(click());
+
+        int index = 0;
+        for (UnitForSelection unitListEntry : UnitsForSelection.generate()) {
+            onData(anything()).atPosition(index).check(matches(withText(unitListEntry.name())));
+            index++;
+        }
+
+        verify(scaledUnitAddInteractor).getUnits();
     }
 
     @Test
@@ -102,6 +116,7 @@ public class ScaledUnitAddFragmentTest {
         scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
         verify(scaledUnitAddInteractor).add(form);
+        verify(scaledUnitAddInteractor).getUnits();
         verify(navigator).back();
     }
 
@@ -114,6 +129,7 @@ public class ScaledUnitAddFragmentTest {
 
         onView(withId(R.id.fragment_scaled_unit_form_scale))
                 .check(matches(hasDescendant(withText(R.string.error_may_not_be_empty))));
+        verify(scaledUnitAddInteractor).getUnits();
     }
 
     @Test
@@ -123,6 +139,7 @@ public class ScaledUnitAddFragmentTest {
         verify(scaledUnitAddInteractor, never()).add(any());
         onView(withId(R.id.fragment_scaled_unit_form_scale))
                 .check(matches(hasDescendant(withText(R.string.error_may_not_be_empty))));
+        verify(scaledUnitAddInteractor).getUnits();
     }
 
     @Inject

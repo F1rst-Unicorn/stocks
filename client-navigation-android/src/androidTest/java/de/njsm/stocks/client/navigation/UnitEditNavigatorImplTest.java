@@ -22,6 +22,8 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Unit;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -35,8 +37,8 @@ public class UnitEditNavigatorImplTest extends NavigationTest {
         int expected = 42;
         input.putInt("id", expected);
 
-        int actual = uut.getUnitId(input);
+        Identifiable<Unit> actual = uut.getUnitId(input);
 
-        assertEquals(expected, actual);
+        assertEquals(expected, actual.id());
     }
 }

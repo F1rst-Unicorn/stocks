@@ -62,6 +62,9 @@ public class ErrorRetryInteractorImplTest {
     private ScaledUnitAddInteractor scaledUnitAddInteractor;
 
     @Mock
+    private ScaledUnitEditInteractor scaledUnitEditInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -79,6 +82,7 @@ public class ErrorRetryInteractorImplTest {
                 unitDeleter,
                 unitEditInteractor,
                 scaledUnitAddInteractor,
+                scaledUnitEditInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -219,6 +223,18 @@ public class ErrorRetryInteractorImplTest {
 
         ScaledUnitAddForm expected = ScaledUnitAddForm.create(errorDetails.scale(), errorDetails.unit());
         verify(scaledUnitAddInteractor).add(expected);
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingScaledUnitEditingDispatches() {
+        ScaledUnitEditErrorDetails errorDetails = ScaledUnitEditErrorDetails.create(1, BigDecimal.ONE, 2, "Gramm", "g");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", errorDetails);
+        ScaledUnitToEdit expected = ScaledUnitToEdit.create(errorDetails.id(), errorDetails.scale(), errorDetails.unit());
+
+        uut.retryInBackground(input);
+
+        verify(scaledUnitEditInteractor).edit(expected);
         verify(errorRepository).deleteError(input);
     }
 }

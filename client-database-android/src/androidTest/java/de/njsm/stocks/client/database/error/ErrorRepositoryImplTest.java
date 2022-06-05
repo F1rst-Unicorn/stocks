@@ -23,29 +23,21 @@ package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.ErrorRepository;
-import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.database.DbTestCase;
-import de.njsm.stocks.client.database.LocationDbEntity;
-import de.njsm.stocks.client.database.StandardEntities;
-import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
-import static de.njsm.stocks.client.database.StandardEntities.unitDbEntity;
-import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertTrue;
+import static de.njsm.stocks.client.database.Util.test;
+import static de.njsm.stocks.client.database.Util.testList;
 
 public class ErrorRepositoryImplTest extends DbTestCase {
 
-    private ErrorRecorder errorRecorder;
+    ErrorRecorder errorRecorder;
 
     private ErrorRepository uut;
 
@@ -57,309 +49,18 @@ public class ErrorRepositoryImplTest extends DbTestCase {
 
     @Test
     public void noErrorsInitially() {
-        uut.getErrors().test().awaitCount(1).assertValue(List::isEmpty);
-        uut.getNumberOfErrors().test().awaitCount(1).assertValue(0);
-    }
-
-    @Test
-    public void locationAddErrorIsLoaded() {
-        LocationAddForm form = LocationAddForm.create("Fridge", "the cold one");
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        errorRecorder.recordLocationAddError(exception, form);
-
-        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
-        uut.getErrors().test().awaitCount(1)
-                .assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
-        uut.getErrors().test().awaitCount(1)
-                .assertValue(v -> v.get(0).errorDetails().equals(form));
-    }
-
-    @Test
-    public void locationAddErrorIsLoadedWithSubsystemException() {
-        LocationAddForm form = LocationAddForm.create("Fridge", "the cold one");
-        SubsystemException exception = new SubsystemException("test");
-        errorRecorder.recordLocationAddError(exception, form);
-
-        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
-        uut.getErrors().test().awaitCount(1)
-                .assertValue(v -> v.get(0).statusCode() == StatusCode.GENERAL_ERROR);
-        uut.getErrors().test().awaitCount(1)
-                .assertValue(v -> v.get(0).errorDetails().equals(form));
-        uut.getErrors().test().awaitCount(1)
-                .assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
-    }
-
-    @Test
-    public void synchronisationErrorIsRetrieved() {
-        SubsystemException exception = new SubsystemException("test");
-        errorRecorder.recordSynchronisationError(exception);
-
-        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
-        TestObserver<List<ErrorDescription>> actual = uut.getErrors().test().awaitCount(1);
-        actual.assertValue(v -> v.get(0).statusCode() == StatusCode.GENERAL_ERROR);
-        actual.assertValue(v -> v.get(0).errorDetails() instanceof SynchronisationErrorDetails);
-        actual.assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
-    }
-
-    @Test
-    public void locationAddErrorCanBeDeleted() {
-        LocationAddForm form = LocationAddForm.create("Fridge", "the cold one");
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        errorRecorder.recordLocationAddError(exception, form);
-        ErrorDescription input = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
-
-        uut.deleteError(input);
-
-        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
-        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
-        assertTrue(stocksDatabase.errorDao().getLocationAdds().isEmpty());
-    }
-
-    @Test
-    public void synchronisationErrorCanBeDeleted() {
-        SubsystemException exception = new SubsystemException("test");
-        errorRecorder.recordSynchronisationError(exception);
-        ErrorDescription input = uut.getErrors().test().awaitCount(1).values().get(0).get(0);
-
-        uut.deleteError(input);
-
-        assertTrue(stocksDatabase.errorDao().getSubsystemErrors().isEmpty());
-        stocksDatabase.errorDao().getNumberOfErrors().firstElement().test().awaitCount(1).assertValue(0);
+        test(uut.getErrors()).assertValue(List::isEmpty);
+        test(uut.getNumberOfErrors()).assertValue(0);
     }
 
     @Test
     public void singleErrorCanBeRetrievedById() {
         SubsystemException exception = new SubsystemException("test");
         errorRecorder.recordSynchronisationError(exception);
-        ErrorDescription input = uut.getErrors().test().awaitCount(1).values().get(0).get(0);
+        ErrorDescription input = testList(uut.getErrors()).values().get(0).get(0);
 
         Observable<ErrorDescription> actual = uut.getError(input.id());
 
-        actual.test().awaitCount(1).assertValue(input);
-    }
-
-    @Test
-    public void locationDeleteErrorCanBeRetrieved() {
-        LocationDbEntity location = StandardEntities.locationDbEntity();
-        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
-                .id(location.id())
-                .version(location.version())
-                .build();
-        LocationDeleteErrorDetails errorDetails = LocationDeleteErrorDetails.create(location.id(), location.name());
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        stocksDatabase.synchronisationDao().writeLocations(Arrays.asList(location));
-        errorRecorder.recordLocationDeleteError(exception, locationForDeletion);
-
-        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
-        TestObserver<List<ErrorDescription>> actual = uut.getErrors().test().awaitCount(1);
-        actual.assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
-        actual.assertValue(v -> v.get(0).errorDetails().equals(errorDetails));
-        actual.assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
-    }
-
-    @Test
-    public void locationDeleteErrorCanBeDeleted() {
-        LocationDbEntity location = StandardEntities.locationDbEntity();
-        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
-                .id(location.id())
-                .version(location.version())
-                .build();
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        stocksDatabase.synchronisationDao().writeLocations(Arrays.asList(location));
-        errorRecorder.recordLocationDeleteError(exception, locationForDeletion);
-        TestObserver<List<ErrorDescription>> data = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1);
-        ErrorDescription input = data.values().get(0).get(0);
-
-        uut.deleteError(input);
-
-        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
-        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
-        assertTrue(stocksDatabase.errorDao().getLocationDeletes().isEmpty());
-    }
-
-    @Test
-    public void locationEditErrorCanBeRetrieved() {
-        LocationDbEntity location = StandardEntities.locationDbEntity();
-        LocationForEditing locationForEditing = LocationForEditing.builder()
-                .id(location.id())
-                .version(location.version())
-                .name("name")
-                .description("description")
-                .build();
-        LocationEditErrorDetails errorDetails = LocationEditErrorDetails.create(location.id(), location.name(), location.description());
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        stocksDatabase.synchronisationDao().writeLocations(Arrays.asList(location));
-        errorRecorder.recordLocationEditError(exception, locationForEditing);
-
-        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
-        TestObserver<List<ErrorDescription>> actual = uut.getErrors().test().awaitCount(1);
-        actual.assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
-        actual.assertValue(v -> v.get(0).errorDetails().equals(errorDetails));
-        actual.assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
-    }
-
-    @Test
-    public void locationEditErrorCanBeDeleted() {
-        LocationDbEntity location = StandardEntities.locationDbEntity();
-        LocationForEditing locationForEditing = LocationForEditing.builder()
-                .id(location.id())
-                .version(location.version())
-                .name(location.name())
-                .description(location.description())
-                .build();
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        stocksDatabase.synchronisationDao().writeLocations(Arrays.asList(location));
-        errorRecorder.recordLocationEditError(exception, locationForEditing);
-        TestObserver<List<ErrorDescription>> data = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1);
-        ErrorDescription input = data.values().get(0).get(0);
-
-        uut.deleteError(input);
-
-        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
-        stocksDatabase.errorDao().getNumberOfErrors().distinctUntilChanged().test().awaitCount(1).assertValues(0);
-        assertTrue(stocksDatabase.errorDao().getLocationEdits().isEmpty());
-    }
-
-    @Test
-    public void unitAddErrorCanBeRetrieved() {
-        UnitAddForm form = UnitAddForm.create("Gramm", "g");
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        errorRecorder.recordUnitAddError(exception, form);
-
-        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
-        uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1)
-                .assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
-        uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1)
-                .assertValue(v -> v.get(0).errorDetails().equals(form));
-    }
-
-    @Test
-    public void unitAddErrorCanBeDeleted() {
-        UnitAddForm form = UnitAddForm.create("Gramm", "g");
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        errorRecorder.recordUnitAddError(exception, form);
-        ErrorDescription input = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
-
-        uut.deleteError(input);
-
-        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
-        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
-        assertTrue(stocksDatabase.errorDao().getUnitAdds().isEmpty());
-    }
-
-    @Test
-    public void unitDeleteErrorCanBeRetrieved() {
-        UnitDbEntity unit = unitDbEntity();
-        UnitForDeletion data = UnitForDeletion.create(unit.id(), unit.version());
-        UnitDeleteErrorDetails errorDetails = UnitDeleteErrorDetails.create(unit.id(), unit.name(), unit.abbreviation());
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        stocksDatabase.synchronisationDao().writeUnits(Arrays.asList(unit));
-        errorRecorder.recordUnitDeleteError(exception, data);
-
-        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
-        TestObserver<List<ErrorDescription>> actual = uut.getErrors().test().awaitCount(1);
-        actual.assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
-        actual.assertValue(v -> v.get(0).errorDetails().equals(errorDetails));
-        actual.assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
-    }
-
-    @Test
-    public void unitDeleteErrorCanBeDeleted() {
-        UnitDbEntity unit = unitDbEntity();
-        UnitForDeletion data = UnitForDeletion.create(1, 2);
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        stocksDatabase.synchronisationDao().writeUnits(Arrays.asList(unit));
-        errorRecorder.recordUnitDeleteError(exception, data);
-        ErrorDescription input = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1).values().get(0).get(0);
-
-        uut.deleteError(input);
-
-        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
-        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
-        assertTrue(stocksDatabase.errorDao().getUnitDeletes().isEmpty());
-    }
-
-    @Test
-    public void unitEditErrorCanBeRetrieved() {
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
-        UnitForEditing unitForEditing = UnitForEditing.builder()
-                .id(unit.id())
-                .version(unit.version())
-                .name("name")
-                .abbreviation("abbreviation")
-                .build();
-        UnitEditErrorDetails errorDetails = UnitEditErrorDetails.create(unit.id(), unit.name(), unit.abbreviation());
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        stocksDatabase.synchronisationDao().writeUnits(Arrays.asList(unit));
-        errorRecorder.recordUnitEditError(exception, unitForEditing);
-
-        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
-        TestObserver<List<ErrorDescription>> actual = uut.getErrors().test().awaitCount(1);
-        actual.assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
-        actual.assertValue(v -> v.get(0).errorDetails().equals(errorDetails));
-        actual.assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
-    }
-
-    @Test
-    public void unitEditErrorCanBeDeleted() {
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
-        UnitForEditing unitForEditing = UnitForEditing.builder()
-                .id(unit.id())
-                .version(unit.version())
-                .name(unit.name())
-                .abbreviation(unit.abbreviation())
-                .build();
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        stocksDatabase.synchronisationDao().writeUnits(Arrays.asList(unit));
-        errorRecorder.recordUnitEditError(exception, unitForEditing);
-        TestObserver<List<ErrorDescription>> data = uut.getErrors().filter(v -> !v.isEmpty()).test().awaitCount(1);
-        ErrorDescription input = data.values().get(0).get(0);
-
-        uut.deleteError(input);
-
-        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
-        stocksDatabase.errorDao().getNumberOfErrors().distinctUntilChanged().test().awaitCount(1).assertValues(0);
-        assertTrue(stocksDatabase.errorDao().getUnitEdits().isEmpty());
-    }
-
-    @Test
-    public void scaledUnitAddErrorCanBeRetrieved() {
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
-        ScaledUnitAddForm form = ScaledUnitAddForm.create(BigDecimal.ONE, unit.id());
-        ScaledUnitAddErrorDetails expected = ScaledUnitAddErrorDetails.create(form.scale(),
-                form.unit(),
-                unit.name(),
-                unit.abbreviation());
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
-        errorRecorder.recordScaledUnitAddError(exception, form);
-
-        uut.getNumberOfErrors().test().awaitCount(1).assertValue(1);
-        test(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == StatusCode.DATABASE_UNREACHABLE);
-        test(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(expected));
-    }
-
-    @Test
-    public void scaledUnitAddErrorCanBeDeleted() {
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
-        ScaledUnitAddForm form = ScaledUnitAddForm.create(BigDecimal.ONE, unit.id());
-        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
-        errorRecorder.recordScaledUnitAddError(exception, form);
-        stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
-        ErrorDescription input = test(uut.getErrors()).values().get(0).get(0);
-
-        uut.deleteError(input);
-
-        assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
-        stocksDatabase.errorDao().getNumberOfErrors().test().awaitCount(1).assertValue(0);
-        assertTrue(stocksDatabase.errorDao().getScaledUnitAdds().isEmpty());
-    }
-
-    private <T> TestObserver<List<T>> test(Observable<List<T>> input) {
-        return input
-                .filter(v -> !v.isEmpty())
-                .test()
-                .awaitCount(1)
-                .assertNoErrors();
+        test(actual).assertValue(input);
     }
 }

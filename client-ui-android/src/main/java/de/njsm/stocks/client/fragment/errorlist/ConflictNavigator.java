@@ -48,6 +48,11 @@ class ConflictNavigator implements ErrorDetailsVisitor.Default<ErrorDescription,
     }
 
     @Override
+    public Void scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, ErrorDescription input) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    @Override
     public Void defaultImpl(ErrorDetails errorDetails, ErrorDescription input) {
         throw new IllegalStateException("unexpected conflict resolution");
     }

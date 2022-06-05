@@ -126,4 +126,11 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         UnitDbEntity unit = errorDao.getLatestUnitEntity(scaledUnitAddEntity.unit());
         return ScaledUnitAddErrorDetails.create(scaledUnitAddEntity.scale(), scaledUnitAddEntity.unit(), unit.name(), unit.abbreviation());
     }
+
+    @Override
+    public ErrorDetails editScaledUnit(ErrorEntity.Action action, Long input) {
+        ScaledUnitEditEntity entity = errorDao.getScaledUnitEdit(input);
+        UnitDbEntity unit = errorDao.getLatestUnitEntity(entity.unit());
+        return ScaledUnitEditErrorDetails.create(entity.id(), entity.scale(), unit.id(), unit.name(), unit.abbreviation());
+    }
 }

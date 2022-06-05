@@ -35,6 +35,7 @@ import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragmentT
 import de.njsm.stocks.client.fragment.locationedit.LocationEditFragmentTest;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragmentTest;
 import de.njsm.stocks.client.fragment.scaledunitadd.ScaledUnitAddFragmentTest;
+import de.njsm.stocks.client.fragment.scaledunitedit.ScaledUnitEditFragmentTest;
 import de.njsm.stocks.client.fragment.scaledunitlist.ScaledUnitListFragmentTest;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentTest;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragmentTest;
@@ -91,6 +92,8 @@ public interface TestComponent {
     void inject(UnitConflictFragmentTest test);
 
     void inject(ScaledUnitAddFragmentTest test);
+
+    void inject(ScaledUnitEditFragmentTest test);
 
     @Component.Builder
     interface Builder {

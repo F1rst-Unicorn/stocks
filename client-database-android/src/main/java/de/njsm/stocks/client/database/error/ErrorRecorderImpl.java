@@ -113,6 +113,14 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_SCALED_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
+    @Override
+    public void recordScaledUnitEditError(SubsystemException e, ScaledUnitForEditing scaledUnitForEditing) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        ScaledUnitEditEntity entity = ScaledUnitEditEntity.create(scaledUnitForEditing.id(), scaledUnitForEditing.version(), scaledUnitForEditing.scale(), scaledUnitForEditing.unit());
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_SCALED_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
     @AutoValue
     abstract static class ExceptionData {
 

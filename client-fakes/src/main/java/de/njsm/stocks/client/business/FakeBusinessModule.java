@@ -188,4 +188,13 @@ public interface FakeBusinessModule {
         when(result.getUnits()).thenReturn(Observable.just(UnitsForSelection.generate()));
         return result;
     }
+
+    @Binds
+    ScaledUnitEditInteractor ScaledUnitEditInteractor(FakeScaledUnitEditInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeScaledUnitEditInteractor FakeScaledUnitEditInteractor() {
+        return new FakeScaledUnitEditInteractor();
+    }
 }
