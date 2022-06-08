@@ -21,13 +21,14 @@
 package de.njsm.stocks.client.fragment;
 
 import de.njsm.stocks.client.business.entities.LocationForDeletion;
+import de.njsm.stocks.client.fragment.util.ListDiffer;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static de.njsm.stocks.client.fragment.ListDiffer.byId;
+import static de.njsm.stocks.client.fragment.util.ListDiffer.byId;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 

@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.util;
+package de.njsm.stocks.client.fragment.view;
 
 import android.text.Editable;
 import android.text.TextWatcher;

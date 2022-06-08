@@ -34,7 +34,7 @@ import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
 
-import static de.njsm.stocks.client.fragment.ListDiffer.byId;
+import static de.njsm.stocks.client.fragment.util.ListDiffer.byId;
 
 public class ScaledUnitListAdapter extends RecyclerView.Adapter<TextWithPrefixIconViewHolder> {
 

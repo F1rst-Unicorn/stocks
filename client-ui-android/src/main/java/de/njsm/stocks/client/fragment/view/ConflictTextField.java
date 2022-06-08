@@ -27,7 +27,6 @@ import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 import de.njsm.stocks.client.ui.R;
-import de.njsm.stocks.client.util.NonEmptyValidator;
 
 import java.util.function.BiConsumer;
 

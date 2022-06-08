@@ -45,7 +45,15 @@ public interface UimockBusinessModule {
 
     @Provides
     static Synchroniser synchroniser() {
-        return () -> {};
+        return new Synchroniser() {
+            @Override
+            public void synchronise() {
+            }
+
+            @Override
+            public void synchroniseAfterError(SubsystemException e) {
+            }
+        };
     }
 
     @Provides

@@ -30,7 +30,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.ui.R;
-import de.njsm.stocks.client.util.NonEmptyValidator;
+import de.njsm.stocks.client.fragment.view.NonEmptyValidator;
 
 import java.util.HashMap;
 import java.util.Map;

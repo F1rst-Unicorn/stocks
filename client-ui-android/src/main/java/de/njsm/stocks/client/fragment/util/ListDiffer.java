@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.fragment;
+package de.njsm.stocks.client.fragment.util;
 
 import androidx.recyclerview.widget.DiffUtil;
 import de.njsm.stocks.client.business.entities.Entity;
@@ -44,7 +45,7 @@ public class ListDiffer<T> extends DiffUtil.Callback {
 
     private final Function<T, Long> idMapper;
 
-    public ListDiffer(List<T> oldList, List<T> newList, Function<T, Long> idMapper) {
+    private ListDiffer(List<T> oldList, List<T> newList, Function<T, Long> idMapper) {
         this.oldList = oldList == null ? Collections.emptyList() : oldList;
         this.newList = newList == null ? Collections.emptyList() : newList;
         this.idMapper = idMapper;
