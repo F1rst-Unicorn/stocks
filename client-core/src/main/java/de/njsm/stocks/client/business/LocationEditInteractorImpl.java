@@ -70,7 +70,7 @@ class LocationEditInteractorImpl implements LocationEditInteractor {
             synchroniser.synchronise();
         } catch (SubsystemException e) {
             errorRecorder.recordLocationEditError(e, dataToNetwork);
-            new AfterErrorSynchroniser(synchroniser).visit(e, null);
+            synchroniser.synchroniseAfterError(e);
         }
     }
 }

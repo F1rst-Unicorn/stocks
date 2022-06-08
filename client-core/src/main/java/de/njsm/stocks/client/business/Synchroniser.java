@@ -24,4 +24,6 @@ package de.njsm.stocks.client.business;
 public interface Synchroniser {
 
     void synchronise();
+
+    void synchroniseAfterError(SubsystemException e);
 }

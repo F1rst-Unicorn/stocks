@@ -54,12 +54,9 @@ class UnitEditInteractorImplTest {
     @Mock
     private ErrorRecorder errorRecorder;
 
-    @Mock
-    private AfterErrorSynchroniser afterErrorSynchroniser;
-
     @BeforeEach
     void setUp() {
-        uut = new UnitEditInteractorImpl(repository, editService, synchroniser, scheduler, errorRecorder, afterErrorSynchroniser);
+        uut = new UnitEditInteractorImpl(repository, editService, synchroniser, scheduler, errorRecorder);
     }
 
     @Test
@@ -172,29 +169,7 @@ class UnitEditInteractorImplTest {
 
         verify(editService).edit(dataToNetwork);
         verify(errorRecorder).recordUnitEditError(exception, dataToNetwork);
-        verifyNoInteractions(synchroniser);
-    }
-
-    @Test
-    void failingEditingErrorWithOutdatedDataIsRecorded() {
-        int id = 42;
-        int version = 2;
-        UnitToEdit localData = getDataToEdit(id);
-        UnitToEdit editedForm = UnitToEdit.builder()
-                .id(id)
-                .name(localData.name())
-                .abbreviation("edited abbreviation")
-                .build();
-        UnitForEditing dataToNetwork = editedForm.addVersion(version);
-        when(repository.getCurrentDataBeforeEditing(editedForm)).thenReturn(localData.addVersion(version));
-        StatusCodeException exception = new StatusCodeException(StatusCode.INVALID_DATA_VERSION);
-        doThrow(exception).when(editService).edit(dataToNetwork);
-
-        uut.editInBackground(editedForm);
-
-        verify(editService).edit(dataToNetwork);
-        verify(errorRecorder).recordUnitEditError(exception, dataToNetwork);
-        verifyNoInteractions(synchroniser);
+        verify(synchroniser).synchroniseAfterError(exception);
     }
 
     private UnitToEdit getDataToEdit(int id) {

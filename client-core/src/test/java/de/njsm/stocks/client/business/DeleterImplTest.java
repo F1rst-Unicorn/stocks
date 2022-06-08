@@ -52,9 +52,6 @@ abstract class DeleterImplTest<E extends Entity<E>> {
     @Mock
     Synchroniser synchroniser;
 
-    @Mock
-    AfterErrorSynchroniser afterErrorSynchroniser;
-
     abstract Job.Type getJobType();
 
     abstract void verifyRecorder(SubsystemException exception, Versionable<E> outputToService);
@@ -97,7 +94,7 @@ abstract class DeleterImplTest<E extends Entity<E>> {
 
         verify(deleteRepository).getEntityForDeletion(input);
         verify(deleteService).delete(outputToService);
-        verifyNoInteractions(synchroniser);
+        verify(synchroniser).synchroniseAfterError(exception);
         verifyRecorder(exception, outputToService);
     }
 
@@ -114,24 +111,7 @@ abstract class DeleterImplTest<E extends Entity<E>> {
 
         verify(deleteRepository).getEntityForDeletion(input);
         verify(deleteService).delete(outputToService);
-        verifyNoInteractions(synchroniser);
-        verifyRecorder(exception, outputToService);
-    }
-
-    @Test
-    void failingDeletionWithOutdatedDataTriggersSynchronisation() {
-        int id = 42;
-        Identifiable<E> input = () -> id;
-        Versionable<E> outputToService = getNetworkData(id, 3);
-        when(deleteRepository.getEntityForDeletion(input)).thenReturn(outputToService);
-        StatusCodeException exception = new StatusCodeException(StatusCode.INVALID_DATA_VERSION);
-        doThrow(exception).when(deleteService).delete(outputToService);
-
-        act(input);
-
-        verify(deleteRepository).getEntityForDeletion(input);
-        verify(deleteService).delete(outputToService);
-        verify(afterErrorSynchroniser).visit(exception, null);
+        verify(synchroniser).synchroniseAfterError(exception);
         verifyRecorder(exception, outputToService);
     }
 

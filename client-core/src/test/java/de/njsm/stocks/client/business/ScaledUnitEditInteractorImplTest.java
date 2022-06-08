@@ -60,12 +60,9 @@ class ScaledUnitEditInteractorImplTest {
     @Mock
     private Scheduler scheduler;
 
-    @Mock
-    private AfterErrorSynchroniser afterErrorSynchroniser;
-
     @BeforeEach
     void setUp() {
-        uut = new ScaledUnitEditInteractorImpl(repository, service, synchroniser, errorRecorder, scheduler, afterErrorSynchroniser);
+        uut = new ScaledUnitEditInteractorImpl(repository, service, synchroniser, errorRecorder, scheduler);
     }
 
     @AfterEach
@@ -183,7 +180,7 @@ class ScaledUnitEditInteractorImplTest {
         verify(service).edit(expected);
         verify(repository).getScaledUnitForSending(editedUnit);
         verify(errorRecorder).recordScaledUnitEditError(exception, expected);
-        verifyNoInteractions(synchroniser);
+        verify(synchroniser).synchroniseAfterError(exception);
     }
 
     private ScaledUnitToEdit getInput() {

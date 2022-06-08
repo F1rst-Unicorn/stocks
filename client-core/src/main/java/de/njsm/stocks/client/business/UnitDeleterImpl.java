@@ -31,8 +31,8 @@ import javax.inject.Inject;
 class UnitDeleterImpl extends AbstractDeleterImpl<Unit> {
 
     @Inject
-    UnitDeleterImpl(EntityDeleteService<Unit> deleteService, EntityDeleteRepository<Unit> entityDeleteRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler, AfterErrorSynchroniser afterErrorSynchroniser) {
-        super(deleteService, entityDeleteRepository, synchroniser, errorRecorder, scheduler, afterErrorSynchroniser);
+    UnitDeleterImpl(EntityDeleteService<Unit> deleteService, EntityDeleteRepository<Unit> entityDeleteRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
+        super(deleteService, entityDeleteRepository, synchroniser, errorRecorder, scheduler);
     }
 
     @Override

@@ -40,16 +40,13 @@ class ScaledUnitEditInteractorImpl implements ScaledUnitEditInteractor {
 
     private final Scheduler scheduler;
 
-    private final AfterErrorSynchroniser afterErrorSynchroniser;
-
     @Inject
-    ScaledUnitEditInteractorImpl(ScaledUnitEditRepository repository, ScaledUnitEditService service, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler, AfterErrorSynchroniser afterErrorSynchroniser) {
+    ScaledUnitEditInteractorImpl(ScaledUnitEditRepository repository, ScaledUnitEditService service, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
         this.repository = repository;
         this.service = service;
         this.synchroniser = synchroniser;
         this.errorRecorder = errorRecorder;
         this.scheduler = scheduler;
-        this.afterErrorSynchroniser = afterErrorSynchroniser;
     }
 
     @Override
@@ -80,7 +77,7 @@ class ScaledUnitEditInteractorImpl implements ScaledUnitEditInteractor {
             synchroniser.synchronise();
         } catch (SubsystemException e) {
             errorRecorder.recordScaledUnitEditError(e, networkData);
-            afterErrorSynchroniser.visit(e, null);
+            synchroniser.synchroniseAfterError(e);
         }
     }
 }

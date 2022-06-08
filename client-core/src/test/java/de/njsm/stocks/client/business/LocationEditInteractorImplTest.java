@@ -150,7 +150,7 @@ class LocationEditInteractorImplTest {
 
         verify(locationEditService).editLocation(dataToNetwork);
         verify(errorRecorder).recordLocationEditError(exception, dataToNetwork);
-        verifyNoInteractions(synchroniser);
+        verify(synchroniser).synchroniseAfterError(exception);
     }
 
     private LocationToEdit getLocationToEdit(int id) {

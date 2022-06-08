@@ -32,7 +32,7 @@ class UnitDeleterImplTest extends DeleterImplTest<Unit> {
 
     @BeforeEach
     void setUp() {
-        uut = new UnitDeleterImpl(deleteService, deleteRepository, synchroniser, errorRecorder, scheduler, afterErrorSynchroniser);
+        uut = new UnitDeleterImpl(deleteService, deleteRepository, synchroniser, errorRecorder, scheduler);
     }
 
     @Override

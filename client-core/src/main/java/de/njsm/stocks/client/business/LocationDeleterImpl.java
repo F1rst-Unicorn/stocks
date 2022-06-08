@@ -29,8 +29,8 @@ import javax.inject.Inject;
 class LocationDeleterImpl extends AbstractDeleterImpl<Location> {
 
     @Inject
-    LocationDeleterImpl(EntityDeleteService<Location> locationDeleteService, EntityDeleteRepository<Location> locationRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler, AfterErrorSynchroniser afterErrorSynchroniser) {
-        super(locationDeleteService, locationRepository, synchroniser, errorRecorder, scheduler, afterErrorSynchroniser);
+    LocationDeleterImpl(EntityDeleteService<Location> locationDeleteService, EntityDeleteRepository<Location> locationRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
+        super(locationDeleteService, locationRepository, synchroniser, errorRecorder, scheduler);
     }
 
     @Override

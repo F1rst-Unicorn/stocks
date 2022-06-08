@@ -42,4 +42,25 @@ class SynchroniserImpl implements Synchroniser {
     public void synchronise() {
         scheduler.schedule(Job.create(Job.Type.SYNCHRONISATION, synchroniseInteractor::synchronise));
     }
+
+    @Override
+    public void synchroniseAfterError(SubsystemException e) {
+        new AfterErrorSynchroniser().visit(e, null);
+    }
+
+    private final class AfterErrorSynchroniser implements SubsystemException.Visitor<Void, Void> {
+
+        @Override
+        public Void statusCodeException(StatusCodeException exception, Void input) {
+            if (exception.getStatusCode().isTriggeredByOutdatedLocalData()) {
+                synchronise();
+            }
+            return null;
+        }
+
+        @Override
+        public Void subsystemException(SubsystemException exception, Void input) {
+            return null;
+        }
+    }
 }

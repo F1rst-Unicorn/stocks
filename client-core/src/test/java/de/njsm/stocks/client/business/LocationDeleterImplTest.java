@@ -32,7 +32,7 @@ class LocationDeleterImplTest extends DeleterImplTest<Location> {
 
     @BeforeEach
     void setUp() {
-        uut = new LocationDeleterImpl(deleteService, deleteRepository, synchroniser, errorRecorder, scheduler, afterErrorSynchroniser);
+        uut = new LocationDeleterImpl(deleteService, deleteRepository, synchroniser, errorRecorder, scheduler);
     }
 
     @Override
