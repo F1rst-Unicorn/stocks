@@ -22,38 +22,26 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.ScaledUnitEditService;
-import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.ScaledUnitForEditing;
 import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-import static de.njsm.stocks.client.network.DataMapper.map;
-
-class ScaledUnitEditServiceImpl implements ScaledUnitEditService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ScaledUnitEditServiceImpl.class);
-
-    private final ServerApi api;
-
-    private final CallHandler callHandler;
+class ScaledUnitEditServiceImpl extends ServiceBase<ScaledUnitForEditing> implements ScaledUnitEditService {
 
     @Inject
     ScaledUnitEditServiceImpl(ServerApi api, CallHandler callHandler) {
-        this.api = api;
-        this.callHandler = callHandler;
+        super(api, callHandler);
     }
 
     @Override
     public void edit(ScaledUnitForEditing form) {
-        LOG.debug(form.toString());
-        Call<Response> call = api.editScaledUnit(form.id(), form.version(), form.scale().toPlainString(), form.unit());
-        StatusCode result = callHandler.executeCommand(call);
-        if (result.isFail())
-            throw new StatusCodeException(map(result));
+        perform(form);
+    }
+
+    @Override
+    Call<Response> buildCall(ScaledUnitForEditing form) {
+        return api.editScaledUnit(form.id(), form.version(), form.scale().toPlainString(), form.unit());
     }
 }

@@ -23,34 +23,27 @@ package de.njsm.stocks.client.network;
 
 
 import de.njsm.stocks.client.business.EntityDeleteService;
-import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.Versionable;
 import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-import static de.njsm.stocks.client.network.DataMapper.map;
-
-public class LocationDeleteServiceImpl implements EntityDeleteService<Location> {
-
-    private final ServerApi api;
-
-    private final CallHandler callHandler;
+public class LocationDeleteServiceImpl extends ServiceBase<Versionable<Location>> implements EntityDeleteService<Location> {
 
     @Inject
     LocationDeleteServiceImpl(ServerApi api, CallHandler callHandler) {
-        this.api = api;
-        this.callHandler = callHandler;
+        super(api, callHandler);
+    }
+
+    @Override
+    Call<Response> buildCall(Versionable<Location> locationForDeletion) {
+        return api.deleteLocation(locationForDeletion.id(), locationForDeletion.version(), 0);
     }
 
     @Override
     public void delete(Versionable<Location> locationForDeletion) {
-        Call<Response> call = api.deleteLocation(locationForDeletion.id(), locationForDeletion.version(), 0);
-        StatusCode result = callHandler.executeCommand(call);
-        if (result.isFail())
-            throw new StatusCodeException(map(result));
+        perform(locationForDeletion);
     }
 }

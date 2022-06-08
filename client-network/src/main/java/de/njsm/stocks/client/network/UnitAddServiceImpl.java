@@ -21,39 +21,27 @@
 
 package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.UnitAddService;
 import de.njsm.stocks.client.business.entities.UnitAddForm;
 import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-import static de.njsm.stocks.client.network.DataMapper.map;
-
-class UnitAddServiceImpl implements UnitAddService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(UnitAddServiceImpl.class);
-
-    private final ServerApi api;
-
-    private final CallHandler callHandler;
+class UnitAddServiceImpl extends ServiceBase<UnitAddForm> implements UnitAddService {
 
     @Inject
     UnitAddServiceImpl(ServerApi api, CallHandler callHandler) {
-        this.api = api;
-        this.callHandler = callHandler;
+        super(api, callHandler);
     }
 
     @Override
     public void addUnit(UnitAddForm form) {
-        LOG.debug(form.toString());
-        Call<Response> call = api.addUnit(form.name(), form.abbreviation());
-        StatusCode result = callHandler.executeCommand(call);
-        if (result.isFail())
-            throw new StatusCodeException(map(result));
+        perform(form);
+    }
+
+    @Override
+    Call<Response> buildCall(UnitAddForm form) {
+        return api.addUnit(form.name(), form.abbreviation());
     }
 }

@@ -23,37 +23,31 @@ package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.LocationAddService;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.common.api.DataResponse;
 import de.njsm.stocks.common.api.LocationForInsertion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import de.njsm.stocks.common.api.Response;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class LocationAddServiceImpl implements LocationAddService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(LocationAddServiceImpl.class);
-
-    private final ServerApi api;
-
-    private final CallHandler callHandler;
+class LocationAddServiceImpl extends ServiceBase<LocationAddForm> implements LocationAddService {
 
     @Inject
     public LocationAddServiceImpl(ServerApi api, CallHandler callHandler) {
-        this.api = api;
-        this.callHandler = callHandler;
+        super(api, callHandler);
     }
 
     @Override
-    public void add(LocationAddForm locationAddForm) {
-        LOG.debug(locationAddForm.toString());
+    Call<? extends Response> buildCall(LocationAddForm locationAddForm) {
         LocationForInsertion networkData = LocationForInsertion.builder()
                 .name(locationAddForm.name())
                 .description(locationAddForm.description())
                 .build();
 
-        Call<DataResponse<Integer>> call = api.addLocation(networkData);
-        callHandler.executeForResult(call);
+        return api.addLocation(networkData);
+    }
+
+    @Override
+    public void add(LocationAddForm locationAddForm) {
+        perform(locationAddForm);
     }
 }

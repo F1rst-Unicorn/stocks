@@ -22,38 +22,26 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.ScaledUnitAddService;
-import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.ScaledUnitAddForm;
 import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-import static de.njsm.stocks.client.network.DataMapper.map;
-
-class ScaledUnitAddServiceImpl implements ScaledUnitAddService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ScaledUnitAddServiceImpl.class);
-
-    private final ServerApi api;
-
-    private final CallHandler callHandler;
+class ScaledUnitAddServiceImpl extends ServiceBase<ScaledUnitAddForm> implements ScaledUnitAddService {
 
     @Inject
     ScaledUnitAddServiceImpl(ServerApi api, CallHandler callHandler) {
-        this.api = api;
-        this.callHandler = callHandler;
+        super(api, callHandler);
+    }
+
+    @Override
+    Call<Response> buildCall(ScaledUnitAddForm form) {
+        return api.addScaledUnit(form.scale().toPlainString(), form.unit());
     }
 
     @Override
     public void add(ScaledUnitAddForm form) {
-        LOG.debug(form.toString());
-        Call<Response> call = api.addScaledUnit(form.scale().toPlainString(), form.unit());
-        StatusCode result = callHandler.executeCommand(call);
-        if (result.isFail())
-            throw new StatusCodeException(map(result));
+        perform(form);
     }
 }

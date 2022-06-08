@@ -22,33 +22,28 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.LocationEditService;
-import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.LocationForEditing;
 import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
 import static de.njsm.stocks.client.network.DataMapper.map;
 
-class LocationEditServiceImpl implements LocationEditService {
-
-    private final ServerApi api;
-
-    private final CallHandler callHandler;
+class LocationEditServiceImpl extends ServiceBase<LocationForEditing> implements LocationEditService {
 
     @Inject
     LocationEditServiceImpl(ServerApi api, CallHandler callHandler) {
-        this.api = api;
-        this.callHandler = callHandler;
+        super(api, callHandler);
+    }
+
+    @Override
+    Call<Response> buildCall(LocationForEditing location) {
+        return api.editLocation(map(location));
     }
 
     @Override
     public void editLocation(LocationForEditing location) {
-        Call<Response> call = api.editLocation(map(location));
-        StatusCode result = callHandler.executeCommand(call);
-        if (result.isFail())
-            throw new StatusCodeException(map(result));
+        perform(location);
     }
 }

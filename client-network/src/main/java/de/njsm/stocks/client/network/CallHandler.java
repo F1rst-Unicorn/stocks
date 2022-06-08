@@ -44,9 +44,9 @@ class CallHandler {
     public CallHandler() {
     }
 
-    StatusCode executeCommand(Call<Response> call) {
+    StatusCode executeCommand(Call<? extends Response> call) {
         try {
-            retrofit2.Response<Response> response = call.execute();
+            retrofit2.Response<? extends Response> response = call.execute();
             StatusCode result = handleResponse(response);
             LOG.debug("Got result for " + call.request().method() + " to " +
                     call.request().url().encodedPath() + ": " + result);

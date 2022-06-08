@@ -21,27 +21,36 @@
 
 package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.UnitEditService;
-import de.njsm.stocks.client.business.entities.UnitForEditing;
+
+import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 
-import javax.inject.Inject;
+import static de.njsm.stocks.client.network.DataMapper.map;
 
-class UnitEditServiceImpl extends ServiceBase<UnitForEditing> implements UnitEditService {
+abstract class ServiceBase<T> {
 
-    @Inject
-    UnitEditServiceImpl(ServerApi api, CallHandler callHandler) {
-        super(api, callHandler);
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceBase.class);
+
+    final ServerApi api;
+
+    private final CallHandler callHandler;
+
+    ServiceBase(ServerApi api, CallHandler callHandler) {
+        this.api = api;
+        this.callHandler = callHandler;
     }
 
-    @Override
-    Call<Response> buildCall(UnitForEditing unit) {
-        return api.editUnit(unit.id(), unit.version(), unit.name(), unit.abbreviation());
+    public void perform(T input) {
+        LOG.debug(input.toString());
+        Call<? extends Response> call = buildCall(input);
+        StatusCode result = callHandler.executeCommand(call);
+        if (result.isFail())
+            throw new StatusCodeException(map(result));
     }
 
-    @Override
-    public void edit(UnitForEditing location) {
-        perform(location);
-    }
+    abstract Call<? extends Response> buildCall(T input);
 }
