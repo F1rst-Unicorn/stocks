@@ -27,6 +27,7 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.di.ViewModelFactory;
 import de.njsm.stocks.client.di.ViewModelKey;
@@ -109,7 +110,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(ScaledUnitListViewModel.class)
-    ViewModel ScaledUnitListViewModel(ScaledUnitListInteractor scaledUnitListInteractor, ScaledUnitDeleter scaledUnitDeleter) {
+    ViewModel ScaledUnitListViewModel(ScaledUnitListInteractor scaledUnitListInteractor, EntityDeleter<ScaledUnit> scaledUnitDeleter) {
         return new ScaledUnitListViewModel(scaledUnitListInteractor, scaledUnitDeleter);
     }
 

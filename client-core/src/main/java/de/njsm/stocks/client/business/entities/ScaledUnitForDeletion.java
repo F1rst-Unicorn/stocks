@@ -19,15 +19,27 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+@AutoValue
+public abstract class ScaledUnitForDeletion implements Versionable<ScaledUnit> {
 
-public interface ScaledUnitRepository extends EntityDeleteRepository<ScaledUnit> {
+    public static ScaledUnitForDeletion create(int id, int version) {
+        return builder()
+                .id(id)
+                .version(version)
+                .build();
+    }
 
-    Observable<List<ScaledUnitForListing>> getScaledUnits();
+    public static ScaledUnitForDeletion.Builder builder() {
+        return new AutoValue_ScaledUnitForDeletion.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder
+            extends BaseBuilder<ScaledUnitForDeletion>
+            implements Versionable.Builder<Builder> {
+    }
 }

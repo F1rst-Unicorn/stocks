@@ -25,6 +25,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.execution.ExecutionModule;
 
@@ -93,7 +94,7 @@ public interface BusinessModule {
     ScaledUnitListInteractor ScaledUnitListInteractor(ScaledUnitListInteractorImpl impl);
 
     @Binds
-    ScaledUnitDeleter ScaledUnitDeleter(ScaledUnitDeleterImpl impl);
+    EntityDeleter<ScaledUnit> ScaledUnitDeleter(ScaledUnitDeleterImpl impl);
 
     @Binds
     UnitAddInteractor UnitAddInteractor(UnitAddInteractorImpl impl);

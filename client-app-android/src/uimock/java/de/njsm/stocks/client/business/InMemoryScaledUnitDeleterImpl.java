@@ -21,6 +21,8 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -29,7 +31,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InMemoryScaledUnitDeleterImpl implements ScaledUnitDeleter {
+public class InMemoryScaledUnitDeleterImpl implements EntityDeleter<ScaledUnit> {
 
     private final BehaviorSubject<List<ScaledUnitForListing>> data;
 
@@ -39,7 +41,7 @@ public class InMemoryScaledUnitDeleterImpl implements ScaledUnitDeleter {
     }
 
     @Override
-    public void deleteScaledUnit(ScaledUnitForListing unit) {
+    public void delete(Identifiable<ScaledUnit> unit) {
         data.firstElement().subscribe(list -> {
             List<ScaledUnitForListing> newList = new ArrayList<>(list);
             newList.removeIf(v -> v.id() == unit.id());

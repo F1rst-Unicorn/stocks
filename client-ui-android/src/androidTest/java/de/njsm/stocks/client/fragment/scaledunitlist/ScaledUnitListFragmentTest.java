@@ -26,8 +26,9 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FakeScaledUnitListInteractor;
-import de.njsm.stocks.client.business.ScaledUnitDeleter;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.navigation.ScaledUnitListNavigator;
 import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
@@ -63,7 +64,7 @@ public class ScaledUnitListFragmentTest {
 
     private ScaledUnitListNavigator mockScaledUnitListNavigator;
 
-    private ScaledUnitDeleter scaledUnitDeleter;
+    private EntityDeleter<ScaledUnit> scaledUnitDeleter;
 
     private ScaledUnitRenderStrategy scaledUnitRenderStrategy;
 
@@ -80,7 +81,7 @@ public class ScaledUnitListFragmentTest {
     }
 
     @Test
-    public void unitsAreListed() {
+    public void scaledUnitsAreListed() {
         scaledUnitListInteractor.setData(ScaledUnitsForListing.generate());
 
         for (ScaledUnitForListing item : ScaledUnitsForListing.generate()) {
@@ -98,7 +99,7 @@ public class ScaledUnitListFragmentTest {
     }
 
     @Test
-    public void clickingAUnitNavigates() {
+    public void clickingAScaledUnitNavigates() {
         int itemIndex = 1;
         List<ScaledUnitForListing> data = ScaledUnitsForListing.generate();
         assertTrue("The test wants to access element " + itemIndex, data.size() >= itemIndex + 1);
@@ -113,7 +114,7 @@ public class ScaledUnitListFragmentTest {
     }
 
     @Test
-    public void unitDeletionWorks() {
+    public void scaledUnitDeletionWorks() {
         List<ScaledUnitForListing> data = ScaledUnitsForListing.generate();
         assertFalse(data.isEmpty());
         scaledUnitListInteractor.setData(data);
@@ -122,11 +123,11 @@ public class ScaledUnitListFragmentTest {
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(itemIndex, swipeRight()));
 
-        verify(scaledUnitDeleter).deleteScaledUnit(data.get(itemIndex));
+        verify(scaledUnitDeleter).delete(data.get(itemIndex));
     }
 
     @Test
-    public void UnitAddingNavigates() {
+    public void scaledUnitAddingNavigates() {
         onView(withId(R.id.template_swipe_list_fab))
                 .perform(click());
 
@@ -144,7 +145,7 @@ public class ScaledUnitListFragmentTest {
     }
 
     @Inject
-    void setScaledUnitDeleter(ScaledUnitDeleter scaledUnitDeleter) {
+    void setScaledUnitDeleter(EntityDeleter<ScaledUnit> scaledUnitDeleter) {
         this.scaledUnitDeleter = scaledUnitDeleter;
     }
 

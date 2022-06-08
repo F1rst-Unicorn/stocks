@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database.error;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.ScaledUnitDeleteErrorDetails;
 import de.njsm.stocks.client.business.entities.UnitDeleteErrorDetails;
 import de.njsm.stocks.client.database.LocationDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
@@ -223,4 +224,30 @@ public abstract class ErrorDao {
             "from scaled_unit_to_edit " +
             "where id = :id")
     abstract ScaledUnitEditEntity getScaledUnitEdit(Long id);
+
+    @Query("select * " +
+            "from scaled_unit_to_delete")
+    abstract List<ScaledUnitDeleteEntity> getScaledUnitDeletes();
+
+    @Insert
+    abstract long insert(ScaledUnitDeleteEntity entity);
+
+    @Query("select * " +
+            "from scaled_unit_to_delete " +
+            "where id = :id")
+    abstract ScaledUnitDeleteEntity getScaledUnitDelete(long id);
+
+    @Query("select scaled_unit.id as id, scaled_unit.scale as scale, unit.name as name, unit.abbreviation as abbreviation " +
+            "from scaled_unit " +
+            "join unit on scaled_unit.unit = unit.id " +
+            "where scaled_unit.id = :id " +
+            "and scaled_unit.version = :version " +
+            "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL + " " +
+            "and unit.valid_time_start <= scaled_unit.valid_time_end " +
+            "and scaled_unit.valid_time_end <= unit.valid_time_end " +
+            "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL + " ")
+    abstract ScaledUnitDeleteErrorDetails getScaledUnit(int id, int version);
+
+    @Query("delete from scaled_unit_to_delete where id = :id")
+    abstract void deleteScaledUnitDelete(long id);
 }

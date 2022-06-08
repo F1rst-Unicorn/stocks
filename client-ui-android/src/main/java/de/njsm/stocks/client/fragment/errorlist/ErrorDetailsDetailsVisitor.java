@@ -80,6 +80,11 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
         return scaledUnitRenderStrategy.render(scaledUnitEditErrorDetails);
     }
 
+    @Override
+    public String scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
+        return scaledUnitRenderStrategy.render(scaledUnitDeleteErrorDetails);
+    }
+
     private String formatUnit(UnitFields unit) {
         return String.format("%s (%s)", unit.name(), unit.abbreviation());
     }

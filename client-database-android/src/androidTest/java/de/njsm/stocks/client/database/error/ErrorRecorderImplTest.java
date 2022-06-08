@@ -273,11 +273,37 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(exception.getStatusCode(), actual.statusCode());
         List<ScaledUnitEditEntity> scaledUnitEdits = stocksDatabase.errorDao().getScaledUnitEdits();
         assertEquals(1, scaledUnitEdits.size());
-        assertEquals(form.scale(), scaledUnitEdits.get(0).scale());
-        assertEquals(form.unit(), scaledUnitEdits.get(0).unit());
+        ScaledUnitEditEntity scaledUnitEditEntity = scaledUnitEdits.get(0);
+        assertEquals(form.id(), scaledUnitEditEntity.id());
+        assertEquals(form.version(), scaledUnitEditEntity.version());
+        assertEquals(form.scale(), scaledUnitEditEntity.scale());
+        assertEquals(form.unit(), scaledUnitEditEntity.unit());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.EDIT_SCALED_UNIT, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
+
+    @Test
+    public void recordingErrorDeletingScaledUnitWorks() {
+        ScaledUnitForDeletion form = ScaledUnitForDeletion.create(1, 2);
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordScaledUnitDeleteError(exception, form);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<ScaledUnitDeleteEntity> scaledUnitDeletes = stocksDatabase.errorDao().getScaledUnitDeletes();
+        assertEquals(1, scaledUnitDeletes.size());
+        ScaledUnitDeleteEntity scaledUnitDeleteEntity = scaledUnitDeletes.get(0);
+        assertEquals(form.id(), scaledUnitDeleteEntity.id());
+        assertEquals(form.version(), scaledUnitDeleteEntity.version());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.DELETE_SCALED_UNIT, errors.get(0).action());
         assertEquals(1, errors.get(0).dataId());
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());

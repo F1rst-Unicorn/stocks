@@ -19,29 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.entities.Job;
+
+import de.njsm.stocks.client.business.EntityDeleteService;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Versionable;
-import de.njsm.stocks.client.execution.Scheduler;
+import de.njsm.stocks.common.api.Response;
+import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class ScaledUnitDeleterImpl extends AbstractDeleterImpl<ScaledUnit> {
+class ScaledUnitDeleteServiceImpl extends ServiceBase<Versionable<ScaledUnit>> implements EntityDeleteService<ScaledUnit> {
 
     @Inject
-    ScaledUnitDeleterImpl(EntityDeleteService<ScaledUnit> deleteService, EntityDeleteRepository<ScaledUnit> entityDeleteRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
-        super(deleteService, entityDeleteRepository, synchroniser, errorRecorder, scheduler);
+    ScaledUnitDeleteServiceImpl(ServerApi api, CallHandler callHandler) {
+        super(api, callHandler);
     }
 
     @Override
-    Job.Type getJobType() {
-        return Job.Type.DELETE_SCALED_UNIT;
+    Call<Response> buildCall(Versionable<ScaledUnit> scaledUnitForDeletion) {
+        return api.deleteScaledUnit(scaledUnitForDeletion.id(), scaledUnitForDeletion.version());
     }
 
     @Override
-    void recordError(SubsystemException e, Versionable<ScaledUnit> data) {
-        errorRecorder.recordScaledUnitDeleteError(e, data);
+    public void delete(Versionable<ScaledUnit> scaledUnitForDeletion) {
+        perform(scaledUnitForDeletion);
     }
 }

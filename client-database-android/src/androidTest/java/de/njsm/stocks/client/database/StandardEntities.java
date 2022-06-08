@@ -84,7 +84,11 @@ public class StandardEntities {
                 .abbreviation("abbreviation");
     }
 
-    static ScaledUnitDbEntity.Builder scaledUnitDbEntityBuilder() {
+    public static ScaledUnitDbEntity scaledUnitDbEntity() {
+        return scaledUnitDbEntityBuilder().build();
+    }
+
+    public static ScaledUnitDbEntity.Builder scaledUnitDbEntityBuilder() {
         return initialiseBuilder(ScaledUnitDbEntity.builder())
                 .scale(BigDecimal.TEN)
                 .unit(4);

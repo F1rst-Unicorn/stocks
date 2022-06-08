@@ -28,6 +28,7 @@ import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ServerEndpoint;
 import de.njsm.stocks.client.business.entities.Unit;
 import okhttp3.OkHttpClient;
@@ -79,6 +80,9 @@ public interface NetworkModule {
 
     @Binds
     ScaledUnitEditService ScaledUnitEditService(ScaledUnitEditServiceImpl impl);
+
+    @Binds
+    EntityDeleteService<ScaledUnit> ScaledUnitDeleteServiceImpl(ScaledUnitDeleteServiceImpl impl);
 
     @Provides
     @Singleton

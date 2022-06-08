@@ -21,8 +21,27 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import de.njsm.stocks.client.business.entities.Job;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
+import de.njsm.stocks.client.business.entities.Versionable;
+import org.junit.jupiter.api.BeforeEach;
 
-public interface ScaledUnitDeleter {
-    void deleteScaledUnit(ScaledUnitForListing scaledUnitForListing);
+import static org.mockito.Mockito.verify;
+
+class ScaledUnitDeleterImplTest extends DeleterImplTest<ScaledUnit> {
+
+    @BeforeEach
+    void setUp() {
+        uut = new ScaledUnitDeleterImpl(deleteService, deleteRepository, synchroniser, errorRecorder, scheduler);
+    }
+
+    @Override
+    Job.Type getJobType() {
+        return Job.Type.DELETE_SCALED_UNIT;
+    }
+
+    @Override
+    void verifyRecorder(SubsystemException exception, Versionable<ScaledUnit> outputToService) {
+        verify(errorRecorder).recordScaledUnitDeleteError(exception, outputToService);
+    }
 }

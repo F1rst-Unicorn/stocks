@@ -28,6 +28,7 @@ import dagger.Provides;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.Job;
 import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.database.error.ConflictRepositoryImpl;
 import de.njsm.stocks.client.database.error.ErrorDao;
@@ -119,4 +120,7 @@ public interface DatabaseModule {
 
     @Binds
     ScaledUnitEditRepository ScaledUnitEditRepository(ScaledUnitEditRepositoryImpl impl);
+
+    @Binds
+    EntityDeleteRepository<ScaledUnit> ScaledUnitDeleteRepository(ScaledUnitRepositoryImpl impl);
 }

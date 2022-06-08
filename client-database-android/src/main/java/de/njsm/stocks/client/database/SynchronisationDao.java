@@ -137,7 +137,7 @@ public abstract class SynchronisationDao {
     }
 
     @Insert(onConflict = REPLACE)
-    abstract void writeScaledUnits(List<ScaledUnitDbEntity> data);
+    public abstract void writeScaledUnits(List<ScaledUnitDbEntity> data);
 
     @Query("delete from scaled_unit")
     abstract void deleteScaledUnits();

@@ -292,6 +292,7 @@
     <string name="error_details_unit_edit_error_list">Maßeinheit bearbeiten</string>
     <string name="error_details_scaled_unit_add_error_list">Mengeneinheit hinzufügen</string>
     <string name="error_details_scaled_unit_edit_error_list">Mengeneinheit bearbeiten</string>
+    <string name="error_details_scaled_unit_delete_error_list">Mengeneinheit löschen</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>
 </resources>

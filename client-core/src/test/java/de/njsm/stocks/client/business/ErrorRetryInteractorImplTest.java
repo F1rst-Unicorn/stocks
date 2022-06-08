@@ -65,6 +65,9 @@ public class ErrorRetryInteractorImplTest {
     private ScaledUnitEditInteractor scaledUnitEditInteractor;
 
     @Mock
+    private EntityDeleter<ScaledUnit> scaledUnitDeleter;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -83,6 +86,7 @@ public class ErrorRetryInteractorImplTest {
                 unitEditInteractor,
                 scaledUnitAddInteractor,
                 scaledUnitEditInteractor,
+                scaledUnitDeleter,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -235,6 +239,20 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(scaledUnitEditInteractor).edit(expected);
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingScaledUnitDeletingDispatches() {
+        ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails = ScaledUnitDeleteErrorDetails.create(1, BigDecimal.ONE, "Gramm", "g");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", scaledUnitDeleteErrorDetails);
+
+        uut.retryInBackground(input);
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Identifiable<ScaledUnit>> captor = ArgumentCaptor.forClass(Identifiable.class);
+        verify(scaledUnitDeleter).delete(captor.capture());
+        assertEquals(scaledUnitDeleteErrorDetails.id(), captor.getValue().id());
         verify(errorRepository).deleteError(input);
     }
 }

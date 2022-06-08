@@ -24,8 +24,9 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
-import de.njsm.stocks.client.business.ScaledUnitDeleter;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.ScaledUnitListInteractor;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
@@ -39,12 +40,12 @@ public class ScaledUnitListViewModel extends ViewModel {
 
     private final ScaledUnitListInteractor scaledUnitListInteractor;
 
-    private ScaledUnitDeleter scaledUnitDeleter;
+    private final EntityDeleter<ScaledUnit> scaledUnitDeleter;
 
     private Observable<List<ScaledUnitForListing>> data;
 
     @Inject
-    ScaledUnitListViewModel(ScaledUnitListInteractor scaledUnitListInteractor, ScaledUnitDeleter scaledUnitDeleter) {
+    ScaledUnitListViewModel(ScaledUnitListInteractor scaledUnitListInteractor, EntityDeleter<ScaledUnit> scaledUnitDeleter) {
         this.scaledUnitListInteractor = scaledUnitListInteractor;
         this.scaledUnitDeleter = scaledUnitDeleter;
     }
@@ -56,7 +57,7 @@ public class ScaledUnitListViewModel extends ViewModel {
     }
 
     public void deleteScaledUnit(int listItemIndex) {
-        performOnCurrentData(list -> scaledUnitDeleter.deleteScaledUnit(list.get(listItemIndex)));
+        performOnCurrentData(list -> scaledUnitDeleter.delete(list.get(listItemIndex)));
     }
 
     public void resolveScaledUnitId(int listItemIndex, Consumer<Integer> callback) {

@@ -160,5 +160,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, Void input) {
             return scaledUnitRenderStrategy.render(scaledUnitEditErrorDetails);
         }
+
+        @Override
+        public String scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
+            return scaledUnitRenderStrategy.render(scaledUnitDeleteErrorDetails);
+        }
     }
 }

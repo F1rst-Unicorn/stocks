@@ -24,6 +24,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.SetupState;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
@@ -108,7 +109,7 @@ public interface UimockBusinessModule {
     ScaledUnitListInteractor ScaledUnitListInteractor(InMemoryScaledUnitListInteractorImpl impl);
 
     @Binds
-    ScaledUnitDeleter ScaledUnitDeleter(InMemoryScaledUnitDeleterImpl impl);
+    EntityDeleter<ScaledUnit> ScaledUnitDeleter(InMemoryScaledUnitDeleterImpl impl);
 
     @Binds
     UnitAddInteractor UnitAddInteractor(InMemoryUnitAddInteractorImpl impl);

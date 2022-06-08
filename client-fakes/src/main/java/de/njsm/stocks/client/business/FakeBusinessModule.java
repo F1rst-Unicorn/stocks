@@ -25,6 +25,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.execution.Scheduler;
 import de.njsm.stocks.client.testdata.UnitsForSelection;
@@ -153,8 +154,9 @@ public interface FakeBusinessModule {
 
     @Provides
     @Singleton
-    static ScaledUnitDeleter ScaledUnitDeleter() {
-        return mock(ScaledUnitDeleter.class);
+    @SuppressWarnings("unchecked")
+    static EntityDeleter<ScaledUnit> ScaledUnitDeleter() {
+        return mock(EntityDeleter.class);
     }
 
     @Provides

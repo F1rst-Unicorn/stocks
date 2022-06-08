@@ -120,4 +120,8 @@ public interface ServerApi {
                                   @Query("version") int version,
                                   @Query("scale") String scale,
                                   @Query("unit") int unit);
+
+    @DELETE("/v2/scaled-unit")
+    Call<Response> deleteScaledUnit(@Query("id") int id,
+                                    @Query("version") int version);
 }

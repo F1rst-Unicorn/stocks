@@ -74,7 +74,7 @@ public abstract class AbstractErrorRepositoryImplTest extends DbTestCase {
         uut.deleteError(input);
 
         assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
-        test(uut.getNumberOfErrors()).assertValue(0);
+        test(uut.getNumberOfErrors()).assertValuesOnly(0);
         assertTrue(getErrorDetails().isEmpty());
     }
 }

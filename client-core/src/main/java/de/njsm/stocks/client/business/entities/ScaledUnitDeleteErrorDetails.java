@@ -19,15 +19,21 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+import java.math.BigDecimal;
 
-public interface ScaledUnitRepository extends EntityDeleteRepository<ScaledUnit> {
+@AutoValue
+public abstract class ScaledUnitDeleteErrorDetails implements ErrorDetails, Identifiable<ScaledUnit>, FullScaledUnitSummaryFields {
 
-    Observable<List<ScaledUnitForListing>> getScaledUnits();
+    public static ScaledUnitDeleteErrorDetails create(int id, BigDecimal scale, String name, String abbreviation) {
+        return new AutoValue_ScaledUnitDeleteErrorDetails(id, scale, abbreviation, name);
+    }
+
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.scaledUnitDeleteErrorDetails(this, input);
+    }
 }

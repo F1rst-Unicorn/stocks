@@ -45,6 +45,8 @@ public interface ErrorDetailsVisitor<I, O> {
 
     O scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, I input);
 
+    O scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, I input);
+
     interface Default<I, O> extends ErrorDetailsVisitor<I, O> {
 
         O defaultImpl(ErrorDetails errorDetails, I input);
@@ -92,6 +94,11 @@ public interface ErrorDetailsVisitor<I, O> {
         @Override
         default O scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, I input) {
             return defaultImpl(scaledUnitEditErrorDetails, input);
+        }
+
+        @Override
+        default O scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, I input) {
+            return defaultImpl(scaledUnitDeleteErrorDetails, input);
         }
     }
 }

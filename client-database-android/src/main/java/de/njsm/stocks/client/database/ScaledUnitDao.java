@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.ScaledUnitForDeletion;
 import de.njsm.stocks.client.business.entities.ScaledUnitForEditing;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
@@ -51,4 +52,9 @@ abstract class ScaledUnitDao {
             "from current_scaled_unit " +
             "where id = :id")
     abstract ScaledUnitForEditing getCurrentScaledUnitWithVersion(int id);
+
+    @Query("select * " +
+            "from current_scaled_unit " +
+            "where id = :id")
+    abstract ScaledUnitForDeletion getScaledUnitForDeletion(int id);
 }

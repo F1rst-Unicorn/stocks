@@ -44,6 +44,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final ScaledUnitEditInteractor scaledUnitEditInteractor;
 
+    private final EntityDeleter<ScaledUnit> scaledUnitDeleter;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -61,6 +63,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              UnitEditInteractor unitEditInteractor,
                              ScaledUnitAddInteractor scaledUnitAddInteractor,
                              ScaledUnitEditInteractor scaledUnitEditInteractor,
+                             EntityDeleter<ScaledUnit> scaledUnitDeleter,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
@@ -72,6 +75,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.unitEditInteractor = unitEditInteractor;
         this.scaledUnitAddInteractor = scaledUnitAddInteractor;
         this.scaledUnitEditInteractor = scaledUnitEditInteractor;
+        this.scaledUnitDeleter = scaledUnitDeleter;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -171,6 +175,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
+        scaledUnitDeleter.delete(scaledUnitDeleteErrorDetails);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -216,6 +226,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, Void input) {
             return Job.Type.EDIT_SCALED_UNIT;
+        }
+
+        @Override
+        public Job.Type scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
+            return Job.Type.DELETE_SCALED_UNIT;
         }
     }
 }

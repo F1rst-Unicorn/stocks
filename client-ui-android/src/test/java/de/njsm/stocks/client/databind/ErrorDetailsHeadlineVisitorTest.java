@@ -50,5 +50,6 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_unit_edit_error_list, (long) uut.visit(UnitEditErrorDetails.create(1, "name", "abbreviation"), null));
         assertEquals(R.string.error_details_scaled_unit_add_error_list, (long) uut.visit(ScaledUnitAddErrorDetails.create(BigDecimal.ONE, 2, "name", "abbreviation"), null));
         assertEquals(R.string.error_details_scaled_unit_edit_error_list, (long) uut.visit(ScaledUnitEditErrorDetails.create(1, BigDecimal.ONE, 2, "name", "abbreviation"), null));
+        assertEquals(R.string.error_details_scaled_unit_delete_error_list, (long) uut.visit(ScaledUnitDeleteErrorDetails.create(1, BigDecimal.ONE, "name", "abbreviation"), null));
     }
 }

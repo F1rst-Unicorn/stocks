@@ -53,6 +53,7 @@ import java.time.format.DateTimeFormatter;
                 UnitEditEntity.class,
                 ScaledUnitAddEntity.class,
                 ScaledUnitEditEntity.class,
+                ScaledUnitDeleteEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,

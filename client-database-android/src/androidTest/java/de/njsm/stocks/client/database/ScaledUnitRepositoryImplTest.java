@@ -22,7 +22,9 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.ScaledUnitRepository;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import de.njsm.stocks.client.business.entities.Versionable;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,7 @@ import java.util.List;
 import static de.njsm.stocks.client.database.StandardEntities.scaledUnitDbEntityBuilder;
 import static de.njsm.stocks.client.database.StandardEntities.unitDbEntity;
 import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
 
 public class ScaledUnitRepositoryImplTest extends DbTestCase {
 
@@ -52,5 +55,18 @@ public class ScaledUnitRepositoryImplTest extends DbTestCase {
         Observable<List<ScaledUnitForListing>> actual = uut.getScaledUnits();
 
         actual.test().awaitCount(1).assertValue(singletonList(ScaledUnitForListing.create(scaledUnit.id(), unit.abbreviation(), scaledUnit.scale())));
+    }
+
+    @Test
+    public void gettingScaledUnitForDeletionWorks() {
+        UnitDbEntity unit = unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = scaledUnitDbEntityBuilder().unit(unit.id()).build();
+        stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
+        stocksDatabase.synchronisationDao().synchroniseScaledUnits(singletonList(scaledUnit));
+
+        Versionable<ScaledUnit> actual = uut.getEntityForDeletion(scaledUnit::id);
+
+        assertEquals(scaledUnit.id(), actual.id());
+        assertEquals(scaledUnit.version(), actual.version());
     }
 }
