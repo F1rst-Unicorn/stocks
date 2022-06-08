@@ -172,7 +172,11 @@ public class DataMapper {
     }
 
     static StatusCode map(de.njsm.stocks.common.api.StatusCode input) {
-        return StatusCode.values()[input.ordinal()];
+        int ordinal = input.ordinal();
+        if (ordinal < StatusCode.values().length)
+            return StatusCode.values()[ordinal];
+        LOG.warn("Unknown status code " + input + " mapped to " + StatusCode.GENERAL_ERROR);
+        return StatusCode.GENERAL_ERROR;
     }
 
     static LocationForEditing map(de.njsm.stocks.client.business.entities.LocationForEditing location) {
